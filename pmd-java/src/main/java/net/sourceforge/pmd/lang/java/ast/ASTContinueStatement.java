@@ -4,7 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTContinueStatement extends AbstractJavaNode {
+
+/**
+ * A continue statement, that jumps to the next iteration of an enclosing loop.
+ *
+ * <pre class="grammar">
+ *
+ * ContinueStatement ::= "continue" &lt;IDENTIFIER&gt;? ";"
+ *
+ * </pre>
+ */
+public final class ASTContinueStatement extends AbstractStatement {
 
     ASTContinueStatement(int id) {
         super(id);

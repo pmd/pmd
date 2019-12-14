@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -38,7 +38,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     private static final String FILL_IN_STACKTRACE = ".fillInStackTrace";
 
     @Override
-    public Object visit(ASTCatchStatement catchStmt, Object data) {
+    public Object visit(ASTCatchClause catchStmt, Object data) {
         String target = catchStmt.jjtGetChild(0).findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getImage();
         // Inspect all the throw stmt inside the catch stmt
         List<ASTThrowStatement> lstThrowStatements = catchStmt.findDescendantsOfType(ASTThrowStatement.class);
@@ -61,7 +61,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                     // maybe it is used inside a anonymous class
                     ck(data, target, throwStatement, parent);
                 } else {
-                    // Check all arguments used in the throw statement 
+                    // Check all arguments used in the throw statement
                     ck(data, target, throwStatement, throwStatement);
                 }
             } else {
@@ -133,7 +133,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     /**
      * Checks whether the given target is in the argument list. If this is the
      * case, then the target (root exception) is used as the cause.
-     * 
+     *
      * @param target
      * @param baseNode
      */
@@ -155,7 +155,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
         }
         return match;
     }
-    
+
     /**
      * Checks whether the given childNode is part of an additive expression (String concatenation) limiting search to base Node.
      * @param childNode

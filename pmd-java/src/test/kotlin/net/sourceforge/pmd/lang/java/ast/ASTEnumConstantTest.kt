@@ -12,8 +12,7 @@ class ASTEnumConstantTest : ParserTestSpec({
 
         "enum Foo { A, B }" should matchToplevelType<ASTEnumDeclaration> {
 
-            child<ASTEnumBody> {
-
+            typeBody {
                 enumConstant("A") {
                     it::isAnonymousClass shouldBe false
 
@@ -36,6 +35,7 @@ class ASTEnumConstantTest : ParserTestSpec({
 
                     it::getArguments shouldBe null
                     it::getAnonymousClass shouldBe null
+
                 }
             }
         }
@@ -45,9 +45,7 @@ class ASTEnumConstantTest : ParserTestSpec({
     parserTest("Enum constants should have an anonymous class node") {
 
         "enum Foo { B { } }" should matchToplevelType<ASTEnumDeclaration> {
-
-            child<ASTEnumBody> {
-
+            typeBody {
                 enumConstant("B") {
                     it::isAnonymousClass shouldBe true
 
@@ -59,18 +57,19 @@ class ASTEnumConstantTest : ParserTestSpec({
                     it::getArguments shouldBe null
 
                     it::getAnonymousClass shouldBe child {
-                        child<ASTClassOrInterfaceBody> {}
+                        typeBody()
                     }
                 }
             }
         }
     }
 
+
     parserTest("Enum constants should contain their annotations") {
 
         "enum Foo { @C B, @A@a C }" should matchToplevelType<ASTEnumDeclaration> {
 
-            child<ASTEnumBody> {
+            typeBody {
 
                 enumConstant("B") {
                     it::getDeclaredAnnotations shouldBe listOf(annotation("C"))
@@ -93,11 +92,12 @@ class ASTEnumConstantTest : ParserTestSpec({
         }
     }
 
+
     parserTest("Enum constants with arguments") {
 
         "enum Foo { B(\"str\") }" should matchToplevelType<ASTEnumDeclaration> {
 
-            child<ASTEnumBody> {
+            typeBody {
 
                 enumConstant("B") {
                     it::getId shouldBe variableId("B") {
@@ -116,8 +116,8 @@ class ASTEnumConstantTest : ParserTestSpec({
 
         "enum Foo { B(\"str\") { } }" should matchToplevelType<ASTEnumDeclaration> {
 
-            child<ASTEnumBody> {
 
+            typeBody {
                 enumConstant("B") {
                     it::getId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
@@ -129,7 +129,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                     }
 
                     it::getAnonymousClass shouldBe child {
-                        child<ASTClassOrInterfaceBody> {}
+                        typeBody()
                     }
                 }
             }

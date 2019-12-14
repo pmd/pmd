@@ -10,7 +10,7 @@ import java.util.Deque;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -58,7 +58,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     /**
      * Creates a new {@link ScopeAndDeclarationFinder}.
-     * 
+     *
      * @param classLoader
      *            the class loader to use to resolve types, see
      *            {@link SourceFileScope} and {@link TypeSet}
@@ -201,7 +201,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         if (node.jjtGetParent() instanceof ASTMethodDeclaration
                 || node.jjtGetParent() instanceof ASTConstructorDeclaration
                 || node.jjtGetParent() instanceof ASTLambdaExpression
-                || node.jjtGetParent() instanceof ASTCatchStatement
+                || node.jjtGetParent() instanceof ASTCatchClause
                 || node.jjtGetParent() instanceof ASTForStatement) {
             super.visit(node, null);
         } else {
@@ -212,7 +212,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
+    public Object visit(ASTCatchClause node, Object data) {
         createLocalScope(node);
         cont(node);
         return data;

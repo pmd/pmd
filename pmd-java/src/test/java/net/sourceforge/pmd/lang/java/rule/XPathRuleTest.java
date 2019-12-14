@@ -169,14 +169,13 @@ public class XPathRuleTest extends RuleTst {
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
-     * 
+     *
      * @throws Exception
      *             any error
      */
     @Test
     public void testFollowingSibling() throws Exception {
-        final String SOURCE = "public class dummy {\n" + "  public String toString() {\n"
-                + "    String test = \"bad example\";\n" + "    test = \"a\";\n" + "    return test;\n" + "  }\n" + "}";
+        final String SOURCE = "public interface dummy extends Foo, Bar, Baz {}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
         ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
         Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
@@ -184,27 +183,27 @@ public class XPathRuleTest extends RuleTst {
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
-        String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
+        String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
 
         // XPATH version 1.0
         XPathRuleQuery xpathRuleQuery = new JaxenXPathRuleQuery();
         xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
+        xpathRuleQuery.setProperties(new HashMap<>());
         xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_1_0);
         List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(2, nodes.size());
-        assertEquals(4, nodes.get(0).getBeginLine());
-        assertEquals(5, nodes.get(1).getBeginLine());
+        assertEquals("Bar", nodes.get(0).getImage());
+        assertEquals("Baz", nodes.get(1).getImage());
 
         // XPATH version 2.0
         xpathRuleQuery = new SaxonXPathRuleQuery();
         xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setProperties(new HashMap<PropertyDescriptor<?>, Object>());
+        xpathRuleQuery.setProperties(new HashMap<>());
         xpathRuleQuery.setVersion(XPathRuleQuery.XPATH_2_0);
         nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(2, nodes.size());
-        assertEquals(4, nodes.get(0).getBeginLine());
-        assertEquals(5, nodes.get(1).getBeginLine());
+        assertEquals("Bar", nodes.get(0).getImage());
+        assertEquals("Baz", nodes.get(1).getImage());
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {

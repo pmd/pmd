@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -102,91 +101,91 @@ public class SimpleNodeTest {
             }
         }
     }
-
-    @Test
-    public void testLineNumbersAreSetOnAllSiblings() {
-        for (ASTBlock b : getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
-            assertTrue(b.getBeginLine() > 0);
-        }
-        for (ASTVariableInitializer b : getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
-            assertTrue(b.getBeginLine() > 0);
-        }
-        for (ASTExpression b : getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
-            assertTrue(b.getBeginLine() > 0);
-        }
-    }
-
-    @Test
-    public void testFindDescendantsOfType() {
-        ASTBlock block = new ASTBlock(2);
-        block.jjtAddChild(new ASTReturnStatement(1), 0);
-        assertEquals(1, block.findDescendantsOfType(ASTReturnStatement.class).size());
-    }
-
-    @Test
-    public void testFindDescendantsOfTypeMultiple() {
-        ASTBlock block = new ASTBlock(1);
-        block.jjtAddChild(new ASTBlockStatement(2), 0);
-        block.jjtAddChild(new ASTBlockStatement(3), 1);
-        List<ASTBlockStatement> nodes = block.findDescendantsOfType(ASTBlockStatement.class);
-        assertEquals(2, nodes.size());
-    }
-
-    @Test
-    public void testFindDescendantsOfTypeRecurse() {
-        ASTBlock block = new ASTBlock(1);
-        ASTBlock childBlock = new ASTBlock(2);
-        block.jjtAddChild(childBlock, 0);
-        childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
-        List<ASTMethodDeclaration> nodes = block.findDescendantsOfType(ASTMethodDeclaration.class);
-        assertEquals(1, nodes.size());
-    }
-
-    @Test
-    public void testGetFirstChild() {
-        ASTBlock block = new ASTBlock(1);
-        ASTStatement x = new ASTStatement(2);
-        block.jjtAddChild(x, 0);
-        block.jjtAddChild(new ASTStatement(3), 1);
-
-        Node n = block.getFirstDescendantOfType(ASTStatement.class);
-        assertNotNull(n);
-        assertTrue(n instanceof ASTStatement);
-        assertEquals(x, n);
-    }
-
-    @Test
-    public void testGetFirstChildNested() {
-        ASTBlock block = new ASTBlock(1);
-        ASTStatement x = new ASTStatement(2);
-        ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
-        x.jjtAddChild(x1, 0);
-        block.jjtAddChild(x, 0);
-        block.jjtAddChild(new ASTStatement(3), 1);
-
-        Node n = block.getFirstDescendantOfType(ASTAssignmentOperator.class);
-        assertNotNull(n);
-        assertTrue(n instanceof ASTAssignmentOperator);
-        assertEquals(x1, n);
-    }
-
-    @Test
-    public void testGetFirstChildNestedDeeper() {
-        ASTBlock block = new ASTBlock(1);
-        ASTStatement x = new ASTStatement(2);
-        ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
-        ASTName x2 = new ASTName(5);
-
-        x.jjtAddChild(x1, 0);
-        x1.jjtAddChild(x2, 0);
-        block.jjtAddChild(x, 0);
-        block.jjtAddChild(new ASTStatement(3), 1);
-
-        Node n = block.getFirstDescendantOfType(ASTName.class);
-        assertNotNull(n);
-        assertTrue(n instanceof ASTName);
-        assertEquals(x2, n);
-    }
+    //
+    //    @Test
+    //    public void testLineNumbersAreSetOnAllSiblings() {
+    //        for (ASTBlock b : getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
+    //            assertTrue(b.getBeginLine() > 0);
+    //        }
+    //        for (ASTVariableInitializer b : getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
+    //            assertTrue(b.getBeginLine() > 0);
+    //        }
+    //        for (ASTExpression b : getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
+    //            assertTrue(b.getBeginLine() > 0);
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testFindDescendantsOfType() {
+    //        ASTBlock block = new ASTBlock(2);
+    //        block.jjtAddChild(new ASTReturnStatement(1), 0);
+    //        assertEquals(1, block.findDescendantsOfType(ASTReturnStatement.class).size());
+    //    }
+    //
+    //    @Test
+    //    public void testFindDescendantsOfTypeMultiple() {
+    //        ASTBlock block = new ASTBlock(1);
+    //        block.jjtAddChild(new ASTBlockStatement(2), 0);
+    //        block.jjtAddChild(new ASTBlockStatement(3), 1);
+    //        List<ASTBlockStatement> nodes = block.findDescendantsOfType(ASTBlockStatement.class);
+    //        assertEquals(2, nodes.size());
+    //    }
+    //
+    //    @Test
+    //    public void testFindDescendantsOfTypeRecurse() {
+    //        ASTBlock block = new ASTBlock(1);
+    //        ASTBlock childBlock = new ASTBlock(2);
+    //        block.jjtAddChild(childBlock, 0);
+    //        childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
+    //        List<ASTMethodDeclaration> nodes = block.findDescendantsOfType(ASTMethodDeclaration.class);
+    //        assertEquals(1, nodes.size());
+    //    }
+    //
+    //    @Test
+    //    public void testGetFirstChild() {
+    //        ASTBlock block = new ASTBlock(1);
+    //        ASTStatement x = new ASTStatement(2);
+    //        block.jjtAddChild(x, 0);
+    //        block.jjtAddChild(new ASTStatement(3), 1);
+    //
+    //        Node n = block.getFirstDescendantOfType(ASTStatement.class);
+    //        assertNotNull(n);
+    //        assertTrue(n instanceof ASTStatement);
+    //        assertEquals(x, n);
+    //    }
+    //
+    //    @Test
+    //    public void testGetFirstChildNested() {
+    //        ASTBlock block = new ASTBlock(1);
+    //        ASTStatement x = new ASTStatement(2);
+    //        ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
+    //        x.jjtAddChild(x1, 0);
+    //        block.jjtAddChild(x, 0);
+    //        block.jjtAddChild(new ASTStatement(3), 1);
+    //
+    //        Node n = block.getFirstDescendantOfType(ASTAssignmentOperator.class);
+    //        assertNotNull(n);
+    //        assertTrue(n instanceof ASTAssignmentOperator);
+    //        assertEquals(x1, n);
+    //    }
+    //
+    //    @Test
+    //    public void testGetFirstChildNestedDeeper() {
+    //        ASTBlock block = new ASTBlock(1);
+    //        ASTStatement x = new ASTStatement(2);
+    //        ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
+    //        ASTName x2 = new ASTName(5);
+    //
+    //        x.jjtAddChild(x1, 0);
+    //        x1.jjtAddChild(x2, 0);
+    //        block.jjtAddChild(x, 0);
+    //        block.jjtAddChild(new ASTStatement(3), 1);
+    //
+    //        Node n = block.getFirstDescendantOfType(ASTName.class);
+    //        assertNotNull(n);
+    //        assertTrue(n instanceof ASTName);
+    //        assertEquals(x2, n);
+    //    }
 
     @Test
     public void testParentMethods() {
@@ -311,9 +310,9 @@ public class SimpleNodeTest {
     private static final String BROKEN_LINE_IN_NAME = "import java.io." + PMD.EOL + "File;" + PMD.EOL
             + "public class Foo{}";
 
-    private static final String LINE_NUMBERS_ON_SIBLINGS = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
-            + "  try {" + PMD.EOL + "  } catch (Exception1 e) {" + PMD.EOL + "   int x =2;" + PMD.EOL + "  }" + PMD.EOL
-            + " if (x != null) {}" + PMD.EOL + " }" + PMD.EOL + "}";
+    //    private static final String LINE_NUMBERS_ON_SIBLINGS = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
+    //            + "  try {" + PMD.EOL + "  } catch (Exception1 e) {" + PMD.EOL + "   int x =2;" + PMD.EOL + "  }" + PMD.EOL
+    //            + " if (x != null) {}" + PMD.EOL + " }" + PMD.EOL + "}";
 
     private static final String NO_LOOKAHEAD = "public class Foo { }";
 

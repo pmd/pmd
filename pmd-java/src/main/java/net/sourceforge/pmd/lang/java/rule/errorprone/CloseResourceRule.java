@@ -363,7 +363,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 }
             }
 
-            if (t.getBeginLine() > id.getBeginLine() && t.hasFinally()) {
+            if (t.getBeginLine() > id.getBeginLine() && t.getFinally() != null) {
                 ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
                 List<ASTName> names = f.findDescendantsOfType(ASTName.class);
                 for (ASTName oName : names) {

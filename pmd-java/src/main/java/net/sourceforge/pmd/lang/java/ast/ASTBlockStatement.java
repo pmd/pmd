@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * @deprecated {@link ASTStatement} has been turned into an interface. Usages of BlockStatement can
+ *  either be replaced with Statement if you don't care about the specific statement, or removed if
+ *  you were extracting the contained node anyway.
+ */
+@Deprecated
 public final class ASTBlockStatement extends AbstractJavaNode {
 
     ASTBlockStatement(int id) {

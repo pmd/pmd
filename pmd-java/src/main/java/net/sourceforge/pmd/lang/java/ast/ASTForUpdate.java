@@ -35,4 +35,10 @@ public final class ASTForUpdate extends AbstractJavaNode {
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
+
+    /** Returns the expression list nested within this node. */
+    public ASTStatementExpressionList getExprList() {
+        return (ASTStatementExpressionList) jjtGetChild(0);
+    }
+
 }

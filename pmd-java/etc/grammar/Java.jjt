@@ -1548,13 +1548,13 @@ TOKEN :
 ASTCompilationUnit CompilationUnit() :
 {}
 {
-  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyStatement() )* ]
-  ( ImportDeclaration() ( EmptyStatement() )* )*
+  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyDeclaration() )* ]
+  ( ImportDeclaration() ( EmptyDeclaration() )* )*
   // the module decl lookahead needs to be before the type declaration branch,
   // looking for annotations + "open" | "module" will fail faster if it's *not*
   // a module (most common case)
-  [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyStatement() )* ]
-  ( TypeDeclaration() ( EmptyStatement() )* )*
+  [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyDeclaration() )* ]
+  ( TypeDeclaration() ( EmptyDeclaration() )* )*
   ( < "\u001a" > )?
   ( < "~[]" > )? // what's this for? Do you mean ( < ~[] > )*, i.e. "any character"?
   <EOF>
@@ -2654,7 +2654,7 @@ void ArrayDimExpr() #void:
  * Statement syntax follows.
  */
 
-void Statement() :
+void Statement() #void:
 {}
 {
   Block()
@@ -2675,7 +2675,7 @@ void Statement() :
 // because they start with a different token
 | LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD(2) LabeledStatement()
-| StatementExpression() ";"
+| ( StatementExpression() ";" ) #ExpressionStatement
 }
 
 void LabeledStatement() :
@@ -2692,14 +2692,14 @@ void Block() :
       ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
 }
 
-void BlockStatement():
+void BlockStatement() #void:
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 | LOOKAHEAD({ jdkVersion >= 13 && isKeyword("yield") }) YieldStatement()
 |
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
-  LocalVariableDeclaration() ";"
+  LocalVariableDeclaration() ";" { ((AbstractJavaNode) jjtree.peekNode()).shiftTokens(0, 1); }
 |
   // we need to lookahead until the "class" token,
   // because a method ref may be annotated
@@ -2709,7 +2709,7 @@ void BlockStatement():
   Statement()
 }
 
-void LocalClassDecl() #void:
+void LocalClassDecl() #LocalClassStatement:
 {int mods = 0;}
 {
     // this preserves the modifiers of the local class.
@@ -2757,7 +2757,13 @@ void EmptyStatement() :
   ";"
 }
 
-void StatementExpression() :
+void EmptyDeclaration() :
+{}
+{
+  ";"
+}
+
+void StatementExpression() #void:
 {AssignmentOp op = null;}
 {
   PrefixIncrementExpression()
@@ -2859,19 +2865,21 @@ void DoStatement() :
   "do" Statement() "while" "(" Expression() ")" ";"
 }
 
-void ForStatement() :
-{}
+void ForStatement() #void:
+{Token t;}
 {
-  "for" "("
+  t="for" "("
 (
       LOOKAHEAD(LocalVariableDeclaration() ":")
-      LocalVariableDeclaration() ":" Expression()
-|
+      (LocalVariableDeclaration() ":" Expression() ")" Statement() { jjtThis.jjtSetFirstToken(t); }) #ForeachStatement
+| (
   [ ForInit() ] ";"
   [ Expression() ] ";"
   [ ForUpdate() ]
-)
   ")" Statement()
+   { jjtThis.jjtSetFirstToken(t); }
+  ) #ForStatement
+)
 }
 
 void ForInit() :
@@ -2932,9 +2940,10 @@ void TryStatement() :
  */
 {}
 {
-  "try" (ResourceList())? Block()
-  ( CatchStatement() )*
-  [ FinallyStatement() ]
+  "try" (ResourceList())?
+  Block()
+  ( CatchClause() )*
+  [ FinallyClause() ]
 }
 
 void ResourceList():
@@ -2964,7 +2973,7 @@ void Resource() :
    {}
 }
 
-void CatchStatement() :
+void CatchClause() :
 {}
 {
   "catch"
@@ -2972,7 +2981,7 @@ void CatchStatement() :
   Block()
 }
 
-void FinallyStatement() :
+void FinallyClause() :
 {}
 {
     "finally" Block()

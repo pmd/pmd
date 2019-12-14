@@ -20,12 +20,12 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
  *
  * TryStatement ::= "try" {@link ASTResourceList ResourceList}?
  *                  {@link ASTBlock Block}
- *                  {@link ASTCatchStatement CatchStatement}*
- *                  {@link ASTFinallyStatement FinallyStatement}?
+ *                  {@link ASTCatchClause CatchClause}*
+ *                  {@link ASTFinallyClause FinallyClause}?
  *
  * </pre>
  */
-public final class ASTTryStatement extends AbstractJavaNode {
+public final class ASTTryStatement extends AbstractStatement {
 
     ASTTryStatement(int id) {
         super(id);
@@ -66,22 +66,18 @@ public final class ASTTryStatement extends AbstractJavaNode {
         return list == null ? Collections.emptyList() : IteratorUtil.toList(list.iterator());
     }
 
+    /** Returns the body of the statement. */
+    public ASTBlock getBody() {
+        return (ASTBlock) jjtGetChild(1);
+    }
+
 
     /**
      * Returns the catch statement nodes of this try statement.
      * If there are none, returns an empty list.
      */
-    public List<ASTCatchStatement> getCatchStatements() {
-        return findChildrenOfType(ASTCatchStatement.class);
-    }
-
-
-    /**
-     * Returns true if this try statement has a  {@code finally} statement,
-     * in which case {@link #getFinally()} won't return {@code null}.
-     */
-    public boolean hasFinally() {
-        return getFirstChildOfType(ASTFinallyStatement.class) != null;
+    public List<ASTCatchClause> getCatchClauses() {
+        return findChildrenOfType(ASTCatchClause.class);
     }
 
 
@@ -90,8 +86,9 @@ public final class ASTTryStatement extends AbstractJavaNode {
      *
      * @return The finally statement, or null if there is none
      */
-    public ASTFinallyStatement getFinally() {
-        return getFirstChildOfType(ASTFinallyStatement.class);
+    @Nullable
+    public ASTFinallyClause getFinally() {
+        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTFinallyClause.class);
     }
 
 }

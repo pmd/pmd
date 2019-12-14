@@ -144,7 +144,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::isQualified shouldBe true
                     it::getArgumentCount shouldBe 0
 
-                it::getQualifier shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
+                    it::getQualifier shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
 
                     it::getExplicitTypeArguments shouldBe child {
                         classType("String")
@@ -158,8 +158,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         "public TabbedPaneLayout() { MetalTabbedPaneUI.this.super(); }" should matchDeclaration<ASTConstructorDeclaration> {
 
             child<ASTFormalParameters> { }
-
-            block {
+            it::getBody shouldBe block {
                 child<ASTExplicitConstructorInvocation> {
                     it::isThis shouldBe false
                     it::isSuper shouldBe true
@@ -167,7 +166,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::getExplicitTypeArguments shouldBe null
                     it::getArgumentCount shouldBe 0
 
-                it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
+                    it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
 
 
                     it::getArgumentsList shouldBe child { }
@@ -225,7 +224,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
             child<ASTFormalParameters> { }
 
             block {
-                child<ASTBlockStatement>(ignoreChildren = true) {}
+                exprStatement()
             }
         }
 
@@ -233,8 +232,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
             block {
-
-                child<ASTBlockStatement>(ignoreChildren = true) {}
+                exprStatement()
             }
         }
 
@@ -243,7 +241,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
             child<ASTFormalParameters> { }
 
             block {
-                child<ASTBlockStatement>(ignoreChildren = true) {}
+                exprStatement()
             }
         }
 
@@ -253,7 +251,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
             child<ASTFormalParameters> { }
 
             block {
-                child<ASTBlockStatement>(ignoreChildren = true) {}
+                exprStatement()
             }
         }
 

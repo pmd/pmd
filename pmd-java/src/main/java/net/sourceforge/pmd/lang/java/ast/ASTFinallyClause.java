@@ -4,13 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTFinallyStatement extends AbstractJavaNode {
+/**
+ * The "finally" clause of a {@linkplain ASTTryStatement try statement}.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * FinallyClause ::= "finally" {@link ASTBlock Block}
+ *
+ * </pre>
+ */
+public final class ASTFinallyClause extends AbstractJavaNode {
 
-    ASTFinallyStatement(int id) {
+    ASTFinallyClause(int id) {
         super(id);
     }
 
-    ASTFinallyStatement(JavaParser p, int id) {
+    ASTFinallyClause(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -23,5 +33,12 @@ public final class ASTFinallyStatement extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+    /**
+     * Returns the block.
+     */
+    public ASTBlock getBlock() {
+        return (ASTBlock) jjtGetChild(0);
     }
 }

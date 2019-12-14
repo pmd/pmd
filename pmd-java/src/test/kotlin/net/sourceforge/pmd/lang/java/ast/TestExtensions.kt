@@ -117,8 +117,9 @@ fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: 
         }
 
 // this isn't a node anymore
-fun TreeNodeWrapper<Node, *>.methodCall(inside: NodeSpec<ASTMethodCall>) =
-        child<ASTMethodCall> {
+fun TreeNodeWrapper<Node, *>.methodCall(name: String, inside: NodeSpec<ASTMethodCall> = EmptyAssertions) =
+        child<ASTMethodCall>(ignoreChildren = inside === EmptyAssertions) {
+            it::getMethodName shouldBe name
             inside()
         }
 
@@ -187,6 +188,84 @@ fun TreeNodeWrapper<Node, *>.diamond() =
 fun TreeNodeWrapper<Node, *>.block(contents: NodeSpec<ASTBlock> = EmptyAssertions) =
         child<ASTBlock>(ignoreChildren = contents == EmptyAssertions) {
             contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.emptyStatement(contents: NodeSpec<ASTEmptyStatement> = EmptyAssertions) =
+        child<ASTEmptyStatement>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.forLoop(body: ValuedNodeSpec<ASTForStatement, ASTStatement?> = { null }) =
+        child<ASTForStatement> {
+            val body = body()
+            if (body != null) it::getBody shouldBe body
+            else unspecifiedChildren(it.numChildren)
+        }
+
+fun TreeNodeWrapper<Node, *>.forUpdate(body: ValuedNodeSpec<ASTForUpdate, ASTStatementExpressionList>) =
+        fromChild<ASTForUpdate, ASTStatementExpressionList> {
+            it::getExprList shouldBe body()
+            it.exprList
+        }
+
+fun TreeNodeWrapper<Node, *>.forInit(body: ValuedNodeSpec<ASTForInit, ASTStatement>) =
+        fromChild<ASTForInit, ASTStatement> {
+            it::getStatement shouldBe body()
+            it.statement
+        }
+
+fun TreeNodeWrapper<Node, *>.statementExprList(body: NodeSpec<ASTStatementExpressionList> = EmptyAssertions) =
+        child<ASTStatementExpressionList>(ignoreChildren = body === EmptyAssertions) {
+            body()
+        }
+
+fun TreeNodeWrapper<Node, *>.foreachLoop(body: ValuedNodeSpec<ASTForeachStatement, ASTStatement?> = { null }) =
+        child<ASTForeachStatement> {
+            val body = body()
+            if (body != null) it::getBody shouldBe body
+            else unspecifiedChildren(it.numChildren)
+        }
+
+fun TreeNodeWrapper<Node, *>.doLoop(body: ValuedNodeSpec<ASTDoStatement, ASTStatement?> = { null }) =
+        child<ASTDoStatement> {
+            val body = body()
+            if (body != null) it::getBody shouldBe body
+            else unspecifiedChildren(it.numChildren)
+        }
+
+fun TreeNodeWrapper<Node, *>.whileLoop(body: ValuedNodeSpec<ASTWhileStatement, ASTStatement?> = { null }) =
+        child<ASTWhileStatement> {
+            val body = body()
+            if (body != null) it::getBody shouldBe body
+            else unspecifiedChildren(it.numChildren)
+        }
+
+fun TreeNodeWrapper<Node, *>.constructorCall(contents: NodeSpec<ASTConstructorCall> = EmptyAssertions) =
+        child<ASTConstructorCall>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.breakStatement(label: String? = null, contents: NodeSpec<ASTBreakStatement> = EmptyAssertions) =
+        child<ASTBreakStatement>(ignoreChildren = contents == EmptyAssertions) {
+            it::getLabel shouldBe label
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.localVarDecl(contents: NodeSpec<ASTLocalVariableDeclaration> = EmptyAssertions) =
+        child<ASTLocalVariableDeclaration>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.localClassDecl(simpleName: String, contents: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
+        child<ASTLocalClassStatement> {
+            it::getDeclaration shouldBe classDecl(simpleName, contents)
+        }
+
+fun TreeNodeWrapper<Node, *>.exprStatement(contents: ValuedNodeSpec<ASTExpressionStatement, ASTExpression?> = { null }) =
+        child<ASTExpressionStatement> {
+            val expr = contents()
+            if (expr != null) it::getExpr shouldBe expr
+            else unspecifiedChild()
         }
 
 fun TreeNodeWrapper<Node, *>.fieldDecl(contents: NodeSpec<ASTFieldDeclaration>) =
@@ -408,7 +487,7 @@ fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.classBody(assertions: NodeSpec<ASTClassOrInterfaceBody> = EmptyAssertions) =
-        child<ASTClassOrInterfaceBody>(ignoreChildren = assertions == EmptyAssertions) {
-            assertions()
+fun TreeNodeWrapper<Node, *>.typeBody(contents: NodeSpec<ASTTypeBody> = EmptyAssertions) =
+        child<ASTTypeBody> {
+            contents()
         }

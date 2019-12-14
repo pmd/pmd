@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTAssertStatement extends AbstractJavaNode {
+public final class ASTAssertStatement extends AbstractStatement {
 
     ASTAssertStatement(int id) {
         super(id);
@@ -38,7 +38,7 @@ public final class ASTAssertStatement extends AbstractJavaNode {
     /**
      * Returns the expression tested by this assert statement.
      */
-    public ASTExpression getGuardExpressionNode() {
+    public ASTExpression getCondition() {
         return (ASTExpression) jjtGetChild(0);
     }
 

@@ -94,6 +94,12 @@ private val javaImplicitAssertions: Assertions<Node> = {
         it::isParenthesized shouldBe (it.parenthesisDepth > 0)
     }
 
+    if (it is InternalInterfaces.AtLeastOneChild) {
+        assert(it.numChildren > 0) {
+            "Expected at least one child for $it"
+        }
+    }
+
 }
 
 
@@ -112,12 +118,8 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * Can be used inside of a [ParserTestSpec] with [ParserTestSpec.parserTest].
  *
  * Parsing contexts allow to parse a string containing only the node you're interested
- * in instead of writing up a full class that the parser can handle. See [parseAstExpression],
- * [parseAstStatement].
- *
- * The methods [parseExpression] and [parseStatement] add some sugar to those by skipping
- * some nodes we're not interested in to find the node of interest using their reified type
- * parameter.
+ * in instead of writing up a full class that the parser can handle. See [parseExpression],
+ * [parseStatement].
  *
  * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
  * on the strings, using their type parameter and the info in this test context to parse, find
@@ -203,7 +205,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             makeMatcher(TopLevelTypeDeclarationParsingCtx, ignoreChildren, nodeSpec)
 
     /**
-     * Returns a String matcher that parses the node using [parseBodyDeclaration] with
+     * Returns a String matcher that parses the node using [parseDeclaration] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      *
      * Note that the enclosing type declaration can be customized by changing [genClassHeader].
@@ -248,37 +250,24 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     }
 
-
-    fun parseAstExpression(expr: String): ASTExpression = ExpressionParsingCtx.parseNode(expr, this)
-
-    fun parseAstStatement(statement: String): ASTBlockStatement = StatementParsingCtx.parseNode(statement, this)
-
-    fun parseAstType(type: String): ASTType = TypeParsingCtx.parseNode(type, this)
-
-    fun parseToplevelAnyTypeDeclaration(type: String): ASTAnyTypeDeclaration = TopLevelTypeDeclarationParsingCtx.parseNode(type, this)
-
-    fun parseBodyDeclaration(type: String): JavaNode = EnclosedDeclarationParsingCtx.parseNode(type, this)
-
-    // reified shorthands, fetching the node
-
-    inline fun <reified N : Node> parseExpression(expr: String): N =
+    inline fun <reified N : ASTExpression> parseExpression(expr: String): N =
             ExpressionParsingCtx.parseAndFind(expr, this)
 
     // don't forget the semicolon
-    inline fun <reified N : Node> parseStatement(stmt: String): N =
+    inline fun <reified N : ASTStatement> parseStatement(stmt: String): N =
             StatementParsingCtx.parseAndFind(stmt, this)
 
-    inline fun <reified N : Node> parseType(type: String): N =
+    inline fun <reified N : ASTType> parseType(type: String): N =
             TypeParsingCtx.parseAndFind(type, this)
 
-    inline fun <reified N : Node> parseTypeParameters(typeParams: String): N =
+    inline fun parseTypeParameters(typeParams: String): ASTTypeParameters =
             TypeParametersParsingCtx.parseAndFind(typeParams, this)
 
     inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N =
             TopLevelTypeDeclarationParsingCtx.parseAndFind(decl, this)
 
     inline fun <reified N : Node> parseDeclaration(decl: String): N =
-            EnclosedDeclarationParsingCtx.parseAndFind(decl, this)
+            EnclosedDeclarationParsingCtx.parseNode(decl, this) as N
 
     companion object {
 
@@ -346,6 +335,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                     parseNode(construct, ctx).findFirstNodeOnStraightLine(N::class.java)
                     ?: throw NoSuchElementException("No node of type ${N::class.java.simpleName} in the given $constructName:\n\t$construct")
 
+
             override fun toString(): String = "$constructName context"
         }
 
@@ -366,7 +356,7 @@ ${ctx.genClassHeader} {
             override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTExpression::class.java)!!
         }
 
-        object StatementParsingCtx : NodeParsingCtx<ASTBlockStatement>("statement") {
+        object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
             override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
                 """
@@ -379,7 +369,7 @@ ${ctx.genClassHeader} {
                 """.trimIndent()
 
 
-            override fun retrieveNode(acu: ASTCompilationUnit): ASTBlockStatement = acu.getFirstDescendantOfType(ASTBlockStatement::class.java)
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement = acu.getFirstDescendantOfType(ASTBlock::class.java).jjtGetChild(0)
         }
 
         object EnclosedDeclarationParsingCtx : NodeParsingCtx<JavaNode>("enclosed declaration") {
@@ -392,7 +382,7 @@ ${ctx.genClassHeader} {
                 """.trimIndent()
 
             override fun retrieveNode(acu: ASTCompilationUnit): JavaNode =
-                    acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java)!!.declarationNode!!
+                    acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java).declarationNode
         }
 
         object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {

@@ -4,7 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTYieldStatement extends AbstractJavaTypeNode {
+/**
+ * A {@code yield} statement in a {@linkplain ASTSwitchExpression switch expression}.
+ *
+ * <pre class="grammar">
+ *
+ * YieldStatement ::= "yield" {@link ASTExpression} ";"
+ *
+ * </pre>
+ */
+public class ASTYieldStatement extends AbstractStatement {
 
     ASTYieldStatement(int id) {
         super(id);
@@ -25,6 +34,12 @@ public class ASTYieldStatement extends AbstractJavaTypeNode {
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
+
+    /** Returns the yielded expression. */
+    public ASTExpression getExpr() {
+        return (ASTExpression) getFirstChild();
+    }
+
 
     @Override
     public String getImage() {

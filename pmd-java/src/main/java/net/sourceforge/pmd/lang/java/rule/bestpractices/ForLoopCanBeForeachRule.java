@@ -49,10 +49,6 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTForStatement node, Object data) {
 
-        if (node.isForeach()) {
-            return data;
-        }
-
         final ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
         final ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
         final ASTExpression guardCondition = node.getFirstChildOfType(ASTExpression.class);

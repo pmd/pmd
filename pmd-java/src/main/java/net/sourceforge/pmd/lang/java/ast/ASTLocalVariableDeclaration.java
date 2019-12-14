@@ -8,13 +8,13 @@ import java.util.Iterator;
 
 
 /**
- * Represents a local variable declaration. This is a {@linkplain ASTBlockStatement block statement},
+ * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
  * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
  * {@linkplain ASTForStatement foreach statements}.
  *
- * <p>This statement may define several variables, possibly of different types (see {@link
- * ASTVariableDeclaratorId#getType()}).
- * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
+ * <p>This statement may define several variables, possibly of different types
+ * (see {@link ASTVariableDeclaratorId#getType()}). The nodes corresponding to
+ * the declared variables are accessible through {@link #iterator()}.
  *
  * <pre class="grammar">
  *
@@ -22,7 +22,8 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, Iterable<ASTVariableDeclaratorId> {
+// TODO extend AbstractStatement
+public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, Iterable<ASTVariableDeclaratorId>, ASTStatement {
 
     ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -43,6 +44,17 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode im
         visitor.visit(this, data);
     }
 
+
+    /**
+     * Returns true if the local variables declared by this statement
+     * are final.
+     */
+    @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    public boolean isFinal() {
+        // TODO unimplement AccessNode, this causes compilation errors because of our current symbol table
+        return super.isFinal();
+    }
 
     /**
      * If true, this local variable declaration represents a declaration,

@@ -20,18 +20,16 @@ class ASTClassOrInterfaceDeclTest : ParserTestSpec({
 
                }
             """ should parseAs {
+                localClassDecl(simpleName = "Local") {
 
-                child<ASTBlockStatement> {
-                    classDecl(simpleName = "Local") {
+                    it::isAbstract shouldBe false
+                    it::isFinal shouldBe false
+                    it::isLocal shouldBe true
+                    it::isNested shouldBe false
 
-                        it::isAbstract shouldBe false
-                        it::isFinal shouldBe false
-                        it::isLocal shouldBe true
-                        it::isNested shouldBe false
+                    annotation("F")
 
-                        annotation("F")
-                        classBody {}
-                    }
+                    typeBody()
                 }
             }
 
@@ -41,20 +39,18 @@ class ASTClassOrInterfaceDeclTest : ParserTestSpec({
                }
             """ should parseAs {
 
-                child<ASTBlockStatement> {
-                    classDecl(simpleName = "Local") {
-                        it::getDeclaredAnnotations shouldBe listOf(
-                                annotation("F"),
-                                annotation("C")
-                        )
+                localClassDecl(simpleName = "Local") {
+                    it::getDeclaredAnnotations shouldBe listOf(
+                            annotation("F"),
+                            annotation("C")
+                    )
 
-                        it::isAbstract shouldBe true
-                        it::isFinal shouldBe false
-                        it::isLocal shouldBe true
-                        it::isNested shouldBe false
+                    it::isAbstract shouldBe true
+                    it::isFinal shouldBe false
+                    it::isLocal shouldBe true
+                    it::isNested shouldBe false
 
-                        classBody {}
-                    }
+                    typeBody()
                 }
             }
         }

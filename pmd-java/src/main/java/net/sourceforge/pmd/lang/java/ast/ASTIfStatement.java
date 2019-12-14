@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTIfStatement extends AbstractJavaNode {
+public final class ASTIfStatement extends AbstractStatement {
 
     private boolean hasElse;
 
@@ -46,7 +46,7 @@ public final class ASTIfStatement extends AbstractJavaNode {
      * Returns the node that represents the guard of this conditional.
      * This may be any expression of type boolean.
      */
-    public ASTExpression getGuardExpressionNode() {
+    public ASTExpression getCondition() {
         return (ASTExpression) jjtGetChild(0);
     }
 

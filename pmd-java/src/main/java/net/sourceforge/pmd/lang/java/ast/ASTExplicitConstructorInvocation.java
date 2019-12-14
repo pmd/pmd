@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTExplicitConstructorInvocation extends AbstractJavaNode implements QualifierOwner {
+public final class ASTExplicitConstructorInvocation extends AbstractStatement implements QualifierOwner {
 
     private boolean isSuper;
 

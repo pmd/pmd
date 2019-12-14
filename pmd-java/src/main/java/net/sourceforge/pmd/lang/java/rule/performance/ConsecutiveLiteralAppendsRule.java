@@ -16,9 +16,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -45,17 +45,17 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
  * literals are used It would be much better to make these calls using one call
  * to <code>.append</code>
- * 
+ *
  * <p>Example:</p>
- * 
+ *
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello&quot;);
  * buf.append(&quot; &quot;).append(&quot;World&quot;);
  * </pre>
- * 
+ *
  * <p>This would be more eloquently put as:</p>
- * 
+ *
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello World&quot;);
@@ -76,8 +76,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTIfStatement.class);
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
-        BLOCK_PARENTS.add(ASTCatchStatement.class);
-        BLOCK_PARENTS.add(ASTFinallyStatement.class);
+        BLOCK_PARENTS.add(ASTCatchClause.class);
+        BLOCK_PARENTS.add(ASTFinallyClause.class);
     }
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR

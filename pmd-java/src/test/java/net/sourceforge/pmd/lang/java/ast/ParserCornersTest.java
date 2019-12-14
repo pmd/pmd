@@ -246,17 +246,17 @@ public class ParserCornersTest {
         String code = "import a;;import b; public class Foo {}";
         ASTCompilationUnit cu = parseJava18(code);
         assertNotNull(cu);
-        Assert.assertEquals(ASTEmptyStatement.class, cu.jjtGetChild(1).getClass());
+        Assert.assertEquals(ASTEmptyDeclaration.class, cu.jjtGetChild(1).getClass());
 
         String code2 = "package c;; import a; import b; public class Foo {}";
         ASTCompilationUnit cu2 = parseJava18(code2);
         assertNotNull(cu2);
-        Assert.assertEquals(ASTEmptyStatement.class, cu2.jjtGetChild(1).getClass());
+        Assert.assertEquals(ASTEmptyDeclaration.class, cu2.jjtGetChild(1).getClass());
 
         String code3 = "package c; import a; import b; public class Foo {};";
         ASTCompilationUnit cu3 = parseJava18(code3);
         assertNotNull(cu3);
-        Assert.assertEquals(ASTEmptyStatement.class, cu3.jjtGetChild(4).getClass());
+        Assert.assertEquals(ASTEmptyDeclaration.class, cu3.jjtGetChild(4).getClass());
     }
 
     @Test

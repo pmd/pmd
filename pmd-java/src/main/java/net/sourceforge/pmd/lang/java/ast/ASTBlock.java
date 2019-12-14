@@ -4,7 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTBlock extends AbstractJavaNode {
+import java.util.Iterator;
+
+/**
+ * A block of code. This is a {@linkplain ASTStatement statement} that
+ * contains other statements.
+ *
+ * <pre class="grammar">
+ *
+ * Block ::=  "{" {@link ASTStatement Statement}* "}"
+ *
+ * </pre>
+ */
+public final class ASTBlock extends AbstractStatement implements Iterable<ASTStatement> {
 
     private boolean containsComment;
 
@@ -36,4 +48,14 @@ public final class ASTBlock extends AbstractJavaNode {
         this.containsComment = true;
     }
 
+    @Override
+    public Iterator<ASTStatement> iterator() {
+        return children(ASTStatement.class).iterator();
+    }
+
+
+    @Override
+    public ASTStatement jjtGetChild(int index) {
+        return (ASTStatement) super.jjtGetChild(index);
+    }
 }

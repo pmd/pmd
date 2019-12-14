@@ -15,7 +15,7 @@ import org.apache.commons.lang3.EnumUtils;
  * {@link ASTSwitchExpression SwitchExpression}, though it does not need
  * to be exhaustive. See the doc of that node for details.
  */
-public final class ASTSwitchStatement extends AbstractJavaNode implements Iterable<ASTSwitchLabel> {
+public final class ASTSwitchStatement extends AbstractStatement implements Iterable<ASTSwitchLabel> {
     ASTSwitchStatement(int id) {
         super(id);
     }

@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
@@ -173,10 +173,8 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public void visit(ASTForStatement node, T data) {
-            if (node.isForeach()) {
-                check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
-            }
+        public void visit(ASTForeachStatement node, T data) {
+            check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
             visitChildren(node, data);
         }
 
@@ -255,7 +253,7 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public void visit(ASTCatchStatement node, T data) {
+        public void visit(ASTCatchClause node, T data) {
             if (node.isMulticatchStatement()) {
                 check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES, data);
             }

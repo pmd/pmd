@@ -4,7 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTBreakStatement extends AbstractJavaNode {
+/**
+ * A break statement, that jumps to a named label (or exits the current loop).
+ *
+ * <pre class="grammar">
+ *
+ * BreakStatement ::= "break" &lt;IDENTIFIER&gt;? ";"
+ *
+ * </pre>
+ *
+ */
+public final class ASTBreakStatement extends AbstractStatement {
 
     ASTBreakStatement(int id) {
         super(id);
@@ -23,6 +33,10 @@ public final class ASTBreakStatement extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+    public String getLabel() {
+        return getImage();
     }
 
     @Override

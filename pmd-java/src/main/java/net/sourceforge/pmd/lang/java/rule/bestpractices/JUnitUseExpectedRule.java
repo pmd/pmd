@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -79,7 +79,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
             return found;
         }
         for (ASTTryStatement trySt : catches) {
-            ASTCatchStatement cStatement = getCatch(trySt);
+            ASTCatchClause cStatement = getCatch(trySt);
             if (cStatement != null) {
                 ASTBlock block = (ASTBlock) cStatement.jjtGetChild(1);
                 if (block.jjtGetNumChildren() != 0) {
@@ -105,10 +105,10 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
         return found;
     }
 
-    private ASTCatchStatement getCatch(Node n) {
+    private ASTCatchClause getCatch(Node n) {
         for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-            if (n.jjtGetChild(i) instanceof ASTCatchStatement) {
-                return (ASTCatchStatement) n.jjtGetChild(i);
+            if (n.jjtGetChild(i) instanceof ASTCatchClause) {
+                return (ASTCatchClause) n.jjtGetChild(i);
             }
         }
         return null;

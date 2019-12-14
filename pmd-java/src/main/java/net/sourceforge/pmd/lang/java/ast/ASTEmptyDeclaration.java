@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * An empty declaration (useless).
+ * An empty declaration (useless). This is kept separate from {@link ASTStatement}
+ * because they don't occur in the same syntactic contexts.
  *
  * <pre class="grammar">
  *

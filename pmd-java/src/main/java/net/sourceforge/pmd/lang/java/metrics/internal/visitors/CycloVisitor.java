@@ -8,10 +8,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
@@ -90,7 +91,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTWhileStatement node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -100,7 +101,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTIfStatement node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -111,10 +112,16 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTForStatement node, Object data) {
         ((MutableInt) data).increment();
 
-        if (considerBooleanPaths && !node.isForeach()) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+        if (considerBooleanPaths) {
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTForeachStatement node, Object data) {
+        ((MutableInt) data).increment();
         return super.visit(node, data);
     }
 
@@ -123,7 +130,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTDoStatement node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -131,7 +138,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
+    public Object visit(ASTCatchClause node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
@@ -150,7 +157,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
             ((MutableInt) data).add(2); // equivalent to if (condition) { throw .. }
 
             if (considerBooleanPaths) {
-                ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+                ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
             }
         }
 

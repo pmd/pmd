@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Formal parameter node. Used in the {@link ASTFormalParameters}
  * production of {@link ASTMethodDeclarator} to represent a
- * method's formal parameter. Also used in the {@link ASTCatchStatement}
+ * method's formal parameter. Also used in the {@link ASTCatchClause}
  * production to represent the declared exception variable.
  * Also used in LambdaExpressions for the LambdaParameters.
  *

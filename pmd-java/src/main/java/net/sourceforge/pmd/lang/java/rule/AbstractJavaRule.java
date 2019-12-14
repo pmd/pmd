@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
@@ -34,9 +35,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -179,6 +183,10 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return visit((ASTExpression) node, data);
     }
 
+    public Object visit(ASTStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
     @Deprecated
     public Object visit(ASTPrimaryPrefix node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
@@ -217,6 +225,17 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     }
 
     @Deprecated
+    public Object visit(ASTBlockStatement node, Object data) {
+        return null;
+    }
+
+
+    @Deprecated
+    public Object visit(ASTStatementExpression node, Object data) {
+        return null;
+    }
+
+    @Deprecated
     public Object visit(ASTMethodDeclarator node, Object data) {
         return null;
     }
@@ -225,4 +244,5 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     public Object visit(ASTArguments node, Object data) {
         return null;
     }
+
 }

@@ -40,7 +40,7 @@ public class Java13Test {
         Assert.assertEquals(1, switchExpression.findChildrenOfType(ASTSwitchLabeledBlock.class).size());
         Assert.assertEquals(1, switchExpression.findDescendantsOfType(ASTYieldStatement.class).size());
         ASTYieldStatement yieldStatement = switchExpression.getFirstDescendantOfType(ASTYieldStatement.class);
-        Assert.assertEquals(Integer.TYPE, yieldStatement.getType());
+        Assert.assertEquals(Integer.TYPE, yieldStatement.getExpr().getType());
     }
 
     @Test

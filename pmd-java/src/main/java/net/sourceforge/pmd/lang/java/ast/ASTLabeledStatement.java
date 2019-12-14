@@ -4,7 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTLabeledStatement extends AbstractJavaNode {
+/**
+ * A wrapper around a statement that assigns it a label.
+ *
+ * <pre class="grammar">
+ *
+ * LabeledStatement ::= &lt;IDENTIFIER&gt; ":" {@link ASTStatement Statement}
+ *
+ * </pre>
+ */
+public final class ASTLabeledStatement extends AbstractStatement {
 
     ASTLabeledStatement(int id) {
         super(id);
@@ -23,6 +32,20 @@ public final class ASTLabeledStatement extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+    /**
+     * Returns the name of the label.
+     */
+    public String getLabel() {
+        return getImage();
+    }
+
+    /**
+     * Returned the statement named by this label.
+     */
+    public ASTStatement getStatement() {
+        return (ASTStatement) jjtGetChild(1);
     }
 
 }

@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTEmptyStatement extends AbstractJavaNode {
+public final class ASTEmptyStatement extends AbstractStatement {
 
     ASTEmptyStatement(int id) {
         super(id);

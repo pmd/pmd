@@ -11,7 +11,7 @@ import java.util.Deque;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -36,9 +36,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <p>
  * Standard rules: +1 for each decision point, including case statements but not
  * including boolean operators unlike CyclomaticComplexityRule.
- * 
+ *
  * @author Alan Hohn, based on work by Donald A. Leckie
- * 
+ *
  * @since June 18, 2014
  */
 @Deprecated
@@ -107,7 +107,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
+    public Object visit(ASTCatchClause node, Object data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;

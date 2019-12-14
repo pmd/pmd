@@ -18,7 +18,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -48,7 +48,7 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testCatchBlocks() {
         parseCode(TEST_CATCH_BLOCKS);
-        ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
+        ASTCatchClause c = acu.findDescendantsOfType(ASTCatchClause.class).get(0);
         ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
         Map<NameDeclaration, List<NameOccurrence>> vars = s.getDeclarations();

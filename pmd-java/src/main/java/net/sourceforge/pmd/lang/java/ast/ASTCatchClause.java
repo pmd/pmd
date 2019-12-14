@@ -9,20 +9,20 @@ import java.util.List;
 
 
 /**
- * Catch statement node.
+ * A "catch" clause of a {@linkplain ASTTryStatement try statement}.
  *
  * <pre class="grammar">
  *
- * CatchStatement ::= "catch" "(" {@link ASTFormalParameter FormalParameter} ")" {@link ASTBlock Block}
+ * CatchClause ::= "catch" "(" {@link ASTFormalParameter FormalParameter} ")" {@link ASTBlock Block}
  *
  * </pre>
  */
-public final class ASTCatchStatement extends AbstractJavaNode {
-    ASTCatchStatement(int id) {
+public final class ASTCatchClause extends AbstractJavaNode {
+    ASTCatchClause(int id) {
         super(id);
     }
 
-    ASTCatchStatement(JavaParser p, int id) {
+    ASTCatchClause(JavaParser p, int id) {
         super(p, id);
     }
 

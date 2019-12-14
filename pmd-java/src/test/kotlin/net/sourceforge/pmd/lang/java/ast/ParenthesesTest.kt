@@ -152,8 +152,7 @@ class ParenthesesTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "((String) obj).length()" should parseAs {
-                methodCall {
-                    it::getMethodName shouldBe "length"
+                methodCall("length") {
 
                     it::getQualifier shouldBe parenthesized {
                         castExpr {
@@ -185,8 +184,7 @@ class ParenthesesTest : ParserTestSpec({
             }
 
             "(switch (obj) { case a -> 1; default -> 2; }).length()" should parseAs {
-                methodCall {
-                    it::getMethodName shouldBe "length"
+                methodCall("length") {
 
                     it::getQualifier shouldBe parenthesized {
                         switchExpr()

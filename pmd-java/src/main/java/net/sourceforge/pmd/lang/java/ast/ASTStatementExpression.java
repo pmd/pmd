@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * @deprecated Use {@link ASTExpression} inside {@link ASTStatementExpressionList},
+ *     or {@link ASTExpressionStatement} inside {@link ASTBlock}
+ */
+@Deprecated
 public final class ASTStatementExpression extends AbstractJavaTypeNode {
 
     ASTStatementExpression(int id) {

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a {@code while} statement.
+ * Represents a {@code while} loop.
  *
  * <pre class="grammar">
  *
@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTWhileStatement extends AbstractJavaNode {
+public final class ASTWhileStatement extends AbstractStatement {
 
     ASTWhileStatement(int id) {
         super(id);
@@ -28,7 +28,7 @@ public final class ASTWhileStatement extends AbstractJavaNode {
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
-    public ASTExpression getGuardExpressionNode() {
+    public ASTExpression getCondition() {
         return (ASTExpression) jjtGetChild(0);
     }
 

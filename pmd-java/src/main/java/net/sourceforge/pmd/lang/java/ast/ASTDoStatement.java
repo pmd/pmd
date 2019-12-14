@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTDoStatement extends AbstractJavaNode {
+public final class ASTDoStatement extends AbstractStatement {
 
     ASTDoStatement(int id) {
         super(id);
@@ -29,7 +29,7 @@ public final class ASTDoStatement extends AbstractJavaNode {
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
-    public ASTExpression getGuardExpressionNode() {
+    public ASTExpression getCondition() {
         return (ASTExpression) jjtGetChild(1);
     }
 

@@ -8,12 +8,12 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import java.io.IOException
 
 
-class ASTCatchStatementTest : ParserTestSpec({
+class ASTCatchClauseTest : ParserTestSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
         expectParseException("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly") {
-            parseAstStatement("try { } catch (IOException | AssertionError e) { }")
+            parseStatement<ASTTryStatement>("try { } catch (IOException | AssertionError e) { }")
         }
 
     }
@@ -24,7 +24,7 @@ class ASTCatchStatementTest : ParserTestSpec({
 
         "try { } catch (IOException ioe) { }" should matchStmt<ASTTryStatement> {
             child<ASTBlock> { }
-            child<ASTCatchStatement> {
+            child<ASTCatchClause> {
                 it.isMulticatchStatement shouldBe false
 
                 unspecifiedChildren(2)
@@ -39,7 +39,7 @@ class ASTCatchStatementTest : ParserTestSpec({
 
         "try { } catch (IOException | AssertionError e) { }" should matchStmt<ASTTryStatement> {
             child<ASTBlock> { }
-            child<ASTCatchStatement> {
+            child<ASTCatchClause> {
                 it.isMulticatchStatement shouldBe true
 
                 val types = fromChild<ASTFormalParameter, List<ASTType>> {

@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTThrowStatement extends AbstractJavaNode {
+public final class ASTThrowStatement extends AbstractStatement {
 
     ASTThrowStatement(int id) {
         super(id);
@@ -34,6 +34,10 @@ public final class ASTThrowStatement extends AbstractJavaNode {
         visitor.visit(this, data);
     }
 
+    /** Returns the expression for the thrown exception. */
+    public ASTExpression getExpr() {
+        return (ASTExpression) getFirstChild();
+    }
 
     /**
      * Gets the image of the first ASTClassOrInterfaceType child or

@@ -71,7 +71,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -220,6 +219,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // no need to visit children, the only child, ASTName, will have no type
         return data;
     }
+
 
 
     @Override
@@ -896,7 +896,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //            if (currentChild.getType() != null) {
         //                // rollup type from the child: PrimaryPrefix -> PrimaryExpression
         //                primaryNodeType = currentChild.getTypeDefinition();
-        //                
+        //
         //                // if this expression is a method call, then make sure, PrimaryPrefix has the type
         //                // on which the method is executed (type of the target reference)
         //                if (currentChild.getFirstChildOfType(ASTArguments.class) != null && previousChild.getFirstChildOfType(ASTName.class) != null) {
@@ -1131,13 +1131,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         } else {
             rollupTypeUnary(node);
         }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTStatementExpression node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
         return data;
     }
 

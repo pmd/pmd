@@ -253,6 +253,10 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
 
+    public Object visit(ASTStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
     // REMOVE ME
     // deprecated stuff kept for compatibility with existing visitors, not matched by anything
 
@@ -343,6 +347,16 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Deprecated
     public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTBlockStatement node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTStatementExpression node, Object data) {
         return null;
     }
 

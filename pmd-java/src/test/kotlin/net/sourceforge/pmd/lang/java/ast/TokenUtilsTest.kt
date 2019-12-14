@@ -21,7 +21,7 @@ class TokenUtilsTest : FunSpec({
         with(ParserTestCtx(JavaVersion.J11)) {
 
 
-            val decl = parseToplevelAnyTypeDeclaration("""
+            val decl = parseToplevelDeclaration<ASTClassOrInterfaceDeclaration>("""
                 class Foo { /* wassup */ abstract void bar(); }
             """.trimIndent())
 

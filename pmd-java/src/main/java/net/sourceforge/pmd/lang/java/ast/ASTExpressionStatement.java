@@ -1,28 +1,28 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A return statement in a method or constructor body.
- *
+ * A statement that contains an expression. Note that this is not an
+ * expression itself.
  *
  * <pre class="grammar">
  *
- * ReturnStatement ::= "return" {@link ASTExpression Expression}? ";"
+ * ExpressionStatement ::= {@link ASTExpression StatementExpression} ";"
  *
  * </pre>
  */
-public final class ASTReturnStatement extends AbstractStatement {
+public final class ASTExpressionStatement extends AbstractStatement {
 
-    ASTReturnStatement(int id) {
+    ASTExpressionStatement(int id) {
         super(id);
     }
 
-    ASTReturnStatement(JavaParser p, int id) {
+    ASTExpressionStatement(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -37,11 +37,10 @@ public final class ASTReturnStatement extends AbstractStatement {
         visitor.visit(this, data);
     }
 
-    /**
-     * Returns the returned expression, or null if this is a simple return.
-     */
-    @Nullable
+
+    /** Returns the contained expression. */
+    @NonNull
     public ASTExpression getExpr() {
-        return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
+        return (ASTExpression) jjtGetChild(0);
     }
 }
