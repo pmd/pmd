@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
@@ -46,6 +47,21 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
     public boolean isExpressionBody() {
         return !isBlockBody();
     }
+
+    /**
+     * Returns the body of this lambda if it is a block.
+     */
+    public ASTBlock getBlockBody() {
+        return NodeStream.of(getLastChild()).filterIs(ASTBlock.class).first();
+    }
+
+    /**
+     * Returns the body of this lambda if it is an expression.
+     */
+    public ASTExpression getExpressionBody() {
+        return NodeStream.of(getLastChild()).filterIs(ASTExpression.class).first();
+    }
+
 
     // TODO MethodLikeNode should be removed, and this class extend AbstractJavaExpr
 

@@ -621,9 +621,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // Type common to all declarations in the same statement
         JavaTypeDefinition baseType = node.getTypeNode().getTypeDefinition();
 
-        if (baseType != null) {
+        if (baseType != null && node.getExtraDimensions() != null) {
             // add the dimensions specific to the declarator id
-            setTypeDefinition(node, baseType.withDimensions(node.getArrayDepth()));
+            setTypeDefinition(node, baseType.withDimensions(node.getExtraDimensions().getSize()));
         }
         return super.visit(node, data);
     }
@@ -1196,13 +1196,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTFormalParameter node, Object data) {
         super.visit(node, data);
-        JavaTypeDefinition varType = node.getVariableDeclaratorId().getTypeDefinition();
+        JavaTypeDefinition varType = node.getVarId().getTypeDefinition();
 
         if (varType != null) {
             if (node.isVarargs()) {
                 // The type of the formal parameter is defined in terms of the type
                 // of the declarator ID
-                setTypeDefinition(node.getVariableDeclaratorId(), varType.withDimensions(1));
+                setTypeDefinition(node.getVarId(), varType.withDimensions(1));
             }
         }
         return data;

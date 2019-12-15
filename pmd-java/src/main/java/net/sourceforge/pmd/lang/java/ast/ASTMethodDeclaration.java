@@ -31,8 +31,8 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  *                       {@link ASTResultType ResultType}
  *                       &lt;IDENTIFIER&gt;
  *                       {@link ASTFormalParameters FormalParameters}
- *                       ( "[" "]" )*
- *                       ({@link ASTThrowsList ThrowsList})?
+ *                       {@link ASTArrayDimensions ArrayDimensions}?
+ *                       {@link ASTThrowsList ThrowsList}?
  *                       ({@link ASTBlock Block} | ";" )
  *
  *
@@ -173,5 +173,13 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return MethodLikeKind.METHOD;
     }
 
+    /**
+     * Returns the extra array dimensions that may be after the
+     * formal parameters.
+     */
+    @Nullable
+    public ASTArrayDimensions getExtraDimensions() {
+        return children(ASTArrayDimensions.class).first();
+    }
 
 }

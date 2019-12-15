@@ -16,9 +16,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * ArrayTypeDim ::= {@link ASTAnnotation TypeAnnotation}* "[" "]"
  *
  * </pre>
- *
  */
 public class ASTArrayTypeDim extends AbstractJavaNode implements Annotatable {
+
+    private boolean isVarargs;
 
     ASTArrayTypeDim(int id) {
         super(id);
@@ -26,6 +27,20 @@ public class ASTArrayTypeDim extends AbstractJavaNode implements Annotatable {
 
     ASTArrayTypeDim(JavaParser p, int id) {
         super(p, id);
+    }
+
+    /**
+     * Returns true if this is a varargs dimension. Varargs parameters
+     * are represented as an array type whose last dimension has this
+     * attribute set to true. Querying {@link ASTFormalParameter#isVarargs()}
+     * is more convenient.
+     */
+    public boolean isVarargs() {
+        return isVarargs;
+    }
+
+    void setVarargs() {
+        isVarargs = true;
     }
 
     @Override

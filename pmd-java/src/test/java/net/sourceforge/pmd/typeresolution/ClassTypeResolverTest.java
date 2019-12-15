@@ -872,15 +872,11 @@ public class ClassTypeResolverTest {
         ASTVariableDeclaratorId aID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(aID);
         assertEquals("a", aID.getImage());
-        assertFalse(aID.isArray());
-        assertEquals(0, aID.getArrayDepth());
         assertEquals(int[].class, aID.getType());
 
         ASTVariableDeclaratorId bID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(bID);
         assertEquals("b", bID.getImage());
-        assertTrue(bID.isArray());
-        assertEquals(1, bID.getArrayDepth());
         assertEquals(int[][].class, bID.getType());
     }
 
@@ -902,15 +898,11 @@ public class ClassTypeResolverTest {
         ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(cID);
         assertEquals("c", cID.getImage());
-        assertFalse(cID.isArray());
-        assertEquals(0, cID.getArrayDepth());
         assertEquals(String[].class, cID.getType());
 
         ASTVariableDeclaratorId dID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(dID);
         assertEquals("d", dID.getImage());
-        assertTrue(dID.isArray());
-        assertEquals(1, dID.getArrayDepth());
         assertEquals(String[][].class, dID.getType());
     }
 

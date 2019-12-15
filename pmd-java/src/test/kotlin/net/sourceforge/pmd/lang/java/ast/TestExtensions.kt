@@ -68,15 +68,20 @@ fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpressio
             it::getQualifier shouldBe qualifier()
         }
 
-fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
-        child<ASTVariableDeclaratorId>(ignoreChildren = true) {
+fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<ASTVariableDeclaratorId> = EmptyAssertions) =
+        child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getVariableName shouldBe name
-            otherAssertions(it)
+            otherAssertions()
         }
 
 fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: NodeSpec<ASTVariableDeclarator> = EmptyAssertions) =
         child<ASTVariableDeclarator> {
-            it::getVariableId shouldBe variableId(name)
+            it::getVarId shouldBe variableId(name)
+            spec()
+        }
+
+fun TreeNodeWrapper<Node, *>.varDeclarator(spec: NodeSpec<ASTVariableDeclarator> = EmptyAssertions) =
+        child<ASTVariableDeclarator> {
             spec()
         }
 
@@ -361,6 +366,31 @@ fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInf
         }
 
 
+fun TreeNodeWrapper<Node, *>.blockLambda(assertions: ValuedNodeSpec<ASTLambdaExpression, ASTBlock?> = {null}) =
+        child<ASTLambdaExpression> {
+            it::isBlockBody shouldBe true
+            it::isExpressionBody shouldBe false
+            val block = assertions()
+            if (block == null) unspecifiedChildren(2)
+            else it::getBlockBody shouldBe block
+        }
+
+
+fun TreeNodeWrapper<Node, *>.lambdaParam(assertions: NodeSpec<ASTLambdaParameter> = EmptyAssertions) =
+        child<ASTLambdaParameter> {
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.exprLambda(assertions: ValuedNodeSpec<ASTLambdaExpression, ASTExpression?> = {null}) =
+        child<ASTLambdaExpression> {
+            it::isBlockBody shouldBe false
+            it::isExpressionBody shouldBe true
+            val block = assertions()
+            if (block == null) unspecifiedChildren(2)
+            else it::getExpressionBody shouldBe block
+        }
+
+
 fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInfixExpression>) =
         infixExpr(BinaryOp.INSTANCEOF, assertions)
 
@@ -433,6 +463,13 @@ fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType,
 
 fun TreeNodeWrapper<Node, *>.arrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =
         child<ASTArrayTypeDim> {
+            it::isVarargs shouldBe false
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.varargsArrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =
+        child<ASTArrayTypeDim> {
+            it::isVarargs shouldBe true
             assertions()
         }
 

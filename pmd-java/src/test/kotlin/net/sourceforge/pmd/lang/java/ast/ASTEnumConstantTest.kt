@@ -16,7 +16,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                 enumConstant("A") {
                     it::isAnonymousClass shouldBe false
 
-                    it::getId shouldBe variableId("A") {
+                    it::getVarId shouldBe variableId("A") {
                         it::isEnumConstant shouldBe true
                         it::isField shouldBe false
                     }
@@ -28,7 +28,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                 enumConstant("B") {
                     it::isAnonymousClass shouldBe false
 
-                    it::getId shouldBe variableId("B") {
+                    it::getVarId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
                         it::isField shouldBe false
                     }
@@ -49,7 +49,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                 enumConstant("B") {
                     it::isAnonymousClass shouldBe true
 
-                    it::getId shouldBe variableId("B") {
+                    it::getVarId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
                         it::isField shouldBe false
                     }
@@ -74,7 +74,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                 enumConstant("B") {
                     it::getDeclaredAnnotations shouldBe listOf(annotation("C"))
 
-                    it::getId shouldBe variableId("B")
+                    it::getVarId shouldBe variableId("B")
 
                     it::getArguments shouldBe null
                     it::getAnonymousClass shouldBe null
@@ -83,7 +83,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                 enumConstant("C") {
                     it::getDeclaredAnnotations shouldBe listOf(annotation("A"), annotation("a"))
 
-                    it::getId shouldBe variableId("C")
+                    it::getVarId shouldBe variableId("C")
 
                     it::getArguments shouldBe null
                     it::getAnonymousClass shouldBe null
@@ -100,7 +100,7 @@ class ASTEnumConstantTest : ParserTestSpec({
             typeBody {
 
                 enumConstant("B") {
-                    it::getId shouldBe variableId("B") {
+                    it::getVarId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
                         it::isField shouldBe false
                     }
@@ -119,7 +119,7 @@ class ASTEnumConstantTest : ParserTestSpec({
 
             typeBody {
                 enumConstant("B") {
-                    it::getId shouldBe variableId("B") {
+                    it::getVarId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
                         it::isField shouldBe false
                     }

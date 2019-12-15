@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -34,7 +35,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration>, Iterable<ASTVariableDeclaratorId> {
+public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode
+    implements SignedNode<ASTFieldDeclaration>,
+               Iterable<ASTVariableDeclaratorId>,
+               LeftRecursiveNode {
 
     private JavaFieldSignature signature;
 
@@ -138,35 +142,6 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implem
         return false;
     }
 
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return checkType() + checkDecl() > 0;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        if (!isArray()) {
-            return 0;
-        }
-        return checkType() + checkDecl();
-    }
-
-    private int checkType() {
-        if (jjtGetNumChildren() == 0 || !(jjtGetChild(0) instanceof ASTType)) {
-            return 0;
-        }
-        return ((ASTType) jjtGetChild(0)).getArrayDepth();
-    }
-
-    private int checkDecl() {
-        if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
-            return 0;
-        }
-        return ((ASTVariableDeclaratorId) jjtGetChild(1).jjtGetChild(0)).getArrayDepth();
-    }
-
     /**
      * Gets the variable name of this field. This method searches the first
      * VariableDeclartorId node and returns its image or <code>null</code> if
@@ -200,14 +175,21 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implem
         return getFirstChildOfType(ASTType.class);
     }
 
+    /**
+     * Returns a stream of IDs for the fields this node declares.
+     */
+    public NodeStream<ASTVariableDeclaratorId> getVariables() {
+        return children(ASTVariableDeclarator.class).children(ASTVariableDeclaratorId.class);
+    }
 
     /**
-     * Returns an iterator over the ids of the fields
-     * declared in this statement.
+     * Returns an iterator of IDs for the fields this node declares.
+     *
+     * @see #getVariables()
      */
     @Override
     public Iterator<ASTVariableDeclaratorId> iterator() {
-        return ASTVariableDeclarator.iterateIds(this);
+        return getVariables().iterator();
     }
 
 

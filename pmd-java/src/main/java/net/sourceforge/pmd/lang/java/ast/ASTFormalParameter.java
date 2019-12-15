@@ -4,25 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 /**
- * Formal parameter node. Used in the {@link ASTFormalParameters}
- * production of {@link ASTMethodDeclarator} to represent a
- * method's formal parameter. Also used in the {@link ASTCatchClause}
- * production to represent the declared exception variable.
- * Also used in LambdaExpressions for the LambdaParameters.
+ * Formal parameter node for a {@linkplain ASTFormalParameters formal parameter list}.
+ * This is distinct from {@linkplain ASTLambdaParameter lambda parameters}.
+ *
+ * <p>The varargs ellipsis {@code "..."} is parsed as an {@linkplain ASTArrayTypeDim array dimension}
+ * in the type node.
  *
  * <pre class="grammar">
  *
- * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} ( "|" {@link ASTType Type} )* [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ *
  * </pre>
  */
-public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable {
-
-    private boolean isVarargs;
+public final class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Annotatable, InternalInterfaces.VariableIdOwner {
 
     @InternalApi
     @Deprecated
@@ -34,17 +35,15 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         super(p, id);
     }
 
-
-    void setVarargs() {
-        isVarargs = true;
-    }
-
-
     /**
-     * Returns true if this node is a varargs parameter.
+     * Returns true if this node is a varargs parameter. Then, the type
+     * node is an {@link ASTArrayType ArrayType}, and its last dimension
+     * {@linkplain ASTArrayTypeDim#isVarargs() is varargs}.
      */
     public boolean isVarargs() {
-        return isVarargs;
+        ASTType tn = getTypeNode();
+        return tn instanceof ASTArrayType
+            && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
     }
 
 
@@ -73,30 +72,10 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     /**
      * Returns the declarator ID of this formal parameter.
      */
-    public ASTVariableDeclaratorId getVariableDeclaratorId() {
+    @Override
+    @NonNull
+    public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
-    }
-
-
-    /**
-     * Returns true if this formal parameter is of an array type.
-     * This includes varargs parameters.
-     */
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return isVarargs()
-                || getTypeNode() != null && getTypeNode().isArrayType()
-                || getVariableDeclaratorId().isArray();
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        if (!isArray()) {
-            return 0;
-        }
-        return getTypeNode().getArrayDepth() + getVariableDeclaratorId().getArrayDepth() + (isVarargs() ? 1 : 0);
     }
 
 
@@ -130,13 +109,13 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
      */
     @Override
     public Class<?> getType() {
-        return getVariableDeclaratorId().getType();
+        return getVarId().getType();
     }
 
 
     @Override
     public JavaTypeDefinition getTypeDefinition() {
-        return getVariableDeclaratorId().getTypeDefinition();
+        return getVarId().getTypeDefinition();
     }
 
 
