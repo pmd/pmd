@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+source .travis/logger.sh
+source .travis/common-functions.sh
+
 if [ "${TRAVIS_REPO_SLUG}" != "pmd/pmd" ] || [ "${TRAVIS_PULL_REQUEST}" != "false" ] || [ "${TRAVIS_SECURE_ENV_VARS}" != "true" ] || [ "${encrypted_5630fbebf057_iv}" = "" ]; then
     echo "Not setting up secrets:"
     echo "  TRAVIS_REPO_SLUG=${TRAVIS_REPO_SLUG}"
@@ -18,8 +21,17 @@ mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
 mv .travis/id_rsa "$HOME/.ssh/id_rsa"
 chmod 600 "$HOME/.ssh/id_rsa"
-mkdir -p "$HOME/.gpg"
-gpg --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
+
+if travis_isLinux; then
+    mkdir -p "$HOME/.gpg"
+    gpg --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
+else
+    log_info "Not setting up gpg for ${TRAVIS_OS_NAME}."
+    # Note: importing keys into gpg will start gpg-agent. This background task then
+    # prevents travis-ci from terminating the build job under Windows.
+    # Alternatively "gpgconf --kill gpg-agent" can be executed to stop the
+    # gpg-agent at the end, if the gpg keys are needed.
+fi
 rm .travis/secrets.tar
 rm .travis/release-signing-key-82DE7BE82166E84E.gpg
 

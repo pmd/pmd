@@ -56,10 +56,9 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
      * <p>This can be used to fetch all increment or decrement operations,
      * regardless of whether they're postfix or prefix. E.g.
      * <pre>{@code
-     *  node.findDescendantsOfType(ASTUnaryExpression.class).stream().anyMatch(it -> !it.getOperator().isPure())
+     *  node.descendants(ASTUnaryExpression.class)
+     *      .filterNot(it -> it.getOperator().isPure())
      * }</pre>
-     *
-     * TODO update example for node streams
      */
     public boolean isPure() {
         return this.ordinal() < PRE_INCREMENT.ordinal();

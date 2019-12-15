@@ -14,9 +14,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * UnaryExpression ::= PrefixExpression | PostfixExpression
  *
- * PrefixExpression  ::= {@link UnaryOp PrefixOp} UnaryExpression
+ * PrefixExpression  ::= {@link UnaryOp PrefixOp} {@link ASTExpression Expression}
  *
- * PostfixExpression ::= {@link ASTExpression Expression} ({@link UnaryOp PostfixOp})
+ * PostfixExpression ::= {@link ASTExpression Expression} {@link UnaryOp PostfixOp}
  *
  * </pre>
  */

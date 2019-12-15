@@ -47,6 +47,6 @@ public final class ASTArgumentList extends AbstractJavaNode implements Iterable<
 
     @Override
     public Iterator<ASTExpression> iterator() {
-        return new NodeChildrenIterator<>(this, ASTExpression.class);
+        return children(ASTExpression.class).iterator();
     }
 }

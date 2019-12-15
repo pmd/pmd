@@ -25,4 +25,17 @@ public class DummyJavaNode extends AbstractJavaNode {
     public DummyJavaNode(JavaParser parser, int id) {
         super(parser, id);
     }
+
+
+    @Override
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
+
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
 }

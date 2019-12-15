@@ -52,6 +52,6 @@ public final class ASTResourceList extends AbstractJavaNode implements Iterable<
 
     @Override
     public Iterator<ASTResource> iterator() {
-        return new NodeChildrenIterator<>(this, ASTResource.class);
+        return children(ASTResource.class).iterator();
     }
 }

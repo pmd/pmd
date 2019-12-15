@@ -33,6 +33,12 @@ public final class ASTArrayDimExpr extends ASTArrayTypeDim implements Annotatabl
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     public ASTExpression getLengthExpression() {
         return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
     }

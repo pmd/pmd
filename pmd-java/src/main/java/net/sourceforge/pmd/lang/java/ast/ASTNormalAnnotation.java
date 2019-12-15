@@ -31,7 +31,7 @@ public final class ASTNormalAnnotation extends AbstractJavaTypeNode implements A
 
     @Override
     public Iterator<ASTMemberValuePair> iterator() {
-        return new NodeChildrenIterator<>(this, ASTMemberValuePair.class);
+        return children(ASTMemberValuePair.class).iterator();
     }
 
     @Override

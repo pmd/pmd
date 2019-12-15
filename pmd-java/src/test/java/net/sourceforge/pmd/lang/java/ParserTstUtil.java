@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
@@ -208,12 +209,12 @@ public class ParserTstUtil {
     }
 
 
-    public static AbstractJavaHandler getLanguageVersionHandler(String version) {
-        return (AbstractJavaHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
+    public static JavaLanguageHandler getLanguageVersionHandler(String version) {
+        return (JavaLanguageHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
     }
 
-    public static AbstractJavaHandler getDefaultLanguageVersionHandler() {
-        return (AbstractJavaHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+    public static JavaLanguageHandler getDefaultLanguageVersionHandler() {
+        return (JavaLanguageHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
     }
 
 
@@ -234,29 +235,29 @@ public class ParserTstUtil {
     }
 
 
-    public static <T> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
         return selectNodes(source, "1.5", resultType, xpath);
     }
 
 
     // This is the master overload, others just default the parameters
-    public static <T> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
         ASTCompilationUnit acu = parseAndTypeResolveJava(version, source);
         return convertList(acu.findChildNodesWithXPath(xpath), resultType);
     }
 
 
-    public static <T> List<T> selectNodes(Class<?> source, Class<T> resultType) {
+    public static <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType) {
         return parseAndTypeResolveJava("1.5", getSourceFromClass(source)).findDescendantsOfType(resultType);
     }
 
 
-    public static <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
         return selectNodes(source, "1.5", resultType, xpath);
     }
 
 
-    public static <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
         return selectNodes(ParserTstUtil.getSourceFromClass(source), version, resultType, xpath);
     }
 

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -66,17 +67,6 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         return (JavaNode) super.jjtGetChild(index);
     }
 
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
 
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
@@ -129,6 +119,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     @Override
+    @NonNull
     public ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
         // at most once.

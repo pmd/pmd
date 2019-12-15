@@ -531,4 +531,25 @@ public class VendingV2PaymentRequest {
 }	
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2016 [java] UnusedImports: False positive if wildcard is used and only static methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+// star import is important here for the test case!!
+import java.util.*;
+
+/**
+ * Note: In order for this test case to work, the class "Issue2016" must also be compiled and available
+ * on the auxclasspath.
+ */
+public class Issue2016 {
+    public void testFunction() {
+        Objects.toString(null);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -4,7 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.io.Reader;
+
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -58,5 +64,20 @@ public final class InternalApiBridge {
         }
     }
 
+    public static ASTCompilationUnit parseInternal(String fileName, Reader source, LanguageLevelChecker<?> checker, ParserOptions options) {
+        JavaParser parser = new JavaParser(new JavaCharStream(source));
+        String suppressMarker = options.getSuppressMarker();
+        if (suppressMarker != null) {
+            parser.setSuppressMarker(suppressMarker);
+        }
+        parser.setJdkVersion(checker.getJdkVersion());
+        parser.setPreview(checker.isPreviewEnabled());
+
+        AbstractTokenManager.setFileName(fileName);
+        ASTCompilationUnit acu = parser.CompilationUnit();
+        acu.setNoPmdComments(parser.getSuppressMap());
+        checker.check(acu);
+        return acu;
+    }
 
 }

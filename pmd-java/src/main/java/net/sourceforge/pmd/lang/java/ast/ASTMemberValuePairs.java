@@ -57,6 +57,6 @@ public final class ASTMemberValuePairs extends AbstractJavaNode implements Itera
 
     @Override
     public Iterator<ASTMemberValuePair> iterator() {
-        return new NodeChildrenIterator<>(this, ASTMemberValuePair.class);
+        return children(ASTMemberValuePair.class).iterator();
     }
 }

@@ -39,6 +39,6 @@ public final class ASTImplementsList extends AbstractJavaNode implements Iterabl
 
     @Override
     public Iterator<ASTClassOrInterfaceType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
+        return children(ASTClassOrInterfaceType.class).iterator();
     }
 }

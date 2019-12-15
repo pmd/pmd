@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,6 +21,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
 
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
+    private Map<Integer, String> noPmdComments = Collections.emptyMap();
 
     ASTCompilationUnit(int id) {
         super(id);
@@ -92,5 +95,14 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
         this.classTypeResolver = classTypeResolver;
+    }
+
+    @Override
+    public Map<Integer, String> getNoPmdComments() {
+        return noPmdComments;
+    }
+
+    void setNoPmdComments(Map<Integer, String> noPmdComments) {
+        this.noPmdComments = noPmdComments;
     }
 }

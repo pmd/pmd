@@ -4,13 +4,20 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * This class handles of producing a Language specific RuleViolation and adding
  * to a Report.
+ *
+ * <p>Since PMD 6.21.0, implementations of this interface are considered internal
+ * API and hence deprecated. Clients should exclusively use this interface and obtain
+ * instances through {@link LanguageVersionHandler#getRuleViolationFactory()}.
  */
 public interface RuleViolationFactory {
     /**
@@ -27,8 +34,8 @@ public interface RuleViolationFactory {
      * @param args
      *            arguments to embed in the rule violation message
      */
-    void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args);
+    void addViolation(RuleContext ruleContext, Rule rule, @Nullable Node node, String message, Object[] args);
 
-    void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine,
-            Object[] args);
+
+    void addViolation(RuleContext ruleContext, Rule rule, @Nullable Node node, String message, int beginLine, int endLine, Object[] args);
 }

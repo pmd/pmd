@@ -49,6 +49,6 @@ public final class ASTTypeArguments extends AbstractJavaNode implements Iterable
 
     @Override
     public Iterator<ASTType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTType.class);
+        return children(ASTType.class).iterator();
     }
 }
