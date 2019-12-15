@@ -11,8 +11,6 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePMap;
-import org.pcollections.PMap;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -110,11 +108,6 @@ class UnresolvedClassImpl implements JClassSymbol {
     @Override
     public List<JClassSymbol> getDeclaredClasses() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public PMap<String, JTypeParameterSymbol> getLexicalScope() {
-        return HashTreePMap.empty();
     }
 
     @Override

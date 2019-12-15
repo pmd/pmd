@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -80,7 +81,7 @@ class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implemen
 
     @Override
     public @NonNull String getPackageName() {
-        return myClass.getPackage().getName(); // TODO test for arrays
+        return myClass.isPrimitive() ? "java.lang" : ClassUtils.getPackageName(myClass);
     }
 
     @Override
@@ -211,7 +212,7 @@ class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implemen
 
     @Override
     public String toString() {
-        return myClass.getName();
+        return getBinaryName();
     }
 
     @Override
@@ -223,6 +224,8 @@ class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implemen
     public int hashCode() {
         return SymbolEquality.CLASS.hash(this);
     }
+
+
 
     static ReflectedClassImpl createWithEnclosing(ReflectionSymFactory symbolFactory,
                                                   @Nullable JClassSymbol enclosing,

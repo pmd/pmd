@@ -12,8 +12,6 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePMap;
-import org.pcollections.PMap;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -78,11 +76,6 @@ class ArraySymbolImpl implements JClassSymbol {
     @Override
     public @Nullable JExecutableSymbol getEnclosingMethod() {
         return null;
-    }
-
-    @Override
-    public PMap<String, JTypeParameterSymbol> getLexicalScope() {
-        return HashTreePMap.empty();
     }
 
     @Override
@@ -202,6 +195,11 @@ class ArraySymbolImpl implements JClassSymbol {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "array(" + component.toString() + ")";
+    }
+
     private static class ArrayLengthField implements JFieldSymbol {
 
         private final JClassSymbol arraySymbol;
@@ -217,7 +215,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
         @Override
         public int getModifiers() {
-            return Modifier.PUBLIC & Modifier.FINAL;
+            return Modifier.PUBLIC | Modifier.FINAL;
         }
 
         @Override
@@ -284,11 +282,6 @@ class ArraySymbolImpl implements JClassSymbol {
         @Override
         public List<JTypeParameterSymbol> getTypeParameters() {
             return Collections.emptyList();
-        }
-
-        @Override
-        public PMap<String, JTypeParameterSymbol> getLexicalScope() {
-            return HashTreePMap.empty();
         }
 
         @Override
@@ -361,11 +354,6 @@ class ArraySymbolImpl implements JClassSymbol {
         @Override
         public List<JTypeParameterSymbol> getTypeParameters() {
             return Collections.emptyList();
-        }
-
-        @Override
-        public PMap<String, JTypeParameterSymbol> getLexicalScope() {
-            return HashTreePMap.empty();
         }
 
         @Override

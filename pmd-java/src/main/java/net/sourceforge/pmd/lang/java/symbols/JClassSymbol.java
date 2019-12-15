@@ -74,7 +74,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
 
     /**
-     * Returns the nested classes declared directly in this class.
+     * Returns the member classes declared directly in this class.
      *
      * @see Class#getDeclaredClasses()
      */

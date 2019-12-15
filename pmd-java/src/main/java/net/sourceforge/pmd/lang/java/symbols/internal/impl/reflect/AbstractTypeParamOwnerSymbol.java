@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.pcollections.PMap;
-
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
@@ -21,7 +19,6 @@ abstract class AbstractTypeParamOwnerSymbol<T extends GenericDeclaration> extend
 
     protected final T reflected;
 
-    private PMap<String, JTypeParameterSymbol> lexicalScope;
     private List<JTypeParameterSymbol> typeParams;
 
 
@@ -59,11 +56,4 @@ abstract class AbstractTypeParamOwnerSymbol<T extends GenericDeclaration> extend
         return typeParams != null ? typeParams.size() : reflected.getTypeParameters().length;
     }
 
-    @Override
-    public PMap<String, JTypeParameterSymbol> getLexicalScope() {
-        if (lexicalScope == null) {
-            lexicalScope = JTypeParameterOwnerSymbol.super.getLexicalScope();
-        }
-        return lexicalScope;
-    }
 }

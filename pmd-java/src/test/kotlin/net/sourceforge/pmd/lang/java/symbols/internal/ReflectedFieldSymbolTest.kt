@@ -33,7 +33,7 @@ class ReflectedFieldSymbolTest : WordSpec({
         }
 
         "reflect its modifiers properly" {
-            TestClassesGen.forAllEqual {
+            TestClassesGen.filterNot { it.isArray }.forAllEqual {
                 Pair(
                         classSym(it)!!.declaredFields.map { it.simpleName to it.modifiers },
                         it.declaredFields.map { it.name to it.modifiers }
