@@ -42,6 +42,17 @@ This is a {{ site.pmd.release_type }} release.
 
 * {% jdoc java::lang.java.AbstractJavaParser %}
 * {% jdoc java::lang.java.AbstractJavaHandler %}
+* {% jdoc java::lang.java.ast.ASTAnyTypeDeclaration.TypeKind %}
+* {% jdoc java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
+* {% jdoc java::lang.java.ast.JavaQualifiedName %}
+* {% jdoc java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
+* {% jdoc java::lang.java.ast.JavaQualifiableNode %}
+  * {% jdoc java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
+  * {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
+  * {% jdoc java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
+* {% jdoc_package java::lang.java.qname %} and its contents
+* {% jdoc java::lang.java.ast.ASTMethodLikeNode %}
+  * Its methods will also be removed from its implementations, {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration %}, {% jdoc java::lang.java.ast.ASTLambdaExpression %}.
 
 
 ### External Contributions

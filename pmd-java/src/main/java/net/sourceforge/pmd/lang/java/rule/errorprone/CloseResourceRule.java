@@ -43,7 +43,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -209,9 +208,9 @@ public class CloseResourceRule extends AbstractJavaRule {
         ASTName name = initializer.getFirstDescendantOfType(ASTName.class);
         if (name != null) {
             ASTFormalParameters formalParameters = null;
-            if (methodOrCstor.getKind() == MethodLikeKind.METHOD) {
+            if (methodOrCstor instanceof ASTMethodDeclaration) {
                 formalParameters = ((ASTMethodDeclaration) methodOrCstor).getFormalParameters();
-            } else if (methodOrCstor.getKind() == MethodLikeKind.CONSTRUCTOR) {
+            } else if (methodOrCstor instanceof ASTConstructorDeclaration) {
                 formalParameters = ((ASTConstructorDeclaration) methodOrCstor).getFormalParameters();
             }
             if (formalParameters != null) {
