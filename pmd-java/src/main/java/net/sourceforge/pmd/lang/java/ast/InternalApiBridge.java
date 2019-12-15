@@ -34,7 +34,6 @@ public final class InternalApiBridge {
 
     }
 
-
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }
@@ -45,6 +44,10 @@ public final class InternalApiBridge {
 
     public static void setComment(JavaNode node, Comment comment) {
         ((AbstractJavaNode) node).comment(comment);
+    }
+
+    public static void setModifier(AccessNode node, int modifier) {
+        ((AbstractJavaAccessNode) node).setModifier(true, modifier);
     }
 
     public static void setQname(ASTAnyTypeDeclaration declaration, JavaTypeQualifiedName qualifiedName) {

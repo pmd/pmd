@@ -32,34 +32,6 @@ import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
  * This allows directly encoding shadowing and hiding mechanisms in the parent-child
  * relationships.
  *
- * <h2>Terminology</h3>
- *
- * <p> If a symbol table S directly "knows about" a declaration D, then D is said
- * to be <i>tracked</i> by S. A symbol table doesn't track the declarations tracked
- * by its parents.
- *
- * <p>Each symbol table is only relevant to a set of program points, which it is said
- * to <i>dominate</i>. The set of program points a table dominates is referred-to
- * as the <i>scope</i> of that symbol table. The scope of a symbol table is a subset of
- * the scope of its parent. The declarations tracked by a symbol table S are said to be
- * <i>in-scope</i> throughout the scope of S, which means they are accessible from their
- * simple name.
- *
- * <h3>Correspondence with JLS terminology</h4>
- *
- * <p>The JLS doesn't care about symbol table implementations so the above terminology is
- * not standard spec. The JLS only defines the <i>scope of a declaration</i>:
- *
- * <blockquote cite="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-6.3">
- *     The scope of a declaration is the region of the program within which
- *     the entity declared by the declaration can be referred to using a
- *     simple name, provided it is not shadowed.
- * </blockquote>
- *
- * <p>For our purposes, a symbol table tracks a set of declarations having exactly the same
- * jls:scope, so that the pmd:scope of a symbol table is the jls:scope of any of its tracked
- * declarations.
- *
  * @author Clément Fournier
  * @since 7.0.0
  */

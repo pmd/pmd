@@ -7,7 +7,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -29,7 +29,7 @@ fun Class<*>.getTypeDeclaration(): ASTAnyTypeDeclaration =
             }
         }
 
-val testSymFactory = SymbolFactory()
+val testSymFactory = ReflectionSymFactory()
 fun classSym(klass: Class<*>?) = testSymFactory.getClassSymbol(klass)
 
 

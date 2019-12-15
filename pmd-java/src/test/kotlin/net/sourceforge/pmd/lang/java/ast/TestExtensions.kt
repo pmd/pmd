@@ -208,7 +208,7 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
 fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getModelConstant shouldBe type
-            it::getTypeImage shouldBe type.getSimpleName()
+            it::getTypeImage shouldBe type.token
             assertions()
         }
 

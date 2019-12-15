@@ -16,7 +16,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
-import net.sourceforge.pmd.lang.java.types.internal.impl.JTypeFactory;
 
 /**
  * Builds symbols.
@@ -64,9 +63,6 @@ public interface SymbolFactory<T> {
     JClassSymbol ITERABLE_SYM = ReflectSymInternals.createSharedSym(Iterable.class);
     JClassSymbol ENUM_SYM = ReflectSymInternals.createSharedSym(Enum.class);
     JClassSymbol STRING_SYM = ReflectSymInternals.createSharedSym(String.class);
-
-
-    JTypeFactory types();
 
 
     default JTypeDeclSymbol fakeSymbol(String name) {

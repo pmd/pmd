@@ -17,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
-import net.sourceforge.pmd.lang.java.types.internal.impl.ReflectedTypeFactory;
 
 /**
  * Builds symbols.
@@ -35,18 +34,6 @@ public final class ReflectionSymFactory implements SymbolFactory<Class<?>> {
 
     }
 
-    @Override
-    public ReflectedTypeFactory types() {
-        // lazy load to avoid class init cycle
-        if (typeFactory == null) {
-            synchronized (this) {
-                if (typeFactory == null) {
-                    typeFactory = new ReflectedTypeFactory(this);
-                }
-            }
-        }
-        return typeFactory;
-    }
 
 
     @Override

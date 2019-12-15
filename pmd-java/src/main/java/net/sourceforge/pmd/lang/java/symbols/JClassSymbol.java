@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -61,7 +62,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      */
     @Nullable
     default JExecutableSymbol getEnclosingMethod() {
-        throw new NotImplementedException("TODO");
+        throw new NotImplementedException("TODO, trickier than it appears");
     }
 
 
