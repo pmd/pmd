@@ -64,6 +64,17 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
         return this.ordinal() < PRE_INCREMENT.ordinal();
     }
 
+    /** Returns true if this is one of {@link #PRE_INCREMENT} or {@link #POST_INCREMENT}. */
+    public boolean isIncrement() {
+        return this == PRE_INCREMENT || this == POST_INCREMENT;
+    }
+
+    /** Returns true if this is one of {@link #PRE_DECREMENT} or {@link #POST_DECREMENT}. */
+    public boolean isDecrement() {
+        return this == PRE_DECREMENT || this == POST_DECREMENT;
+    }
+
+
     /** Returns true if this is a prefix operator. */
     public boolean isPrefix() {
         return this.ordinal() < POST_INCREMENT.ordinal();
