@@ -30,7 +30,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
     /**
      * Returns how this expression is accessed in the enclosing expression.
      * If this expression occurs as the left-hand-side of an {@linkplain ASTAssignmentExpression assignment},
-     * or as the target of an {@linkplain ASTIncrementExpression increment or decrement expression},
+     * or as the target of an {@linkplain ASTUnaryExpression increment or decrement expression},
      * this method returns {@link AccessType#WRITE}. Otherwise the value is just {@linkplain AccessType#READ read}.
      */
     @NonNull
@@ -38,7 +38,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
 
         Node parent = this.jjtGetParent();
 
-        if (parent instanceof ASTIncrementExpression
+        if (parent instanceof ASTUnaryExpression && !((ASTUnaryExpression) parent).getOperator().isPure()
             || jjtGetChildIndex() == 0 && parent instanceof ASTAssignmentExpression) {
             return AccessType.WRITE;
         }

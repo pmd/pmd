@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 /**
  * @author Clément Fournier
@@ -233,7 +234,7 @@ $delim
         }
 
         "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
-            it::getOperator shouldBe UnaryOp.UNARY_MINUS
+            it::getOperator shouldBe UNARY_MINUS
             it::getOperand shouldBe number(INT) {
                 it::getImage shouldBe "0X0000_000f"
                 it::getValueAsInt shouldBe 15
@@ -283,7 +284,7 @@ $delim
         }
 
         "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
-            it::getOperator shouldBe UnaryOp.UNARY_MINUS
+            it::getOperator shouldBe UNARY_MINUS
 
             it::getOperand shouldBe number(DOUBLE) {
                 it::getValueAsInt shouldBe 3456
@@ -361,7 +362,7 @@ $delim
             "0x0_0__0F" should parseAs(hex15i)
 
             "-0X0000_000f" should parseAs {
-                unaryExpr(UnaryOp.UNARY_MINUS) {
+                unaryExpr(UNARY_MINUS) {
                     hex15i()
                 }
             }

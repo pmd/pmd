@@ -124,28 +124,12 @@ fun TreeNodeWrapper<Node, *>.methodCall(name: String, inside: NodeSpec<ASTMethod
         }
 
 
-fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, out ASTExpression>.() -> ASTExpression): ASTExpression =
+fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, ASTUnaryExpression>.() -> ASTExpression) =
         child<ASTUnaryExpression> {
             it::getOperator shouldBe op
             it::getOperand shouldBe baseExpr()
         }
 
-
-fun TreeNodeWrapper<Node, *>.postfixMutation(op: IncrementOp, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
-        incrementExpr(op, isPrefix = false, baseExpr = baseExpr)
-
-fun TreeNodeWrapper<Node, *>.prefixMutation(op: IncrementOp, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
-        incrementExpr(op, isPrefix = true, baseExpr = baseExpr)
-
-fun TreeNodeWrapper<Node, *>.incrementExpr(op: IncrementOp, isPrefix: Boolean, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
-        child<ASTIncrementExpression> {
-            it::getOp shouldBe op
-            it::isPostfix shouldBe !isPrefix
-            it::isPrefix shouldBe isPrefix
-            it::isDecrement shouldBe (op == IncrementOp.DECREMENT)
-            it::isIncrement shouldBe (op == IncrementOp.INCREMENT)
-            it::getOperand shouldBe baseExpr()
-        }
 
 fun TreeNodeWrapper<Node, *>.typeParamList(contents: NodeSpec<ASTTypeParameters>) =
         child(nodeSpec = contents)

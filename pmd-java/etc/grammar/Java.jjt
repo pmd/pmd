@@ -2283,23 +2283,24 @@ void MultiplicativeExpression() #void:
 void UnaryExpression() #void:
 {}
 {
-    (("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()) #UnaryExpression
+    (("+" {jjtThis.setOp(UnaryOp.UNARY_PLUS);} | "-" {jjtThis.setOp(UnaryOp.UNARY_MINUS);}) UnaryExpression()) #UnaryExpression
   | PrefixIncrementExpression()
   | UnaryExpressionNotPlusMinus()
 }
 
-void PrefixIncrementExpression() #IncrementExpression:
+void PrefixIncrementExpression() #UnaryExpression:
 {}
 {
-  ( "++" {jjtThis.setIncrement();} | "--" )
-  { jjtThis.setPrefix(); }
+  ("++" {jjtThis.setOp(UnaryOp.PRE_INCREMENT);}
+  | "--" {jjtThis.setOp(UnaryOp.PRE_DECREMENT);}
+  )
   PrimaryExpression()
 }
 
 void UnaryExpressionNotPlusMinus() #void:
 {}
 {
- (( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");}) UnaryExpression()) #UnaryExpression
+ (( "~" {jjtThis.setOp(UnaryOp.COMPLEMENT);} | "!" {jjtThis.setOp(UnaryOp.NEGATION);}) UnaryExpression()) #UnaryExpression
  // There's no separate production for CastExpression, because that would force
  // us to repeat the lookahead
  // Those lookaheads are quite expensive, they're run to disambiguate between
@@ -2328,7 +2329,13 @@ void PostfixExpression() #void:
 {}
 {
 
-  PrimaryExpression() [LOOKAHEAD(1) ("++" {jjtThis.setIncrement();} | "--") #IncrementExpression(1) ]
+  PrimaryExpression()
+  [
+    LOOKAHEAD(1)
+    ("++" {jjtThis.setOp(UnaryOp.POST_INCREMENT);}
+    | "--" {jjtThis.setOp(UnaryOp.POST_DECREMENT);}
+    ) #UnaryExpression(1)
+  ]
 }
 
 
