@@ -32,4 +32,10 @@ public class ASTArrayTypeDim extends AbstractJavaNode implements Annotatable {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
 }

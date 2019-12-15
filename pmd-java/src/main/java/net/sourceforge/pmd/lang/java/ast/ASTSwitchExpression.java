@@ -47,6 +47,12 @@ public final class ASTSwitchExpression extends AbstractJavaExpr implements ASTEx
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Gets the expression tested by this switch.
      * This is the expression between the parentheses.

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * @author Clément Fournier
  */
-class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
+abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
 
     AbstractLiteral(int i) {
         super(i);

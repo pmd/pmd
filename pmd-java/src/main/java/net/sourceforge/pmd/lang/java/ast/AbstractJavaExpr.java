@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpression {
+abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpression {
 
     private int parenDepth;
 
