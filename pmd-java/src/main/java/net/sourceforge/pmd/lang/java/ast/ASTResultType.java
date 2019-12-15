@@ -42,9 +42,7 @@ public final class ASTResultType extends AbstractJavaNode {
         return isVoid() ? null : (ASTType) jjtGetChild(0);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -31,9 +31,7 @@ public final class ASTLambdaParameterList extends AbstractJavaNode implements It
         return jjtGetNumChildren();
     }
 
-    /**
-     * Accept the visitor. *
-     */
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
