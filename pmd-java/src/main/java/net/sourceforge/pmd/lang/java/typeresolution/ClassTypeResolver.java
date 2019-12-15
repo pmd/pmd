@@ -55,7 +55,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -89,6 +88,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -784,25 +784,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTUnaryExpression node, Object data) {
         super.visit(node, data);
 
-        switch (node.getOperator()) {
-        case BOOLEAN_NOT:
+        if (node.getOperator() == UnaryOp.NEGATION) {
             populateType(node, "boolean");
-            break;
-        case BITWISE_INVERSE:
+        } else if (node.getOperator() == UnaryOp.COMPLEMENT) {
             rollupTypeUnary(node);
-            break;
-        default:
+        } else {
             rollupTypeUnaryNumericPromotion(node);
-            break;
         }
 
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTIncrementExpression node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
         return data;
     }
 

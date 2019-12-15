@@ -1,54 +1,79 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toMap;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-
-
 /**
- * A unary operator for {@link ASTUnaryExpression}.
+ * A unary operator, either prefix or postfix. This is used by {@link ASTUnaryExpression UnaryExpression}
+ * to abstract over the syntactic form of the operator.
  *
  * <pre class="grammar">
  *
- * UnaryOp ::= "+" | "-" | "~" | "!"
+ * UnaryOp ::= PrefixOp | PostfixOp
  *
- * </pre>
+ * PrefixOp ::= "+" | "-" | "~" | "!" | "++" | "--"
+ *
+ * PostfixOp ::= "++" | "--"
+ *
+ *  </pre>
  *
  * @see BinaryOp
  * @see AssignmentOp
  */
 public enum UnaryOp implements InternalInterfaces.OperatorLike {
-    /** "+" */
+    /** Unary numeric promotion operator {@code "+"}. */
     UNARY_PLUS("+"),
-    /** "-" */
+    /** Arithmetic negation operation {@code "-"}. */
     UNARY_MINUS("-"),
-    /** "~" */
-    BITWISE_INVERSE("~"),
-    /** "!" */
-    BOOLEAN_NOT("!");
+    /** Bitwise complement operator {@code "~"}. */
+    COMPLEMENT("~"),
+    /** Logical complement operator {@code "!"}. */
+    NEGATION("!"),
 
-    private static final Map<String, UnaryOp> LOOKUP =
-        Arrays.stream(values())
-              .collect(
-                  collectingAndThen(
-                      toMap(UnaryOp::getToken, op -> op),
-                      Collections::unmodifiableMap
-                  )
-              );
+    /** Prefix increment operator {@code "++"}. */
+    PRE_INCREMENT("++"),
+    /** Prefix decrement operator {@code "--"}. */
+    PRE_DECREMENT("--"),
+
+    /** Postfix increment operator {@code "++"}. */
+    POST_INCREMENT("++"),
+    /** Postfix decrement operator {@code "--"}. */
+    POST_DECREMENT("--");
+
 
     private final String code;
-
 
     UnaryOp(String code) {
         this.code = code;
     }
+
+    /**
+     * Returns true if this operator is pure, ie the evaluation of
+     * the unary expression doesn't produce side-effects. Only increment
+     * and decrement operators are impure.
+     *
+     * <p>This can be used to fetch all increment or decrement operations,
+     * regardless of whether they're postfix or prefix. E.g.
+     * <pre>{@code
+     *  node.descendants(ASTUnaryExpression.class)
+     *      .filterNot(it -> it.getOperator().isPure())
+     * }</pre>
+     */
+    public boolean isPure() {
+        return this.ordinal() < PRE_INCREMENT.ordinal();
+    }
+
+    /** Returns true if this is a prefix operator. */
+    public boolean isPrefix() {
+        return this.ordinal() < POST_INCREMENT.ordinal();
+    }
+
+    /** Returns true if this is a postfix operator. */
+    public boolean isPostfix() {
+        return !isPrefix();
+    }
+
 
     @Override
     public String getToken() {
@@ -60,9 +85,4 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
         return this.code;
     }
 
-
-    // parser only for now
-    static UnaryOp fromImage(String image) {
-        return LOOKUP.get(image);
-    }
 }
