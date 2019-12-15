@@ -15,11 +15,13 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
@@ -60,6 +62,9 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         this.levelChecker = new LanguageLevelChecker<>(jdkVersion, preview, ReportingStrategy.reporterThatThrows());
     }
 
+    public int getJdkVersion() {
+        return jdkVersion;
+    }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
@@ -153,6 +158,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         return new VisitorStarter() {
             @Override
             public void start(Node rootNode) {
+                InternalApiBridge.setTyperesClassLoader((RootNode) rootNode, classLoader);
                 new QualifiedNameResolver().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
         };

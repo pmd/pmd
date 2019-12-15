@@ -139,5 +139,4 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
             return LOOKUP.get(token);
         }
     }
-
 }

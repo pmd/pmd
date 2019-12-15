@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -34,16 +35,16 @@ public final class InternalApiBridge {
     }
 
 
+    public static void setSymbolTable(JavaNode node, JSymbolTable table) {
+        ((AbstractJavaNode) node).setSymbolTable(table);
+    }
+
     public static void setScope(JavaNode node, Scope scope) {
         ((AbstractJavaNode) node).setScope(scope);
     }
 
     public static void setComment(JavaNode node, Comment comment) {
         ((AbstractJavaNode) node).comment(comment);
-    }
-
-    public static void setModifier(AccessNode node, int modifier) {
-        ((AbstractJavaAccessNode) node).setModifier(true, modifier);
     }
 
     public static void setQname(ASTAnyTypeDeclaration declaration, JavaTypeQualifiedName qualifiedName) {
@@ -57,10 +58,6 @@ public final class InternalApiBridge {
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {
         if (node instanceof AbstractJavaTypeNode) {
             ((AbstractJavaTypeNode) node).setTypeDefinition(definition);
-        } else if (node instanceof AbstractJavaAccessTypeNode) {
-            ((AbstractJavaAccessTypeNode) node).setTypeDefinition(definition);
-        } else if (node instanceof ASTLambdaExpression) {
-            ((ASTLambdaExpression) node).setTypeDefinition(definition);
         }
     }
 

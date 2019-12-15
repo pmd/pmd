@@ -6,8 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 
 class ASTInstanceOfExpressionTest : ParserTestSpec({
 
@@ -31,7 +31,7 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
     parserTest("InstanceofExpression cannot test primitive types") {
 
         inContext(ExpressionParsingCtx) {
-            PrimitiveType.values().map { it.token }.forEach {
+            PrimitiveType.values().map { it.simpleName }.forEach {
                 "f instanceof $it" shouldNot parse()
                 "f instanceof @A $it" shouldNot parse()
             }
