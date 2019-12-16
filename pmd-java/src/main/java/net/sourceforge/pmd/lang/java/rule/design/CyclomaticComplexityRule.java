@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
@@ -130,7 +132,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
                 String[] messageParams = {PrettyPrintingUtil.kindName(node),
                                           node.getSimpleName(),
                                           " total",
-                                          classWmc + " (highest " + classHighest + ")",};
+                                          classWmc + " (highest " + classHighest + ")", };
 
                 addViolation(data, node, messageParams);
             }
@@ -145,10 +147,20 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions);
         if (cyclo >= methodReportLevel) {
 
-            addViolation(data, node, new String[]{node.getKind().getPrintableName(),
-                                                  node.getQualifiedName().getOperation(),
-                                                  "",
-                                                  "" + cyclo, });
+
+            String opname = node instanceof ASTMethodOrConstructorDeclaration
+                            ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
+                            : "lambda";
+
+            String kindname = node instanceof ASTMethodOrConstructorDeclaration
+                              ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
+                              : "lambda";
+
+
+            addViolation(data, node, new String[] {kindname,
+                                                   opname,
+                                                   "",
+                                                   "" + cyclo, });
         }
 
         return data;
