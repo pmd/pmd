@@ -9,6 +9,10 @@ import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
+/**
+ * Support methods for the token manager. The call to {@link #newToken(int, CharStream)}
+ * is hacked in via search/replace on {@link JavaParserTokenManager}.
+ */
 final class JavaTokenFactory {
 
     private JavaTokenFactory() {

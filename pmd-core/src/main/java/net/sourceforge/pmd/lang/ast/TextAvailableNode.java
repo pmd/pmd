@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
+
 /**
  * Refinement of {@link Node} for nodes that can provide the underlying
  * source text.
@@ -29,6 +31,7 @@ public interface TextAvailableNode extends Node {
      * particular, for a {@link RootNode}, returns the whole text
      * of the file.
      */
+    @NoAttribute
     CharSequence getText();
 
 

@@ -2698,7 +2698,11 @@ void BlockStatement() #void:
 | LOOKAHEAD({ jdkVersion >= 13 && isKeyword("yield") }) YieldStatement()
 |
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
-  LocalVariableDeclaration() ";" { ((AbstractJavaNode) jjtree.peekNode()).shiftTokens(0, 1); }
+  LocalVariableDeclaration() ";" {
+      // make it so that the LocalVariableDeclaration's last token is the semicolon
+      AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
+      top.jjtSetLastToken(getToken(0));
+  } {}
 |
   // we need to lookahead until the "class" token,
   // because a method ref may be annotated
