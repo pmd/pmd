@@ -231,9 +231,10 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     * @deprecated This will be removed with 7.0.0
      */
     @Deprecated
+    @InternalApi
     public void testingOnlySetBeginLine(int i) {
         this.beginLine = i;
     }
@@ -252,9 +253,10 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     * @deprecated This will be removed with 7.0.0
      */
     @Deprecated
+    @InternalApi
     public void testingOnlySetBeginColumn(final int i) {
         this.beginColumn = i;
     }
@@ -265,9 +267,10 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     * @deprecated This will be removed with 7.0.0
      */
     @Deprecated
+    @InternalApi
     public void testingOnlySetEndLine(final int i) {
         this.endLine = i;
     }
@@ -278,9 +281,10 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     * @deprecated This will be removed with 7.0.0
      */
     @Deprecated
+    @InternalApi
     public void testingOnlySetEndColumn(final int i) {
         this.endColumn = i;
     }

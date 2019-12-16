@@ -6,9 +6,24 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
 
+
+    /** Initial value when combining values returned by children. */
+    protected Object zero() {
+        return null;
+    }
+
+    /** Merge two values of type R, used to combine values returned by children. */
+    protected Object combine(Object acc, Object r) {
+        return r;
+    }
+
     @Override
     public Object visit(PLSQLNode node, Object data) {
-        return node.childrenAccept(this, data);
+        Object returnValue = zero();
+        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
+        }
+        return returnValue;
     }
 
     @Override

@@ -17,6 +17,18 @@ public interface VfNode extends Node, TokenBasedNode<Token> {
 
     /**
      * Accept the visitor. *
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(VfParserVisitor visitor, Object data);
+
+
+    @Override
+    VfNode getParent();
+
+
+    @Override
+    VfNode jjtGetChild(int i);
 }

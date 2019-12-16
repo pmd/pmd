@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.impl.javacc.AbstractJjtreeNode;
 /**
  *
  */
-public class AbstractVmNode extends AbstractJjtreeNode<Token> implements VmNode {
+public class AbstractVmNode extends AbstractJjtreeNode<VmNode, Token> implements VmNode {
 
     /** */
     // TODO - It seems that this field is only valid when parsing, and should

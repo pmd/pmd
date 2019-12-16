@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Deprecated
 @InternalApi
-public abstract class AbstractJavaNode extends AbstractJjtreeNode<Token> implements JavaNode {
+public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode, Token> implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.java.ast.impl.javacc.AbstractJjtreeNode;
 
-public class AbstractJspNode extends AbstractJjtreeNode<Token> implements JspNode {
+public class AbstractJspNode extends AbstractJjtreeNode<JspNode, Token> implements JspNode {
 
     protected JspParser parser;
 

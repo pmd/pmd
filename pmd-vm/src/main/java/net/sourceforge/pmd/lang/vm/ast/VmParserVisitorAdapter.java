@@ -3,10 +3,24 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 public class VmParserVisitorAdapter implements VmParserVisitor {
 
+
+    /** Initial value when combining values returned by children. */
+    protected Object zero() {
+        return null;
+    }
+
+    /** Merge two values of type R, used to combine values returned by children. */
+    protected Object combine(Object acc, Object r) {
+        return r;
+    }
+
     @Override
     public Object visit(final VmNode node, final Object data) {
-        node.childrenAccept(this, data);
-        return null;
+        Object returnValue = zero();
+        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
+        }
+        return returnValue;
     }
 
     @Override

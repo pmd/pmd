@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.lang.plsql.ast.*;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
@@ -94,7 +96,9 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      */
     @Override
     public Object visit(PLSQLNode node, Object data) {
-        node.childrenAccept(this, data);
+        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            node.getChild(i).jjtAccept(this, data);
+        }
         return null;
     }
 

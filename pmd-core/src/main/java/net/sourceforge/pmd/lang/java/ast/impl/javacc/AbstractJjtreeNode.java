@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.TokenBasedNode;
  * present on the API of {@link Node} and {@link AbstractNode} will be
  * moved here for 7.0.0.
  */
-public abstract class AbstractJjtreeNode<T extends GenericToken> extends AbstractNode implements TokenBasedNode<T> {
+public abstract class AbstractJjtreeNode<N extends Node, T extends GenericToken> extends AbstractNode implements TokenBasedNode<T> {
 
     public AbstractJjtreeNode(int id) {
         super(id);
@@ -35,5 +35,15 @@ public abstract class AbstractJjtreeNode<T extends GenericToken> extends Abstrac
     @SuppressWarnings("unchecked")
     public T getLastToken() {
         return (T) super.jjtGetLastToken();
+    }
+
+    @Override
+    public N getChild(int index) {
+        return (N) super.getChild(index);
+    }
+
+    @Override
+    public N getParent() {
+        return (N) super.getParent();
     }
 }

@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.ast;
  * A {@link Node} that can provide access to the underlying
  * {@linkplain GenericToken tokens} produced by the lexer.
  */
-public interface TokenBasedNode<T extends GenericToken> {
+public interface TokenBasedNode<T extends GenericToken> extends Node {
 
     /**
      * Returns the first token producing this node.
