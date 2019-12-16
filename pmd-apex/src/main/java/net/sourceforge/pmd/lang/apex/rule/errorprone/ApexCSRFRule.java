@@ -46,33 +46,24 @@ public class ApexCSRFRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTBlockStatement node, Object data) {
-        if (node.jjtGetParent() instanceof ASTUserClass) {
-            // initializer block
-            if (Helper.foundAnyDML(node)) {
-                addViolation(data, node);
-            }
+        if (node.jjtGetParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
+            addViolation(data, node);
         }
         return data;
     }
 
-    /**
-     * @param node
-     * @param data
-     */
     private void checkForCSRF(ASTMethod node, Object data) {
-        if (node.isConstructor()) {
-            if (Helper.foundAnyDML(node)) {
-                addViolation(data, node);
-            }
-
+        if (node.isConstructor() && Helper.foundAnyDML(node)) {
+            addViolation(data, node);
         }
 
         String name = node.getImage();
-        if (INIT.equalsIgnoreCase(name) || STATIC_INITIALIZER.equals(name)) {
-            if (Helper.foundAnyDML(node)) {
-                addViolation(data, node);
-            }
+        if (isInitializerMethod(name) && Helper.foundAnyDML(node)) {
+            addViolation(data, node);
         }
+    }
 
+    private boolean isInitializerMethod(String name) {
+        return INIT.equalsIgnoreCase(name) || STATIC_INITIALIZER.equals(name);
     }
 }

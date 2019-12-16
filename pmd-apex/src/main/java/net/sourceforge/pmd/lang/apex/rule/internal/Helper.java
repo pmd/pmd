@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.rule.internal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -133,10 +134,8 @@ public final class Helper {
     public static String getFQVariableName(final ASTVariableExpression variable) {
         final ASTReferenceExpression ref = variable.getFirstChildOfType(ASTReferenceExpression.class);
         String objectName = "";
-        if (ref != null) {
-            if (ref.getNode().getNames().size() == 1) {
-                objectName = ref.getNode().getNames().get(0).getValue() + ".";
-            }
+        if (ref != null && ref.getNode().getNames().size() == 1) {
+            objectName = ref.getNode().getNames().get(0).getValue() + ".";
         }
 
         VariableExpression n = variable.getNode();
@@ -194,17 +193,9 @@ public final class Helper {
     }
 
     private static boolean isWhitelisted(List<Identifier> ids) {
-        StringBuffer sb = new StringBuffer();
+        String identifier = ids.stream().map(Identifier::getValue).collect(Collectors.joining("."));
 
-        for (int i = 0; i < ids.size(); i++) {
-            sb.append(ids.get(i).getValue());
-
-            if (i != ids.size() - 1) {
-                sb.append(".");
-            }
-        }
-
-        switch (sb.toString().toLowerCase(Locale.ROOT)) {
+        switch (identifier.toLowerCase(Locale.ROOT)) {
         case "queueable":
         case "database.batchable":
         case "installhandler":
@@ -216,13 +207,13 @@ public final class Helper {
     }
 
     public static String getFQVariableName(Parameter p) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(p.getDefiningType()).append(":").append(p.getName().getValue());
         return sb.toString();
     }
 
     public static String getFQVariableName(ASTParameter p) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(p.getNode().getDefiningType()).append(":").append(p.getImage());
         return sb.toString();
     }
