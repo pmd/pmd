@@ -461,28 +461,42 @@ try {  // Prefer this:
 Avoid using hard-coded literals in conditional statements. By declaring them as static variables
 or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
 More exceptions can be defined with the property "ignoreMagicNumbers".
+
+The rule doesn't consider deeper expressions by default, but this can be enabled via the property `ignoreExpressions`.
+With this property set to false, if-conditions like `i == 1 + 5` are reported as well. Note that in that case,
+the property ignoreMagicNumbers is not taken into account, if there are multiple literals involved in such an expression.
         </description>
         <priority>3</priority>
         <properties>
             <property name="ignoreMagicNumbers"
                       description="Comma-separated list of magic numbers, that should be ignored"
                       type="String" value="-1,0"/>
+            <property name="ignoreExpressions"
+                      description="If true, only literals in simple if conditions are considered. Otherwise literals in expressions are checked, too."
+                      type="Boolean" value="true"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement/Expression//*[local-name() != 'UnaryExpression' or @Operator != '-']/PrimaryExpression/PrimaryPrefix/Literal
+(: simple case - no deep expressions :)
+//IfStatement[$ignoreExpressions = true()]/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
+    [not(NullLiteral)]
+    [not(BooleanLiteral)]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
+|
+(: consider also deeper expressions :)
+//IfStatement[$ignoreExpressions = false()]/Expression//*[local-name() != 'UnaryExpression' or @Operator != '-']/PrimaryExpression/PrimaryPrefix/Literal
     [not(NullLiteral)]
     [not(BooleanLiteral)]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 |
 (: consider negative literals :)
-//IfStatement/Expression//UnaryExpression[@Operator = '-']/PrimaryExpression/PrimaryPrefix/Literal
+//IfStatement[$ignoreExpressions = false()]/Expression//UnaryExpression[@Operator = '-']/PrimaryExpression/PrimaryPrefix/Literal
     [not(NullLiteral)]
     [not(BooleanLiteral)]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
 |
 (: consider multiple literals in expressions :)
-//IfStatement/Expression[count(*/PrimaryExpression/PrimaryPrefix/Literal
+//IfStatement[$ignoreExpressions = false()]/Expression[count(*/PrimaryExpression/PrimaryPrefix/Literal
     [not(NullLiteral)]
     [not(BooleanLiteral)]) > 1]
 ]]>
@@ -509,6 +523,10 @@ public void checkRequests() {
 
     if (aDouble > 0.0) {}                  // magic number 0.0
     if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
+
+    // with rule property "ignoreExpressions" set to "false"
+    if (i == pos + 5) {}  // violation: magic number 5 within an (additive) expression
+    if (i == pos + SUFFIX_LENGTH) {} // preferred approach
 }
 ]]>
         </example>

@@ -93,6 +93,7 @@ public class Foo {
 
   <test-code>
     <description>#2140 [java] AvoidLiteralsInIfCondition: false negative for expressions</description>
+    <rule-property name="ignoreExpressions">false</rule-property>
     <expected-problems>4</expected-problems>
     <expected-linenumbers>3,3,4,5</expected-linenumbers>
     <code><![CDATA[
@@ -109,9 +110,10 @@ public class Foo {
 
   <test-code>
     <description>More tests with expressions (see #2150)</description>
+    <rule-property name="ignoreExpressions">false</rule-property>
     <rule-property name="ignoreMagicNumbers">-1,0,1</rule-property>
-    <expected-problems>4</expected-problems>
-    <expected-linenumbers>4,7,7,8</expected-linenumbers>
+    <expected-problems>8</expected-problems>
+    <expected-linenumbers>4,7,7,8,9,10,11,11</expected-linenumbers>
     <code><![CDATA[
 public class AvoidLiteralsInIfConditionWithExpressions {
     public void test() {
@@ -121,6 +123,9 @@ public class AvoidLiteralsInIfConditionWithExpressions {
         if (bodyStart >= 0 && bodyStart != (currentToken.length() - 1)) {} // ok, single literal per expression, both whitelisted
         if (1 * 5) {} // not ok - literal 5 and also a expression with two literals
         if (a + 5) {} // not ok
+        if (i == a + 5) {} // not ok - literal 5
+        if (i == 1 + 5) {} // not ok - expression with two literals
+        if (s.equals("Prefix" + "Suffix")) {}
     }
 }
     ]]></code>

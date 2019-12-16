@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/AvoidLiteralsInIfCondition" %} (`java-errorprone`) has a new property
+    `ignoreExpressions`. This property is set by default to `true` in order to maintain compatibility. If this
+    property is set to false, then literals in more complex expressions are considered as well.
+
 ### Fixed Issues
 
 *   java-bestpractices
