@@ -31,6 +31,25 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         this.parser = parser;
     }
 
+    @Override
+    public int getBeginLine() {
+        return jjtGetFirstToken().getBeginLine();
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return jjtGetFirstToken().getBeginColumn();
+    }
+
+    @Override
+    public int getEndLine() {
+        return jjtGetLastToken().getEndLine();
+    }
+
+    @Override
+    public int getEndColumn() {
+        return jjtGetLastToken().getEndColumn();
+    }
 
     @Override
     public void jjtClose() {
@@ -235,22 +254,19 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
-            jjtSetFirstToken(findTokenSiblingInThisNode(this.jjtGetFirstToken(), leftShift));
+            jjtSetFirstToken(findTokenSiblingInThisNode(jjtGetFirstToken(), leftShift));
         }
         if (rightShift != 0) {
-            jjtSetLastToken(findTokenSiblingInThisNode(this.jjtGetLastToken(), rightShift));
+            jjtSetLastToken(findTokenSiblingInThisNode(jjtGetLastToken(), rightShift));
         }
     }
 
-    // these make the setter visible to the parser
-
     private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
-        assert token != null : "Null token";
         if (shift == 0) {
             return token;
         } else if (shift < 0) {
             // expects a positive shift
-            return TokenUtils.nthPrevious(this.jjtGetFirstToken(), token, -shift);
+            return TokenUtils.nthPrevious(jjtGetFirstToken(), token, -shift);
         } else {
             return TokenUtils.nthFollower(token, shift);
         }
@@ -258,8 +274,8 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
 
     void copyTextCoordinates(AbstractJavaNode copy) {
-        this.jjtSetFirstToken(copy.jjtGetFirstToken());
-        this.jjtSetLastToken(copy.jjtGetLastToken());
+        jjtSetFirstToken(copy.jjtGetFirstToken());
+        jjtSetLastToken(copy.jjtGetLastToken());
     }
 
 

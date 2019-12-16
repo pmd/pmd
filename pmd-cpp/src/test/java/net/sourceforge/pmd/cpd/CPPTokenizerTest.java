@@ -41,7 +41,7 @@ public class CPPTokenizerTest {
         assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(24, tokens.size());
     }
-
+    
     @Test
     public void testIgnoreBetweenSpecialComments() {
         String code = "#include <iostream>\n" + "#include <string>\n" + "\n" + "// CPD-OFF\n"
@@ -155,7 +155,7 @@ public class CPPTokenizerTest {
         tokenizer.setProperties(properties);
 
         expectedException.expect(TokenMgrError.class);
-        expectedException.expectMessage("Lexical error in file issue-1559.cpp");
+        expectedException.expectMessage("Lexical error in file issue-1559.cpp at");
         tokenizer.tokenize(code, new Tokens());
     }
 

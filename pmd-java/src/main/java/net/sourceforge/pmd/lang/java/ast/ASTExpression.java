@@ -80,7 +80,7 @@ public interface ASTExpression extends JavaNode, TypeNode, ASTMemberValue {
     /**
      * Returns the constant value of this expression, if this is a constant expression.
      * Otherwise, or if some references couldn't be resolved, returns null.
-     * TODO implement that
+     * TODO implement that on other types
      */
     default @Nullable Object getConstValue() {
         return null;
