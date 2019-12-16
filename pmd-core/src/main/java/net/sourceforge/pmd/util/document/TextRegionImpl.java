@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
 /**
  * Immutable implementation of the {@link TextRegion} interface.

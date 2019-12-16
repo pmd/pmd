@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,7 +34,7 @@ public class DocumentFileTest {
     public void insertAtStartOfTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(1, 1, "public ");
         }
 
@@ -45,7 +45,7 @@ public class DocumentFileTest {
     public void insertAtStartOfTheFileWithOffsetShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
         }
 
@@ -101,7 +101,7 @@ public class DocumentFileTest {
     public void insertVariousTokensIntoTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(1, 1, "public ");
             documentFile.insert(17, "final ");
         }
@@ -114,7 +114,7 @@ public class DocumentFileTest {
         final String code = "public static void main(String[] args)";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(code.length(), "{}");
         }
 
@@ -126,7 +126,7 @@ public class DocumentFileTest {
         final String code = "public static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             doc.delete(doc.createRegion(1, 25, 1, 31));
         }
 
@@ -138,7 +138,7 @@ public class DocumentFileTest {
         final String code = "static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             doc.insert(1, 1, "public ");
             doc.delete(doc.createRegion("static void main(".length(), "final ".length()));
         }
@@ -151,7 +151,7 @@ public class DocumentFileTest {
         final String code = "void main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             doc.insert(0, "public ");
             doc.insert(0, "static ");
             // delete "void"
@@ -169,7 +169,7 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             doc.replace(doc.createRegion(0, 3), "void");
         }
 
@@ -181,7 +181,7 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             doc.replace(doc.createRegion(1, 1, 1, 1 + "int".length()), "void");
             doc.replace(doc.createRegion(1, 1 + "int ".length(), 1, 1 + "int main".length()), "foo");
             doc.replace(doc.createRegion("int main(".length(), "String".length()), "CharSequence");
@@ -195,7 +195,7 @@ public class DocumentFileTest {
         final String code = "static int main(CharSequence[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             doc.insert(1, 1, "public");
             // delete "static "
             doc.delete(doc.createRegion(1, 1, 1, 7));

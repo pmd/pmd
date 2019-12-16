@@ -9,6 +9,7 @@ import org.mozilla.javascript.ast.AstNode;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 

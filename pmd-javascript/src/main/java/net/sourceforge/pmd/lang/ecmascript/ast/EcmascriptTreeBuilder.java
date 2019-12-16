@@ -66,7 +66,7 @@ import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
 import org.mozilla.javascript.ast.XmlString;
 
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 final class EcmascriptTreeBuilder implements NodeVisitor {
 

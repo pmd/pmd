@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,16 +10,14 @@ import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-
-class MutableDocumentImpl extends DocumentImpl implements MutableDocument {
+class MutableTextDocumentImpl extends TextDocumentImpl implements MutableTextDocument {
 
     private ReplaceHandler out;
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
 
-    MutableDocumentImpl(final CharSequence source, final ReplaceHandler writer) {
+    MutableTextDocumentImpl(final CharSequence source, final ReplaceHandler writer) {
         super(source);
         this.out = writer;
     }

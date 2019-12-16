@@ -1,27 +1,26 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
-import net.sourceforge.pmd.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.document.TextRegionImpl.WithLineInfo;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
 
 
-class DocumentImpl implements Document {
+class TextDocumentImpl implements TextDocument {
 
     /** The positioner has the original source file. */
     SourceCodePositioner positioner;
 
 
-    DocumentImpl(final CharSequence source) {
+    TextDocumentImpl(final CharSequence source) {
         positioner = new SourceCodePositioner(source);
     }
 
     @Override
-    public MutableDocument newMutableDoc(ReplaceHandler out) {
-        return new MutableDocumentImpl(getText(), out);
+    public MutableTextDocument newMutableDoc(ReplaceHandler out) {
+        return new MutableTextDocumentImpl(getText(), out);
     }
 
     @Override

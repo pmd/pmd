@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
 
 import java.io.IOException;
@@ -10,13 +10,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** Handles text updates for a {@link MutableDocument}. */
+/** Handles text updates for a {@link MutableTextDocument}. */
 public interface ReplaceHandler {
 
     /** Does nothing. */
     ReplaceHandler NOOP = new ReplaceHandler() {
         @Override
-        public CharSequence getCurrentText(MutableDocument doc) {
+        public CharSequence getCurrentText(MutableTextDocument doc) {
             return doc.getText();
         }
 
@@ -39,7 +39,7 @@ public interface ReplaceHandler {
 
 
     /** Gets the latest text. */
-    CharSequence getCurrentText(MutableDocument doc);
+    CharSequence getCurrentText(MutableTextDocument doc);
 
 
     /**
@@ -62,7 +62,7 @@ public interface ReplaceHandler {
             private StringBuilder builder = new StringBuilder(originalBuffer);
 
             @Override
-            public CharSequence getCurrentText(MutableDocument doc) {
+            public CharSequence getCurrentText(MutableTextDocument doc) {
                 return builder;
             }
 

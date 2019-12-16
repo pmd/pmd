@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.nio.file.Path;
  * <p>Consider that all mutation operations shift the coordinate system
  * transparently.
  */
-public interface MutableDocument extends Document, Closeable {
+public interface MutableTextDocument extends TextDocument, Closeable {
 
     /** Insert some text in the document. */
     void insert(int beginLine, int beginColumn, String textToInsert);
@@ -63,8 +63,8 @@ public interface MutableDocument extends Document, Closeable {
     CharSequence getUncommittedText();
 
 
-    static MutableDocument forFile(final Path file, final Charset charset) throws IOException {
-        Document doc = Document.forFile(file, charset);
+    static MutableTextDocument forFile(final Path file, final Charset charset) throws IOException {
+        TextDocument doc = TextDocument.forFile(file, charset);
         return doc.newMutableDoc(ReplaceHandler.bufferedFile(doc.getText(), file, charset));
     }
 

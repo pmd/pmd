@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
 import apex.jorje.data.Location;

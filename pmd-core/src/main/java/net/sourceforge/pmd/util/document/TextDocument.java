@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.document;
+package net.sourceforge.pmd.util.document;
 
 import static java.util.Objects.requireNonNull;
 
@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import net.sourceforge.pmd.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 
 /**
  * Represents a text document. A document provides methods to identify
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.document.TextRegion.RegionWithLines;
  *
  * <p>The default document implementations do *not* normalise line endings.
  */
-public interface Document {
+public interface TextDocument {
 
     /**
      * Create a new region based on line coordinates.
@@ -56,18 +56,18 @@ public interface Document {
 
 
     /** Returns a mutable document that uses the given replace handler to carry out updates. */
-    MutableDocument newMutableDoc(ReplaceHandler out);
+    MutableTextDocument newMutableDoc(ReplaceHandler out);
 
 
-    static Document forFile(final Path file, final Charset charset) throws IOException {
+    static TextDocument forFile(final Path file, final Charset charset) throws IOException {
         byte[] bytes = Files.readAllBytes(requireNonNull(file));
         String text = new String(bytes, requireNonNull(charset));
         return forCode(text);
     }
 
 
-    static Document forCode(final String source) {
-        return new DocumentImpl(source);
+    static TextDocument forCode(final CharSequence source) {
+        return new TextDocumentImpl(source);
     }
 
 }

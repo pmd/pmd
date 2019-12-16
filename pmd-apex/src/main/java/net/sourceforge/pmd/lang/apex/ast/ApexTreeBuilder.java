@@ -15,7 +15,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;

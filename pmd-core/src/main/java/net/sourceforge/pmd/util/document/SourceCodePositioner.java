@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast;
+package net.sourceforge.pmd.util.document;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,14 +11,10 @@ import java.util.Scanner;
 
 import org.apache.commons.io.input.CharSequenceReader;
 
-import net.sourceforge.pmd.document.Document;
-
 /**
  * Maps absolute offset in a text to line/column coordinates, and back.
  * This is used by some language implementations (JS, XML, Apex) and by
- * the {@link Document} implementation.
- *
- * <p>TODO move to document package
+ * the {@link TextDocument} implementation.
  *
  * Idea from:
  * http://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/javascript/jscomp/SourceFile.java
