@@ -36,7 +36,7 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/python/ast/PythonParserTokenManager.java"
                  token="class PythonParserTokenManager"
-                 value="class PythonParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class PythonParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <delete file="${target}/net/sourceforge/pmd/lang/python/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/python/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/python/ast/TokenMgrError.java" />

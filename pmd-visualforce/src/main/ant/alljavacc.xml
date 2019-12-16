@@ -33,7 +33,7 @@
                 javacchome="${javacc-home.path}" />
         <!-- Ensure generated using CharStream interface debugparser="true"
         		debugtokenmanager="true"-->
-        <javacc static="false"        	
+        <javacc static="false"
                 usercharstream="true"
                 unicodeinput="true"
                 javaunicodeescape="false"
@@ -46,7 +46,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/TokenMgrError.java" />
         <replace file="${target}/net/sourceforge/pmd/lang/vf/ast/VfParserTokenManager.java"
                  token="class VfParserTokenManager"
-                 value="class VfParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class VfParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/vf/ast/VfParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />

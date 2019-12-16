@@ -31,9 +31,9 @@ infix fun <T, U : T> KCallable<Optional<T>>.shouldBePresent(any: U) = this shoul
 
 fun JavaNode.tokenList(): List<GenericToken> {
     val lst = mutableListOf<GenericToken>()
-    var t = firstToken
+    var t = jjtGetFirstToken()
     lst += t
-    while (t != lastToken) {
+    while (t != jjtGetLastToken()) {
         t = t.next
         lst += t
     }

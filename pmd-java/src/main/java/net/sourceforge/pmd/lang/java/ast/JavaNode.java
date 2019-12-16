@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -87,10 +86,10 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     JavaNode jjtGetParent();
 
 
-    JavaccToken getFirstToken();
+    JavaccToken jjtGetFirstToken();
 
 
-    JavaccToken getLastToken();
+    JavaccToken jjtGetLastToken();
 
 
     /**

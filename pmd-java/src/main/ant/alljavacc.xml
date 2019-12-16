@@ -178,7 +178,7 @@
 
         <replace file="${target-package-dir}/JavaParserTokenManager.java"
                  token="public class JavaParserTokenManager"
-                 value="import net.sourceforge.pmd.lang.ast.impl.JavaccToken; public class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken; public class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <replace file="${target-package-dir}/JavaParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />

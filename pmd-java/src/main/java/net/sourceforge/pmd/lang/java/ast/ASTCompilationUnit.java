@@ -23,7 +23,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
-    private CharSequence fileText;
     private TokenDocument tokenDocument;
 
     ASTCompilationUnit(int id) {

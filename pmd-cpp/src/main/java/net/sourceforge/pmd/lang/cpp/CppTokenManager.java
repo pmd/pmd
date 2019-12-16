@@ -17,7 +17,7 @@ public class CppTokenManager implements TokenManager {
 
     /**
      * Creates a new C++ Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
@@ -30,8 +30,4 @@ public class CppTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        CppParserTokenManager.setFileName(fileName);
-    }
 }

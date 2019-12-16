@@ -13,7 +13,6 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.util.IOUtil;
@@ -44,7 +43,7 @@ public class PLSQLParser extends AbstractParser {
     public Node parse(String fileName, Reader source) throws ParseException {
         try {
             String sourcecode = IOUtils.toString(source);
-            AbstractTokenManager.setFileName(fileName);
+
             return createPLSQLParser(new StringReader(sourcecode)).Input(sourcecode);
         } catch (IOException e) {
             throw new ParseException(e);

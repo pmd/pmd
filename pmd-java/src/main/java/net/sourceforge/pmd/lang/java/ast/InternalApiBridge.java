@@ -8,7 +8,6 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
@@ -73,7 +72,6 @@ public final class InternalApiBridge {
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
-        AbstractTokenManager.setFileName(fileName);
         ASTCompilationUnit acu = parser.CompilationUnit();
         acu.setNoPmdComments(parser.getSuppressMap());
         checker.check(acu);

@@ -31,8 +31,4 @@ public class PythonTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        PythonParserTokenManager.setFileName(fileName);
-    }
 }

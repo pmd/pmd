@@ -36,7 +36,7 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/ecmascript5/ast/Ecmascript5ParserTokenManager.java"
                  token="class Ecmascript5ParserTokenManager"
-                 value="class Ecmascript5ParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class Ecmascript5ParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <delete file="${target}/net/sourceforge/pmd/lang/ecmascript5/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/ecmascript5/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/ecmascript5/ast/TokenMgrError.java" />

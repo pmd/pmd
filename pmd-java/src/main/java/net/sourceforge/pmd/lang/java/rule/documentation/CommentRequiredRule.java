@@ -225,7 +225,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
                 && field.isStatic()
                 && field.isFinal()
                 && field.isArray()
-                && "ObjectStreamField".equals(field.getFirstToken().getImage()); // .getType() returns null
+                && "ObjectStreamField".equals(field.jjtGetFirstToken().getImage()); // .getType() returns null
     }
 
     @Override

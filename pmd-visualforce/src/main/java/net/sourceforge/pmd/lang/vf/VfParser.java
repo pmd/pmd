@@ -9,7 +9,6 @@ import java.io.Reader;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
@@ -29,7 +28,7 @@ public class VfParser extends AbstractParser {
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        AbstractTokenManager.setFileName(fileName);
+
         return new net.sourceforge.pmd.lang.vf.ast.VfParser(new VfSimpleCharStream(source)).CompilationUnit();
     }
 

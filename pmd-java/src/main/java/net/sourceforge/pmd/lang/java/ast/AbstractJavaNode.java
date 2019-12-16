@@ -7,14 +7,13 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
+abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
@@ -22,14 +21,13 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
     private Comment comment;
     private ASTCompilationUnit root;
     private CharSequence text;
-    private final int id;
 
     AbstractJavaNode(int id) {
-        this.id = id;
+        super(id);
     }
 
     AbstractJavaNode(JavaParser parser, int id) {
-        this.id = id;
+        super(id);
         this.parser = parser;
     }
 
@@ -122,6 +120,16 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
         return root;
     }
 
+    @Override
+    public JavaccToken jjtGetFirstToken() {
+        return (JavaccToken) firstToken;
+    }
+
+    @Override
+    public JavaccToken jjtGetLastToken() {
+        return (JavaccToken) lastToken;
+    }
+
     /**
      * Replaces the child at index idx with its own children.
      */
@@ -188,20 +196,20 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
     }
 
     private void enlargeLeft(AbstractJavaNode child) {
-        JavaccToken thisFst = this.getFirstToken();
-        JavaccToken childFst = child.getFirstToken();
+        JavaccToken thisFst = this.jjtGetFirstToken();
+        JavaccToken childFst = child.jjtGetFirstToken();
 
         if (TokenUtils.isBefore(childFst, thisFst)) {
-            setFirstToken(childFst);
+            this.jjtSetFirstToken(childFst);
         }
     }
 
     private void enlargeRight(AbstractJavaNode child) {
-        JavaccToken thisLast = this.getLastToken();
-        JavaccToken childLast = child.getLastToken();
+        JavaccToken thisLast = this.jjtGetLastToken();
+        JavaccToken childLast = child.jjtGetLastToken();
 
         if (TokenUtils.isAfter(childLast, thisLast)) {
-            setLastToken(childLast);
+            this.jjtSetLastToken(childLast);
         }
     }
 
@@ -227,20 +235,14 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
-            jjtSetFirstToken(findTokenSiblingInThisNode(this.getFirstToken(), leftShift));
+            jjtSetFirstToken(findTokenSiblingInThisNode(this.jjtGetFirstToken(), leftShift));
         }
         if (rightShift != 0) {
-            jjtSetLastToken(findTokenSiblingInThisNode(this.getLastToken(), rightShift));
+            jjtSetLastToken(findTokenSiblingInThisNode(this.jjtGetLastToken(), rightShift));
         }
     }
 
-    void jjtSetFirstToken(JavaccToken token) {
-        super.setFirstToken(token);
-    }
-
-    void jjtSetLastToken(JavaccToken token) {
-        super.setLastToken(token);
-    }
+    // these make the setter visible to the parser
 
     private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
         assert token != null : "Null token";
@@ -248,7 +250,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
             return token;
         } else if (shift < 0) {
             // expects a positive shift
-            return TokenUtils.nthPrevious(this.getFirstToken(), token, -shift);
+            return TokenUtils.nthPrevious(this.jjtGetFirstToken(), token, -shift);
         } else {
             return TokenUtils.nthFollower(token, shift);
         }
@@ -256,8 +258,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
 
 
     void copyTextCoordinates(AbstractJavaNode copy) {
-        setFirstToken(copy.getFirstToken());
-        setLastToken(copy.getLastToken());
+        this.jjtSetFirstToken(copy.jjtGetFirstToken());
+        this.jjtSetLastToken(copy.jjtGetLastToken());
     }
 
 
@@ -292,11 +294,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
     }
 
     private int getStartOffset() {
-        return this.getFirstToken().getStartInDocument();
+        return this.jjtGetFirstToken().getStartInDocument();
     }
 
 
     private int getEndOffset() {
-        return this.getLastToken().getEndInDocument();
+        return this.jjtGetLastToken().getEndInDocument();
     }
 }

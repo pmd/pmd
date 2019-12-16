@@ -36,7 +36,7 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/objectivec/ast/ObjectiveCParserTokenManager.java"
                  token="class ObjectiveCParserTokenManager"
-                 value="class ObjectiveCParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class ObjectiveCParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <delete file="${target}/net/sourceforge/pmd/lang/objectivec/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/objectivec/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/objectivec/ast/TokenMgrError.java" />

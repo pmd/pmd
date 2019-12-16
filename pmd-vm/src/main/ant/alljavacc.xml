@@ -46,7 +46,7 @@
 
         <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParserTokenManager.java"
                  token="class VmParserTokenManager"
-                 value="class VmParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class VmParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/vm/ast/VmParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />

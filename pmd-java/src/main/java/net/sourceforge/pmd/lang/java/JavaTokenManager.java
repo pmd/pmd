@@ -25,8 +25,4 @@ public class JavaTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        tokenManager.setFileName(fileName);
-    }
 }

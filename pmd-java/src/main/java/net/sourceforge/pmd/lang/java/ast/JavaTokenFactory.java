@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 
 final class JavaTokenFactory {
 
@@ -65,7 +65,7 @@ final class JavaTokenFactory {
 
     private static final class LazyImageToken extends JavaccToken {
 
-        public LazyImageToken(int kind, int startInclusive, int endExclusive, TokenDocument document) {
+        LazyImageToken(int kind, int startInclusive, int endExclusive, TokenDocument document) {
             super(kind, null, startInclusive, endExclusive, document);
         }
 

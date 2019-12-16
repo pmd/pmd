@@ -252,7 +252,7 @@ import java.util.List;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -1551,7 +1551,7 @@ ASTCompilationUnit CompilationUnit() :
   <EOF>
   {
      jjtThis.setComments(token_source.comments);
-     jjtThis.setTokenDocument(((net.sourceforge.pmd.lang.ast.impl.JavaCharStream) token_source.input_stream).getTokenDocument());
+     jjtThis.setTokenDocument(((net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream) token_source.input_stream).getTokenDocument());
      return jjtThis;
   }
 }
