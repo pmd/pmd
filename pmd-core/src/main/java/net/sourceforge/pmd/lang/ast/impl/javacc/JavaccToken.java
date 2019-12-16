@@ -2,15 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A generic token implementation for JavaCC parsers. Will probably help
@@ -22,11 +17,11 @@ import net.sourceforge.pmd.util.StringUtil;
  * 4-tuple. This offers two practical advantages:
  * <ul>
  * <li>It allows retrieving easily the underlying text of a node (just
- * need to cut a substring). Other attributes like lines and column bounds
- * can be derived as well - though this should not be done systematically
- * because it's quite costly.
- * <li>It's a bit lighter. Token instances are by far the most numerous
- * class in a PMD run and this may prove significant.
+ * need to cut a substring of the file text). Other attributes like lines
+ * and column bounds can be derived as well - though this should not be
+ * done systematically because it's costlier.
+ * <li>It's a bit lighter. Token instances are one of the most numerous
+ * class in a typical PMD run and this may reduce GC pressur.
  * </ul>
  *
  * <p>TODO replace duplicates over PMD.
@@ -126,22 +121,22 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
 
     @Override
     public int getBeginLine() {
-        return document == null ? -1 : StringUtil.lineNumberAt(document.getFullText(), startInclusive);
+        return document == null ? -1 : document.lineNumberFromOffset(startInclusive);
     }
 
     @Override
     public int getEndLine() {
-        return document == null ? -1 : StringUtil.lineNumberAt(document.getFullText(), endExclusive - 1);
+        return document == null ? -1 : document.lineNumberFromOffset(endExclusive - 1);
     }
 
     @Override
     public int getBeginColumn() {
-        return document == null ? -1 : StringUtil.columnNumberAt(document.getFullText(), startInclusive);
+        return document == null ? -1 : document.columnFromOffset(startInclusive);
     }
 
     @Override
     public int getEndColumn() {
-        return document == null ? -1 : StringUtil.columnNumberAt(document.getFullText(), endExclusive - 1);
+        return document == null ? -1 : document.columnFromOffset(endExclusive - 1);
     }
 
     /**

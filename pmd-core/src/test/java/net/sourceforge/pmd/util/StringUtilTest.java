@@ -16,43 +16,6 @@ public class StringUtilTest {
     }
 
     @Test
-    public void testLineNumberSingleLine() {
-        assertEquals(1, StringUtil.lineNumberAt("foo", 0));
-        assertEquals(1, StringUtil.lineNumberAt("foo", 1));
-        assertEquals(1, StringUtil.lineNumberAt("foo", 2));
-        assertEquals(1, StringUtil.lineNumberAt("foo", 3));
-        assertEquals(-1, StringUtil.lineNumberAt("foo", -1));
-    }
-
-    @Test
-    public void testLineNumberLf() {
-        assertEquals(1, StringUtil.lineNumberAt("foo\na", 3));
-        assertEquals(2, StringUtil.lineNumberAt("foo\na", 4));
-    }
-
-    @Test
-    public void testLineNumberCrLf() {
-        assertEquals(1, StringUtil.lineNumberAt("f\r\na", 0));
-        // notice both \r and \n are on line 1
-        assertEquals(1, StringUtil.lineNumberAt("f\r\na", 1));
-        assertEquals(1, StringUtil.lineNumberAt("f\r\na", 2));
-        assertEquals(2, StringUtil.lineNumberAt("f\r\na", 3));
-        assertEquals(2, StringUtil.lineNumberAt("f\r\na", 4));
-        assertEquals(-1, StringUtil.lineNumberAt("f\r\na", 5));
-        assertEquals(-1, StringUtil.lineNumberAt("f\r\na", 6));
-    }
-
-    @Test
-    public void testLineNumberCr() {
-        assertEquals(1, StringUtil.lineNumberAt("f\ra\nb", 0));
-        assertEquals(1, StringUtil.lineNumberAt("f\ra\nb", 1));
-        assertEquals(2, StringUtil.lineNumberAt("f\ra\nb", 2));
-        assertEquals(2, StringUtil.lineNumberAt("f\ra\nb", 3));
-        assertEquals(3, StringUtil.lineNumberAt("f\ra\nb", 4));
-        assertEquals(3, StringUtil.lineNumberAt("f\ra\nb", 5));
-    }
-
-    @Test
     public void testColumnNumber() {
         assertEquals(-1, StringUtil.columnNumberAt("f\rah\nb", -1));
         assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 0));
@@ -77,22 +40,10 @@ public class StringUtilTest {
     }
 
     @Test
-    public void testLineNumberTrailing() {
-        assertEquals(1, StringUtil.lineNumberAt("\n", 0));
-        assertEquals(2, StringUtil.lineNumberAt("\n", 1));
-    }
-
-    @Test
     public void testColumnNumberTrailing() {
         assertEquals(1, StringUtil.columnNumberAt("\n", 0));
         assertEquals(2, StringUtil.columnNumberAt("\n", 1));
         assertEquals(-1, StringUtil.columnNumberAt("\n", 2));
-    }
-
-    @Test
-    public void testLineNumberEmpty() {
-        assertEquals(1, StringUtil.lineNumberAt("", 0));
-        assertEquals(-1, StringUtil.lineNumberAt("", 1));
     }
 
     @Test
