@@ -26,9 +26,6 @@ val Node.childIndex: Int
 val Node.parent: Node?
     get() = this.jjtGetParent()
 
-val Node.containingFile: Node
-    get() = generateSequence(this) { it.parent }.last()
-
 
 val Node.firstToken: GenericToken
     get() = (this as AbstractNode).jjtGetFirstToken()

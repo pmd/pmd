@@ -45,12 +45,12 @@ final class TokenUtils {
     }
 
 
-    public static GenericToken nthFollower(GenericToken token, int n) {
+    public static <T extends GenericToken> T nthFollower(T token, int n) {
         if (n < 0) {
             throw new IllegalArgumentException("Negative index?");
         }
         while (n-- > 0 && token != null) {
-            token = token.getNext();
+            token = (T) token.getNext();
         }
         if (token == null) {
             throw new NoSuchElementException("No such token");
@@ -75,7 +75,7 @@ final class TokenUtils {
      * @throws NoSuchElementException If there's less than n tokens to the left of the anchor.
      */
     // test only
-    public static GenericToken nthPrevious(GenericToken startHint, GenericToken anchor, int n) {
+    public static <T extends GenericToken> T nthPrevious(T startHint, T anchor, int n) {
         if (compare(startHint, anchor) >= 0) {
             throw new IllegalStateException("Wrong left hint, possibly not left enough");
         }
@@ -83,15 +83,15 @@ final class TokenUtils {
             throw new IllegalArgumentException("Offset can't be less than 1");
         }
         int numAway = 0;
-        GenericToken target = startHint;
-        GenericToken current = startHint;
+        T target = startHint;
+        T current = startHint;
         while (current != null && !current.equals(anchor)) {
-            current = current.getNext();
+            current = (T) current.getNext();
             // wait "n" iterations before starting to advance the target
             // then advance "target" at the same rate as "current", but
             // "n" tokens to the left
             if (numAway == n) {
-                target = target.getNext();
+                target = (T) target.getNext();
             } else {
                 numAway++;
             }

@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.JavaCharStream;
-import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 
 final class JavaTokenFactory {

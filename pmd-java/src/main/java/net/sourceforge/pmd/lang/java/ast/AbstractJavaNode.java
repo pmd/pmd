@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,14 +7,14 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.RichCharSequence;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
+abstract class AbstractJavaNode extends AbstractJjtreeNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
@@ -22,46 +22,17 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     private Comment comment;
     private ASTCompilationUnit root;
     private CharSequence text;
+    private final int id;
 
     AbstractJavaNode(int id) {
-        super(id);
+        this.id = id;
     }
 
     AbstractJavaNode(JavaParser parser, int id) {
-        super(id);
+        this.id = id;
         this.parser = parser;
     }
 
-
-    @Override
-    public void jjtSetFirstToken(GenericToken token) {
-        super.firstToken = token;
-    }
-
-    @Override
-    public void jjtSetLastToken(GenericToken token) {
-        super.lastToken = token;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return jjtGetFirstToken().getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return jjtGetFirstToken().getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        return jjtGetLastToken().getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        return jjtGetLastToken().getEndColumn();
-    }
 
     @Override
     public void jjtClose() {
@@ -217,20 +188,20 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     private void enlargeLeft(AbstractJavaNode child) {
-        GenericToken thisFst = jjtGetFirstToken();
-        GenericToken childFst = child.jjtGetFirstToken();
+        JavaccToken thisFst = this.getFirstToken();
+        JavaccToken childFst = child.getFirstToken();
 
         if (TokenUtils.isBefore(childFst, thisFst)) {
-            jjtSetFirstToken(childFst);
+            setFirstToken(childFst);
         }
     }
 
     private void enlargeRight(AbstractJavaNode child) {
-        GenericToken thisLast = jjtGetLastToken();
-        GenericToken childLast = child.jjtGetLastToken();
+        JavaccToken thisLast = this.getLastToken();
+        JavaccToken childLast = child.getLastToken();
 
         if (TokenUtils.isAfter(childLast, thisLast)) {
-            jjtSetLastToken(childLast);
+            setLastToken(childLast);
         }
     }
 
@@ -256,19 +227,28 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
-            jjtSetFirstToken(findTokenSiblingInThisNode(jjtGetFirstToken(), leftShift));
+            jjtSetFirstToken(findTokenSiblingInThisNode(this.getFirstToken(), leftShift));
         }
         if (rightShift != 0) {
-            jjtSetLastToken(findTokenSiblingInThisNode(jjtGetLastToken(), rightShift));
+            jjtSetLastToken(findTokenSiblingInThisNode(this.getLastToken(), rightShift));
         }
     }
 
-    private GenericToken findTokenSiblingInThisNode(GenericToken token, int shift) {
+    void jjtSetFirstToken(JavaccToken token) {
+        super.setFirstToken(token);
+    }
+
+    void jjtSetLastToken(JavaccToken token) {
+        super.setLastToken(token);
+    }
+
+    private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
+        assert token != null : "Null token";
         if (shift == 0) {
             return token;
         } else if (shift < 0) {
             // expects a positive shift
-            return TokenUtils.nthPrevious(jjtGetFirstToken(), token, -shift);
+            return TokenUtils.nthPrevious(this.getFirstToken(), token, -shift);
         } else {
             return TokenUtils.nthFollower(token, shift);
         }
@@ -276,8 +256,8 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
 
     void copyTextCoordinates(AbstractJavaNode copy) {
-        jjtSetFirstToken(copy.jjtGetFirstToken());
-        jjtSetLastToken(copy.jjtGetLastToken());
+        setFirstToken(copy.getFirstToken());
+        setLastToken(copy.getLastToken());
     }
 
 
@@ -312,11 +292,11 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     private int getStartOffset() {
-        return jjtGetFirstToken().getStartInDocument();
+        return this.getFirstToken().getStartInDocument();
     }
 
 
     private int getEndOffset() {
-        return jjtGetLastToken().getEndInDocument();
+        return this.getLastToken().getEndInDocument();
     }
 }

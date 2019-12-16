@@ -10,7 +10,7 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.impl.JavaCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractVfNodesTest {

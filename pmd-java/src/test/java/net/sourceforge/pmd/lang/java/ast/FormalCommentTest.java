@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 public class FormalCommentTest {
 

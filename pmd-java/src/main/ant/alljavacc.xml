@@ -123,15 +123,15 @@
             </replacevalue>
         </replace>
 
-        <replace token="new Token()" value="net.sourceforge.pmd.lang.ast.impl.JavaccToken.undefined()">
+        <replace token="new Token()" value="net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken.undefined()">
             <fileset dir="${target-package-dir}"/>
         </replace>
 
-        <replace token=" Token " value=" net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
+        <replace token=" Token " value=" net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken ">
             <fileset dir="${target-package-dir}"/>
         </replace>
 
-        <replace token="(Token " value="(net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
+        <replace token="(Token " value="(net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken ">
             <fileset dir="${target-package-dir}"/>
         </replace>
 
@@ -139,7 +139,7 @@
             <fileset dir="${target-package-dir}"/>
         </replace>
 
-        <replace token=";Token " value=";net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
+        <replace token=";Token " value=";net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken ">
             <fileset dir="${target-package-dir}"/>
         </replace>
 
@@ -156,9 +156,9 @@
         </replace>
 
         <replaceregexp file="${target-package-dir}/JavaParserTokenManager.java" flags="s">
-            <regexp pattern="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken.*?}" />
+            <regexp pattern="protected net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken jjFillToken.*?}" />
             <substitution
-                    expression="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken() {return JavaTokenFactory.newToken(jjmatchedKind, input_stream);}"/>
+                    expression="protected net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken jjFillToken() {return JavaTokenFactory.newToken(jjmatchedKind, input_stream);}"/>
         </replaceregexp>
 
 

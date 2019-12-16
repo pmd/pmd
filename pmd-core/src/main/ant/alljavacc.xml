@@ -56,7 +56,7 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
                  token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast.impl" />
+                 value="net.sourceforge.pmd.lang.ast.impl.javacc" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
                  token="JavaCharStream"
                  value="JavaCharStreamBase"/>
@@ -72,7 +72,7 @@
 
        <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/impl/JavaCharStreamBase.java" />
+              tofile="${target}/net/sourceforge/pmd/lang/ast/impl/javacc/JavaCharStreamBase.java" />
 
         <!-- Generate ASCII w/o Unicode Escapes CharStream implementation -->
         <javacc usercharstream="false"

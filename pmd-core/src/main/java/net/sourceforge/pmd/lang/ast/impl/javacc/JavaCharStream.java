@@ -2,13 +2,19 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.commons.io.IOUtils;
+
+import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 
 /**
  * This stream buffers the whole file in memory before parsing,
