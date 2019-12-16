@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.TokenBasedNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -13,7 +14,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode {
+public interface JavaNode extends ScopedNode, TokenBasedNode<Token> {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.

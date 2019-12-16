@@ -533,7 +533,10 @@ public abstract class AbstractNode implements Node {
         this.userData = userData;
     }
 
-    // TODO should we deprecate this too?
+    /**
+     * @deprecated Not all nodes have access to their tokens, use the interface {@link TokenBasedNode} instead
+     */
+    @Deprecated
     public GenericToken jjtGetFirstToken() {
         return firstToken;
     }
@@ -546,7 +549,10 @@ public abstract class AbstractNode implements Node {
         this.firstToken = token;
     }
 
-    // TODO should we deprecate this too?
+    /**
+     * @deprecated Not all nodes have access to their tokens, use the interface {@link TokenBasedNode} instead
+     */
+    @Deprecated
     public GenericToken jjtGetLastToken() {
         return lastToken;
     }

@@ -25,12 +25,13 @@ import java.io.Writer;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.impl.javacc.AbstractJjtreeNode;
 
 /**
  *
  */
-public class AbstractVmNode extends AbstractNode implements VmNode {
+public class AbstractVmNode extends AbstractJjtreeNode<Token> implements VmNode {
 
     /** */
     // TODO - It seems that this field is only valid when parsing, and should
@@ -93,17 +94,18 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         endColumn = parser.token.endColumn;
     }
 
-    /**
-     * @param t
-     */
+    @InternalApi
+    @Deprecated
     public void setFirstToken(final Token t) {
         this.first = t;
     }
 
+    @Override
     public Token getFirstToken() {
         return first;
     }
 
+    @Override
     public Token getLastToken() {
         return last;
     }
