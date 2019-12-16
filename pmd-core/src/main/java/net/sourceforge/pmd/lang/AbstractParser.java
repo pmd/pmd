@@ -25,7 +25,9 @@ public abstract class AbstractParser implements Parser {
 
     @Override
     public TokenManager getTokenManager(String fileName, Reader source) {
-        return createTokenManager(source);
+        TokenManager tokenManager = createTokenManager(source);
+        tokenManager.setFileName(fileName);
+        return tokenManager;
     }
 
     protected abstract TokenManager createTokenManager(Reader source);

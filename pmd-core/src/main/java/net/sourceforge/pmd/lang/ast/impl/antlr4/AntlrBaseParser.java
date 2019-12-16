@@ -34,7 +34,7 @@ public abstract class AntlrBaseParser<T extends org.antlr.v4.runtime.Parser> imp
     @Override
     public TokenManager getTokenManager(final String fileName, final Reader source) {
         try {
-            return new AntlrTokenManager(getLexer(source));
+            return new AntlrTokenManager(getLexer(source), fileName);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

@@ -27,18 +27,20 @@ public abstract class AntlrTokenizer implements Tokenizer {
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
 
         final AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
+        tokenManager.setFileName(sourceCode.getFileName());
+
         final AntlrTokenFilter tokenFilter = getTokenFilter(tokenManager);
 
         try {
             AntlrToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
-                processToken(tokenEntries, sourceCode.getFileName(), currentToken);
+                processToken(tokenEntries, tokenManager.getFileName(), currentToken);
                 currentToken = tokenFilter.getNextToken();
             }
         } catch (final AntlrTokenManager.ANTLRSyntaxError err) {
             // Wrap exceptions of the ANTLR tokenizer in a TokenMgrError, so they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line option
-            throw new TokenMgrError("Lexical error in file " + sourceCode.getFileName() + " at line "
+            throw new TokenMgrError("Lexical error in file " + tokenManager.getFileName() + " at line "
                     + err.getLine() + ", column " + err.getColumn() + ".  Encountered: " + err.getMessage(),
                     TokenMgrError.LEXICAL_ERROR);
         } finally {

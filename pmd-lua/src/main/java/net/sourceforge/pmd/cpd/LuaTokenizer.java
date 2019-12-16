@@ -19,7 +19,7 @@ public class LuaTokenizer extends AntlrTokenizer {
     @Override
     protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new LuaLexer(charStream));
+        return new AntlrTokenManager(new LuaLexer(charStream), sourceCode.getFileName());
     }
 
     @Override

@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
 public class SourceCodeProcessor {
@@ -160,12 +159,7 @@ public class SourceCodeProcessor {
 
         Parser parser = PMD.parserFor(languageVersion, configuration);
 
-        RootNode rootNode;
-        try {
-            rootNode = (RootNode) parse(ctx, sourceCode, parser);
-        } catch (TokenMgrError tmgrError) {
-            throw TokenMgrError.withFileName(ctx.getSourceCodeFile().toString(), tmgrError);
-        }
+        RootNode rootNode = (RootNode) parse(ctx, sourceCode, parser);
 
         dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 

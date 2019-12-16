@@ -31,4 +31,8 @@ public class MatlabTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
+    @Override
+    public void setFileName(String fileName) {
+        MatlabParserTokenManager.setFileName(fileName);
+    }
 }

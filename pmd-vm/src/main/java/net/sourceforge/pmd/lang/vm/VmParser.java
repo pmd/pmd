@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
 import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
 
 /**
@@ -29,7 +30,7 @@ public class VmParser extends AbstractParser {
 
     @Override
     public Node parse(final String fileName, final Reader source) throws ParseException {
-
+        AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.vm.ast.VmParser(new VelocityCharStream(source, 1, 1)).process();
     }
 

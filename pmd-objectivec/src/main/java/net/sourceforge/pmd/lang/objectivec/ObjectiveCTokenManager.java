@@ -31,4 +31,8 @@ public class ObjectiveCTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
+    @Override
+    public void setFileName(String fileName) {
+        ObjectiveCParserTokenManager.setFileName(fileName);
+    }
 }

@@ -17,15 +17,18 @@ import net.sourceforge.pmd.lang.TokenManager;
  */
 public class AntlrTokenManager implements TokenManager {
     private final Lexer lexer;
+    private String fileName;
     private AntlrToken previousToken;
 
     /**
      * Constructor
      *
      * @param lexer The lexer
+     * @param fileName The file name
      */
-    public AntlrTokenManager(final Lexer lexer) {
+    public AntlrTokenManager(final Lexer lexer, final String fileName) {
         this.lexer = lexer;
+        this.fileName = fileName;
         resetListeners();
     }
 
@@ -44,6 +47,15 @@ public class AntlrTokenManager implements TokenManager {
         previousToken = currentToken;
 
         return currentToken;
+    }
+
+    @Override
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     private void resetListeners() {

@@ -91,6 +91,22 @@
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/SimpleCharStream.java" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+                 token="net.sourceforge.pmd.lang.ast.dummy"
+                 value="net.sourceforge.pmd.lang.ast" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+                 token="extends Error"
+                 value="extends RuntimeException" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+                 token="static final int"
+                 value="public static final int" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java">
+            <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
+            <replacevalue><![CDATA["Lexical error in file " + net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager.getFileName() + " at line "]]></replacevalue>
+        </replace>
+        <move overwrite="true"
+              file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+              tofile="${target}/net/sourceforge/pmd/lang/ast/TokenMgrError.java" />
 
         <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
 
