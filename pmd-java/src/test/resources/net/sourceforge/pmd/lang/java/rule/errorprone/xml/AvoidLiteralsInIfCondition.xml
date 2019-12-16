@@ -106,4 +106,23 @@ public class Foo {
 }
     ]]></code>
   </test-code>
+
+  <test-code>
+    <description>More tests with expressions (see #2150)</description>
+    <rule-property name="ignoreMagicNumbers">-1,0,1</rule-property>
+    <expected-problems>4</expected-problems>
+    <expected-linenumbers>4,7,7,8</expected-linenumbers>
+    <code><![CDATA[
+public class AvoidLiteralsInIfConditionWithExpressions {
+    public void test() {
+        if (1) {}    // ok, "1" is in ignoreMagicNumbers
+        if (1+1) {}  // not ok! multiple literals in expression
+        if (a+1) {}  // ok, single literal, whitelisted
+        if (bodyStart >= 0 && bodyStart != (currentToken.length() - 1)) {} // ok, single literal per expression, both whitelisted
+        if (1 * 5) {} // not ok - literal 5 and also a expression with two literals
+        if (a + 5) {} // not ok
+    }
+}
+    ]]></code>
+  </test-code>
 </test-data>

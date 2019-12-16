@@ -480,6 +480,11 @@ More exceptions can be defined with the property "ignoreMagicNumbers".
     [not(NullLiteral)]
     [not(BooleanLiteral)]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
+|
+(: consider multiple literals in expressions :)
+//IfStatement/Expression[count(*/PrimaryExpression/PrimaryPrefix/Literal
+    [not(NullLiteral)]
+    [not(BooleanLiteral)]) > 1]
 ]]>
                 </value>
             </property>
