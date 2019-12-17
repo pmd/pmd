@@ -14,6 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modelica support
+
+Thanks to [Anatoly Trosinenko](https://github.com/atrosinenko) PMD supports now a new language:
+[Modelica](https://modelica.org/modelicalanguage) is a language to model complex physical systems.
+Both PMD and CPD are supported and there are already [3 rules available](pmd_rules_modelica.html).
+The PMD Designer supports syntax highlighting for Modelica.
+
+While the language implementation is quite complete, Modelica support is considered experimental
+for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
+the implementation based on your feedback.
+
+
 ### Fixed Issues
 
 *   java-bestpractices
@@ -45,6 +57,8 @@ This is a {{ site.pmd.release_type }} release.
 
 
 ### External Contributions
+
+*   [#2041](https://github.com/pmd/pmd/pull/2041): \[modelica] Initial implementation for PMD - [Anatoly Trosinenko](https://github.com/atrosinenko)
 
 {% endtocmaker %}
 
