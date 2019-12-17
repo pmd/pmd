@@ -1,26 +1,25 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-public class VmParserVisitorAdapter implements VmParserVisitor {
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
 
+public class VmParserVisitorAdapter extends BaseGenericVisitor implements VmParserVisitor {
 
-    /** Initial value when combining values returned by children. */
-    protected Object zero() {
-        return null;
-    }
-
-    /** Merge two values of type R, used to combine values returned by children. */
-    protected Object combine(Object acc, Object r) {
-        return r;
+    @Override
+    protected Object zero(Node parent, Object data) {
+        return data;
     }
 
     @Override
-    public Object visit(final VmNode node, final Object data) {
-        Object returnValue = zero();
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
-        }
-        return returnValue;
+    protected Object visitChildAt(Node node, int idx, Object data) {
+        return ((VmNode) node).getChild(idx).jjtAccept(this, data);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object visit(VmNode node, Object data) {
+        return super.visit(node, data);
     }
 
     @Override

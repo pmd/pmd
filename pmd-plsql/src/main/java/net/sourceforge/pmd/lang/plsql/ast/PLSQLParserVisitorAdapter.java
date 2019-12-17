@@ -4,26 +4,25 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
 
+public class PLSQLParserVisitorAdapter extends BaseGenericVisitor implements PLSQLParserVisitor {
 
-    /** Initial value when combining values returned by children. */
-    protected Object zero() {
-        return null;
-    }
-
-    /** Merge two values of type R, used to combine values returned by children. */
-    protected Object combine(Object acc, Object r) {
-        return r;
+    @Override
+    protected Object zero(Node parent, Object data) {
+        return data;
     }
 
     @Override
+    protected Object visitChildAt(Node node, int idx, Object data) {
+        return ((PLSQLNode) node).getChild(idx).jjtAccept(this, data);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public Object visit(PLSQLNode node, Object data) {
-        Object returnValue = zero();
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
-        }
-        return returnValue;
+        return super.visit(node, data);
     }
 
     @Override

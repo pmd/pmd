@@ -4,12 +4,19 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-public class ModelicaParserVisitorAdapter implements ModelicaParserVisitor {
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
+
+public class ModelicaParserVisitorAdapter extends BaseGenericVisitor implements ModelicaParserVisitor {
+
+    @Override
+    protected Object visitChildAt(Node node, int idx, Object data) {
+        return ((ModelicaNode) node).getChild(idx).jjtAccept(this, data);
+    }
+
+    @SuppressWarnings("unchecked")
     public Object visit(ModelicaNode node, Object data) {
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-            node.jjtGetChild(i).jjtAccept(this, data);
-        }
-        return data;
+        return super.visit(node, data);
     }
 
     @Override

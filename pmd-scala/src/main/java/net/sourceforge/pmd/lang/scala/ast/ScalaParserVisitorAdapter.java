@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
+
 import scala.meta.Case;
 import scala.meta.Ctor;
 import scala.meta.Decl;
@@ -33,25 +35,11 @@ import scala.meta.Type;
  * @param <R>
  *            The type of the returned data
  */
-public class ScalaParserVisitorAdapter<D, R> implements ScalaParserVisitor<D, R> {
-
-    /** Initial value when combining values returned by children. */
-    protected R zero() {
-        return null;
-    }
-
-    /** Merge two values of type R, used to combine values returned by children. */
-    protected R combine(R acc, R r) {
-        return r;
-    }
+public class ScalaParserVisitorAdapter<D, R> extends BaseGenericVisitor<ScalaNode<?>, R, D> implements ScalaParserVisitor<D, R> {
 
     @Override
-    public R visit(ScalaNode<?> node, D data) {
-        R returnValue = zero();
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.getChild(i).accept(this, data));
-        }
-        return returnValue;
+    protected R visitChildAt(ScalaNode<?> node, int idx, D data) {
+        return node.getChild(idx).accept(this, data);
     }
 
     @Override

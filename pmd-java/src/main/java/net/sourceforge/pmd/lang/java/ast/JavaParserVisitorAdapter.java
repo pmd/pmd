@@ -4,25 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class JavaParserVisitorAdapter implements JavaParserVisitor {
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
 
-    /** Initial value when combining values returned by children. */
-    protected Object zero() {
-        return null;
-    }
+public class JavaParserVisitorAdapter extends BaseGenericVisitor implements JavaParserVisitor {
 
-    /** Merge two values of type Object, used to combine values returned by children. */
-    protected Object combine(Object acc, Object r) {
-        return r;
+    @Override
+    protected Object zero(Node parent, Object data) {
+        return data;
     }
 
     @Override
+    protected Object visitChildAt(Node node, int idx, Object data) {
+        return ((JavaNode) node).getChild(idx).jjtAccept(this, data);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public Object visit(JavaNode node, Object data) {
-        Object returnValue = zero();
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
-        }
-        return returnValue;
+        return super.visit(node, data);
     }
 
     @Override

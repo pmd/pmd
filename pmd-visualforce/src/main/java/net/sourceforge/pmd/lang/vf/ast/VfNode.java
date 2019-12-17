@@ -30,5 +30,5 @@ public interface VfNode extends Node, TokenBasedNode<Token> {
 
 
     @Override
-    VfNode jjtGetChild(int i);
+    VfNode getChild(int i);
 }

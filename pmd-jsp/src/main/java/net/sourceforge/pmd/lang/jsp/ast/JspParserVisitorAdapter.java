@@ -4,26 +4,25 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public class JspParserVisitorAdapter implements JspParserVisitor {
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
 
+public class JspParserVisitorAdapter extends BaseGenericVisitor implements JspParserVisitor {
 
-    /** Initial value when combining values returned by children. */
-    protected Object zero() {
-        return null;
-    }
-
-    /** Merge two values of type R, used to combine values returned by children. */
-    protected Object combine(Object acc, Object r) {
-        return r;
+    @Override
+    protected Object zero(Node parent, Object data) {
+        return data;
     }
 
     @Override
-    public Object visit(final JspNode node, final Object data) {
-        Object returnValue = zero();
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
-        }
-        return returnValue;
+    protected Object visitChildAt(Node node, int idx, Object data) {
+        return ((JspNode) node).getChild(idx).jjtAccept(this, data);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object visit(JspNode node, Object data) {
+        return super.visit(node, data);
     }
 
     @Override
