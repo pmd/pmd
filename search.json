@@ -858,6 +858,53 @@
 
 
 
+
+
+{
+"title": "Best Practices (Modelica, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ClassStartNameEqualsEndName",
+"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ConnectUsingNonConnector",
+"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AmbiguousResolution (Modelica, Best Practices)",
+"tags": "",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Building PMD from source",
 "tags": "devdocs",
@@ -4314,6 +4361,22 @@
 "keywords": "",
 "url": "pmd_userdocs_extending_metrics_howto.html",
 "summary": "Since version 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called Metrics Framework). This framework provides developers with a straightforward interface to use code metrics in their rules, and to extend the framework with their own custom metrics."
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Modelica Rules",
+"tags": "rule_referencesmodelica",
+"keywords": "",
+"url": "pmd_rules_modelica.html",
+"summary": "Index of all built-in rules available for Modelica"
 }
 
 

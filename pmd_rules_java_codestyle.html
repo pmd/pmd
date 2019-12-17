@@ -731,6 +731,37 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">PLSQL Rules</a>
                     <ul>
                         
@@ -1315,12 +1346,12 @@ by <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="h
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
  </span><span class="p">[</span><span class="na">@Abstract</span><span class="err">=</span><span class="s1">'true'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Interface</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
- </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'Abstract'</span><span class="p">))]</span><span class="w">
+ </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'Abstract'</span><span class="p">))]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
  </span><span class="p">[</span><span class="na">@Abstract</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
  </span><span class="p">[</span><span class="nv">$strict</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]</span><span class="w">
- </span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'Abstract'</span><span class="p">)]</span><span class="w">
+ </span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'Abstract'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1499,7 +1530,7 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#formalparametern
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="w">
-        </span><span class="nn">pmd:</span><span class="nf">matches</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'^in[A-Z].*'</span><span class="p">,</span><span class="s1">'^out[A-Z].*'</span><span class="p">,</span><span class="s1">'^in$'</span><span class="p">,</span><span class="s1">'^out$'</span><span class="p">)</span><span class="w">
+        </span><span class="nn">pmd:</span><span class="nf">matches</span><span class="p">(</span><span class="na">@VariableName</span><span class="p">,</span><span class="s1">'^in[A-Z].*'</span><span class="p">,</span><span class="s1">'^out[A-Z].*'</span><span class="p">,</span><span class="s1">'^in$'</span><span class="p">,</span><span class="s1">'^out$'</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2880,7 +2911,7 @@ Developers Perceive Them</a>.</p>
     </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="w">
     </span><span class="p">(</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'LocalHome'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'LocalHome'</span><span class="p">)</span><span class="w">
     </span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
@@ -2913,7 +2944,7 @@ Developers Perceive Them</a>.</p>
     </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="w">
     </span><span class="p">(</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'Local'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'Local'</span><span class="p">)</span><span class="w">
     </span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
@@ -3140,7 +3171,7 @@ properties.</p>
     </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="w">
     </span><span class="p">(</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'Bean'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'Bean'</span><span class="p">)</span><span class="w">
     </span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
@@ -3424,11 +3455,11 @@ by the more general rule
     </span><span class="p">)</span><span class="w">
     </span><span class="ow">and</span><span class="w">
     </span><span class="p">(</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'Session'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'Session'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'EJB'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'EJB'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'Bean'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'Bean'</span><span class="p">)</span><span class="w">
     </span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
@@ -3466,7 +3497,7 @@ by the more general rule
     </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="w">
     </span><span class="p">(</span><span class="w">
-        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'Home'</span><span class="p">)</span><span class="w">
+        </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="s1">'Home'</span><span class="p">)</span><span class="w">
     </span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
@@ -3491,7 +3522,7 @@ by the more general rule
 <p>Short Classnames with fewer than e.g. five characters are not recommended.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4118,7 +4149,7 @@ which makes the code also more readable.</p>
 </span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Arguments</span><span class="err">=</span><span class="s1">'false'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ArrayDereference</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="p">]]</span><span class="w">
 </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">MemberSelector</span><span class="p">)]</span><span class="w">
 </span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="na">@AnonymousInnerClass</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]]</span><span class="w">
-</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
+</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@SimpleName</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4447,7 +4478,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 16, 2019 <br />
+ Site last generated: Dec 17, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

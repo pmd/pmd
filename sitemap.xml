@@ -86,6 +86,12 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_modelica_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_devdocs_building.html</loc>
   </url>
   
@@ -365,6 +371,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_metrics_howto.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_modelica.html</loc>
   </url>
   
   

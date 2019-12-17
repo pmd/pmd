@@ -731,6 +731,37 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Modelica Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_modelica_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">PLSQL Rules</a>
                     <ul>
                         
@@ -1304,9 +1335,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modelica-support">Modelica support</h4>
+
+<p>Thanks to <a href="https://github.com/atrosinenko">Anatoly Trosinenko</a> PMD supports now a new language:
+<a href="https://modelica.org/modelicalanguage">Modelica</a> is a language to model complex physical systems.
+Both PMD and CPD are supported and there are already <a href="pmd_rules_modelica.html">3 rules available</a>.
+The PMD Designer supports syntax highlighting for Modelica.</p>
+
+<p>While the language implementation is quite complete, Modelica support is considered experimental
+for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
+the implementation based on your feedback.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2167">#2167</a>: [java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2149">#2149</a>: [java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</li>
@@ -1325,6 +1372,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h5 id="internal-api">Internal API</h5>
 
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
 <ul>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/JavaLanguageHandler.html#"><code class="highlighter-rouge">JavaLanguageHandler</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/JavaLanguageParser.html#"><code class="highlighter-rouge">JavaLanguageParser</code></a></li>
@@ -1342,9 +1392,36 @@ eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sour
 <ul>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code class="highlighter-rouge">AbstractJavaParser</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code class="highlighter-rouge">AbstractJavaHandler</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html"><code class="highlighter-rouge">ASTAnyTypeDeclaration.TypeKind</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getKind()"><code class="highlighter-rouge">ASTAnyTypeDeclaration#getKind</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code class="highlighter-rouge">JavaQualifiedName</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#declarationsAreInDefaultPackage()"><code class="highlighter-rouge">ASTCompilationUnit#declarationsAreInDefaultPackage</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiableNode.html#"><code class="highlighter-rouge">JavaQualifiableNode</code></a>
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getQualifiedName()"><code class="highlighter-rouge">ASTAnyTypeDeclaration#getQualifiedName</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#getQualifiedName()"><code class="highlighter-rouge">ASTMethodOrConstructorDeclaration#getQualifiedName</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getQualifiedName()"><code class="highlighter-rouge">ASTLambdaExpression#getQualifiedName</code></a></li>
+    </ul>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/qname/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.qname</code></a> and its contents</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code class="highlighter-rouge">MethodLikeNode</code></a>
+    <ul>
+      <li>Its methods will also be removed from its implementations,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#"><code class="highlighter-rouge">ASTMethodOrConstructorDeclaration</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code class="highlighter-rouge">ASTLambdaExpression</code></a>.</li>
+    </ul>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code class="highlighter-rouge">ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use <code class="highlighter-rouge">getSimpleName()</code>
+instead. This affects <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code class="highlighter-rouge">ASTAnnotationTypeDeclaration#getImage</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code class="highlighter-rouge">ASTClassOrInterfaceDeclaration#getImage</code></a>, and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code class="highlighter-rouge">ASTEnumDeclaration#getImage</code></a>.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/2041">#2041</a>: [modelica] Initial implementation for PMD - <a href="https://github.com/atrosinenko">Anatoly Trosinenko</a></li>
+</ul>
 
 
 
@@ -1362,7 +1439,7 @@ eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sour
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 16, 2019 <br />
+ Site last generated: Dec 17, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
