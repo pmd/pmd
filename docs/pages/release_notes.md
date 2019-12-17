@@ -28,6 +28,8 @@ the implementation based on your feedback.
 
 ### Fixed Issues
 
+*   core
+    *   [#2170](https://github.com/pmd/pmd/issues/2170): \[core] DocumentFile doesn't preserve newlines
 *   java-codestyle
     *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference
 *   java-bestpractices
