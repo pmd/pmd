@@ -77,6 +77,9 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
   {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
 
+* Many methods on the {% jdoc core::lang.ast.Node %} interface 
+and {% jdoc core::lang.ast.AbstractNode %} base class. See their javadoc for details.
+
 
 ### External Contributions
 

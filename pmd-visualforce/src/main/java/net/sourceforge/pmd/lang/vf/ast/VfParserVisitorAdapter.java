@@ -4,27 +4,13 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
-
-public class VfParserVisitorAdapter extends BaseGenericVisitor implements VfParserVisitor {
+public class VfParserVisitorAdapter implements VfParserVisitor {
 
     @Override
-    protected Object zero(Node parent, Object data) {
+    public Object visit(VfNode node, Object data) {
+        node.childrenAccept(this, data);
         return data;
     }
-
-    @Override
-    protected Object visitChildAt(Node node, int idx, Object data) {
-        return ((VfNode) node).getChild(idx).jjtAccept(this, data);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object visit(VfNode node, Object data) {
-        return super.visit(node, data);
-    }
-
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {

@@ -4,25 +4,12 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.impl.BaseGenericVisitor;
-
-public class JspParserVisitorAdapter extends BaseGenericVisitor implements JspParserVisitor {
+public class JspParserVisitorAdapter implements JspParserVisitor {
 
     @Override
-    protected Object zero(Node parent, Object data) {
-        return data;
-    }
-
-    @Override
-    protected Object visitChildAt(Node node, int idx, Object data) {
-        return ((JspNode) node).getChild(idx).jjtAccept(this, data);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public Object visit(JspNode node, Object data) {
-        return super.visit(node, data);
+        node.childrenAccept(this, data);
+        return null;
     }
 
     @Override
