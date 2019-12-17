@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="ClassStartNameEqualsEndName"
+          language="modelica"
+          message="Class ends with an end clause with a different name"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+            Having a class starting with some name and some *different*
+            name in its end clause is an error.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassSpecifier/*[SimpleName[1]/@Image != SimpleName[last()]/@Image]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <rule name="ConnectUsingNonConnector"
+          language="modelica"
+          message="Arguments passed to `connect` should be connectors, not `{0}`"
+          class="net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector">
+        <description>
+            Modelica specification requires passing connectors to the `connect` clause,
+            while some implementations tolerate using it on plain variables, etc..
+        </description>
+        <priority>2</priority>
+    </rule>
+
+    <rule name="AmbiguousResolution"
+          language="modelica"
+          message="Type resolution is ambiguous: {0}"
+          class="net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule">
+        <description>
+            There is multiple candidates for this type resolution. While generally this is not an error,
+            this may indicate a bug.
+        </description>
+        <priority>3</priority>
+    </rule>
+</ruleset>
