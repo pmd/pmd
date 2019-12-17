@@ -50,7 +50,6 @@ public class Foo {
 
     <test-code>
         <description>Missing comments - only class level required.</description>
-        <rule-property name="headerCommentRequirement">Required</rule-property>
         <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
@@ -62,7 +61,6 @@ public class Foo {
 
     <test-code>
         <description>Too many comments - all comments are unwanted.</description>
-        <rule-property name="headerCommentRequirement">Unwanted</rule-property>
         <rule-property name="classCommentRequirement">Unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">Unwanted</rule-property>
         <rule-property name="publicMethodCommentRequirement">Unwanted</rule-property>
@@ -242,9 +240,6 @@ public class CommentRequired implements Serializable {
         <description>#1522 [java] CommentRequired: false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        /**
-          * Kommentar zu de.konsens.biene.ka.client
-          */
 package de.konsens.biene.ka.client;
 
 /**
@@ -511,32 +506,22 @@ public class CommentRequired {
     </test-code>
 
     <test-code>
-        <description>#1683 [java] CommentRequired property names are inconsistent</description>
-        <rule-property name="headerCommentRequirement">Required</rule-property>
+        <description>#1683 [java] CommentRequired property names are inconsistent - use deprecated property</description>
+        <rule-property name="headerCommentRequirement">Unwanted</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-package test.my_package;
-/** The class comment */
-public class CommentRequired {
-}
+/** Unwanted class comment */
+public class CommentRequirement {}
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#1683 [java] CommentRequired property names are inconsistent - package with comment without new lines</description>
-        <rule-property name="headerCommentRequirement">Required</rule-property>
+        <description>#1683 [java] CommentRequired property names are inconsistent - use new property</description>
+        <rule-property name="classCommentRequirement">Unwanted</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-/** licence comment */ package test.my_package; public class Test { /** public method */ public void method() { } }
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1683 [java] CommentRequired property names are inconsistent - package without comment and without new lines</description>
-        <rule-property name="headerCommentRequirement">Required</rule-property>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-package test.my_package; public class Test { /** public method */ public void method() { } }
+/** Unwanted class comment */
+public class CommentRequirement {}
         ]]></code>
     </test-code>
 </test-data>
