@@ -22,7 +22,8 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
     @Parameters
     public static Iterable<String> languagesToTest() {
         // note: scala and wsdl have no rules
-        return Arrays.asList("java", "apex", "javascript", "jsp", "plsql", "pom", "visualforce", "velocitytemplate", "xml", "xsl");
+        return Arrays.asList("java", "apex", "javascript", "jsp", "modelica",
+                "plsql", "pom", "visualforce", "velocitytemplate", "xml", "xsl");
     }
 
     @Test
