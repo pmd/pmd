@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-codestyle
+    *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference
 *   java-bestpractices
     *   [#2149](https://github.com/pmd/pmd/issues/2149): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
 *   java-performance

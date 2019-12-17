@@ -109,7 +109,7 @@ public class Foo {
         doSomething();
         return res;
     }
-    
+
     public void doSomething() { }
 }
         ]]></code>
@@ -125,7 +125,7 @@ public class Foo {
         doSomething(res);
         return res;
     }
-    
+
     public void doSomething(int x) { }
 }
         ]]></code>
@@ -142,7 +142,7 @@ public class Foo {
         doSomething(res);
         return res;
     }
-    
+
     public void doSomething(int x) { }
 }
         ]]></code>
@@ -167,7 +167,7 @@ public class UnnecessaryLocalBeforeReturnCase {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
         <expected-problems>0</expected-problems>
@@ -232,7 +232,7 @@ public class UnnecessaryLocalBeforeReturnFP {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1775 [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</description>
         <expected-problems>1</expected-problems>
@@ -243,24 +243,36 @@ public class UnnecessaryLocalBeforeReturnFP {
         Object o = thing()
         	.make(i);
         return o; // true positive
-    }  
+    }
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1804 [java] NPE with fields</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class ObjectCreator {
 
-    private static final String A = ""; 
+    private static final String A = "";
     private static final String B = "" + A; // the existence of this line causes the NPE.
 
     public Object create() {
         final Object o = new Object(A);
         return o;
-    }   
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with captured method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ObjectCreator {
+    public Supplier<String> create() {
+        final Object o = new Object(); // captured by the method ref
+        return o::toString;
+    }
 }
         ]]></code>
     </test-code>
