@@ -90,6 +90,31 @@ public abstract class AbstractNode implements Node {
         endColumn = theEndColumn;
     }
 
+
+    @Override
+    public Node getParent() {
+        return jjtGetParent();
+    }
+
+    @Override
+    public int getIndexInParent() {
+        return jjtGetChildIndex();
+    }
+
+    @Override
+    public Node getChild(final int index) {
+        if (children == null) {
+            throw new IndexOutOfBoundsException();
+        }
+        return children[index];
+    }
+
+    @Override
+    public int getNumChildren() {
+        return jjtGetNumChildren();
+    }
+
+
     /**
      * @deprecated This is never used and is trivial, will be removed from this class.
      */
@@ -98,9 +123,6 @@ public abstract class AbstractNode implements Node {
         return beginLine == endLine;
     }
 
-    /**
-     * @deprecated Will be made protected
-     */
     @Override
     @Deprecated
     @InternalApi
@@ -108,9 +130,6 @@ public abstract class AbstractNode implements Node {
         // to be overridden by subclasses
     }
 
-    /**
-     * @deprecated Will be made protected
-     */
     @Override
     @Deprecated
     @InternalApi
@@ -118,9 +137,6 @@ public abstract class AbstractNode implements Node {
         // to be overridden by subclasses
     }
 
-    /**
-     * @deprecated Will be made protected
-     */
     @Override
     @Deprecated
     @InternalApi
@@ -129,18 +145,11 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public Node jjtGetParent() {
         return parent;
     }
 
-    @Override
-    public Node getParent() {
-        return jjtGetParent();
-    }
-
-    /**
-     * @deprecated Will be made protected
-     */
     @Override
     @Deprecated
     @InternalApi
@@ -156,9 +165,6 @@ public abstract class AbstractNode implements Node {
         child.jjtSetChildIndex(index);
     }
 
-    /**
-     * @deprecated Will be made protected
-     */
     @Override
     @Deprecated
     @InternalApi
@@ -167,38 +173,24 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public int jjtGetChildIndex() {
         return childIndex;
     }
 
 
     @Override
-    public int getIndexInParent() {
-        return jjtGetChildIndex();
-    }
-
-    @Override
+    @Deprecated
     public Node jjtGetChild(final int index) {
         return children[index];
     }
 
     @Override
-    public Node getChild(final int index) {
-        if (children == null) {
-            throw new IndexOutOfBoundsException();
-        }
-        return children[index];
-    }
-
-    @Override
+    @Deprecated
     public int jjtGetNumChildren() {
         return children == null ? 0 : children.length;
     }
 
-    @Override
-    public int getNumChildren() {
-        return jjtGetNumChildren();
-    }
 
     /**
      * @deprecated Will be made protected with 7.0.0.

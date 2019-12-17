@@ -28,8 +28,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
  * Most of them are implementation details that clutter this API and
  * make implementation more difficult. Some methods prefixed with {@code jjt}
  * have a more conventional counterpart (e.g. {@link #jjtGetParent()} and
- * {@link #getParent()}) that should be preferred. We may deprecate those
- * old forms in the future.
+ * {@link #getParent()}) that should be preferred.
  */
 public interface Node {
 
@@ -67,19 +66,11 @@ public interface Node {
      * Returns the parent of this node.
      *
      * @return The parent of the node
+     *
+     * @deprecated Use {@link #getParent()}
      */
+    @Deprecated
     Node jjtGetParent();
-
-
-    /**
-     * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
-     * of the tree.
-     *
-     * <p>This method should be preferred to {@link #jjtGetParent()}.
-     *
-     * @return The parent of this node
-     */
-    Node getParent();
 
 
     /**
@@ -111,20 +102,11 @@ public interface Node {
      * Gets the index of this node in the children of its parent.
      *
      * @return The index of the node
+     *
+     * @deprecated Use {@link #getIndexInParent()}
      */
+    @Deprecated
     int jjtGetChildIndex();
-
-
-    /**
-     * Returns the index of this node in its parent's children. If this
-     * node is a {@linkplain RootNode root node}, returns -1.
-     *
-     * <p>This method replaces {@link #jjtGetChildIndex()}, whose name was
-     * JJTree-specific.
-     *
-     * @return The index of this node in its parent's children
-     */
-    int getIndexInParent();
 
 
     /**
@@ -134,28 +116,20 @@ public interface Node {
      * @param index
      *            the child index. Must be nonnegative and less than
      *            {@link #jjtGetNumChildren}.
+     *
+     * @deprecated Use {@link #getChild(int)}
      */
+    @Deprecated
     Node jjtGetChild(int index);
 
 
     /**
-     * Returns the child of this node at the given index.
-     *
-     * @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getNumChildren()}.
-     */
-    Node getChild(int index);
-
-
-    /**
      * Returns the number of children the node has.
+     *
+     * @deprecated Use {@link #getNumChildren()}
      */
+    @Deprecated
     int jjtGetNumChildren();
-
-
-    /**
-     * Returns the number of children of this node.
-     */
-    int getNumChildren();
 
 
     /**
@@ -422,6 +396,40 @@ public interface Node {
     @InternalApi
     void removeChildAtIndex(int childIndex);
 
+
+    /**
+     * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
+     * of the tree.
+     *
+     * <p>This method should be preferred to {@link #jjtGetParent()}.
+     *
+     * @return The parent of this node
+     */
+    Node getParent();
+
+    /**
+     * Returns the child of this node at the given index.
+     *
+     * @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getNumChildren()}.
+     */
+    Node getChild(int index);
+
+
+    /**
+     * Returns the number of children of this node.
+     */
+    int getNumChildren();
+
+    /**
+     * Returns the index of this node in its parent's children. If this
+     * node is a {@linkplain RootNode root node}, returns -1.
+     *
+     * <p>This method replaces {@link #jjtGetChildIndex()}, whose name was
+     * JJTree-specific.
+     *
+     * @return The index of this node in its parent's children
+     */
+    int getIndexInParent();
 
     /**
      * Gets the name of the node that is used to match it with XPath queries.

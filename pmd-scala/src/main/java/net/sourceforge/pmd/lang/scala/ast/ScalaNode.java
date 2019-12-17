@@ -54,9 +54,9 @@ public interface ScalaNode<T extends Tree> extends Node {
 
 
     @Override
-    ScalaNode<?> jjtGetChild(int idx);
+    ScalaNode<?> getChild(int idx);
 
 
     @Override
-    ScalaNode<?> jjtGetParent();
+    ScalaNode<?> getParent();
 }

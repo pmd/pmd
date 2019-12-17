@@ -214,7 +214,7 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     //
     @Override
     public Object visit(JavaNode node, Object data) {
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+        for (int i = 0; i < node.getNumChildren(); ++i) {
             node.getChild(i).jjtAccept(this, data);
         }
         return null;

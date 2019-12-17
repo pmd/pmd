@@ -17,7 +17,7 @@ public class VmParserVisitorAdapter implements VmParserVisitor {
     @Override
     public Object visit(final VmNode node, final Object data) {
         Object returnValue = zero();
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+        for (int i = 0; i < node.getNumChildren(); ++i) {
             returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
         }
         return returnValue;

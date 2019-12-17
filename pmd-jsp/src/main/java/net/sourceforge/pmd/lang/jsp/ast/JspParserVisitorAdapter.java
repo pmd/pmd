@@ -20,7 +20,7 @@ public class JspParserVisitorAdapter implements JspParserVisitor {
     @Override
     public Object visit(final JspNode node, final Object data) {
         Object returnValue = zero();
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+        for (int i = 0; i < node.getNumChildren(); ++i) {
             returnValue = combine(returnValue, node.getChild(i).jjtAccept(this, data));
         }
         return returnValue;

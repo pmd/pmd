@@ -82,7 +82,7 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
 
     @Override
     public Object visit(final VmNode node, final Object data) {
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+        for (int i = 0; i < node.getNumChildren(); ++i) {
             node.getChild(i).jjtAccept(this, data);
         }
         return null;
