@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -222,7 +223,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
         try {
             boolean overridden = currentLookup.peek().isOverridden(node.getName(), node.getFormalParameters());
             if (overridden) {
-                addViolation(data, node, new Object[]{node.getQualifiedName().getOperation()});
+                addViolation(data, node, new Object[]{PrettyPrintingUtil.displaySignature(node)});
             }
         } catch (NoSuchMethodException e) {
             // may happen in the body of an enum constant,

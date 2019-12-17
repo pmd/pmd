@@ -1556,11 +1556,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
 
-        if (node.declarationsAreInDefaultPackage()) {
-            return classDecl.getImage();
+        if (node.getPackageName().isEmpty()) {
+            return classDecl.getSimpleName();
         }
-        importedOnDemand.add(node.getPackageDeclaration().getPackageNameImage());
-        return classDecl.getQualifiedName().toString();
+        importedOnDemand.add(node.getPackageName());
+        return classDecl.getBinaryName();
     }
 
     /**

@@ -705,7 +705,7 @@ public String bar(String string) {
   @Name='onStart'
   ]
     /Block[not(
-      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name]))]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
   pmd-java:typeIs('android.app.Activity') or
   pmd-java:typeIs('android.app.Application') or
@@ -750,7 +750,7 @@ Super should be called at the end of the method
   @Name='onTerminate'
   ]
    /Block/BlockStatement[last()]
-    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
+    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name])]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
   pmd-java:typeIs('android.app.Activity') or
   pmd-java:typeIs('android.app.Application') or
@@ -939,7 +939,7 @@ Note: This is only possible with Java 1.5 or higher.
 [
 @Name = 'clone'
 and @Arity = 0
-and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image)
+and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)
 ]
 ]]>
                 </value>
@@ -2452,10 +2452,10 @@ See the property `annotations`.
            [(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
                 [@Public=true()]
                 [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
+                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@SimpleName]
                 ]
             ) or (
-                ./ExtendsList/ClassOrInterfaceType[@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
+                ./ExtendsList/ClassOrInterfaceType[@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@SimpleName]
             )]
         )
 ]
@@ -2650,7 +2650,7 @@ Object clone() should be implemented with super.clone().
 [count(./Block//*[
     (self::AllocationExpression) and
     (./ClassOrInterfaceType/@Image = ancestor::
-ClassOrInterfaceDeclaration[1]/@Image)
+ClassOrInterfaceDeclaration[1]/@SimpleName)
   ])> 0
 ]
 ]]>
@@ -2696,8 +2696,8 @@ with the restriction that the logger needs to be passed into the constructor.
     or (@Static = false() and .//VariableDeclaratorId[@Image != $loggerName])
 
     (: check logger argument type matches class or enum name :)
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@Image]
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@Image]
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@SimpleName]
 ]
 [not(
      (: special case - final logger initialized inside constructor :)

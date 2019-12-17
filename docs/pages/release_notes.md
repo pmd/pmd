@@ -30,6 +30,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ##### Internal API
 
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
 * {% jdoc java::lang.java.JavaLanguageHandler %}
 * {% jdoc java::lang.java.JavaLanguageParser %}
 * {% jdoc java::lang.java.JavaDataFlowHandler %}
@@ -44,6 +47,23 @@ This is a {{ site.pmd.release_type }} release.
 
 * {% jdoc java::lang.java.AbstractJavaParser %}
 * {% jdoc java::lang.java.AbstractJavaHandler %}
+* [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
+* {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
+* {% jdoc java::lang.java.ast.JavaQualifiedName %}
+* {% jdoc !!java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
+* {% jdoc java::lang.java.ast.JavaQualifiableNode %}
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
+  * {% jdoc !!java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
+  * {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
+* {% jdoc_package java::lang.java.qname %} and its contents
+* {% jdoc java::lang.java.ast.MethodLikeNode %}
+  * Its methods will also be removed from its implementations,
+    {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration %},
+    {% jdoc java::lang.java.ast.ASTLambdaExpression %}.
+* {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getImage() %} will be removed. Please use `getSimpleName()`
+  instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
+  {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
+  {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
 
 
 ### External Contributions
