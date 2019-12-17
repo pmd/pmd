@@ -24,6 +24,16 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
  * <li>Location metadata: eg {@link #getBeginLine()}, {@link #getBeginColumn()}
  * </ul>
  *
+ * <p>It is assumed in many places that the {@link #getChild(int)} and {@link #getParent()}
+ * method return a node of the same type than this node. For example,
+ * no JSP node should have a Java node as its child. Embedding nodes from
+ * different languages will not be done via these methods, and conforming
+ * implementations should ensure, that every node returned by these methods
+ * are indeed of the same type. Possibly, a type parameter will be added to
+ * the Node interface in 7.0.0 to enforce it at compile-time.
+ *
+ * <p>Note: I'm pretty sure Apex doesn't respect this invariant with its comment nodes.
+ *
  * <p>A number of methods are deprecated and will be removed in 7.0.0.
  * Most of them are implementation details that clutter this API and
  * make implementation more difficult. Some methods prefixed with {@code jjt}
