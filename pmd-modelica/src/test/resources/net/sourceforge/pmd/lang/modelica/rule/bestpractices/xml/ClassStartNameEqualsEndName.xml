@@ -10,7 +10,6 @@
 package Test
 end Test;
         ]]></code>
-        <source-type>modelica</source-type>
     </test-code>
     <test-code>
         <description>Invalid example</description>
@@ -20,6 +19,5 @@ end Test;
 package Test
 end OtherName;
         ]]></code>
-        <source-type>modelica</source-type>
     </test-code>
 </test-data>

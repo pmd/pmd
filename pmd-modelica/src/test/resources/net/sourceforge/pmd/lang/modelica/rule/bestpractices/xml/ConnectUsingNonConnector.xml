@@ -17,7 +17,6 @@ equation
   connect(a, b);
 end Test;
         ]]></code>
-        <source-type>modelica</source-type>
     </test-code>
     <test-code>
         <description>Plain variables are connected</description>
@@ -30,7 +29,6 @@ equation
   connect(x, y);
 end Test;
         ]]></code>
-        <source-type>modelica</source-type>
     </test-code>
     <test-code>
         <description>Records are connected</description>
@@ -46,7 +44,6 @@ equation
   connect(x, y);
 end Test;
         ]]></code>
-        <source-type>modelica</source-type>
     </test-code>
 
 </test-data>
