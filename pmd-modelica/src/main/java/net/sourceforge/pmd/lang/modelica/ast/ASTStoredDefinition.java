@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 
 /**
  * A representation of a Modelica source code file.
  */
-public class ASTStoredDefinition extends AbstractModelicaNode {
+public class ASTStoredDefinition extends AbstractModelicaNode implements RootNode {
     private boolean hasBOM = false;
 
     ASTStoredDefinition(int id) {

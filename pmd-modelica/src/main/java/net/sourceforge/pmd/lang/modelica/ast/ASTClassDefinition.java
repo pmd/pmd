@@ -11,11 +11,11 @@ public class ASTClassDefinition extends AbstractModelicaNode {
     private ModelicaClassSpecialization specialization;
     private ModelicaClassSpecifierNode specifier;
 
-    public ASTClassDefinition(int id) {
+    ASTClassDefinition(int id) {
         super(id);
     }
 
-    public ASTClassDefinition(ModelicaParser p, int id) {
+    ASTClassDefinition(ModelicaParser p, int id) {
         super(p, id);
     }
 
