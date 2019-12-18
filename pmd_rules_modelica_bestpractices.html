@@ -1339,6 +1339,29 @@ this may indicate a bug.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-modelica/src/main/java/net/sourceforge/pmd/lang/modelica/rule/AmbiguousResolutionRule.java">net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule</a></p>
 
+<p><strong>Example(s):</strong></p>
+
+<pre><code class="language-modelica">package Test
+  package Inc1
+    model X
+    end X;
+    model Y
+    end Y;
+  end Inc1;
+  package Inc2
+    model Y
+    end Y;
+    model Z
+    end Z;
+  end Inc2;
+  model B
+    import Test.Inc1.*;
+    import Test.Inc2.*;
+    Y y; // Class Y is imported twice
+  end B;
+end Test;
+</code></pre>
+
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/modelica/bestpractices.xml/AmbiguousResolution"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
@@ -1354,6 +1377,15 @@ name in its end clause is an error.</p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassSpecifier</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="nt">SimpleName</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@Image</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nt">SimpleName</span><span class="p">[</span><span class="nf">last</span><span class="p">()]</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
+<p><strong>Example(s):</strong></p>
+
+<pre><code class="language-modelica">model SomeName
+  Real x;
+equation
+  x = 1;
+end SomeOtherName /* should be SomeName */;
+</code></pre>
+
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/modelica/bestpractices.xml/ClassStartNameEqualsEndName"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
@@ -1366,6 +1398,27 @@ name in its end clause is an error.</p>
 while some implementations tolerate using it on plain variables, etc..</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-modelica/src/main/java/net/sourceforge/pmd/lang/modelica/rule/ConnectUsingNonConnector.java">net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<pre><code class="language-modelica">package Example
+  connector Conn
+    Real x;
+    Real y;
+  end Conn;
+
+  model Test
+    input Conn c1;
+    output Conn c2;
+    input Real x1;
+    output Real x2;
+  equation
+    connect(c1, c2); // OK
+    connect(x1, x2); // error, x1 and x2 are not (both) connectors
+    // x1 = x2; // OK
+  end Test;
+end Example;
+</code></pre>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/modelica/bestpractices.xml/ConnectUsingNonConnector"</span> <span class="nt">/&gt;</span>
@@ -1387,7 +1440,7 @@ while some implementations tolerate using it on plain variables, etc..</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 17, 2019 <br />
+ Site last generated: Dec 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1940,11 +1940,33 @@ This probably means that type and/or field names should be chosen more carefully
 or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
 More exceptions can be defined with the property "ignoreMagicNumbers".</p>
 
+<p>The rule doesn’t consider deeper expressions by default, but this can be enabled via the property <code class="highlighter-rouge">ignoreExpressions</code>.
+With this property set to false, if-conditions like <code class="highlighter-rouge">i == 1 + 5</code> are reported as well. Note that in that case,
+the property ignoreMagicNumbers is not taken into account, if there are multiple literals involved in such an expression.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="err">/*</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">NullLiteral</span><span class="p">)]</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">BooleanLiteral</span><span class="p">)]</span><span class="w">
-</span><span class="p">[</span><span class="nf">empty</span><span class="p">(</span><span class="kr">in</span><span class="nf">dex-of</span><span class="p">(</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$ignoreMagicNumbers</span><span class="p">,</span><span class="w"> </span><span class="s1">'\s*,\s*'</span><span class="p">),</span><span class="w"> </span><span class="na">@Image</span><span class="p">))]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(: simple case - no deep expressions :)</span><span class="w">
+</span><span class="o">//</span><span class="nt">IfStatement</span><span class="p">[</span><span class="nv">$ignoreExpressions</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="o">/</span><span class="nt">Expression</span><span class="err">/*</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">NullLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">BooleanLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="nf">empty</span><span class="p">(</span><span class="kr">in</span><span class="nf">dex-of</span><span class="p">(</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$ignoreMagicNumbers</span><span class="p">,</span><span class="w"> </span><span class="s1">'\s*,\s*'</span><span class="p">),</span><span class="w"> </span><span class="na">@Image</span><span class="p">))]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="c">(: consider also deeper expressions :)</span><span class="w">
+</span><span class="o">//</span><span class="nt">IfStatement</span><span class="p">[</span><span class="nv">$ignoreExpressions</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="o">/</span><span class="nt">Expression</span><span class="err">//</span><span class="o">*</span><span class="p">[</span><span class="nf">local-name</span><span class="p">()</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'UnaryExpression'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Operator</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'-'</span><span class="p">]</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">NullLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">BooleanLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="nf">empty</span><span class="p">(</span><span class="kr">in</span><span class="nf">dex-of</span><span class="p">(</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$ignoreMagicNumbers</span><span class="p">,</span><span class="w"> </span><span class="s1">'\s*,\s*'</span><span class="p">),</span><span class="w"> </span><span class="na">@Image</span><span class="p">))]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="c">(: consider negative literals :)</span><span class="w">
+</span><span class="o">//</span><span class="nt">IfStatement</span><span class="p">[</span><span class="nv">$ignoreExpressions</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="o">/</span><span class="nt">Expression</span><span class="o">//</span><span class="nt">UnaryExpression</span><span class="p">[</span><span class="na">@Operator</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'-'</span><span class="p">]</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">NullLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">BooleanLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="nf">empty</span><span class="p">(</span><span class="kr">in</span><span class="nf">dex-of</span><span class="p">(</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$ignoreMagicNumbers</span><span class="p">,</span><span class="w"> </span><span class="s1">'\s*,\s*'</span><span class="p">),</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="s1">'-'</span><span class="p">,</span><span class="w"> </span><span class="na">@Image</span><span class="p">)))]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="c">(: consider multiple literals in expressions :)</span><span class="w">
+</span><span class="o">//</span><span class="nt">IfStatement</span><span class="p">[</span><span class="nv">$ignoreExpressions</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">NullLiteral</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">BooleanLiteral</span><span class="p">)])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1966,6 +1988,10 @@ More exceptions can be defined with the property "ignoreMagicNumbers".</p>
 
     <span class="k">if</span> <span class="o">(</span><span class="n">aDouble</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="o">)</span> <span class="o">{}</span>                  <span class="c1">// magic number 0.0</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">aDouble</span> <span class="o">&gt;=</span> <span class="n">Double</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">)</span> <span class="o">{}</span>    <span class="c1">// preferred approach</span>
+
+    <span class="c1">// with rule property "ignoreExpressions" set to "false"</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">5</span><span class="o">)</span> <span class="o">{}</span>  <span class="c1">// violation: magic number 5 within an (additive) expression</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">SUFFIX_LENGTH</span><span class="o">)</span> <span class="o">{}</span> <span class="c1">// preferred approach</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1987,6 +2013,12 @@ More exceptions can be defined with the property "ignoreMagicNumbers".</p>
       <td>Comma-separated list of magic numbers, that should be ignored</td>
       <td>no</td>
     </tr>
+    <tr>
+      <td>ignoreExpressions</td>
+      <td>true</td>
+      <td>If true, only literals in simple if conditions are considered. Otherwise literals in expressions are checked, too.</td>
+      <td>no</td>
+    </tr>
   </tbody>
 </table>
 
@@ -1998,6 +2030,7 @@ More exceptions can be defined with the property "ignoreMagicNumbers".</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/AvoidLiteralsInIfCondition"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreMagicNumbers"</span> <span class="na">value=</span><span class="s">"-1,0"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreExpressions"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -5095,7 +5128,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 17, 2019 <br />
+ Site last generated: Dec 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

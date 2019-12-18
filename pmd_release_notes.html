@@ -1346,17 +1346,38 @@ The PMD Designer supports syntax highlighting for Modelica.</p>
 for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
 the implementation based on your feedback.</p>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#avoidliteralsinifcondition"><code class="highlighter-rouge">AvoidLiteralsInIfCondition</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has a new property
+<code class="highlighter-rouge">ignoreExpressions</code>. This property is set by default to <code class="highlighter-rouge">true</code> in order to maintain compatibility. If this
+property is set to false, then literals in more complex expressions are considered as well.</p>
+  </li>
+  <li>
+    <p>The Apex rule <a href="pmd_rules_apex_errorprone.html#apexcsrf"><code class="highlighter-rouge">ApexCSRF</code></a> (<code class="highlighter-rouge">apex-errorprone</code>) has been moved from category
+“Security” to “Error Prone”. The Apex runtime already prevents DML statements from being executed, but only
+at runtime. So, if you try to do this, you’ll get an error at runtime, hence this is error prone. See also
+the discussion on <a href="https://github.com/pmd/pmd/issues/2064">#2064</a>.</p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2149">#2149</a>: [java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</li>
+    </ul>
+  </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2167">#2167</a>: [java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference</li>
     </ul>
   </li>
-  <li>java-bestpractices
+  <li>java-errorprone
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2149">#2149</a>: [java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2140">#2140</a>: [java] AvoidLiteralsInIfCondition: false negative for expressions</li>
     </ul>
   </li>
   <li>java-performance
@@ -1421,6 +1442,8 @@ instead. This affects <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-j
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/2041">#2041</a>: [modelica] Initial implementation for PMD - <a href="https://github.com/atrosinenko">Anatoly Trosinenko</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2051">#2051</a>: [doc] Update the docs on adding a new language - <a href="https://github.com/atrosinenko">Anatoly Trosinenko</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2169">#2169</a>: [modelica] Follow-up fixes for Modelica language module - <a href="https://github.com/atrosinenko">Anatoly Trosinenko</a></li>
 </ul>
 
 
@@ -1439,7 +1462,7 @@ instead. This affects <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-j
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 17, 2019 <br />
+ Site last generated: Dec 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

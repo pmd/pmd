@@ -4024,6 +4024,15 @@
 ,
 
 {
+"title": "ApexCSRF (Apex, Error Prone)",
+"tags": "",
+"keywords": "ApexCSRF",
+"url": "pmd_rules_apex_errorprone.html#apexcsrf",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "AvoidDirectAccessTriggerMap (Apex, Error Prone)",
 "tags": "",
 "keywords": "AvoidDirectAccessTriggerMap",

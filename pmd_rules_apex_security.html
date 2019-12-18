@@ -1457,22 +1457,43 @@ privilege and may produce runtime errors. This check forces you to handle such s
 
 <h2 id="apexcsrf">ApexCSRF</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>The rule has been moved to another ruleset. Use instead: <a href="pmd_rules_apex_errorprone.html#apexcsrf">ApexCSRF</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.5.3</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Check to avoid making DML operations in Apex class constructor/init method. This prevents
-modification of the database just by accessing a page.</p>
+<p>Having DML operations in Apex class constructor or initializers can have unexpected side effects:
+By just accessing a page, the DML statements would be executed and the database would be modified.
+Just querying the database is permitted.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexCSRFRule.java">net.sourceforge.pmd.lang.apex.rule.security.ApexCSRFRule</a></p>
+<p>In addition to constructors and initializers, any method called <code class="highlighter-rouge">init</code> is checked as well.</p>
+
+<p>Salesforce Apex already protects against this scenario and raises a runtime exception.</p>
+
+<p>Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.21.0, since
+using DML in constructors is not a security problem, but crashes the application.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/ApexCSRFRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.ApexCSRFRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// initializer</span>
+    <span class="o">{</span>
         <span class="n">insert</span> <span class="n">data</span><span class="o">;</span>
     <span class="o">}</span>
 
+    <span class="c1">// static initializer</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="n">insert</span> <span class="n">data</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// constructor</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">insert</span> <span class="n">data</span><span class="o">;</span>
     <span class="o">}</span>
@@ -2008,7 +2029,7 @@ to avoid XSS attacks.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 17, 2019 <br />
+ Site last generated: Dec 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
