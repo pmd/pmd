@@ -23,7 +23,7 @@ In addition to constructors and initializers, any method called `init` is checke
 
 Salesforce Apex already protects against this scenario and raises a runtime exception.
 
-Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.20.0, since
+Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.21.0, since
 using DML in constructors is not a security problem, but crashes the application.
         </description>
         <priority>3</priority>
