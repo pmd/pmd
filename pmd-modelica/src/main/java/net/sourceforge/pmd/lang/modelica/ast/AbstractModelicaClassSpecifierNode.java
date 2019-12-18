@@ -55,8 +55,8 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
     }
 
     void pushExtendsAndImports(ModelicaClassType classTypeDeclaration, ASTComposition composition) {
-        for (int i = 0; i < composition.jjtGetNumChildren(); ++i) {
-            ModelicaNode maybeElementList = composition.jjtGetChild(i);
+        for (int i = 0; i < composition.getNumChildren(); ++i) {
+            ModelicaNode maybeElementList = composition.getChild(i);
             if (maybeElementList instanceof ASTElementList) {
                 pushExtendsAndImportsFromList(classTypeDeclaration, (ASTElementList) maybeElementList);
             }
