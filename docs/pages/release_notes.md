@@ -37,5 +37,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#2051](https://github.com/pmd/pmd/pull/2051): \[doc] Update the docs on adding a new language - [Anatoly Trosinenko](https://github.com/atrosinenko)
+
 {% endtocmaker %}
 
