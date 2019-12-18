@@ -287,7 +287,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="category/apex/security.xml/ApexCSRF" message="Avoid making DML operations in Apex class constructor/init method">
+   <rule ref="category/apex/errorprone.xml/ApexCSRF">
       <priority>3</priority>
       <properties>
          <!-- relevant for Code Climate output only -->

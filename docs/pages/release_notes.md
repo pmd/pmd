@@ -31,6 +31,11 @@ the implementation based on your feedback.
     `ignoreExpressions`. This property is set by default to `true` in order to maintain compatibility. If this
     property is set to false, then literals in more complex expressions are considered as well.
 
+*   The Apex rule {% rule "apex/errorprone/ApexCSRF" %} (`apex-errorprone`) has been moved from category
+    "Security" to "Error Prone". The Apex runtime already prevents DML statements from being executed, but only
+    at runtime. So, if you try to do this, you'll get an error at runtime, hence this is error prone. See also
+    the discussion on [#2064](https://github.com/pmd/pmd/issues/2064).
+
 ### Fixed Issues
 
 *   java-bestpractices

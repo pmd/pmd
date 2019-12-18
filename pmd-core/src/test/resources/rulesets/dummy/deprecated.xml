@@ -3,8 +3,10 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
-  Ruleset used by test RuleSetReferenceIdTest
+  Ruleset used by test RuleSetFactoryTest
   </description>
+
+    <!-- all rules (references) are deprecated in this ruleset - hence the ruleset itself is considered deprecated -->
 
     <!--  the rule has been moved -->
     <rule ref="rulesets/dummy/basic.xml/DummyBasicMockRule" deprecated="true" />
