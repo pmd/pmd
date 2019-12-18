@@ -25,13 +25,20 @@ While the language implementation is quite complete, Modelica support is conside
 for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
 the implementation based on your feedback.
 
+#### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/AvoidLiteralsInIfCondition" %} (`java-errorprone`) has a new property
+    `ignoreExpressions`. This property is set by default to `true` in order to maintain compatibility. If this
+    property is set to false, then literals in more complex expressions are considered as well.
 
 ### Fixed Issues
 
-*   java-codestyle
-    *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference
 *   java-bestpractices
     *   [#2149](https://github.com/pmd/pmd/issues/2149): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
+*   java-codestyle
+    *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference
+*   java-errorprone
+    *   [#2140](https://github.com/pmd/pmd/issues/2140): \[java] AvoidLiteralsInIfCondition: false negative for expressions
 *   java-performance
     *   [#2141](https://github.com/pmd/pmd/issues/2141): \[java] StringInstatiation: False negative with String-array access
 
