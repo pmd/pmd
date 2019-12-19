@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
@@ -14,7 +15,12 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  *
  * @author Clément Fournier
  * @since 6.1.0
+ * @deprecated Lambda expressions should not be grouped with other kinds
+ *     of method declarations, they have nothing in common. Giving them a
+ *     qualified name is hacky and compiler-implementation-dependent.
+ *     Ultimately this supertype is not useful and can go away.
  */
+@Deprecated
 public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNode {
 
     /**
@@ -24,15 +30,27 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
      * implementing class.
      *
      * @return The kind of method-like
+     * @deprecated Same reason as for {@link TypeKind}
      */
+    @Deprecated
     MethodLikeKind getKind();
 
 
+    /**
+     * @deprecated Qualified names are not very useful objects. Use them
+     *     to get a nice string for a method, but this is not going
+     */
     @Override
+    @Deprecated
     JavaOperationQualifiedName getQualifiedName();
 
 
-    /** Kind of method-like. */
+    /**
+     * Kind of method-like.
+     *
+     * @deprecated Same reason as for {@link TypeKind}
+     */
+    @Deprecated
     enum MethodLikeKind {
         METHOD,
         CONSTRUCTOR,

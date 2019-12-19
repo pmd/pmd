@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
@@ -74,7 +75,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
         int npath = (int) JavaMetrics.get(JavaOperationMetricKey.NPATH, (MethodLikeNode) node);
         if (npath >= reportLevel) {
             addViolation(data, node, new String[]{node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                  node.getQualifiedName().getOperation(), "" + npath, });
+                                                  PrettyPrintingUtil.displaySignature(node), "" + npath, });
         }
 
         return data;

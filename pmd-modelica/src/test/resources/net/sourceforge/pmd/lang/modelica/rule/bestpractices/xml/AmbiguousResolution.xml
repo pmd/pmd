@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Valid example</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package Test
+  package Inc
+    model X
+    end X;
+    model Y
+    end Y;
+  end Inc;
+  model A
+    model Y
+    end Y;
+  end A;
+  model B
+    extends A;
+    import Inc.*;
+    X x;
+  end B;
+end Test;
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Valid example #2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package Test
+  model X
+    model X
+    end X;
+    Test.X.X mdl;
+  end X;
+end Test;
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Invalid example: class Y is imported twice</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package Test
+  model Inc1
+    model X
+    end X;
+    model Y
+    end Y;
+  end Inc1;
+  model Inc2
+    model Y
+    end Y;
+    model Z
+    end Z;
+  end Inc2;
+  model B
+    import Inc1.*;
+    import Inc2.*;
+    Y y;
+  end B;
+end Test;
+        ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description>Invalid example: suspicious reference to X</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package Test
+  model X
+    model X
+    end X;
+    X mdl;
+  end X;
+end Test;
+        ]]></code>
+    </test-code>
+</test-data>

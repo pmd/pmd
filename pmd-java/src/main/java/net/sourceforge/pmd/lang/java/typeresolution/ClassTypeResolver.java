@@ -69,6 +69,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
@@ -951,8 +952,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 
             if (currentChild.getType() != null) {
-                // rollup type from the child: PrimaryPrefix -> PrimaryExpression
-                primaryNodeType = currentChild.getTypeDefinition();
+                // rollup type from the child: PrimaryPrefix/PrimarySuffx -> PrimaryExpression
+                if (primaryNodeType == null || !primaryNodeType.isArrayType()) {
+                    primaryNodeType = currentChild.getTypeDefinition();
+                }
 
                 // if this expression is a method call, then make sure, PrimaryPrefix has the type
                 // on which the method is executed (type of the target reference)
@@ -967,6 +970,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     } else if (name.getTypeDefinition() == null) {
                         // if there is no better type, use the type of the expression
                         name.setTypeDefinition(primaryNodeType);
+                    }
+                }
+
+                // maybe array access?
+                if (primaryNodeType != null && primaryNodeType.isArrayType()) {
+                    if (currentChild instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) currentChild).isArrayDereference()) {
+                        primaryNodeType = JavaTypeDefinition.forClass(primaryNodeType.getType().getComponentType());
                     }
                 }
             } else {
@@ -1060,6 +1070,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTPrimarySuffix node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
 
@@ -1538,11 +1556,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
 
-        if (node.declarationsAreInDefaultPackage()) {
-            return classDecl.getImage();
+        if (node.getPackageName().isEmpty()) {
+            return classDecl.getSimpleName();
         }
-        importedOnDemand.add(node.getPackageDeclaration().getPackageNameImage());
-        return classDecl.getQualifiedName().toString();
+        importedOnDemand.add(node.getPackageName());
+        return classDecl.getBinaryName();
     }
 
     /**
