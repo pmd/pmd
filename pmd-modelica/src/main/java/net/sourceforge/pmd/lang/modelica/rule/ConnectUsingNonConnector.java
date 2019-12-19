@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.modelica.rule;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTComponentReference;
 import net.sourceforge.pmd.lang.modelica.ast.ASTConnectClause;
-import net.sourceforge.pmd.lang.modelica.ast.AbstractModelicaRule;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassSpecialization;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassType;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaComponentDeclaration;

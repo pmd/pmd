@@ -53,7 +53,7 @@
                  value="extends net.sourceforge.pmd.lang.ast.ParseException" />
         <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ModelicaParserVisitor.java"
                  token="SimpleNode"
-                 value="AbstractModelicaNode" />
+                 value="ModelicaNode" />
         <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/JJTModelicaParserState.java">
             <replacetoken>public class</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;

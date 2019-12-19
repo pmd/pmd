@@ -4,5 +4,5 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-public interface ModelicaImportClause {
+public interface ModelicaImportClause extends ModelicaNode {
 }
