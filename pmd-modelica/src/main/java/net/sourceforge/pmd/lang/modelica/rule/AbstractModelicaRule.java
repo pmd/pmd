@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.modelica.ModelicaLanguageModule;
 import net.sourceforge.pmd.lang.modelica.ast.ASTAddOp;
@@ -154,6 +155,7 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.modelica.ast.ASTWithinClause;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor;
+import net.sourceforge.pmd.lang.modelica.internal.ModelicaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
@@ -183,6 +185,14 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
             node.jjtGetChild(i).jjtAccept(this, data);
         }
         return data;
+    }
+
+    @Override
+    public boolean dependsOn(AstProcessingStage<?> stage) {
+        if (!(stage instanceof ModelicaProcessingStage)) {
+            throw new IllegalArgumentException("Processing stage wasn't a Modelica one: " + stage);
+        }
+        return true;
     }
 
     @Override

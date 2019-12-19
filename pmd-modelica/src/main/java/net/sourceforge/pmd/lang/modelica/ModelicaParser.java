@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.modelica;
 
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -28,18 +26,9 @@ public class ModelicaParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.modelica.ast.ModelicaParser(new SimpleCharStream(source)).StoredDefinition();
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<Integer, String>(); // TODO
-    }
 }
