@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
 /**
  * A public API for resolving lexical references to class or components.
  */
-public interface ResolvableModelicaNode {
+public interface ResolvableModelicaNode extends ModelicaNode {
     /**
      * Tries to resolve the <b>declaration</b> of the referenced component.
      */

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.modelica.rule;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTName;
-import net.sourceforge.pmd.lang.modelica.ast.AbstractModelicaRule;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
 
