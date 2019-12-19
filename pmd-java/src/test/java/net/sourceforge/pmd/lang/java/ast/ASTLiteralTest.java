@@ -4,59 +4,58 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 
-public class ASTLiteralTest {
+public class ASTLiteralTest extends BaseParserTest {
 
     @Test
     public void testIsStringLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST1);
-        assertTrue((literals.iterator().next()).isStringLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST1);
+        assertTrue(literals.get(0).isStringLiteral());
     }
 
     @Test
     public void testIsNotStringLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST2);
-        assertFalse((literals.iterator().next()).isStringLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST2);
+        assertFalse(literals.get(0).isStringLiteral());
     }
 
     @Test
     public void testIsIntIntLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST3);
-        assertTrue((literals.iterator().next()).isIntLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST3);
+        assertTrue(literals.get(0).isIntLiteral());
     }
 
     @Test
     public void testIsIntLongLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST4);
-        assertTrue((literals.iterator().next()).isLongLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST4);
+        assertTrue(literals.get(0).isLongLiteral());
     }
 
     @Test
     public void testIsFloatFloatLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST5);
-        assertTrue((literals.iterator().next()).isFloatLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST5);
+        assertTrue(literals.get(0).isFloatLiteral());
     }
 
     @Test
     public void testIsFloatDoubleLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST6);
-        assertTrue((literals.iterator().next()).isDoubleLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST6);
+        assertTrue(literals.get(0).isDoubleLiteral());
     }
 
     @Test
     public void testIsCharLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST7);
-        assertTrue((literals.iterator().next()).isCharLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST7);
+        assertTrue(literals.get(0).isCharLiteral());
     }
 
     @Test
@@ -68,7 +67,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(1___234, literal.getValueAsInt());
     }
-    
+
     @Test
     public void testIntValueParsingBinary() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -78,7 +77,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(0b0000_0010, literal.getValueAsInt());
     }
-    
+
     @Test
     public void testIntValueParsingNegativeHexa() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -88,7 +87,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(-0X0000_000f, literal.getValueAsInt());
     }
-    
+
     @Test
     public void testFloatValueParsingNegative() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -98,7 +97,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(-3_456.123_456f, literal.getValueAsFloat(), 0);
     }
-    
+
     @Test
     public void testStringUnicodeEscapesNotEscaped() {
         ASTLiteral literal = new ASTLiteral(1);

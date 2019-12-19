@@ -4,28 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 
-public class ASTSwitchLabelTest {
+public class ASTSwitchLabelTest extends BaseParserTest {
 
     @Test
     public void testDefaultOff() {
-        Set<ASTSwitchLabel> ops = getNodes(ASTSwitchLabel.class, TEST1);
-        assertFalse(ops.iterator().next().isDefault());
+        List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, TEST1);
+        assertFalse(ops.get(0).isDefault());
     }
 
     @Test
     public void testDefaultSet() {
-        Set<ASTSwitchLabel> ops = getNodes(ASTSwitchLabel.class, TEST2);
-        assertTrue(ops.iterator().next().isDefault());
+        List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, TEST2);
+        assertTrue(ops.get(0).isDefault());
     }
 
     private static final String TEST1 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  switch (x) {"

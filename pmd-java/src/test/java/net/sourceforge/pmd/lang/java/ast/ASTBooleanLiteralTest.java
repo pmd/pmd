@@ -4,29 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 
-public class ASTBooleanLiteralTest {
+public class ASTBooleanLiteralTest extends BaseParserTest {
 
     @Test
     public void testTrue() {
-        Set<ASTBooleanLiteral> ops = getNodes(ASTBooleanLiteral.class, TEST1);
-        ASTBooleanLiteral b = ops.iterator().next();
+        List<ASTBooleanLiteral> ops = java.getNodes(ASTBooleanLiteral.class, TEST1);
+        ASTBooleanLiteral b = ops.get(0);
         assertTrue(b.isTrue());
     }
 
     @Test
     public void testFalse() {
-        Set<ASTBooleanLiteral> ops = getNodes(ASTBooleanLiteral.class, TEST2);
-        ASTBooleanLiteral b = ops.iterator().next();
+        List<ASTBooleanLiteral> ops = java.getNodes(ASTBooleanLiteral.class, TEST2);
+        ASTBooleanLiteral b = ops.get(0);
         assertFalse(b.isTrue());
     }
 

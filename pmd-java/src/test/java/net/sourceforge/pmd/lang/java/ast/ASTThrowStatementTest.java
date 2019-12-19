@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -13,20 +12,20 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 
 /**
- * Created on Jan 19, 2005 
+ * Created on Jan 19, 2005
  * @author mgriffa
  */
-public class ASTThrowStatementTest {
+public class ASTThrowStatementTest extends BaseParserTest {
 
     @Test
     public final void testGetFirstASTNameImageNull() {
-        ASTThrowStatement t = getNodes(ASTThrowStatement.class, NULL_NAME).iterator().next();
+        ASTThrowStatement t = java.getNodes(ASTThrowStatement.class, NULL_NAME).get(0);
         assertNull(t.getFirstClassOrInterfaceTypeImage());
     }
 
     @Test
     public final void testGetFirstASTNameImageNew() {
-        ASTThrowStatement t = getNodes(ASTThrowStatement.class, OK_NAME).iterator().next();
+        ASTThrowStatement t = java.getNodes(ASTThrowStatement.class, OK_NAME).get(0);
         assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
     }
 

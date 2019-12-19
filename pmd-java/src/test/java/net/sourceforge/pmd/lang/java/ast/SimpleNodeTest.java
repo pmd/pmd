@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -13,9 +11,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.jaxen.JaxenException;
 import org.junit.Ignore;
@@ -23,62 +19,55 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class SimpleNodeTest {
+public class SimpleNodeTest extends BaseParserTest {
 
     @Test
     public void testMethodDiffLines() {
-        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
+        List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
         verifyNode(methods.iterator().next(), 2, 9, 4, 2);
     }
 
     @Test
     public void testMethodSameLine() {
-        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
+        List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
         verifyNode(methods.iterator().next(), 2, 9, 2, 21);
     }
 
     @Test
     public void testNoLookahead() {
-        String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
-        Set<ASTClassOrInterfaceDeclaration> uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
+        List<ASTClassOrInterfaceDeclaration> uCD = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_LOOKAHEAD);
         verifyNode(uCD.iterator().next(), 1, 8, 1, 20);
     }
 
     @Test
     public void testHasExplicitExtends() {
-        String code = HAS_EXPLICIT_EXTENDS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     @Test
     public void testNoExplicitExtends() {
-        String code = NO_EXPLICIT_EXTENDS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_EXTENDS).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     @Test
     public void testHasExplicitImplements() {
-        String code = HAS_EXPLICIT_IMPLEMENTS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_IMPLEMENTS).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     @Test
     public void testNoExplicitImplements() {
-        String code = NO_EXPLICIT_IMPLEMENTS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_IMPLEMENTS).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     @Test
     public void testColumnsOnQualifiedName() {
-        Set<ASTName> name = getNodes(ASTName.class, QUALIFIED_NAME);
-        Iterator<ASTName> i = name.iterator();
-        while (i.hasNext()) {
-            Node node = i.next();
+        for (Node node : java.getNodes(ASTName.class, QUALIFIED_NAME)) {
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 8, 1, 19);
             }
@@ -87,10 +76,7 @@ public class SimpleNodeTest {
 
     @Test
     public void testLineNumbersForNameSplitOverTwoLines() {
-        Set<ASTName> name = getNodes(ASTName.class, BROKEN_LINE_IN_NAME);
-        Iterator<ASTName> i = name.iterator();
-        while (i.hasNext()) {
-            Node node = i.next();
+        for (Node node : java.getNodes(ASTName.class, BROKEN_LINE_IN_NAME)) {
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 8, 2, 4);
             }
@@ -102,13 +88,13 @@ public class SimpleNodeTest {
 
     @Test
     public void testLineNumbersAreSetOnAllSiblings() {
-        for (ASTBlock b : getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTBlock b : java.getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        for (ASTVariableInitializer b : getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTVariableInitializer b : java.getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        for (ASTExpression b : getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTExpression b : java.getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
     }
@@ -187,7 +173,7 @@ public class SimpleNodeTest {
 
     @Test
     public void testParentMethods() {
-        ASTCompilationUnit u = parseJava14(TEST1);
+        ASTCompilationUnit u = JavaParsingHelper.JUST_PARSE.parse(TEST1);
 
         ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
         assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(),
@@ -207,7 +193,7 @@ public class SimpleNodeTest {
     @Ignore
     @Test
     public void testContainsNoInner() {
-        ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
+        ASTCompilationUnit c = java.getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
         List<ASTFieldDeclaration> res = c.findDescendantsOfType(ASTFieldDeclaration.class);
         assertTrue(res.isEmpty());
         /*
@@ -251,21 +237,21 @@ public class SimpleNodeTest {
 
     @Test
     public void testContainsNoInnerWithAnonInner() {
-        ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
+        ASTCompilationUnit c = java.parse(CONTAINS_NO_INNER_WITH_ANON_INNER);
         List<ASTFieldDeclaration> res = c.findDescendantsOfType(ASTFieldDeclaration.class);
         assertTrue(res.isEmpty());
     }
 
     @Test
     public void testContainsChildOfType() {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE)
+        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE)
                 .iterator().next();
         assertTrue(c.hasDescendantOfType(ASTFieldDeclaration.class));
     }
 
     @Test
     public void testXPathNodeSelect() throws JaxenException {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
+        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
         List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
@@ -276,7 +262,7 @@ public class SimpleNodeTest {
 
     @Test
     public void testUserData() {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
+        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
                 .iterator().next();
         assertNull(c.getUserData());
         c.setUserData("foo");
