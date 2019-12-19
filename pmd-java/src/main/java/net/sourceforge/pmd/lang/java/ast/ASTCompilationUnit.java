@@ -51,6 +51,10 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     }
 
 
+    /**
+     * @deprecated Use {@code getPackageName().isEmpty()}
+     */
+    @Deprecated
     public boolean declarationsAreInDefaultPackage() {
         return getPackageDeclaration() == null;
     }
@@ -78,6 +82,16 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     public List<ASTAnyTypeDeclaration> getTypeDeclarations() {
         List<ASTTypeDeclaration> tds = findChildrenOfType(ASTTypeDeclaration.class);
         return tds.stream().map(it -> (ASTAnyTypeDeclaration) it.getFirstChild()).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the package name of this compilation unit. If this is in
+     * the default package, returns the empty string.
+     */
+    // @NonNull
+    public String getPackageName() {
+        ASTPackageDeclaration pdecl = getPackageDeclaration();
+        return pdecl == null ? "" : pdecl.getPackageNameImage();
     }
 
     @InternalApi

@@ -2,11 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.rule.security;
+package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Constructor and init method might contain DML, which constitutes a CSRF
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  */
 public class ApexCSRFRule extends AbstractApexRule {
     public static final String INIT = "init";
+    private static final String STATIC_INITIALIZER = "<clinit>";
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -35,24 +38,26 @@ public class ApexCSRFRule extends AbstractApexRule {
         return data;
     }
 
-    /**
-     * @param node
-     * @param data
-     */
-    private void checkForCSRF(ASTMethod node, Object data) {
-        if (node.isConstructor()) {
-            if (Helper.foundAnyDML(node)) {
-                addViolation(data, node);
-            }
+    @Override
+    public Object visit(ASTBlockStatement node, Object data) {
+        if (node.jjtGetParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
+            addViolation(data, node);
+        }
+        return data;
+    }
 
+    private void checkForCSRF(ASTMethod node, Object data) {
+        if (node.isConstructor() && Helper.foundAnyDML(node)) {
+            addViolation(data, node);
         }
 
         String name = node.getImage();
-        if (name.equalsIgnoreCase(INIT)) {
-            if (Helper.foundAnyDML(node)) {
-                addViolation(data, node);
-            }
+        if (isInitializerMethod(name) && Helper.foundAnyDML(node)) {
+            addViolation(data, node);
         }
+    }
 
+    private boolean isInitializerMethod(String name) {
+        return INIT.equalsIgnoreCase(name) || STATIC_INITIALIZER.equals(name);
     }
 }

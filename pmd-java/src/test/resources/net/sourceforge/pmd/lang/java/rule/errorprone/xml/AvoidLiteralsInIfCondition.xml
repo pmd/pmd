@@ -25,8 +25,7 @@ public class PrimitiveType {
     if(i==PRIMITIVE_TYPE) {
     }
   }
-}
-    ]]></code>
+}    ]]></code>
   </test-code>
   <test-code>
     <description>allow null literal</description>
@@ -47,7 +46,7 @@ public class MyClass {
 public class Foo {
     public void bar() {
         if( ( flags & Flag.IMPORTANT ) != 0 ) {}
-        if (aString.indexOf('.') != -1) {}     // magic number -1, by default ignored
+        if (aString.indexOf(DOT) != -1) {}     // magic number -1, by default ignored
     }
 }
     ]]></code>
@@ -71,7 +70,7 @@ public class Foo {
     <code><![CDATA[
 public class Foo {
     public void bar() {
-        if (true && aDouble > 0.0) {
+        if (true && aDouble > 0) {
         }
     }
 }
@@ -92,4 +91,43 @@ public class Foo {
     ]]></code>
   </test-code>
 
+  <test-code>
+    <description>#2140 [java] AvoidLiteralsInIfCondition: false negative for expressions</description>
+    <rule-property name="ignoreExpressions">false</rule-property>
+    <expected-problems>4</expected-problems>
+    <expected-linenumbers>3,3,4,5</expected-linenumbers>
+    <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        if (a > 3 + 5) {}
+        if (b == -5) {}
+        if (true && b == -5) {}
+        if (c == -1) {}
+    }
+}
+    ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>More tests with expressions (see #2150)</description>
+    <rule-property name="ignoreExpressions">false</rule-property>
+    <rule-property name="ignoreMagicNumbers">-1,0,1</rule-property>
+    <expected-problems>8</expected-problems>
+    <expected-linenumbers>4,7,7,8,9,10,11,11</expected-linenumbers>
+    <code><![CDATA[
+public class AvoidLiteralsInIfConditionWithExpressions {
+    public void test() {
+        if (1) {}    // ok, "1" is in ignoreMagicNumbers
+        if (1+1) {}  // not ok! multiple literals in expression
+        if (a+1) {}  // ok, single literal, whitelisted
+        if (bodyStart >= 0 && bodyStart != (currentToken.length() - 1)) {} // ok, single literal per expression, both whitelisted
+        if (1 * 5) {} // not ok - literal 5 and also a expression with two literals
+        if (a + 5) {} // not ok
+        if (i == a + 5) {} // not ok - literal 5
+        if (i == 1 + 5) {} // not ok - expression with two literals
+        if (s.equals("Prefix" + "Suffix")) {}
+    }
+}
+    ]]></code>
+  </test-code>
 </test-data>

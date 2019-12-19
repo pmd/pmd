@@ -66,6 +66,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
@@ -828,13 +829,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                if (currentChild.jjtGetLastToken().toString().equals("this")) {
         //
         //                    if (previousChild != null) { // Qualified 'this' expression
-        //                        setTypeDefinition(currentChild, previousChild.getTypeDefinition());
+        //                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
         //                    } else { // simple 'this' expression
         //                        ASTClassOrInterfaceDeclaration typeDeclaration
         //                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         //
         //                        if (typeDeclaration != null) {
-        //                            setTypeDefinition(currentChild, typeDeclaration.getTypeDefinition());
+        //                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
         //                        }
         //                    }
         //
@@ -845,14 +846,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                        // anonymous classes can't have qualified super expression, thus
         //                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
         //                        // looking for enclosing super types
-        //                        setTypeDefinition(currentChild,
+        //                        currentChild.setTypeDefinition(
         //                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
         //                    } else { // simple 'super' expression
-        //                        setTypeDefinition(currentChild, getSuperClassTypeDefinition(currentChild, null));
+        //                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
         //                    }
         //
         //                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
-        //                    setTypeDefinition(currentChild, previousChild.getTypeDefinition());
+        //                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
         //                } else if (previousChild != null && previousChild.getType() != null) {
         //                    String currentChildImage = currentChild.getImage();
         //                    if (currentChildImage == null) {
@@ -872,10 +873,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                                                                        currentChildImage,
         //                                                                        typeArguments, methodArgsArity, accessingClass);
         //
-        //                        setTypeDefinition(currentChild, getBestMethodReturnType(previousChild.getTypeDefinition(),
+        //                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
         //                                                                               methods, astArgumentList));
         //                    } else { // field
-        //                        setTypeDefinition(currentChild, getFieldType(previousChild.getTypeDefinition(),
+        //                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
         //                                                                    currentChildImage, accessingClass));
         //                    }
         //                }
@@ -883,9 +884,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //
         //
         //            if (currentChild.getType() != null) {
-        //                // rollup type from the child: PrimaryPrefix -> PrimaryExpression
-        //                primaryNodeType = currentChild.getTypeDefinition();
-        //                
+        //                // rollup type from the child: PrimaryPrefix/PrimarySuffx -> PrimaryExpression
+        //                if (primaryNodeType == null || !primaryNodeType.isArrayType()) {
+        //                    primaryNodeType = currentChild.getTypeDefinition();
+        //                }
+        //
         //                // if this expression is a method call, then make sure, PrimaryPrefix has the type
         //                // on which the method is executed (type of the target reference)
         //                if (currentChild.getFirstChildOfType(ASTArguments.class) != null && previousChild.getFirstChildOfType(ASTName.class) != null) {
@@ -901,6 +904,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                        name.setTypeDefinition(primaryNodeType);
         //                    }
         //                }
+        //
+        //                // maybe array access?
+        //                if (primaryNodeType != null && primaryNodeType.isArrayType()) {
+        //                    if (currentChild instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) currentChild).isArrayDereference()) {
+        //                        primaryNodeType = JavaTypeDefinition.forClass(primaryNodeType.getType().getComponentType());
+        //                    }
+        //                }
         //            } else {
         //                // avoid falsely passing tests
         //                primaryNodeType = null;
@@ -910,7 +920,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //            previousChild = currentChild;
         //        }
         //
-        //        setTypeDefinition(primaryNode, primaryNodeType);
+        //        primaryNode.setTypeDefinition(primaryNodeType);
         //
         //        return data;
     }
@@ -1446,11 +1456,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
 
-        if (node.declarationsAreInDefaultPackage()) {
-            return classDecl.getImage();
+        if (node.getPackageName().isEmpty()) {
+            return classDecl.getSimpleName();
         }
-        importedOnDemand.add(node.getPackageDeclaration().getPackageNameImage());
-        return classDecl.getQualifiedName().toString();
+        importedOnDemand.add(node.getPackageName());
+        return classDecl.getBinaryName();
     }
 
     /**

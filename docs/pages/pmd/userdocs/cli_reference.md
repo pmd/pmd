@@ -185,6 +185,7 @@ Example:
     *   Supported Versions: 1.3, 1.4, 1.5, 5, 1.6, 6, 1.7, 7, 1.8, 8, 9, 1.9, 10, 1.10, 11, 12, 13 (default), 13-preview
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
+*   [modelica](pmd_rules_modelica.html)
 *   [plsql](pmd_rules_plsql.html)
 *   [scala](pmd_rules_scala.html)
     *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)

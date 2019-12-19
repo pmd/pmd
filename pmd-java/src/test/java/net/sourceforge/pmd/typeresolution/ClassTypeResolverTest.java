@@ -81,6 +81,7 @@ import net.sourceforge.pmd.typeresolution.testdata.AbstractReturnTypeUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayAccess;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayVariableDeclaration;
@@ -776,6 +777,22 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+    @Test
+    public void testArrayAccess() throws JaxenException {
+        List<ASTExpression> expressions = selectNodes(ArrayAccess.class, ASTExpression.class, "//VariableInitializer/Expression");
+
+        int index = 1;
+        // int aElement = a[0];
+        assertEquals(int.class, expressions.get(index).getType());
+
+        index += 2;
+        // Object bElement = b[0][0];
+        assertEquals(Object.class, expressions.get(index).getType());
+
+        index += 3;
+        // ArrayAccess cElement = c[0][0][0];
+        assertEquals(ArrayAccess.class, expressions.get(index).getType());
+    }
 
     @Test
     public void testReferenceType() {

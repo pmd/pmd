@@ -41,7 +41,9 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
  * 
  * @author sergey.gorbaty
  *
+ * @deprecated Use {@link net.sourceforge.pmd.lang.apex.rule.internal.Helper} instead.
  */
+@Deprecated
 public final class Helper {
     static final String ANY_METHOD = "*";
 

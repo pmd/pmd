@@ -23,7 +23,8 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
     public static Iterable<String> languagesToTest() {
         // note: scala and wsdl have no rules
         // note: Java rules have not been updated yet
-        return Arrays.asList(/*"java",*/ "apex", "javascript", "jsp", "plsql", "pom", "visualforce", "velocitytemplate", "xml", "xsl");
+        return Arrays.asList(/*"java",*/ "apex", "javascript", "jsp", "modelica",
+                "plsql", "pom", "visualforce", "velocitytemplate", "xml", "xsl");
     }
 
     @Test
@@ -45,7 +46,7 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
         result.assertNoErrorInReport("Error while processing");
         result.assertNoErrorInReport("Error while parsing");
 
-        // See bug #2092: [apex] ApexLexer logs visible when Apex is the selected language upon starting the designer 
+        // See bug #2092: [apex] ApexLexer logs visible when Apex is the selected language upon starting the designer
         result.assertNoError("Deduped array ApexLexer");
     }
 }
