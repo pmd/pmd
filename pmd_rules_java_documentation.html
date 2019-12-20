@@ -1391,7 +1391,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Denotes whether comments are required (or unwanted) for specific language elements.</p>
+<p>Denotes whether javadoc (formal) comments are required (or unwanted) for specific language elements.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/documentation/CommentRequiredRule.java">net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule</a></p>
 
@@ -1429,9 +1429,15 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <td>no</td>
     </tr>
     <tr>
+      <td>classCommentRequirement</td>
+      <td>Required</td>
+      <td>Class comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>no</td>
+    </tr>
+    <tr>
       <td>headerCommentRequirement</td>
       <td>Required</td>
-      <td>Header comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Header comments. Please use the property "classCommentRequired" instead.. Possible values: [Required, Ignored, Unwanted]</td>
       <td>no</td>
     </tr>
     <tr>
@@ -1482,7 +1488,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"methodWithOverrideCommentRequirement"</span> <span class="na">value=</span><span class="s">"Ignored"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"accessorCommentRequirement"</span> <span class="na">value=</span><span class="s">"Ignored"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"headerCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"classCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"fieldCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"publicMethodCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"protectedMethodCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
@@ -1661,7 +1667,7 @@ empty methods.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 19, 2019 <br />
+ Site last generated: Dec 20, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
