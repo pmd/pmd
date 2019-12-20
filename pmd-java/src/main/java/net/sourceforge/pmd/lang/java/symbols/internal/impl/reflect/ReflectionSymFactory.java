@@ -29,12 +29,8 @@ public final class ReflectionSymFactory implements SymbolFactory<Class<?>> {
      * Lazy initialized to avoid class init cycle, because
      * {@link SymbolFactory} creates reflected symbols.
      */
-    private static volatile Map<Class<?>, JClassSymbol> COMMON_SYMBOLS;
+    private static Map<Class<?>, JClassSymbol> commonSymbols;
 
-
-    public ReflectionSymFactory() {
-
-    }
 
     @Override
     @Nullable
@@ -62,14 +58,14 @@ public final class ReflectionSymFactory implements SymbolFactory<Class<?>> {
         return createOuterClass(this, klass);
     }
 
-    private Map<Class<?>, JClassSymbol> getCommonSyms() {
-        Map<Class<?>, JClassSymbol> shared = COMMON_SYMBOLS;
+    private static Map<Class<?>, JClassSymbol> getCommonSyms() {
+        Map<Class<?>, JClassSymbol> shared = commonSymbols;
         if (shared == null) {
             synchronized (ReflectionSymFactory.class) {
-                shared = COMMON_SYMBOLS;
+                shared = commonSymbols;
                 if (shared == null) {
                     shared = initCommonSyms();
-                    COMMON_SYMBOLS = shared;
+                    commonSymbols = shared;
                 }
             }
         }
@@ -83,8 +79,7 @@ public final class ReflectionSymFactory implements SymbolFactory<Class<?>> {
     }
 
 
-
-    private Map<Class<?>, JClassSymbol> initCommonSyms() {
+    private static Map<Class<?>, JClassSymbol> initCommonSyms() {
         // consider putting whole java.lang + java.util in there ?
 
         Map<Class<?>, JClassSymbol> specials = new HashMap<>();

@@ -30,7 +30,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
     private final JTypeDeclSymbol component;
 
-    ArraySymbolImpl(SymbolFactory<?> factory, JTypeDeclSymbol component) {
+    ArraySymbolImpl(@SuppressWarnings("PMD.UnusedFormalParameter") SymbolFactory<?> factory, JTypeDeclSymbol component) {
         this.component = Objects.requireNonNull(component, "Array symbol requires component");
         if (component instanceof JClassSymbol && ((JClassSymbol) component).isAnonymousClass()) {
             throw new IllegalArgumentException("Anonymous classes cannot be array components: " + component);
@@ -207,7 +207,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
         private final JClassSymbol arraySymbol;
 
-        public ArrayLengthField(JClassSymbol arraySymbol) {
+        ArrayLengthField(JClassSymbol arraySymbol) {
             this.arraySymbol = arraySymbol;
         }
 
@@ -253,7 +253,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
         private final ArraySymbolImpl arraySymbol;
 
-        public ArrayCloneMethod(ArraySymbolImpl arraySymbol) {
+        ArrayCloneMethod(ArraySymbolImpl arraySymbol) {
             this.arraySymbol = arraySymbol;
         }
 
@@ -314,7 +314,9 @@ class ArraySymbolImpl implements JClassSymbol {
 
         private final ArraySymbolImpl arraySymbol;
 
-        public ArrayConstructor(ArraySymbolImpl arraySymbol) {this.arraySymbol = arraySymbol;}
+        ArrayConstructor(ArraySymbolImpl arraySymbol) {
+            this.arraySymbol = arraySymbol;
+        }
 
         @Override
         public List<JFormalParamSymbol> getFormalParameters() {

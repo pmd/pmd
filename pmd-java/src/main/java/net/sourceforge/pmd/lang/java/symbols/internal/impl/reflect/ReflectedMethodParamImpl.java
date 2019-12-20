@@ -17,7 +17,7 @@ final class ReflectedMethodParamImpl extends AbstractReflectedSymbol implements 
     private final Parameter reflected;
 
     /** Constructor for a reflected method or constructor parameter. */
-    public ReflectedMethodParamImpl(AbstractReflectedExecutableSymbol<?> owner, Parameter reflected) {
+    ReflectedMethodParamImpl(AbstractReflectedExecutableSymbol<?> owner, Parameter reflected) {
         super(owner.symFactory);
         this.owner = owner;
         this.reflected = reflected;

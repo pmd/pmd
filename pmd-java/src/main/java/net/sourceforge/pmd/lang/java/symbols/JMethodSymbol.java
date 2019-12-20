@@ -22,7 +22,7 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
     default boolean isDefault() {
         // Default methods are public non-abstract instance methods
         // declared in an interface.
-        return ((getModifiers() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
+        return (getModifiers() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC
             && getEnclosingClass().isInterface();
     }
 

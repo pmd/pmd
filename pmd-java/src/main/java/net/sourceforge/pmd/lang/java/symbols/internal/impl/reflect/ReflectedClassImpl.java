@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 
-class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implements JClassSymbol {
+final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implements JClassSymbol {
 
     private final Class<?> myClass;
     private final @Nullable JClassSymbol enclosing;
@@ -52,8 +52,8 @@ class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implemen
         assert !myClass.isArray() : "This class cannot represent array types";
 
         assert enclosing == null && myClass.getEnclosingClass() == null
-            || (myClass.getEnclosingClass() != null && enclosing != null
-            && myClass.getEnclosingClass().getName().equals(enclosing.getBinaryName()))
+            || myClass.getEnclosingClass() != null && enclosing != null
+            && myClass.getEnclosingClass().getName().equals(enclosing.getBinaryName())
             : "Wrong enclosing class " + enclosing + ", expecting " + myClass.getEnclosingClass();
     }
 
