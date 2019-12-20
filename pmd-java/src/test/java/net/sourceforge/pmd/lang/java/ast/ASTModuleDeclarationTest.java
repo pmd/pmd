@@ -16,7 +16,7 @@ public class ASTModuleDeclarationTest extends BaseParserTest {
 
     @Test
     public final void jdk9ModuleInfo() {
-        ASTCompilationUnit ast = java9.parseResource("jdk9_module_info.java");
+        ASTCompilationUnit ast = java9.parseResource("jdkversiontests/jdk9_module_info.java");
         List<ASTModuleDeclaration> modules = ast.findDescendantsOfType(ASTModuleDeclaration.class);
         assertEquals(1, modules.size());
         ASTModuleDeclaration module = modules.get(0);
