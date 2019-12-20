@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -32,10 +34,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @author Brian Remedios
  */
 public class CommentRequiredRule extends AbstractCommentRule {
+    private static final Logger LOG = Logger.getLogger(CommentRequiredRule.class.getName());
 
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
-
 
     private static final PropertyDescriptor<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
         = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters\"")
@@ -44,7 +46,9 @@ public class CommentRequiredRule extends AbstractCommentRule {
         = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
         .defaultValue(CommentRequirement.Ignored).build();
     private static final PropertyDescriptor<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("headerCommentRequirement", "Header comments").build();
+        = requirementPropertyBuilder("headerCommentRequirement", "Deprecated! Header comments. Please use the property \"classCommentRequired\" instead.").build();
+    private static final PropertyDescriptor<CommentRequirement> CLASS_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("classCommentRequirement", "Class comments").build();
     private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("fieldCommentRequirement", "Field comments").build();
     private static final PropertyDescriptor<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
@@ -60,10 +64,13 @@ public class CommentRequiredRule extends AbstractCommentRule {
         = requirementPropertyBuilder("serialPersistentFieldsCommentRequired", "Serial persistent fields comments")
         .defaultValue(CommentRequirement.Ignored).build();
 
+    /** stores the resolved property values. This is necessary in order to transparently use deprecated properties. */
+    private final Map<PropertyDescriptor<CommentRequirement>, CommentRequirement> propertyValues = new HashMap<>();
 
     public CommentRequiredRule() {
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
+        definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -73,10 +80,37 @@ public class CommentRequiredRule extends AbstractCommentRule {
         definePropertyDescriptor(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
     }
 
+    @Override
+    public void start(RuleContext ctx) {
+        propertyValues.put(ACCESSOR_CMT_DESCRIPTOR, getProperty(ACCESSOR_CMT_DESCRIPTOR));
+        propertyValues.put(OVERRIDE_CMT_DESCRIPTOR, getProperty(OVERRIDE_CMT_DESCRIPTOR));
+        propertyValues.put(FIELD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR));
+        propertyValues.put(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
+        propertyValues.put(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
+        propertyValues.put(ENUM_CMT_REQUIREMENT_DESCRIPTOR, getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR));
+        propertyValues.put(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR,
+                getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR));
+        propertyValues.put(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR,
+                getProperty(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR));
+
+        CommentRequirement headerCommentRequirementValue = getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
+        boolean headerCommentRequirementValueOverridden = headerCommentRequirementValue != CommentRequirement.Required;
+        CommentRequirement classCommentRequirementValue = getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
+        boolean classCommentRequirementValueOverridden = classCommentRequirementValue != CommentRequirement.Required;
+
+        if (headerCommentRequirementValueOverridden && !classCommentRequirementValueOverridden) {
+            LOG.warning("Rule CommentRequired uses deprecated property 'headerCommentRequirement'. "
+                    + "Future versions of PMD will remove support for this property. "
+                    + "Please use 'classCommentRequirement' instead!");
+            propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, headerCommentRequirementValue);
+        } else {
+            propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, classCommentRequirementValue);
+        }
+    }
 
     private void checkCommentMeetsRequirement(Object data, AbstractJavaNode node,
                                               PropertyDescriptor<CommentRequirement> descriptor) {
-        switch (getProperty(descriptor)) {
+        switch (propertyValues.get(descriptor)) {
         case Ignored:
             break;
         case Required:
@@ -109,7 +143,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, HEADER_CMT_REQUIREMENT_DESCRIPTOR);
+        checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
         return super.visit(decl, data);
     }
 
@@ -181,9 +215,9 @@ public class CommentRequiredRule extends AbstractCommentRule {
      * This field must be initialized with an array of ObjectStreamField objects.
      * The modifiers for the field are required to be private, static, and final.
      *
-     * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
      * @param field the field, must not be null
-     * @return true if the field ia a serialPersistentFields variable, otherwise false
+     * @return true if the field is a serialPersistentFields variable, otherwise false
+     * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
      */
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
         return "serialPersistentFields".equals(field.getVariableName())
@@ -200,7 +234,6 @@ public class CommentRequiredRule extends AbstractCommentRule {
         return super.visit(decl, data);
     }
 
-
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
         assignCommentsToDeclarations(cUnit);
@@ -211,7 +244,8 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
         return getProperty(OVERRIDE_CMT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(ACCESSOR_CMT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && (getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                        || getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored)
                 && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
