@@ -30,8 +30,11 @@ class ArraySymbolImpl implements JClassSymbol {
 
     private final JTypeDeclSymbol component;
 
-    public ArraySymbolImpl(SymbolFactory<?> factory, JTypeDeclSymbol component) {
-        this.component = component;
+    ArraySymbolImpl(SymbolFactory<?> factory, JTypeDeclSymbol component) {
+        this.component = Objects.requireNonNull(component, "Array symbol requires component");
+        if (component instanceof JClassSymbol && ((JClassSymbol) component).isAnonymousClass()) {
+            throw new IllegalArgumentException("Anonymous classes cannot be array components: " + component);
+        }
     }
 
     @Override
@@ -122,11 +125,6 @@ class ArraySymbolImpl implements JClassSymbol {
     }
 
     @Override
-    public boolean isAnnotation() {
-        return false;
-    }
-
-    @Override
     public List<JClassSymbol> getDeclaredClasses() {
         return Collections.emptyList();
     }
@@ -168,6 +166,11 @@ class ArraySymbolImpl implements JClassSymbol {
     @Override
     public boolean isArray() {
         return true;
+    }
+
+    @Override
+    public boolean isAnnotation() {
+        return false;
     }
 
     @Override
@@ -216,6 +219,11 @@ class ArraySymbolImpl implements JClassSymbol {
         @Override
         public int getModifiers() {
             return Modifier.PUBLIC | Modifier.FINAL;
+        }
+
+        @Override
+        public boolean isEnumConstant() {
+            return false;
         }
 
         @Override

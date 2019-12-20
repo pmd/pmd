@@ -18,6 +18,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public interface JFieldSymbol extends JAccessibleElementSymbol, JValueSymbol {
 
 
+    /** Returns true if this field is an enum constant. */
+    boolean isEnumConstant();
+
+
     @Override
     default boolean isFinal() {
         return Modifier.isFinal(getModifiers());

@@ -19,22 +19,22 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 
 /**
- * Builds symbols.
- *
- * <p>This may be improved later to eg cache and reuse the most recently
- * accessed symbols (there may be a lot of cache hits in a typical java file).
+ * Symbol factory building type symbols from {@link Class} instances.
+ * Reflected symbol implementations carry an instance of this around,
+ * so as to allow caching recently accessed symbols later on.
  */
 public final class ReflectionSymFactory implements SymbolFactory<Class<?>> {
 
+    /**
+     * Lazy initialized to avoid class init cycle, because
+     * {@link SymbolFactory} creates reflected symbols.
+     */
     private static volatile Map<Class<?>, JClassSymbol> COMMON_SYMBOLS;
-
 
 
     public ReflectionSymFactory() {
 
     }
-
-
 
     @Override
     @Nullable

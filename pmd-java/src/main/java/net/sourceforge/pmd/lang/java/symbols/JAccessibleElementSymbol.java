@@ -20,6 +20,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface JAccessibleElementSymbol extends JElementSymbol {
 
     /**
+     * Conventional return value of {@link #getPackageName()} for
+     * primitive types.
+     */
+    String PRIMITIVE_PACKAGE = "java.lang";
+
+
+    /**
      * Returns the modifiers of the element represented by this symbol,
      * as decodable by the standard {@link Modifier} API.
      */
@@ -40,6 +47,14 @@ public interface JAccessibleElementSymbol extends JElementSymbol {
     JClassSymbol getEnclosingClass();
 
 
+    /**
+     * Returns the name of the package this element is declared in. This
+     * recurses into the enclosing elements if needed. If this is an array
+     * symbol, returns the package name of the element symbol. If this is
+     * a primitive type, returns {@value #PRIMITIVE_PACKAGE}.
+     *
+     * <p>This is consistent with Java 9's {@code getPackageName()}.
+     */
     @NonNull
     String getPackageName();
 }

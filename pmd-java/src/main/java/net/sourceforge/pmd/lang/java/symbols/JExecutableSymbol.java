@@ -19,9 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParameterOwnerSymbol {
 
 
-    /**
-     * Returns the list of formal parameter symbols.
-     */
+    /** Returns the formal parameters this executable declares. */
     List<JFormalParamSymbol> getFormalParameters();
 
 

@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 import java.lang.reflect.Method;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
@@ -17,12 +15,6 @@ class ReflectedMethodImpl extends AbstractReflectedExecutableSymbol<Method> impl
 
     ReflectedMethodImpl(@NonNull ReflectedClassImpl owner, Method method) {
         super(owner, method);
-    }
-
-    @Nullable
-    @Override
-    public ASTMethodDeclaration getDeclaration() {
-        return null;
     }
 
 

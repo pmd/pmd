@@ -5,8 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -21,9 +19,4 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 interface BoundToNode<N extends Node> extends JElementSymbol {
 
-    @Override
-    @Nullable
-    default N getDeclaration() {
-        return null;
-    }
 }

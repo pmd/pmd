@@ -13,7 +13,6 @@ import org.apache.commons.lang3.ClassUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -81,7 +80,8 @@ class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implemen
 
     @Override
     public @NonNull String getPackageName() {
-        return myClass.isPrimitive() ? "java.lang" : ClassUtils.getPackageName(myClass);
+        return myClass.isPrimitive() ? PRIMITIVE_PACKAGE
+                                     : ClassUtils.getPackageName(myClass);
     }
 
     @Override
@@ -152,12 +152,6 @@ class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implemen
     @Override
     public boolean isArray() {
         return false;
-    }
-
-    @Nullable
-    @Override
-    public ASTAnyTypeDeclaration getDeclaration() {
-        return null;
     }
 
     @Override

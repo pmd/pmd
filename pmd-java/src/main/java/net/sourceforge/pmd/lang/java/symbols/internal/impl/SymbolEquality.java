@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
  *
  * <p>Despite this two equal symbols may not hold the same amount of
  * information... Reflection symbols are nice, but they also add some
- * synthetic stuff, which we must either filter-out or replicate
- * in AST symbols.
+ * synthetic stuff (eg implicit formal parameters, bridge methods),
+ * which we must either filter-out or replicate in AST symbols. This is TODO
  */
 public final class SymbolEquality {
 

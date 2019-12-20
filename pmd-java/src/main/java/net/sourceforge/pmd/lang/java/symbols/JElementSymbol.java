@@ -5,11 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
@@ -20,7 +17,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  *
  * <p>This type hierarchy is probably not directly relevant to users writing
  * rules. It's mostly intended to unify the representation of type resolution
- * and symbol analysis. At least for now it's internal.
+ * and symbol analysis.
  *
  * <p>SymbolDeclarations have no reference to the scope they were found in, because
  * that would tie the code reference to the analysed file, preventing the garbage
@@ -50,18 +47,6 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 public interface JElementSymbol {
 
 
-
-    /**
-     * Returns the node declaring this program element, if it is available.
-     * If the element was declared outside of the analysed sources (considering
-     * incremental analysis), its AST is not available.
-     *
-     * @return the AST node representing the declaration, or null
-     */
-    @Nullable
-    Node getDeclaration();
-
-
     /**
      * Gets the name with which this declaration may be referred to,
      * eg the name of the method, or the simple name of the class.
@@ -79,7 +64,8 @@ public interface JElementSymbol {
      * with this contract.
      *
      * <p>Symbols should only be compared using this method, never with {@code ==},
-     * because their unicity is not guaranteed (even for those declared in {@link SymbolFactory}.
+     * because their unicity is not guaranteed (even for the static ones
+     * declared in {@link SymbolFactory}).
      *
      * @param o Comparand
      *

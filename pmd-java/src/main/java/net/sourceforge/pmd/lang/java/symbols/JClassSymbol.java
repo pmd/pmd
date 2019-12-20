@@ -18,7 +18,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 
 /**
  * Abstraction over a {@link Class} instance. This is not a type, it's
- * the *declaration* of a type.
+ * the *declaration* of a type. For example, a class symbol representing
+ * a generic class can provide access to the formal type parameters, but
+ * the symbol does not represent a specific parametrization of a type.
+ *
+ * <p>Class symbols represent the full range of types represented by {@link Class}:
+ * classes, interfaces, arrays, and primitives. This precludes type variables,
+ * and intersection types.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -49,6 +55,27 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Returns true if this class is a symbolic reference to an unresolved
      * class. In that case no information about the symbol are known except
      * its name, and the accessors of this class return default values.
+     *
+     * <p>This kind of symbol is introduced to allow for some best-effort
+     * symbolic resolution. For example in:
+     * <pre>{@code
+     * import org.Bar;
+     *
+     * Bar foo = new Bar();
+     * }</pre>
+     * and supposing {@code org.Bar} is not on the classpath. The type
+     * of {@code foo} is {@code Bar}, which we can qualify to {@code org.Bar} thanks to the
+     * import (via symbol tables, and without even querying the classpath).
+     * Even though we don't know what members {@code org.Bar} has, a
+     * test for {@code typeIs("org.Bar")} would succeed with certainty,
+     * so it makes sense to preserve the name information and not give
+     * up too early.
+     *
+     * <p>Note that unresolved types are always created from an unresolved
+     * <i>canonical name</i>, so they can't be just <i>any</i> type. For example,
+     * they can't be array types, nor local classes (since those are lexically
+     * scoped, so always resolvable), nor anonymous classes (can only be referenced
+     * on their declaration site), etc.
      */
     boolean isUnresolved();
 

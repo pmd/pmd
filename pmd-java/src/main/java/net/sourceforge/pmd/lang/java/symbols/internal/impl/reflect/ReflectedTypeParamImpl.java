@@ -9,7 +9,6 @@ import java.lang.reflect.TypeVariable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
@@ -37,12 +36,6 @@ class ReflectedTypeParamImpl implements JTypeParameterSymbol {
     @Override
     public JTypeParameterOwnerSymbol getDeclaringSymbol() {
         return ownerSymbol;
-    }
-
-    @Nullable
-    @Override
-    public ASTTypeParameter getDeclaration() {
-        return null;
     }
 
     @NonNull

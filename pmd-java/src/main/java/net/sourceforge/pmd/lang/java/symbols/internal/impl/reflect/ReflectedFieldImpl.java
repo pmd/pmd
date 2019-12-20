@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 import java.lang.reflect.Field;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
@@ -24,15 +22,14 @@ class ReflectedFieldImpl extends AbstractReflectedSymbol implements JFieldSymbol
         this.myField = myField;
     }
 
-    @Nullable
-    @Override
-    public ASTVariableDeclaratorId getDeclaration() {
-        return null;
-    }
-
     @Override
     public String getSimpleName() {
         return myField.getName();
+    }
+
+    @Override
+    public boolean isEnumConstant() {
+        return myField.isEnumConstant();
     }
 
     @NonNull

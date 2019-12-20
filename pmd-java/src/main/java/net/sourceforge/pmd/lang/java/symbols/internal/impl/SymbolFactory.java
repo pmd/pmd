@@ -13,6 +13,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
@@ -22,6 +23,9 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInt
  *
  * <p>This may be improved later to eg cache and reuse the most recently
  * accessed symbols (there may be a lot of cache hits in a typical java file).
+ *
+ * @param <T> Type of stuff this factory can convert to symbols. We'll
+ *            implement it for {@link Class} and {@link ASTAnyTypeDeclaration}.
  */
 public interface SymbolFactory<T> {
 
@@ -65,17 +69,30 @@ public interface SymbolFactory<T> {
     JClassSymbol STRING_SYM = ReflectSymInternals.createSharedSym(String.class);
 
 
-    default JTypeDeclSymbol fakeSymbol(String name) {
-        return new FakeTypeSymbol(name);
-    }
-
-
+    /**
+     * Produces an unresolved class symbol from the given canonical name.
+     *
+     * @param canonicalName Canonical name of the returned symbol
+     *
+     * @throws NullPointerException     If the name is null
+     * @throws IllegalArgumentException If the name is empty
+     */
     @NonNull
     default JClassSymbol makeUnresolvedReference(String canonicalName) {
         return new UnresolvedClassImpl(canonicalName);
     }
 
 
+    /**
+     * Produces an array symbol from the given component symbol (one dimension).
+     * The component can naturally be another array symbol, but cannot be an
+     * anonymous class.
+     *
+     * @param component Component symbol of the array
+     *
+     * @throws NullPointerException     If the component is null
+     * @throws IllegalArgumentException If the component is the symbol for an anonymous class
+     */
     @NonNull
     default JClassSymbol makeArraySymbol(JTypeDeclSymbol component) {
         return new ArraySymbolImpl(this, component);
@@ -85,6 +102,8 @@ public interface SymbolFactory<T> {
     /**
      * Returns the symbol representing the given class. Returns null if
      * the given class is itself null.
+     *
+     * @param klass Object representing a class
      */
     JClassSymbol getClassSymbol(@Nullable T klass);
 

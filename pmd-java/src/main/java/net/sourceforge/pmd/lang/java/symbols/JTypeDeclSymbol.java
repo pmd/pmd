@@ -25,8 +25,11 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
 
     /**
      * Returns the reflected class this node represents, if it's on the auxclasspath.
-     * Ideally this shouldn't be used, and the symbol API should reflect everything
-     * there is to know about a class.
+     * There's no guarantee that this is even exists (this symbol may be notional).
+     *
+     * <p>This is provided to optimize some stuff, but ideally the symbol
+     * API should reflect everything there is to know about classes,
+     * and this method shouldn't be used.
      */
     @Nullable
     Class<?> getJvmRepr();

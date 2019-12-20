@@ -60,9 +60,6 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         this.levelChecker = new LanguageLevelChecker<>(jdkVersion, preview, ReportingStrategy.reporterThatThrows());
     }
 
-    public int getJdkVersion() {
-        return levelChecker.getJdkVersion();
-    }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {

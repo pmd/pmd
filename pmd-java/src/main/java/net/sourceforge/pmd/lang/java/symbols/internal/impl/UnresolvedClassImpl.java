@@ -12,7 +12,6 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -22,9 +21,9 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 
 /**
- * Unresolved external reference to a class. An inner/local class that
- * cannot be resolved uses the AST implementation. This symbol is here
- * for those external references that we cannot resolve.
+ * Unresolved <i>external reference</i> to a class.
+ *
+ * @see JClassSymbol#isUnresolved()
  */
 class UnresolvedClassImpl implements JClassSymbol {
 
@@ -138,12 +137,6 @@ class UnresolvedClassImpl implements JClassSymbol {
     @Override
     public boolean isArray() {
         return false;
-    }
-
-    @Nullable
-    @Override
-    public ASTAnyTypeDeclaration getDeclaration() {
-        return null;
     }
 
     @Override
