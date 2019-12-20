@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -147,6 +148,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     String kindDisplayName(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
-        return isUtilityClass(node) ? "utility class" : node.getTypeKind().getPrintableName();
+        return isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.kindName(node);
     }
 }

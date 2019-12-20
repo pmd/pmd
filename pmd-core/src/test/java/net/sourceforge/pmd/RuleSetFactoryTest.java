@@ -350,6 +350,42 @@ public class RuleSetFactoryTest {
                     "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is mispelled or the rule doesn't exist anymore?"));
     }
 
+    /**
+     * When a custom ruleset references a ruleset that only contains deprecated rules, then this ruleset itself is
+     * considered deprecated and the user should get a deprecation warning for the ruleset.
+     */
+    @Test
+    public void testRuleSetReferencesDeprecatedRuleset() throws Exception {
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule ref=\"rulesets/dummy/deprecated.xml\" />" + "</ruleset>");
+        assertEquals(2, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(rs.getRuleByName("SampleXPathRule"));
+
+        assertEquals(1,
+                StringUtils.countMatches(logging.getLog(),
+                    "WARNING: The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"));
+    }
+
+    /**
+     * When a custom ruleset references a ruleset that contains both rules and rule references, that are left
+     * for backwards compatibility, because the rules have been moved to a different ruleset, then there should be
+     * no warning about deprecation - since the deprecated rules are not used.
+     */
+    @Test
+    public void testRuleSetReferencesRulesetWithAMovedRule() throws Exception {
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule ref=\"rulesets/dummy/basic2.xml\" />" + "</ruleset>");
+        assertEquals(1, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("DummyBasic2MockRule"));
+
+        assertEquals(0,
+                StringUtils.countMatches(logging.getLog(),
+                    "WARNING: Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule. PMD"));
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testXPath() throws RuleSetNotFoundException {

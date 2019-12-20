@@ -808,7 +808,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//CompilationUnit[count(ImportDeclaration) = 0 or count(ImportDeclaration/Name[@Image='java.util.Vector']) > 0]
+//CompilationUnit[count(ImportDeclaration) = 0 or count(ImportDeclaration[@ImportedName='java.util.Vector']) > 0]
   //AllocationExpression/ClassOrInterfaceType
     [@Image='Vector' or @Image='java.util.Vector']
 ]]>

@@ -33,6 +33,16 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode imp
             || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
+    @Override
+    @Deprecated
+    public String getImage() {
+        return super.getImage();
+    }
+
+    @Override
+    public String getBinaryName() {
+        return getQualifiedName().getBinaryName();
+    }
 
     /**
      * Returns true if the enclosing type of this type declaration

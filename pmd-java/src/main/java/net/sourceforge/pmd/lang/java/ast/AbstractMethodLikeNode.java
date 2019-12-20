@@ -27,6 +27,7 @@ abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements 
 
 
     @Override
+    @Deprecated
     public JavaOperationQualifiedName getQualifiedName() {
         return qualifiedName;
     }
