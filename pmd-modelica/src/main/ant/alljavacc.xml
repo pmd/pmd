@@ -44,7 +44,7 @@
 
         <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ModelicaParserTokenManager.java"
                  token="class ModelicaParserTokenManager"
-                 value="class ModelicaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class ModelicaParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/modelica/ast/ModelicaParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />
