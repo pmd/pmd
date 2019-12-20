@@ -7,6 +7,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
 import java.io.File
 import java.io.IOException
@@ -60,6 +61,7 @@ object TestClassesGen : Gen<Class<*>> {
                     java.lang.Object::class.java,
                     IntArray::class.java,
                     Cloneable::class.java,
+                    Integer.TYPE,
                     Array<String>::class.java) +
                     getClassesInPackage(javaClass.`package`.name + ".internal.testdata").asSequence()
 
@@ -105,4 +107,21 @@ object TestClassesGen : Gen<Class<*>> {
         }
         return result
     }
+}
+
+/** Generator of test instances. */
+object PrimitiveSymGen : Gen<JClassSymbol> {
+    override fun constants() = listOf(
+            SymbolFactory.INT_SYM,
+            SymbolFactory.DOUBLE_SYM,
+            SymbolFactory.FLOAT_SYM,
+            SymbolFactory.VOID_SYM,
+            SymbolFactory.CHAR_SYM,
+            SymbolFactory.BYTE_SYM,
+            SymbolFactory.SHORT_SYM,
+            SymbolFactory.LONG_SYM,
+            SymbolFactory.BOOLEAN_SYM
+    )
+
+    override fun random() = emptySequence<JClassSymbol>()
 }

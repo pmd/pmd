@@ -23,8 +23,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
  * the symbol does not represent a specific parametrization of a type.
  *
  * <p>Class symbols represent the full range of types represented by {@link Class}:
- * classes, interfaces, arrays, and primitives. This precludes type variables,
- * and intersection types.
+ * classes, interfaces, arrays, and primitives. This excludes type variables,
+ * intersection types, parameterized types, wildcard types, etc., which are only
+ * compile-time constructs.
  *
  * @author Clément Fournier
  * @since 7.0.0
