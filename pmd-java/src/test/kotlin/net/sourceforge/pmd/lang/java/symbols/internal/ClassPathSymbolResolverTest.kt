@@ -8,6 +8,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.impls.GenericClass
 import javasymbols.testdata.impls.SomeInnerClasses
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
 import net.sourceforge.pmd.lang.java.symbols.testSymFactory
@@ -18,25 +19,32 @@ import net.sourceforge.pmd.lang.java.symbols.testSymFactory
 class ClassPathSymbolResolverTest : FunSpec({
 
 
+    val cl = Thread.currentThread().contextClassLoader
+    val resolver = ClasspathSymbolResolver(cl, testSymFactory)
+
     test("Test outer class") {
-
-
-        val cl = Thread.currentThread().contextClassLoader
-        val resolver = ClasspathSymbolResolver(cl, testSymFactory)
 
         resolver.resolveClassFromCanonicalName(GenericClass::class.java.canonicalName) shouldBe classSym(GenericClass::class.java)
     }
 
     test("Test inner class") {
 
-
-        val cl = Thread.currentThread().contextClassLoader
-        val resolver = ClasspathSymbolResolver(cl, testSymFactory)
-
-
-
         resolver.resolveClassFromCanonicalName("javasymbols.testdata.impls.SomeInnerClasses.Inner")
                 .shouldBe(classSym(SomeInnerClasses.Inner::class.java))
+    }
+
+    test("Test inner class with dollar") {
+
+        resolver.resolveClassFromCanonicalName("javasymbols.testdata.impls.SomeInnerClasses\$Inner")
+                .shouldBe(classSym(SomeInnerClasses.Inner::class.java))
+    }
+
+    test("Test default to unresolved") {
+
+        val sym = resolver.resolveClassOrDefault("javasymbols.testdata.impls.This.Does.NotExist")
+
+        sym::isUnresolved shouldBe true
+        sym::getSimpleName shouldBe "NotExist"
     }
 
 })

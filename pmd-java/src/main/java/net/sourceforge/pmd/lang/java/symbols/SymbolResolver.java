@@ -20,7 +20,7 @@ public interface SymbolResolver {
      * be interpreted as nested-class separators.
      */
     @Nullable
-    JClassSymbol resolveClassFromCanonicalName(String canonicalName);
+    JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName);
 
 
     /**
@@ -28,6 +28,6 @@ public interface SymbolResolver {
      * but if this fails, returns an {@link JClassSymbol#isUnresolved() unresolved symbol}.
      */
     @NonNull
-    JClassSymbol resolveClassOrDefault(String canonicalName);
+    JClassSymbol resolveClassOrDefault(@NonNull String canonicalName);
 
 }

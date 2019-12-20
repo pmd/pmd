@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
@@ -23,7 +25,7 @@ public class ClasspathSymbolResolver implements SymbolResolver {
 
 
     @Override
-    public JClassSymbol resolveClassFromCanonicalName(String canonicalName) {
+    public JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
         try {
             return factory.getClassSymbol(classLoader.loadClass(canonicalName));
         } catch (ClassNotFoundException e) {
@@ -46,8 +48,9 @@ public class ClasspathSymbolResolver implements SymbolResolver {
         return null;
     }
 
+    @NonNull
     @Override
-    public JClassSymbol resolveClassOrDefault(String canonicalName) {
+    public JClassSymbol resolveClassOrDefault(@NonNull String canonicalName) {
         JClassSymbol symbol = resolveClassFromCanonicalName(canonicalName);
         return symbol != null ? symbol : factory.makeUnresolvedReference(canonicalName);
     }

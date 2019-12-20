@@ -5,6 +5,7 @@ import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.JavaNode
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
@@ -24,7 +25,7 @@ class ArraySymbolTests : WordSpec({
             intArr.getDeclaredField("length").shouldBeA<JFieldSymbol> {
                 it::isFinal shouldBe true
                 it::getSimpleName shouldBe "length"
-                it::getPackageName shouldBe "java.lang"
+                it::getPackageName shouldBe PRIMITIVE_PACKAGE
                 it::getEnclosingClass shouldBe intArr
             }
 
@@ -45,7 +46,7 @@ class ArraySymbolTests : WordSpec({
 
             intArr.getDeclaredMethods("clone").single().also {
                 it::getSimpleName shouldBe "clone"
-                it::getPackageName shouldBe "java.lang"
+                it::getPackageName shouldBe PRIMITIVE_PACKAGE
                 it::getEnclosingClass shouldBe intArr
             }
 
@@ -64,7 +65,7 @@ class ArraySymbolTests : WordSpec({
 
             intArr.constructors.single().also {
                 it::getSimpleName shouldBe JConstructorSymbol.CTOR_NAME
-                it::getPackageName shouldBe "java.lang"
+                it::getPackageName shouldBe PRIMITIVE_PACKAGE
                 it::getEnclosingClass shouldBe intArr
                 it.formalParameters.shouldHaveSize(1)
             }
@@ -82,6 +83,10 @@ class ArraySymbolTests : WordSpec({
 
         "reflect its simple name properly" {
 
+            val stringArr = testSymFactory.makeArraySymbol(SymbolFactory.STRING_SYM)
+
+            stringArr::getSimpleName shouldBe "String[]"
+
             val intArr = testSymFactory.makeArraySymbol(SymbolFactory.INT_SYM)
 
             intArr::getSimpleName shouldBe "int[]"
@@ -94,6 +99,10 @@ class ArraySymbolTests : WordSpec({
 
         "reflect its binary name properly" {
 
+            val stringArr = testSymFactory.makeArraySymbol(SymbolFactory.STRING_SYM)
+
+            stringArr::getBinaryName shouldBe "java.lang.String[]"
+
             val intArr = testSymFactory.makeArraySymbol(SymbolFactory.INT_SYM)
 
             intArr::getBinaryName shouldBe "int[]"
@@ -101,6 +110,18 @@ class ArraySymbolTests : WordSpec({
             val iiarr = testSymFactory.makeArraySymbol(intArr)
 
             iiarr::getBinaryName shouldBe "int[][]"
+
+        }
+
+        "reflect its package name properly" {
+
+            val stringArr = testSymFactory.makeArraySymbol(SymbolFactory.STRING_SYM)
+
+            stringArr::getPackageName shouldBe "java.lang"
+
+            val iarr = testSymFactory.makeArraySymbol(SymbolFactory.INT_SYM)
+
+            iarr::getPackageName shouldBe PRIMITIVE_PACKAGE
 
         }
 
