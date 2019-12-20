@@ -44,11 +44,6 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode imp
         return getQualifiedName().getBinaryName();
     }
 
-    @Override
-    public String getSimpleName() {
-        return getImage();
-    }
-
     /**
      * Returns true if the enclosing type of this type declaration
      * is any of the given kinds. If this declaration is a top-level

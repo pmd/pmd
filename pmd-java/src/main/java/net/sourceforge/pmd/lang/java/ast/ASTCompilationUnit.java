@@ -84,15 +84,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         return tds.stream().map(it -> (ASTAnyTypeDeclaration) it.getFirstChild()).collect(Collectors.toList());
     }
 
-    /**
-     * Returns the package name of this compilation unit. If this is in
-     * the default package, returns the empty string.
-     */
-    // @NonNull
-    public String getPackageName() {
-        ASTPackageDeclaration pdecl = getPackageDeclaration();
-        return pdecl == null ? "" : pdecl.getPackageNameImage();
-    }
 
     @InternalApi
     @Deprecated

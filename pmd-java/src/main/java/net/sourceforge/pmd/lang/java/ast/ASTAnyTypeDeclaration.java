@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
@@ -20,18 +22,14 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, JavaNode {
 
 
-    default String getSimpleName() {
-        return getImage();
-    }
-
     /**
      * Returns the simple name of this type declaration. Returns null
      * if this is an anonymous class declaration.
      */
-    // note that anonymous class declarations won't extend ASTAnyTypeDeclaration
-    // until PMD 7.0.0 so this is @NonNull until then
-    // @Nullable
-    String getSimpleName();
+    @Nullable
+    default String getSimpleName() {
+        return getImage();
+    }
 
 
     /**
