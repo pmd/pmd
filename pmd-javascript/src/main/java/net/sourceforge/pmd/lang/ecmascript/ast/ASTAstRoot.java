@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstRoot;
 
-import net.sourceforge.pmd.lang.ast.RootNode;
-
-public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
+public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> {
     public ASTAstRoot(AstRoot astRoot) {
         super(astRoot);
     }

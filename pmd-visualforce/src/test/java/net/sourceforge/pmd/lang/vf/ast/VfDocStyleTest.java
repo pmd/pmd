@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ import org.junit.Test;
  * Test parsing of a VF in document style, by checking the generated AST.
  * Original @author pieter_van_raemdonck - Application Engineers NV/SA -
  * www.ae.be
- *
+ * 
  * @author sergey.gorbaty - VF adaptation
  *
  */
@@ -31,8 +32,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testSimplestVf() {
-        List<ASTElement> nodes = vf.getNodes(ASTElement.class, TEST_SIMPLEST_HTML);
-        assertEquals("Exactly " + 1 + " element(s) expected", 1, nodes.size());
+        assertNumberOfNodes(ASTElement.class, TEST_SIMPLEST_HTML, 1);
     }
 
     /**
@@ -40,23 +40,22 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testElementAttributeAndNamespace() {
-        ASTCompilationUnit root = vf.parse(TEST_ELEMENT_AND_NAMESPACE);
+        Set<VfNode> nodes = getNodes(null, TEST_ELEMENT_AND_NAMESPACE);
 
-
-        List<ASTElement> elementNodes = root.findDescendantsOfType(ASTElement.class);
+        Set<ASTElement> elementNodes = getNodesOfType(ASTElement.class, nodes);
         assertEquals("One element node expected!", 1, elementNodes.size());
         ASTElement element = elementNodes.iterator().next();
         assertEquals("Correct name expected!", "h:html", element.getName());
-        assertTrue("Has namespace prefix!", element.isHasNamespacePrefix());
-        assertTrue("Element is empty!", element.isEmpty());
+        assertEquals("Has namespace prefix!", true, element.isHasNamespacePrefix());
+        assertEquals("Element is empty!", true, element.isEmpty());
         assertEquals("Correct namespace prefix of element expected!", "h", element.getNamespacePrefix());
         assertEquals("Correct local name of element expected!", "html", element.getLocalName());
 
-        List<ASTAttribute> attributeNodes = root.findDescendantsOfType(ASTAttribute.class);
+        Set<ASTAttribute> attributeNodes = getNodesOfType(ASTAttribute.class, nodes);
         assertEquals("One attribute node expected!", 1, attributeNodes.size());
         ASTAttribute attribute = attributeNodes.iterator().next();
         assertEquals("Correct name expected!", "MyNsPrefix:MyAttr", attribute.getName());
-        assertTrue("Has namespace prefix!", attribute.isHasNamespacePrefix());
+        assertEquals("Has namespace prefix!", true, attribute.isHasNamespacePrefix());
         assertEquals("Correct namespace prefix of element expected!", "MyNsPrefix", attribute.getNamespacePrefix());
         assertEquals("Correct local name of element expected!", "MyAttr", attribute.getLocalName());
 
@@ -69,24 +68,31 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testAttributeValueContainingHash() {
+        Set<VfNode> nodes = getNodes(null, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
 
-        List<ASTAttribute> attributes = vf.getNodes(ASTAttribute.class, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
+        Set<ASTAttribute> attributes = getNodesOfType(ASTAttribute.class, nodes);
         assertEquals("Three attributes expected!", 3, attributes.size());
 
-        ASTAttribute attr = attributes.get(0);
-        assertEquals("Correct attribute name expected!", "something", attr.getName());
-        assertEquals("Correct attribute value expected!", "#yes#",
-                     attr.getFirstDescendantOfType(ASTText.class).getImage());
+        List<ASTAttribute> attrsList = new ArrayList<>(attributes);
+        Collections.sort(attrsList, new Comparator<ASTAttribute>() {
+            public int compare(ASTAttribute arg0, ASTAttribute arg1) {
+                return arg0.getName().compareTo(arg1.getName());
+            }
+        });
 
-        attr = attributes.get(1);
+        ASTAttribute attr = attrsList.get(0);
         assertEquals("Correct attribute name expected!", "foo", attr.getName());
         assertEquals("Correct attribute value expected!", "CREATE",
                 attr.getFirstDescendantOfType(ASTText.class).getImage());
 
-        attr = attributes.get(2);
+        attr = attrsList.get(1);
         assertEquals("Correct attribute name expected!", "href", attr.getName());
         assertEquals("Correct attribute value expected!", "#", attr.getFirstDescendantOfType(ASTText.class).getImage());
 
+        attr = attrsList.get(2);
+        assertEquals("Correct attribute name expected!", "something", attr.getName());
+        assertEquals("Correct attribute value expected!", "#yes#",
+                attr.getFirstDescendantOfType(ASTText.class).getImage());
     }
 
     /**
@@ -94,7 +100,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testCData() {
-        List<ASTCData> cdataNodes = vf.getNodes(ASTCData.class, TEST_CDATA);
+        Set<ASTCData> cdataNodes = getNodes(ASTCData.class, TEST_CDATA);
 
         assertEquals("One CDATA node expected!", 1, cdataNodes.size());
         ASTCData cdata = cdataNodes.iterator().next();
@@ -106,14 +112,14 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testDoctype() {
-        ASTCompilationUnit root = vf.parse(TEST_DOCTYPE);
+        Set<VfNode> nodes = getNodes(null, TEST_DOCTYPE);
 
-        List<ASTDoctypeDeclaration> docTypeDeclarations = root.findDescendantsOfType(ASTDoctypeDeclaration.class);
+        Set<ASTDoctypeDeclaration> docTypeDeclarations = getNodesOfType(ASTDoctypeDeclaration.class, nodes);
         assertEquals("One doctype declaration expected!", 1, docTypeDeclarations.size());
         ASTDoctypeDeclaration docTypeDecl = docTypeDeclarations.iterator().next();
         assertEquals("Correct doctype-name expected!", "html", docTypeDecl.getName());
 
-        List<ASTDoctypeExternalId> externalIds = root.findDescendantsOfType(ASTDoctypeExternalId.class);
+        Set<ASTDoctypeExternalId> externalIds = getNodesOfType(ASTDoctypeExternalId.class, nodes);
         assertEquals("One doctype external id expected!", 1, externalIds.size());
         ASTDoctypeExternalId externalId = externalIds.iterator().next();
         assertEquals("Correct external public id expected!", "-//W3C//DTD XHTML 1.1//EN", externalId.getPublicId());
@@ -127,7 +133,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testHtmlScript() {
-        List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
@@ -139,7 +145,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInTagValue() {
-        List<ASTElement> elememts = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE);
+        Set<ASTElement> elememts = getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE);
         assertEquals("One element expected!", 1, elememts.size());
         ASTElement element = elememts.iterator().next();
         ASTAttributeValue attribute = element.getFirstDescendantOfType(ASTAttributeValue.class);
@@ -153,7 +159,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInTagValueWithCommentDQ() {
-        List<ASTElement> elememts = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT);
+        Set<ASTElement> elememts = getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT);
         assertEquals("One element expected!", 1, elememts.size());
         ASTElement element = elememts.iterator().next();
         ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
@@ -166,7 +172,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInTagValueWithCommentSQ() {
-        List<ASTElement> elememts = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ);
+        Set<ASTElement> elememts = getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ);
         assertEquals("One element expected!", 1, elememts.size());
         ASTElement element = elememts.iterator().next();
         ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
@@ -180,7 +186,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testELInHtmlScript() {
-        List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT);
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
@@ -195,7 +201,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testInlineCommentInEL() {
-        List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT);
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
@@ -210,7 +216,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testQuotedELInHtmlScript() {
-        List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_QUOTED_EL_IN_HTML_SCRIPT);
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_QUOTED_EL_IN_HTML_SCRIPT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
@@ -226,7 +232,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testImportHtmlScript() {
-        List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_IMPORT_JAVASCRIPT);
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_IMPORT_JAVASCRIPT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         List<ASTAttribute> attr = script.findDescendantsOfType(ASTAttribute.class);
@@ -242,13 +248,13 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testHtmlScriptWithAttribute() {
-        List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT_WITH_ATTRIBUTE);
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT_WITH_ATTRIBUTE);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
         assertEquals("Correct script content expected!", "Script!", text.getImage());
         List<ASTText> attrs = script.findDescendantsOfType(ASTText.class);
-        assertEquals("text/javascript", attrs.get(0).getImage());
+        assertTrue("text/javascript".equals(attrs.get(0).getImage()));
     }
 
     /**
@@ -256,7 +262,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testComplexHtmlScript() {
-        List<ASTHtmlScript> script = vf.getNodes(ASTHtmlScript.class, TEST_COMPLEX_SCRIPT);
+        Set<ASTHtmlScript> script = getNodes(ASTHtmlScript.class, TEST_COMPLEX_SCRIPT);
         assertEquals("One script expected!", 1, script.size());
         ASTHtmlScript next = script.iterator().next();
         ASTText text = next.getFirstChildOfType(ASTText.class);
@@ -269,7 +275,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testInlineCss() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_INLINE_STYLE);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_INLINE_STYLE);
         assertEquals("Two elements expected!", 3, elements.size());
     }
 
@@ -278,7 +284,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testTextInTag() {
-        List<ASTText> scripts = vf.getNodes(ASTText.class, TEST_TEXT_IN_TAG);
+        Set<ASTText> scripts = getNodes(ASTText.class, TEST_TEXT_IN_TAG);
         assertEquals("One text chunk expected!", 1, scripts.size());
         ASTText script = scripts.iterator().next();
         assertEquals("Correct content expected!", " some text ", script.getImage());
@@ -290,9 +296,10 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void noSpacesBetweenTags() {
-        List<ASTElement> scripts = vf.getNodes(ASTElement.class, TEST_TAGS_NO_SPACE);
+        Set<ASTElement> scripts = getNodes(ASTElement.class, TEST_TAGS_NO_SPACE);
         assertEquals("Two tags expected!", 2, scripts.size());
-        Iterator<ASTElement> iterator = scripts.iterator();
+        List<ASTElement> elmts = sortNodesByName(scripts);
+        Iterator<ASTElement> iterator = elmts.iterator();
         ASTElement script = iterator.next();
         assertEquals("Correct content expected!", "a", script.getName());
         script = iterator.next();
@@ -305,7 +312,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unclosedTagsWithDollar() {
-        List<ASTText> scripts = vf.getNodes(ASTText.class, TEST_TAGS_WITH_DOLLAR);
+        Set<ASTText> scripts = getNodes(ASTText.class, TEST_TAGS_WITH_DOLLAR);
         assertEquals("Two text chunks expected!", 2, scripts.size());
         ASTText script = scripts.iterator().next();
         assertEquals("Correct content expected!", " $ ", script.getImage());
@@ -317,7 +324,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unclosedTagsWithELWithin() {
-        List<ASTElement> element = vf.getNodes(ASTElement.class, TEST_TAGS_WITH_EL_WITHIN);
+        Set<ASTElement> element = getNodes(ASTElement.class, TEST_TAGS_WITH_EL_WITHIN);
         assertEquals("One element expected!", 1, element.size());
 
         for (ASTElement elem : element) {
@@ -340,20 +347,21 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void textAfterOpenAndClosedTag() {
-        List<ASTElement> nodes = vf.getNodes(ASTElement.class, TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG);
+        Set<ASTElement> nodes = getNodes(ASTElement.class, TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG);
         assertEquals("Two elements expected!", 2, nodes.size());
-        assertEquals("First element should be a", "a", nodes.get(0).getName());
-        assertFalse("first element should be closed", nodes.get(0).isUnclosed());
-        assertEquals("Second element should be b", "b", nodes.get(1).getName());
-        assertTrue("Second element should not be closed", nodes.get(1).isUnclosed());
+        List<ASTElement> elmts = sortNodesByName(nodes);
+        assertEquals("First element should be a", "a", elmts.get(0).getName());
+        assertFalse("first element should be closed", elmts.get(0).isUnclosed());
+        assertEquals("Second element should be b", "b", elmts.get(1).getName());
+        assertTrue("Second element should not be closed", elmts.get(1).isUnclosed());
 
-        List<ASTText> text = vf.getNodes(ASTText.class, TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG);
+        Set<ASTText> text = getNodes(ASTText.class, TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG);
         assertEquals("Two text chunks expected!", 2, text.size());
     }
 
     @Test
     public void quoteEL() {
-        List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_QUOTE_EL);
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_QUOTE_EL);
         assertEquals("One attribute expected!", 1, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
         List<ASTElExpression> els = attr.findChildrenOfType(ASTElExpression.class);
@@ -368,7 +376,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void quoteAttrValue() {
-        List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_ATTR);
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_ATTR);
         assertEquals("One attribute expected!", 1, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
         ASTText text = attr.getFirstChildOfType(ASTText.class);
@@ -380,7 +388,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void noQuoteAttrEmpty() {
-        List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_EMPTY_ATTR);
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_EMPTY_ATTR);
         assertEquals("two attributes expected!", 2, attributes.size());
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();
@@ -389,7 +397,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
             // in order to ensure that we check the proper attribute
             attr = iterator.next();
         }
-        assertNull("Expected to detect proper value for attribute!", attr.getImage());
+        assertEquals("Expected to detect proper value for attribute!", null, attr.getImage());
     }
 
     /**
@@ -397,7 +405,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void singleQuoteAttrTab() {
-        List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_TAB_ATTR);
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_TAB_ATTR);
         assertEquals("One attribute expected!", 1, attributes.size());
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();
@@ -408,33 +416,35 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     @Test
     public void unclosedTag() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_UNCLOSED_SIMPLE);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_SIMPLE);
+        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("2 tags expected", 2, elements.size());
-        assertEquals("Second element should be tag:someTag", "tag:someTag", elements.get(0).getName());
-        assertEquals("First element should be sorted tag:if", "tag:if", elements.get(1).getName());
+        assertEquals("First element should be sorted tag:if", "tag:if", sortedElmnts.get(0).getName());
+        assertEquals("Second element should be tag:someTag", "tag:someTag", sortedElmnts.get(1).getName());
 
-        assertTrue(elements.get(1).isEmpty());
-        assertTrue(elements.get(1).isUnclosed());
-        assertFalse(elements.get(0).isEmpty());
-        assertFalse(elements.get(0).isUnclosed());
+        assertTrue(sortedElmnts.get(0).isEmpty());
+        assertTrue(sortedElmnts.get(0).isUnclosed());
+        assertFalse(sortedElmnts.get(1).isEmpty());
+        assertFalse(sortedElmnts.get(1).isUnclosed());
     }
 
     @Test
     public void unclosedTagAndNoQuotesForAttribute() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_UNCLOSED_ATTR);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_ATTR);
+        List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("2 tags expected", 2, elements.size());
-        assertEquals("Second element should be tag:someTag", "tag:someTag", elements.get(0).getName());
-        assertEquals("First element should be sorted tag:if", "tag:if", elements.get(1).getName());
+        assertEquals("First element should be sorted tag:if", "tag:if", sortedElmnts.get(0).getName());
+        assertEquals("Second element should be tag:someTag", "tag:someTag", sortedElmnts.get(1).getName());
 
-        assertTrue(elements.get(1).isEmpty());
-        assertTrue(elements.get(1).isUnclosed());
-        assertFalse(elements.get(0).isEmpty());
-        assertFalse(elements.get(0).isUnclosed());
+        assertTrue(sortedElmnts.get(0).isEmpty());
+        assertTrue(sortedElmnts.get(0).isUnclosed());
+        assertFalse(sortedElmnts.get(1).isEmpty());
+        assertFalse(sortedElmnts.get(1).isUnclosed());
     }
 
     @Test
     public void unclosedTagMultipleLevels() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_UNCLOSED_MULTIPLE_LEVELS);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_MULTIPLE_LEVELS);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("3 tags expected", 3, elements.size());
         assertEquals("First element should be sorted tag:someTag", "tag:someTag", sortedElmnts.get(0).getName());
@@ -456,7 +466,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void nestedEmptyTags() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_MULTIPLE_EMPTY_TAGS);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_MULTIPLE_EMPTY_TAGS);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 4, elements.size());
         assertEquals("First element should a1", "a1", sortedElmnts.get(0).getName());
@@ -488,7 +498,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void nestedMultipleTags() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_MULTIPLE_NESTED_TAGS);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_MULTIPLE_NESTED_TAGS);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 6, elements.size());
         assertEquals("First element should a1", "a1", sortedElmnts.get(0).getName());
@@ -531,7 +541,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unclosedParentTagClosedBeforeChild() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_UNCLOSED_END_AFTER_PARENT_CLOSE);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_END_AFTER_PARENT_CLOSE);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 4, elements.size());
         assertEquals("First element should be 'a'", "a", sortedElmnts.get(0).getName());
@@ -565,7 +575,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unmatchedTagDoesNotInfluenceStructure() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_UNCLOSED_UNMATCHED_CLOSING_TAG);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_UNMATCHED_CLOSING_TAG);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("4 tags expected", 4, elements.size());
         assertEquals("First element should be 'a'", "a", sortedElmnts.get(0).getName());
@@ -599,7 +609,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unclosedStartTagWithUnmatchedCloseOfDifferentTag() {
-        List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("5 tags expected", 5, elements.size());
         assertEquals("First element should be 'a'", "a", sortedElmnts.get(0).getName());
@@ -634,13 +644,14 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      * is the same it will sort against o1.getBeginColumn() +""+
      * o1.getBeginLine(). so first criteria is the name, then the second is the
      * column +""+line string.
-     *
+     * 
      * @param elements
      * @return
      */
-    private List<ASTElement> sortNodesByName(List<ASTElement> elements) {
-        Collections.sort(elements, new Comparator<ASTElement>() {
-            @Override
+    private List<ASTElement> sortNodesByName(Set<ASTElement> elements) {
+        List<ASTElement> list = new ArrayList<>();
+        list.addAll(elements);
+        Collections.sort(list, new Comparator<ASTElement>() {
             public int compare(ASTElement o1, ASTElement o2) {
                 if (o1.getName() == null) {
                     return Integer.MIN_VALUE;
@@ -656,12 +667,12 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        return elements;
+        return list;
     }
 
     @Test
     public void noQuoteAttrWithJspEL() {
-        List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_EL);
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_EL);
         assertEquals("One attribute expected!", 1, attributes.size());
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();

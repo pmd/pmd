@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,8 +16,10 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 public class JoinClauseTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testInnerCrossJoin() {
-        ASTInput input = plsql.parseResource("InnerCrossJoin.pls");
+    public void testInnerCrossJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("InnerCrossJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTInnerCrossJoinClause> joins = input.findDescendantsOfType(ASTInnerCrossJoinClause.class);
         Assert.assertEquals(1, joins.size());
         Assert.assertTrue(joins.get(0).isCross());
@@ -23,8 +27,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testInnerNaturalJoin() {
-        ASTInput input = plsql.parseResource("InnerNaturalJoin.pls");
+    public void testInnerNaturalJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("InnerNaturalJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTInnerCrossJoinClause> joins = input.findDescendantsOfType(ASTInnerCrossJoinClause.class);
         Assert.assertEquals(2, joins.size());
         Assert.assertFalse(joins.get(0).isCross());
@@ -32,8 +38,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testInnerJoinUsing() {
-        ASTInput input = plsql.parseResource("InnerJoinUsing.pls");
+    public void testInnerJoinUsing() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("InnerJoinUsing.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTInnerCrossJoinClause> joins = input.findDescendantsOfType(ASTInnerCrossJoinClause.class);
         Assert.assertEquals(3, joins.size());
         Assert.assertFalse(joins.get(0).isCross());
@@ -44,8 +52,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testOuterJoinUsing() {
-        ASTInput input = plsql.parseResource("OuterJoinUsing.pls");
+    public void testOuterJoinUsing() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("OuterJoinUsing.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinClause> joins = input.findDescendantsOfType(ASTOuterJoinClause.class);
         Assert.assertEquals(1, joins.size());
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
@@ -56,8 +66,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testRightOuterJoin() {
-        ASTInput input = plsql.parseResource("RightOuterJoin.pls");
+    public void testRightOuterJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("RightOuterJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinClause> joins = input.findDescendantsOfType(ASTOuterJoinClause.class);
         Assert.assertEquals(2, joins.size());
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
@@ -65,8 +77,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testLeftOuterJoin() {
-        ASTInput input = plsql.parseResource("LeftOuterJoin.pls");
+    public void testLeftOuterJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("LeftOuterJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinClause> joins = input.findDescendantsOfType(ASTOuterJoinClause.class);
         Assert.assertEquals(2, joins.size());
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
@@ -79,8 +93,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testNaturalRightOuterJoin() {
-        ASTInput input = plsql.parseResource("NaturalRightOuterJoin.pls");
+    public void testNaturalRightOuterJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("NaturalRightOuterJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinClause> joins = input.findDescendantsOfType(ASTOuterJoinClause.class);
         Assert.assertEquals(1, joins.size());
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
@@ -89,8 +105,10 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testOuterJoinPartitioned() {
-        ASTInput input = plsql.parseResource("OuterJoinPartitioned.pls");
+    public void testOuterJoinPartitioned() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("OuterJoinPartitioned.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinClause> joins = input.findDescendantsOfType(ASTOuterJoinClause.class);
         Assert.assertEquals(1, joins.size());
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
@@ -99,18 +117,24 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testFullOuterJoin() {
-        plsql.parseResource("FullOuterJoin.pls");
+    public void testFullOuterJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("FullOuterJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
     }
 
     @Test
-    public void testInnerJoinSubquery() {
-        plsql.parseResource("InnerJoinSubquery.pls");
+    public void testInnerJoinSubquery() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("InnerJoinSubquery.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
     }
 
     @Test
-    public void testJoinOperator() {
-        ASTInput input = plsql.parseResource("JoinOperator.pls");
+    public void testJoinOperator() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("JoinOperator.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinExpression> expressions = input.findDescendantsOfType(ASTOuterJoinExpression.class);
         Assert.assertEquals(4, expressions.size());
         Assert.assertEquals("h.opp_id", expressions.get(3).getImage());

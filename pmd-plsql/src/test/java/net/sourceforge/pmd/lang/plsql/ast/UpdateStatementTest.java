@@ -14,7 +14,8 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 public class UpdateStatementTest extends AbstractPLSQLParserTst {
     @Test
     public void parseUpdateStatementExample() {
-        ASTInput input = plsql.parseResource("UpdateStatementExample.pls");
+        String code = loadTestResource("UpdateStatementExample.pls");
+        ASTInput input = parsePLSQL(code);
         List<ASTUpdateStatement> updateStatements = input.findDescendantsOfType(ASTUpdateStatement.class);
         Assert.assertEquals(2, updateStatements.size());
         Assert.assertEquals(2, updateStatements.get(1).getFirstChildOfType(ASTUpdateSetClause.class)
@@ -23,13 +24,13 @@ public class UpdateStatementTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseUpdateStatementExample2() {
-        ASTInput input = plsql.parseResource("UpdateStatementExample2.pls");
+        ASTInput input = parsePLSQL(loadTestResource("UpdateStatementExample2.pls"));
         Assert.assertNotNull(input);
     }
 
     @Test
     public void parseUpdateStatementRef() {
-        ASTInput input = plsql.parseResource("UpdateStatementRef.pls");
+        ASTInput input = parsePLSQL(loadTestResource("UpdateStatementRef.pls"));
         Assert.assertNotNull(input);
     }
 }

@@ -4,15 +4,17 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import static net.sourceforge.pmd.lang.xml.XmlParsingHelper.XML;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,11 +51,16 @@ public class XmlParserTest {
     /**
      * See bug #1054: XML Rules ever report a line -1 and not the line/column
      * where the error occurs
-     *
+     * 
+     * @throws Exception
+     *             any error
      */
     @Test
-    public void testLineNumbers() {
-        Node document = XML.parse(XML_TEST);
+    public void testLineNumbers() throws Exception {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
+        Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
+        Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
         assertLineNumbers(document, 1, 1, 19, 14);
@@ -94,7 +101,10 @@ public class XmlParserTest {
      */
     @Test
     public void testDefaultParsing() {
-        Node document = XML.parse(XML_TEST);
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
+        Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
+        Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
         Node dtdElement = document.jjtGetChild(0);
@@ -121,9 +131,12 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingCoalescingEnabled() {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setCoalescing(true);
-        Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
+        Parser parser = xmlVersionHandler.getParser(parserOptions);
+        Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
         Node dtdElement = document.jjtGetChild(0);
@@ -149,9 +162,12 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingDoNotExpandEntities() {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setExpandEntityReferences(false);
-        Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
+        Parser parser = xmlVersionHandler.getParser(parserOptions);
+        Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
         Node dtdElement = document.jjtGetChild(0);
@@ -188,9 +204,12 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingIgnoreComments() {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setIgnoringComments(true);
-        Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
+        Parser parser = xmlVersionHandler.getParser(parserOptions);
+        Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
         Node dtdElement = document.jjtGetChild(0);
@@ -216,9 +235,12 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingIgnoreElementContentWhitespace() {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setIgnoringElementContentWhitespace(true);
-        Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
+        Parser parser = xmlVersionHandler.getParser(parserOptions);
+        Node document = parser.parse(null, new StringReader(XML_TEST));
 
         assertNode(document, "document", 2);
         Node dtdElement = document.jjtGetChild(0);
@@ -241,7 +263,10 @@ public class XmlParserTest {
      */
     @Test
     public void testDefaultParsingNamespaces() {
-        Node document = XML.parse(XML_NAMESPACE_TEST);
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
+        Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
+        Node document = parser.parse(null, new StringReader(XML_NAMESPACE_TEST));
 
         assertNode(document, "document", 1);
         Node rootElement = document.jjtGetChild(0);
@@ -271,9 +296,12 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingNotNamespaceAware() {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setNamespaceAware(false);
-        Node document = XML.withParserOptions(parserOptions).parse(XML_NAMESPACE_TEST);
+        Parser parser = xmlVersionHandler.getParser(parserOptions);
+        Node document = parser.parse(null, new StringReader(XML_NAMESPACE_TEST));
 
         assertNode(document, "document", 1);
         Node rootElement = document.jjtGetChild(0);
@@ -299,21 +327,24 @@ public class XmlParserTest {
 
     /**
      * Verifies the parsing behavior of the XML parser with validation on.
-     *
+     * 
      * @throws UnsupportedEncodingException
      *             error
      */
     @Test
     public void testParsingWithValidation() throws UnsupportedEncodingException {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setValidating(true);
+        Parser parser = xmlVersionHandler.getParser(parserOptions);
         PrintStream oldErr = System.err;
         Locale oldLocale = Locale.getDefault();
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             System.setErr(new PrintStream(bos));
             Locale.setDefault(Locale.ENGLISH);
-            Node document = XML.withParserOptions(parserOptions).parse(XML_INVALID_WITH_DTD);
+            Node document = parser.parse(null, new StringReader(XML_INVALID_WITH_DTD));
             Assert.assertNotNull(document);
             String output = bos.toString("UTF-8");
             Assert.assertTrue(output.contains("Element type \"invalidChild\" must be declared."));
@@ -340,20 +371,30 @@ public class XmlParserTest {
         assertLineNumbers(document.jjtGetChild(0), 1, 22, 1, 29);
     }
 
+    private Node parseXml(String xml) {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
+        Parser parser = xmlVersionHandler.getParser(options);
+        return parser.parse(null, new StringReader(xml));
+    }
+
     @Test
     public void testBug1518() throws Exception {
-        XML.parseResource("parsertests/bug1518.xml");
+        String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"),
+                StandardCharsets.UTF_8);
+        Node document = parseXml(xml);
+        assertNotNull(document);
     }
 
     @Test
     public void testAutoclosingElementLength() {
         final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
-        assertLineNumbers(XML.parse(xml), 1, 1, 1, xml.length());
+        assertLineNumbers(parseXml(xml), 1, 1, 1, xml.length());
     }
 
     /**
      * Asserts a single node inclusive attributes.
-     *
+     * 
      * @param node
      *            the node
      * @param toString
@@ -383,7 +424,7 @@ public class XmlParserTest {
 
     /**
      * Assert a single text node.
-     *
+     * 
      * @param node
      *            the node to check
      * @param text

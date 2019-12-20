@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,15 +16,19 @@ import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 public class SelectForUpdateTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseSelectForUpdateWait() {
-        ASTInput input = plsql.parseResource("SelectForUpdateWait.pls");
+    public void parseSelectForUpdateWait() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectForUpdateWait.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
         Assert.assertEquals(5, input.findDescendantsOfType(ASTForUpdateClause.class).size());
     }
 
     @Test
-    public void parseSelectForUpdate() {
-        ASTInput input = plsql.parseResource("SelectForUpdate.pls");
+    public void parseSelectForUpdate() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectForUpdate.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
         List<ASTForUpdateClause> forUpdateClauses = input.findDescendantsOfType(ASTForUpdateClause.class);
         Assert.assertEquals(2, forUpdateClauses.size());
