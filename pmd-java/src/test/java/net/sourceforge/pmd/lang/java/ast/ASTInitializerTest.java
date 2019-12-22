@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTInitializerTest extends BaseParserTest {
 
     @Test
@@ -15,6 +13,5 @@ public class ASTInitializerTest extends BaseParserTest {
         java.parse(TEST1);
     }
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + " {" + PMD.EOL + "   x = 5;" + PMD.EOL + " }"
-            + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n {\n   x = 5;\n }\n}";
 }

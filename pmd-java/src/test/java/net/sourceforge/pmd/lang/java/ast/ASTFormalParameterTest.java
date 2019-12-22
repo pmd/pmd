@@ -12,8 +12,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTFormalParameterTest extends BaseParserTest {
 
     @Test
@@ -38,5 +36,5 @@ public class ASTFormalParameterTest extends BaseParserTest {
         assertEquals(1, nrOfNoVarArgs);
     }
 
-    private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar(int x, int... others) {}" + PMD.EOL + "}";
+    private static final String TEST1 = "class Foo {\n void bar(int x, int... others) {}\n}";
 }

@@ -17,7 +17,6 @@ import org.jaxen.JaxenException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
@@ -187,8 +186,7 @@ public class SimpleNodeTest extends BaseParserTest {
         assertNull("getNthParent 8", d.getNthParent(8));
     }
 
-    private static final String TEST1 = "public class Test {" + PMD.EOL + "  void bar(String s) {" + PMD.EOL
-            + "   s = s.toLowerCase();" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Test {\n  void bar(String s) {\n   s = s.toLowerCase();\n  }\n}";
 
     @Ignore
     @Test
@@ -286,32 +284,24 @@ public class SimpleNodeTest extends BaseParserTest {
 
     private static final String NO_EXPLICIT_IMPLEMENTS = "public class Test {}";
 
-    private static final String METHOD_SAME_LINE = "public class Test {" + PMD.EOL + " public void foo() {}" + PMD.EOL
-            + "}";
+    private static final String METHOD_SAME_LINE = "public class Test {\n public void foo() {}\n}";
 
-    private static final String QUALIFIED_NAME = "import java.io.File;" + PMD.EOL + "public class Foo{}";
+    private static final String QUALIFIED_NAME = "import java.io.File;\npublic class Foo{}";
 
-    private static final String BROKEN_LINE_IN_NAME = "import java.io." + PMD.EOL + "File;" + PMD.EOL
-            + "public class Foo{}";
+    private static final String BROKEN_LINE_IN_NAME = "import java.io.\nFile;\npublic class Foo{}";
 
-    private static final String LINE_NUMBERS_ON_SIBLINGS = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
-            + "  try {" + PMD.EOL + "  } catch (Exception1 e) {" + PMD.EOL + "   int x =2;" + PMD.EOL + "  }" + PMD.EOL
-            + " if (x != null) {}" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String LINE_NUMBERS_ON_SIBLINGS =
+        "public class Foo {\n void bar() {\n  try {\n  } catch (Exception1 e) {\n   int x =2;\n  }\n if (x != null) {}\n }\n}";
 
     private static final String NO_LOOKAHEAD = "public class Foo { }";
 
-    private static final String METHOD_DIFF_LINES = "public class Test {" + PMD.EOL + " public void foo() {" + PMD.EOL
-            + "  int x;" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String METHOD_DIFF_LINES = "public class Test {\n public void foo() {\n  int x;\n }\n}";
 
-    private static final String CONTAINS_CHILDREN_OF_TYPE = "public class Test {" + PMD.EOL + "  int x;" + PMD.EOL
-            + "}";
+    private static final String CONTAINS_CHILDREN_OF_TYPE = "public class Test {\n  int x;\n}";
 
-    private static final String CONTAINS_NO_INNER = "public class Test {" + PMD.EOL + "  public class Inner {" + PMD.EOL
-            + "   int foo;" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String CONTAINS_NO_INNER = "public class Test {\n  public class Inner {\n   int foo;\n  }\n}";
 
-    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER = "public class Test {" + PMD.EOL + "  void bar() {"
-            + PMD.EOL + "   foo(new Fuz() { int x = 2;});" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER = "public class Test {\n  void bar() {\n   foo(new Fuz() { int x = 2;});\n  }\n}";
 
-    private static final String TEST_XPATH = "public class Test {" + PMD.EOL + "  int x = 2;" + PMD.EOL
-            + "  int y = 42;" + PMD.EOL + "}";
+    private static final String TEST_XPATH = "public class Test {\n  int x = 2;\n  int y = 42;\n}";
 }

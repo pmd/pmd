@@ -9,8 +9,6 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 /**
  * Created on Jan 19, 2005
  * @author mgriffa
@@ -29,9 +27,7 @@ public class ASTThrowStatementTest extends BaseParserTest {
         assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
     }
 
-    private static final String NULL_NAME = "public class Test {" + PMD.EOL + "  void bar() {" + PMD.EOL + "   throw e;"
-            + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String NULL_NAME = "public class Test {\n  void bar() {\n   throw e;\n  }\n}";
 
-    private static final String OK_NAME = "public class Test {" + PMD.EOL + "  void bar() {" + PMD.EOL
-            + "   throw new FooException();" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String OK_NAME = "public class Test {\n  void bar() {\n   throw new FooException();\n  }\n}";
 }

@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTPrimarySuffixTest extends BaseParserTest {
 
     @Test
@@ -26,7 +24,7 @@ public class ASTPrimarySuffixTest extends BaseParserTest {
         assertTrue(ops.get(0).isArguments());
     }
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + "  {x[0] = 2;}" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n  {x[0] = 2;}\n}";
 
-    private static final String TEST2 = "public class Foo {" + PMD.EOL + "  {foo(a);}" + PMD.EOL + "}";
+    private static final String TEST2 = "public class Foo {\n  {foo(a);}\n}";
 }

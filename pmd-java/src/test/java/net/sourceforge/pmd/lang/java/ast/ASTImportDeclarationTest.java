@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTImportDeclarationTest extends BaseParserTest {
 
     @Test
@@ -39,9 +37,9 @@ public class ASTImportDeclarationTest extends BaseParserTest {
         java.parse(TEST3, "1.4");
     }
 
-    private static final String TEST1 = "import foo.bar.*;" + PMD.EOL + "public class Foo {}";
+    private static final String TEST1 = "import foo.bar.*;\npublic class Foo {}";
 
-    private static final String TEST2 = "import foo.bar.Baz;" + PMD.EOL + "public class Foo {}";
+    private static final String TEST2 = "import foo.bar.Baz;\npublic class Foo {}";
 
-    private static final String TEST3 = "import static foo.bar.Baz;" + PMD.EOL + "public class Foo {}";
+    private static final String TEST3 = "import static foo.bar.Baz;\npublic class Foo {}";
 }

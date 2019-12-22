@@ -8,8 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTLocalVariableDeclarationTest extends BaseParserTest {
 
     @Test
@@ -30,9 +28,9 @@ public class ASTLocalVariableDeclarationTest extends BaseParserTest {
         assertEquals(3, node.getArrayDepth());
     }
 
-    private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar() {int x[] = null;}" + PMD.EOL + "}";
+    private static final String TEST1 = "class Foo {\n void bar() {int x[] = null;}\n}";
 
-    private static final String TEST2 = "class Foo {" + PMD.EOL + " void bar() {int x[][] = null;}" + PMD.EOL + "}";
+    private static final String TEST2 = "class Foo {\n void bar() {int x[][] = null;}\n}";
 
-    private static final String TEST3 = "class Foo {" + PMD.EOL + " void bar() {int[] x[][] = null;}" + PMD.EOL + "}";
+    private static final String TEST3 = "class Foo {\n void bar() {int[] x[][] = null;}\n}";
 }

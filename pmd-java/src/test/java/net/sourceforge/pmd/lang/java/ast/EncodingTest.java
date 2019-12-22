@@ -8,8 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class EncodingTest extends BaseParserTest {
 
     @Test
@@ -19,6 +17,5 @@ public class EncodingTest extends BaseParserTest {
         assertEquals("é", methodName);
     }
 
-    private static final String TEST_UTF8 = "class Foo {" + PMD.EOL + "  void é() {}" + PMD.EOL + "  void fiddle() {}"
-            + PMD.EOL + "}";
+    private static final String TEST_UTF8 = "class Foo {\n  void é() {}\n  void fiddle() {}\n}";
 }

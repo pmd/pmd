@@ -8,12 +8,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTPackageDeclarationTest extends BaseParserTest {
 
-    private static final String PACKAGE_INFO_ANNOTATED = "@Deprecated" + PMD.EOL + "package net.sourceforge.pmd.foobar;"
-            + PMD.EOL;
+    private static final String PACKAGE_INFO_ANNOTATED = "@Deprecated\npackage net.sourceforge.pmd.foobar;\n";
 
     /**
      * Regression test for bug 3524607.

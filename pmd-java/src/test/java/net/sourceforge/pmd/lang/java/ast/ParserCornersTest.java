@@ -15,7 +15,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -171,9 +170,9 @@ public class ParserCornersTest {
 
     @Test
     public void testBug206() {
-        java8.parse("public @interface Foo {" + PMD.EOL
-                        + "static final ThreadLocal<Interner<Integer>> interner =" + PMD.EOL
-                        + "    ThreadLocal.withInitial(Interners::newStrongInterner);" + PMD.EOL
+        java8.parse("public @interface Foo {" + "\n"
+                        + "static final ThreadLocal<Interner<Integer>> interner =" + "\n"
+                        + "    ThreadLocal.withInitial(Interners::newStrongInterner);" + "\n"
                         + "}");
     }
 
@@ -184,13 +183,13 @@ public class ParserCornersTest {
 
     @Test
     public void testGitHubBug257NonExistingCast() {
-        String code = "public class Test {" + PMD.EOL
-            + "     public static void main(String[] args) {" + PMD.EOL
-            + "         double a = 4.0;" + PMD.EOL
-            + "         double b = 2.0;" + PMD.EOL
-            + "         double result = Math.sqrt((a)   - b);" + PMD.EOL
-            + "         System.out.println(result);" + PMD.EOL
-            + "     }" + PMD.EOL
+        String code = "public class Test {" + "\n"
+            + "     public static void main(String[] args) {" + "\n"
+            + "         double a = 4.0;" + "\n"
+            + "         double b = 2.0;" + "\n"
+            + "         double result = Math.sqrt((a)   - b);" + "\n"
+            + "         System.out.println(result);" + "\n"
+            + "     }" + "\n"
             + "}";
 
         assertEquals("A cast was found when none expected",
@@ -271,14 +270,17 @@ public class ParserCornersTest {
     }
 
 
-    private static final String GENERICS_PROBLEM = "public class Test {" + PMD.EOL + " public void test() {" + PMD.EOL
-            + "   String o = super.<String> doStuff(\"\");" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String GENERICS_PROBLEM =
+        "public class Test {\n public void test() {\n   String o = super.<String> doStuff(\"\");\n }\n}";
 
-    private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL = "public class Test {" + PMD.EOL + "  void bar() {"
-            + PMD.EOL + "   abstract class X { public abstract void f(); }" + PMD.EOL
-            + "   class Y extends X { public void f() {" + PMD.EOL + "    new Y().f();" + PMD.EOL + "   }}" + PMD.EOL
-            + "  }" + PMD.EOL + "}";
+    private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL =
+        "public class Test {\n"
+            + "  void bar() {\n"
+            + "   abstract class X { public abstract void f(); }\n"
+            + "   class Y extends X { public void f() { new Y().f(); } }\n"
+            + "  }\n"
+            + "}";
 
-    private static final String CAST_LOOKAHEAD_PROBLEM = "public class BadClass {" + PMD.EOL + "  public Class foo() {"
-            + PMD.EOL + "    return (byte[].class);" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String CAST_LOOKAHEAD_PROBLEM =
+        "public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}";
 }

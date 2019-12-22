@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTSwitchLabelTest extends BaseParserTest {
 
     @Test
@@ -27,9 +25,7 @@ public class ASTSwitchLabelTest extends BaseParserTest {
         assertTrue(ops.get(0).isDefault());
     }
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  switch (x) {"
-            + PMD.EOL + "   case 1: y = 2;" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n void bar() {\n  switch (x) {\n   case 1: y = 2;\n  }\n }\n}";
 
-    private static final String TEST2 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  switch (x) {"
-            + PMD.EOL + "   default: y = 2;" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST2 = "public class Foo {\n void bar() {\n  switch (x) {\n   default: y = 2;\n  }\n }\n}";
 }

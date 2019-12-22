@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTAssignmentOperatorTest extends BaseParserTest {
 
     @Test
@@ -33,12 +31,9 @@ public class ASTAssignmentOperatorTest extends BaseParserTest {
         assertTrue(ops.get(0).isCompound());
     }
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  int x;"
-            + PMD.EOL + "  x=2;" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n void bar() {\n  int x;\n  x=2;\n }\n}";
 
-    private static final String TEST2 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  int x;"
-            + PMD.EOL + "  x += 2;" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST2 = "public class Foo {\n void bar() {\n  int x;\n  x += 2;\n }\n}";
 
-    private static final String TEST3 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  int x;"
-            + PMD.EOL + "  x *= 2;" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST3 = "public class Foo {\n void bar() {\n  int x;\n  x *= 2;\n }\n}";
 }

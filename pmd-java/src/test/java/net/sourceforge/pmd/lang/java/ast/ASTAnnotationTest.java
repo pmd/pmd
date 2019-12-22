@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTAnnotationTest extends BaseParserTest {
 
     @Test
@@ -25,6 +23,6 @@ public class ASTAnnotationTest extends BaseParserTest {
         java.parse(TEST1, "1.5");
     }
 
-    private static final String TEST1 = "public class Foo extends Buz {" + PMD.EOL + " @Override" + PMD.EOL
-            + " void bar() {" + PMD.EOL + "  // overrides a superclass method" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String TEST1 =
+        "public class Foo extends Buz {\n @Override\n void bar() {\n  // overrides a superclass method\n }\n}";
 }

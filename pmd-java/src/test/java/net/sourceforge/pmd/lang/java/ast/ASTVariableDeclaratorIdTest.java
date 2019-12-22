@@ -10,8 +10,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTVariableDeclaratorIdTest extends BaseParserTest {
 
 
@@ -58,15 +56,13 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         assertNull(f.getTypeNameNode());
     }
 
-    private static final String TYPE_NAME_NODE = "public class Test {" + PMD.EOL + "  private String bar;" + PMD.EOL
-            + "}";
+    private static final String TYPE_NAME_NODE = "public class Test {\n  private String bar;\n}";
     private static final String EXCEPTION_PARAMETER = "public class Test { { try {} catch(Exception ie) {} } }";
-    private static final String TEST_ANNOTATIONS = "public class Foo {" + PMD.EOL
-            + "    public void bar(@A1 @A2 String s) {}" + PMD.EOL + "}";
-    private static final String TEST_LAMBDA_WITH_TYPE = "public class Foo {\n" + "    public void bar() {\n"
-            + "        FileFilter java = (File f) -> f.getName().endsWith(\".java\");\n" + "    }\n" + "}\n";
-    private static final String TEST_LAMBDA_WITHOUT_TYPE = "public class Foo {\n" + "    public void bar() {\n"
-            + "        FileFilter java2 = f -> f.getName().endsWith(\".java\");\n" + "    }\n" + "}\n";
+    private static final String TEST_ANNOTATIONS = "public class Foo {\n    public void bar(@A1 @A2 String s) {}\n}";
+    private static final String TEST_LAMBDA_WITH_TYPE =
+        "public class Foo {\n    public void bar() {\n        FileFilter java = (File f) -> f.getName().endsWith(\".java\");\n    }\n}\n";
+    private static final String TEST_LAMBDA_WITHOUT_TYPE =
+        "public class Foo {\n    public void bar() {\n        FileFilter java2 = f -> f.getName().endsWith(\".java\");\n    }\n}\n";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ASTVariableDeclaratorIdTest.class);

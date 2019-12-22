@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ParserOptions
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.RootNode
 import org.apache.commons.io.IOUtils
+import java.io.InputStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
 
@@ -140,8 +141,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         val input = rloader.getResourceAsStream(params.resourcePrefix + resourceName)
                 ?: throw IllegalArgumentException("Unable to find resource file ${params.resourcePrefix + resourceName} from $rloader")
-        return IOUtils.toString(input, StandardCharsets.UTF_8)
+        return consume(input)
     }
+
+    private fun consume(input: InputStream) =
+            IOUtils.toString(input, StandardCharsets.UTF_8)
+                    .replace("\r\n", "\n")  // normalize line-endings
 
     /**
      * Gets the source from the source file in which the class was declared.
@@ -162,7 +167,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val input = javaClass.classLoader.getResourceAsStream(sourceFile)
                 ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
-        return IOUtils.toString(input, StandardCharsets.UTF_8)
+        return consume(input)
     }
 
 

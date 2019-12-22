@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.testdata.InterfaceWithNestedClass;
 
@@ -61,16 +60,15 @@ public class ASTFieldDeclarationTest extends BaseParserTest {
         assertTrue(node.isAnnotationMember());
     }
 
-    private static final String TEST1 = "class Foo {" + PMD.EOL + " String[] foo;" + PMD.EOL + "}";
+    private static final String TEST1 = "class Foo {\n String[] foo;\n}";
 
-    private static final String TEST2 = "class Foo {" + PMD.EOL + " String[][][] foo;" + PMD.EOL + "}";
+    private static final String TEST2 = "class Foo {\n String[][][] foo;\n}";
 
-    private static final String TEST3 = "interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
+    private static final String TEST3 = "interface Foo {\n int BAR = 6;\n}";
 
-    private static final String TEST4 = "public enum Foo {" + PMD.EOL + " FOO(1);" + PMD.EOL + " private int x;"
-            + PMD.EOL + "}";
+    private static final String TEST4 = "public enum Foo {\n FOO(1);\n private int x;\n}";
 
-    private static final String TEST5 = "public @interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
+    private static final String TEST5 = "public @interface Foo {\n int BAR = 6;\n}";
 
     @Test
     public void testGetVariableName() {

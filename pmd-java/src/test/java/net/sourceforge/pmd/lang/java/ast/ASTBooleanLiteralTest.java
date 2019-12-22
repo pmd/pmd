@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
 public class ASTBooleanLiteralTest extends BaseParserTest {
 
     @Test
@@ -29,7 +27,7 @@ public class ASTBooleanLiteralTest extends BaseParserTest {
         assertFalse(b.isTrue());
     }
 
-    private static final String TEST1 = "class Foo { " + PMD.EOL + " boolean bar = true; " + PMD.EOL + "} ";
+    private static final String TEST1 = "class Foo { \n boolean bar = true; \n} ";
 
-    private static final String TEST2 = "class Foo { " + PMD.EOL + " boolean bar = false; " + PMD.EOL + "} ";
+    private static final String TEST2 = "class Foo { \n boolean bar = false; \n} ";
 }
