@@ -71,12 +71,12 @@ public class Java13Test {
             ASTLiteral literal = literals.get(i);
             Assert.assertTrue(literal.isTextBlock());
         }
-        Assert.assertEquals("\"\"\"\n"
-                                + "                <html>\n"
-                                + "                    <body>\n"
-                                + "                        <p>Hello, world</p>\n"
-                                + "                    </body>\n"
-                                + "                </html>\n"
+        Assert.assertEquals("\"\"\"\r\n"
+                                + "                <html>\r\n"
+                                + "                    <body>\r\n"
+                                + "                        <p>Hello, world</p>\r\n"
+                                + "                    </body>\r\n"
+                                + "                </html>\r\n"
                                 + "                \"\"\"",
                             literals.get(0).getImage());
         Assert.assertFalse(literals.get(8).isTextBlock());
