@@ -22,7 +22,7 @@ public interface ReplaceHandler {
 
         @Override
         public void replace(TextRegion region, String text) {
-
+            // noop
         }
 
         @Override

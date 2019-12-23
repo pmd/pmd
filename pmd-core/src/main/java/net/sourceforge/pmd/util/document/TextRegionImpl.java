@@ -44,7 +44,7 @@ class TextRegionImpl implements TextRegion {
         return value;
     }
 
-    final static class WithLineInfo extends TextRegionImpl implements RegionWithLines {
+    static final class WithLineInfo extends TextRegionImpl implements RegionWithLines {
 
         private final int beginLine;
         private final int endLine;

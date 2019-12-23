@@ -68,7 +68,7 @@ public class DocumentFileTest {
 
         writeContentToTemporaryFile(testFileContent);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
         }
 
@@ -90,7 +90,7 @@ public class DocumentFileTest {
 
         writeContentToTemporaryFile(testFileContent);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
         }
 

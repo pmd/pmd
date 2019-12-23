@@ -26,7 +26,7 @@ public interface TextDocument {
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    RegionWithLines createRegion(final int beginLine, final int beginColumn, final int endLine, final int endColumn);
+    RegionWithLines createRegion(int beginLine, int beginColumn, int endLine, int endColumn);
 
 
     /**
@@ -34,7 +34,7 @@ public interface TextDocument {
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    TextRegion createRegion(final int offset, final int length);
+    TextRegion createRegion(int offset, int length);
 
 
     /**

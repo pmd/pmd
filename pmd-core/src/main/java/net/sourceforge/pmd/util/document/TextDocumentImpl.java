@@ -41,10 +41,10 @@ class TextDocumentImpl implements TextDocument {
 
         if (startOffset < 0 || endOffset < 0) {
             throw new IndexOutOfBoundsException(
-                "Region (" + beginLine + ", "
-                    + beginColumn
-                    + "," + endLine +
-                    "," + endColumn + ") is not in range of this document");
+                "Region (" + beginLine
+                    + ", " + beginColumn
+                    + ", " + endLine
+                    + ", " + endColumn + ") is not in range of this document");
         }
 
         return new WithLineInfo(startOffset, endOffset - startOffset,
