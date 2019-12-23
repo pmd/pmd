@@ -40,7 +40,7 @@ end Test;
         ]]></code>
     </test-code>
     <test-code>
-        <description>Invalid example: class Y is both placed to the scope by extending and import</description>
+        <description>Invalid example: class Y is imported twice</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 package Test
@@ -64,8 +64,7 @@ package Test
 end Test;
         ]]></code>
     </test-code>
-<!--
-    <test-code>
+    <test-code regressionTest="false">
         <description>Invalid example: suspicious reference to X</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -78,5 +77,4 @@ package Test
 end Test;
         ]]></code>
     </test-code>
--->
 </test-data>

@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.modelica.ast;
 public class ASTElementList extends AbstractModelicaNode {
     private Visibility visibility;
 
-    public ASTElementList(int id) {
+    ASTElementList(int id) {
         super(id);
     }
 
-    public ASTElementList(ModelicaParser p, int id) {
+    ASTElementList(ModelicaParser p, int id) {
         super(p, id);
     }
 

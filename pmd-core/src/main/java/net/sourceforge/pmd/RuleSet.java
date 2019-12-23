@@ -153,6 +153,32 @@ public class RuleSet implements ChecksumAware {
         }
 
         /**
+         * Finds an already added rule by same name and language, if it already exists.
+         * @param rule the rule to search
+         * @return the already added rule or <code>null</code> if no rule was added yet to the builder.
+         */
+        Rule getExistingRule(final Rule rule) {
+            for (Rule r : rules) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                    return r;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Checks, whether a rule with the same name and language already exists in the
+         * ruleset.
+         * @param rule to rule to check
+         * @return <code>true</code> if the rule already exists, <code>false</code> if the given
+         *     rule is the first configuration of this rule.
+         */
+        boolean hasRule(final Rule rule) {
+            return getExistingRule(rule) != null;
+        }
+
+        /**
          * Adds a rule. If a rule with the same name and language already
          * existed before in the ruleset, then the new rule will replace it.
          * This makes sure that the rule configured is overridden.
@@ -197,13 +223,7 @@ public class RuleSet implements ChecksumAware {
                 rule = ((RuleReference) rule).getRule();
             }
 
-            boolean exists = false;
-            for (final Rule r : rules) {
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
-                    exists = true;
-                    break;
-                }
-            }
+            boolean exists = hasRule(rule);
             if (!exists) {
                 addRule(ruleOrRef);
             }
