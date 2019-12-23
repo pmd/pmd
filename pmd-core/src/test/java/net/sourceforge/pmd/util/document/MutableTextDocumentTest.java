@@ -17,7 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class DocumentFileTest {
+public class MutableTextDocumentTest {
 
     private static final String FILE_PATH = "psvm.java";
 

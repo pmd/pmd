@@ -34,6 +34,13 @@ public interface ReplaceHandler {
 
     /**
      * Replace the content of a region with some text.
+     * <ul>
+     * <li>To insert some text, use an empty region
+     * <li>To delete some text, use an empty text string
+     * </ul>
+     *
+     * @param region Region of text to replace
+     * @param text   Text that will replace the given region
      */
     void replace(TextRegion region, String text);
 

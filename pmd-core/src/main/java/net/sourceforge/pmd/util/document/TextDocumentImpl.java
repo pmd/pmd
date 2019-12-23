@@ -10,6 +10,12 @@ import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
 
 class TextDocumentImpl implements TextDocument {
 
+    private static final String OUT_OF_BOUNDS_WITH_LINES =
+        "Region [bpos=(%d, %d), epos = (%d, %d)] is not in range of this document";
+
+    private static final String OUT_OF_BOUNDS_WITH_OFFSET =
+        "Region [%d, +%d] is not in range of this document";
+
     /** The positioner has the original source file. */
     SourceCodePositioner positioner;
 
@@ -41,10 +47,10 @@ class TextDocumentImpl implements TextDocument {
 
         if (startOffset < 0 || endOffset < 0) {
             throw new IndexOutOfBoundsException(
-                "Region (" + beginLine
-                    + ", " + beginColumn
-                    + ", " + endLine
-                    + ", " + endColumn + ") is not in range of this document");
+                String.format(OUT_OF_BOUNDS_WITH_LINES,
+                              beginLine, beginColumn,
+                              endLine, endColumn)
+            );
         }
 
         return new WithLineInfo(startOffset, endOffset - startOffset,
@@ -54,8 +60,7 @@ class TextDocumentImpl implements TextDocument {
     @Override
     public TextRegion createRegion(int offset, int length) {
         if (offset < 0 || offset + length > positioner.getSourceCode().length()) {
-            throw new IndexOutOfBoundsException(
-                "Region (" + offset + ",+" + length + ") is not in range of this document");
+            throw new IndexOutOfBoundsException(String.format(OUT_OF_BOUNDS_WITH_OFFSET, offset, length));
         }
 
         return new TextRegionImpl(offset, length);

@@ -61,7 +61,7 @@ public interface TextRegion extends Comparable<TextRegion> {
         int getBeginColumn();
 
 
-        /** 1-based, inclusive index. */
+        /** 1-based, <b>exclusive</b> index. */
         int getEndColumn();
     }
 

@@ -24,6 +24,11 @@ public interface TextDocument {
     /**
      * Create a new region based on line coordinates.
      *
+     * @param beginLine   1-based inclusive index (>= 1)
+     * @param beginColumn 1-based inclusive index (>= 1)
+     * @param endLine     1-based inclusive index (>= 1)
+     * @param endColumn   1-based <b>exclusive</b> index (>= 1)
+     *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
     RegionWithLines createRegion(int beginLine, int beginColumn, int endLine, int endColumn);
@@ -31,6 +36,9 @@ public interface TextDocument {
 
     /**
      * Create a new region based on offset coordinates.
+     *
+     * @param offset 0-based, inclusive offset
+     * @param length Length of the region
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */

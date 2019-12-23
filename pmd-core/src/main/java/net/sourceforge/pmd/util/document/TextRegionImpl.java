@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.document;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+
 /**
  * Immutable implementation of the {@link TextRegion} interface.
  */
@@ -13,8 +15,8 @@ class TextRegionImpl implements TextRegion {
     private final int length;
 
     TextRegionImpl(int offset, int length) {
-        this.startOffset = requireNonNegative(offset);
-        this.length = requireNonNegative(length);
+        this.startOffset = AssertionUtil.requireNonNegative("Start offset", offset);
+        this.length = AssertionUtil.requireNonNegative("Region length", length);
     }
 
     @Override
@@ -37,13 +39,6 @@ class TextRegionImpl implements TextRegion {
         return "Region(start=" + startOffset + ", len=" + length + ")";
     }
 
-    private static int requireNonNegative(int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("Expected a non-negative value, got " + value);
-        }
-        return value;
-    }
-
     static final class WithLineInfo extends TextRegionImpl implements RegionWithLines {
 
         private final int beginLine;
@@ -53,17 +48,19 @@ class TextRegionImpl implements TextRegion {
 
         WithLineInfo(int startOffset, int length, int beginLine, int beginColumn, int endLine, int endColumn) {
             super(startOffset, length);
-            this.beginLine = requireOver1(beginLine);
-            this.endLine = requireOver1(endLine);
-            this.beginColumn = requireOver1(beginColumn);
-            this.endColumn = requireOver1(endColumn);
+            this.beginLine = AssertionUtil.requireOver1("Begin line", beginLine);
+            this.endLine = AssertionUtil.requireOver1("End line", endLine);
+            this.beginColumn = AssertionUtil.requireOver1("Begin column", beginColumn);
+            this.endColumn = AssertionUtil.requireOver1("End column", endColumn);
 
             requireLinesCorrectlyOrdered();
         }
 
         private void requireLinesCorrectlyOrdered() {
             if (beginLine > endLine) {
-                throw new IllegalArgumentException("endLine must be equal or greater than beginLine");
+                throw AssertionUtil.mustBe("endLine", endLine, ">= beginLine (= " + beginLine + ")");
+            } else if (beginLine == endLine && beginColumn > endColumn) {
+                throw AssertionUtil.mustBe("endColumn", endColumn, ">= beginColumn (= " + beginColumn + ")");
             }
         }
 
@@ -87,13 +84,6 @@ class TextRegionImpl implements TextRegion {
             return endColumn;
         }
 
-
-        private int requireOver1(final int value) {
-            if (value < 1) {
-                throw new IllegalArgumentException("parameter must be >= 1");
-            }
-            return value;
-        }
 
     }
 
