@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-assertArrayEquals ok
-     ]]></description>
+        <description>assertArrayEquals ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -17,10 +16,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertArrayEquals bad
-     ]]></description>
+        <description>assertArrayEquals bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -31,10 +29,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertEquals ok
-     ]]></description>
+        <description>assertEquals ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -45,10 +42,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertEquals with string variable as message ok
-     ]]></description>
+        <description>assertEquals with string variable as message ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -60,10 +56,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertEquals with delta ok
-     ]]></description>
+        <description>assertEquals with delta ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -74,10 +69,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertEquals bad
-     ]]></description>
+        <description>assertEquals bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -88,10 +82,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertEquals with delta bad
-     ]]></description>
+        <description>assertEquals with delta bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -102,10 +95,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertEquals with delta but missing assertion message not ok
-     ]]></description>
+        <description>assertEquals with delta but missing assertion message not ok</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -117,10 +109,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertFalse ok
-     ]]></description>
+        <description>assertFalse ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -131,10 +122,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertFalse bad
-     ]]></description>
+        <description>assertFalse bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -145,10 +135,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertNotNull OK
-     ]]></description>
+        <description>assertNotNull OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -159,10 +148,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertNotNull bad
-     ]]></description>
+        <description>assertNotNull bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -173,10 +161,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertNotSame ok
-     ]]></description>
+        <description>assertNotSame ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -187,10 +174,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertNotSame bad
-     ]]></description>
+        <description>assertNotSame bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -201,10 +187,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertNull OK
-     ]]></description>
+        <description>assertNull OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -215,10 +200,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertNull bad
-     ]]></description>
+        <description>assertNull bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -229,10 +213,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertSame OK
-     ]]></description>
+        <description>assertSame OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -243,10 +226,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertSame bad
-     ]]></description>
+        <description>assertSame bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -257,10 +239,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertThat ok
-     ]]></description>
+        <description>assertThat ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -271,10 +252,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertThat bad
-     ]]></description>
+        <description>assertThat bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -285,10 +265,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertTrue ok
-     ]]></description>
+        <description>assertTrue ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -299,10 +278,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-assertTrue bad
-     ]]></description>
+        <description>assertTrue bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -313,10 +291,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail ok
-     ]]></description>
+        <description>fail ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -327,10 +304,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail bad
-     ]]></description>
+        <description>fail bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -341,10 +317,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-find that pesky bug
-     ]]></description>
+        <description>find that pesky bug</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -355,10 +330,9 @@ public class Foo extends TestCase {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Not a JUnit test - assertEquals bad
-     ]]></description>
+        <description>Not a JUnit test - assertEquals bad</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -368,10 +342,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-JUnit 4 - assertEquals
-     ]]></description>
+        <description>JUnit 4 - assertEquals</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
@@ -383,6 +356,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
         <description>#1374 JUnitAssertionsShouldIncludeMessage does not work</description>
         <expected-problems>4</expected-problems>
@@ -405,6 +379,7 @@ public class TestClass extends Assert {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1373 JUnitAssertionsShouldIncludeMessage is no longer compatible with TestNG</description>
         <expected-problems>0</expected-problems>
@@ -426,6 +401,7 @@ public class TestNgTestCase {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>
 Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
@@ -439,6 +415,22 @@ class SimpleTest {
     @Test
     public void simpleMethod() {
         assertEquals(0, 1, "Not equals 0 != 1");
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2149 [java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+class SimpleTest {
+    @Test
+    public void simpleMethod() {
+        assertEquals(0, Integer.compare(0, 0), "Not equals 0 != 1");
     }
 }
      ]]></code>
