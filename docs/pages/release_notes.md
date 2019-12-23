@@ -55,6 +55,8 @@ the implementation based on your feedback.
     *   [#2140](https://github.com/pmd/pmd/issues/2140): \[java] AvoidLiteralsInIfCondition: false negative for expressions
 *   java-performance
     *   [#2141](https://github.com/pmd/pmd/issues/2141): \[java] StringInstatiation: False negative with String-array access
+*   plsql
+    *   [#2008](https://github.com/pmd/pmd/issues/2008): \[plsql] In StringLiteral using alternative quoting mechanism single quotes cause parsing errors
 
 ### API Changes
 
