@@ -41,12 +41,21 @@ the implementation based on your feedback.
     at runtime. So, if you try to do this, you'll get an error at runtime, hence this is error prone. See also
     the discussion on [#2064](https://github.com/pmd/pmd/issues/2064).
 
+*   The Java rule {% rule "java/documentation/CommentRequired" %} (`java-documentation`) has a new property
+    `classCommentRequirement`. This replaces the now deprecated property `headerCommentRequirement`, since
+    the name was misleading. (File) header comments are not checked, but class comments are.
+
 ### Fixed Issues
 
+*   core
+    *   [#2006](https://github.com/pmd/pmd/issues/2006): \[core] PMD should warn about multiple instances of the same rule in a ruleset
+    *   [#2170](https://github.com/pmd/pmd/issues/2170): \[core] DocumentFile doesn't preserve newlines
 *   java-bestpractices
     *   [#2149](https://github.com/pmd/pmd/issues/2149): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
 *   java-codestyle
     *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference
+*   java-documentation
+    *   [#1683](https://github.com/pmd/pmd/issues/1683): \[java] CommentRequired property names are inconsistent
 *   java-errorprone
     *   [#2140](https://github.com/pmd/pmd/issues/2140): \[java] AvoidLiteralsInIfCondition: false negative for expressions
 *   java-performance
@@ -99,6 +108,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 *   [#2041](https://github.com/pmd/pmd/pull/2041): \[modelica] Initial implementation for PMD - [Anatoly Trosinenko](https://github.com/atrosinenko)
 *   [#2051](https://github.com/pmd/pmd/pull/2051): \[doc] Update the docs on adding a new language - [Anatoly Trosinenko](https://github.com/atrosinenko)
+*   [#2069](https://github.com/pmd/pmd/pull/2069): \[java] CommentRequired: make property names consistent - [snuyanzin](https://github.com/snuyanzin)
 *   [#2169](https://github.com/pmd/pmd/pull/2169): \[modelica] Follow-up fixes for Modelica language module - [Anatoly Trosinenko](https://github.com/atrosinenko)
 
 {% endtocmaker %}
