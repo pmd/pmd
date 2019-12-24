@@ -40,11 +40,15 @@ public class StringLiteralsTest extends AbstractPLSQLParserTst {
         ASTInput input = parsePLSQL(code);
         List<ASTStringLiteral> strings = input.findDescendantsOfType(ASTStringLiteral.class);
         Assert.assertEquals(1, strings.size());
-        Assert.assertTrue(strings.get(0).getString().startsWith("\ncreate or replace and"));
+        Assert.assertTrue(normalizeEol(strings.get(0).getString()).startsWith("\ncreate or replace and"));
     }
 
     private static void assertString(String quoted, String plain, int index, List<ASTStringLiteral> strings) {
-        Assert.assertEquals(quoted, strings.get(index).getImage());
-        Assert.assertEquals(plain, strings.get(index).getString());
+        Assert.assertEquals(quoted, normalizeEol(strings.get(index).getImage()));
+        Assert.assertEquals(plain, normalizeEol(strings.get(index).getString()));
+    }
+
+    private static String normalizeEol(String s) {
+        return s.replaceAll("\n|\r|\r\n|\n\r", "\n");
     }
 }
