@@ -55,6 +55,8 @@ the implementation based on your feedback.
     *   [#2140](https://github.com/pmd/pmd/issues/2140): \[java] AvoidLiteralsInIfCondition: false negative for expressions
 *   java-performance
     *   [#2141](https://github.com/pmd/pmd/issues/2141): \[java] StringInstatiation: False negative with String-array access
+*   plsql
+    *   [#2009](https://github.com/pmd/pmd/issues/2009): \[plsql] Multiple DDL commands are skipped during parsing
 
 ### API Changes
 
