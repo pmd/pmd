@@ -95,12 +95,24 @@ public final class RulesetsFactoryUtils {
      * @see #createFactory(PMDConfiguration, ClassLoader)
      */
     public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
-        return getRulesetFactory(configuration, new ResourceLoader());
+        return createFactory(configuration, RulesetsFactoryUtils.class.getClassLoader());
+    }
+
+    /**
+     * Returns a ruleset factory with default parameters. It doesn't prune
+     * rules based on priority, and doesn't warn for deprecations.
+     *
+     * @return A ruleset factory
+     *
+     * @see #createFactory(PMDConfiguration, ClassLoader)
+     */
+    public static RuleSetFactory defaultFactory() {
+        return new RuleSetFactory();
     }
 
     /**
      * Returns a ruleset factory which uses the provided {@link ClassLoader}
-     * to resolve resource references.
+     * to resolve resource references. It warns for deprecated rule usages.
      *
      * @param configuration PMD configuration, contains info about the
      *                      factory parameters
@@ -111,7 +123,52 @@ public final class RulesetsFactoryUtils {
      * @see #createFactory(PMDConfiguration)
      */
     public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
-        return getRulesetFactory(configuration, new ResourceLoader(classLoader));
+        return createFactory(classLoader,
+                             configuration.getMinimumPriority(),
+                             true,
+                             configuration.isRuleSetFactoryCompatibilityEnabled());
+    }
+
+    /**
+     * Returns a ruleset factory which uses the provided {@link ClassLoader}
+     * to resolve resource references.
+     *
+     * @param minimumPriority     Minimum priority for rules to be included
+     * @param warnDeprecated      If true, print warnings when deprecated rules are included
+     * @param enableCompatibility If true, rule references to moved rules are mapped to their
+     *                            new location if they are known
+     * @param classLoader         Class loader to load resources
+     *
+     * @return A ruleset factory
+     *
+     * @see #createFactory(PMDConfiguration)
+     */
+    public static RuleSetFactory createFactory(ClassLoader classLoader,
+                                               RulePriority minimumPriority,
+                                               boolean warnDeprecated,
+                                               boolean enableCompatibility) {
+
+        return new RuleSetFactory(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
+    }
+
+    /**
+     * Returns a ruleset factory which uses the classloader for PMD
+     * classes to resolve resource references.
+     *
+     * @param minimumPriority     Minimum priority for rules to be included
+     * @param warnDeprecated      If true, print warnings when deprecated rules are included
+     * @param enableCompatibility If true, rule references to moved rules are mapped to their
+     *                            new location if they are known
+     *
+     * @return A ruleset factory
+     *
+     * @see #createFactory(PMDConfiguration)
+     */
+    public static RuleSetFactory createFactory(RulePriority minimumPriority,
+                                               boolean warnDeprecated,
+                                               boolean enableCompatibility) {
+
+        return new RuleSetFactory(new ResourceLoader(), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
     /**

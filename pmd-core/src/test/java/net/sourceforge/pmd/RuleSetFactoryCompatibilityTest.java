@@ -28,7 +28,7 @@ public class RuleSetFactoryCompatibilityTest {
                 + "  <description>Test</description>\n" + "\n"
                 + " <rule ref=\"rulesets/dummy/notexisting.xml/DummyBasicMockRule\" />\n" + "</ruleset>\n";
 
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         factory.getCompatibilityFilter().addFilterRuleMoved("dummy", "notexisting", "basic", "DummyBasicMockRule");
 
         RuleSet createdRuleSet = createRulesetFromString(ruleset, factory);
@@ -66,7 +66,7 @@ public class RuleSetFactoryCompatibilityTest {
                 + "  <description>Test</description>\n" + "\n" + " <rule ref=\"rulesets/dummy/basic.xml\">\n"
                 + "   <exclude name=\"OldNameOfSampleXPathRule\"/>\n" + " </rule>\n" + "</ruleset>\n";
 
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         factory.getCompatibilityFilter().addFilterRuleRenamed("dummy", "basic", "OldNameOfSampleXPathRule",
                 "SampleXPathRule");
 

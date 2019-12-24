@@ -261,7 +261,7 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
         return rsf.createRuleSet(ruleSetFileName);
     }
 
@@ -360,7 +360,7 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml2: " + xml2);
 
         // Read RuleSet from XML, first time
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         RuleSet ruleSet2 = ruleSetFactory.createRuleSet(createRuleSetReferenceId(xml2));
 
         // Do write/read a 2nd time, just to be sure
