@@ -227,6 +227,9 @@ public class PLSQLParser {
   /**
    * Semantic lookahead to check if the next identifier is a
    * specific keyword.
+   *
+   * <p>
+   * Usage: <code>LOOKAHEAD({isKeyword("WAIT")}) KEYWORD("WAIT")</code>
    */
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).image.equalsIgnoreCase(keyword);
@@ -259,12 +262,12 @@ ASTInput Input(String sourcecode) : {}
 	 | LOOKAHEAD(6) Directory()
 	 | LOOKAHEAD(6) DatabaseLink()
 	 | LOOKAHEAD(6) Global()
-     | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
+     | (LOOKAHEAD(6) DDLCommand())+
 	 | LOOKAHEAD(2) SqlPlusCommand()
 	 | UpdateStatement()
 	 | DeleteStatement()
 	 | InsertStatement()
-	 | SelectStatement() (";")?
+	 | SelectStatement() [";"]
 	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )
 	 ("/")*
@@ -279,8 +282,15 @@ ASTDDLCommand DDLCommand() :
 }
 {
   (
-    simpleNode = DDLEvent()
-    SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR)
+    (
+      LOOKAHEAD({isKeyword("COMMENT")})
+      simpleNode = Comment()
+    )
+    |
+    (
+      simpleNode = DDLEvent()
+      SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR)
+    )
   )
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
@@ -315,7 +325,7 @@ ASTSqlPlusCommand SqlPlusCommand() :
   | <VARIABLE>
   | <WHENEVER>
   // DDL that might be encountered
-  | <COMMENT>
+  | LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT")
   | <GRANT>
   | <REVOKE>
   | <DROP>
@@ -3904,19 +3914,22 @@ ASTViewColumn ViewColumn()  :
       { return jjtThis ; }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/COMMENT.html#GUID-65F447C4-6914-4823-9691-F15D52DB74D7
+ */
 ASTComment Comment()  :
 {
 }
 {
-  <COMMENT> <ON> (
+  LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT")
+  <ON> (
     ((<TABLE> | <OPERATOR> | <INDEXTYPE>) [LOOKAHEAD(2) ID()"."] ID()) |
     (<COLUMN> [LOOKAHEAD(ID()"."ID()"."ID()) ID()"."] ID() "." ID())
   )
-  <IS> <STRING_LITERAL>
-  [";"]
-      { return jjtThis ; }
+  <IS> StringLiteral()
+  ";"
+  { return jjtThis ; }
 }
-// SRT * /
 
 
 
@@ -4489,23 +4502,26 @@ ASTNonDMLTrigger NonDMLTrigger()  :
       { return jjtThis ; }
 }
 
-
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Types-of-SQL-Statements.html#GUID-FD9A8CB4-6B9A-44E5-B114-EFB8DA76FC88
+ */
 ASTDDLEvent DDLEvent(): {}
 {
   ( <ALTER>
   | <ANALYZE>
   | <ASSOCIATE> <STATISTICS>
   | <AUDIT>
-  | <COMMENT>
+  | LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT")
   | <CREATE>
   | <DISASSOCIATE> <STATISTICS>
   | <DROP>
+  // | <FLASHBACK>
   | <GRANT>
   | <NOAUDIT>
+  // | <PURGE>
   | <RENAME>
   | <REVOKE>
   | <TRUNCATE>
-  | <DDL>
   )
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
@@ -4741,7 +4757,6 @@ TOKEN [IGNORE_CASE]:
 <COALESCE: "COALESCE"> |
 <COLLECT: "COLLECT"> |
 <COLUMN: "COLUMN"> |
-<COMMENT: "COMMENT"> |
 <COMMIT: "COMMIT"> |
 <CONSTANT: "CONSTANT"> |
 <CONSTRAINT: "CONSTRAINT"> |
@@ -4997,7 +5012,6 @@ TOKEN [IGNORE_CASE]:
 | <COMPOUND: "COMPOUND">  //11G Trigger Syntax
 | <DATABASE: "DATABASE">  //11G Trigger Syntax
 | <CALL: "CALL"> //11G Trigger Syntax
-| <DDL: "DDL">  //11G Trigger Syntax
 | <DISASSOCIATE: "DISASSOCIATE">  //11G Trigger Syntax
 | <EACH: "EACH">  //11G Trigger Syntax
 | <FOLLOWS: "FOLLOWS">  //11G Trigger Syntax
@@ -5386,7 +5400,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <COLUMN_STATS>
 //| <COLUMN_VALUE>
 //| <COLUMNS>
-| <COMMENT>
 | <COMMIT>
 //| <COMMITTED>
 //| <COMPACT>
@@ -5447,7 +5460,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DBA_RECYCLEBIN>
 //| <DBMS_STATS>
 | <DBTIMEZONE>
-| <DDL>
 //| <DEALLOCATE>
 //| <DEBUG>
 | <DEC>
@@ -6352,7 +6364,7 @@ ASTID ID(): {}
 	        | KEYWORD_UNRESERVED()  //SRT 2011-04-17
 		/*KEYWORDS_UNRESERVED
 		|<EXTRACT> | <FALSE> | <TRUE>  | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <MONTH> | <YEAR>
-		 | <NO> |<ROW>  | <COMMENT> | <CURSOR>
+		 | <NO> |<ROW> | <CURSOR>
 		*/
 		//20120501 | <DEFINER>
 		| <SERIALLY_REUSABLE> | <RESTRICT_REFERENCES>
@@ -6615,7 +6627,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<CLUSTER>
 		//| <COALESCE>
 		//20120501 | <COLLECT>
-		//| <COMMENT>
 		//| <COMMIT>
 		//<COMPRESS>
 		//<CONNECT>
