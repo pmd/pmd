@@ -268,7 +268,7 @@ ASTInput Input(String sourcecode) : {}
 	 | DeleteStatement()
 	 | InsertStatement()
 	 | SelectStatement() [";"]
-	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
+	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) ReadPastNextOccurrence(";") //Ignore SQL statements in scripts
 	 )
 	 ("/")*
 	)*
@@ -289,7 +289,7 @@ ASTDDLCommand DDLCommand() :
     |
     (
       simpleNode = DDLEvent()
-      SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR)
+      ReadPastNextOccurrence(";")
     )
   )
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
@@ -1131,6 +1131,7 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
   {
     nextToken = getNextToken();
     sb.append(nextToken.image);
+    sb.append(' ');
     nextToken = getToken(1);
   }
 }
@@ -1143,10 +1144,11 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 */
 ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 {
+  ASTRead2NextOccurrence skipped = Read2NextOccurrence(target);
+
   StringBuilder sb = new StringBuilder();
-  Token t = null;
-  sb.append(Read2NextOccurrence(target)) ;
-  t = getNextToken(); // Chomp this one
+  sb.append(skipped.getImage()) ;
+  Token t = getNextToken(); // Chomp this one
   sb.append(t.image);
 }
 {
@@ -3921,7 +3923,7 @@ ASTComment Comment()  :
 {
 }
 {
-  LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT")
+  LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT") { jjtThis.setImage(token.image); }
   <ON> (
     ((<TABLE> | <OPERATOR> | <INDEXTYPE>) [LOOKAHEAD(2) ID()"."] ID()) |
     (<COLUMN> [LOOKAHEAD(ID()"."ID()"."ID()) ID()"."] ID() "." ID())
@@ -5157,8 +5159,6 @@ TOKEN :
 < JAVA_INTERFACE_CLASS: ( "SQLData" | "CustomDatum" | "OraData" ) >
 //|
 //< #BOOLEAN_LITERAL: "TRUE" | "FALSE" >
-|
-<SQLPLUS_TERMINATOR: ( ";" | "/" ) >
 }
 
 /**

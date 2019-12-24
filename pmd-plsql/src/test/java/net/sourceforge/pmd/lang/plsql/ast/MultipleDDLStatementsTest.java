@@ -21,7 +21,7 @@ public class MultipleDDLStatementsTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         List<ASTDDLCommand> ddlcommands = input.findDescendantsOfType(ASTDDLCommand.class);
-        Assert.assertEquals(3, ddlcommands.size());
+        Assert.assertEquals(4, ddlcommands.size());
         List<ASTComment> comments = input.findDescendantsOfType(ASTComment.class);
         Assert.assertEquals(3, comments.size());
         Assert.assertEquals("'abbreviated job title'", comments.get(0).getFirstChildOfType(ASTStringLiteral.class).getImage());
