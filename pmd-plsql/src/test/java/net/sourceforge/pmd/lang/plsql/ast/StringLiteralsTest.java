@@ -49,6 +49,6 @@ public class StringLiteralsTest extends AbstractPLSQLParserTst {
     }
 
     private static String normalizeEol(String s) {
-        return s.replaceAll("\n|\r|\r\n|\n\r", "\n");
+        return s.replaceAll("\r\n|\n\r|\n|\r", "\n");
     }
 }
