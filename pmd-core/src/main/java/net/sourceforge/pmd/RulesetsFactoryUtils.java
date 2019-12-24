@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -61,24 +62,62 @@ public final class RulesetsFactoryUtils {
      * @throws IllegalArgumentException
      *             if rulesets is empty (means, no rules have been found) or if
      *             a ruleset couldn't be found.
+     * @deprecated Is internal API
      */
+    @InternalApi
+    @Deprecated
     public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             return getRuleSets(rulesets, factory);
         }
     }
 
+    /**
+     * @deprecated Use {@link #createFactory(PMDConfiguration)} or {@link #createFactory(PMDConfiguration, ClassLoader)}
+     */
+    @InternalApi
+    @Deprecated
     public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration,
-            final ResourceLoader resourceLoader) {
+                                                   final ResourceLoader resourceLoader) {
         return new RuleSetFactory(resourceLoader, configuration.getMinimumPriority(), true,
-                configuration.isRuleSetFactoryCompatibilityEnabled());
+                                  configuration.isRuleSetFactoryCompatibilityEnabled());
+    }
+
+    /**
+     * Returns a ruleset factory which uses the classloader for PMD
+     * classes to resolve resource references.
+     *
+     * @param configuration PMD configuration, contains info about the
+     *                      factory parameters
+     *
+     * @return A ruleset factory
+     *
+     * @see #createFactory(PMDConfiguration, ClassLoader)
+     */
+    public static RuleSetFactory createFactory(final PMDConfiguration configuration) {
+        return getRulesetFactory(configuration, new ResourceLoader());
+    }
+
+    /**
+     * Returns a ruleset factory which uses the provided {@link ClassLoader}
+     * to resolve resource references.
+     *
+     * @param configuration PMD configuration, contains info about the
+     *                      factory parameters
+     * @param classLoader   Class loader to load resources
+     *
+     * @return A ruleset factory
+     *
+     * @see #createFactory(PMDConfiguration)
+     */
+    public static RuleSetFactory createFactory(final PMDConfiguration configuration, ClassLoader classLoader) {
+        return getRulesetFactory(configuration, new ResourceLoader(classLoader));
     }
 
     /**
      * If in debug modus, print the names of the rules.
      *
-     * @param rulesets
-     *            the RuleSets to print
+     * @param rulesets the RuleSets to print
      */
     private static void printRuleNamesInDebug(RuleSets rulesets) {
         if (LOG.isLoggable(Level.FINER)) {
