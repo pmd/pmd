@@ -105,6 +105,6 @@ public class ASTSwitchStatement extends AbstractJavaNode implements Iterable<AST
 
     @Override
     public Iterator<ASTSwitchLabel> iterator() {
-        return new NodeChildrenIterator<>(this, ASTSwitchLabel.class);
+        return children(ASTSwitchLabel.class).iterator();
     }
 }

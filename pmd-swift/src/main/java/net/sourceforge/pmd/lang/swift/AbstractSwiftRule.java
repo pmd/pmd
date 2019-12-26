@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.swift;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftBaseVisitor;
+import net.sourceforge.pmd.lang.swift.ast.SwiftBaseVisitor;
 
 public abstract class AbstractSwiftRule<T> extends SwiftBaseVisitor<T> {
     public AbstractSwiftRule() {

@@ -34,7 +34,7 @@ public class CpdExecutor {
         String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
 
         int result = process.waitFor();
-        return new ExecutionResult(result, output);
+        return new ExecutionResult(result, output, null, null);
     }
 
     private static ExecutionResult runCpdWindows(Path tempDir, String ... arguments) throws Exception {
@@ -46,7 +46,7 @@ public class CpdExecutor {
         String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
 
         int result = process.waitFor();
-        return new ExecutionResult(result, output);
+        return new ExecutionResult(result, output, null, null);
     }
 
     /**

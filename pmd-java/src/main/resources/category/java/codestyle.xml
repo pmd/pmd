@@ -101,7 +101,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
+/MethodDeclaration[@Protected='true' and @Name != 'finalize']
  ]]>
                 </value>
             </property>
@@ -168,13 +168,13 @@ prefix for these methods.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[
-MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
-                [starts-with(@Image, 'get')]
-and
-ResultType/Type/PrimitiveType[@Image = 'boolean']
-and not(../Annotation//Name[@Image = 'Override'])
-]
+//MethodDeclaration
+    [starts-with(@Name, 'get')]
+    [@Arity = 0 or $checkParameterizedMethods = 'true']
+    [
+        ResultType/Type/PrimitiveType[@Image = 'boolean']
+        and not(../Annotation//Name[@Image = 'Override'])
+    ]
 ]]>
                 </value>
             </property>
@@ -835,7 +835,7 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
     and
     not
     (
-        ends-with(@Image,'LocalHome')
+        ends-with(@SimpleName,'LocalHome')
     )
 ]
 ]]>
@@ -873,7 +873,7 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
     and
     not
     (
-        ends-with(@Image,'Local')
+        ends-with(@SimpleName,'Local')
     )
 ]
 ]]>
@@ -1004,7 +1004,7 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
     and
     not
     (
-        ends-with(@Image,'Bean')
+        ends-with(@SimpleName,'Bean')
     )
 ]
 ]]>
@@ -1246,11 +1246,11 @@ Remote Interface of a Session EJB should not have a suffix.
     )
     and
     (
-        ends-with(@Image,'Session')
+        ends-with(@SimpleName,'Session')
         or
-        ends-with(@Image,'EJB')
+        ends-with(@SimpleName,'EJB')
         or
-        ends-with(@Image,'Bean')
+        ends-with(@SimpleName,'Bean')
     )
 ]
 ]]>
@@ -1293,7 +1293,7 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
     and
     not
     (
-        ends-with(@Image,'Home')
+        ends-with(@SimpleName,'Home')
     )
 ]
 ]]>
@@ -1324,7 +1324,7 @@ Short Classnames with fewer than e.g. five characters are not recommended.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[string-length(@Image) < $minimum]
+//ClassOrInterfaceDeclaration[string-length(@SimpleName) < $minimum]
 ]]>
                 </value>
             </property>
@@ -1352,7 +1352,7 @@ Method names that are very short are not helpful to the reader.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclarator[string-length(@Image) < $minimum]
+//MethodDeclaration[string-length(@Name) < $minimum]
 ]]>
                 </value>
             </property>
@@ -1762,7 +1762,7 @@ public class Foo {
 [PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
-/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
+/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>

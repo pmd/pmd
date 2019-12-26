@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.swift;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.antlr.AntlrRuleChainVisitor;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrRuleChainVisitor;
 
 /**
  * Language Module for Swift

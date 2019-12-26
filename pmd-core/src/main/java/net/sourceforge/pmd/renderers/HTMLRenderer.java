@@ -78,7 +78,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        Writer writer = getWriter();
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
@@ -88,13 +87,11 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         glomRuleViolations(writer, violations);
     }
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         writer.write("</table>");
         glomProcessingErrors(writer, errors);
         if (showSuppressedViolations) {
@@ -116,13 +113,13 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 buf.append(" bgcolor=\"lightgrey\"");
             }
             colorize = !colorize;
-            buf.append("> " + PMD.EOL);
-            buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
-            buf.append("<td width=\"*%\">"
-                    + maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(rv.getFilename())),
-                            linePrefix == null ? "" : linePrefix + Integer.toString(rv.getBeginLine()))
-                    + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
+            buf.append("> ").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(PMD.EOL);
+            buf.append("<td width=\"*%\">")
+               .append(maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(rv.getFilename())), linePrefix == null ? "" : linePrefix + rv.getBeginLine()))
+               .append("</td>")
+                .append(PMD.EOL);
+            buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
 
@@ -130,8 +127,11 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             if (StringUtils.isNotBlank(infoUrl)) {
                 d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
             }
-            buf.append("<td width=\"*\">" + d + "</td>" + PMD.EOL);
-            buf.append("</tr>" + PMD.EOL);
+            buf.append("<td width=\"*\">")
+               .append(d)
+               .append("</td>")
+               .append(PMD.EOL)
+               .append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());
             violationCount++;
         }
@@ -157,10 +157,10 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 buf.append(" bgcolor=\"lightgrey\"");
             }
             colorize = !colorize;
-            buf.append("> " + PMD.EOL);
-            buf.append("<td>" + determineFileName(pe.getFile()) + "</td>" + PMD.EOL);
-            buf.append("<td><pre>" + pe.getDetail() + "</pre></td>" + PMD.EOL);
-            buf.append("</tr>" + PMD.EOL);
+            buf.append("> ").append(PMD.EOL);
+            buf.append("<td>").append(determineFileName(pe.getFile())).append("</td>").append(PMD.EOL);
+            buf.append("<td><pre>").append(pe.getDetail()).append("</pre></td>").append(PMD.EOL);
+            buf.append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());
         }
         writer.write("</table>");
@@ -185,19 +185,19 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 buf.append(" bgcolor=\"lightgrey\"");
             }
             colorize = !colorize;
-            buf.append("> " + PMD.EOL);
-            buf.append("<td align=\"left\">" + determineFileName(sv.getRuleViolation().getFilename()) + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + sv.getRuleViolation().getBeginLine() + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + sv.getRuleViolation().getRule().getName() + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + (sv.getUserMessage() == null ? "" : sv.getUserMessage()) + "</td>"
-                    + PMD.EOL);
-            buf.append("</tr>" + PMD.EOL);
+            buf.append("> ").append(PMD.EOL);
+            buf.append("<td align=\"left\">").append(determineFileName(sv.getRuleViolation().getFilename())).append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(sv.getRuleViolation().getBeginLine()).append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(sv.getRuleViolation().getRule().getName()).append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(
+                sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(PMD.EOL);
+            buf.append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());
         }
         writer.write("</table>");
     }
-    
+
     private void glomConfigurationErrors(final Writer writer, final List<ConfigurationError> configErrors) throws IOException {
         if (configErrors.isEmpty()) {
             return;
@@ -217,10 +217,10 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 buf.append(" bgcolor=\"lightgrey\"");
             }
             colorize = !colorize;
-            buf.append("> " + PMD.EOL);
-            buf.append("<td>" + ce.rule().getName() + "</td>" + PMD.EOL);
-            buf.append("<td>" + ce.issue() + "</td>" + PMD.EOL);
-            buf.append("</tr>" + PMD.EOL);
+            buf.append("> ").append(PMD.EOL);
+            buf.append("<td>").append(ce.rule().getName()).append("</td>").append(PMD.EOL);
+            buf.append("<td>").append(ce.issue()).append("</td>").append(PMD.EOL);
+            buf.append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());
         }
         writer.write("</table>");

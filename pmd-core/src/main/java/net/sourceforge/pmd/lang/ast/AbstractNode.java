@@ -190,7 +190,7 @@ public abstract class AbstractNode implements Node {
      * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
      */
     @Deprecated
-    public final boolean hasDecendantOfAnyType(final Class<?>... types) {
+    public final boolean hasDecendantOfAnyType(final Class<? extends Node>... types) {
         return hasDescendantOfAnyType(types);
     }
 
@@ -199,13 +199,13 @@ public abstract class AbstractNode implements Node {
      *
      * @param types Types to test
      */
-    public final boolean hasDescendantOfAnyType(final Class<?>... types) {
+    public final boolean hasDescendantOfAnyType(final Class<? extends Node>... types) {
         // TODO consider implementing that with a single traversal!
         // hasDescendantOfType could then be a special case of this one
         // But to really share implementations, getFirstDescendantOfType's
         // internal helper could have to give up some type safety to rely
         // instead on a getFirstDescendantOfAnyType, then cast to the correct type
-        for (final Class<?> type : types) {
+        for (final Class<? extends Node> type : types) {
             if (hasDescendantOfType(type)) {
                 return true;
             }
@@ -271,4 +271,5 @@ public abstract class AbstractNode implements Node {
     public String toString() {
         return getXPathNodeName();
     }
+
 }

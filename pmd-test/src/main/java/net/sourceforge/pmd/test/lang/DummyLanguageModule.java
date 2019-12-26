@@ -7,9 +7,7 @@ package net.sourceforge.pmd.test.lang;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -22,9 +20,10 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 /**
@@ -78,21 +77,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
+                    DummyNode node = new DummyRootNode(1);
                     node.testingOnlySetBeginLine(1);
                     node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
                     return node;
-                }
-
-                @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
-                }
-
-                @Override
-                public boolean canParse() {
-                    return true;
                 }
 
                 @Override
@@ -103,7 +92,16 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    public static class RuleViolationFactory extends AbstractRuleViolationFactory {
+    private static class DummyRootNode extends DummyNode implements RootNode {
+
+        DummyRootNode(int id) {
+            super(id);
+        }
+
+    }
+
+
+    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);

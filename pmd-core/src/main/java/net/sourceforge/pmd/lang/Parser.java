@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -32,10 +31,6 @@ public interface Parser {
      */
     TokenManager getTokenManager(String fileName, Reader source);
 
-    /**
-     * Indicates if this parser can actual parse, or if it can only tokenize.
-     */
-    boolean canParse();
 
     /**
      * Parse source code and return the root node of the AST.
@@ -51,6 +46,5 @@ public interface Parser {
      */
     Node parse(String fileName, Reader source) throws ParseException;
 
-    // TODO Document
-    Map<Integer, String> getSuppressMap();
+
 }

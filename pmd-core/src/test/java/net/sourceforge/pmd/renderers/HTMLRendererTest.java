@@ -8,7 +8,16 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class HTMLRendererTest extends AbstractRendererTst {
+public class HTMLRendererTest extends AbstractRendererTest {
+
+    @Override
+    protected String getSourceCodeFilename() {
+        return "someFilename<br>thatNeedsEscaping.ext";
+    }
+
+    private String getEscapedFilename() {
+        return "someFilename&lt;br&gt;thatNeedsEscaping.ext";
+    }
 
     @Override
     public Renderer getRenderer() {
@@ -16,15 +25,10 @@ public class HTMLRendererTest extends AbstractRendererTst {
     }
 
     @Override
-    protected String getSourceCodeFilename() {
-        return "filename/that/needs <script>alert(1)</script> escaping.ext";
-    }
-
-    @Override
     public String getExpected() {
         return getHeader()
                 + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL
-                + "<td width=\"*%\">filename/that/needs &lt;script&gt;alert(1)&lt;/script&gt; escaping.ext</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
+                + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
                 + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>" + PMD.EOL + "</table></body></html>" + PMD.EOL;
     }
 
@@ -38,9 +42,9 @@ public class HTMLRendererTest extends AbstractRendererTst {
     public String getExpectedMultiple() {
         return getHeader()
                 + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL
-                + "<td width=\"*%\">filename/that/needs &lt;script&gt;alert(1)&lt;/script&gt; escaping.ext</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
+                + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
                 + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>" + PMD.EOL + "<tr> " + PMD.EOL
-                + "<td align=\"center\">2</td>" + PMD.EOL + "<td width=\"*%\">filename/that/needs &lt;script&gt;alert(1)&lt;/script&gt; escaping.ext</td>" + PMD.EOL
+                + "<td align=\"center\">2</td>" + PMD.EOL + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + PMD.EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>"
                 + PMD.EOL + "</table></body></html>" + PMD.EOL;
     }

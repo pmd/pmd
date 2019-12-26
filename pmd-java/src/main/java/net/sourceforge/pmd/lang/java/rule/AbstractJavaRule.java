@@ -11,11 +11,12 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.JavaProcessingStage;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
@@ -60,7 +61,13 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
      *
      * @param node
      *            the node which will be searched
+     *
+     * @deprecated This method just returns the type name as a string
+     *     which doesn't leverage any type resolution. Use {@link Node#getFirstParentOfType(Class)}
+     *     directly to find the node of type {@link ASTClassOrInterfaceBodyDeclaration} via the
+     *     {@code getType} method.
      */
+    @Deprecated
     protected final String getDeclaringType(Node node) {
         ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         if (c != null) {
@@ -89,7 +96,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         if (!(stage instanceof JavaProcessingStage)) {
             throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
         }
-        return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
+
+        return stage != JavaProcessingStage.DFA || isDfa();
     }
 
 }

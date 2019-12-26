@@ -118,16 +118,25 @@ public class ThrDeux {
     <rule name="DoNotUseThreads"
           language="java"
           since="4.1"
+          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="To be compliant to J2EE, a webapp should not use any thread."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#donotusethreads">
         <description>
-The J2EE specification explicitly forbids the use of threads.
+The J2EE specification explicitly forbids the use of threads. Threads are resources, that should be managed and monitored by the J2EE server.
+If the application creates threads on its own or uses own custom thread pools, then these threads are not managed, which could lead to resource exhaustion.
+Also EJB's might be moved between machines in a cluster and only managed resources can be moved along.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']</value>
+                <value>
+<![CDATA[
+//ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+|
+//StatementExpression/PrimaryExpression/PrimaryPrefix/Name[pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+]]>
+                </value>
             </property>
         </properties>
         <example>

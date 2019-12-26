@@ -9,28 +9,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-
-import org.jaxen.JaxenException;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 /**
  * @author Clément Fournier
@@ -45,6 +51,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTForStatement node, Object data) {
 
+        if (node.isForeach()) {
+            return data;
+        }
+
         final ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
         final ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
         final ASTExpression guardCondition = node.getFirstChildOfType(ASTExpression.class);
@@ -53,153 +63,115 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return data;
         }
 
-        Entry<VariableNameDeclaration, List<NameOccurrence>> indexDecl = getIndexVarDeclaration(init, update);
+        Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> indexDecl = getIndexVarDeclaration(init, update);
 
-        if (indexDecl == null) {
+        if (!indexDecl.isPresent()) {
             return data;
         }
 
-
-        List<NameOccurrence> occurrences = indexDecl.getValue();
-        VariableNameDeclaration index = indexDecl.getKey();
+        final List<NameOccurrence> occurrences = indexDecl.get().getValue();
+        final VariableNameDeclaration index = indexDecl.get().getKey();
 
         if (TypeHelper.isExactlyAny(index, Iterator.class)) {
-            Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = getIterableDeclOfIteratorLoop(index, node.getScope());
+            getIterableDeclOfIteratorLoop(index, node.getScope())
+                .filter(iterableInfo -> isReplaceableIteratorLoop(indexDecl.get(), guardCondition, iterableInfo, node))
+                .ifPresent(ignored -> addViolation(data, node));
 
-            if (iterableInfo != null && isReplaceableIteratorLoop(indexDecl, guardCondition, iterableInfo, node)) {
-                addViolation(data, node);
-            }
             return data;
         }
 
+        if (occurrences == null
+            || !"int".equals(index.getTypeImage())
+            || !indexStartsAtZero(index)
+            || !isForUpdateSimpleEnough(update)) {
 
-        if (occurrences == null || !"int".equals(index.getTypeImage()) || !indexStartsAtZero(index)) {
             return data;
         }
 
-
-        String itName = index.getName();
-        String iterableName = getIterableNameOrNullToAbort(guardCondition, itName);
-
-
-        if (!isForUpdateSimpleEnough(update, itName) || iterableName == null) {
-            return data;
-        }
-
-        Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = findDeclaration(iterableName, node.getScope());
-        VariableNameDeclaration iterableDeclaration = iterableInfo == null ? null : iterableInfo.getKey();
-
-        if (iterableDeclaration == null) {
-            return data;
-        }
-
-        if (iterableDeclaration.isArray() && isReplaceableArrayLoop(node, occurrences, iterableDeclaration)) {
-            addViolation(data, node);
-        } else if (iterableDeclaration.getTypeImage() != null && iterableDeclaration.getTypeImage()
-                                                                                    .matches("List|ArrayList|LinkedList")
-            && isReplaceableListLoop(node, occurrences, iterableDeclaration)) {
-            addViolation(data, node);
-        }
+        findIterableName(guardCondition, index.getName())
+            .flatMap(iterableName -> findDeclaration(iterableName, node.getScope()))
+            .map(Entry::getKey)
+            .filter(iterableDecl ->
+                        isReplaceableArrayLoop(node, occurrences, iterableDecl)
+                            || isReplaceableListLoop(node, occurrences, iterableDecl))
+            .ifPresent(decl -> addViolation(data, node));
 
         return data;
     }
 
 
     /* Finds the declaration of the index variable and its occurrences, null to abort */
-    private Entry<VariableNameDeclaration, List<NameOccurrence>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
+    private Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
         if (init == null) {
             return guessIndexVarFromUpdate(update);
         }
 
-        ASTLocalVariableDeclaration decl = init.getFirstChildOfType(ASTLocalVariableDeclaration.class);
-        if (decl == null) {
-            return null;
-        }
-
-        int numDeclaredVars = decl.findChildrenOfType(ASTVariableDeclarator.class).size();
-        if (numDeclaredVars > 1) {
-            return null; // will abort in the calling function
-        }
-
-        Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
-        Entry<VariableNameDeclaration, List<NameOccurrence>> indexVarAndOccurrences = null;
-
-        for (Entry<VariableNameDeclaration, List<NameOccurrence>> e : decls.entrySet()) {
-
-            ASTForInit declInit = e.getKey().getNode().getFirstParentOfType(ASTForInit.class);
-            if (Objects.equals(declInit, init)) {
-                indexVarAndOccurrences = e;
-                break;
-            }
-        }
-
-        return indexVarAndOccurrences;
-
+        return init.children(ASTLocalVariableDeclaration.class)
+                   .filter(it -> it.children(ASTVariableDeclarator.class).count() == 1)
+                   .firstOpt()
+                   .flatMap(decl -> getInfoAboutForIndexVar(init));
     }
 
 
+
     /** Does a best guess to find the index variable, gives up if the update has several statements */
-    private Entry<VariableNameDeclaration, List<NameOccurrence>> guessIndexVarFromUpdate(ASTForUpdate update) {
+    private Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> guessIndexVarFromUpdate(ASTForUpdate update) {
+        return simpleForUpdateVarName(update).flatMap(name -> findDeclaration(name, update.getScope().getParent()));
+    }
 
-        Node name = null;
-        try {
-            List<Node> match = update.findChildNodesWithXPath(getSimpleForUpdateXpath(null));
-            if (!match.isEmpty()) {
-                name = match.get(0);
-            }
-        } catch (JaxenException je) {
-            throw new RuntimeException(je);
-        }
 
-        if (name == null || name.getImage() == null) {
-            return null;
-        }
-
-        return findDeclaration(name.getImage(), update.getScope().getParent());
+    private boolean isForUpdateSimpleEnough(ASTForUpdate update) {
+        return simpleForUpdateVarName(update).isPresent();
     }
 
 
     /**
-     * @return true if there's only one update statement of the form i++ or ++i.
+     * @return the variable name if there's only one update statement of the form i++ or ++i.
      */
-    private boolean isForUpdateSimpleEnough(ASTForUpdate update, String itName) {
-        return update != null && update.hasDescendantMatchingXPath(getSimpleForUpdateXpath(itName));
-    }
-
-
-    private String getSimpleForUpdateXpath(String itName) {
-        return "./StatementExpressionList[count(*)=1]"
-            + "/StatementExpression"
-            + "/*[self::PostfixExpression and @Image='++' or self::PreIncrementExpression]"
-            + "/PrimaryExpression"
-            + "/PrimaryPrefix"
-            + "/Name"
-            + (itName == null ? "" : "[@Image='" + itName + "']");
+    private Optional<String> simpleForUpdateVarName(ASTForUpdate base) {
+        return NodeStream.of(base)
+                         .children(ASTStatementExpressionList.class)
+                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .children(ASTStatementExpression.class)
+                         .children()
+                         .filter(
+                             it -> it instanceof ASTPostfixExpression && it.hasImageEqualTo("++")
+                                 || it instanceof ASTPreIncrementExpression
+                         )
+                         .children(ASTPrimaryExpression.class)
+                         .children(ASTPrimaryPrefix.class)
+                         .children(ASTName.class)
+                         .firstOpt()
+                         .map(Node::getImage);
     }
 
 
     /* We only report loops with int initializers starting at zero. */
     private boolean indexStartsAtZero(VariableNameDeclaration index) {
-        ASTVariableDeclaratorId name = (ASTVariableDeclaratorId) index.getNode();
-        ASTVariableDeclarator declarator = name.getFirstParentOfType(ASTVariableDeclarator.class);
 
-        if (declarator == null) {
-            return false;
-        }
+        return NodeStream.of(index.getNode())
+                         .parents()
+                         .filterIs(ASTVariableDeclarator.class)
+                         .children(ASTVariableInitializer.class)
+                         .children(ASTExpression.class)
+                         .children(ASTPrimaryExpression.class)
+                         .children(ASTPrimaryPrefix.class)
+                         .children(ASTLiteral.class)
+                         .filterMatching(Node::getImage, "0")
+                         .filterNot(ASTLiteral::isStringLiteral)
+                         .nonEmpty();
+    }
 
-        try {
-            List<Node> zeroLiteral = declarator.findChildNodesWithXPath(
-                "./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0' and "
-                    + "@StringLiteral='false']");
-            if (!zeroLiteral.isEmpty()) {
-                return true;
-            }
-        } catch (JaxenException je) {
-            throw new RuntimeException(je);
-        }
 
-        return false;
+    private static Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> getInfoAboutForIndexVar(ASTForInit init) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
 
+        return decls.entrySet().stream()
+                    .filter(e -> e.getKey().getNode()
+                                  .ancestors(ASTForInit.class)
+                                  .filterMatching(n -> n, init)
+                                  .nonEmpty())
+                    .findFirst();
     }
 
 
@@ -210,7 +182,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
      *
      * @return The name, or null if it couldn't be found or the guard condition is not safe to refactor (then abort)
      */
-    private String getIterableNameOrNullToAbort(ASTExpression guardCondition, String itName) {
+    private Optional<String> findIterableName(ASTExpression guardCondition, String itName) {
 
 
         if (guardCondition.jjtGetNumChildren() > 0
@@ -220,62 +192,75 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
-                try {
-                    List<Node> left = guardCondition.findChildNodesWithXPath(
-                        "./RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='" + itName + "']");
+                boolean leftIsIndexVarName =
+                    guardCondition.children(ASTRelationalExpression.class)
+                                  .children(ASTPrimaryExpression.class)
+                                  .children(ASTPrimaryPrefix.class)
+                                  .children(ASTName.class)
+                                  .filterMatching(Node::getImage, itName)
+                                  .nonEmpty();
 
-                    List<Node> right = guardCondition.findChildNodesWithXPath(
-                        "./RelationalExpression[@Image='<']/PrimaryExpression/PrimaryPrefix"
-                            + "/Name[matches(@Image,'\\w+\\.(size|length)')]"
-                            + "|"
-                            + "./RelationalExpression[@Image='<=']/AdditiveExpression[count(*)=2 and "
-                            + "@Image='-' and PrimaryExpression/PrimaryPrefix/Literal[@Image='1']]"
-                            + "/PrimaryExpression/PrimaryPrefix/Name[matches(@Image,'\\w+\\.(size|length)')]");
-
-                    if (left.isEmpty()) {
-                        return null;
-                    } else if (!right.isEmpty()) {
-                        return right.get(0).getImage().split("\\.")[0];
-                    } else {
-                        return null;
-                    }
-
-                } catch (JaxenException je) {
-                    throw new RuntimeException(je);
+                if (!leftIsIndexVarName) {
+                    return Optional.empty();
                 }
+
+                return guardCondition.children(ASTRelationalExpression.class)
+                                     .forkJoin(
+                                         rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
+                                         rel -> NodeStream.of(rel)
+                                                          .filterMatching(Node::getImage, "<=")
+                                                          .children(ASTAdditiveExpression.class)
+                                                          .filter(expr ->
+                                                               expr.jjtGetNumChildren() == 2
+                                                                   && expr.getOperator().equals("-")
+                                                                   && expr.children(ASTPrimaryExpression.class)
+                                                                          .children(ASTPrimaryPrefix.class)
+                                                                          .children(ASTLiteral.class)
+                                                                          .filterMatching(Node::getImage, "1")
+                                                                          .nonEmpty()
+                                                   )
+                                     )
+                                     .children(ASTPrimaryExpression.class)
+                                     .children(ASTPrimaryPrefix.class)
+                                     .children(ASTName.class)
+                                     .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
+                                     .firstOpt()
+                                     .map(astName -> astName.getImage().split("\\.")[0]);
+
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 
-    private Entry<VariableNameDeclaration, List<NameOccurrence>> getIterableDeclOfIteratorLoop(VariableNameDeclaration indexDecl, Scope scope) {
-        Node initializer = indexDecl.getNode().getFirstParentOfType(ASTVariableDeclarator.class)
-                                    .getFirstChildOfType(ASTVariableInitializer.class);
+    private Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> getIterableDeclOfIteratorLoop(VariableNameDeclaration indexDecl, Scope scope) {
 
-        if (initializer == null) {
-            return null;
-        }
+        return NodeStream.of(indexDecl.getNode())
+                         .followingSiblings()
+                         .filterIs(ASTVariableInitializer.class)
+                         .descendants(ASTName.class)
+                         .firstOpt()             // TODO : This can return null if we are calling a local / statically imported method that returns the iterable - currently unhandled
+                         .flatMap(nameNode -> {
 
-        ASTName nameNode = initializer.getFirstDescendantOfType(ASTName.class);
-        if (nameNode == null) {
-            // TODO : This can happen if we are calling a local / statically imported method that returns the iterable - currently unhandled
-            return null;
-        }
+                             String name = nameNode.getImage();
+                             int dotIndex = name.indexOf('.');
 
-        String name = nameNode.getImage();
-        int dotIndex = name.indexOf('.');
+                             if (dotIndex > 0) {
+                                 name = name.substring(0, dotIndex);
+                             }
 
-        if (dotIndex > 0) {
-            name = name.substring(0, dotIndex);
-        }
-
-        return findDeclaration(name, scope);
+                             return findDeclaration(name, scope);
+                         });
     }
 
 
     private boolean isReplaceableArrayLoop(ASTForStatement stmt, List<NameOccurrence> occurrences,
                                            VariableNameDeclaration arrayDeclaration) {
+
+        if (!arrayDeclaration.isArray()) {
+            return false;
+        }
+
         String arrayName = arrayDeclaration.getName();
 
 
@@ -300,10 +285,24 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                 return false;
             }
 
-            return suffix.hasDescendantMatchingXPath("./Expression/PrimaryExpression[count(*)"
-                                                         + "=1]/PrimaryPrefix/Name[@Image='" + occ.getImage() + "']")
-                && suffix.hasDescendantMatchingXPath("../PrimaryPrefix/Name[@Image='" + arrayName + "']")
-                && !suffix.hasDescendantMatchingXPath("../../AssignmentOperator");
+            return suffix.descendants(ASTExpression.class)
+                         .children(ASTPrimaryExpression.class)
+                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .children(ASTPrimaryPrefix.class)
+                         .children(ASTName.class)
+                         .filterMatching(Node::getImage, occ.getImage())
+                         .nonEmpty()
+                && suffix.asStream()
+                         .precedingSiblings()
+                         .filterIs(ASTPrimaryPrefix.class)
+                         .children(ASTName.class)
+                         .filterMatching(Node::getImage, arrayName)
+                         .nonEmpty()
+
+                && suffix.jjtGetParent()
+                         .jjtGetParent()
+                         .children(ASTAssignmentOperator.class)
+                         .isEmpty();
         }
         return false;
     }
@@ -311,6 +310,11 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
     private boolean isReplaceableListLoop(ASTForStatement stmt, List<NameOccurrence> occurrences,
                                           VariableNameDeclaration listDeclaration) {
+
+        if (listDeclaration.getTypeImage() == null
+            || !listDeclaration.getTypeImage().matches("List|ArrayList|LinkedList")) {
+            return false;
+        }
 
         String listName = listDeclaration.getName();
 
@@ -330,7 +334,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
 
     /** @return true if this occurence is as an argument to List.get on the correct list */
-    private boolean occurenceIsListGet(NameOccurrence occ, String listName) {
+    private static boolean occurenceIsListGet(NameOccurrence occ, String listName) {
         if (occ.getLocation() instanceof ASTName) {
             ASTPrimarySuffix suffix = occ.getLocation().getFirstParentOfType(ASTPrimarySuffix.class);
 
@@ -356,77 +360,63 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    private Entry<VariableNameDeclaration, List<NameOccurrence>> findDeclaration(String varName, Scope innermost) {
+    private static Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> findDeclaration(String varName, Scope innermost) {
         Scope currentScope = innermost;
 
         while (currentScope != null) {
             for (Entry<VariableNameDeclaration, List<NameOccurrence>> e : currentScope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
                 if (e.getKey().getName().equals(varName)) {
-                    return e;
+                    return Optional.of(e);
                 }
             }
             currentScope = currentScope.getParent();
         }
 
-        return null;
+        return Optional.empty();
     }
 
 
-    private boolean isReplaceableIteratorLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> indexInfo,
-                                              ASTExpression guardCondition,
-                                              Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
-                                              ASTForStatement stmt) {
-
-        if (isIterableModifiedInsideLoop(iterableInfo, stmt)) {
-            return false;
-        }
-
-
-        String indexName = indexInfo.getKey().getName();
-
-        if (indexName == null) {
-            return false;
-        }
-
-        if (!guardCondition.hasDescendantMatchingXPath(
-            "./PrimaryExpression/PrimaryPrefix/Name[@Image='" + indexName + ".hasNext']")) {
-            return false;
-        }
+    private static boolean isReplaceableIteratorLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> indexInfo,
+                                                     ASTExpression guardCondition,
+                                                     Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
+                                                     ASTForStatement stmt) {
 
         List<NameOccurrence> occurrences = indexInfo.getValue();
 
-        if (occurrences.size() > 2) {
+        if (isIterableModifiedInsideLoop(iterableInfo, stmt) || occurrences.size() > 2) {
             return false;
         }
 
-        for (NameOccurrence occ : indexInfo.getValue()) {
-            ScopedNode location = occ.getLocation();
-            boolean isCallingNext = location instanceof ASTName
-                    && (location.hasImageEqualTo(indexName + ".hasNext")
-                            || location.hasImageEqualTo(indexName + ".next"));
-
-            if (!isCallingNext) {
-                return false;
-            }
-        }
-        return true;
+        return Optional.ofNullable(indexInfo.getKey().getName())
+                       .filter(indexName -> guardCondition.children(ASTPrimaryExpression.class)
+                                                          .children(ASTPrimaryPrefix.class)
+                                                          .children(ASTName.class)
+                                                          .filterMatching(Node::getImage, indexName + ".hasNext")
+                                                          .nonEmpty())
+                       .map(indexName -> occurrences.stream()
+                                                    .map(NameOccurrence::getLocation)
+                                                    .allMatch(n -> isCallingNext(n, indexName)))
+                       .orElse(false);
     }
 
-    private boolean isIterableModifiedInsideLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
-                                                 ASTForStatement stmt) {
 
-        String iterableName = iterableInfo.getKey().getName();
-        for (NameOccurrence occ : iterableInfo.getValue()) {
-            ASTForStatement forParent = occ.getLocation().getFirstParentOfType(ASTForStatement.class);
-            if (Objects.equals(forParent, stmt)) {
-                String image = occ.getLocation().getImage();
-                if (image.startsWith(iterableName + ".remove")) {
-                    return true;
-                }
-            }
-        }
+    private static boolean isCallingNext(Node node, String indexName) {
+        return node instanceof ASTName
+            && (node.hasImageEqualTo(indexName + ".hasNext")
+            || node.hasImageEqualTo(indexName + ".next"));
+    }
 
-        return false;
+
+    private static boolean isIterableModifiedInsideLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo,
+                                                        ASTForStatement stmt) {
+
+        return iterableInfo.getValue().stream()
+                           .map(NameOccurrence::getLocation)
+                           .filter(n -> n.ancestors(ASTForStatement.class)
+                                         .firstOpt()
+                                         .filter(forParent -> Objects.equals(forParent, stmt))
+                                         .isPresent())
+                           .anyMatch(it -> it.hasImageEqualTo(iterableInfo.getKey().getName() + ".remove"));
     }
 
 

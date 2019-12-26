@@ -9,6 +9,46 @@
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
     </description>
 
+    <rule name="ApexCSRF"
+          since="5.5.3"
+          message="Avoid making DML operations in Apex class constructor or initializers"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.ApexCSRFRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#apexcsrf">
+        <description>
+Having DML operations in Apex class constructor or initializers can have unexpected side effects:
+By just accessing a page, the DML statements would be executed and the database would be modified.
+Just querying the database is permitted.
+
+In addition to constructors and initializers, any method called `init` is checked as well.
+
+Salesforce Apex already protects against this scenario and raises a runtime exception.
+
+Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.21.0, since
+using DML in constructors is not a security problem, but crashes the application.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    // initializer
+    {
+        insert data;
+    }
+
+    // static initializer
+    static {
+        insert data;
+    }
+
+    // constructor
+    public Foo() {
+        insert data;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidDirectAccessTriggerMap"
           since="6.0.0"
           message="Avoid directly accessing Trigger.old and Trigger.new"

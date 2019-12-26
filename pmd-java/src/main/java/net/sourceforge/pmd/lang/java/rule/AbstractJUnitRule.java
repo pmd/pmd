@@ -86,7 +86,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isJUnit3Method(ASTMethodDeclaration method) {
-        return isJUnit3Class && method.isVoid() && method.getMethodName().startsWith("test");
+        return isJUnit3Class && method.isVoid() && method.getName().startsWith("test");
     }
 
     private boolean isJUnit3Class(ASTCompilationUnit node) {

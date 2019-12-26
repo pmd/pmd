@@ -17,6 +17,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -296,6 +297,12 @@ public class RuleReference extends AbstractDelegateRule {
     }
 
 
+    @Override
+    public boolean dependsOn(AstProcessingStage<?> stage) {
+        return getRule().dependsOn(stage);
+    }
+
+
     public RuleSetReference getRuleSetReference() {
         return ruleSetReference;
     }
@@ -381,5 +388,18 @@ public class RuleReference extends AbstractDelegateRule {
     @Override
     public Rule deepCopy() {
         return new RuleReference(this);
+    }
+
+    /**
+     * Checks whether this rule reference explicitly overrides any of the possible
+     * attributes of the referenced rule.
+     * @return <code>true</code> if there is at least one attribute overridden. <code>false</code> if
+     *     the referenced rule is referenced without any change.
+     */
+    public boolean hasOverriddenAttributes() {
+        return deprecated != null || description != null || examples != null || externalInfoUrl != null
+                || maximumLanguageVersion != null || minimumLanguageVersion != null
+                || message != null || name != null || priority != null
+                || propertyDescriptors != null || propertyValues != null;
     }
 }

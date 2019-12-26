@@ -7,7 +7,7 @@ package net.sourceforge.pmd.cpd.token;
 import static org.antlr.v4.runtime.Token.EOF;
 
 import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
-import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 
 /**
  * A generic filter for Antlr-based token managers that allows to use comments

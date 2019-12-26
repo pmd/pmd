@@ -35,6 +35,7 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
@@ -82,8 +83,8 @@ public class PMDTaskImpl {
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
-            LanguageVersion languageVersion = LanguageRegistry
-                    .findLanguageVersionByTerseName(version.getName() + ' ' + version.getVersion());
+            Language lang = LanguageRegistry.findLanguageByTerseName(version.getName());
+            LanguageVersion languageVersion = lang == null ? null : lang.getVersion(version.getVersion());
             if (languageVersion == null) {
                 throw new BuildException("The following language is not supported:" + version + '.');
             }
@@ -101,7 +102,7 @@ public class PMDTaskImpl {
 
     private void doTask() {
         setupClassLoader();
-        
+
         // Setup RuleSetFactory and validate RuleSets
         final ResourceLoader rl = setupResourceLoader();
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
@@ -148,8 +149,12 @@ public class PMDTaskImpl {
                 files.add(new FileDataSource(file));
             }
 
-            final String inputPaths = ds.getBasedir().getPath();
-            configuration.setInputPaths(inputPaths);
+            final String commonInputPath = ds.getBasedir().getPath();
+            configuration.setInputPaths(commonInputPath);
+            final List<String> reportShortNamesPaths = new ArrayList<>();
+            if (configuration.isReportShortNames()) {
+                reportShortNamesPaths.add(commonInputPath);
+            }
 
             Renderer logRenderer = new AbstractRenderer("log", "Logging renderer") {
                 @Override
@@ -159,7 +164,7 @@ public class PMDTaskImpl {
 
                 @Override
                 public void startFileAnalysis(DataSource dataSource) {
-                    project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths),
+                    project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
                             Project.MSG_VERBOSE);
                 }
 
@@ -184,7 +189,9 @@ public class PMDTaskImpl {
             List<Renderer> renderers = new ArrayList<>(formatters.size() + 1);
             renderers.add(logRenderer);
             for (Formatter formatter : formatters) {
-                renderers.add(formatter.getRenderer());
+                Renderer renderer = formatter.getRenderer();
+                renderer.setUseShortNames(reportShortNamesPaths);
+                renderers.add(renderer);
             }
             try {
                 PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);

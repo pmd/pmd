@@ -267,12 +267,13 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private boolean validateAgainstSchema(String fileName)
             throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
-        InputStream inputStream = loadResourceAsStream(fileName);
-        boolean valid = validateAgainstSchema(inputStream);
-        if (!valid) {
-            System.err.println("Validation against XML Schema failed for: " + fileName);
+        try (InputStream inputStream = loadResourceAsStream(fileName)) {
+            boolean valid = validateAgainstSchema(inputStream);
+            if (!valid) {
+                System.err.println("Validation against XML Schema failed for: " + fileName);
+            }
+            return valid;
         }
-        return valid;
     }
 
     private boolean validateAgainstSchema(InputStream inputStream)
@@ -285,12 +286,13 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private boolean validateAgainstDtd(String fileName)
             throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
-        InputStream inputStream = loadResourceAsStream(fileName);
-        boolean valid = validateAgainstDtd(inputStream);
-        if (!valid) {
-            System.err.println("Validation against DTD failed for: " + fileName);
+        try (InputStream inputStream = loadResourceAsStream(fileName)) {
+            boolean valid = validateAgainstDtd(inputStream);
+            if (!valid) {
+                System.err.println("Validation against DTD failed for: " + fileName);
+            }
+            return valid;
         }
-        return valid;
     }
 
     private boolean validateAgainstDtd(InputStream inputStream)
@@ -316,23 +318,22 @@ public abstract class AbstractRuleSetFactoryTest {
             file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset>" + PMD.EOL + file;
         }
 
-        InputStream modifiedStream = new ByteArrayInputStream(file.getBytes());
-
-        saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
-        modifiedStream.close();
+        try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes())) {
+            saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
+        }
         return validateDefaultHandler.isValid();
     }
 
     private String readFullyToString(InputStream inputStream) throws IOException {
         StringBuilder buf = new StringBuilder(64 * 1024);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            buf.append(line);
-            buf.append(PMD.EOL);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buf.append(line);
+                buf.append(PMD.EOL);
+            }
+            return buf.toString();
         }
-        reader.close();
-        return buf.toString();
     }
 
     private static InputStream loadResourceAsStream(String resource) throws RuleSetNotFoundException {

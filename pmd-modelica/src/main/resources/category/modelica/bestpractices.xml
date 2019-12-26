@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="ClassStartNameEqualsEndName"
+          language="modelica"
+          message="Class ends with an end clause with a different name"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#classstartnameequalsendname"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+            Having a class starting with some name and some *different*
+            name in its end clause is an error.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassSpecifier/*[SimpleName[1]/@Image != SimpleName[last()]/@Image]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+model SomeName
+  Real x;
+equation
+  x = 1;
+end SomeOtherName /* should be SomeName */;
+]]>
+        </example>
+    </rule>
+
+    <rule name="ConnectUsingNonConnector"
+          language="modelica"
+          message="Arguments passed to `connect` should be connectors, not `{0}`"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#connectusingnonconnector"
+          class="net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector">
+        <description>
+            Modelica specification requires passing connectors to the `connect` clause,
+            while some implementations tolerate using it on plain variables, etc..
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+package Example
+  connector Conn
+    Real x;
+    Real y;
+  end Conn;
+
+  model Test
+    input Conn c1;
+    output Conn c2;
+    input Real x1;
+    output Real x2;
+  equation
+    connect(c1, c2); // OK
+    connect(x1, x2); // error, x1 and x2 are not (both) connectors
+    // x1 = x2; // OK
+  end Test;
+end Example;
+]]>
+        </example>
+    </rule>
+
+    <rule name="AmbiguousResolution"
+          language="modelica"
+          message="Type resolution is ambiguous: {0}"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#ambiguousresolution"
+          class="net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule">
+        <description>
+            There is multiple candidates for this type resolution. While generally this is not an error,
+            this may indicate a bug.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+package Test
+  package Inc1
+    model X
+    end X;
+    model Y
+    end Y;
+  end Inc1;
+  package Inc2
+    model Y
+    end Y;
+    model Z
+    end Z;
+  end Inc2;
+  model B
+    import Test.Inc1.*;
+    import Test.Inc2.*;
+    Y y; // Class Y is imported twice
+  end B;
+end Test;
+]]>
+        </example>
+    </rule>
+</ruleset>

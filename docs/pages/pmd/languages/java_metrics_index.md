@@ -23,6 +23,44 @@ it uses instead of the services they provide.
  
 ATFD can be used to detect God Classes and Feature Envy. \[[Lanza05](#Lanza05)\]
 
+## Class Fan Out Complexity (CLASS_FAN_OUT)
+
+*Operation metric, class metric.* Can be computed on classes, enums and 
+concrete operations.
+
+### Description
+This counts the number of other classes a given class or operation relies on.
+Classes from the package `java.lang` are ignored by default (can be changed via options).
+Also primitives are not included into the count.
+
+### Code example
+
+```java
+import java.util.*;
+import java.io.IOException;
+
+public class Foo { // total 8
+    public Set set = new HashSet(); // +2
+    public Map map = new HashMap(); // +2
+    public String string = ""; // from java.lang -> does not count by default
+    public Double number = 0.0; // from java.lang -> does not count by default
+    public int[] intArray = new int[3]; // primitive -> does not count
+
+    @Deprecated // from java.lang -> does not count by default
+    @Override // from java.lang -> does not count by default
+    public void foo(List list) throws Exception { // +1 (Exception is from java.lang)
+        throw new IOException(); // +1
+    }
+
+    public int getMapSize() {
+        return map.size(); // +1 because it uses the Class from the 'map' field
+    }   
+}
+```
+
+### Options
+
+* Option `includeJavaLang`: Also include classes from the package `java.lang`
 
 ## Cyclomatic Complexity (CYCLO) 
 

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -13,13 +12,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class PapariTextRendererTest extends AbstractRendererTst {
-
-    private static String naString = "n/a";
-
-    static {
-        naString = naString.substring(naString.lastIndexOf(File.separator) + 1);
-    }
+public class PapariTextRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
@@ -35,7 +28,7 @@ public class PapariTextRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "* file: n/a" + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL
+        return "* file: " + getSourceCodeFilename() + PMD.EOL + "    src:  " + getSourceCodeFilename() + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL
                 + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL
                 + "Summary:" + PMD.EOL + PMD.EOL + " : 1" + PMD.EOL + "* warnings: 1" + PMD.EOL;
     }
@@ -47,9 +40,9 @@ public class PapariTextRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "* file: n/a" + PMD.EOL + "    src:  " + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL
+        return "* file: " + getSourceCodeFilename() + PMD.EOL + "    src:  " + getSourceCodeFilename() + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL
                 + "    msg:  blah" + PMD.EOL + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + "    src:  "
-                + naString + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  blah" + PMD.EOL
+                + getSourceCodeFilename() + ":1:1" + PMD.EOL + "    rule: Foo" + PMD.EOL + "    msg:  blah" + PMD.EOL
                 + "    code: public class Foo {}" + PMD.EOL + PMD.EOL + PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL
                 + PMD.EOL + " : 2" + PMD.EOL + "* warnings: 2" + PMD.EOL;
     }

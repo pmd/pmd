@@ -226,6 +226,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Modelica Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_modelica.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_modelica_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: PLSQL Rules
         output: web, pdf
         subfolderitems:
@@ -351,6 +363,9 @@ entries:
       output: web, pdf
     - title: Pmdtester
       url: /pmd_devdocs_pmdtester.html
+      output: web, pdf
+    - title: Rule Deprecation Policy
+      url: /pmd_devdocs_rule_deprecation_policy.html
       output: web, pdf
     - title: null
       output: web, pdf

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -37,7 +38,9 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * <li>Variable name</li>
  * <li>Suppression indicator</li>
  * </ul>
+ * @deprecated See {@link RuleViolation}
  */
+@Deprecated
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
     public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
@@ -65,10 +68,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
             }
             // Variable name node specific
             setVariableNameIfExists(node);
-
-            if (!suppressed) {
-                suppressed = isSupressed(node, getRule());
-            }
         }
     }
 
@@ -101,6 +100,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
     private void setClassNameFrom(JavaNode node) {
         String qualifiedName = null;
+
+        if (node.getScope() instanceof ClassScope) {
+            qualifiedName = ((ClassScope) node.getScope()).getClassName();
+        }
+
         for (AbstractAnyTypeDeclaration parent : node.getParentsOfType(AbstractAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
             if (qualifiedName == null) {

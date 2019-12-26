@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Valid example #1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package Test
+  connector Conn
+    Real x;
+  end Conn;
+  input Conn a;
+  output Conn b;
+equation
+  connect(a, b);
+end Test;
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Plain variables are connected</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+package Test
+  input Real x;
+  output Real y;
+equation
+  connect(x, y);
+end Test;
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Records are connected</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+package Test
+  record R
+    Real a;
+  end R;
+  input R x;
+  output R y;
+equation
+  connect(x, y);
+end Test;
+        ]]></code>
+    </test-code>
+
+</test-data>

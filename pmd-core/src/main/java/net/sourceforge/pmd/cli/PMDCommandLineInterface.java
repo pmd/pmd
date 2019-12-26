@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.cli;
 
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -27,7 +29,7 @@ public final class PMDCommandLineInterface {
     public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
     public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
-    private static final int NO_ERRORS_STATUS = 0;
+    public static final int NO_ERRORS_STATUS = 0;
     public static final int ERROR_STATUS = 1;
     public static final int VIOLATIONS_FOUND = 4;
 
@@ -120,7 +122,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport())
+                + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
                 + PMD.EOL;
     }
 

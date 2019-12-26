@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -77,6 +78,7 @@ import net.sourceforge.pmd.typeresolution.testdata.AbstractReturnTypeUseCase;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayAccess;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayTypes;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayVariableDeclaration;
@@ -101,6 +103,7 @@ import net.sourceforge.pmd.typeresolution.testdata.JavaTypeDefinitionToStringNPE
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.LocalGenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
+import net.sourceforge.pmd.typeresolution.testdata.MethodCallExpressionTypes;
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericExplicit;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericParam;
@@ -779,6 +782,22 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+    @Test
+    public void testArrayAccess() throws JaxenException {
+        List<ASTExpression> expressions = selectNodes(ArrayAccess.class, ASTExpression.class, "//VariableInitializer/Expression");
+
+        int index = 1;
+        // int aElement = a[0];
+        assertEquals(int.class, expressions.get(index).getType());
+
+        index += 2;
+        // Object bElement = b[0][0];
+        assertEquals(Object.class, expressions.get(index).getType());
+
+        index += 3;
+        // ArrayAccess cElement = c[0][0][0];
+        assertEquals(ArrayAccess.class, expressions.get(index).getType());
+    }
 
     @Test
     public void testReferenceType() {
@@ -1542,13 +1561,13 @@ public class ClassTypeResolverTest {
 
         // int c = StaticMembers.primitiveStaticMethod();
         assertEquals(int.class, expressions.get(index).getType());
-        assertEquals(int.class, getChildType(expressions.get(index), 0));
-        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+        assertEquals(StaticMembers.class, getChildType(expressions.get(index), 0)); // PrimaryPrefix
+        assertEquals(int.class, getChildType(expressions.get(index++), 1)); // PrimarySuffix
 
         // String c = MethodStaticAccess.Nested.primitiveStaticMethod();
         assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index), 0));
-        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+        assertEquals(MethodStaticAccess.Nested.class, getChildType(expressions.get(index), 0)); // PrimaryPrefix
+        assertEquals(String.class, getChildType(expressions.get(index++), 1)); // PrimarySuffix
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -1845,6 +1864,13 @@ public class ClassTypeResolverTest {
         parseAndTypeResolveForClass(LocalGenericClass.class, "9");
     }
 
+    @Test
+    public void testMethodCallExpressionTypes() throws Exception {
+        ASTCompilationUnit cu = parseAndTypeResolveForClass(MethodCallExpressionTypes.class, "11");
+        ASTPrimaryExpression expr = cu.getFirstDescendantOfType(ASTPrimaryExpression.class);
+        assertEquals(forClass(String.class), expr.getTypeDefinition());
+        assertEquals(forClass(Objects.class), expr.getFirstChildOfType(ASTPrimaryPrefix.class).getTypeDefinition());
+    }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();

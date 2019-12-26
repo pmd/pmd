@@ -131,7 +131,7 @@
    <rule ref="category/apex/security.xml/ApexInsecureEndpoint" message="Apex callouts should use encrypted communication channels">
       <priority>3</priority>
    </rule>
-   <rule ref="category/apex/security.xml/ApexCSRF" message="Avoid making DML operations in Apex class constructor/init method">
+   <rule ref="category/apex/errorprone.xml/ApexCSRF">
       <priority>3</priority>
    </rule>
    <rule ref="category/apex/security.xml/ApexOpenRedirect" message="Apex classes should safely redirect to a known location">

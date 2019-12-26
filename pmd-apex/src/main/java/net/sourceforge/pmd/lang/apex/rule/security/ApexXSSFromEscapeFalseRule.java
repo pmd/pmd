@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Finds all .addError method calls that are not HTML escaped on purpose

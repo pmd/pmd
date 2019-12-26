@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,6 +18,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
 
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
+    private Map<Integer, String> noPmdComments = Collections.emptyMap();
 
     @InternalApi
     @Deprecated
@@ -51,6 +54,10 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     }
 
 
+    /**
+     * @deprecated Use {@code getPackageName().isEmpty()}
+     */
+    @Deprecated
     public boolean declarationsAreInDefaultPackage() {
         return getPackageDeclaration() == null;
     }
@@ -63,6 +70,16 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return null;
     }
 
+    /**
+     * Returns the package name of this compilation unit. If this is in
+     * the default package, returns the empty string.
+     */
+    // @NonNull
+    public String getPackageName() {
+        ASTPackageDeclaration pdecl = getPackageDeclaration();
+        return pdecl == null ? "" : pdecl.getPackageNameImage();
+    }
+
     @InternalApi
     @Deprecated
     public ClassTypeResolver getClassTypeResolver() {
@@ -73,5 +90,14 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
         this.classTypeResolver = classTypeResolver;
+    }
+
+    @Override
+    public Map<Integer, String> getNoPmdComments() {
+        return noPmdComments;
+    }
+
+    void setNoPmdComments(Map<Integer, String> noPmdComments) {
+        this.noPmdComments = noPmdComments;
     }
 }

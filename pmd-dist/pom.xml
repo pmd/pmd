@@ -164,6 +164,11 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-modelica</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-perl</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -232,7 +237,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.18</version>
+            <version>1.19</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

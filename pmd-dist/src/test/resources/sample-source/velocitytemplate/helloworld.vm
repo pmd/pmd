@@ -1,0 +1,8 @@
+<html>
+  <body>
+  #set( $foo = "Velocity" )
+  Hello $foo World!
+  
+  <script type= "text/javascript"> alert("hello"); </script>
+  </body>
+</html>

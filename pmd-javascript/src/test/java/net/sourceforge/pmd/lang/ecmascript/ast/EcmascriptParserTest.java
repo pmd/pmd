@@ -141,21 +141,21 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      * not implemented) with ECMAscript
      */
     @Test
-    public void testSuppresionComment() {
+    public void testSuppressionComment() {
         Ecmascript3Parser parser = new Ecmascript3Parser(new EcmascriptParserOptions());
         Reader sourceCode = new StringReader("function(x) {\n" + "x = x; //NOPMD I know what I'm doing\n" + "}\n");
-        parser.parse("foo", sourceCode);
-        assertEquals(" I know what I'm doing", parser.getSuppressMap().get(2));
-        assertEquals(1, parser.getSuppressMap().size());
+        ASTAstRoot root = parser.parse("foo", sourceCode);
+        assertEquals(" I know what I'm doing", root.getNoPmdComments().get(2));
+        assertEquals(1, root.getNoPmdComments().size());
 
         EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
         parserOptions.setSuppressMarker("FOOOO");
         parser = new Ecmascript3Parser(parserOptions);
         sourceCode = new StringReader(
                 "function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
-        parser.parse("foo", sourceCode);
-        assertEquals(" I know what I'm doing", parser.getSuppressMap().get(3));
-        assertEquals(1, parser.getSuppressMap().size());
+        root = parser.parse("foo", sourceCode);
+        assertEquals(" I know what I'm doing", root.getNoPmdComments().get(3));
+        assertEquals(1, root.getNoPmdComments().size());
     }
 
     /**
