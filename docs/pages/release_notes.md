@@ -99,6 +99,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
   {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
 * Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
   have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+* Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
 
 ### External Contributions
 
