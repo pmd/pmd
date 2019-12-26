@@ -97,7 +97,8 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
   instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
   {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
-
+* Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
+  have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
 
 ### External Contributions
 
