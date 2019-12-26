@@ -76,6 +76,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
   eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
   {% jdoc core::RuleViolation %}.
 
+* {% jdoc core::rules.RuleFactory %}
+* {% jdoc core::rules.RuleBuilder %}
+* Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
+* {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
+
 ##### For removal
 
 * {% jdoc java::lang.java.AbstractJavaParser %}
