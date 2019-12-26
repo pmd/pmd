@@ -37,9 +37,10 @@ public abstract class XmlMapper<T> {
     }
 
     /**
-     * Read the value from a string.
+     * Read the value from a string, if it is supported.
+     *
      * @throws UnsupportedOperationException if unsupported, see {@link #supportsStringMapping()}
-     * @throws IllegalArgumentException if something goes wrong (but should be reported on the error reporter)
+     * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
      */
     public T fromString(String attributeData) {
         throw new UnsupportedOperationException("Check #supportsStringMapping()");
@@ -72,6 +73,12 @@ public abstract class XmlMapper<T> {
         return examples("", "    ");
     }
 
+    /**
+     * Builds examples (impl).
+     *
+     * @param curIndent  Indentation of the current level
+     * @param baseIndent Base indentation string, adding one indent level concats this with the [curIndent]
+     */
     protected abstract List<String> examples(String curIndent, String baseIndent);
 
     @Override

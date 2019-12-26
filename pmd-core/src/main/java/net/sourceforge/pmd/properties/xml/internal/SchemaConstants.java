@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.properties.xml.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 
 

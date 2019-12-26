@@ -41,7 +41,7 @@ public interface PropertyConstraint<T> {
      * @return An optional diagnostic message
      */
     @Nullable
-    String validate(T value); // Future make default
+    String validate(T value);
 
 
     /**
@@ -77,6 +77,36 @@ public interface PropertyConstraint<T> {
 
 
     /**
+     * Returns a constraint that validates a collection of Ts
+     * by checking each component conforms to this validator.
+     *
+     * @return A collection validator
+     */
+    default PropertyConstraint<Iterable<? extends T>> toCollectionConstraint() {
+        final PropertyConstraint<T> thisValidator = PropertyConstraint.this;
+        return new PropertyConstraint<Iterable<? extends T>>() {
+            @Override
+            public @Nullable String validate(Iterable<? extends T> value) {
+                List<String> errors = new ArrayList<>();
+                for (T t : value) {
+                    String compValidation = thisValidator.validate(t);
+                    if (compValidation != null) {
+                        errors.add(compValidation);
+                    }
+                }
+                return errors.isEmpty() ? null
+                                        : String.join(", ", errors);
+            }
+
+            @Override
+            public String getConstraintDescription() {
+                return "Components " + StringUtils.uncapitalize(thisValidator.getConstraintDescription());
+            }
+        };
+    }
+
+
+    /**
      * Builds a new validator from a predicate, and description.
      *
      * @param pred                  The predicate. If it returns
@@ -99,27 +129,9 @@ public interface PropertyConstraint<T> {
                 return pred.test(value) ? null : "Constraint violated on property value '" + value + "' (" + StringUtils.uncapitalize(constraintDescription) + ")";
             }
 
-
             @Override
             public String getConstraintDescription() {
                 return StringUtils.capitalize(constraintDescription);
-            }
-
-
-            @Override
-            public PropertyConstraint<Iterable<? extends U>> toCollectionConstraint() {
-                final PropertyConstraint<U> thisValidator = this;
-                return fromPredicate(
-                    us -> {
-                        for (U u : us) {
-                            if (!pred.test(u)) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    },
-                    "Components " + StringUtils.uncapitalize(thisValidator.getConstraintDescription())
-                );
             }
         };
     }

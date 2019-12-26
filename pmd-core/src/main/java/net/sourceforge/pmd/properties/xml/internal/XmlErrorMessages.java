@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml;
+package net.sourceforge.pmd.properties.xml.internal;
 
 /**
  * @author Clément Fournier

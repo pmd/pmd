@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

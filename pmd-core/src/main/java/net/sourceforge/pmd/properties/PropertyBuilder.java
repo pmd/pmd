@@ -129,20 +129,15 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return (B) this;
     }
 
-    // TODO 7.0.0 document the following:
-    //
-    //     * <p>Constraints should be independent from each other, and should
-    //     * perform no side effects. PMD doesn't specify how many times a
-    //     * constraint predicate will be executed, or in what order.
-    //
-    // This is superfluous right now bc users may not create their own constraints
-
-
     /**
      * Add a constraint on the values that this property may take.
      * The validity of values will be checked when parsing the XML,
      * and invalid values will be reported. A rule will never be run
      * if some of its properties violate some constraints.
+     *
+     * <p>Constraints should be independent from each other, and should
+     * perform no side effects. PMD doesn't specify how many times a
+     * constraint predicate will be executed, or in what order.
      *
      * @param constraint The constraint
      *

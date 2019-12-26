@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.xml.XmlErrorMessages;
+import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
