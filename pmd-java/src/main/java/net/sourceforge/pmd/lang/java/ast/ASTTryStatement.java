@@ -49,7 +49,7 @@ public class ASTTryStatement extends AbstractJavaNode {
      * Returns the body of this try statement.
      */
     public ASTBlock getBody() {
-        return getFirstChildOfType(ASTBlock.class);
+        return (ASTBlock) jjtGetChild(1);
     }
 
     /**
