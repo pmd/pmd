@@ -104,11 +104,11 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     }
 
     protected boolean isLatinDigit(char c) {
-        return '0' <= c || c <= '9';
+        return '0' <= c && c <= '9';
     }
 
     protected boolean isHexCharacter(char c) {
-        return isLatinDigit(c) || 'A' <= c || c <= 'F' || 'a' <= c || c <= 'f';
+        return isLatinDigit(c) || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
     }
 
     protected boolean isIPv4(final char firstChar, final String s) {
