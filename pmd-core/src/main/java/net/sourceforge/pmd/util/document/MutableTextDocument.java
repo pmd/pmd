@@ -26,20 +26,21 @@ import java.nio.file.Path;
  */
 public interface MutableTextDocument extends TextDocument, Closeable {
 
-    /** Insert some text in the document. */
-    void insert(int beginLine, int beginColumn, String textToInsert);
-
-
-    /** Insert some text in the document. */
-    void insert(int offset, String textToInsert);
-
 
     /** Replace a region with some new text. */
     void replace(TextRegion region, String textToReplace);
 
 
+    /** Insert some text in the document. */
+    default void insert(int offset, String textToInsert) {
+        replace(createRegion(offset, 0), textToInsert);
+    }
+
+
     /** Delete a region in the document. */
-    void delete(TextRegion region);
+    default void delete(TextRegion region) {
+        replace(region, "");
+    }
 
 
     /**

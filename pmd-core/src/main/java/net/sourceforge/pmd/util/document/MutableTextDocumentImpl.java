@@ -22,21 +22,6 @@ class MutableTextDocumentImpl extends TextDocumentImpl implements MutableTextDoc
         this.out = writer;
     }
 
-    @Override
-    public void insert(int beginLine, int beginColumn, final String textToInsert) {
-        insert(positioner.offsetFromLineColumn(beginLine, beginColumn), textToInsert);
-    }
-
-    @Override
-    public void insert(int offset, String textToInsert) {
-        replace(createRegion(offset, 0), textToInsert);
-    }
-
-
-    @Override
-    public void delete(final TextRegion region) {
-        replace(region, "");
-    }
 
     @Override
     public void replace(final TextRegion region, final String textToReplace) {
@@ -69,9 +54,9 @@ class MutableTextDocumentImpl extends TextDocumentImpl implements MutableTextDoc
         }
 
         TextRegion realPos = shift == 0
-                                 ? origCoords
-                                 // don't check the bounds
-                                 : new TextRegionImpl(origCoords.getStartOffset() + shift, origCoords.getLength());
+                             ? origCoords
+                             // don't check the bounds
+                             : new TextRegionImpl(origCoords.getStartOffset() + shift, origCoords.getLength());
 
         accumulatedOffsets.compute(origCoords.getStartOffset(), (k, v) -> {
             int s = v == null ? lenDiff : v + lenDiff;

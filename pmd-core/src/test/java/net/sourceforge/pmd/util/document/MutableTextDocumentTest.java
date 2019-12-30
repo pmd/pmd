@@ -30,16 +30,6 @@ public class MutableTextDocumentTest {
         temporaryFile = temporaryFolder.newFile(FILE_PATH).toPath();
     }
 
-    @Test
-    public void insertAtStartOfTheFileShouldSucceed() throws IOException {
-        writeContentToTemporaryFile("static void main(String[] args) {}");
-
-        try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(1, 1, "public ");
-        }
-
-        assertFinalFileIs("public static void main(String[] args) {}");
-    }
 
     @Test
     public void insertAtStartOfTheFileWithOffsetShouldSucceed() throws IOException {
@@ -102,7 +92,7 @@ public class MutableTextDocumentTest {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
         try (MutableTextDocument documentFile = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(1, 1, "public ");
+            documentFile.insert(0, "public ");
             documentFile.insert(17, "final ");
         }
 
@@ -139,7 +129,7 @@ public class MutableTextDocumentTest {
         writeContentToTemporaryFile(code);
 
         try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            doc.insert(1, 1, "public ");
+            doc.insert(0, "public ");
             doc.delete(doc.createRegion("static void main(".length(), "final ".length()));
         }
 
@@ -196,12 +186,12 @@ public class MutableTextDocumentTest {
         writeContentToTemporaryFile(code);
 
         try (MutableTextDocument doc = MutableTextDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            doc.insert(1, 1, "public");
+            doc.insert(0, "public");
             // delete "static "
             doc.delete(doc.createRegion(1, 1, 1, 7));
             // replace "int"
             doc.replace(doc.createRegion(1, 8, 1, 8 + "int".length()), "void");
-            doc.insert(1, 17, "final ");
+            doc.insert(16, "final ");
             doc.replace(doc.createRegion(1, 17, 1, 17 + "CharSequence".length()), "String");
         }
 
