@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.util.document;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
+import net.sourceforge.pmd.util.document.io.StringTextSource;
 
 /**
  * Represents a text document. A document provides methods to identify
@@ -63,19 +62,35 @@ public interface TextDocument {
     CharSequence subSequence(TextRegion region);
 
 
-    /** Returns a mutable document that uses the given replace handler to carry out updates. */
-    MutableTextDocument newMutableDoc(ReplaceHandler out);
+    /**
+     * Returns true if this source cannot be written to. In that case,
+     * {@link #newEditor()} will throw an exception.
+     */
+    boolean isReadOnly();
 
 
-    static TextDocument forFile(final Path file, final Charset charset) throws IOException {
-        byte[] bytes = Files.readAllBytes(requireNonNull(file));
-        String text = new String(bytes, requireNonNull(charset));
-        return forCode(text);
+    /**
+     * Produce a new editor mutating this file.
+     *
+     * @return A new editor
+     *
+     * @throws IOException                   If external modifications were detected
+     * @throws UnsupportedOperationException If this document is read-only
+     */
+    TextEditor newEditor() throws IOException;
+
+
+    static TextDocument forFile(final Path path, final Charset charset) throws IOException {
+        return new TextDocumentImpl(PhysicalTextSource.forFile(path, charset));
     }
 
 
     static TextDocument forCode(final CharSequence source) {
-        return new TextDocumentImpl(source);
+        try {
+            return new TextDocumentImpl(new StringTextSource(source));
+        } catch (IOException e) {
+            throw new AssertionError("String text source should never throw IOException", e);
+        }
     }
 
 }

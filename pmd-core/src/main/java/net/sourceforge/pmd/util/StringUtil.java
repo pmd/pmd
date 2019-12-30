@@ -468,6 +468,26 @@ public final class StringUtil {
     }
 
 
+    /**
+     * Truncate the given string to the maximum given with. If
+     * it is truncated, the ellipsis string is appended to the
+     * output.
+     *
+     * @param str      String to truncate
+     * @param maxWidth Maximum width
+     * @param ellipsis String to append to the truncated string
+     *
+     * @return The given string, possibly truncated to maxWidth characters
+     */
+    public static String truncate(String str, int maxWidth, String ellipsis) {
+        if (str.length() > maxWidth) {
+            final int ix = Math.min(maxWidth, str.length());
+            return str.substring(0, ix) + ellipsis;
+        }
+        return str;
+    }
+
+
     public enum CaseConvention {
         /** SCREAMING_SNAKE_CASE. */
         SCREAMING_SNAKE_CASE {

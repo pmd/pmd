@@ -10,26 +10,59 @@ import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
 
-class MutableTextDocumentImpl extends TextDocumentImpl implements MutableTextDocument {
 
-    private ReplaceHandler out;
+class TextEditorImpl implements TextEditor {
+
+    private final TextDocumentImpl document;
+
+    private final PhysicalTextSource backend;
+    private final long originalStamp;
+    private final StringBuilder buffer;
+    private boolean open = true;
+
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
 
-    MutableTextDocumentImpl(final CharSequence source, final ReplaceHandler writer) {
-        super(source);
-        this.out = writer;
+    TextEditorImpl(final TextDocumentImpl document, final PhysicalTextSource writer) throws IOException {
+        if (writer.isReadOnly()) {
+            throw new UnsupportedOperationException(writer + " is readonly");
+        }
+
+        this.document = document;
+        this.backend = writer;
+        this.buffer = new StringBuilder(document.getText());
+        this.originalStamp = document.getCurStamp();
     }
 
+    private void ensureOpen() {
+        if (!open) {
+            throw new IllegalStateException("Closed handler");
+        }
+    }
+
+    @Override
+    public void insert(int offset, String textToInsert) {
+        replace(document.createRegion(offset, 0), textToInsert);
+    }
+
+    @Override
+    public void delete(TextRegion region) {
+        replace(region, "");
+    }
 
     @Override
     public void replace(final TextRegion region, final String textToReplace) {
+        synchronized (this) {
+            ensureOpen();
 
-        TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
+            TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
 
-        out.replace(realPos, textToReplace);
+            buffer.replace(realPos.getStartOffset(), realPos.getEndOffset(), textToReplace);
+        }
     }
+
 
     private TextRegion shiftOffset(TextRegion origCoords, int lenDiff) {
         // instead of using a map, a balanced binary tree would be more efficient
@@ -68,15 +101,19 @@ class MutableTextDocumentImpl extends TextDocumentImpl implements MutableTextDoc
 
 
     @Override
-    public CharSequence getUncommittedText() {
-        return out.getCurrentText(this);
-    }
-
-    @Override
     public void close() throws IOException {
-        out = out.commit();
-        positioner = new SourceCodePositioner(out.getCurrentText(this));
-        accumulatedOffsets = new TreeMap<>();
+        synchronized (this) {
+            ensureOpen();
+            open = false;
+
+            long timeStamp = backend.fetchStamp();
+            if (timeStamp != originalStamp) {
+                throw new IOException(backend + " was modified externally");
+            }
+
+            backend.writeContents(buffer);
+            document.setText(buffer);
+        }
     }
 
 }

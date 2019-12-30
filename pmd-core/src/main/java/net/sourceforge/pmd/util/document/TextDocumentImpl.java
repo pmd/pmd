@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.util.document;
 
+import java.io.IOException;
+
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
+import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
 
 
 class TextDocumentImpl implements TextDocument {
@@ -16,17 +19,28 @@ class TextDocumentImpl implements TextDocument {
     private static final String OUT_OF_BOUNDS_WITH_OFFSET =
         "Region [%d, +%d] is not in range of this document";
 
+    private final PhysicalTextSource backend;
+
+    private long curStamp;
+
     /** The positioner has the original source file. */
-    SourceCodePositioner positioner;
+    private SourceCodePositioner positioner;
 
+    TextDocumentImpl(PhysicalTextSource backend) throws IOException {
+        this.backend = backend;
 
-    TextDocumentImpl(final CharSequence source) {
-        positioner = new SourceCodePositioner(source);
+        this.curStamp = backend.fetchStamp();
+        this.positioner = new SourceCodePositioner(backend.readContents());
     }
 
     @Override
-    public MutableTextDocument newMutableDoc(ReplaceHandler out) {
-        return new MutableTextDocumentImpl(getText(), out);
+    public boolean isReadOnly() {
+        return backend.isReadOnly();
+    }
+
+    @Override
+    public TextEditor newEditor() throws IOException {
+        return new TextEditorImpl(this, backend);
     }
 
     @Override
@@ -69,6 +83,14 @@ class TextDocumentImpl implements TextDocument {
     @Override
     public CharSequence getText() {
         return positioner.getSourceCode();
+    }
+
+    long getCurStamp() {
+        return curStamp;
+    }
+
+    void setText(CharSequence text) {
+        positioner = new SourceCodePositioner(text);
     }
 
     @Override
