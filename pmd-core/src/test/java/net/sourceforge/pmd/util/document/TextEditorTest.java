@@ -97,6 +97,12 @@ public class TextEditorTest {
         }
 
         assertFinalFileIs(doc, "public static void main(final String[] args) {}");
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.replace(doc.createRegion(30, 6), "int[]");
+        }
+
+        assertFinalFileIs(doc, "public static void main(final int[][] args) {}");
     }
 
     @Test
@@ -200,8 +206,8 @@ public class TextEditorTest {
 
     private void assertFinalFileIs(TextDocument doc, String expected) throws IOException {
         final String actualContent = new String(Files.readAllBytes(temporaryFile), StandardCharsets.UTF_8);
-        assertEquals(expected, doc.getText());
         assertEquals(expected, actualContent);
+        assertEquals(expected, doc.getText().toString()); // getText() is not necessarily a string
     }
 
     private TextDocument tempFile(final String content) throws IOException {

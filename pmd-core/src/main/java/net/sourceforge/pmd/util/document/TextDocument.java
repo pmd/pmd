@@ -80,11 +80,20 @@ public interface TextDocument {
     TextEditor newEditor() throws IOException;
 
 
+    /**
+     * Returns an instance of this interface reading & writing to a file.
+     * The returned instance may be readonly.
+     *
+     * @throws IOException If the file is not a regular file
+     */
     static TextDocument forFile(final Path path, final Charset charset) throws IOException {
         return new TextDocumentImpl(PhysicalTextSource.forFile(path, charset));
     }
 
 
+    /**
+     * Returns a read-only document for the given text.
+     */
     static TextDocument forCode(final CharSequence source) {
         try {
             return new TextDocumentImpl(new StringTextSource(source));

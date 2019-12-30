@@ -58,9 +58,9 @@ public interface PhysicalTextSource {
 
     /**
      * Returns an instance of this interface reading & writing to a file.
-     * The file is not considered readonly.
+     * The returned instance may be readonly.
      *
-     * @throws IOException If the file is a directory
+     * @throws IOException If the file is not a regular file
      */
     static PhysicalTextSource forFile(final Path path, final Charset charset) throws IOException {
         return new FilePhysicalTextSource(path, charset);

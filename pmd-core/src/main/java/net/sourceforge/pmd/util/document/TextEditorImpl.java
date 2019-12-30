@@ -17,9 +17,8 @@ class TextEditorImpl implements TextEditor {
 
     private final TextDocumentImpl document;
 
-    private final PhysicalTextSource backend;
-    private final long originalStamp;
-    private final StringBuilder buffer;
+    private final IoBuffer out;
+
     private boolean open = true;
 
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
@@ -30,15 +29,23 @@ class TextEditorImpl implements TextEditor {
             throw new UnsupportedOperationException(writer + " is readonly");
         }
 
+        this.out = new IoBuffer(document.getText(), document.getCurStamp(), writer);
         this.document = document;
-        this.backend = writer;
-        this.buffer = new StringBuilder(document.getText());
-        this.originalStamp = document.getCurStamp();
     }
 
     private void ensureOpen() {
         if (!open) {
             throw new IllegalStateException("Closed handler");
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        synchronized (this) {
+            ensureOpen();
+            open = false;
+
+            out.close(document);
         }
     }
 
@@ -56,10 +63,9 @@ class TextEditorImpl implements TextEditor {
     public void replace(final TextRegion region, final String textToReplace) {
         synchronized (this) {
             ensureOpen();
-
             TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
 
-            buffer.replace(realPos.getStartOffset(), realPos.getEndOffset(), textToReplace);
+            out.replace(realPos, textToReplace);
         }
     }
 
@@ -99,21 +105,5 @@ class TextEditorImpl implements TextEditor {
         return realPos;
     }
 
-
-    @Override
-    public void close() throws IOException {
-        synchronized (this) {
-            ensureOpen();
-            open = false;
-
-            long timeStamp = backend.fetchStamp();
-            if (timeStamp != originalStamp) {
-                throw new IOException(backend + " was modified externally");
-            }
-
-            backend.writeContents(buffer);
-            document.setText(buffer);
-        }
-    }
 
 }

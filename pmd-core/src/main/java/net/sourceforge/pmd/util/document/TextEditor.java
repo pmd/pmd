@@ -5,16 +5,17 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * A mutable editor over a {@linkplain TextDocument text document}.
+ * An editor over a {@linkplain TextDocument text document}.
  * Instances of this interface have those responsibilities:
  * <ul>
- * <li>Buffering updates to delay IO access;
- * <li>Maintaining a coordinate system consistent with the current
- * state of the text document even after performing mutation operations.
+ * <li>Buffering updates to delay IO interaction;
+ * <li>Maintaining a coordinate system consistent with the state of
+ * the underlying document. This makes it so, that {@link TextRegion}s
+ * created by the text document address the same portion of text even
+ * after some updates.
  * </ul>
  *
  * <p>For example, take a document containing the text "a".
@@ -26,7 +27,7 @@ import java.io.IOException;
  * <p>Consider that all mutation operations shift the coordinate system
  * transparently.
  */
-public interface TextEditor extends Closeable {
+public interface TextEditor extends AutoCloseable {
 
 
     /** Replace a region with some new text. */

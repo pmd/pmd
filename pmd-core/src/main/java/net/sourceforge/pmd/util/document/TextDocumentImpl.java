@@ -11,13 +11,13 @@ import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
 import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
 
 
-class TextDocumentImpl implements TextDocument {
+final class TextDocumentImpl implements TextDocument {
 
     private static final String OUT_OF_BOUNDS_WITH_LINES =
-        "Region [bpos=(%d, %d), epos = (%d, %d)] is not in range of this document";
+        "Region [bpos=(%d, %d), epos = (%d, %d)] is not in range of this document (length %d)";
 
     private static final String OUT_OF_BOUNDS_WITH_OFFSET =
-        "Region [%d, +%d] is not in range of this document";
+        "Region [%d, +%d] is not in range of this document (length %d)";
 
     private final PhysicalTextSource backend;
 
@@ -45,12 +45,28 @@ class TextDocumentImpl implements TextDocument {
 
     @Override
     public RegionWithLines addLineInfo(TextRegion region) {
+        if (region.getEndOffset() > getText().length()) {
+            throw new IndexOutOfBoundsException(
+                String.format(
+                    OUT_OF_BOUNDS_WITH_OFFSET,
+                    region.getStartOffset(),
+                    region.getLength(),
+                    getText().length()
+                )
+            );
+        }
+
         int bline = positioner.lineNumberFromOffset(region.getStartOffset());
         int bcol = positioner.columnFromOffset(bline, region.getStartOffset());
         int eline = positioner.lineNumberFromOffset(region.getEndOffset());
         int ecol = positioner.columnFromOffset(eline, region.getEndOffset());
 
-        return createRegion(bline, bcol, eline, ecol);
+        return new WithLineInfo(
+            region.getStartOffset(),
+            region.getLength(),
+            bline, bcol,
+            eline, ecol
+        );
     }
 
     @Override
@@ -61,9 +77,12 @@ class TextDocumentImpl implements TextDocument {
 
         if (startOffset < 0 || endOffset < 0) {
             throw new IndexOutOfBoundsException(
-                String.format(OUT_OF_BOUNDS_WITH_LINES,
-                              beginLine, beginColumn,
-                              endLine, endColumn)
+                String.format(
+                    OUT_OF_BOUNDS_WITH_LINES,
+                    beginLine, beginColumn,
+                    endLine, endColumn,
+                    getText().length()
+                )
             );
         }
 
@@ -73,8 +92,15 @@ class TextDocumentImpl implements TextDocument {
 
     @Override
     public TextRegion createRegion(int offset, int length) {
-        if (offset < 0 || offset + length > positioner.getSourceCode().length()) {
-            throw new IndexOutOfBoundsException(String.format(OUT_OF_BOUNDS_WITH_OFFSET, offset, length));
+        if (offset < 0 || offset + length > getText().length()) {
+            throw new IndexOutOfBoundsException(
+                String.format(
+                    OUT_OF_BOUNDS_WITH_OFFSET,
+                    offset,
+                    length,
+                    getText().length()
+                )
+            );
         }
 
         return new TextRegionImpl(offset, length);
@@ -89,8 +115,9 @@ class TextDocumentImpl implements TextDocument {
         return curStamp;
     }
 
-    void setText(CharSequence text) {
-        positioner = new SourceCodePositioner(text);
+    void setText(CharSequence text, long stamp) {
+        this.positioner = new SourceCodePositioner(text.toString());
+        this.curStamp = stamp;
     }
 
     @Override
