@@ -35,7 +35,7 @@ public class StringTextFile implements TextFile {
 
     @Override
     public long fetchStamp() {
-        return 0;
+        return hashCode();
     }
 
     @Override

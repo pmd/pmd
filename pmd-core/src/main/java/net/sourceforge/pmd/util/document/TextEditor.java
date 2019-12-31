@@ -7,6 +7,9 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 
+import net.sourceforge.pmd.util.document.io.ExternalModificationException;
+import net.sourceforge.pmd.util.document.io.TextFile;
+
 /**
  * An editor over a {@linkplain TextDocument text document}.
  * Instances of this interface have those responsibilities:
@@ -30,22 +33,40 @@ import java.io.IOException;
 public interface TextEditor extends AutoCloseable {
 
 
-    /** Replace a region with some new text. */
+    /**
+     * Replace a region with some new text.
+     *
+     * @throws IllegalStateException If this editor has been closed
+     */
     void replace(TextRegion region, String textToReplace);
 
 
-    /** Insert some text in the document. */
+    /**
+     * Insert some text in the document.
+     *
+     * @throws IllegalStateException If this editor has been closed
+     */
     void insert(int offset, String textToInsert);
 
 
-    /** Delete a region in the document. */
+    /**
+     * Delete a region in the document.
+     *
+     * @throws IllegalStateException If this editor has been closed
+     */
     void delete(TextRegion region);
 
 
     /**
      * Commit the document. The {@linkplain TextDocument#getText() text}
      * of the associated document is updated to reflect the changes. The
-     * physical file may be updated as well.
+     * physical file may be updated as well. This editor becomes unusable
+     * after being closed.
+     *
+     * @throws IOException                   If an IO exception occurs, eg while writing to a file
+     * @throws ExternalModificationException If external modifications were detected,
+     *                                       in which case the {@link TextFile} is not
+     *                                       overwritten
      */
     @Override
     void close() throws IOException;

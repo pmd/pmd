@@ -26,6 +26,8 @@ class FsTextFile implements TextFile {
 
         if (!Files.isRegularFile(path)) {
             throw new IOException("Not a regular file: " + path);
+        } else if (!Files.isReadable(path)) {
+            throw new IOException("Cannot read file " + path);
         }
 
         this.path = path;

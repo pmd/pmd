@@ -24,12 +24,12 @@ class TextEditorImpl implements TextEditor {
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
 
-    TextEditorImpl(final TextDocumentImpl document, final TextFile writer) throws IOException {
-        if (writer.isReadOnly()) {
-            throw new UnsupportedOperationException(writer + " is readonly");
+    TextEditorImpl(final TextDocumentImpl document, final TextFile backend) throws IOException {
+        if (backend.isReadOnly()) {
+            throw new UnsupportedOperationException(backend + " is readonly");
         }
 
-        this.out = new IoBuffer(document.getText(), document.getCurStamp(), writer);
+        this.out = new IoBuffer(document.getText(), document.getCurStamp(), backend);
         this.document = document;
     }
 

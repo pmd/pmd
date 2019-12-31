@@ -7,6 +7,8 @@ package net.sourceforge.pmd.util.document.io;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -28,6 +30,8 @@ public interface TextFile {
     /**
      * Returns true if this source cannot be written to. In that case,
      * {@link #writeContents(CharSequence)} will throw an exception.
+     * In the general case, nothing prevents this method's result from
+     * changing from one invocation to another.
      */
     boolean isReadOnly();
 
@@ -66,7 +70,8 @@ public interface TextFile {
      * Returns an instance of this interface reading & writing to a file.
      * The returned instance may be readonly.
      *
-     * @throws IOException If the file is not a regular file
+     * @throws IOException If the file is not a regular file ({@link Files#isRegularFile(Path, LinkOption...)})
+     * @throws IOException If the file is not readable ({@link Files#isReadable(Path)})
      */
     static TextFile forPath(final Path path, final Charset charset) throws IOException {
         return new FsTextFile(path, charset);

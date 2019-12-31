@@ -5,18 +5,22 @@
 package net.sourceforge.pmd.util.document;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ConcurrentModificationException;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.util.document.io.StringTextFile;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class TextEditorTest {
@@ -25,6 +29,9 @@ public class TextEditorTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @Rule
+    public ExpectedException expect = ExpectedException.none();
+
     private Path temporaryFile;
 
     @Before
@@ -204,6 +211,42 @@ public class TextEditorTest {
         }
 
         assertFinalFileIs(doc, "public void main(final String[] args) {}");
+    }
+
+
+    @Test
+    public void textDocumentsShouldOnlyAllowASingleOpenEditor() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.insert(0, "public");
+
+            expect.expect(ConcurrentModificationException.class);
+
+            try (TextEditor editor2 = doc.newEditor()) {
+                // delete "static "
+                editor.delete(doc.createRegion(0, 7));
+            }
+
+            // replace "int"
+            editor.replace(doc.createRegion(8, 3), "void");
+        }
+
+    }
+
+
+    @Test
+    public void textReadOnlyDocumentCannotBeEdited() throws IOException {
+        StringTextFile someFooBar = new StringTextFile("someFooBar");
+        assertTrue(someFooBar.isReadOnly());
+        TextDocument doc = TextDocument.create(someFooBar);
+
+        assertTrue(doc.isReadOnly());
+
+        expect.expect(UnsupportedOperationException.class);
+
+        doc.newEditor();
     }
 
     private void assertFinalFileIs(TextDocument doc, String expected) throws IOException {
