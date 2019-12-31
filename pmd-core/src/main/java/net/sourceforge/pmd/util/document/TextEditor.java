@@ -36,7 +36,10 @@ public interface TextEditor extends AutoCloseable {
     /**
      * Replace a region with some new text.
      *
-     * @throws IllegalStateException If this editor has been closed
+     * @throws IllegalStateException       If this editor has been closed
+     * @throws OverlappingOperationsException If the region identified by the
+     *                                     parameter has been entirely deleted
+     *                                     in this editor session
      */
     void replace(TextRegion region, String textToReplace);
 
@@ -70,5 +73,19 @@ public interface TextEditor extends AutoCloseable {
      */
     @Override
     void close() throws IOException;
+
+
+    class OverlappingOperationsException extends RuntimeException {
+
+        public final TextRegion r1;
+        public final TextRegion r2;
+
+
+        public OverlappingOperationsException(TextRegion r1, TextRegion r2) {
+            super("Regions " + r1 + " and " + r2 + " overlap on " + r1.intersect(r2) );
+            this.r1 = r1;
+            this.r2 = r2;
+        }
+    }
 
 }

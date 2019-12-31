@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -22,6 +23,7 @@ class TextEditorImpl implements TextEditor {
     private boolean open = true;
 
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
+    private List<TextRegion> affectedRegions = new ArrayList<>();
 
 
     TextEditorImpl(final TextDocumentImpl document, final TextFile backend) throws IOException {
@@ -63,6 +65,15 @@ class TextEditorImpl implements TextEditor {
     public void replace(final TextRegion region, final String textToReplace) {
         synchronized (this) {
             ensureOpen();
+
+            for (TextRegion reg : affectedRegions) {
+                if (reg.overlaps(region)) {
+                    throw new OverlappingOperationsException(reg, region);
+                }
+            }
+
+            affectedRegions.add(region);
+
             TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
 
             out.replace(realPos, textToReplace);

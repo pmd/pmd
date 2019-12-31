@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.util.Comparator;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a range of text in a {@link TextDocument} with the tuple (offset, length).
@@ -30,6 +31,38 @@ public interface TextRegion extends Comparable<TextRegion> {
 
     /** Length of the region. */
     int getLength();
+
+
+    /**
+     * Returns true if this region overlaps with the other region by at
+     * least one character. This is a symmetric relation.
+     *
+     * @param other Other region
+     */
+    default boolean overlaps(TextRegion other) {
+        TextRegion intersection = this.intersect(other);
+        return intersection != null && intersection.getLength() > 0;
+    }
+
+
+    /**
+     * Compute the intersection of this region with the other. Returns
+     * null if the two regions are disjoint.
+     *
+     * @param other Other region
+     */
+    @Nullable
+    default TextRegion intersect(TextRegion other) {
+        if (this.getStartOffset() < other.getStartOffset()) {
+            int len = this.getEndOffset() - other.getStartOffset();
+            return len < 0 ? null : new TextRegionImpl(other.getStartOffset(), len);
+        } else if (other.getStartOffset() < this.getStartOffset()) {
+            int len = other.getEndOffset() - this.getStartOffset();
+            return len < 0 ? null : new TextRegionImpl(this.getStartOffset(), len);
+        } else {
+            return new TextRegionImpl(this.getStartOffset(), Math.min(this.getLength(), other.getLength()));
+        }
+    }
 
 
     /**

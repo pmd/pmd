@@ -213,6 +213,19 @@ public class TextEditorTest {
         assertFinalFileIs(doc, "public void main(final String[] args) {}");
     }
 
+    @Test
+    public void testDeleteEverything() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.delete(doc.createRegion(0, code.length()));
+            editor.replace(doc.createRegion(8, 3), "void");
+        }
+
+        assertFinalFileIs(doc, "public void main(final String[] args) {}");
+    }
+
 
     @Test
     public void textDocumentsShouldOnlyAllowASingleOpenEditor() throws IOException {
