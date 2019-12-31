@@ -14,7 +14,7 @@ public class TextDocumentTest {
 
     @Test
     public void testSingleLineRegion() {
-        TextDocument doc = TextDocument.forCode("bonjour\ntristesse");
+        TextDocument doc = TextDocument.readonlyString("bonjour\ntristesse");
 
         TextRegion region = doc.createRegion(0, "bonjour".length());
 
@@ -33,7 +33,7 @@ public class TextDocumentTest {
 
     @Test
     public void testMultiLineRegion() {
-        TextDocument doc = TextDocument.forCode("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readonlyString("bonjour\noha\ntristesse");
 
         TextRegion region = doc.createRegion("bonjou".length(), "r\noha\ntri".length());
 
@@ -51,7 +51,7 @@ public class TextDocumentTest {
 
     @Test
     public void testEmptyRegion() {
-        TextDocument doc = TextDocument.forCode("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readonlyString("bonjour\noha\ntristesse");
 
         TextRegion region = doc.createRegion("bonjour".length(), 0);
 
@@ -65,21 +65,6 @@ public class TextDocumentTest {
         assertEquals(1, withLines.getEndLine());
         assertEquals(1 + "bonjour".length(), withLines.getBeginColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
-    }
-
-    @Test
-    public void testRegionsRoundTrip() {
-        TextDocument doc = TextDocument.forCode("bonjour\noha\ntristesse");
-
-        TextRegion region = doc.createRegion("bonjour".length(), "\noha\ntrist".length());
-
-        RegionWithLines withLines = doc.addLineInfo(region);
-
-        RegionWithLines other = doc.createRegion(withLines.getBeginLine(), withLines.getBeginColumn(), withLines.getEndLine(), withLines.getEndColumn());
-
-        assertEquals(other.getStartOffset(), region.getStartOffset());
-        assertEquals(other.getEndOffset(), region.getEndOffset());
-        assertEquals(other.getLength(), region.getLength());
     }
 
 }

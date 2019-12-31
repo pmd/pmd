@@ -2,21 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.util.document.io;
 
 import static java.util.Objects.requireNonNull;
 
 import net.sourceforge.pmd.util.StringUtil;
 
-public class StringTextSource implements PhysicalTextSource {
+public class StringTextFile implements TextFile {
 
     private final String buffer;
 
-    public StringTextSource(CharSequence source) {
+    public StringTextFile(CharSequence source) {
         requireNonNull(source, "Null charset");
 
         this.buffer = source.toString();

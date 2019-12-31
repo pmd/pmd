@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 
 class TextEditorImpl implements TextEditor {
@@ -24,7 +24,7 @@ class TextEditorImpl implements TextEditor {
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
 
-    TextEditorImpl(final TextDocumentImpl document, final PhysicalTextSource writer) throws IOException {
+    TextEditorImpl(final TextDocumentImpl document, final TextFile writer) throws IOException {
         if (writer.isReadOnly()) {
             throw new UnsupportedOperationException(writer + " is readonly");
         }

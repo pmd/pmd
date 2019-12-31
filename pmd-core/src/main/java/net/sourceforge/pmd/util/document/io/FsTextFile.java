@@ -6,17 +6,21 @@ package net.sourceforge.pmd.util.document.io;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
-class FilePhysicalTextSource implements PhysicalTextSource {
+/**
+ * A {@link TextFile} backed by a file in some {@link FileSystem}.
+ */
+class FsTextFile implements TextFile {
 
     private final Path path;
     private final Charset charset;
 
-    FilePhysicalTextSource(Path path, Charset charset) throws IOException {
+    FsTextFile(Path path, Charset charset) throws IOException {
         AssertionUtil.requireParamNotNull(path, "path");
         AssertionUtil.requireParamNotNull(charset, "charset");
 

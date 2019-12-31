@@ -17,6 +17,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.util.document.io.TextFile;
+
 public class TextEditorTest {
 
     private static final String FILE_PATH = "psvm.java";
@@ -123,7 +125,7 @@ public class TextEditorTest {
         TextDocument doc = tempFile(code);
 
         try (TextEditor editor = doc.newEditor()) {
-            editor.delete(doc.createRegion(1, 25, 1, 31));
+            editor.delete(doc.createRegion(24, 6));
         }
 
         assertFinalFileIs(doc, "public static void main(String[] args) {}");
@@ -178,9 +180,9 @@ public class TextEditorTest {
         TextDocument doc = tempFile(code);
 
         try (TextEditor editor = doc.newEditor()) {
-            editor.replace(doc.createRegion(1, 1, 1, 1 + "int".length()), "void");
-            editor.replace(doc.createRegion(1, 1 + "int ".length(), 1, 1 + "int main".length()), "foo");
-            editor.replace(doc.createRegion("int main(".length(), "String".length()), "CharSequence");
+            editor.replace(doc.createRegion(0, 3), "void");
+            editor.replace(doc.createRegion(4, 4), "foo");
+            editor.replace(doc.createRegion(9, 6), "CharSequence");
         }
 
         assertFinalFileIs(doc, "void foo(CharSequence[] args) {}");
@@ -194,11 +196,11 @@ public class TextEditorTest {
         try (TextEditor editor = doc.newEditor()) {
             editor.insert(0, "public");
             // delete "static "
-            editor.delete(doc.createRegion(1, 1, 1, 7));
+            editor.delete(doc.createRegion(0, 7));
             // replace "int"
-            editor.replace(doc.createRegion(1, 8, 1, 8 + "int".length()), "void");
+            editor.replace(doc.createRegion(8, 3), "void");
             editor.insert(16, "final ");
-            editor.replace(doc.createRegion(1, 17, 1, 17 + "CharSequence".length()), "String");
+            editor.replace(doc.createRegion(17, "CharSequence".length()), "String");
         }
 
         assertFinalFileIs(doc, "public void main(final String[] args) {}");
@@ -214,7 +216,7 @@ public class TextEditorTest {
         try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             writer.write(content);
         }
-        return TextDocument.forFile(temporaryFile, StandardCharsets.UTF_8);
+        return TextDocument.create(TextFile.forPath(temporaryFile, StandardCharsets.UTF_8));
     }
 
 }

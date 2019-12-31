@@ -5,32 +5,20 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
-import net.sourceforge.pmd.util.document.io.StringTextSource;
+import net.sourceforge.pmd.util.document.io.StringTextFile;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
- * Represents a text document. A document provides methods to identify
- * regions of text and to convert between lines and columns.
+ * A view over a {@link TextFile}, providing methods to edit it incrementally
+ * and address regions of text.
  *
- * <p>The default document implementations do *not* normalise line endings.
+ * <p>A text document wraps a snapshot of the underlying {@link TextFile}.
+ * The text file is
+ * It may be edited with a {@linkplain TextEditor} (see {@link #newEditor()})
  */
 public interface TextDocument {
-
-    /**
-     * Create a new region based on line coordinates.
-     *
-     * @param beginLine   1-based inclusive index (>= 1)
-     * @param beginColumn 1-based inclusive index (>= 1)
-     * @param endLine     1-based inclusive index (>= 1)
-     * @param endColumn   1-based <b>exclusive</b> index (>= 1)
-     *
-     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
-     */
-    RegionWithLines createRegion(int beginLine, int beginColumn, int endLine, int endColumn);
 
 
     /**
@@ -49,12 +37,16 @@ public interface TextDocument {
      * offsets are considered, if the region is already a {@link RegionWithLines},
      * that information is discarded.
      *
+     * @return A new region with line information
+     *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
     RegionWithLines addLineInfo(TextRegion region);
 
 
-    /** Returns the text of this document. */
+    /**
+     * Returns the current text of this document.
+     */
     CharSequence getText();
 
 
@@ -63,7 +55,7 @@ public interface TextDocument {
 
 
     /**
-     * Returns true if this source cannot be written to. In that case,
+     * Returns true if this document cannot be written to. In that case,
      * {@link #newEditor()} will throw an exception.
      */
     boolean isReadOnly();
@@ -81,22 +73,21 @@ public interface TextDocument {
 
 
     /**
-     * Returns an instance of this interface reading & writing to a file.
-     * The returned instance may be readonly.
+     * Returns a document backed by the given text "file".
      *
-     * @throws IOException If the file is not a regular file
+     * @throws IOException If an error occurs eg while reading the file
      */
-    static TextDocument forFile(final Path path, final Charset charset) throws IOException {
-        return new TextDocumentImpl(PhysicalTextSource.forFile(path, charset));
+    static TextDocument create(TextFile textFile) throws IOException {
+        return new TextDocumentImpl(textFile);
     }
 
 
     /**
      * Returns a read-only document for the given text.
      */
-    static TextDocument forCode(final CharSequence source) {
+    static TextDocument readonlyString(final CharSequence source) {
         try {
-            return new TextDocumentImpl(new StringTextSource(source));
+            return new TextDocumentImpl(new StringTextFile(source));
         } catch (IOException e) {
             throw new AssertionError("String text source should never throw IOException", e);
         }

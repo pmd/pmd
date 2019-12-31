@@ -2,12 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -15,11 +12,18 @@ import java.nio.file.Path;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
- * This interface presents the file operations needed by {@link TextDocument}
- * to support read/write access. This represents the "backend" of a text document,
- * eg a local file, or an in-memory buffer.
+ * Physical backend of a {@link TextDocument}, providing read-write
+ * access to some location containing text data. Despite the name, this
+ * is not necessarily backed by a local file: it may be eg a file system
+ * file, an archive entry, an in-memory buffer, etc.
+ *
+ * <p>This interface provides only block IO access, while {@link TextDocument}
+ * adds logic about incremental edition (eg replacing a single region of text).
+ *
+ * <p>Note that this doesn't have the generality of a {@link File},
+ * because it cannot represent binary files.
  */
-public interface PhysicalTextSource {
+public interface TextFile {
 
     /**
      * Returns true if this source cannot be written to. In that case,
@@ -48,10 +52,12 @@ public interface PhysicalTextSource {
 
 
     /**
-     * Returns a number identifying the revision. Every time a physical
-     * document is modified, it should change stamps. This however doesn't
-     * mandate a pattern for the individual stamps, it's less restrictive
-     * than eg a "last modified date".
+     * Returns a number identifying the state of the underlying physical
+     * record. Every time a text file is modified (either through an instance
+     * of this interface or through external filesystem operations), it
+     * should change stamps. This however doesn't mandate a pattern for
+     * the stamps over time, eg they don't need to increase, or really
+     * represent anything.
      */
     long fetchStamp() throws IOException;
 
@@ -62,8 +68,8 @@ public interface PhysicalTextSource {
      *
      * @throws IOException If the file is not a regular file
      */
-    static PhysicalTextSource forFile(final Path path, final Charset charset) throws IOException {
-        return new FilePhysicalTextSource(path, charset);
+    static TextFile forPath(final Path path, final Charset charset) throws IOException {
+        return new FsTextFile(path, charset);
     }
 
 

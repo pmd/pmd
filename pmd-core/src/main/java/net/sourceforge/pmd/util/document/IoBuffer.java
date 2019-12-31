@@ -6,7 +6,7 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 
-import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Helper that buffers operations of a {@link TextEditor} to delay IO
@@ -14,12 +14,12 @@ import net.sourceforge.pmd.util.document.io.PhysicalTextSource;
  */
 class IoBuffer {
 
-    private final PhysicalTextSource backend;
+    private final TextFile backend;
     private final long originalStamp;
     private final StringBuilder buffer;
 
 
-    IoBuffer(CharSequence sequence, long stamp, final PhysicalTextSource writer) {
+    IoBuffer(CharSequence sequence, long stamp, final TextFile writer) {
         if (writer.isReadOnly()) {
             throw new UnsupportedOperationException(writer + " is readonly");
         }
