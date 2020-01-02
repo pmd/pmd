@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.util.document;
 
-import static net.sourceforge.pmd.util.document.TextEditor.*;
+import static net.sourceforge.pmd.util.document.TextEditor.OverlappingOperationsException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.io.ReadonlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
@@ -98,7 +99,7 @@ public class TextEditorTest {
     }
 
     @Test
-    public void insertVariousTokensIntoTheFileShouldSucceed() throws IOException {
+    public void testEditTwice() throws IOException {
         TextDocument doc = tempFile("static void main(String[] args) {}");
 
         try (TextEditor editor = doc.newEditor()) {
@@ -113,6 +114,34 @@ public class TextEditorTest {
         }
 
         assertFinalFileIs(doc, "public static void main(final int[][] args) {}");
+    }
+
+    @Test
+    public void testLineNumbersAfterEdition() throws IOException {
+        TextDocument doc = tempFile("static void main(String[] args) {}");
+
+
+        RegionWithLines rwl = doc.addLineInfo(doc.createRegion(0, 15));
+
+        assertEquals(1, rwl.getBeginLine());
+        assertEquals(1, rwl.getBeginColumn());
+        assertEquals(1, rwl.getEndLine());
+        assertEquals(16, rwl.getEndColumn());
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.replace(doc.createRegion(0, "static ".length()), "@Override\n");
+        }
+
+        assertFinalFileIs(doc, "@Override\nvoid main(String[] args) {}");
+
+
+        rwl = doc.addLineInfo(doc.createRegion(0, 15));
+
+        assertEquals(1, rwl.getBeginLine());
+        assertEquals(1, rwl.getBeginColumn());
+        assertEquals(2, rwl.getEndLine());
+        assertEquals(6, rwl.getEndColumn());
+
     }
 
     @Test

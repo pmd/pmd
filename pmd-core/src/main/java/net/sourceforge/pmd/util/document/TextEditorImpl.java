@@ -66,10 +66,10 @@ class TextEditorImpl implements TextEditor {
         synchronized (this) {
             ensureOpen();
 
-            for (TextRegion reg : affectedRegions) {
-                if (reg.overlaps(region)
-                    || region.isEmpty() && reg.contains(region.getStartOffset())) {
-                    throw new OverlappingOperationsException(reg, region);
+            for (TextRegion changedRegion : affectedRegions) {
+                if (changedRegion.overlaps(region)
+                    || region.isEmpty() && changedRegion.containsChar(region.getStartOffset())) {
+                    throw new OverlappingOperationsException(changedRegion, region);
                 }
             }
 

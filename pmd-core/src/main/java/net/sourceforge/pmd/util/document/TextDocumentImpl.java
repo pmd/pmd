@@ -23,13 +23,15 @@ final class TextDocumentImpl implements TextDocument {
     private long curStamp;
 
     private SourceCodePositioner positioner;
+    private CharSequence text;
 
     private int numOpenEditors;
 
     TextDocumentImpl(TextFileBehavior backend) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
-        this.positioner = new SourceCodePositioner(backend.readContents());
+        this.text = backend.readContents().toString();
+        this.positioner = null;
     }
 
     @Override
@@ -50,7 +52,8 @@ final class TextDocumentImpl implements TextDocument {
     void closeEditor(CharSequence text, long stamp) {
         synchronized (this) {
             numOpenEditors--;
-            this.positioner = new SourceCodePositioner(text.toString());
+            this.text = text.toString();
+            this.positioner = null;
             this.curStamp = stamp;
         }
     }
@@ -58,6 +61,12 @@ final class TextDocumentImpl implements TextDocument {
     @Override
     public RegionWithLines addLineInfo(TextRegion region) {
         checkInRange(region.getStartOffset(), region.getLength());
+
+        if (positioner == null) {
+            // if nobody cares about lines, this is not computed
+            positioner = new SourceCodePositioner(text);
+        }
+
 
         int bline = positioner.lineNumberFromOffset(region.getStartOffset());
         int bcol = positioner.columnFromOffset(bline, region.getStartOffset());
@@ -101,7 +110,7 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public CharSequence getText() {
-        return positioner.getText();
+        return text;
     }
 
     long getCurStamp() {

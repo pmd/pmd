@@ -54,9 +54,11 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /**
-     * Returns true if this region contains the given offset.
+     * Returns true if this region contains the character at the given
+     * offset. Note that a region with length zero does not even contain
+     * its start offset.
      */
-    default boolean contains(int offset) {
+    default boolean containsChar(int offset) {
         return getStartOffset() <= offset && offset < getEndOffset();
     }
 
