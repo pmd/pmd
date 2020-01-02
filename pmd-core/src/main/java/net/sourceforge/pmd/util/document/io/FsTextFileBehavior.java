@@ -21,8 +21,8 @@ class FsTextFileBehavior implements TextFileBehavior {
     private final Charset charset;
 
     FsTextFileBehavior(Path path, Charset charset) throws IOException {
-        AssertionUtil.requireParamNotNull(path, "path");
-        AssertionUtil.requireParamNotNull(charset, "charset");
+        AssertionUtil.requireParamNotNull("path", path);
+        AssertionUtil.requireParamNotNull("charset", charset);
 
         if (!Files.isRegularFile(path)) {
             throw new IOException("Not a regular file: " + path);

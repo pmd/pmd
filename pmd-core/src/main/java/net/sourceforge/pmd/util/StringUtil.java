@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -469,19 +470,23 @@ public final class StringUtil {
 
 
     /**
-     * Truncate the given string to the maximum given with. If
-     * it is truncated, the ellipsis string is appended to the
-     * output.
+     * Truncate the string to the given maximum length. If it is truncated,
+     * the ellipsis string is appended to it.
      *
      * @param str      String to truncate
      * @param maxWidth Maximum width
-     * @param ellipsis String to append to the truncated string
+     * @param ellipsis Ellipsis to append to the string when the string
+     *                 is truncated (eg {@code ...})
      *
-     * @return The given string, possibly truncated to maxWidth characters
+     * @return A truncated string, with at most length {@code maxWidth}
      */
     public static String truncate(String str, int maxWidth, String ellipsis) {
+        AssertionUtil.requireParamNotNull("str", str);
+        AssertionUtil.requireParamNotNull("ellipsis", ellipsis);
+        AssertionUtil.requireNonNegative("maximum width", maxWidth);
+
         if (str.length() > maxWidth) {
-            final int ix = Math.min(maxWidth, str.length());
+            final int ix = Math.max(maxWidth - ellipsis.length(), 0);
             return str.substring(0, ix) + ellipsis;
         }
         return str;
