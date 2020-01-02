@@ -9,9 +9,10 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.util.document.util.ZeroBased;
 
 /**
- * An object allowing updating regions of a {@linkplain TextDocument text document}.
+ * Used to update regions of a {@link TextDocument}.
  * The text regions given to all methods here are taken to be in the
  * coordinate system of the underlying document's initial state, and
  * not of the updated state. For that reason, an editor cannot edit
@@ -46,7 +47,7 @@ public interface TextEditor extends AutoCloseable {
      * @throws OverlappingOperationsException If the offset is contained in some region
      *                                        that has been modified by this editor
      */
-    void insert(int offset, String textToInsert);
+    void insert(@ZeroBased int offset, String textToInsert);
 
 
     /**
@@ -83,7 +84,10 @@ public interface TextEditor extends AutoCloseable {
      */
     class OverlappingOperationsException extends IllegalArgumentException {
 
+        /** Region that has already been modified. */
         public final TextRegion older;
+
+        /** Region for which the modification has been attempted and aborted. */
         public final TextRegion newer;
 
 

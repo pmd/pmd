@@ -10,17 +10,16 @@ import java.util.ConcurrentModificationException;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.io.ReadonlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.util.document.util.ZeroBased;
 
 /**
- * A view over a {@link TextFileBehavior}, providing methods to edit it incrementally
- * and address regions of text.
- *
- * <p>A text document wraps a snapshot of the underlying {@link TextFileBehavior}.
- * It may be edited with a {@linkplain TextEditor} (see {@link #newEditor()}),
- * but the {@link TextFileBehavior} is *not* polled for external modifications.
- * {@link TextFileBehavior} provides a very simple stamping system to detect
- * external modifications and avoid overwriting them (by failing). This falls
- * short of
+ * Represents a textual document, providing methods to edit it incrementally
+ * and address regions of text. A text document delegates IO operations
+ * to a {@link TextFileBehavior}. It reflects some snapshot of the file,
+ * though the file may still be edited externally. We do not poll for
+ * external modifications, instead {@link TextFileBehavior} provides a
+ * very simple stamping system to avoid overwriting external modifications
+ * (by failing).
  */
 public interface TextDocument {
 
@@ -55,7 +54,7 @@ public interface TextDocument {
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    TextRegion createRegion(int startOffset, int length);
+    TextRegion createRegion(@ZeroBased int startOffset, int length);
 
 
     /**
@@ -68,6 +67,12 @@ public interface TextDocument {
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
     RegionWithLines addLineInfo(TextRegion region);
+
+
+    /**
+     * Returns a region of the {@linkplain #getText() text} as a character sequence.
+     */
+    CharSequence subSequence(TextRegion region);
 
 
     /**
@@ -97,12 +102,6 @@ public interface TextDocument {
      * @throws ConcurrentModificationException If an editor is already open for this document
      */
     TextEditor newEditor() throws IOException;
-
-
-    /**
-     * Returns a region of the {@linkplain #getText() text} as a character sequence.
-     */
-    CharSequence subSequence(TextRegion region);
 
 
     /**

@@ -9,12 +9,14 @@ import java.util.Comparator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.util.document.util.OneBased;
+import net.sourceforge.pmd.util.document.util.ZeroBased;
+
 /**
  * A contiguous range of text in a {@link TextDocument}. See {@link TextDocument#createRegion(int, int)}
  * for a description of valid regions in a document.
  *
- * <p>Line and column information may be added when the {@link TextDocument} is known.
- * See {@link TextDocument#addLineInfo(TextRegion)}.
+ * <p>Line and column information may be added by {@link TextDocument#addLineInfo(TextRegion)}.
  *
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
@@ -27,11 +29,11 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /** 0-based, inclusive index. */
-    int getStartOffset();
+    @ZeroBased int getStartOffset();
 
 
     /** 0-based, exclusive index. */
-    int getEndOffset();
+    @ZeroBased int getEndOffset();
 
 
     /**
@@ -52,7 +54,7 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /**
-     * Returns true if this region overlaps with the other region by at
+     * Returns true if this region overlaps the other region by at
      * least one character. This is a symmetric, reflexive relation.
      *
      * @param other Other region
@@ -105,20 +107,20 @@ public interface TextRegion extends Comparable<TextRegion> {
     interface RegionWithLines extends TextRegion {
 
 
-        /** 1-based, inclusive index. */
-        int getBeginLine();
+        /** Inclusive line number. */
+        @OneBased int getBeginLine();
 
 
-        /** 1-based, inclusive index. */
-        int getEndLine();
+        /** Inclusive line number. */
+        @OneBased int getEndLine();
 
 
-        /** 1-based, inclusive index. */
-        int getBeginColumn();
+        /** Inclusive column number. */
+        @OneBased int getBeginColumn();
 
 
-        /** 1-based, <b>exclusive</b> index. */
-        int getEndColumn();
+        /** <b>Exclusive</b> column number. */
+        @OneBased int getEndColumn();
     }
 
 }

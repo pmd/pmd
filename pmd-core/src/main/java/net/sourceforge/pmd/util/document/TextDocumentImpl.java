@@ -101,7 +101,7 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public CharSequence getText() {
-        return positioner.getSourceCode();
+        return positioner.getText();
     }
 
     long getCurStamp() {

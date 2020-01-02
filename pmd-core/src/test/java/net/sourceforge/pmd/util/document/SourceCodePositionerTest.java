@@ -16,10 +16,6 @@ import org.junit.Test;
  */
 public class SourceCodePositionerTest {
 
-
-    /**
-     * Tests whether the lines and columns are calculated correctly.
-     */
     @Test
     public void testLineNumberFromOffset() {
         final String source = "abcd\ndefghi\n\njklmn\nopq";
@@ -43,11 +39,16 @@ public class SourceCodePositionerTest {
         offset = source.indexOf('q');
         assertEquals(5, positioner.lineNumberFromOffset(offset));
         assertEquals(3, positioner.columnFromOffset(5, offset));
+
+        offset = source.length();
+        assertEquals(5, positioner.lineNumberFromOffset(offset));
+        assertEquals(4, positioner.columnFromOffset(5, offset));
+
+        offset = source.length() + 1;
+        assertEquals(-1, positioner.lineNumberFromOffset(offset));
+        assertEquals(-1, positioner.columnFromOffset(5, offset));
     }
 
-    /**
-     * Tests whether the lines and columns are calculated correctly.
-     */
     @Test
     public void testOffsetFromLineColumn() {
         final String source = "abcd\ndefghi\r\njklmn\nopq";
@@ -67,9 +68,6 @@ public class SourceCodePositionerTest {
     }
 
 
-    /**
-     * Tests whether the lines and columns are calculated correctly.
-     */
     @Test
     public void testWrongOffsets() {
         final String source = "abcd\ndefghi\r\njklmn\nopq";
@@ -85,6 +83,23 @@ public class SourceCodePositionerTest {
 
 
         assertEquals(-1, positioner.offsetFromLineColumn(1, 7));
+    }
+
+
+    @Test
+    public void testEmptyDocument() {
+
+        SourceCodePositioner positioner = new SourceCodePositioner("");
+
+        assertEquals(0, positioner.offsetFromLineColumn(1, 1));
+        assertEquals(-1, positioner.offsetFromLineColumn(1, 2));
+
+        assertEquals(1, positioner.lineNumberFromOffset(0));
+        assertEquals(-1, positioner.lineNumberFromOffset(1));
+
+        assertEquals(1, positioner.columnFromOffset(1, 0));
+        assertEquals(-1, positioner.columnFromOffset(1, 1));
+
     }
 
 

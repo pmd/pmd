@@ -82,7 +82,9 @@ class TextEditorImpl implements TextEditor {
 
 
     private TextRegion shiftOffset(TextRegion origCoords, int lenDiff) {
-        // instead of using a map, a balanced binary tree would be more efficient
+        // these data structures are not the most adapted (a binary tree would be)
+
+
         ArrayList<Integer> keys = new ArrayList<>(accumulatedOffsets.keySet());
         int idx = Collections.binarySearch(keys, origCoords.getStartOffset());
 

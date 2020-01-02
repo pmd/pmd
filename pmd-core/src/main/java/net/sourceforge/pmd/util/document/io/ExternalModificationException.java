@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.IOException;
+
 import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextEditor;
 
@@ -16,7 +18,7 @@ import net.sourceforge.pmd.util.document.TextEditor;
  * loop. External modifications are rare and can be considered unrecoverable
  * for our use case.
  */
-public class ExternalModificationException extends RuntimeException {
+public class ExternalModificationException extends IOException {
 
     private final TextFileBehavior backend;
 

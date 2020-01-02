@@ -47,12 +47,12 @@ class TextRegionImpl implements TextRegion {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TextRegionImpl)) {
+        if (!(o instanceof TextRegion)) {
             return false;
         }
-        TextRegionImpl that = (TextRegionImpl) o;
-        return startOffset == that.startOffset
-            && length == that.length;
+        TextRegion that = (TextRegion) o;
+        return startOffset == that.getStartOffset()
+            && length == that.getLength();
     }
 
     @Override
