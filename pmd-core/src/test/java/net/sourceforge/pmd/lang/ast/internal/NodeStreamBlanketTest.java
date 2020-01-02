@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -206,9 +207,7 @@ public class NodeStreamBlanketTest<T extends Node> {
 
     @SafeVarargs
     private static <T> void assertImplication(T input, Prop<? super T> precond, Prop<? super T>... properties) {
-        if (!precond.test(input)) {
-            return;
-        }
+        Assume.assumeTrue(precond.test(input));
 
         for (Prop<? super T> prop2 : properties) {
             Assert.assertTrue(
