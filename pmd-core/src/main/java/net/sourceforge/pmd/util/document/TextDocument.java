@@ -40,11 +40,18 @@ public interface TextDocument {
 
 
     /**
-     * Create a new region based on its start offset and length.
+     * Create a new region based on its start offset and length. The
+     * parameters must identify a valid region in the document. Valid
+     * start offsets range from 0 to {@link #getLength()} (inclusive).
+     * The sum {@code startOffset + length} must range from {@code startOffset}
+     * to {@link #getLength()} (inclusive).
+     *
+     * <p>This makes the region starting at {@link #getLength()} with
+     * length 0 a valid region (the caret position at the end of the
+     * document).
      *
      * @param startOffset 0-based, inclusive offset for the start of the region
-     * @param length      Length of the region in characters. All characters are length 1,
-     *                    including {@code '\t'}, {@code '\r'}, {@code '\n'}
+     * @param length      Length of the region in characters.
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */

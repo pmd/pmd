@@ -57,6 +57,6 @@ class FsTextFileBehavior implements TextFileBehavior {
 
     @Override
     public String toString() {
-        return "PhysicalFileDoc{charset=" + charset + ", path=" + path + '}';
+        return "FsTextFile[charset=" + charset + ", path=" + path + ']';
     }
 }

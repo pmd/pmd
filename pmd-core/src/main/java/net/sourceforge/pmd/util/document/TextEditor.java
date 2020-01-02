@@ -43,8 +43,8 @@ public interface TextEditor extends AutoCloseable {
      * Insert some text in the document.
      *
      * @throws IllegalStateException          If this editor has been closed
-     * @throws OverlappingOperationsException If the region overlaps other regions
-     *                                        that have been modified by this editor
+     * @throws OverlappingOperationsException If the offset is contained in some region
+     *                                        that has been modified by this editor
      */
     void insert(int offset, String textToInsert);
 

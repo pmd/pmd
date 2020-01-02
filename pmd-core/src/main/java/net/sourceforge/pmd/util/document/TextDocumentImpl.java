@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
@@ -21,7 +22,6 @@ final class TextDocumentImpl implements TextDocument {
 
     private long curStamp;
 
-    /** The positioner has the original source file. */
     private SourceCodePositioner positioner;
 
     private int numOpenEditors;
@@ -74,8 +74,11 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public TextRegion createRegion(int startOffset, int length) {
+        AssertionUtil.requireNonNegative("Start offset", startOffset);
+        AssertionUtil.requireNonNegative("Region length", length);
+
         checkInRange(startOffset, length);
-        return new TextRegionImpl(startOffset, length);
+        return TextRegionImpl.fromOffsetLength(startOffset, length);
     }
 
     private void checkInRange(int startOffset, int length) {

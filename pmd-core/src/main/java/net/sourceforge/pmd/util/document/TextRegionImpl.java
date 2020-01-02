@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.document;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
@@ -14,7 +16,7 @@ class TextRegionImpl implements TextRegion {
     private final int startOffset;
     private final int length;
 
-    TextRegionImpl(int offset, int length) {
+    private TextRegionImpl(int offset, int length) {
         this.startOffset = AssertionUtil.requireNonNegative("Start offset", offset);
         this.length = AssertionUtil.requireNonNegative("Region length", length);
     }
@@ -37,6 +39,39 @@ class TextRegionImpl implements TextRegion {
     @Override
     public String toString() {
         return "Region(start=" + startOffset + ", len=" + length + ")";
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TextRegionImpl)) {
+            return false;
+        }
+        TextRegionImpl that = (TextRegionImpl) o;
+        return startOffset == that.startOffset
+            && length == that.length;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startOffset, length);
+    }
+
+    /**
+     * Builds a new region from offset and length.
+     */
+    static TextRegionImpl fromOffsetLength(int startOffset, int length) {
+        return new TextRegionImpl(startOffset, length);
+    }
+
+    /**
+     * Builds a new region from start and end offset.
+     */
+    static TextRegionImpl fromBothOffsets(int startOffset, int endOffset) {
+        return new TextRegionImpl(startOffset, endOffset - startOffset);
     }
 
     static final class WithLineInfo extends TextRegionImpl implements RegionWithLines {

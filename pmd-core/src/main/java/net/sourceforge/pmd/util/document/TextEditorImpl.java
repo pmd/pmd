@@ -106,7 +106,7 @@ class TextEditorImpl implements TextEditor {
         TextRegion realPos = shift == 0
                              ? origCoords
                              // don't check the bounds
-                             : new TextRegionImpl(origCoords.getStartOffset() + shift, origCoords.getLength());
+                             : TextRegionImpl.fromOffsetLength(origCoords.getStartOffset() + shift, origCoords.getLength());
 
         accumulatedOffsets.compute(origCoords.getStartOffset(), (k, v) -> {
             int s = v == null ? lenDiff : v + lenDiff;

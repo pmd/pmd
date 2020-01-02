@@ -43,7 +43,7 @@ public class ReadonlyStringBehavior implements TextFileBehavior {
 
     @Override
     public String toString() {
-        return "StringTextSource[" + StringUtil.truncate(buffer, 15, "...") + "]";
+        return "ReadOnlyString[" + StringUtil.truncate(buffer, 15, "...") + "]";
     }
 
 }
