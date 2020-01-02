@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.document;
 
+import static net.sourceforge.pmd.util.document.TextEditor.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -201,29 +202,44 @@ public class TextEditorTest {
         TextDocument doc = tempFile(code);
 
         try (TextEditor editor = doc.newEditor()) {
-            editor.insert(0, "public");
+            editor.insert(0, "public ");
             // delete "static "
             editor.delete(doc.createRegion(0, 7));
             // replace "int"
-            editor.replace(doc.createRegion(8, 3), "void");
+            editor.replace(doc.createRegion(7, 3), "void");
             editor.insert(16, "final ");
-            editor.replace(doc.createRegion(17, "CharSequence".length()), "String");
+            editor.replace(doc.createRegion(16, "CharSequence".length()), "String");
         }
 
         assertFinalFileIs(doc, "public void main(final String[] args) {}");
     }
 
     @Test
-    public void testDeleteEverything() throws IOException {
+    public void testOverlapOnDeletedRegion() throws IOException {
         final String code = "static int main(CharSequence[] args) {}";
         TextDocument doc = tempFile(code);
 
         try (TextEditor editor = doc.newEditor()) {
             editor.delete(doc.createRegion(0, code.length()));
+            expect.expect(OverlappingOperationsException.class);
             editor.replace(doc.createRegion(8, 3), "void");
         }
+    }
 
-        assertFinalFileIs(doc, "public void main(final String[] args) {}");
+
+    @Test
+    public void testOverlapOnReplacedRegion() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.replace(doc.createRegion(7, 3), "void");
+            expect.expect(OverlappingOperationsException.class);
+            // static i|nt main(CharSequence[] args) {}
+            //         ^
+            editor.insert(8, "&");
+        }
+        assertFinalFileIs(doc, "static vo&id main(CharSequence[] args) {}");
     }
 
 

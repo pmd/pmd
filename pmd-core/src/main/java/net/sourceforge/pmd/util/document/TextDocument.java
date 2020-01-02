@@ -76,7 +76,7 @@ public interface TextDocument {
 
 
     /**
-     * Returns true if this document cannot be written to. In that case,
+     * Returns true if this document cannot be edited. In that case,
      * {@link #newEditor()} will throw an exception. In the general case,
      * nothing prevents this method's result from changing from one
      * invocation to another.

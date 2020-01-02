@@ -54,6 +54,14 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /**
+     * Returns true if this region contains the given offset.
+     */
+    default boolean contains(int offset) {
+        return getStartOffset() <= offset && offset < getEndOffset();
+    }
+
+
+    /**
      * Returns true if this region overlaps the other region by at
      * least one character. This is a symmetric, reflexive relation.
      *
@@ -97,6 +105,19 @@ public interface TextRegion extends Comparable<TextRegion> {
     default int compareTo(@NonNull TextRegion o) {
         return COMPARATOR.compare(this, o);
     }
+
+
+    /**
+     * Returns true if the other object is a text region with the same
+     * start offset and end offset as this one. If the other is a {@link RegionWithLines},
+     * the line and column information is not taken into account.
+     *
+     * @param o {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
+    @Override
+    boolean equals(Object o);
 
 
     /**
