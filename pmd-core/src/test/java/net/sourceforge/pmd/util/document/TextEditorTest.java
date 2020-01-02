@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import static net.sourceforge.pmd.util.document.TextEditor.OverlappingOperationsException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
@@ -157,6 +159,19 @@ public class TextEditorTest {
     }
 
     @Test
+    public void testInsertTwiceInSamePlace() throws IOException {
+        final String code = "void main(String[] args)";
+        TextDocument doc = tempFile(code);
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.insert(0, "public ");
+            editor.insert(0, "static ");
+        }
+
+        assertFinalFileIs(doc, "public static void main(String[] args)");
+    }
+
+    @Test
     public void removeTokenShouldSucceed() throws IOException {
         final String code = "public static void main(final String[] args) {}";
         TextDocument doc = tempFile(code);
@@ -211,19 +226,6 @@ public class TextEditorTest {
         assertFinalFileIs(doc, "void main(String[] args) {}");
     }
 
-    @Test
-    public void replaceVariousTokensShouldSucceed() throws IOException {
-        final String code = "int main(String[] args) {}";
-        TextDocument doc = tempFile(code);
-
-        try (TextEditor editor = doc.newEditor()) {
-            editor.replace(doc.createRegion(0, 3), "void");
-            editor.replace(doc.createRegion(4, 4), "foo");
-            editor.replace(doc.createRegion(9, 6), "CharSequence");
-        }
-
-        assertFinalFileIs(doc, "void foo(CharSequence[] args) {}");
-    }
 
     @Test
     public void insertDeleteAndReplaceVariousTokensShouldSucceed() throws IOException {
@@ -295,6 +297,52 @@ public class TextEditorTest {
 
 
     @Test
+    public void closedTextDocumentShouldntProduceNewEditors() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        doc.close();
+
+        expect.expect(IOException.class);
+
+        doc.newEditor();
+
+    }
+
+    @Test
+    public void closedTextDocumentWithOpenEditorShouldThrow() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        TextEditor editor = doc.newEditor();
+
+        expect.expect(IllegalStateException.class);
+
+        doc.close();
+    }
+
+
+    @Test
+    public void closedTextDocumentShouldntNeutralizeExistingEditor() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        TextEditor editor = doc.newEditor();
+
+        editor.insert(0, "FOO");
+
+        try {
+            doc.close();
+            fail();
+        } catch (IllegalStateException e) {
+            editor.close();
+
+            assertFinalFileIs(doc, code); // no modification
+        }
+    }
+
+
+    @Test
     public void textReadOnlyDocumentCannotBeEdited() throws IOException {
         ReadOnlyStringBehavior someFooBar = new ReadOnlyStringBehavior("someFooBar");
         assertTrue(someFooBar.isReadOnly());
@@ -302,7 +350,7 @@ public class TextEditorTest {
 
         assertTrue(doc.isReadOnly());
 
-        expect.expect(UnsupportedOperationException.class);
+        expect.expect(ReadOnlyFileException.class);
 
         doc.newEditor();
     }

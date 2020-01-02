@@ -11,9 +11,10 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 
-final class TextDocumentImpl implements TextDocument {
+final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private static final String OUT_OF_BOUNDS_WITH_OFFSET =
         "Region [%d, +%d] is not in range of this document (length %d)";
@@ -25,7 +26,7 @@ final class TextDocumentImpl implements TextDocument {
     private SourceCodePositioner positioner;
     private CharSequence text;
 
-    private int numOpenEditors;
+    private TextEditorImpl curEditor;
 
     TextDocumentImpl(TextFileBehavior backend) throws IOException {
         this.backend = backend;
@@ -41,25 +42,30 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public TextEditor newEditor() throws IOException {
-        synchronized (this) {
-            if (numOpenEditors++ > 0) {
-                throw new ConcurrentModificationException("An editor is already open on this document");
-            }
-            return new TextEditorImpl(this, backend);
+        ensureOpen();
+        if (curEditor != null) {
+            throw new ConcurrentModificationException("An editor is already open on this document");
         }
+        return curEditor = new TextEditorImpl(this, backend);
     }
 
     void closeEditor(CharSequence text, long stamp) {
-        synchronized (this) {
-            numOpenEditors--;
-            this.text = text.toString();
-            this.positioner = null;
-            this.curStamp = stamp;
-        }
+
+        curEditor = null;
+        this.text = text.toString();
+        this.positioner = null;
+        this.curStamp = stamp;
+
     }
 
     @Override
-    public void close() throws IOException {
+    protected void doClose() throws IOException {
+        if (curEditor != null) {
+            curEditor.sever();
+            curEditor = null;
+            throw new IllegalStateException("Unclosed editor!");
+        }
+
         backend.close();
     }
 

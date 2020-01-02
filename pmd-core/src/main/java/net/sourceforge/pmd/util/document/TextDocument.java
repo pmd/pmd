@@ -58,9 +58,8 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Add line information to the given region. Only the start and end
-     * offsets are considered, if the region is already a {@link RegionWithLines},
-     * that information is discarded.
+     * Turn a text region into a {@link RegionWithLines}. If the region
+     * is already a {@link RegionWithLines}, that information is discarded.
      *
      * @return A new region with line information
      *
@@ -98,10 +97,26 @@ public interface TextDocument extends Closeable {
      * @return A new editor
      *
      * @throws IOException                     If an IO error occurs
+     * @throws IOException                     If this document was closed
      * @throws ReadOnlyFileException           If this document is read-only
      * @throws ConcurrentModificationException If an editor is already open for this document
      */
     TextEditor newEditor() throws IOException;
+
+
+    /**
+     * Closing a document closes the underlying {@link TextFileBehavior}.
+     * New editors cannot be produced after that, and the document otherwise
+     * remains in its current state.
+     *
+     * @throws IOException           If {@link TextFileBehavior#close()} throws
+     * @throws IllegalStateException If an editor is currently open. In this case
+     *                               the editor is rendered ineffective before the
+     *                               exception is thrown. This indicates a programming
+     *                               mistake.
+     */
+    @Override
+    void close() throws IOException;
 
 
     /**

@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -36,6 +35,7 @@ public interface TextFileBehavior extends Closeable {
      *
      * @param charSequence Content to write
      *
+     * @throws IOException           If this instance is closed
      * @throws IOException           If an error occurs
      * @throws ReadOnlyFileException If this text source is read-only
      */
@@ -46,6 +46,9 @@ public interface TextFileBehavior extends Closeable {
      * Reads the contents of the underlying character source.
      *
      * @return The most up-to-date content
+     *
+     * @throws IOException If this instance is closed
+     * @throws IOException If reading causes an IOException
      */
     CharSequence readContents() throws IOException;
 
@@ -57,6 +60,9 @@ public interface TextFileBehavior extends Closeable {
      * should change stamps. This however doesn't mandate a pattern for
      * the stamps over time, eg they don't need to increase, or really
      * represent anything.
+     *
+     * @throws IOException If this instance is closed
+     * @throws IOException If reading causes an IOException
      */
     long fetchStamp() throws IOException;
 
@@ -72,18 +78,6 @@ public interface TextFileBehavior extends Closeable {
      */
     static TextFileBehavior forPath(final Path path, final Charset charset) throws IOException {
         return new FsTextFileBehavior(path, charset);
-    }
-
-
-    /**
-     * Returns a read-only instance of this interface reading from the
-     * given dataSource.
-     *
-     * @param dataSource Data source
-     * @param charset    Encoding to use
-     */
-    static TextFileBehavior forDataSource(final DataSource dataSource, final Charset charset) {
-        return new ReadOnlyDataSourceBehavior(dataSource, charset);
     }
 
 

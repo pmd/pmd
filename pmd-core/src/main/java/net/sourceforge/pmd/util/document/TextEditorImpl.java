@@ -13,15 +13,14 @@ import java.util.TreeMap;
 
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 
-class TextEditorImpl implements TextEditor {
+class TextEditorImpl extends BaseCloseable implements TextEditor {
 
     private final TextDocumentImpl document;
 
     private final IoBuffer out;
-
-    private boolean open = true;
 
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
     private List<TextRegion> affectedRegions = new ArrayList<>();
@@ -33,20 +32,32 @@ class TextEditorImpl implements TextEditor {
         this.document = document;
     }
 
-    private void ensureOpen() {
-        if (!open) {
-            throw new IllegalStateException("Closed handler");
+    @Override
+    protected void ensureOpen() {
+        try {
+            super.ensureOpen();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public void close() throws IOException {
-        synchronized (this) {
-            ensureOpen();
-            open = false;
-
+    protected void doClose() throws IOException {
+        if (!affectedRegions.isEmpty()) {
             out.close(document);
         }
+    }
+
+    void sever() {
+        open = false; // doClose will never be called
+    }
+
+    @Override
+    public void drop() {
+        ensureOpen();
+        out.reset();
+        accumulatedOffsets.clear();
+        affectedRegions.clear();
     }
 
     @Override

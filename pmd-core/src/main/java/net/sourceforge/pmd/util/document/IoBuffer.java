@@ -18,7 +18,8 @@ class IoBuffer {
 
     private final TextFileBehavior backend;
     private final long originalStamp;
-    private final StringBuilder buffer;
+    private final CharSequence original;
+    private StringBuilder buffer;
 
 
     /** @throws ReadOnlyFileException If the backend is read-only */
@@ -27,9 +28,14 @@ class IoBuffer {
             throw new ReadOnlyFileException(backend + " is readonly");
         }
 
+        this.original = sequence;
         this.backend = backend;
         this.buffer = new StringBuilder(sequence);
         this.originalStamp = stamp;
+    }
+
+    void reset() {
+        buffer = new StringBuilder(original);
     }
 
 

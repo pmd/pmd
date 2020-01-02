@@ -11,11 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 /**
  * A {@link TextFileBehavior} backed by a file in some {@link FileSystem}.
  */
-class FsTextFileBehavior implements TextFileBehavior {
+class FsTextFileBehavior extends BaseCloseable implements TextFileBehavior {
 
     private final Path path;
     private final Charset charset;
@@ -40,24 +41,28 @@ class FsTextFileBehavior implements TextFileBehavior {
 
     @Override
     public void writeContents(CharSequence charSequence) throws IOException {
+        ensureOpen();
         byte[] bytes = charSequence.toString().getBytes(charset);
         Files.write(path, bytes);
     }
 
     @Override
     public CharSequence readContents() throws IOException {
+        ensureOpen();
         byte[] bytes = Files.readAllBytes(path);
         return new String(bytes, charset);
     }
 
     @Override
     public long fetchStamp() throws IOException {
+        ensureOpen();
         return Files.getLastModifiedTime(path).hashCode();
     }
 
-    @Override
-    public void close() throws IOException {
 
+    @Override
+    protected void doClose() {
+        // do nothing
     }
 
     @Override

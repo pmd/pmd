@@ -60,8 +60,8 @@ public interface TextEditor extends AutoCloseable {
 
 
     /**
-     * Commit the document. The {@linkplain TextDocument#getText() text}
-     * of the associated document is updated to reflect the changes. The
+     * Commits the document. If there are some changes, the {@linkplain TextDocument#getText() text}
+     * of the associated document is updated to reflect them, and the
      * {@link TextFileBehavior} is written to. This editor becomes unusable
      * after being closed.
      *
@@ -72,6 +72,14 @@ public interface TextEditor extends AutoCloseable {
      */
     @Override
     void close() throws IOException;
+
+
+    /**
+     * Drops all updates created in this editor.
+     *
+     * @throws IllegalStateException If this editor has been closed
+     */
+    void drop();
 
 
     /**
