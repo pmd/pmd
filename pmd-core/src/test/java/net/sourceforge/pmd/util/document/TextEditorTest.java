@@ -22,7 +22,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.io.ReadonlyStringBehavior;
+import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 public class TextEditorTest {
@@ -296,7 +296,7 @@ public class TextEditorTest {
 
     @Test
     public void textReadOnlyDocumentCannotBeEdited() throws IOException {
-        ReadonlyStringBehavior someFooBar = new ReadonlyStringBehavior("someFooBar");
+        ReadOnlyStringBehavior someFooBar = new ReadOnlyStringBehavior("someFooBar");
         assertTrue(someFooBar.isReadOnly());
         TextDocument doc = TextDocument.create(someFooBar);
 

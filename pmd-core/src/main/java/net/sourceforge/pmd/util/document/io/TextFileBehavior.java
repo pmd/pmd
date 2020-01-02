@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
+import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -61,12 +62,27 @@ public interface TextFileBehavior {
 
     /**
      * Returns an instance of this interface reading and writing to a file.
-     * The returned instance may be readonly.
+     * The returned instance may be read-only.
+     *
+     * @param path    Path to the file
+     * @param charset Encoding to use
      *
      * @throws IOException If the file is not a regular file (see {@link Files#isRegularFile(Path, LinkOption...)})
      */
     static TextFileBehavior forPath(final Path path, final Charset charset) throws IOException {
         return new FsTextFileBehavior(path, charset);
+    }
+
+
+    /**
+     * Returns a read-only instance of this interface reading from the
+     * given dataSource.
+     *
+     * @param dataSource Data source
+     * @param charset    Encoding to use
+     */
+    static TextFileBehavior forDataSource(final DataSource dataSource, final Charset charset) {
+        return new ReadOnlyDataSourceBehavior(dataSource, charset);
     }
 
 

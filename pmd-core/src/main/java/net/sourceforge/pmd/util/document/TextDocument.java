@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.io.ReadonlyStringBehavior;
+import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 import net.sourceforge.pmd.util.document.util.ZeroBased;
 
@@ -119,7 +119,7 @@ public interface TextDocument {
      */
     static TextDocument readOnlyString(final String source) {
         try {
-            return new TextDocumentImpl(new ReadonlyStringBehavior(source));
+            return new TextDocumentImpl(new ReadOnlyStringBehavior(source));
         } catch (IOException e) {
             throw new AssertionError("ReadonlyStringBehavior should never throw IOException", e);
         }

@@ -4,19 +4,18 @@
 
 package net.sourceforge.pmd.util.document.io;
 
-import static java.util.Objects.requireNonNull;
-
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Read-only view on a string.
  */
-public class ReadonlyStringBehavior implements TextFileBehavior {
+public class ReadOnlyStringBehavior implements TextFileBehavior {
 
     private final String buffer;
 
-    public ReadonlyStringBehavior(String source) {
-        requireNonNull(source, "Null charset");
+    public ReadOnlyStringBehavior(String source) {
+        AssertionUtil.requireParamNotNull("source text", source);
 
         this.buffer = source;
     }
