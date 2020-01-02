@@ -10,7 +10,6 @@ import java.util.ConcurrentModificationException;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
-import net.sourceforge.pmd.util.document.util.ZeroBased;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
@@ -54,7 +53,7 @@ public interface TextDocument {
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    TextRegion createRegion(@ZeroBased int startOffset, int length);
+    TextRegion createRegion(int startOffset, int length);
 
 
     /**

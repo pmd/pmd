@@ -16,8 +16,11 @@ class TextRegionImpl implements TextRegion {
     private final int startOffset;
     private final int length;
 
-    private TextRegionImpl(int offset, int length) {
-        this.startOffset = AssertionUtil.requireNonNegative("Start offset", offset);
+    /**
+     * @throws IllegalArgumentException If the start offset or length are negative
+     */
+    private TextRegionImpl(int startOffset, int length) {
+        this.startOffset = AssertionUtil.requireNonNegative("Start offset", startOffset);
         this.length = AssertionUtil.requireNonNegative("Region length", length);
     }
 
@@ -81,6 +84,11 @@ class TextRegionImpl implements TextRegion {
         private final int beginColumn;
         private final int endColumn;
 
+        /**
+         * @throws IllegalArgumentException If any of the line/col parameters are strictly less than 1
+         * @throws IllegalArgumentException If the line and column are not correctly ordered
+         * @throws IllegalArgumentException If the start offset or length are negative
+         */
         WithLineInfo(int startOffset, int length, int beginLine, int beginColumn, int endLine, int endColumn) {
             super(startOffset, length);
             this.beginLine = AssertionUtil.requireOver1("Begin line", beginLine);

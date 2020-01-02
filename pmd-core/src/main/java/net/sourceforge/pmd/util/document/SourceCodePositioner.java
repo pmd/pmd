@@ -12,8 +12,6 @@ import java.util.Scanner;
 import org.apache.commons.io.input.CharSequenceReader;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.document.util.OneBased;
-import net.sourceforge.pmd.util.document.util.ZeroBased;
 
 /**
  * Wraps a piece of text, and converts absolute offsets to line/column coordinates, and back.
@@ -54,7 +52,7 @@ public final class SourceCodePositioner {
             }
         }
 
-        // empty text, consider it a
+        // empty text, consider it a single empty line
         if (lineOffsets.isEmpty()) {
             lineOffsets.add(0);
         }
@@ -96,11 +94,11 @@ public final class SourceCodePositioner {
      *
      * @param offset Offset in the document
      *
-     * @return Column number, or -1
+     * @return Line number (1-based), or -1
      *
      * @throws IllegalArgumentException If the offset is negative
      */
-    public @OneBased int lineNumberFromOffset(@ZeroBased int offset) {
+    public int lineNumberFromOffset(final int offset) {
         AssertionUtil.requireNonNegative("offset", offset);
 
         if (offset > sourceCodeLength) {
@@ -117,15 +115,14 @@ public final class SourceCodePositioner {
      * relative to the line (the line number is just a hint). If the
      * column number does not exist (on the given line), returns -1.
      *
-     * @param lineNumber Line number
-     * @param offset     Global offset in the document
+     * @param lineNumber   Line number
+     * @param globalOffset Global offset in the document
      *
-     * @return Column number, or -1
+     * @return Column number (1-based), or -1
      *
      * @throws IllegalArgumentException If the line number does not exist
      */
-    public @OneBased int columnFromOffset(@OneBased int lineNumber,
-                                          @ZeroBased int offset) {
+    public int columnFromOffset(final int lineNumber, final int globalOffset) {
         int lineIndex = lineNumber - 1;
         if (lineIndex < 0 || lineIndex >= lineOffsets.size()) {
             throw new IllegalArgumentException("Line " + lineNumber + " does not exist");
@@ -134,12 +131,12 @@ public final class SourceCodePositioner {
         int bound = lineIndex + 1 < lineOffsets.size() ? lineOffsets.get(lineIndex + 1)
                                                        : sourceCodeLength;
 
-        if (offset > bound) {
+        if (globalOffset > bound) {
             // throw new IllegalArgumentException("Column " + (col + 1) + " does not exist on line " + lineNumber);
             return -1;
         }
 
-        return offset - lineOffsets.get(lineIndex) + 1; // 1-based column offsets
+        return globalOffset - lineOffsets.get(lineIndex) + 1; // 1-based column offsets
     }
 
     /**
@@ -150,11 +147,10 @@ public final class SourceCodePositioner {
      * @param line   Line number (1-based)
      * @param column Column number (1-based)
      *
-     * @return Text offset, or -1
+     * @return Text offset (zero-based), or -1
      */
-    public @ZeroBased int offsetFromLineColumn(final @OneBased int line,
-                                               final @OneBased int column) {
-        final @ZeroBased int lineIdx = line - 1;
+    public int offsetFromLineColumn(final int line, final int column) {
+        final int lineIdx = line - 1;
 
         if (lineIdx < 0 || lineIdx >= lineOffsets.size()) {
             return -1;
@@ -172,14 +168,14 @@ public final class SourceCodePositioner {
      * Returns the number of lines, which is also the ordinal of the
      * last line.
      */
-    public @OneBased int getLastLine() {
+    public int getLastLine() {
         return lineOffsets.size();
     }
 
     /**
      * Returns the last column number of the last line in the document.
      */
-    public @OneBased int getLastLineColumn() {
+    public int getLastLineColumn() {
         return columnFromOffset(getLastLine(), sourceCodeLength - 1);
     }
 }

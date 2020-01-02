@@ -9,9 +9,6 @@ import java.util.Comparator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.util.document.util.OneBased;
-import net.sourceforge.pmd.util.document.util.ZeroBased;
-
 /**
  * A contiguous range of text in a {@link TextDocument}. See {@link TextDocument#createRegion(int, int)}
  * for a description of valid regions in a document.
@@ -31,11 +28,11 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /** 0-based, inclusive index. */
-    @ZeroBased int getStartOffset();
+    int getStartOffset();
 
 
     /** 0-based, exclusive index. */
-    @ZeroBased int getEndOffset();
+    int getEndOffset();
 
 
     /**
@@ -133,19 +130,19 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
         /** Inclusive line number. */
-        @OneBased int getBeginLine();
+        int getBeginLine();
 
 
         /** Inclusive line number. */
-        @OneBased int getEndLine();
+        int getEndLine();
 
 
         /** Inclusive column number. */
-        @OneBased int getBeginColumn();
+        int getBeginColumn();
 
 
         /** <b>Exclusive</b> column number. */
-        @OneBased int getEndColumn();
+        int getEndColumn();
     }
 
 }

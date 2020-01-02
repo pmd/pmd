@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
-import net.sourceforge.pmd.util.document.util.ZeroBased;
 
 /**
  * Used to update regions of a {@link TextDocument}.
@@ -47,7 +46,7 @@ public interface TextEditor extends AutoCloseable {
      * @throws OverlappingOperationsException If the offset is contained in some region
      *                                        that has been modified by this editor
      */
-    void insert(@ZeroBased int offset, String textToInsert);
+    void insert(int offset, String textToInsert);
 
 
     /**
