@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
-import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 
 class TextEditorImpl extends BaseCloseable implements TextEditor {
@@ -72,22 +72,20 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
 
     @Override
     public void replace(final TextRegion region, final String textToReplace) {
-        synchronized (this) {
-            ensureOpen();
+        ensureOpen();
 
-            for (TextRegion changedRegion : affectedRegions) {
-                if (changedRegion.overlaps(region)
-                    || region.isEmpty() && changedRegion.containsChar(region.getStartOffset())) {
-                    throw new OverlappingOperationsException(changedRegion, region);
-                }
+        for (TextRegion changedRegion : affectedRegions) {
+            if (changedRegion.overlaps(region)
+                || region.isEmpty() && changedRegion.containsChar(region.getStartOffset())) {
+                throw new OverlappingOperationsException(changedRegion, region);
             }
-
-            affectedRegions.add(region);
-
-            TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
-
-            out.replace(realPos, textToReplace);
         }
+
+        affectedRegions.add(region);
+
+        TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
+
+        out.replace(realPos, textToReplace);
     }
 
 

@@ -6,11 +6,16 @@ package net.sourceforge.pmd.util.document;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 
 public class TextDocumentTest {
+
+    @Rule
+    public ExpectedException expect = ExpectedException.none();
 
     @Test
     public void testSingleLineRegion() {
@@ -65,6 +70,15 @@ public class TextDocumentTest {
         assertEquals(1, withLines.getEndLine());
         assertEquals(1 + "bonjour".length(), withLines.getBeginColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
+    }
+
+    @Test
+    public void testRegionOutOfBounds() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse");
+
+        expect.expect(IndexOutOfBoundsException.class);
+
+        doc.createRegion(0, 40);
     }
 
 }

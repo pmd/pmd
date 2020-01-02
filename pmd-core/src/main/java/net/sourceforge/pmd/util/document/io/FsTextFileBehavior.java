@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
@@ -56,7 +57,7 @@ class FsTextFileBehavior extends BaseCloseable implements TextFileBehavior {
     @Override
     public long fetchStamp() throws IOException {
         ensureOpen();
-        return Files.getLastModifiedTime(path).hashCode();
+        return Files.getLastModifiedTime(path).to(TimeUnit.MICROSECONDS);
     }
 
 

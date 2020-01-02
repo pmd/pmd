@@ -23,6 +23,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
@@ -117,6 +118,41 @@ public class TextEditorTest {
 
         assertFinalFileIs(doc, "public static void main(final int[][] args) {}");
     }
+
+    @Test
+    public void testExternalModification() throws IOException, InterruptedException {
+        String content = "static void main(String[] args) {}";
+        // mock it, because file modification date is not precise enough
+        MockTextFileBehavior mockFile = new MockTextFileBehavior(content);
+        TextDocument doc = TextDocument.create(mockFile);
+
+        assertTextIs(content, doc);
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.insert(0, "public ");
+        }
+
+        assertTextIs("public static void main(String[] args) {}", doc);
+        assertEquals("public static void main(String[] args) {}", mockFile.readContents().toString());
+
+        // this goes behind the back of the TextDocument
+        mockFile.writeContents("DO NOT OVERWRITE");
+
+        try {
+            try (TextEditor editor = doc.newEditor()) {
+                editor.insert(0, "public ");
+            }
+
+            fail();
+        } catch (ExternalModificationException e) {
+
+            assertEquals("DO NOT OVERWRITE", mockFile.readContents());
+            // hasn't changed
+            assertTextIs("public static void main(String[] args) {}", doc);
+        }
+
+    }
+
 
     @Test
     public void testLineNumbersAfterEdition() throws IOException {
@@ -228,6 +264,20 @@ public class TextEditorTest {
 
 
     @Test
+    public void testDrop() throws IOException {
+        final String code = "int main(String[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        try (TextEditor editor = doc.newEditor()) {
+            editor.replace(doc.createRegion(0, 3), "void");
+            editor.drop();
+        }
+
+        assertFinalFileIs(doc, code);
+    }
+
+
+    @Test
     public void insertDeleteAndReplaceVariousTokensShouldSucceed() throws IOException {
         final String code = "static int main(CharSequence[] args) {}";
         TextDocument doc = tempFile(code);
@@ -310,6 +360,21 @@ public class TextEditorTest {
     }
 
     @Test
+    public void closedEditorShouldFail() throws IOException {
+        final String code = "static int main(CharSequence[] args) {}";
+        TextDocument doc = tempFile(code);
+
+        TextEditor editor = doc.newEditor();
+        editor.close();
+
+        expect.expect(IllegalStateException.class);
+        expect.expectMessage("Closed");
+
+        editor.insert(0, "foo");
+
+    }
+
+    @Test
     public void closedTextDocumentWithOpenEditorShouldThrow() throws IOException {
         final String code = "static int main(CharSequence[] args) {}";
         TextDocument doc = tempFile(code);
@@ -357,8 +422,12 @@ public class TextEditorTest {
 
     private void assertFinalFileIs(TextDocument doc, String expected) throws IOException {
         final String actualContent = new String(Files.readAllBytes(temporaryFile), StandardCharsets.UTF_8);
-        assertEquals(expected, actualContent);
-        assertEquals(expected, doc.getText().toString()); // getText() is not necessarily a string
+        assertEquals("Content of temp file is incorrect", expected, actualContent);
+        assertTextIs(expected, doc);
+    }
+
+    public void assertTextIs(String s, TextDocument text) {
+        assertEquals("Incorrect document text", s, text.getText().toString());// getText() is not necessarily a string
     }
 
     private TextDocument tempFile(final String content) throws IOException {
