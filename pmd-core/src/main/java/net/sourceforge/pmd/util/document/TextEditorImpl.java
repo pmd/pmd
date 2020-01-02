@@ -12,6 +12,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.util.document.TextDocument.EditorCommitHandler;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
@@ -27,8 +28,8 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
 
 
     /** @throws ReadOnlyFileException If the backend is read-only */
-    TextEditorImpl(final TextDocumentImpl document, final TextFileBehavior backend) throws IOException {
-        this.out = new IoBuffer(document.getText(), document.getCurStamp(), backend);
+    TextEditorImpl(final TextDocumentImpl document, final TextFileBehavior backend, EditorCommitHandler handler) throws IOException {
+        this.out = new IoBuffer(document.getText(), document.getCurStamp(), backend, handler);
         this.document = document;
     }
 

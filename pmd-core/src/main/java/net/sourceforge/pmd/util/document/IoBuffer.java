@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 
+import net.sourceforge.pmd.util.document.TextDocument.EditorCommitHandler;
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
@@ -19,15 +20,17 @@ class IoBuffer {
     private final TextFileBehavior backend;
     private final long originalStamp;
     private final CharSequence original;
+    private final EditorCommitHandler handler;
     private StringBuilder buffer;
 
 
     /** @throws ReadOnlyFileException If the backend is read-only */
-    IoBuffer(CharSequence sequence, long stamp, final TextFileBehavior backend) {
+    IoBuffer(CharSequence sequence, long stamp, final TextFileBehavior backend, EditorCommitHandler handler) {
         if (backend.isReadOnly()) {
             throw new ReadOnlyFileException(backend + " is readonly");
         }
 
+        this.handler = handler;
         this.original = sequence;
         this.backend = backend;
         this.buffer = new StringBuilder(sequence);
@@ -50,9 +53,8 @@ class IoBuffer {
             throw new ExternalModificationException(backend);
         }
 
-        backend.writeContents(buffer);
+        handler.commitNewContents(backend, buffer);
 
-        // Stamp must be fetched after writing
         sink.closeEditor(buffer, backend.fetchStamp());
     }
 

@@ -41,12 +41,12 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public TextEditor newEditor() throws IOException {
+    public TextEditor newEditor(EditorCommitHandler handler) throws IOException {
         ensureOpen();
         if (curEditor != null) {
             throw new ConcurrentModificationException("An editor is already open on this document");
         }
-        return curEditor = new TextEditorImpl(this, backend);
+        return curEditor = new TextEditorImpl(this, backend, handler);
     }
 
     void closeEditor(CharSequence text, long stamp) {

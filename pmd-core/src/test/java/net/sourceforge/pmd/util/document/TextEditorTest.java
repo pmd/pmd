@@ -120,7 +120,7 @@ public class TextEditorTest {
     }
 
     @Test
-    public void testExternalModification() throws IOException, InterruptedException {
+    public void testExternalModification() throws IOException {
         String content = "static void main(String[] args) {}";
         // mock it, because file modification date is not precise enough
         MockTextFileBehavior mockFile = new MockTextFileBehavior(content);
