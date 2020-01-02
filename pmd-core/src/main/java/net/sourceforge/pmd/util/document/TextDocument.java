@@ -8,21 +8,35 @@ import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.io.StringTextFile;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.ReadonlyStringBehavior;
+import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 /**
- * A view over a {@link TextFile}, providing methods to edit it incrementally
+ * A view over a {@link TextFileBehavior}, providing methods to edit it incrementally
  * and address regions of text.
  *
- * <p>A text document wraps a snapshot of the underlying {@link TextFile}.
+ * <p>A text document wraps a snapshot of the underlying {@link TextFileBehavior}.
  * It may be edited with a {@linkplain TextEditor} (see {@link #newEditor()}),
- * but the {@link TextFile} is *not* polled for external modifications.
- * {@link TextFile} provides a very simple stamping system to detect
+ * but the {@link TextFileBehavior} is *not* polled for external modifications.
+ * {@link TextFileBehavior} provides a very simple stamping system to detect
  * external modifications and avoid overwriting them (by failing). This falls
  * short of
  */
 public interface TextDocument {
+
+
+    /**
+     * Returns the current text of this document. Note that this can only
+     * be updated through {@link #newEditor()} and that this doesn't take
+     * external modifications to the {@link TextFileBehavior} into account.
+     */
+    CharSequence getText();
+
+
+    /**
+     * Returns the length in characters of the {@linkplain #getText() text}.
+     */
+    int getLength();
 
 
     /**
@@ -47,20 +61,6 @@ public interface TextDocument {
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
     RegionWithLines addLineInfo(TextRegion region);
-
-
-    /**
-     * Returns the current text of this document. Note that this can only
-     * be updated through {@link #newEditor()} and that this doesn't take
-     * external modifications to the {@link TextFile} into account.
-     */
-    CharSequence getText();
-
-
-    /**
-     * Returns a region of the {@link #getText() text} as a character sequence.
-     */
-    CharSequence subSequence(TextRegion region);
 
 
     /**
@@ -93,23 +93,29 @@ public interface TextDocument {
 
 
     /**
+     * Returns a region of the {@linkplain #getText() text} as a character sequence.
+     */
+    CharSequence subSequence(TextRegion region);
+
+
+    /**
      * Returns a document backed by the given text "file".
      *
      * @throws IOException If an error occurs eg while reading the file contents
      */
-    static TextDocument create(TextFile textFile) throws IOException {
-        return new TextDocumentImpl(textFile);
+    static TextDocument create(TextFileBehavior textFileBehavior) throws IOException {
+        return new TextDocumentImpl(textFileBehavior);
     }
 
 
     /**
      * Returns a read-only document for the given text.
      */
-    static TextDocument readonlyString(final CharSequence source) {
+    static TextDocument readOnlyString(final String source) {
         try {
-            return new TextDocumentImpl(new StringTextFile(source));
+            return new TextDocumentImpl(new ReadonlyStringBehavior(source));
         } catch (IOException e) {
-            throw new AssertionError("String text source should never throw IOException", e);
+            throw new AssertionError("ReadonlyStringBehavior should never throw IOException", e);
         }
     }
 

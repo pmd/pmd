@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.document.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -14,21 +13,15 @@ import java.nio.file.Path;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
- * Physical backend of a {@link TextDocument}, providing read-write
- * access to some location containing text data. Despite the name, this
- * is not necessarily backed by a local file: it may be eg a file system
- * file, an archive entry, an in-memory buffer, etc.
- *
- * <p>This interface provides only block IO access, while {@link TextDocument}
- * adds logic about incremental edition (eg replacing a single region of text).
- *
- * <p>Note that this doesn't have the generality of a {@link File},
- * because it cannot represent binary files.
+ * Strategy backing a {@link TextDocument}, providing read-write
+ * access to some location containing text data. This interface only
+ * provides block IO operations, while {@link TextDocument} adds logic
+ * about incremental edition (eg replacing a single region of text).
  */
-public interface TextFile {
+public interface TextFileBehavior {
 
     /**
-     * Returns true if this source cannot be written to. In that case,
+     * Returns true if this file cannot be written to. In that case,
      * {@link #writeContents(CharSequence)} will throw an exception.
      * In the general case, nothing prevents this method's result from
      * changing from one invocation to another.
@@ -37,7 +30,7 @@ public interface TextFile {
 
 
     /**
-     * Writes the given content to the file.
+     * Writes the given content to the underlying character store.
      *
      * @param charSequence Content to write
      *
@@ -67,14 +60,13 @@ public interface TextFile {
 
 
     /**
-     * Returns an instance of this interface reading & writing to a file.
+     * Returns an instance of this interface reading and writing to a file.
      * The returned instance may be readonly.
      *
-     * @throws IOException If the file is not a regular file ({@link Files#isRegularFile(Path, LinkOption...)})
-     * @throws IOException If the file is not readable ({@link Files#isReadable(Path)})
+     * @throws IOException If the file is not a regular file (see {@link Files#isRegularFile(Path, LinkOption...)})
      */
-    static TextFile forPath(final Path path, final Charset charset) throws IOException {
-        return new FsTextFile(path, charset);
+    static TextFileBehavior forPath(final Path path, final Charset charset) throws IOException {
+        return new FsTextFileBehavior(path, charset);
     }
 
 

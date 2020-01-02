@@ -14,7 +14,7 @@ public class TextDocumentTest {
 
     @Test
     public void testSingleLineRegion() {
-        TextDocument doc = TextDocument.readonlyString("bonjour\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse");
 
         TextRegion region = doc.createRegion(0, "bonjour".length());
 
@@ -33,7 +33,7 @@ public class TextDocumentTest {
 
     @Test
     public void testMultiLineRegion() {
-        TextDocument doc = TextDocument.readonlyString("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse");
 
         TextRegion region = doc.createRegion("bonjou".length(), "r\noha\ntri".length());
 
@@ -51,7 +51,7 @@ public class TextDocumentTest {
 
     @Test
     public void testEmptyRegion() {
-        TextDocument doc = TextDocument.readonlyString("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse");
 
         TextRegion region = doc.createRegion("bonjour".length(), 0);
 

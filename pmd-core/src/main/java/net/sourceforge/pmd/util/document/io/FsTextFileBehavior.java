@@ -13,21 +13,19 @@ import java.nio.file.Path;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
- * A {@link TextFile} backed by a file in some {@link FileSystem}.
+ * A {@link TextFileBehavior} backed by a file in some {@link FileSystem}.
  */
-class FsTextFile implements TextFile {
+class FsTextFileBehavior implements TextFileBehavior {
 
     private final Path path;
     private final Charset charset;
 
-    FsTextFile(Path path, Charset charset) throws IOException {
+    FsTextFileBehavior(Path path, Charset charset) throws IOException {
         AssertionUtil.requireParamNotNull(path, "path");
         AssertionUtil.requireParamNotNull(charset, "charset");
 
         if (!Files.isRegularFile(path)) {
             throw new IOException("Not a regular file: " + path);
-        } else if (!Files.isReadable(path)) {
-            throw new IOException("Cannot read file " + path);
         }
 
         this.path = path;

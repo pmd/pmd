@@ -10,7 +10,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Represents a range of text in a {@link TextDocument} with the tuple (offset, length).
+ * A contiguous range of text in a {@link TextDocument}. Regions are
+ * not bound to a specific document, keeping a reference to them does
+ * not prevent the document from being garbage-collected.
  *
  * <p>Line and column information may be added when the {@link TextDocument} is known.
  */
@@ -46,8 +48,9 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /**
-     * Compute the intersection of this region with the other. Returns
-     * null if the two regions are disjoint.
+     * Compute the intersection of this region with the other. It may
+     * have length zero. Returns null if the two regions are completely
+     * disjoint.
      *
      * @param other Other region
      */

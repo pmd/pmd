@@ -8,14 +8,17 @@ import static java.util.Objects.requireNonNull;
 
 import net.sourceforge.pmd.util.StringUtil;
 
-public class StringTextFile implements TextFile {
+/**
+ * Read-only view on a string.
+ */
+public class ReadonlyStringBehavior implements TextFileBehavior {
 
     private final String buffer;
 
-    public StringTextFile(CharSequence source) {
+    public ReadonlyStringBehavior(String source) {
         requireNonNull(source, "Null charset");
 
-        this.buffer = source.toString();
+        this.buffer = source;
     }
 
     @Override

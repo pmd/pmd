@@ -9,7 +9,7 @@ import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 
 final class TextDocumentImpl implements TextDocument {
@@ -17,7 +17,7 @@ final class TextDocumentImpl implements TextDocument {
     private static final String OUT_OF_BOUNDS_WITH_OFFSET =
         "Region [%d, +%d] is not in range of this document (length %d)";
 
-    private final TextFile backend;
+    private final TextFileBehavior backend;
 
     private long curStamp;
 
@@ -26,7 +26,7 @@ final class TextDocumentImpl implements TextDocument {
 
     private int numOpenEditors;
 
-    TextDocumentImpl(TextFile backend) throws IOException {
+    TextDocumentImpl(TextFileBehavior backend) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
         this.positioner = new SourceCodePositioner(backend.readContents());
@@ -57,16 +57,7 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public RegionWithLines addLineInfo(TextRegion region) {
-        if (region.getEndOffset() > getText().length()) {
-            throw new IndexOutOfBoundsException(
-                String.format(
-                    OUT_OF_BOUNDS_WITH_OFFSET,
-                    region.getStartOffset(),
-                    region.getLength(),
-                    getText().length()
-                )
-            );
-        }
+        checkInRange(region.getStartOffset(), region.getLength());
 
         int bline = positioner.lineNumberFromOffset(region.getStartOffset());
         int bcol = positioner.columnFromOffset(bline, region.getStartOffset());
@@ -83,18 +74,26 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public TextRegion createRegion(int startOffset, int length) {
-        if (startOffset < 0 || startOffset + length > getText().length()) {
+        checkInRange(startOffset, length);
+        return new TextRegionImpl(startOffset, length);
+    }
+
+    private void checkInRange(int startOffset, int length) {
+        if (startOffset < 0 || startOffset + length > getLength()) {
             throw new IndexOutOfBoundsException(
                 String.format(
                     OUT_OF_BOUNDS_WITH_OFFSET,
                     startOffset,
                     length,
-                    getText().length()
+                    getLength()
                 )
             );
         }
+    }
 
-        return new TextRegionImpl(startOffset, length);
+    @Override
+    public int getLength() {
+        return getText().length();
     }
 
     @Override

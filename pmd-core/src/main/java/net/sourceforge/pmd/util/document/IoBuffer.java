@@ -7,7 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 /**
  * Helper that buffers operations of a {@link TextEditor} to delay IO
@@ -15,12 +15,12 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  */
 class IoBuffer {
 
-    private final TextFile backend;
+    private final TextFileBehavior backend;
     private final long originalStamp;
     private final StringBuilder buffer;
 
 
-    IoBuffer(CharSequence sequence, long stamp, final TextFile backend) {
+    IoBuffer(CharSequence sequence, long stamp, final TextFileBehavior backend) {
         if (backend.isReadOnly()) {
             throw new UnsupportedOperationException(backend + " is readonly");
         }

@@ -20,8 +20,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-import net.sourceforge.pmd.util.document.io.StringTextFile;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.ReadonlyStringBehavior;
+import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 public class TextEditorTest {
 
@@ -251,7 +251,7 @@ public class TextEditorTest {
 
     @Test
     public void textReadOnlyDocumentCannotBeEdited() throws IOException {
-        StringTextFile someFooBar = new StringTextFile("someFooBar");
+        ReadonlyStringBehavior someFooBar = new ReadonlyStringBehavior("someFooBar");
         assertTrue(someFooBar.isReadOnly());
         TextDocument doc = TextDocument.create(someFooBar);
 
@@ -272,7 +272,7 @@ public class TextEditorTest {
         try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             writer.write(content);
         }
-        return TextDocument.create(TextFile.forPath(temporaryFile, StandardCharsets.UTF_8));
+        return TextDocument.create(TextFileBehavior.forPath(temporaryFile, StandardCharsets.UTF_8));
     }
 
 }
