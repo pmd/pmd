@@ -11,7 +11,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A contiguous range of text in a {@link TextDocument}. See {@link TextDocument#createRegion(int, int)}
- * for a description of valid regions in a document.
+ * for a description of valid regions in a document. Empty regions may
+ * be thought of as caret positions in an IDE. An empty region at offset
+ * {@code n} does not contain the character at offset {@code n} in the
+ * document, but if it were a caret, typing text would insert it at offset
+ * {@code n} in the document.
  *
  * <p>Line and column information may be added by {@link TextDocument#addLineInfo(TextRegion)}.
  *
@@ -36,16 +40,17 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /**
-     * Returns the length of the region in characters. All characters
-     * have length 1, including {@code '\t'}. The sequence {@code "\r\n"}
-     * has length 2.
+     * Returns the length of the region in characters. This is the difference
+     * between start offset and end offset. All characters have length 1,
+     * including {@code '\t'}. The sequence {@code "\r\n"} has length 2 and
+     * not 1.
      */
     int getLength();
 
 
     /**
      * Returns true if the region contains no characters. In that case
-     * it can be viewed as a caret position, eg used for text insertion.
+     * it can be viewed as a caret position, and e.g. used for text insertion.
      */
     default boolean isEmpty() {
         return getLength() == 0;

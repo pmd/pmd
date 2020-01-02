@@ -59,6 +59,11 @@ final class TextDocumentImpl implements TextDocument {
     }
 
     @Override
+    public void close() throws IOException {
+        backend.close();
+    }
+
+    @Override
     public RegionWithLines addLineInfo(TextRegion region) {
         checkInRange(region.getStartOffset(), region.getLength());
 
@@ -120,6 +125,9 @@ final class TextDocumentImpl implements TextDocument {
 
     @Override
     public CharSequence subSequence(TextRegion region) {
+        if (region.isEmpty()) {
+            return "";
+        }
         return getText().subSequence(region.getStartOffset(), region.getEndOffset());
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 
@@ -26,11 +27,8 @@ class TextEditorImpl implements TextEditor {
     private List<TextRegion> affectedRegions = new ArrayList<>();
 
 
+    /** @throws ReadOnlyFileException If the backend is read-only */
     TextEditorImpl(final TextDocumentImpl document, final TextFileBehavior backend) throws IOException {
-        if (backend.isReadOnly()) {
-            throw new UnsupportedOperationException(backend + " is readonly");
-        }
-
         this.out = new IoBuffer(document.getText(), document.getCurStamp(), backend);
         this.document = document;
     }

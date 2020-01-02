@@ -92,7 +92,7 @@ public final class SourceCodePositioner {
      * Returns the line number of the character at the given offset.
      * Returns -1 if the offset is not valid in this document.
      *
-     * @param offset Offset in the document
+     * @param offset Offset in the document (zero-based)
      *
      * @return Line number (1-based), or -1
      *
@@ -115,8 +115,8 @@ public final class SourceCodePositioner {
      * relative to the line (the line number is just a hint). If the
      * column number does not exist (on the given line), returns -1.
      *
-     * @param lineNumber   Line number
-     * @param globalOffset Global offset in the document
+     * @param lineNumber   Line number (1-based)
+     * @param globalOffset Global offset in the document (zero-based)
      *
      * @return Column number (1-based), or -1
      *

@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.util.document;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
@@ -20,7 +22,7 @@ import net.sourceforge.pmd.util.document.io.TextFileBehavior;
  * very simple stamping system to avoid overwriting external modifications
  * (by failing in {@link TextEditor#close()}).
  */
-public interface TextDocument {
+public interface TextDocument extends Closeable {
 
 
     /**
@@ -44,9 +46,8 @@ public interface TextDocument {
      * The sum {@code startOffset + length} must range from {@code startOffset}
      * to {@link #getLength()} (inclusive).
      *
-     * <p>This makes the region starting at {@link #getLength()} with
-     * length 0 a valid region (the caret position at the end of the
-     * document).
+     * <p>Those rules make the region starting at {@link #getLength()}
+     * with length 0 a valid region (the caret position at the end of the document).
      *
      * @param startOffset 0-based, inclusive offset for the start of the region
      * @param length      Length of the region in characters.
@@ -97,7 +98,7 @@ public interface TextDocument {
      * @return A new editor
      *
      * @throws IOException                     If an IO error occurs
-     * @throws UnsupportedOperationException   If this document is read-only
+     * @throws ReadOnlyFileException           If this document is read-only
      * @throws ConcurrentModificationException If an editor is already open for this document
      */
     TextEditor newEditor() throws IOException;

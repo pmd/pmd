@@ -20,24 +20,33 @@ public class ReadOnlyStringBehavior implements TextFileBehavior {
         this.buffer = source;
     }
 
+    /** Returns true, always. */
     @Override
     public boolean isReadOnly() {
         return true;
     }
 
+    /** @throws ReadOnlyFileException Always */
     @Override
     public void writeContents(CharSequence charSequence) {
-        throw new UnsupportedOperationException("Readonly source");
+        throw new ReadOnlyFileException("Readonly source");
     }
 
+    /** Returns the original string. */
     @Override
-    public CharSequence readContents() {
+    public String readContents() {
         return buffer;
     }
 
     @Override
     public long fetchStamp() {
         return hashCode();
+    }
+
+    /** Closing an instance of this class has no effect. */
+    @Override
+    public void close() {
+
     }
 
     @Override

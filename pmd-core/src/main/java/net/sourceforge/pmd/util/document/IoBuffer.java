@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
+import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFileBehavior;
 
 /**
@@ -20,9 +21,10 @@ class IoBuffer {
     private final StringBuilder buffer;
 
 
+    /** @throws ReadOnlyFileException If the backend is read-only */
     IoBuffer(CharSequence sequence, long stamp, final TextFileBehavior backend) {
         if (backend.isReadOnly()) {
-            throw new UnsupportedOperationException(backend + " is readonly");
+            throw new ReadOnlyFileException(backend + " is readonly");
         }
 
         this.backend = backend;

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -19,7 +20,7 @@ import net.sourceforge.pmd.util.document.TextDocument;
  * provides block IO operations, while {@link TextDocument} adds logic
  * about incremental edition (eg replacing a single region of text).
  */
-public interface TextFileBehavior {
+public interface TextFileBehavior extends Closeable {
 
     /**
      * Returns true if this file cannot be written to. In that case,
@@ -35,8 +36,8 @@ public interface TextFileBehavior {
      *
      * @param charSequence Content to write
      *
-     * @throws IOException                   If an error occurs
-     * @throws UnsupportedOperationException If this text source is read-only
+     * @throws IOException           If an error occurs
+     * @throws ReadOnlyFileException If this text source is read-only
      */
     void writeContents(CharSequence charSequence) throws IOException;
 

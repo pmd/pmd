@@ -38,7 +38,7 @@ class ReadOnlyDataSourceBehavior implements TextFileBehavior {
 
     @Override
     public void writeContents(CharSequence charSequence) {
-        throw new UnsupportedOperationException("Readonly source");
+        throw new ReadOnlyFileException("Readonly source");
     }
 
     @Override
@@ -53,6 +53,11 @@ class ReadOnlyDataSourceBehavior implements TextFileBehavior {
     @Override
     public long fetchStamp() throws IOException {
         return hashCode();
+    }
+
+    @Override
+    public void close() throws IOException {
+        dataSource.close();
     }
 
     @Override
