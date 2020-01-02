@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.document.util.ZeroBased;
  * though the file may still be edited externally. We do not poll for
  * external modifications, instead {@link TextFileBehavior} provides a
  * very simple stamping system to avoid overwriting external modifications
- * (by failing).
+ * (by failing in {@link TextEditor#close()}).
  */
 public interface TextDocument {
 

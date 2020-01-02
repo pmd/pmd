@@ -63,14 +63,14 @@ class TextRegionImpl implements TextRegion {
     /**
      * Builds a new region from offset and length.
      */
-    static TextRegionImpl fromOffsetLength(int startOffset, int length) {
+    static TextRegion fromOffsetLength(int startOffset, int length) {
         return new TextRegionImpl(startOffset, length);
     }
 
     /**
      * Builds a new region from start and end offset.
      */
-    static TextRegionImpl fromBothOffsets(int startOffset, int endOffset) {
+    static TextRegion fromBothOffsets(int startOffset, int endOffset) {
         return new TextRegionImpl(startOffset, endOffset - startOffset);
     }
 

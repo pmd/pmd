@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.document;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -36,17 +37,34 @@ public class TextRegionTest {
 
     @Test
     public void testIsEmpty() {
-        TextRegionImpl r = TextRegionImpl.fromOffsetLength(0, 0);
+        TextRegion r = TextRegionImpl.fromOffsetLength(0, 0);
 
         assertTrue(r.isEmpty());
+    }
+
+    @Test
+    public void testEmptyContains() {
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
+
+        assertFalse(r1.containsChar(0));
+    }
+
+    @Test
+    public void testContains() {
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(1, 2);
+
+        assertFalse(r1.containsChar(0));
+        assertTrue(r1.containsChar(1));
+        assertTrue(r1.containsChar(2));
+        assertFalse(r1.containsChar(3));
     }
 
     @Test
     public void testIntersectZeroLen() {
         // r1: [[-----
         // r2: [ -----[
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(0, 0);
-        TextRegionImpl r2 = TextRegionImpl.fromOffsetLength(0, 5);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 5);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -57,8 +75,8 @@ public class TextRegionTest {
     public void testIntersectZeroLen2() {
         // r1:  -----[[
         // r2: [-----[
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(5, 0);
-        TextRegionImpl r2 = TextRegionImpl.fromOffsetLength(0, 5);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(5, 0);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 5);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -69,8 +87,8 @@ public class TextRegionTest {
     public void testIntersectZeroLen3() {
         // r1:  -- -[---[
         // r2:  --[-[---
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(3, 3);
-        TextRegionImpl r2 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(3, 3);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -82,7 +100,7 @@ public class TextRegionTest {
 
     @Test
     public void testIntersectZeroLen4() {
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(0, 0);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
 
         TextRegion inter = doIntersect(r1, r1);
 
@@ -94,8 +112,8 @@ public class TextRegionTest {
         // r1:  ---[-- --[
         // r2: [--- --[--
         // i:   ---[--[--
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(3, 4);
-        TextRegionImpl r2 = TextRegionImpl.fromOffsetLength(0, 5);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(3, 4);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 5);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -108,8 +126,8 @@ public class TextRegionTest {
         // r1:  --[- - ---[
         // r2:  -- -[-[---
         // i:   -- -[-[---
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(2, 5);
-        TextRegionImpl r2 = TextRegionImpl.fromOffsetLength(3, 1);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 5);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 1);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -121,11 +139,77 @@ public class TextRegionTest {
     public void testIntersectDisjoint() {
         // r1:  -- -[---[
         // r2:  --[-[---
-        TextRegionImpl r1 = TextRegionImpl.fromOffsetLength(4, 3);
-        TextRegionImpl r2 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(4, 3);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
 
         noIntersect(r1, r2);
     }
+
+    @Test
+    public void testOverlapContained() {
+        // r1:  --[- - ---[
+        // r2:  -- -[-[---
+        // i:   -- -[-[---
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 5);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 1);
+
+        assertOverlap(r1, r2);
+    }
+
+    @Test
+    public void testOverlapDisjoint() {
+        // r1:  -- -[---[
+        // r2:  --[-[---
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(4, 3);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
+
+        assertNoOverlap(r1, r2);
+    }
+
+
+    @Test
+    public void testOverlapBoundary() {
+        // r1:  -- -[---[
+        // r2:  --[-[---
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(3, 3);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
+
+        assertNoOverlap(r1, r2);
+    }
+
+    @Test
+    public void testCompare() {
+        // r1:  --[-[---
+        // r2:  -- -[---[
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 3);
+
+        assertIsBefore(r1, r2);
+    }
+
+    @Test
+    public void testCompareSameOffset() {
+        // r1:  [-[--
+        // r2:  [- --[
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 1);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 3);
+
+        assertIsBefore(r1, r2);
+    }
+
+    public void assertIsBefore(TextRegion r1, TextRegion r2) {
+        assertTrue("Region " + r1 + " should be before " + r2, r1.compareTo(r2) < 0);
+        assertTrue("Region " + r2 + " should be after " + r1, r2.compareTo(r1) > 0);
+    }
+
+    private void assertNoOverlap(TextRegion r1, TextRegion r2) {
+        assertFalse("Regions " + r1 + " and " + r2 + " should not overlap", r1.overlaps(r2));
+    }
+
+    private void assertOverlap(TextRegion r1, TextRegion r2) {
+        assertTrue("Regions " + r1 + " and " + r2 + " should overlap", r1.overlaps(r2));
+    }
+
 
     private TextRegion doIntersect(TextRegion r1, TextRegion r2) {
         TextRegion inter = r1.intersect(r2);

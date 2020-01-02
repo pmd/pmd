@@ -21,6 +21,8 @@ import net.sourceforge.pmd.util.document.util.ZeroBased;
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
  */
+// Regions could have the stamp of the document that created them though,
+// in which case we could assert that they're up to date
 public interface TextRegion extends Comparable<TextRegion> {
 
     /** Compares the start offset, then the length of a region. */
