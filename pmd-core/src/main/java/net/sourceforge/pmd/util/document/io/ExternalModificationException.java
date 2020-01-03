@@ -12,7 +12,7 @@ import net.sourceforge.pmd.util.document.TextEditor;
 
 /**
  * Thrown when a {@link TextDocument} or {@link TextEditor} detects that
- * {@link TextFileBehavior} has been externally modified.
+ * {@link TextFile} has been externally modified.
  *
  * <p>This is not meant to be handled below the top-level file parsing
  * loop. External modifications are rare and can be considered unrecoverable
@@ -20,15 +20,15 @@ import net.sourceforge.pmd.util.document.TextEditor;
  */
 public class ExternalModificationException extends IOException {
 
-    private final TextFileBehavior backend;
+    private final TextFile backend;
 
-    public ExternalModificationException(TextFileBehavior backend) {
+    public ExternalModificationException(TextFile backend) {
         super(backend + " was modified externally");
         this.backend = backend;
     }
 
     /** Returns the file for which the external modification occurred. */
-    public TextFileBehavior getFile() {
+    public TextFile getFile() {
         return backend;
     }
 }

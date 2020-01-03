@@ -8,15 +8,14 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
-import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
  * and address regions of text. A text document delegates IO operations
- * to a {@link TextFileBehavior}. It reflects some snapshot of the file,
+ * to a {@link TextFile}. It reflects some snapshot of the file,
  * though the file may still be edited externally. We do not poll for
- * external modifications, instead {@link TextFileBehavior} provides a
+ * external modifications, instead {@link TextFile} provides a
  * very simple stamping system to avoid overwriting external modifications
  * (by failing in {@link TextEditor#close()}).
  */
@@ -26,7 +25,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns the current text of this document. Note that this can only
      * be updated through {@link #newEditor()} and that this doesn't take
-     * external modifications to the {@link TextFileBehavior} into account.
+     * external modifications to the {@link TextFile} into account.
      */
     CharSequence getText();
 
@@ -91,7 +90,7 @@ public interface TextDocument extends Closeable {
      * @see #newEditor(EditorCommitHandler)
      */
     default TextEditor newEditor() throws IOException {
-        return newEditor(TextFileBehavior::writeContents);
+        return newEditor(TextFile::writeContents);
     }
 
 
@@ -108,7 +107,7 @@ public interface TextDocument extends Closeable {
      * <p>Only a single editor may be open at a time.
      *
      * @param handler Handles closing of the {@link TextEditor}.
-     *                {@link EditorCommitHandler#commitNewContents(TextFileBehavior, CharSequence) commitNewContents}
+     *                {@link EditorCommitHandler#commitNewContents(TextFile, CharSequence) commitNewContents}
      *                is called with the backend file and the new text
      *                as parameters.
      *
@@ -123,11 +122,11 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Closing a document closes the underlying {@link TextFileBehavior}.
+     * Closing a document closes the underlying {@link TextFile}.
      * New editors cannot be produced after that, and the document otherwise
      * remains in its current state.
      *
-     * @throws IOException           If {@link TextFileBehavior#close()} throws
+     * @throws IOException           If {@link TextFile#close()} throws
      * @throws IllegalStateException If an editor is currently open. In this case
      *                               the editor is rendered ineffective before the
      *                               exception is thrown. This indicates a programming
@@ -142,8 +141,8 @@ public interface TextDocument extends Closeable {
      *
      * @throws IOException If an error occurs eg while reading the file contents
      */
-    static TextDocument create(TextFileBehavior textFileBehavior) throws IOException {
-        return new TextDocumentImpl(textFileBehavior);
+    static TextDocument create(TextFile textFile) throws IOException {
+        return new TextDocumentImpl(textFile);
     }
 
 
@@ -152,7 +151,7 @@ public interface TextDocument extends Closeable {
      */
     static TextDocument readOnlyString(final String source) {
         try {
-            return new TextDocumentImpl(new ReadOnlyStringBehavior(source));
+            return new TextDocumentImpl(TextFile.readOnlyString(source));
         } catch (IOException e) {
             throw new AssertionError("ReadonlyStringBehavior should never throw IOException", e);
         }
@@ -170,7 +169,7 @@ public interface TextDocument extends Closeable {
          *
          * @throws IOException If an I/O error occurs
          */
-        void commitNewContents(TextFileBehavior originalFile, CharSequence newContents) throws IOException;
+        void commitNewContents(TextFile originalFile, CharSequence newContents) throws IOException;
 
     }
 

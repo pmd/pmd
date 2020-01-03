@@ -25,8 +25,7 @@ import org.junit.rules.TemporaryFolder;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
-import net.sourceforge.pmd.util.document.io.ReadOnlyStringBehavior;
-import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class TextEditorTest {
 
@@ -123,7 +122,7 @@ public class TextEditorTest {
     public void testExternalModification() throws IOException {
         String content = "static void main(String[] args) {}";
         // mock it, because file modification date is not precise enough
-        MockTextFileBehavior mockFile = new MockTextFileBehavior(content);
+        MockTextFile mockFile = new MockTextFile(content);
         TextDocument doc = TextDocument.create(mockFile);
 
         assertTextIs(content, doc);
@@ -409,7 +408,7 @@ public class TextEditorTest {
 
     @Test
     public void textReadOnlyDocumentCannotBeEdited() throws IOException {
-        ReadOnlyStringBehavior someFooBar = new ReadOnlyStringBehavior("someFooBar");
+        TextFile someFooBar = TextFile.readOnlyString("someFooBar");
         assertTrue(someFooBar.isReadOnly());
         TextDocument doc = TextDocument.create(someFooBar);
 
@@ -434,7 +433,7 @@ public class TextEditorTest {
         try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             writer.write(content);
         }
-        return TextDocument.create(TextFileBehavior.forPath(temporaryFile, StandardCharsets.UTF_8));
+        return TextDocument.create(TextFile.forPath(temporaryFile, StandardCharsets.UTF_8));
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.ConcurrentModificationException;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
-import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.util.document.io.TextFile;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 
@@ -19,7 +19,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private static final String OUT_OF_BOUNDS_WITH_OFFSET =
         "Region [%d, +%d] is not in range of this document (length %d)";
 
-    private final TextFileBehavior backend;
+    private final TextFile backend;
 
     private long curStamp;
 
@@ -28,7 +28,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private TextEditorImpl curEditor;
 
-    TextDocumentImpl(TextFileBehavior backend) throws IOException {
+    TextDocumentImpl(TextFile backend) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
         this.text = backend.readContents().toString();

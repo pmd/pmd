@@ -6,21 +6,27 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.util.document.io.TextFileBehavior;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
  * File modification date is not precise enough to write tests directly on it.
  */
-public class MockTextFileBehavior extends BaseCloseable implements TextFileBehavior {
+public class MockTextFile extends BaseCloseable implements TextFile {
 
     private CharSequence curContents;
     private long modCount = 0;
 
-    public MockTextFileBehavior(CharSequence initialValue) {
+    public MockTextFile(CharSequence initialValue) {
         this.curContents = initialValue;
     }
 
+    @Override
+    public @NonNull String getFileName() {
+        return "MockFile";
+    }
 
     @Override
     public boolean isReadOnly() {

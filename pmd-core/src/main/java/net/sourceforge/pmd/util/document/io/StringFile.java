@@ -4,35 +4,42 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Read-only view on a string.
  */
-public class ReadOnlyStringBehavior implements TextFileBehavior {
+class StringFile implements TextFile {
 
     private final String buffer;
+    private final String name;
 
-    public ReadOnlyStringBehavior(String source) {
+    StringFile(String source, @Nullable String name) {
         AssertionUtil.requireParamNotNull("source text", source);
 
         this.buffer = source;
+        this.name = String.valueOf(name);
     }
 
-    /** Returns true, always. */
+    @Override
+    public @NonNull String getFileName() {
+        return name;
+    }
+
     @Override
     public boolean isReadOnly() {
         return true;
     }
 
-    /** @throws ReadOnlyFileException Always */
     @Override
     public void writeContents(CharSequence charSequence) {
         throw new ReadOnlyFileException("Readonly source");
     }
 
-    /** Returns the original string. */
     @Override
     public String readContents() {
         return buffer;
@@ -43,10 +50,9 @@ public class ReadOnlyStringBehavior implements TextFileBehavior {
         return hashCode();
     }
 
-    /** Closing an instance of this class has no effect. */
     @Override
     public void close() {
-
+        // nothing to do
     }
 
     @Override

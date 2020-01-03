@@ -9,20 +9,24 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 
 /**
- * A {@link TextFileBehavior} backed by a file in some {@link FileSystem}.
+ * A {@link TextFile} backed by a file in some {@link FileSystem}.
  */
-class FsTextFileBehavior extends BaseCloseable implements TextFileBehavior {
+class FileSysTextFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
 
-    FsTextFileBehavior(Path path, Charset charset) throws IOException {
+    FileSysTextFile(Path path, Charset charset) throws IOException {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
 
@@ -34,6 +38,16 @@ class FsTextFileBehavior extends BaseCloseable implements TextFileBehavior {
         this.charset = charset;
     }
 
+    @Override
+    public @NonNull String getFileName() {
+        return path.toAbsolutePath().toString();
+    }
+
+    @Override
+    public @NonNull String getShortFileName(List<String> baseFileNames) {
+        AssertionUtil.requireParamNotNull("baseFileNames", baseFileNames);
+        return ShortFilenameUtil.determineFileName(baseFileNames, getFileName());
+    }
 
     @Override
     public boolean isReadOnly() {
