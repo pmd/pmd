@@ -18,6 +18,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated API
+
+- {% jdoc !!core::RuleContext#removeAttribute(java.lang.String) %}
+- {% jdoc !!core::RuleContext#getAttribute(java.lang.String) %}
+- {% jdoc !!core::RuleContext#setAttribute(java.lang.String, java.lang.Object) %}
+
 ### External Contributions
 
 {% endtocmaker %}
