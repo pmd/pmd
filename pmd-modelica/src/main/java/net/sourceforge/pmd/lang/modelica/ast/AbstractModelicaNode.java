@@ -66,6 +66,14 @@ abstract class AbstractModelicaNode extends AbstractNode implements Node, Modeli
         }
         endLine = parser.token.endLine;
         endColumn = parser.token.endColumn;
+
+        if (endLine < beginLine) {
+            beginLine = endLine;
+            beginColumn = endColumn;
+        }
+        if (endLine == beginLine && endColumn < beginColumn) {
+            beginColumn = endColumn;
+        }
     }
 
     @Override
