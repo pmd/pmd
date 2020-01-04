@@ -106,6 +106,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2069](https://github.com/pmd/pmd/pull/2069): \[java] CommentRequired: make property names consistent - [snuyanzin](https://github.com/snuyanzin)
 *   [#2169](https://github.com/pmd/pmd/pull/2169): \[modelica] Follow-up fixes for Modelica language module - [Anatoly Trosinenko](https://github.com/atrosinenko)
 *   [#2193](https://github.com/pmd/pmd/pull/2193): \[core] Fix odd logic in test runner - [Egor Bredikhin](https://github.com/Egor18)
+*   [#2194](https://github.com/pmd/pmd/pull/2194): \[java] Fix odd logic in AvoidUsingHardCodedIPRule - [Egor Bredikhin](https://github.com/Egor18)
 
 {% endtocmaker %}
 
