@@ -86,7 +86,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public NodeStream<T> drop(int n) {
-            AssertionUtil.assertArgNonNegative(n);
+            AssertionUtil.requireNonNegative("n", n);
             switch (n) {
             case 0:
                 return this;
@@ -306,13 +306,13 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public NodeStream<T> take(int maxSize) {
-            AssertionUtil.assertArgNonNegative(maxSize);
+            AssertionUtil.requireNonNegative("maxSize", maxSize);
             return StreamImpl.sliceChildren(node, filter, low, min(maxSize, len));
         }
 
         @Override
         public NodeStream<T> drop(int n) {
-            AssertionUtil.assertArgNonNegative(n);
+            AssertionUtil.requireNonNegative("n", n);
             int newLow = min(low + n, node.jjtGetNumChildren());
             int newLen = max(len - n, 0);
 

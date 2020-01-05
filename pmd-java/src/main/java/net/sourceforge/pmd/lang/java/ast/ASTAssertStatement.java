@@ -37,8 +37,18 @@ public final class ASTAssertStatement extends AbstractJavaNode {
 
     /**
      * Returns the expression tested by this assert statement.
+     *
+     * @deprecated Use {@link #getCondition()}
      */
+    @Deprecated
     public ASTExpression getGuardExpressionNode() {
+        return getCondition();
+    }
+
+    /**
+     * Returns the expression tested by this assert statement.
+     */
+    public ASTExpression getCondition() {
         return (ASTExpression) jjtGetChild(0);
     }
 

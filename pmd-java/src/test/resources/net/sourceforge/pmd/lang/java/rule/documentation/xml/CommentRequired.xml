@@ -50,7 +50,7 @@ public class Foo {
 
     <test-code>
         <description>Missing comments - only class level required.</description>
-        <rule-property name="headerCommentRequirement">Required</rule-property>
+        <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Ignored</rule-property>
@@ -61,7 +61,7 @@ public class Foo {
 
     <test-code>
         <description>Too many comments - all comments are unwanted.</description>
-        <rule-property name="headerCommentRequirement">Unwanted</rule-property>
+        <rule-property name="classCommentRequirement">Unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">Unwanted</rule-property>
         <rule-property name="publicMethodCommentRequirement">Unwanted</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Unwanted</rule-property>
@@ -505,5 +505,23 @@ public class CommentRequired {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1683 [java] CommentRequired property names are inconsistent - use deprecated property</description>
+        <rule-property name="headerCommentRequirement">Unwanted</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/** Unwanted class comment */
+public class CommentRequirement {}
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>#1683 [java] CommentRequired property names are inconsistent - use new property</description>
+        <rule-property name="classCommentRequirement">Unwanted</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/** Unwanted class comment */
+public class CommentRequirement {}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -68,18 +68,39 @@ public final class ASTTryStatement extends AbstractJavaNode {
 
 
     /**
+     * Returns the body of this try statement.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) jjtGetChild(1);
+    }
+
+    /**
      * Returns the catch statement nodes of this try statement.
      * If there are none, returns an empty list.
+     *
+     * @deprecated Use {@link #getCatchClauses()}
      */
+    @Deprecated
     public List<ASTCatchStatement> getCatchStatements() {
+        return findChildrenOfType(ASTCatchStatement.class);
+    }
+
+    /**
+     * Returns the catch clauses of this try statement.
+     * If there are none, returns an empty list.
+     */
+    public List<ASTCatchStatement> getCatchClauses() {
         return findChildrenOfType(ASTCatchStatement.class);
     }
 
 
     /**
      * Returns true if this try statement has a  {@code finally} statement,
-     * in which case {@link #getFinally()} won't return {@code null}.
+     * in which case {@link #getFinallyClause()} won't return {@code null}.
+     *
+     * @deprecated Check for nullity of {@link #getFinallyClause()}
      */
+    @Deprecated
     public boolean hasFinally() {
         return getFirstChildOfType(ASTFinallyStatement.class) != null;
     }
@@ -89,8 +110,19 @@ public final class ASTTryStatement extends AbstractJavaNode {
      * Returns the {@code finally} statement of this try statement, if any.
      *
      * @return The finally statement, or null if there is none
+     *
+     * @deprecated Use {@link #getFinallyClause()}
      */
     public ASTFinallyStatement getFinally() {
+        return getFirstChildOfType(ASTFinallyStatement.class);
+    }
+
+    /**
+     * Returns the {@code finally} clause of this try statement, if any.
+     *
+     * @return The finally statement, or null if there is none
+     */
+    public ASTFinallyStatement getFinallyClause() {
         return getFirstChildOfType(ASTFinallyStatement.class);
     }
 

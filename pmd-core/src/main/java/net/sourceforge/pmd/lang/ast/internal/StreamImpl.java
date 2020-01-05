@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredDescendantStream
 
 public final class StreamImpl {
 
+    @SuppressWarnings("rawtypes")
     private static final NodeStream EMPTY = new IteratorBasedNStream() {
         @Override
         public Iterator iterator() {

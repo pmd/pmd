@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -28,6 +29,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@InternalApi
+@Deprecated
 public class RuleBuilder {
 
     private List<PropertyDescriptor<?>> definedProperties = new ArrayList<>();

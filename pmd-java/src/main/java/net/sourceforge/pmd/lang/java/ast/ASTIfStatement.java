@@ -45,8 +45,19 @@ public final class ASTIfStatement extends AbstractJavaNode {
     /**
      * Returns the node that represents the guard of this conditional.
      * This may be any expression of type boolean.
+     *
+     * @deprecated Use {@link #getCondition()}
      */
+    @Deprecated
     public ASTExpression getGuardExpressionNode() {
+        return (ASTExpression) jjtGetChild(0);
+    }
+
+    /**
+     * Returns the node that represents the guard of this conditional.
+     * This may be any expression of type boolean.
+     */
+    public ASTExpression getCondition() {
         return (ASTExpression) jjtGetChild(0);
     }
 

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public class RuleSetResolverTest {
 
@@ -30,10 +31,10 @@ public class RuleSetResolverTest {
     public void resolveAllRulesets() {
         Path basePath = FileSystems.getDefault().getPath(".").resolve("..").toAbsolutePath().normalize();
         List<String> additionalRulesets = GenerateRuleDocsCmd.findAdditionalRulesets(basePath);
-    
+
         filterRuleSets(additionalRulesets);
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         for (String filename : additionalRulesets) {
             try {
                 ruleSetFactory.createRuleSet(filename);

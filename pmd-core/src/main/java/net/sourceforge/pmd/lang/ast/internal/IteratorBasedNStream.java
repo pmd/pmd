@@ -78,13 +78,13 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public NodeStream<T> drop(int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
         return n == 0 ? this : mapIter(iter -> IteratorUtil.drop(iter, n));
     }
 
     @Override
     public NodeStream<T> take(int maxSize) {
-        AssertionUtil.assertArgNonNegative(maxSize);
+        AssertionUtil.requireNonNegative("maxSize", maxSize);
         return maxSize == 0 ? NodeStream.empty() : mapIter(iter -> IteratorUtil.take(iter, maxSize));
     }
 

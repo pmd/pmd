@@ -90,7 +90,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTWhileStatement node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }
@@ -100,7 +100,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTIfStatement node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -112,7 +112,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
         ((MutableInt) data).increment();
 
         if (considerBooleanPaths && !node.isForeach()) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -123,7 +123,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTDoStatement node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
 
         return super.visit(node, data);
@@ -150,7 +150,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
             ((MutableInt) data).add(2); // equivalent to if (condition) { throw .. }
 
             if (considerBooleanPaths) {
-                ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+                ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
             }
         }
 
