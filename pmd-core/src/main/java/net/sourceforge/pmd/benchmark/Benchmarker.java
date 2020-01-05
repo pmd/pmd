@@ -27,6 +27,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
@@ -116,7 +117,7 @@ public final class Benchmarker {
                 System.out.println("Checking directory " + srcDir);
             }
             Set<RuleDuration> results = new TreeSet<>();
-            RuleSetFactory factory = new RuleSetFactory();
+            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
             if (StringUtils.isNotBlank(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
             } else {
@@ -174,7 +175,7 @@ public final class Benchmarker {
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
             Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         for (Rule rule: ruleSet.getRules()) {
             if (debug) {
                 System.out.println("Starting " + rule.getName());

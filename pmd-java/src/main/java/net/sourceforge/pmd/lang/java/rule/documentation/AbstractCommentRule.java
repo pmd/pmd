@@ -19,11 +19,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.CommentUtil;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocElement;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
@@ -66,17 +68,16 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
         SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
         FormalComment lastComment = null;
-        AccessNode lastNode = null;
+        JavaNode lastNode = null;
 
         for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
             Node value = entry.getValue();
-
-            if (value instanceof AccessNode) {
-                AccessNode node = (AccessNode) value;
+            if (value instanceof AccessNode || value instanceof ASTPackageDeclaration) {
+                JavaNode node = (JavaNode) value;
 
                 // maybe the last comment is within the last node
-                if (lastComment != null && isCommentNotWithin(lastComment, lastNode, node)
-                        && isCommentBefore(lastComment, node)) {
+                if (lastComment != null && isCommentNotWithin(lastComment, lastNode, value)
+                        && isCommentBefore(lastComment, value)) {
                     InternalApiBridge.setComment(node, lastComment);
                     lastComment = null;
                 }
@@ -109,6 +110,8 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
         SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<>();
+
+        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTPackageDeclaration.class, true));
 
         addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true));
 

@@ -35,12 +35,6 @@ public class ASTYieldStatement extends AbstractStatement {
         visitor.visit(this, data);
     }
 
-    /** Returns the yielded expression. */
-    public ASTExpression getExpr() {
-        return (ASTExpression) getFirstChild();
-    }
-
-
     @Override
     public String getImage() {
         String result = super.getImage();
@@ -49,4 +43,11 @@ public class ASTYieldStatement extends AbstractStatement {
         }
         return result;
     }
+
+
+    /** Returns the yielded expression. */
+    public ASTExpression getExpr() {
+        return (ASTExpression) jjtGetChild(0);
+    }
+
 }

@@ -60,22 +60,31 @@ public class RuleSetFactory {
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
 
+    /**
+     * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
+     */
+    @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory() {
         this(new ResourceLoader(), RulePriority.LOW, false, true);
     }
 
     /**
-     * @deprecated Use {@link #RuleSetFactory(ResourceLoader, RulePriority, boolean, boolean)} with
-     * {@link ResourceLoader} instead of a {@link ClassLoader}.
+     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
+     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
      */
     @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility) {
+                          final boolean warnDeprecated, final boolean enableCompatibility) {
         this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
+    /**
+     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
+     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
+     */
+    @Deprecated // to be hidden with PMD 7.0.0.
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility) {
+                          final boolean warnDeprecated, final boolean enableCompatibility) {
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
@@ -374,6 +383,8 @@ public class RuleSetFactory {
                 ruleSetBuilder.withName("Missing RuleSet Name");
             }
 
+            Set<String> rulesetReferences = new HashSet<>();
+
             NodeList nodeList = ruleSetElement.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
@@ -395,7 +406,7 @@ public class RuleSetFactory {
                         }
                         ruleSetBuilder.withFileExclusions(pattern);
                     } else if ("rule".equals(nodeName)) {
-                        parseRuleNode(ruleSetReferenceId, ruleSetBuilder, node, withDeprecatedRuleReferences);
+                        parseRuleNode(ruleSetReferenceId, ruleSetBuilder, node, withDeprecatedRuleReferences, rulesetReferences);
                     } else {
                         throw new IllegalArgumentException(UNEXPECTED_ELEMENT + node.getNodeName()
                                 + "> encountered as child of <ruleset> element.");
@@ -481,14 +492,15 @@ public class RuleSetFactory {
      * @param withDeprecatedRuleReferences
      *            whether rule references that are deprecated should be ignored
      *            or not
+     * @param rulesetReferences keeps track of already processed complete ruleset references in order to log a warning
      */
     private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder, Node ruleNode,
-            boolean withDeprecatedRuleReferences)
+            boolean withDeprecatedRuleReferences, Set<String> rulesetReferences)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException, RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
-            parseRuleSetReferenceNode(ruleSetBuilder, ruleElement, ref);
+            parseRuleSetReferenceNode(ruleSetBuilder, ruleElement, ref, rulesetReferences);
         } else if (StringUtils.isBlank(ref)) {
             parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode);
         } else {
@@ -508,8 +520,9 @@ public class RuleSetFactory {
      *            Must be a rule element node.
      * @param ref
      *            The RuleSet reference.
+     * @param rulesetReferences keeps track of already processed complete ruleset references in order to log a warning
      */
-    private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder, Element ruleElement, String ref)
+    private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder, Element ruleElement, String ref, Set<String> rulesetReferences)
             throws RuleSetNotFoundException {
         String priority = null;
         NodeList childNodes = ruleElement.getChildNodes();
@@ -571,6 +584,12 @@ public class RuleSetFactory {
                     + "; perhaps the rule name is mispelled or the rule doesn't exist anymore?");
             }
         }
+
+        if (rulesetReferences.contains(ref)) {
+            LOG.warning("The ruleset " + ref + " is referenced multiple times in \""
+                    + ruleSetBuilder.getName() + "\".");
+        }
+        rulesetReferences.add(ref);
     }
 
     /**
@@ -694,6 +713,19 @@ public class RuleSetFactory {
         }
 
         if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
+            Rule existingRule = ruleSetBuilder.getExistingRule(ruleReference);
+            if (existingRule instanceof RuleReference) {
+                RuleReference existingRuleReference = (RuleReference) existingRule;
+                // the only valid use case is: the existing rule does not override anything yet
+                // which means, it is a plain reference. And the new reference overrides.
+                // for all other cases, we should log a warning
+                if (existingRuleReference.hasOverriddenAttributes() || !ruleReference.hasOverriddenAttributes()) {
+                    LOG.warning("The rule " + ruleReference.getName() + " is referenced multiple times in \""
+                            + ruleSetBuilder.getName() + "\". "
+                            + "Only the last rule configuration is used.");
+                }
+            }
+
             ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
         }
     }

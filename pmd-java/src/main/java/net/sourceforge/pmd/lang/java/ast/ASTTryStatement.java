@@ -66,11 +66,13 @@ public final class ASTTryStatement extends AbstractStatement {
         return list == null ? Collections.emptyList() : IteratorUtil.toList(list.iterator());
     }
 
-    /** Returns the body of the statement. */
+
+    /**
+     * Returns the body of this try statement.
+     */
     public ASTBlock getBody() {
         return (ASTBlock) jjtGetChild(1);
     }
-
 
     /**
      * Returns the catch statement nodes of this try statement.
@@ -82,13 +84,12 @@ public final class ASTTryStatement extends AbstractStatement {
 
 
     /**
-     * Returns the {@code finally} statement of this try statement, if any.
+     * Returns the {@code finally} clause of this try statement, if any.
      *
      * @return The finally statement, or null if there is none
      */
-    @Nullable
-    public ASTFinallyClause getFinally() {
-        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTFinallyClause.class);
+    public ASTFinallyClause getFinallyClause() {
+        return getFirstChildOfType(ASTFinallyClause.class);
     }
 
 }

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ThreadSafeReportListener;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -51,9 +52,9 @@ public class MultiThreadProcessorTest {
         ctx.getReport().addListener(reportListener);
 
         processor = new MultiThreadProcessor(configuration);
-        ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
     }
-    
+
     @Test
     public void testRulesDysnfunctionalLog() throws IOException {
         setUpForTest("rulesets/MultiThreadProcessorTest/dysfunctional.xml");

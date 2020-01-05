@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -362,9 +363,10 @@ public class CloseResourceRule extends AbstractJavaRule {
                 }
             }
 
-            if (t.getBeginLine() > id.getBeginLine() && t.getFinally() != null) {
-                ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
-                List<ASTName> names = f.findDescendantsOfType(ASTName.class);
+            ASTFinallyClause finallyClause = t.getFinallyClause();
+            if (t.getBeginLine() > id.getBeginLine() && finallyClause != null) {
+                ASTBlock finallyBody = finallyClause.getBody();
+                List<ASTName> names = finallyBody.findDescendantsOfType(ASTName.class);
                 for (ASTName oName : names) {
                     String name = oName.getImage();
                     if (name != null && name.contains(".")) {
@@ -373,7 +375,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                             String methodName = parts[1];
                             String varName = parts[0];
                             if (varName.equals(variableToClose) && closeTargets.contains(methodName)
-                                    && nullCheckIfCondition(f, oName, varName)) {
+                                    && nullCheckIfCondition(finallyBody, oName, varName)) {
                                 closed = true;
                                 break;
                             }
@@ -386,7 +388,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 }
 
                 List<ASTStatementExpression> exprs = new ArrayList<>();
-                f.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
+                finallyBody.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
                 for (ASTStatementExpression stmt : exprs) {
                     ASTPrimaryExpression expr = stmt.getFirstChildOfType(ASTPrimaryExpression.class);
                     if (expr != null) {

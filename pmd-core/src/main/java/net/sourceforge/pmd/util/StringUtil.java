@@ -53,10 +53,8 @@ public final class StringUtil {
      * Return whether the non-null text arg starts with any of the prefix
      * values.
      *
-     * @param text
-     * @param prefixes
-     *
      * @return boolean
+     *
      * @deprecated {@link StringUtils#startsWithAny(CharSequence, CharSequence...)}
      */
     @Deprecated
@@ -74,9 +72,6 @@ public final class StringUtil {
 
     /**
      * Returns whether the non-null text arg matches any of the test values.
-     *
-     * @param text
-     * @param tests
      *
      * @return boolean
      */
@@ -96,9 +91,6 @@ public final class StringUtil {
      * Checks for the existence of any of the listed prefixes on the non-null
      * text and removes them.
      *
-     * @param text
-     * @param prefixes
-     *
      * @return String
      */
     public static String withoutPrefixes(String text, String... prefixes) {
@@ -117,6 +109,7 @@ public final class StringUtil {
      * @param value String
      *
      * @return boolean
+     *
      * @deprecated {@link StringUtils#isNotBlank(CharSequence)}
      */
     @Deprecated
@@ -133,6 +126,7 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
+     *
      * @deprecated {@link StringUtils#isBlank(CharSequence)}
      */
     @Deprecated
@@ -147,6 +141,7 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return True if the argument is null or the empty string
+     *
      * @deprecated {@link StringUtils#isEmpty(CharSequence)}
      */
     @Deprecated
@@ -158,9 +153,6 @@ public final class StringUtil {
     /**
      * Returns true if both strings are effectively null or whitespace, returns
      * false otherwise if they have actual text that differs.
-     *
-     * @param a
-     * @param b
      *
      * @return boolean
      */
@@ -184,6 +176,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     *
      * @deprecated {@link StringUtils#replace(String, String, String)}
      */
     @Deprecated
@@ -207,11 +200,8 @@ public final class StringUtil {
     }
 
     /**
-     * @param buf
-     * @param src
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
-     *
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
@@ -249,8 +239,6 @@ public final class StringUtil {
     /**
      * Replace some whitespace characters so they are visually apparent.
      *
-     * @param o
-     *
      * @return String
      */
     public static String escapeWhitespace(Object o) {
@@ -271,6 +259,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     *
      * @deprecated {@link StringUtils#replace(String, String, String)} or {@link StringUtils#replaceChars(String, char, char)}
      */
     @Deprecated
@@ -304,6 +293,7 @@ public final class StringUtil {
      * @param delimiter char
      *
      * @return String[]
+     *
      * @deprecated {@link StringUtils#split(String, char)}
      */
     @Deprecated
@@ -352,6 +342,7 @@ public final class StringUtil {
      * @param separator char
      *
      * @return String[]
+     *
      * @deprecated {@link StringUtils#split(String, String)}
      */
     @Deprecated
@@ -386,6 +377,7 @@ public final class StringUtil {
      * @param sb        StringBuffer
      * @param iter      Iterator
      * @param separator String
+     *
      * @deprecated {@link StringUtils#join(Iterator, String)}
      */
     @Deprecated
@@ -411,6 +403,7 @@ public final class StringUtil {
      * @param sb        StringBuilder
      * @param items     Object[]
      * @param separator String
+     *
      * @deprecated {@link StringUtils#join(Iterable, String)}
      */
     @Deprecated
@@ -497,9 +490,6 @@ public final class StringUtil {
      * Trims off the leading characters off the strings up to the trimDepth
      * specified. Returns the same strings if trimDepth = 0
      *
-     * @param strings
-     * @param trimDepth
-     *
      * @return String[]
      */
     public static String[] trimStartOn(String[] strings, int trimDepth) {
@@ -523,6 +513,7 @@ public final class StringUtil {
      * @param length The desired minimum length of the resulting padded String
      *
      * @return The resulting left padded String
+     *
      * @deprecated {@link StringUtils#leftPad(String, int)}
      */
     @Deprecated

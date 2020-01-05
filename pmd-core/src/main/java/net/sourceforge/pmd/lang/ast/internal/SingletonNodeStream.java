@@ -92,13 +92,13 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
 
     @Override
     public NodeStream<T> drop(int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
         return n == 0 ? this : NodeStream.empty();
     }
 
     @Override
     public NodeStream<T> take(int maxSize) {
-        AssertionUtil.assertArgNonNegative(maxSize);
+        AssertionUtil.requireNonNegative("maxSize", maxSize);
         return maxSize >= 1 ? this : NodeStream.empty();
     }
 

@@ -35,10 +35,11 @@ public final class ASTFinallyClause extends AbstractJavaNode {
         visitor.visit(this, data);
     }
 
+
     /**
-     * Returns the block.
+     * Returns the body of this finally clause.
      */
-    public ASTBlock getBlock() {
+    public ASTBlock getBody() {
         return (ASTBlock) jjtGetChild(0);
     }
 }

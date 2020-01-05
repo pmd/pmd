@@ -201,7 +201,7 @@ public final class IteratorUtil {
 
     /** Advance {@code n} times. */
     public static void advance(Iterator<?> iterator, int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
 
         while (n > 0 && iterator.hasNext()) {
             iterator.next();
@@ -211,7 +211,7 @@ public final class IteratorUtil {
 
     /** Limit the number of elements yielded by this iterator to the given number. */
     public static <T> Iterator<T> take(Iterator<T> iterator, final int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
         if (n == 0) {
             return Collections.emptyIterator();
         }
@@ -233,7 +233,7 @@ public final class IteratorUtil {
 
     /** Produce an iterator whose first element is the nth element of the given source. */
     public static <T> Iterator<T> drop(Iterator<T> source, final int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
         if (n == 0) {
             return source;
         }
