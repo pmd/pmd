@@ -1373,6 +1373,7 @@ the name was misleading. (File) header comments are not checked, but class comme
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2006">#2006</a>: [core] PMD should warn about multiple instances of the same rule in a ruleset</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2161">#2161</a>: [core] ResourceLoader is deprecated and marked as internal but is exposed</li>
       <li><a href="https://github.com/pmd/pmd/issues/2170">#2170</a>: [core] DocumentFile doesn’t preserve newlines</li>
     </ul>
   </li>
@@ -1401,6 +1402,12 @@ the name was misleading. (File) header comments are not checked, but class comme
       <li><a href="https://github.com/pmd/pmd/issues/2141">#2141</a>: [java] StringInstatiation: False negative with String-array access</li>
     </ul>
   </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2008">#2008</a>: [plsql] In StringLiteral using alternative quoting mechanism single quotes cause parsing errors</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2009">#2009</a>: [plsql] Multiple DDL commands are skipped during parsing</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
@@ -1419,9 +1426,15 @@ You can identify them with the <code class="highlighter-rouge">@InternalApi</cod
   <li>Implementations of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/rule/RuleViolationFactory.html#"><code class="highlighter-rouge">RuleViolationFactory</code></a> in each
 language module, eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolationFactory.html#"><code class="highlighter-rouge">JavaRuleViolationFactory</code></a>.
 See javadoc of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/rule/RuleViolationFactory.html#"><code class="highlighter-rouge">RuleViolationFactory</code></a>.</li>
-  <li>Implementations of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleViolation.html#"><code class="highlighter-rouge">RuleViolation</code></a> in each language module,
+  <li>
+    <p>Implementations of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleViolation.html#"><code class="highlighter-rouge">RuleViolation</code></a> in each language module,
 eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolation.html#"><code class="highlighter-rouge">JavaRuleViolation</code></a>. See javadoc of
-<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleViolation.html#"><code class="highlighter-rouge">RuleViolation</code></a>.</li>
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleViolation.html#"><code class="highlighter-rouge">RuleViolation</code></a>.</p>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/rules/RuleFactory.html#"><code class="highlighter-rouge">RuleFactory</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/rules/RuleBuilder.html#"><code class="highlighter-rouge">RuleBuilder</code></a></li>
+  <li>Constructors of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleSetFactory.html#"><code class="highlighter-rouge">RuleSetFactory</code></a>, use factory methods from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#"><code class="highlighter-rouge">RulesetsFactoryUtils</code></a> instead</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRulesetFactory(net.sourceforge.pmd.PMDConfiguration,net.sourceforge.pmd.util.ResourceLoader)"><code class="highlighter-rouge">getRulesetFactory</code></a></li>
 </ul>
 
 <h5 id="for-removal">For removal</h5>
@@ -1452,6 +1465,12 @@ eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sour
 instead. This affects <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code class="highlighter-rouge">ASTAnnotationTypeDeclaration#getImage</code></a>,
 <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code class="highlighter-rouge">ASTClassOrInterfaceDeclaration#getImage</code></a>, and
 <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code class="highlighter-rouge">ASTEnumDeclaration#getImage</code></a>.</li>
+  <li>Several methods of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code class="highlighter-rouge">ASTTryStatement</code></a>, replacements with other names
+have been added. This includes the XPath attribute <code class="highlighter-rouge">@Finally</code>, replace it with a test for <code class="highlighter-rouge">child::FinallyStatement</code>.</li>
+  <li>Several methods named <code class="highlighter-rouge">getGuardExpressionNode</code> are replaced with <code class="highlighter-rouge">getCondition</code>. This affects the
+following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code class="highlighter-rouge">ASTYieldStatement</code></a> will not implement <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code class="highlighter-rouge">TypeNode</code></a>
+anymore come 7.0.0. Test the type of the expression nested within it.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
