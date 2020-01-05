@@ -108,7 +108,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     }
 
     protected boolean isHexCharacter(char c) {
-        return isLatinDigit(c) || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
+        return isLatinDigit(c) || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
     }
 
     protected boolean isIPv4(final char firstChar, final String s) {
