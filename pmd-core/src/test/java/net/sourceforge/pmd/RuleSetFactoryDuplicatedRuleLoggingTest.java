@@ -75,7 +75,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
     }
 
     private RuleSet loadRuleSet(String ruleSetFilename) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
         return rsf.createRuleSet("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest/" + ruleSetFilename);
     }
 }

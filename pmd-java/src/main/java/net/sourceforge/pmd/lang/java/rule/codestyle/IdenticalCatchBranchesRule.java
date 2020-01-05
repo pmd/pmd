@@ -88,7 +88,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTTryStatement node, Object data) {
 
-        List<ASTCatchStatement> catchStatements = node.getCatchStatements();
+        List<ASTCatchStatement> catchStatements = node.getCatchClauses();
         Set<List<ASTCatchStatement>> equivClasses = equivalenceClasses(catchStatements);
 
         for (List<ASTCatchStatement> identicalStmts : equivClasses) {

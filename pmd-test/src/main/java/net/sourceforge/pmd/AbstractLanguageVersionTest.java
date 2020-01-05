@@ -141,7 +141,7 @@ public class AbstractLanguageVersionTest {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         if (rulesetFilenames.trim().isEmpty()) {
             return;

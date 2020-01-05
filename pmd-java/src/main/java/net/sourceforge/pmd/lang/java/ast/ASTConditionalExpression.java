@@ -62,8 +62,19 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
     /**
      * Returns the node that represents the guard of this conditional.
      * That is the expression before the '?'.
+     *
+     * @deprecated Use {@link #getCondition()}
      */
+    @Deprecated
     public Node getGuardExpressionNode() {
+        return jjtGetChild(0);
+    }
+
+    /**
+     * Returns the node that represents the guard of this conditional.
+     * That is the expression before the '?'.
+     */
+    public Node getCondition() {
         return jjtGetChild(0);
     }
 

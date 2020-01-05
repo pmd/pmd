@@ -60,22 +60,31 @@ public class RuleSetFactory {
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
 
+    /**
+     * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
+     */
+    @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory() {
         this(new ResourceLoader(), RulePriority.LOW, false, true);
     }
 
     /**
-     * @deprecated Use {@link #RuleSetFactory(ResourceLoader, RulePriority, boolean, boolean)} with
-     * {@link ResourceLoader} instead of a {@link ClassLoader}.
+     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
+     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
      */
     @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility) {
+                          final boolean warnDeprecated, final boolean enableCompatibility) {
         this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
+    /**
+     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
+     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
+     */
+    @Deprecated // to be hidden with PMD 7.0.0.
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility) {
+                          final boolean warnDeprecated, final boolean enableCompatibility) {
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;

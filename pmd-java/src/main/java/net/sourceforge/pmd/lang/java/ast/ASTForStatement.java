@@ -52,8 +52,23 @@ public class ASTForStatement extends AbstractJavaNode {
      *
      * <p>If this node represents a foreach loop, or if there is
      * no specified guard, then returns null.
+     *
+     * @deprecated Use {@link #getCondition()}
      */
+    @Deprecated
     public ASTExpression getGuardExpressionNode() {
+        return getCondition();
+    }
+
+
+    /**
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
+     *
+     * <p>If this node represents a foreach loop, or if there is
+     * no specified guard, then returns null.
+     */
+    public ASTExpression getCondition() {
         if (isForeach()) {
             return null;
         }

@@ -60,7 +60,7 @@ public class RuleSetTest {
     public void testNoDFA() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
         assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
 
@@ -69,7 +69,7 @@ public class RuleSetTest {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
         mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         mock.setDfa(true);
-        RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
         assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
     }
 
@@ -88,21 +88,21 @@ public class RuleSetTest {
     @Test
     public void testGetRuleByName() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
     @Test
     public void testGetRuleByName2() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(mock);
+        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
         assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
     }
 
     @Test
     public void testRuleList() {
         MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet ruleset = new RuleSetFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleset = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
 
         assertEquals("Size of RuleSet isn't one.", 1, ruleset.size());
 

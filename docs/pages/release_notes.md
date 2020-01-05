@@ -49,6 +49,7 @@ the implementation based on your feedback.
 
 *   core
     *   [#2006](https://github.com/pmd/pmd/issues/2006): \[core] PMD should warn about multiple instances of the same rule in a ruleset
+    *   [#2161](https://github.com/pmd/pmd/issues/2161): \[core] ResourceLoader is deprecated and marked as internal but is exposed
     *   [#2170](https://github.com/pmd/pmd/issues/2170): \[core] DocumentFile doesn't preserve newlines
 *   java-bestpractices
     *   [#2149](https://github.com/pmd/pmd/issues/2149): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
@@ -60,6 +61,9 @@ the implementation based on your feedback.
     *   [#2140](https://github.com/pmd/pmd/issues/2140): \[java] AvoidLiteralsInIfCondition: false negative for expressions
 *   java-performance
     *   [#2141](https://github.com/pmd/pmd/issues/2141): \[java] StringInstatiation: False negative with String-array access
+*   plsql
+    *   [#2008](https://github.com/pmd/pmd/issues/2008): \[plsql] In StringLiteral using alternative quoting mechanism single quotes cause parsing errors
+    *   [#2009](https://github.com/pmd/pmd/issues/2009): \[plsql] Multiple DDL commands are skipped during parsing
 
 ### API Changes
 
@@ -80,6 +84,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * Implementations of {% jdoc core::RuleViolation %} in each language module,
   eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
   {% jdoc core::RuleViolation %}.
+
+* {% jdoc core::rules.RuleFactory %}
+* {% jdoc core::rules.RuleBuilder %}
+* Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
+* {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
 
 ##### For removal
 
@@ -102,7 +111,12 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
   instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
   {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
-
+* Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
+  have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+* Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
+  following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
+* {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
+  anymore come 7.0.0. Test the type of the expression nested within it.
 
 ### External Contributions
 
@@ -110,6 +124,8 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2051](https://github.com/pmd/pmd/pull/2051): \[doc] Update the docs on adding a new language - [Anatoly Trosinenko](https://github.com/atrosinenko)
 *   [#2069](https://github.com/pmd/pmd/pull/2069): \[java] CommentRequired: make property names consistent - [snuyanzin](https://github.com/snuyanzin)
 *   [#2169](https://github.com/pmd/pmd/pull/2169): \[modelica] Follow-up fixes for Modelica language module - [Anatoly Trosinenko](https://github.com/atrosinenko)
+*   [#2193](https://github.com/pmd/pmd/pull/2193): \[core] Fix odd logic in test runner - [Egor Bredikhin](https://github.com/Egor18)
+*   [#2194](https://github.com/pmd/pmd/pull/2194): \[java] Fix odd logic in AvoidUsingHardCodedIPRule - [Egor Bredikhin](https://github.com/Egor18)
 
 {% endtocmaker %}
 

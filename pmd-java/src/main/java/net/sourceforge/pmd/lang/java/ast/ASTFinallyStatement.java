@@ -30,4 +30,12 @@ public class ASTFinallyStatement extends AbstractJavaNode {
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
+
+
+    /**
+     * Returns the body of this finally clause.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) jjtGetChild(0);
+    }
 }
