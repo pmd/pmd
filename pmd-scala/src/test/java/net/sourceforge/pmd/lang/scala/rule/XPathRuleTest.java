@@ -19,9 +19,9 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
@@ -57,7 +57,7 @@ public class XPathRuleTest extends RuleTst {
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File("test.scala"));
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
+        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;
     }

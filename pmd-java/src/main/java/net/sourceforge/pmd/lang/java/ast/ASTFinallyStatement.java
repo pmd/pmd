@@ -24,4 +24,12 @@ public class ASTFinallyStatement extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    /**
+     * Returns the body of this finally clause.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) jjtGetChild(0);
+    }
 }
