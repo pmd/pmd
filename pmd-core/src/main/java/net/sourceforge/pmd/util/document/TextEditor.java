@@ -33,6 +33,7 @@ public interface TextEditor extends AutoCloseable {
      * Replace a region with some new text.
      *
      * @throws IllegalStateException          If this editor has been closed
+     * @throws InvalidRegionException         If the region is invalid in this document
      * @throws OverlappingOperationsException If the region overlaps other regions
      *                                        that have been modified by this editor
      */
@@ -43,6 +44,8 @@ public interface TextEditor extends AutoCloseable {
      * Insert some text in the document.
      *
      * @throws IllegalStateException          If this editor has been closed
+     * @throws InvalidRegionException         If the offset is invalid (should be between 0
+     *                                        and {@link TextDocument#getLength() length}, inclusive)
      * @throws OverlappingOperationsException If the offset is contained in some region
      *                                        that has been modified by this editor
      */
@@ -53,6 +56,7 @@ public interface TextEditor extends AutoCloseable {
      * Delete a region in the document.
      *
      * @throws IllegalStateException          If this editor has been closed
+     * @throws InvalidRegionException         If the region is invalid in this document
      * @throws OverlappingOperationsException If the region overlaps other regions
      *                                        that have been modified by this editor
      */
@@ -86,8 +90,8 @@ public interface TextEditor extends AutoCloseable {
      * Signals that an operation of a {@link TextEditor} modifies a text
      * region that has already been modified. This means, that the text
      * region doesn't identify the same text in the original document and
-     * the document being edited.
-     * The text may have been changed, or even deleted.
+     * the document being edited. The text may have been changed, or even
+     * deleted.
      */
     class OverlappingOperationsException extends IllegalArgumentException {
 

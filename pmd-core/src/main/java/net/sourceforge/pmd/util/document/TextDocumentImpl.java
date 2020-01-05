@@ -7,16 +7,15 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
 import net.sourceforge.pmd.util.document.io.TextFile;
-import net.sourceforge.pmd.internal.util.BaseCloseable;
 
 
 final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
-    private static final String OUT_OF_BOUNDS_WITH_OFFSET =
+    private static final String OFFSETS_OUT_OF_BOUNDS =
         "Region [%d, +%d] is not in range of this document (length %d)";
 
     private final TextFile backend;
@@ -94,23 +93,18 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     @Override
     public TextRegion createRegion(int startOffset, int length) {
-        AssertionUtil.requireNonNegative("Start offset", startOffset);
-        AssertionUtil.requireNonNegative("Region length", length);
-
         checkInRange(startOffset, length);
         return TextRegionImpl.fromOffsetLength(startOffset, length);
     }
 
-    private void checkInRange(int startOffset, int length) {
-        if (startOffset < 0 || startOffset + length > getLength()) {
-            throw new IndexOutOfBoundsException(
-                String.format(
-                    OUT_OF_BOUNDS_WITH_OFFSET,
-                    startOffset,
-                    length,
-                    getLength()
-                )
-            );
+
+    void checkInRange(int startOffset, int length) {
+        if (startOffset < 0) {
+            throw InvalidRegionException.negativeQuantity("Start offset", startOffset);
+        } else if (length < 0) {
+            throw InvalidRegionException.negativeQuantity("Region length", length);
+        } else if (startOffset + length > getLength()) {
+            throw InvalidRegionException.regionOutOfBounds(startOffset, startOffset + length, getLength());
         }
     }
 

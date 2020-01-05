@@ -63,7 +63,7 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
 
     @Override
     public void insert(int offset, String textToInsert) {
-        replace(document.createRegion(offset, 0), textToInsert);
+        replace(TextRegionImpl.fromOffsetLength(offset, 0), textToInsert);
     }
 
     @Override
@@ -74,6 +74,7 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
     @Override
     public void replace(final TextRegion region, final String textToReplace) {
         ensureOpen();
+        document.checkInRange(region.getStartOffset(), region.getLength());
 
         for (TextRegion changedRegion : affectedRegions) {
             if (changedRegion.overlaps(region)

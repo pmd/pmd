@@ -57,7 +57,8 @@ public interface TextDocument extends Closeable {
      * @param startOffset 0-based, inclusive offset for the start of the region
      * @param length      Length of the region in characters.
      *
-     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
+     * @throws InvalidRegionException If the arguments do not identify
+     *                                a valid region in this document
      */
     TextRegion createRegion(int startOffset, int length);
 
@@ -68,7 +69,7 @@ public interface TextDocument extends Closeable {
      *
      * @return A new region with line information
      *
-     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
+     * @throws InvalidRegionException If the argument is not a valid region in this document
      */
     RegionWithLines addLineInfo(TextRegion region);
 

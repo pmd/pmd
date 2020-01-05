@@ -20,8 +20,8 @@ class TextRegionImpl implements TextRegion {
      * @throws IllegalArgumentException If the start offset or length are negative
      */
     private TextRegionImpl(int startOffset, int length) {
-        this.startOffset = AssertionUtil.requireNonNegative("Start offset", startOffset);
-        this.length = AssertionUtil.requireNonNegative("Region length", length);
+        this.startOffset = startOffset;
+        this.length = length;
     }
 
     @Override
