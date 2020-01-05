@@ -3425,54 +3425,10 @@ ASTLiteral Literal() :
 }
 
 ASTStringLiteral  StringLiteral() :
+{}
 {
-	Token thisToken = null;
-	StringBuilder literal = new StringBuilder() ;
-	char startDelimiter ;
-	char endDelimiter ;
-	String terminator = null;
-}
-{
-  //Essentially unchanged
- (
-  thisToken = <STRING_LITERAL>
-  {
-   literal.append(thisToken.image);
-   /*
-   This might be Q-Quoted string and this might be only a partial string
-   The token will only match up to the first single quote.
-   The code below appends any remaining part, theh returns the complete string
-   */
-   if (thisToken.image.toUpperCase().startsWith("Q'")
-       && thisToken.image.length() > 2
-      )
-   {
-   // Get the first token of the string so that the delimiter can be identified
-
-     startDelimiter= thisToken.image.charAt(2) ;
-     /*
-     if the start delimiter is one of [, {, <, or (, the end delimiter
-     is the corresponding closing character
-     */
-     switch (startDelimiter)
-     {
-      case '<' : endDelimiter = '>' ; break ;
-      case '{' : endDelimiter = '}' ;  break ;
-      case '(' : endDelimiter = ')' ;  break ;
-      case '[' : endDelimiter = ']' ;  break ;
-      default: endDelimiter = startDelimiter ;
-     }
-
-     terminator = new String(endDelimiter + "'");
-     if (!thisToken.image.endsWith(terminator))
-     {
-       //Loop until we find atoken that ends with a single-quote precede by the terminator
-       literal.append(ReadPastNextOccurrence(terminator));
-     }
-   }
-  }
- )
- { jjtThis.setImage(literal.toString()) ;  jjtThis.value = literal.toString() ; return jjtThis ; }
+  <STRING_LITERAL>
+ { jjtThis.setImage(token.image); return jjtThis ; }
 }
 
 
@@ -5109,26 +5065,9 @@ TOKEN :
 |
 < #INTEGER_LITERAL: ( <DIGIT> )+ >
 |
-
-< #_WHATEVER_CHARACTER_WO_ASTERISK: (~["'"]) >
+< #_WHATEVER_CHARACTER_WO_APOSTROPHE: (~["'"]) >
 |
-< CHARACTER_LITERAL: "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS>)? "'" >
-//|< STRING_LITERAL:
-//  (["q","Q"])* "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'"
-//> //Cope with Q-quoted stringswithout single quotes in them
-|< STRING_LITERAL:
-// Hard-code the most likely q-quote strings
-             "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'"
-|(["n","N"]) "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" //National Character Set String
-|(["q","Q"]) "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" // Bug 160632
-|(["q","Q"]) "'[" (~["[","]"])* "]'"
-|(["q","Q"]) "'{" (~["{","}"])* "}'"
-|(["q","Q"]) "'<" (~["<",">"])* ">'"
-|(["q","Q"]) "'(" (~["(",")"])* ")'"
-|(["q","Q"]) "'/" (~["/"])* "/'"
-|(["q","Q"]) "'!" (~["!"])* "!'"
-|(["q","Q"]) "'#" (~["#"])* "#'"
-> //Cope with Q-quoted stringswithout single quotes in them
+< CHARACTER_LITERAL: "'" (<_WHATEVER_CHARACTER_WO_APOSTROPHE> | <SPECIAL_CHARACTERS>)? "'" >
 |
 < #_WHATEVER_CHARACTER_WO_QUOTE: (~["\""]) >
 |
@@ -5146,6 +5085,41 @@ TOKEN :
 |
 <SQLPLUS_TERMINATOR: ( ";" | "/" ) >
 }
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Literals.html#GUID-1824CBAA-6E16-4921-B2A6-112FB02248DA
+ */
+<DEFAULT> MORE :
+{
+   < #_ALTERNATIVE_QUOTING_STRING_LITERAL:
+       (["q","Q"]) "'[" (~["]"] | "]" ~["'"] )* "]"
+     | (["q","Q"]) "'{" (~["}"] | "}" ~["'"] )* "}"
+     | (["q","Q"]) "'<" (~[">"] | ">" ~["'"] )* ">"
+     | (["q","Q"]) "'(" (~[")"] | ")" ~["'"] )* ")"
+   >
+ | <(["n","N"])? "'" (<_WHATEVER_CHARACTER_WO_APOSTROPHE> | <SPECIAL_CHARACTERS> | "''")*> : IN_STRING_LITERAL_TOKENIZE
+ | <(["n","N"])? <_ALTERNATIVE_QUOTING_STRING_LITERAL>> : IN_STRING_LITERAL_TOKENIZE
+
+ // special handling for custom quote delimiters
+ | <(["n","N"])? (["q","Q"]) "'" (~[" ", "\t", "\r", "\n", "[", "{", "<", "("])> : IN_STRING_LITERAL
+}
+<IN_STRING_LITERAL> MORE : {
+    <~["'"]>
+  | <"'"> {
+     int quoteDelimiter = image.charAt(2);
+     if (image.charAt(0) == 'n' || image.charAt(0) == 'N') {
+         quoteDelimiter = image.charAt(3);
+     }
+     int beforeQuote = image.charAt(image.length() - 2);
+     if (quoteDelimiter == beforeQuote) {
+         input_stream.backup(1);
+         image.setLength(image.length() - 1);
+         SwitchTo(IN_STRING_LITERAL_TOKENIZE);
+     }
+  }
+}
+<IN_STRING_LITERAL_TOKENIZE> TOKEN : { <STRING_LITERAL: "'"> : DEFAULT }
+
 
 /**
  * PL/SQL Reserved words
