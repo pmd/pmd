@@ -22,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 
 public final class GenerateRuleDocsCmd {
     private GenerateRuleDocsCmd() {
@@ -33,7 +34,7 @@ public final class GenerateRuleDocsCmd {
         Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
         System.out.println("Generating docs into " + output);
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         Iterator<RuleSet> registeredRuleSets = ruleSetFactory.getRegisteredRuleSets();
         List<String> additionalRulesets = findAdditionalRulesets(output);
 

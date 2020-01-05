@@ -44,6 +44,7 @@ the implementation based on your feedback.
 
 *   core
     *   [#2006](https://github.com/pmd/pmd/issues/2006): \[core] PMD should warn about multiple instances of the same rule in a ruleset
+    *   [#2161](https://github.com/pmd/pmd/issues/2161): \[core] ResourceLoader is deprecated and marked as internal but is exposed
     *   [#2170](https://github.com/pmd/pmd/issues/2170): \[core] DocumentFile doesn't preserve newlines
 *   java-bestpractices
     *   [#2149](https://github.com/pmd/pmd/issues/2149): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
@@ -75,6 +76,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * Implementations of {% jdoc core::RuleViolation %} in each language module,
   eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
   {% jdoc core::RuleViolation %}.
+
+* {% jdoc core::rules.RuleFactory %}
+* {% jdoc core::rules.RuleBuilder %}
+* Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
+* {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
 
 ##### For removal
 
