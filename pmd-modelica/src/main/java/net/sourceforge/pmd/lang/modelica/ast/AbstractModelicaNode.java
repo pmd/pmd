@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.java.ast.impl.javacc.AbstractJjtreeNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
 
 /**
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  *
  * @see ModelicaNode for public API.
  */
-abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode, Token> implements ModelicaNode {
+abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> implements ModelicaNode {
     private ModelicaParser parser;
     private ModelicaScope ownScope;
 

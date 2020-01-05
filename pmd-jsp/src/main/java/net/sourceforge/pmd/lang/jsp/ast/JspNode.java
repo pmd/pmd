@@ -5,9 +5,8 @@
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.TokenBasedNode;
 
-public interface JspNode extends Node, TokenBasedNode<Token> {
+public interface JspNode extends Node {
 
     /**
      * Accept the visitor. *

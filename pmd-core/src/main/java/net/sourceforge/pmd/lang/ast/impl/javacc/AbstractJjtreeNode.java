@@ -2,13 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast.impl.javacc;
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.TokenBasedNode;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -19,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.TokenBasedNode;
  * unforeseeable ways. Don't use it directly, use the node interfaces.
  */
 @Experimental
-public abstract class AbstractJjtreeNode<N extends Node, T extends GenericToken> extends AbstractNode implements TokenBasedNode<T> {
+public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode {
 
     public AbstractJjtreeNode(int id) {
         super(id);
@@ -29,18 +27,6 @@ public abstract class AbstractJjtreeNode<N extends Node, T extends GenericToken>
         super(id, theBeginLine, theEndLine, theBeginColumn, theEndColumn);
     }
 
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T getFirstToken() {
-        return (T) super.jjtGetFirstToken();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T getLastToken() {
-        return (T) super.jjtGetLastToken();
-    }
 
     @Override
     public N getChild(int index) {

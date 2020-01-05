@@ -530,7 +530,7 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * @deprecated Not all nodes have access to their tokens, use the interface {@link TokenBasedNode} instead
+     * @deprecated Not all nodes are based on tokens, and this is an implementation detail
      */
     @Deprecated
     public GenericToken jjtGetFirstToken() {
@@ -546,7 +546,7 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * @deprecated Not all nodes have access to their tokens, use the interface {@link TokenBasedNode} instead
+     * @deprecated Not all nodes are based on tokens, and this is an implementation detail
      */
     @Deprecated
     public GenericToken jjtGetLastToken() {

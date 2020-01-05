@@ -5,9 +5,8 @@
 package net.sourceforge.pmd.lang.vm.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.TokenBasedNode;
 
-public interface VmNode extends Node, TokenBasedNode<Token> {
+public interface VmNode extends Node {
     /**
      * Accept the visitor. *
      */

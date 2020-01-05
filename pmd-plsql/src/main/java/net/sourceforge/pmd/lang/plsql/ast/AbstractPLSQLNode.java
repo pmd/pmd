@@ -7,10 +7,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.java.ast.impl.javacc.AbstractJjtreeNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode, Token> implements PLSQLNode {
+public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> implements PLSQLNode {
     protected Object value;
     protected PLSQLParser parser;
     protected Scope scope;
