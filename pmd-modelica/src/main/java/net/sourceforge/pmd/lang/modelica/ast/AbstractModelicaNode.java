@@ -115,7 +115,7 @@ abstract class AbstractModelicaNode extends AbstractNode implements Node, Modeli
     @Override
     public void jjtSetLastToken(GenericToken token) {
         // don't let jjtree override tokens we've chosen
-        if (lastToken != null) {
+        if (lastToken == null) {
             super.jjtSetLastToken(token);
         }
     }
