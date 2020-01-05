@@ -21,7 +21,7 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
 
     private final TextDocumentImpl document;
 
-    private final IoBuffer out;
+    private final EditorBuffer out;
 
     private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
     private List<TextRegion> affectedRegions = new ArrayList<>();
@@ -29,7 +29,7 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
 
     /** @throws ReadOnlyFileException If the backend is read-only */
     TextEditorImpl(final TextDocumentImpl document, final TextFile backend, EditorCommitHandler handler) throws IOException {
-        this.out = new IoBuffer(document.getText(), document.getCurStamp(), backend, handler);
+        this.out = new EditorBuffer(document.getText(), document.getCurStamp(), backend, handler);
         this.document = document;
     }
 

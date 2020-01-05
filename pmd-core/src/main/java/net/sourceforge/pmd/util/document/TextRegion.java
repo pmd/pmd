@@ -14,8 +14,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * for a description of valid regions in a document. Empty regions may
  * be thought of as caret positions in an IDE. An empty region at offset
  * {@code n} does not contain the character at offset {@code n} in the
- * document, but if it were a caret, typing text would insert it at offset
- * {@code n} in the document.
+ * document, but if it were a caret, typing a character {@code c} would
+ * make {@code c} the character at offset {@code n} in the document.
  *
  * <p>Line and column information may be added by {@link TextDocument#addLineInfo(TextRegion)}.
  *
@@ -52,18 +52,30 @@ public interface TextRegion extends Comparable<TextRegion> {
      * Returns true if the region contains no characters. In that case
      * it can be viewed as a caret position, and e.g. used for text insertion.
      */
-    default boolean isEmpty() {
-        return getLength() == 0;
-    }
+    boolean isEmpty();
 
 
     /**
      * Returns true if this region contains the character at the given
      * offset. Note that a region with length zero does not even contain
-     * its start offset.
+     * the character at its start offset.
+     *
+     * @param offset Offset of a character
      */
     default boolean containsChar(int offset) {
         return getStartOffset() <= offset && offset < getEndOffset();
+    }
+
+
+    /**
+     * Returns true if this region contains the entirety of the other
+     * region. Any region contains itself.
+     *
+     * @param other Other region
+     */
+    default boolean contains(TextRegion other) {
+        return this.getStartOffset() <= other.getStartOffset()
+            && other.getEndOffset() <= this.getEndOffset();
     }
 
 
@@ -80,14 +92,10 @@ public interface TextRegion extends Comparable<TextRegion> {
 
 
     /**
-     * Computes the intersection of this region with the other. It may
-     * have length zero. Returns null if the two regions are completely
-     * disjoint. For all regions {@code R}, {@code S}:
-     *
-     * <pre>
-     *  R intersect R == R
-     *  R intersect S == S intersect R
-     * </pre>
+     * Computes the intersection of this region with the other. This is the
+     * largest region that this region and the parameter both contain.
+     * It may have length zero, or not exist (if the regions are completely
+     * disjoint).
      *
      * @param other Other region
      *
@@ -101,6 +109,26 @@ public interface TextRegion extends Comparable<TextRegion> {
         return start <= end ? TextRegionImpl.fromBothOffsets(start, end)
                             : null;
 
+    }
+
+
+    /**
+     * Computes the union of this region with the other. This is the
+     * smallest region that contains both this region and the parameter.
+     *
+     * @param other Other region
+     *
+     * @return The union of both regions
+     */
+    default TextRegion union(TextRegion other) {
+        if (this == other) {
+            return this;
+        }
+
+        int start = Math.min(this.getStartOffset(), other.getStartOffset());
+        int end = Math.max(this.getEndOffset(), other.getEndOffset());
+
+        return TextRegionImpl.fromBothOffsets(start, end);
     }
 
 

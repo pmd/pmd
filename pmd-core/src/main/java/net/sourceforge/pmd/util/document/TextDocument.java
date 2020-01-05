@@ -46,6 +46,14 @@ public interface TextDocument extends Closeable {
      * <p>Those rules make the region starting at {@link #getLength()}
      * with length 0 a valid region (the caret position at the end of the document).
      *
+     * <p>For example, for a document of length 1 ({@code "c"}), there
+     * are only three valid regions:
+     * <pre>{@code
+     * [[c     : caret position at offset 0 (empty region)
+     *  [c[    : range containing the character
+     *   c[[   : caret position at offset 1 (empty region)
+     * }</pre>
+     *
      * @param startOffset 0-based, inclusive offset for the start of the region
      * @param length      Length of the region in characters.
      *

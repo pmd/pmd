@@ -40,6 +40,11 @@ class TextRegionImpl implements TextRegion {
     }
 
     @Override
+    public boolean isEmpty() {
+        return length == 0;
+    }
+
+    @Override
     public String toString() {
         return "Region(start=" + startOffset + ", len=" + length + ")";
     }

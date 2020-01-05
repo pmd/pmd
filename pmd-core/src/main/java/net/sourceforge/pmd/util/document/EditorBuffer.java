@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  * Helper that buffers operations of a {@link TextEditor} to delay IO
  * interaction.
  */
-class IoBuffer {
+class EditorBuffer {
 
     private final TextFile backend;
     private final long originalStamp;
@@ -25,7 +25,7 @@ class IoBuffer {
 
 
     /** @throws ReadOnlyFileException If the backend is read-only */
-    IoBuffer(CharSequence sequence, long stamp, final TextFile backend, EditorCommitHandler handler) {
+    EditorBuffer(CharSequence sequence, long stamp, final TextFile backend, EditorCommitHandler handler) {
         if (backend.isReadOnly()) {
             throw new ReadOnlyFileException(backend + " is readonly");
         }

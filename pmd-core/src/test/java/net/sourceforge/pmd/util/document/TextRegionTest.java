@@ -197,6 +197,36 @@ public class TextRegionTest {
         assertIsBefore(r1, r2);
     }
 
+
+    @Test
+    public void testUnion() {
+        // r1:  --[-[---
+        // r2:  -- -[---[
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 3);
+
+        TextRegion union = doUnion(r1, r2);
+
+        assertEquals(2, union.getStartOffset());
+        assertEquals(6, union.getEndOffset());
+        assertEquals(4, union.getLength());
+    }
+
+    @Test
+    public void testUnionDisjoint() {
+        // r1:  --[-[- ---
+        // r2:  -- ---[---[
+        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r2 = TextRegionImpl.fromOffsetLength(5, 3);
+
+        TextRegion union = doUnion(r1, r2);
+
+        assertEquals(2, union.getStartOffset());
+        assertEquals(8, union.getEndOffset());
+        assertEquals(6, union.getLength());
+    }
+
+
     public void assertIsBefore(TextRegion r1, TextRegion r2) {
         assertTrue("Region " + r1 + " should be before " + r2, r1.compareTo(r2) < 0);
         assertTrue("Region " + r2 + " should be after " + r1, r2.compareTo(r1) > 0);
@@ -218,6 +248,17 @@ public class TextRegionTest {
         assertEquals("Intersection of " + r1 + " and " + r2 + " must be symmetric", inter, symmetric);
 
         return inter;
+    }
+    private TextRegion doUnion(TextRegion r1, TextRegion r2) {
+        TextRegion union = r1.union(r2);
+
+        assertTrue("Union of " + r1 + " and " + r2 + " must contain first region", union.contains(r1));
+        assertTrue("Union of " + r1 + " and " + r2 + " must contain second region", union.contains(r2));
+
+        TextRegion symmetric = r2.union(r1);
+        assertEquals("Union of " + r1 + " and " + r2 + " must be symmetric", union, symmetric);
+
+        return union;
     }
 
     private void noIntersect(TextRegion r1, TextRegion r2) {
