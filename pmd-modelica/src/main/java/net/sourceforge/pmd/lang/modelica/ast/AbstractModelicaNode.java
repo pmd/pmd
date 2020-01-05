@@ -86,7 +86,7 @@ abstract class AbstractModelicaNode extends AbstractNode implements Node, Modeli
 
             Token next = parser.token.next;
 
-            Token implicit = new Token(IMPLICIT_TOKEN);
+            Token implicit = new Token(IMPLICIT_TOKEN, "");
             implicit.beginColumn = next.beginColumn;
             implicit.endColumn = next.beginColumn - 1; // because of inclusive columns..
             implicit.beginLine = next.beginLine;
