@@ -69,7 +69,7 @@ public final class CompositeName {
     /**
      * Tries to match the <code>prefix</code> argument with the first elements of this name
      *
-     * @returns the remaining elements on success or null on failure
+     * @return the remaining elements on success or null on failure
      */
     public CompositeName matchPrefix(String[] prefix) {
         return matchPrefix(prefix, 0);

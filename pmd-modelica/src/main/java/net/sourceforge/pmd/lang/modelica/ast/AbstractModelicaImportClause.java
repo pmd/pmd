@@ -34,14 +34,14 @@ abstract class AbstractModelicaImportClause extends AbstractModelicaNode impleme
     abstract boolean isQualified();
 
     /**
-     * A template method to be used by {@link resolveSimpleName}. Usually used to fetch the lexically referenced
+     * A template method to be used by {@link #resolveSimpleName}. Usually used to fetch the lexically referenced
      * class in the corresponding import statement.
      */
     protected abstract ResolutionResult<ModelicaDeclaration> getCacheableImportSources(ResolutionState state, ModelicaScope scope);
 
     /**
-     * A template method to be used by {@link resolveSimpleName}. Usually used to try to fetch declarations for
-     * <code>simpleName</code> from particular <i>source</i> returned by {@link getCacheableImportSources}.
+     * A template method to be used by {@link #resolveSimpleName}. Usually used to try to fetch declarations for
+     * <code>simpleName</code> from particular <i>source</i> returned by {@link #getCacheableImportSources}.
      */
     protected abstract void fetchImportedClassesFromSource(ResolutionContext result, ModelicaDeclaration source, String simpleName) throws Watchdog.CountdownException;
 
