@@ -101,7 +101,7 @@ public final class CppParser {
      int i;
      if (t.kind != SCOPE)
      {
-        s.append(t.image);
+        s.append(t.getImage());
         t = getToken(2);
         i = 3;
      }
@@ -110,8 +110,8 @@ public final class CppParser {
 
      while (t.kind == SCOPE)
      {
-        s.append(t.image);
-        s.append((t = getToken(i++)).image);
+        s.append(t.getImage());
+        s.append((t = getToken(i++)).getImage());
         t = getToken(i++);
      }
 
@@ -172,7 +172,7 @@ MORE:
   |
   "\\\r\n"
   |
-  "/*": IN_PREPROCESSOR_OUTPUT_COMMENT 
+  "/*": IN_PREPROCESSOR_OUTPUT_COMMENT
   |
   < ~[] >
 }
@@ -606,12 +606,12 @@ String scope_override() :
     ("::")  { name += "::"; }
     (
       LOOKAHEAD(2) t = <ID> ("<" template_argument_list() ">")? "::"
-                   { name += t.image + "::"; }
+                   { name += t.getImage() + "::"; }
     )*
    |
     (
       LOOKAHEAD(2) t = <ID> ("<" template_argument_list() ">")? "::"
-                   { name += t.image + "::"; }
+                   { name += t.getImage() + "::"; }
     )+
   )
   { return name; }
@@ -627,7 +627,7 @@ String qualified_id() :
     [ LOOKAHEAD(scope_override_lookahead()) name = scope_override() ]
     (
       t = <ID> [ "<" template_argument_list()  ">" ]
-      { return name + t.image; }
+      { return name + t.getImage(); }
      |
       "operator" optor() { return "operator"; }
     )
@@ -718,7 +718,7 @@ void class_specifier() :
    |
     LOOKAHEAD(2) t = <ID>
      {
-        sc = (ClassScope)sym.OpenScope(t.image, true);
+        sc = (ClassScope)sym.OpenScope(t.getImage(), true);
      }
      (base_clause(sc))?
     "{"
@@ -729,7 +729,7 @@ void class_specifier() :
         }
    |
     t=<ID> (LOOKAHEAD(2) "<" template_argument_list()  ">")?
-    { sym.PutTypeName(t.image); }
+    { sym.PutTypeName(t.getImage()); }
    )
 }
 
@@ -745,7 +745,7 @@ void base_specifier(ClassScope scope) :
    ("virtual" (access_specifier())? | access_specifier() ("virtual")?)?
    (LOOKAHEAD(scope_override_lookahead()) scope_override())?
    t = <ID> ("<" template_argument_list()  ">")?
-   {                          scope.AddSuper(sym.GetScope(t.image));
+   {                          scope.AddSuper(sym.GetScope(t.getImage()));
    }
 }
 
@@ -837,7 +837,7 @@ void enum_specifier() :
     "{" enumerator_list() "}"
    |
     t=<ID> (LOOKAHEAD(2) "{" enumerator_list() "}")?
-           { sym.PutTypeName(t.image); }
+           { sym.PutTypeName(t.getImage()); }
    )
 }
 
@@ -894,7 +894,7 @@ String direct_declarator() :
 {
    LOOKAHEAD(2)
     "~" t = <ID> (LOOKAHEAD(2) declarator_suffixes())?
-        { return "~" + t.image; }
+        { return "~" + t.getImage(); }
    |
     "(" name = declarator() ")" (LOOKAHEAD(2) declarator_suffixes())?
         { return name; }
@@ -1149,7 +1149,7 @@ void template_parameter() :
 { Token t; }
 {
     LOOKAHEAD(3)
-      "class" t=<ID> { sym.PutTypeName(t.image); }
+      "class" t=<ID> { sym.PutTypeName(t.getImage()); }
    |
     parameter_declaration()
 }
