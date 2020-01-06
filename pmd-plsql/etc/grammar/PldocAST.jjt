@@ -232,7 +232,7 @@ public class PLSQLParser {
    * Usage: <code>LOOKAHEAD({isKeyword("WAIT")}) KEYWORD("WAIT")</code>
    */
   private boolean isKeyword(String keyword) {
-    return getToken(1).kind == IDENTIFIER && getToken(1).image.equalsIgnoreCase(keyword);
+    return getToken(1).kind == IDENTIFIER && getToken(1).getImage().equalsIgnoreCase(keyword);
   }
 }
 
@@ -333,7 +333,7 @@ ASTSqlPlusCommand SqlPlusCommand() :
   // Attach Library
   | "." <ATTACH>
   )
-  { sb.append(token.image) ; sb.append(" ...") ; }
+  { sb.append(token.getImage()) ; sb.append(" ...") ; }
   Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token
   //[";" | "-"]
   )
@@ -639,15 +639,15 @@ ASTMethodDeclarator MethodDeclarator() :
       {
         Token nextToken;
 	nextToken = getToken(1); //ReadAhead
-        if (!nextToken.image.equalsIgnoreCase("WRAPPED")
+        if (!nextToken.getImage().equalsIgnoreCase("WRAPPED")
 	    &&
-	    !nextToken.image.equalsIgnoreCase("RETURN")
+	    !nextToken.getImage().equalsIgnoreCase("RETURN")
 	   )
         {
           throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \""
-		                              + nextToken.image
-		                              + "\" at line "+nextToken.beginLine
-		                              + ", column "+nextToken.beginColumn
+		                              + nextToken.getImage()
+		                              + "\" at line "+nextToken.getBeginLine()
+		                              + ", column "+nextToken.getBeginColumn()
 		                             );
         }
       }
@@ -692,9 +692,9 @@ ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() :
 {
   (
   simpleNode = VariableOrConstantDeclaratorId() { sb.append(simpleNode.getImage());}
-  [LOOKAHEAD(2) <CONSTANT> {sb.append(" " + token.image);} ] simpleNode = Datatype() { sb.append(" " + simpleNode.getImage());}
-  [[<NOT> {sb.append(" " + token.image);} ] <NULL> {sb.append(" " + token.image);} ]
-  [ ( ":" "=" {sb.append(" :=");}| <_DEFAULT> {sb.append(" " + token.image);})
+  [LOOKAHEAD(2) <CONSTANT> {sb.append(" " + token.getImage());} ] simpleNode = Datatype() { sb.append(" " + simpleNode.getImage());}
+  [[<NOT> {sb.append(" " + token.getImage());} ] <NULL> {sb.append(" " + token.getImage());} ]
+  [ ( ":" "=" {sb.append(" :=");}| <_DEFAULT> {sb.append(" " + token.getImage());})
     simpleNode = VariableOrConstantInitializer() { sb.append(" " + simpleNode.getImage());}
   ]
   )
@@ -734,10 +734,10 @@ ASTDatatype Datatype() :
 		LOOKAHEAD(2) simpleNode = ScalarDataTypeName() {sb.append(simpleNode.getImage());}
 		|
 		(
-		  ( [LOOKAHEAD(2) "REF"  {sb.append(token.image);}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());}
+		  ( [LOOKAHEAD(2) "REF"  {sb.append(token.getImage());}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());}
 		    //Bug 35352414 - datatype may include dblink
 		    ["@" simpleNode = QualifiedName() {sb.append("@"+simpleNode.getImage());}  ]
-		    ["%" (<TYPE>|<ROWTYPE>){sb.append("%"+token.image);} ]
+		    ["%" (<TYPE>|<ROWTYPE>){sb.append("%"+token.getImage());} ]
                   )
 		)
 	)
@@ -752,24 +752,24 @@ ASTCompilationDataType CompilationDataType() :
 }
 {
 	(
-	  <CC_IF> {sb.append(" "); sb.append(token.image) ; }
+	  <CC_IF> {sb.append(" "); sb.append(token.getImage()) ; }
 	  simpleNode= ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
-	  <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	  <CC_THEN> {sb.append(" "); sb.append(token.getImage()); }
 	  simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); }
 
 	  (
-	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); }
+	    <CC_ELSIF> {sb.append(" "); sb.append(token.getImage()); }
 	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
-	    <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	    <CC_THEN> {sb.append(" "); sb.append(token.getImage()); }
 	    simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); }
 	  )*
 
 	  (
-	    <CC_ELSE> {sb.append(" "); sb.append(token.image); }
+	    <CC_ELSE> {sb.append(" "); sb.append(token.getImage()); }
 	    simpleNode = Datatype()  {sb.append(" "); sb.append(simpleNode.getImage()); }
 	  )*
 
-	  <CC_END> {sb.append(" "); sb.append(token.image); }
+	  <CC_END> {sb.append(" "); sb.append(token.getImage()); }
 	)
  {
  jjtThis.setImage(sb.toString()) ;  return jjtThis;
@@ -934,12 +934,12 @@ ASTDateTimeLiteral DateTimeLiteral() :
 	|<TIMESTAMP>
 	|<DATE> // ANSI DATE Literal
         )
-        { sb.append(token.image); }
+        { sb.append(token.getImage()); }
 
 
         (
          // 20110526 <STRING_LITERAL>
-         <CHARACTER_LITERAL>  { sb.append(" ");  sb.append(token.image); }
+         <CHARACTER_LITERAL>  { sb.append(" ");  sb.append(token.getImage()); }
          |simpleNode = StringLiteral(){ sb.append(" ");  sb.append(simpleNode.getImage()); }
         )
         (  <YEAR>
@@ -952,7 +952,7 @@ ASTDateTimeLiteral DateTimeLiteral() :
         {
            if (null != t)
            {
-            sb.append(" ");  sb.append(token.image);
+            sb.append(" ");  sb.append(token.getImage());
             t = null;
            }
         }
@@ -976,7 +976,7 @@ ASTDateTimeLiteral DateTimeLiteral() :
          | <MINUTE>
          | <SECOND>
         )
-        { sb.append(token.image); }
+        { sb.append(token.getImage()); }
 
 	(LOOKAHEAD(2) "(" simpleNode = NumericLiteral()  { sb.append("(");  sb.append(simpleNode.getImage()); }
 	")"   { sb.append("}"); }
@@ -1005,17 +1005,17 @@ void Skip2NextTerminator(String initiator,String terminator) :
   Token beginToken = getToken(0);
   Token t = getToken(1);
   int count = (initiator == null) ? 0 : 1;
-  if(t.image.equals(initiator)) count++;
-  while (count > 0 || !t.image.equals(terminator))
+  if(t.getImage().equals(initiator)) count++;
+  while (count > 0 || !t.getImage().equals(terminator))
   {
     t = getNextToken();
     t = getToken(1);
-	  if(t.image.equals(initiator)) count++;
-	  if(t.image.equals(terminator)) count--;
+	  if(t.getImage().equals(initiator)) count++;
+	  if(t.getImage().equals(terminator)) count--;
     if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE
         && beginToken.kind != MERGE && beginToken.kind != EXECUTE && beginToken.kind != WITH) || t.kind == EOF)
         return;
-    if (t.specialToken != null && "/".equals(t.image))
+    if (t.specialToken != null && "/".equals(t.getImage()))
 	    return;
   }
 }
@@ -1029,8 +1029,8 @@ void Skip2NextTerminator(String initiator,String terminator) :
 void Skip2NextOccurrence(String target) :
 {
   Token nextToken = getToken(1);
-  while (!nextToken.image.equals(target)
-	 && (null == nextToken.specialToken || !nextToken.specialToken.image.equals(target) ) //In case the target is a Special Token
+  while (!nextToken.getImage().equals(target)
+	 && (null == nextToken.specialToken || !nextToken.specialToken.getImage().equals(target) ) //In case the target is a Special Token
 	 && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
         )
   {
@@ -1125,12 +1125,12 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 {
   StringBuilder sb = new StringBuilder();
   Token nextToken = getToken(1);
-  while (!nextToken.image.equals(target)
+  while (!nextToken.getImage().equals(target)
 	 && nextToken.kind!=EOF
         )
   {
     nextToken = getNextToken();
-    sb.append(nextToken.image);
+    sb.append(nextToken.getImage());
     sb.append(' ');
     nextToken = getToken(1);
   }
@@ -1149,7 +1149,7 @@ ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
   StringBuilder sb = new StringBuilder();
   sb.append(skipped.getImage()) ;
   Token t = getNextToken(); // Chomp this one
-  sb.append(t.image);
+  sb.append(t.getImage());
 }
 {
 	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
@@ -1244,11 +1244,11 @@ ASTSubqueryOperation SubqueryOperation() :
 {}
 {
   (
-    <UNION> { jjtThis.setImage(token.image); jjtThis.setUnion(true); } [ <ALL> { jjtThis.setImage(jjtThis.getImage() + " " + token.image); jjtThis.setAll(true); } ]
+    <UNION> { jjtThis.setImage(token.getImage()); jjtThis.setUnion(true); } [ <ALL> { jjtThis.setImage(jjtThis.getImage() + " " + token.getImage()); jjtThis.setAll(true); } ]
   |
-    <INTERSECT> { jjtThis.setImage(token.image); jjtThis.setIntersect(true); }
+    <INTERSECT> { jjtThis.setImage(token.getImage()); jjtThis.setIntersect(true); }
   |
-    <MINUS> { jjtThis.setImage(token.image); jjtThis.setMinus(true); }
+    <MINUS> { jjtThis.setImage(token.getImage()); jjtThis.setMinus(true); }
   )
     { return jjtThis; }
 }
@@ -1323,7 +1323,7 @@ ASTGroupByClause GroupByClause() :
 ASTRollupCubeClause RollupCubeClause() :
 {}
 {
-    ( <ROLLUP> | <CUBE> ) { jjtThis.setImage(token.image); }
+    ( <ROLLUP> | <CUBE> ) { jjtThis.setImage(token.getImage()); }
     "(" GroupingExpressionList() ")"
     { return jjtThis; }
 }
@@ -1509,12 +1509,12 @@ ASTComparisonCondition ComparisonCondition() :
 {
     (
     // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.image); } SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.image); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } SqlExpression() )
+    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
 
     // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.image); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.image); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
+    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
+    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
     )
     { return jjtThis; }
 }
@@ -1563,39 +1563,39 @@ ASTSimpleExpression SimpleExpression() :
 { StringBuilder sb = new StringBuilder(); }
 {
  (
-    LOOKAHEAD(2) <ROWNUM> { sb.append(token.image); }
+    LOOKAHEAD(2) <ROWNUM> { sb.append(token.getImage()); }
  |
-    StringLiteral() { sb.append(token.image); }
+    StringLiteral() { sb.append(token.getImage()); }
  |
-    NumericLiteral() { sb.append(token.image); }
+    NumericLiteral() { sb.append(token.getImage()); }
  |
-    LOOKAHEAD(2) NullLiteral() { sb.append(token.image); }
+    LOOKAHEAD(2) NullLiteral() { sb.append(token.getImage()); }
  |
     // sequence
     LOOKAHEAD(4) ID() "." ( <CURRVAL> | <NEXTVAL> )
  |
     LOOKAHEAD(6)
-        SchemaName() { sb.append(token.image); } "." { sb.append(token.image); }
-        TableName() { sb.append(token.image); } "." { sb.append(token.image); }
-        ( "*" | Column() ) { sb.append(token.image); }
+        SchemaName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); }
+        TableName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); }
+        ( "*" | Column() ) { sb.append(token.getImage()); }
  |
     LOOKAHEAD(4)
-        TableName() { sb.append(token.image); } "." { sb.append(token.image); }
-        ( "*" | Column() ) { sb.append(token.image); }
+        TableName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); }
+        ( "*" | Column() ) { sb.append(token.getImage()); }
  |
     // Named Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/named-cursor-attribute.html#GUID-CD8D8415-FF19-4D81-99BA-7825FD40CC96
     // Implicit Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/implicit-cursor-attribute.html#GUID-5A938EE7-E8D2-468C-B60F-81898F110BE1
     LOOKAHEAD(3)
-        Column() { sb.append(token.image); } "%" ( LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
+        Column() { sb.append(token.getImage()); } "%" ( LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
                      | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
                      | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
                      | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
                      | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT")
                      | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS")
-                     ) { sb.append('%').append(token.image); }
+                     ) { sb.append('%').append(token.getImage()); }
  |
     LOOKAHEAD(2)
-        ( "*" | Column() ) { sb.append(token.image); }
+        ( "*" | Column() ) { sb.append(token.getImage()); }
  )
  {
     jjtThis.setImage(sb.toString());
@@ -1606,9 +1606,9 @@ ASTSimpleExpression SimpleExpression() :
 ASTOuterJoinExpression OuterJoinExpression() :
 { StringBuilder sb = new StringBuilder(); }
 {
-    [ LOOKAHEAD(6) SchemaName() { sb.append(token.image); } "." { sb.append(token.image); } ]
-    [ LOOKAHEAD(4) TableName() { sb.append(token.image); } "." { sb.append(token.image); } ]
-    Column() { sb.append(token.image); }
+    [ LOOKAHEAD(6) SchemaName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); } ]
+    [ LOOKAHEAD(4) TableName() { sb.append(token.getImage()); } "." { sb.append(token.getImage()); } ]
+    Column() { sb.append(token.getImage()); }
     "(" "+" ")"
 
     {
@@ -1636,12 +1636,12 @@ ASTFunctionCall FunctionCall() :
 {
     name = FunctionName()
     (
-        LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
-      | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.image)}) "(" Expression() <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
-      | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.image)}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
-      | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.image)}) XMLElement()
+        LOOKAHEAD({"TRIM".equalsIgnoreCase(token.getImage())}) TrimExpression()
+      | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.getImage())}) "(" Expression() <AS> Datatype() ")"
+      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
+      | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
+      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
+      | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.getImage())}) XMLElement()
       | Arguments()
     )
 
@@ -2760,9 +2760,9 @@ ASTFieldDeclaration FieldDeclaration()  :
       { jjtThis.setImage(name.getImage()) ;  return jjtThis ; }
 }
 
-ASTCollectionTypeDefinition CollectionTypeDefinition() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
-ASTCollectionDeclaration CollectionDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
-ASTObjectDeclaration ObjectDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
+ASTCollectionTypeDefinition CollectionTypeDefinition() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.getImage()) ;  return jjtThis ; } }
+ASTCollectionDeclaration CollectionDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.getImage()) ;  return jjtThis ; } }
+ASTObjectDeclaration ObjectDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.getImage()) ;  return jjtThis ; } }
 
 /** Java stored procedure, external function*/
 ASTCallSpecTail CallSpecTail() : {
@@ -2929,24 +2929,24 @@ ASTCompilationExpression CompilationExpression() :
 }
 {
 	(
-	  <CC_IF> {sb.append(" "); sb.append(token.image) ; }
+	  <CC_IF> {sb.append(" "); sb.append(token.getImage()) ; }
 	   simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
-	  <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	  <CC_THEN> {sb.append(" "); sb.append(token.getImage()); }
 	  simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); }
 
 	  (
-	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); }
+	    <CC_ELSIF> {sb.append(" "); sb.append(token.getImage()); }
 	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
-	    <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	    <CC_THEN> {sb.append(" "); sb.append(token.getImage()); }
 	    simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); }
 	  )*
 
 	  (
-	    <CC_ELSE> {sb.append(" "); sb.append(token.image); }
+	    <CC_ELSE> {sb.append(" "); sb.append(token.getImage()); }
 	    simpleNode = Expression()  {sb.append(" "); sb.append(simpleNode.getImage()); }
 	  )*
 
-	  <CC_END> {sb.append(" "); sb.append(token.image); }
+	  <CC_END> {sb.append(" "); sb.append(token.getImage()); }
 	)
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
@@ -2986,7 +2986,7 @@ ASTLikeExpression LikeExpression() :
 {
   (
         simpleNode = PrimaryExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	(thisToken = <LIKE> ) { sb.append(thisToken.image);}
+	(thisToken = <LIKE> ) { sb.append(thisToken.getImage());}
 	//["(" { sb.append("(");} ]
 	( simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
 	//[ ")" { sb.append(")");} ]
@@ -3013,7 +3013,7 @@ ASTTrimExpression TrimExpression() :
      "(" { sb.append("(");}
      [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
      [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-     [ <FROM> { sb.append(" ").append(token.image); } ]
+     [ <FROM> { sb.append(" ").append(token.getImage()); } ]
      simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
      ")" { sb.append(")");}
   )
@@ -3030,7 +3030,7 @@ ASTObjectExpression ObjectExpression() :
 { Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.image);}
+	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.getImage());}
 	"(" { sb.append("(");}
 	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
 	[
@@ -3382,11 +3382,11 @@ ASTPrimarySuffix PrimarySuffix() :
   | //Possible dblink
   ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.getImage()) ; }
   | //Possible Date Time Expression - Bug 3553725
-  ( <AT> {sb.append(" "); sb.append(token.image.toUpperCase());}
-          (  <LOCAL> {sb.append(" "); sb.append(token.image.toUpperCase());}
+  ( <AT> {sb.append(" "); sb.append(token.getImage().toUpperCase());}
+          (  <LOCAL> {sb.append(" "); sb.append(token.getImage().toUpperCase());}
             | ( <TIME> <ZONE> {sb.append(" TIME ZONE");}
-		(   <DBTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
-		  | <SESSIONTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
+		(   <DBTIMEZONE> {sb.append(" "); sb.append(token.getImage().toUpperCase());}
+		  | <SESSIONTIMEZONE> {sb.append(" "); sb.append(token.getImage().toUpperCase());}
 		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.getImage());}
 		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.getImage());}
 		)
@@ -3430,7 +3430,7 @@ ASTLiteral Literal() :
    }
    else if (null != t)
    {
-     jjtThis.setImage( t.image ) ;
+     jjtThis.setImage( t.getImage() ) ;
    }
    return jjtThis ;
  }
@@ -3440,7 +3440,7 @@ ASTStringLiteral  StringLiteral() :
 {}
 {
   <STRING_LITERAL>
- { jjtThis.setImage(token.image); return jjtThis ; }
+ { jjtThis.setImage(token.getImage()); return jjtThis ; }
 }
 
 
@@ -3454,7 +3454,7 @@ ASTBooleanLiteral BooleanLiteral() :
   <FALSE>
  )
   {
-   jjtThis.setImage(token.image) ;
+   jjtThis.setImage(token.getImage()) ;
    return jjtThis;
   }
 }
@@ -3467,7 +3467,7 @@ ASTNullLiteral NullLiteral() :
   <NULL>
   )
  {
-  jjtThis.setImage(token.image) ;
+  jjtThis.setImage(token.getImage()) ;
   return jjtThis ;
  }
 }
@@ -3501,7 +3501,7 @@ ASTNumericLiteral NumericLiteral() :
 		t = <UNSIGNED_NUMERIC_LITERAL>
 	)
 	{
-	 jjtThis.setImage(t.image) ;
+	 jjtThis.setImage(t.getImage()) ;
          return jjtThis;
 	}
 }
@@ -3616,7 +3616,7 @@ ASTDatatypeDeclaration DatatypeDeclaration() :
  Token t ;
 }
 { t = <IDENTIFIER>
-  { jjtThis.setImage(t.image) ;  return jjtThis ; }
+  { jjtThis.setImage(t.getImage()) ;  return jjtThis ; }
 }
 
 ASTPragma Pragma() :
@@ -3879,7 +3879,7 @@ ASTComment Comment()  :
 {
 }
 {
-  LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT") { jjtThis.setImage(token.image); }
+  LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT") { jjtThis.setImage(token.getImage()); }
   <ON> (
     ((<TABLE> | <OPERATOR> | <INDEXTYPE>) [LOOKAHEAD(2) ID()"."] ID()) |
     (<COLUMN> [LOOKAHEAD(ID()"."ID()"."ID()) ID()"."] ID() "." ID())
@@ -4392,8 +4392,8 @@ ASTTriggerTimingPointSection TriggerTimingPointSection()  :
 }
 {
  (
- ( <BEFORE> | <AFTER> | <INSTEADOF> ) { sb.append(token.image) ; }
- (   <STATEMENT>  | <EACH> <ROW>  ) {sb.append(" "); sb.append(token.image) ; }
+ ( <BEFORE> | <AFTER> | <INSTEADOF> ) { sb.append(token.getImage()) ; }
+ (   <STATEMENT>  | <EACH> <ROW>  ) {sb.append(" "); sb.append(token.getImage()) ; }
  <IS>
  <BEGIN>
  (Statement())+
@@ -5237,10 +5237,10 @@ void KEYWORD(String id) #void:
 {
     <IDENTIFIER>
     {
-        if (!token.image.equalsIgnoreCase(id)) {
+        if (!token.getImage().equalsIgnoreCase(id)) {
             String eol = System.getProperty("line.separator", "\n");
-            throw new ParseException("Encountered \"" + token.image + "\" at line "
-                + token.beginLine + ", column " + token.beginColumn + "." + eol
+            throw new ParseException("Encountered \"" + token.getImage() + "\" at line "
+                + token.getBeginLine() + ", column " + token.getBeginColumn() + "." + eol
                 + "Was expecting: " + id);
         }
     }
