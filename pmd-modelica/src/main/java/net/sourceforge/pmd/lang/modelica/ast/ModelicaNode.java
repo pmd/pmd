@@ -19,7 +19,7 @@ public interface ModelicaNode extends Node {
     /**
      * Returns the most specific lexical scope naturally associated with this node.
      *
-     * @return the scope defined by this node itself or the same as {@link getContainingScope} otherwise
+     * @return the scope defined by this node itself or the same as {@link #getContainingScope} otherwise
      */
     ModelicaScope getMostSpecificScope();
 
