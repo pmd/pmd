@@ -2,6 +2,17 @@
 
     <property name="javacc-home.path" value="target/lib" />
 
+    <property name="tmp-package" value="net.sourceforge.pmd.lang.ast.dummy" />
+
+    <property name="tmp-package.dir" value="${target}/net/sourceforge/pmd/lang/ast/dummy" />
+
+    <property name="base-ast-package" value="net.sourceforge.pmd.lang.ast" />
+    <property name="base-ast-package.dir" value="${target}/net/sourceforge/pmd/lang/ast" />
+
+    <property name="target-package" value="${base-ast-package}.impl.javacc" />
+    <property name="target-package.dir" value="${base-ast-package.dir}/impl/javacc" />
+
+
     <target name="alljavacc"
             description="Generates all JavaCC aspects within PMD"
             depends="checkUpToDate,init,dummyjjtree,cleanup" />
@@ -27,88 +38,98 @@
 
     <target name="dummyjjtree" description="Generates the reusable JavaCC aspects" unless="javaccBuildNotRequired">
 
-        <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
-        <mkdir dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
+        <delete dir="${tmp-package.dir}" />
+        <mkdir dir="${tmp-package.dir}" />
         <echo>Using JavaCC home: ${javacc-home.path}</echo>
         <jjtree target="etc/grammar/dummy.jjt"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                outputdirectory="${tmp-package.dir}"
                 javacchome="${javacc-home.path}" />
 
         <!-- Generate CharStream interface -->
         <javacc usercharstream="true"
-                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                target="${tmp-package.dir}/dummy.jj"
+                outputdirectory="${tmp-package.dir}"
                 javacchome="${javacc-home.path}" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
-                 token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast" />
-        <move overwrite="true"
-              file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/CharStream.java" />
 
         <!-- Generate ASCII w/ Unicode Escapes CharStream implementation -->
         <javacc usercharstream="false"
                 unicodeinput="false"
                 javaunicodeescape="true"
                 static="false"
-                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                target="${tmp-package.dir}/dummy.jj"
+                outputdirectory="${tmp-package.dir}"
                 javacchome="${javacc-home.path}" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-                 token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast.impl.javacc" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+
+        <replace file="${tmp-package.dir}/JavaCharStream.java"
+                 token="${tmp-package}"
+                 value="${target-package}">
+            <fileset dir="${tmp-package.dir}">
+            </fileset>
+        </replace>
+
+
+        <!-- Patch JavaCharStream        -->
+
+        <replace file="${tmp-package.dir}/JavaCharStream.java"
                  token="JavaCharStream"
                  value="JavaCharStreamBase"/>
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+        <replace file="${tmp-package.dir}/JavaCharStream.java"
                  token="class JavaCharStreamBase"
-                 value="abstract class JavaCharStreamBase implements net.sourceforge.pmd.lang.ast.CharStream" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 value="abstract class JavaCharStreamBase implements ${target-package}.CharStream" />
+        <replace file="${tmp-package.dir}/JavaCharStream.java"
                  token="char c;"
                  value="char c; beforeReadChar();" />
-         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+         <replace file="${tmp-package.dir}/JavaCharStream.java"
                  token="/** Read a character. */"
                  value="protected void beforeReadChar() { }" />
 
        <move overwrite="true"
-              file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/impl/javacc/JavaCharStreamBase.java" />
+              file="${tmp-package.dir}/JavaCharStream.java"
+              tofile="${target-package.dir}/JavaCharStreamBase.java" />
 
         <!-- Generate ASCII w/o Unicode Escapes CharStream implementation -->
         <javacc usercharstream="false"
                 unicodeinput="false"
                 javaunicodeescape="false"
                 static="false"
-                target="${target}/net/sourceforge/pmd/lang/ast/dummy/dummy.jj"
-                outputdirectory="${target}/net/sourceforge/pmd/lang/ast/dummy"
+                target="${tmp-package.dir}/dummy.jj"
+                outputdirectory="${tmp-package.dir}"
                 javacchome="${javacc-home.path}" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
-                 token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+
+        <replace file="${tmp-package.dir}/SimpleCharStream.java"
                  token="public class SimpleCharStream"
                  value="public class SimpleCharStream implements CharStream" />
-        <move overwrite="true"
-              file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/SimpleCharStream.java" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
-                 token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+
+        <replace file="${tmp-package.dir}/TokenMgrError.java"
+                 token="${target-package}"
+                 value="${base-ast-package}" />
+
+        <replace file="${tmp-package.dir}/TokenMgrError.java"
                  token="extends Error"
                  value="extends RuntimeException" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
+
+        <replace file="${tmp-package.dir}/TokenMgrError.java"
                  token="static final int"
                  value="public static final int" />
-        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java">
-            <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
-            <replacevalue><![CDATA["Lexical error in file " + net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager.getFileName() + " at line "]]></replacevalue>
-        </replace>
-        <move overwrite="true"
-              file="${target}/net/sourceforge/pmd/lang/ast/dummy/TokenMgrError.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/TokenMgrError.java" />
 
-        <delete dir="${target}/net/sourceforge/pmd/lang/ast/dummy" />
+        <replace file="${tmp-package.dir}/TokenMgrError.java">
+            <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
+            <replacevalue>&quot;Lexical error in file &quot; + net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager.getFileName() + &quot; at line &quot;</replacevalue>
+        </replace>
+
+        <move overwrite="true"
+              file="${tmp-package.dir}/TokenMgrError.java"
+              tofile="${base-ast-package.dir}/TokenMgrError.java" />
+
+        <move overwrite="true"
+              todir="${target-package.dir}">
+            <fileset dir="${tmp-package.dir}">
+                <include name="SimpleCharStream.java" />
+                <include name="CharStream.java" />
+            </fileset>
+        </move>
+
+        <delete dir="${tmp-package.dir}" />
 
     </target>
 

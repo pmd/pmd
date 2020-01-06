@@ -15,26 +15,26 @@
  * Script code inside <script> ... </script> is not parsed.
  */
 
-options { 
+options {
 	USER_CHAR_STREAM = true;
 	NODE_USES_PARSER=true;
 	UNICODE_INPUT=true;
-	FORCE_LA_CHECK = false;	  
-	IGNORE_CASE = true; 
-	STATIC = false; 
-	
+	FORCE_LA_CHECK = false;
+	IGNORE_CASE = true;
+	STATIC = false;
+
 	MULTI=true;
 	VISITOR=true;
 	TRACK_TOKENS = true;
-} 
+}
 
 PARSER_BEGIN(JspParser)
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-/** 
+/**
  * JSP Parser for PMD.
  * @author Pieter, Application Engineers NV/SA, http://www.ae.be
  */

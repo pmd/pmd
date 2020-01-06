@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 
 
 public class ModelicaParser extends AbstractParser {

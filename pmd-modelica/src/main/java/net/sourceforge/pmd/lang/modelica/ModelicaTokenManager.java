@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.modelica;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserTokenManager;
 
 

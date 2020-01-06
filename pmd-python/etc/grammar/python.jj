@@ -1,23 +1,23 @@
 /**
- * This Python 2.7 grammar was copied from the PyDev Project. (http://www.pydev.org/) 
- * 
- * Original source file: 
+ * This Python 2.7 grammar was copied from the PyDev Project. (http://www.pydev.org/)
+ *
+ * Original source file:
  * https://github.com/aptana/Pydev/blob/development/plugins/org.python.pydev.parser/src/org/python/pydev/parser/grammar27/python.jjt (commit 32950d534139f286e03d34795aec99edab09c04c)
  */
- 
+
 options {
   BUILD_PARSER=false;
   CACHE_TOKENS=true;
   STATIC=false;
   UNICODE_INPUT = true;
-  USER_CHAR_STREAM=true; 
+  USER_CHAR_STREAM=true;
 }
 
 PARSER_BEGIN(PythonParser)
 
 package net.sourceforge.pmd.lang.python.ast;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PythonParser {

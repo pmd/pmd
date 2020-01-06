@@ -93,7 +93,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
 import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
 import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
