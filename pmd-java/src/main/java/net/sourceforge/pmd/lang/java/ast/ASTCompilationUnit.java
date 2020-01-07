@@ -58,11 +58,6 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return getPackageDeclaration() == null;
     }
 
-    @Override
-    public ClassLoader getTypeResClassLoader() {
-        return classTypeResolver.getPmdClassLoader();
-    }
-
     public ASTPackageDeclaration getPackageDeclaration() {
         if (getNumChildren() > 0) {
             Node n = getChild(0);
