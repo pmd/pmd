@@ -30,21 +30,26 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <li>Read-only: mutation is impossible, but querying data is.
  * <li>Write-only: querying data is impossible, but mutating the structure is.
  * </ul>
- * If the internal structure is not changed during a write phase,
- * most of the work may be avoided when {@linkplain #freezeTopo() freezing}
- * the structure.
  *
- * <p>The {@link TopoOrder TopoOrder<T>} must generate an acyclic graph,
- * this implementation handles cycles by throwing an exception upon freezing.
+ * <p>Initially the structure is created in write-only mode. Use
+ * {@link #freezeTopo()} and {@link #unfreezeTopo()} to toggle the mode.
+ * The expensive checks of {@link #freezeTopo()} may be avoided if the
+ * internal structure is not changed during a write phase.
  *
- * <p>There is no equality relation defined on a lattice, and no
- * operation to test if an element is contained in the lattice.
- *
- * <p>This implementation is not thread-safe.
+ * <p><b>Limitations</b>
+ * <ul>
+ * <li>The {@link TopoOrder TopoOrder<T>} must generate an acyclic graph,
+ *  this implementation handles cycles by throwing an exception upon freezing.
+ * <li>There is no equality relation defined on a lattice, and no
+ *   operation to test if an element is contained in the lattice.
+ * <li>A lattice can only grow, and not be pruned.
+ * <li>This implementation is not thread-safe.
+ * </ul>
+ * <p>
  *
  * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
- *           must implement a consistent {@link Object#equals(Object) equals} and
- *           {@link Object#hashCode() hashcode} and be immutable.
+ *            must implement a consistent {@link Object#equals(Object) equals} and
+ *            {@link Object#hashCode() hashcode} and be immutable.
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
 class LatticeRelation<T, @NonNull U> {
@@ -59,10 +64,9 @@ class LatticeRelation<T, @NonNull U> {
     private final Monoid<U> accumulate;
 
     private final TopoOrder<T> keyOrder;
+    private final Map<T, LNode> nodes;
     private boolean frozen;
     private boolean up2DateTopo;
-
-    private final Map<T, LNode> nodes;
 
     LatticeRelation(Monoid<U> combine, TopoOrder<T> keyOrder) {
         this(combine, combine, keyOrder);
@@ -313,18 +317,16 @@ class LatticeRelation<T, @NonNull U> {
     final class LNode {
 
         private final T key;
-        /** Proper value associated with this node (independent of topology). */
-        private @NonNull U properVal = accumulate.zero();
-
-        // topological state, to be reset between freeze cycles
-
-        /** Cached value */
-        private @Nullable U frozenVal;
-
         // before freezing this contains the successors of a node
         // after, it contains its direct predecessors
         private final Set<LNode> succ = new LinkedHashSet<>(0);
+
+        // topological state, to be reset between freeze cycles
         boolean hasDiamond = false;
+        /** Proper value associated with this node (independent of topology). */
+        private @NonNull U properVal = accumulate.zero();
+        /** Cached value */
+        private @Nullable U frozenVal;
         private int topoMark = UNDEFINED_TOPOMARK;
         private int idx = -1;
 
