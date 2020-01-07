@@ -1,10 +1,9 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+package net.sourceforge.pmd.lang.java.symbols;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -20,7 +19,4 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 interface BoundToNode<N extends Node> extends JElementSymbol {
 
-    @Override
-    @Nullable
-    N getDeclaration();
 }

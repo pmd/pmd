@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -33,6 +34,9 @@ public final class InternalApiBridge {
 
     }
 
+    public static void setSymbolTable(JavaNode node, JSymbolTable table) {
+        ((AbstractJavaNode) node).setSymbolTable(table);
+    }
 
     public static void setScope(JavaNode node, Scope scope) {
         ((AbstractJavaNode) node).setScope(scope);
