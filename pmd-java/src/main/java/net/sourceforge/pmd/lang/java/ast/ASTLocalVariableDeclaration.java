@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.lang.ast.NodeStream;
-
-
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
  * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
@@ -27,7 +22,8 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 // TODO extend AbstractStatement
 public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode
     implements Iterable<ASTVariableDeclaratorId>,
-               ASTStatement {
+               ASTStatement,
+               InternalInterfaces.MultiVariableIdOwner {
 
     ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -80,24 +76,10 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode
      *
      * @see #isTypeInferred()
      */
+    @Override
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
 
-    /**
-     * Returns a stream of IDs for the fields this node declares.
-     */
-    public NodeStream<ASTVariableDeclaratorId> getVarIds() {
-        return children(ASTVariableDeclarator.class).children(ASTVariableDeclaratorId.class);
-    }
 
-    /**
-     * Returns an iterator of IDs for the fields this node declares.
-     *
-     * @see #getVarIds()
-     */
-    @Override
-    public Iterator<ASTVariableDeclaratorId> iterator() {
-        return getVarIds().iterator();
-    }
 }

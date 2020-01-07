@@ -4,12 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 /**
@@ -35,10 +31,11 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode
+public final class ASTFieldDeclaration extends AbstractJavaAccessNode
     implements SignedNode<ASTFieldDeclaration>,
                Iterable<ASTVariableDeclaratorId>,
-               LeftRecursiveNode {
+               LeftRecursiveNode,
+               InternalInterfaces.MultiVariableIdOwner {
 
     private JavaFieldSignature signature;
 
@@ -171,46 +168,14 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode
         return signature;
     }
 
+    /**
+     * Returns the type node at the beginning of this field declaration.
+     * The type of this node is not necessarily the type of the variables,
+     * see {@link ASTVariableDeclaratorId#getType()}.
+     */
+    @Override
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
 
-    /**
-     * Returns a stream of IDs for the fields this node declares.
-     */
-    public NodeStream<ASTVariableDeclaratorId> getVariables() {
-        return children(ASTVariableDeclarator.class).children(ASTVariableDeclaratorId.class);
-    }
-
-    /**
-     * Returns an iterator of IDs for the fields this node declares.
-     *
-     * @see #getVariables()
-     */
-    @Override
-    public Iterator<ASTVariableDeclaratorId> iterator() {
-        return getVariables().iterator();
-    }
-
-
-    /**
-     * @deprecated FieldDeclaration may declare several variables with a different type
-     *     It won't implement TypeNode anymore come 7.0.0
-     */
-    @Override
-    @Deprecated
-    public Class<?> getType() {
-        return super.getType();
-    }
-
-
-    /**
-     * @deprecated FieldDeclaration may declare several variables with a different type
-     *     It won't implement TypeNode anymore come 7.0.0
-     */
-    @Override
-    @Deprecated
-    public JavaTypeDefinition getTypeDefinition() {
-        return super.getTypeDefinition();
-    }
 }

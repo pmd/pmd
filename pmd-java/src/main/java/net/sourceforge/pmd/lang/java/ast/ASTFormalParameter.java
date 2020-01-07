@@ -94,11 +94,11 @@ public final class ASTFormalParameter extends AbstractJavaAccessTypeNode impleme
 
 
     /**
-     * @deprecated use {@link #getVariableDeclaratorId()}
+     * @deprecated use {@link #getVarId()}
      */
     @Deprecated
     protected ASTVariableDeclaratorId getDecl() {
-        return getVariableDeclaratorId();
+        return getVarId();
     }
 
     /**

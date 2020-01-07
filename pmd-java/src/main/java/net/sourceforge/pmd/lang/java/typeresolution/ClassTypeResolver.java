@@ -50,7 +50,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -593,13 +592,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-
-    @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
 
     @Override
     public Object visit(ASTVariableDeclarator node, Object data) {

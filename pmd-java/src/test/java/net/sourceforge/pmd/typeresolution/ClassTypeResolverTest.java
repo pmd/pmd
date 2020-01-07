@@ -170,7 +170,6 @@ public class ClassTypeResolverTest {
         assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTType.class).getType());
         assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTVariableDeclaratorId.class).getType());
         assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTVariableDeclarator.class).getType());
-        assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTFieldDeclaration.class).getType());
 
         acu = parseAndTypeResolveForClass15(DefaultJavaLangImport.class);
         assertEquals(String.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType());

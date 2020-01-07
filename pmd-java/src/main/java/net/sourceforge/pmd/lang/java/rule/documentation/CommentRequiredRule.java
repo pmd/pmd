@@ -202,6 +202,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialVersionUID(ASTFieldDeclaration field) {
         return false; // FIXME, commented out because of incompatibility, needs typeres
         //        return "serialVersionUID".equals(field.getVariableName())
@@ -220,6 +221,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
      * @return true if the field is a serialPersistentFields variable, otherwise false
      * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
         return false; // FIXME, commented out because of incompatibility, needs typeres
         //        return "serialPersistentFields".equals(field.getVariableName())

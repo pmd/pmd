@@ -45,7 +45,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 // @formatter:on
 public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
-    private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
 
     @InternalApi
@@ -109,7 +108,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
      * a {@code catch} statement.
      */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent() instanceof ASTCatchParameter;
+        return jjtGetParent() instanceof ASTFormalParameter && jjtGetParent().jjtGetParent() instanceof ASTCatchClause;
     }
 
 
@@ -179,9 +178,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             // This accounts for exception parameters too for now
             return ((ASTFormalParameter) jjtGetParent()).isFinal();
-        } else if (jjtGetParent() instanceof ASTCatchParameter) {
-            return ((ASTCatchParameter) jjtGetParent()).isMulticatch()
-                || ((ASTCatchParameter) jjtGetParent()).isFinal();
         }
 
         Node grandpa = getNthParent(2);

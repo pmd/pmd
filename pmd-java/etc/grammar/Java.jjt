@@ -1799,7 +1799,7 @@ void FormalParameter() :
 {boolean isFinal = false;}
 {
    isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
-   FormalParamType()
+   FormalParamType() ("|" FormalParamType())* // remove this stuff when #2202 is merged
    VariableIdWithDims()
 }
 
