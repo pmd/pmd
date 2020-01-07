@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
-import net.sourceforge.pmd.lang.java.symbols.testSymFactory
 
 /**
  * @author Clément Fournier

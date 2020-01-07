@@ -4,7 +4,6 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import javasymbols.testdata.impls.GenericClass
 import javasymbols.testdata.impls.GenericClassCopy
-import net.sourceforge.pmd.lang.java.symbols.classSym
 
 /**
  * @author Clément Fournier

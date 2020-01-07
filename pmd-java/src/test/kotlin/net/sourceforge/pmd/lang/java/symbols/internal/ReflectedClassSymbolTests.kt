@@ -3,9 +3,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.TestClassesGen
-import net.sourceforge.pmd.lang.java.symbols.classSym
-import net.sourceforge.pmd.lang.java.symbols.forAllEqual
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
 
 /**

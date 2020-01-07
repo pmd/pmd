@@ -9,9 +9,7 @@ import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.impls.GenericClass
 import javasymbols.testdata.impls.SomeInnerClasses
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
-import net.sourceforge.pmd.lang.java.symbols.testSymFactory
 
 /**
  * @author Clément Fournier

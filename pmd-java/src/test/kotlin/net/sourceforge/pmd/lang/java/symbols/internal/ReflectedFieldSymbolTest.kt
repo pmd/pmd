@@ -5,9 +5,6 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import javasymbols.testdata.impls.IdenticalToSomeFields
 import javasymbols.testdata.impls.SomeFields
-import net.sourceforge.pmd.lang.java.symbols.TestClassesGen
-import net.sourceforge.pmd.lang.java.symbols.classSym
-import net.sourceforge.pmd.lang.java.symbols.forAllEqual
 
 /**
  * @author Clément Fournier

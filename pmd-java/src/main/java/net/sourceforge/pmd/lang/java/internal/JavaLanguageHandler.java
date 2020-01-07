@@ -66,6 +66,9 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         return new JavaLanguageParser(levelChecker, parserOptions);
     }
 
+    public int getJdkVersion() {
+        return levelChecker.getJdkVersion();
+    }
 
     @Override
     public DataFlowHandler getDataFlowHandler() {

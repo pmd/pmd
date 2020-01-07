@@ -2,7 +2,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
-import net.sourceforge.pmd.lang.java.symbols.classSym
 import javasymbols.testdata.impls.Overloads
 
 /**

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.testSymFactory
 
 /**
  * @author Clément Fournier
