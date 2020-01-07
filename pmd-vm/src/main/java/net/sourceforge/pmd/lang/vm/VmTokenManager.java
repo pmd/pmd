@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.vm;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
 import net.sourceforge.pmd.lang.vm.ast.VmParserTokenManager;
 import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
 

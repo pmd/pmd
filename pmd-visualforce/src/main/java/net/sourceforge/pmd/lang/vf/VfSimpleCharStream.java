@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf;
 
 import java.io.Reader;
 
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 
 /**
  * @author sergey.gorbaty

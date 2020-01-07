@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
+import io.kotlintest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.AbstractNode
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.TextAvailableNode
 import java.util.*
 
 
@@ -24,9 +26,6 @@ val Node.childIndex: Int
 val Node.parent: Node?
     get() = this.jjtGetParent()
 
-val Node.containingFile: Node
-    get() = generateSequence(this) { it.parent }.last()
-
 
 val Node.firstToken: GenericToken
     get() = (this as AbstractNode).jjtGetFirstToken()
@@ -35,7 +34,7 @@ val Node.lastToken: GenericToken
     get() = (this as AbstractNode).jjtGetLastToken()
 
 
-fun Node.getChild(i: Int) = jjtGetChild(i)
+fun Node.getChild(i: Int): Node = jjtGetChild(i)
 
 fun Node.safeGetChild(i: Int): Node? = when {
     i < numChildren -> jjtGetChild(i)
@@ -63,13 +62,18 @@ fun Node.assertTextRangeIsOk() {
     assert(beginColumn >= 1) { "Begin column is not set" }
     assert(endColumn >= 1) { "End column is not set" }
 
+    val textRange = textRange
     // they're in the right order
     textRange.assertOrdered()
 
     val parent = parent ?: return
 
     assert(textRange in parent.textRange) {
-        "The text range is not a subrange of that of the parent"
+        "The text range $textRange is not a subrange of that of the parent (${parent.textRange})"
+    }
+
+    if (this is TextAvailableNode && parent is TextAvailableNode) {
+        parent.text.toString().shouldContain(this.text.toString())
     }
 }
 

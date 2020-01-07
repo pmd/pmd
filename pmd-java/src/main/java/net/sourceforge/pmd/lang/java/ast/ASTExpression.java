@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Represents an expression, in the most general sense.
  * This corresponds to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-Expression">Expression</a>
@@ -72,6 +74,22 @@ public interface ASTExpression extends JavaNode, TypeNode, ASTMemberValue {
      */
     default boolean isParenthesized() {
         return getParenthesisDepth() > 0;
+    }
+
+
+    /**
+     * Returns the constant value of this expression, if this is a constant expression.
+     * Otherwise, or if some references couldn't be resolved, returns null.
+     * TODO implement that on other types
+     */
+    default @Nullable Object getConstValue() {
+        return null;
+    }
+
+
+    /** Returns true if this expression is a compile-time constant, and is inlined. */
+    default boolean isCompileTimeConstant() {
+        return getConstValue() != null;
     }
 
 }

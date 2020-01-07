@@ -9,10 +9,10 @@ import java.io.Reader;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 
 /**
  * Adapter for the JspParser.

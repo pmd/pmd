@@ -45,7 +45,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/jsp/ast/TokenMgrError.java" />
         <replace file="${target}/net/sourceforge/pmd/lang/jsp/ast/JspParserTokenManager.java"
                  token="class JspParserTokenManager"
-                 value="class JspParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class JspParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/jsp/ast/JspParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />

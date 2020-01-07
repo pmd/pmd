@@ -23,10 +23,27 @@ public interface GenericToken {
     GenericToken getPreviousComment();
 
     /**
-     * Gets the token's text.
-     * @return the token's text
+     * Returns the token's text.
      */
     String getImage();
+
+    // TODO these default implementations are here for compatibility because
+    //  the functionality is only used in pmd-java for now, though it could
+    //  be ported. I prefer doing this as changing all the GenericToken in
+    //  pmd-java to JavaccToken
+
+
+    /** Inclusive start offset in the source file text. */
+    default int getStartInDocument() {
+        return -1;
+    }
+
+
+    /** Exclusive end offset in the source file text. */
+    default int getEndInDocument() {
+        return -1;
+    }
+
 
     /**
      * Gets the line where the token's region begins

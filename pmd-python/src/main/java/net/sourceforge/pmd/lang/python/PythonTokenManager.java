@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.python;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 import net.sourceforge.pmd.lang.python.ast.PythonParserTokenManager;
 
 /**

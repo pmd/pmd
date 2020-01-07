@@ -8,8 +8,8 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;

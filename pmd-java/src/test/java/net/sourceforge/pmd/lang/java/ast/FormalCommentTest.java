@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 public class FormalCommentTest {
 
     @Test
@@ -21,8 +23,7 @@ public class FormalCommentTest {
                 + "    boolean supports(N node);\n"
                 + "";
 
-        Token token = new Token();
-        token.image = comment;
+        JavaccToken token = new JavaccToken(comment);
         FormalComment commentNode = new FormalComment(token);
 
         Assert.assertEquals(2, commentNode.jjtGetNumChildren());

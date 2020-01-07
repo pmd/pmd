@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,8 +8,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -20,6 +20,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     private JSymbolTable symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
+    private CharSequence text;
 
     AbstractJavaNode(int id) {
         super(id);
@@ -99,9 +100,18 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     @Override
     public Scope getScope() {
         if (scope == null) {
-            return ((JavaNode) parent).getScope();
+            return jjtGetParent().getScope();
         }
         return scope;
+    }
+
+
+    @Override
+    public CharSequence getText() {
+        if (text == null) {
+            text = getRoot().getText().subSequence(getStartOffset(), getEndOffset());
+        }
+        return text;
     }
 
     void setScope(Scope scope) {
@@ -127,6 +137,16 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
             root = jjtGetParent().getRoot();
         }
         return root;
+    }
+
+    @Override
+    public JavaccToken jjtGetFirstToken() {
+        return (JavaccToken) firstToken;
+    }
+
+    @Override
+    public JavaccToken jjtGetLastToken() {
+        return (JavaccToken) lastToken;
     }
 
     /**
@@ -195,20 +215,20 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     private void enlargeLeft(AbstractJavaNode child) {
-        GenericToken thisFst = jjtGetFirstToken();
-        GenericToken childFst = child.jjtGetFirstToken();
+        JavaccToken thisFst = this.jjtGetFirstToken();
+        JavaccToken childFst = child.jjtGetFirstToken();
 
         if (TokenUtils.isBefore(childFst, thisFst)) {
-            jjtSetFirstToken(childFst);
+            this.jjtSetFirstToken(childFst);
         }
     }
 
     private void enlargeRight(AbstractJavaNode child) {
-        GenericToken thisLast = jjtGetLastToken();
-        GenericToken childLast = child.jjtGetLastToken();
+        JavaccToken thisLast = this.jjtGetLastToken();
+        JavaccToken childLast = child.jjtGetLastToken();
 
         if (TokenUtils.isAfter(childLast, thisLast)) {
-            jjtSetLastToken(childLast);
+            this.jjtSetLastToken(childLast);
         }
     }
 
@@ -241,7 +261,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         }
     }
 
-    private GenericToken findTokenSiblingInThisNode(GenericToken token, int shift) {
+    private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
         if (shift == 0) {
             return token;
         } else if (shift < 0) {
@@ -277,5 +297,24 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     @Override
     public String getXPathNodeName() {
         return JavaParserTreeConstants.jjtNodeName[id];
+    }
+
+
+    /**
+     * The toString of Java nodes is only meant for debugging purposes
+     * as it's pretty expensive.
+     */
+    @Override
+    public String toString() {
+        return "|" + getXPathNodeName() + "|" + getStartOffset() + "," + getEndOffset() + "|" + getText();
+    }
+
+    private int getStartOffset() {
+        return this.jjtGetFirstToken().getStartInDocument();
+    }
+
+
+    private int getEndOffset() {
+        return this.jjtGetLastToken().getEndInDocument();
     }
 }

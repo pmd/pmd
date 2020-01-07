@@ -21,17 +21,17 @@ class ASTLiteralTest : ParserTestSpec({
 
         "\"\"" should matchExpr<ASTStringLiteral> {
             it::isStringLiteral shouldBe true
-            it::getUnescapedValue shouldBe ""
+            it::getConstValue shouldBe ""
             it::getImage shouldBe "\"\""
         }
 
         "\"foo\"" should matchExpr<ASTStringLiteral> {
-            it::getUnescapedValue shouldBe "foo"
+            it::getConstValue shouldBe "foo"
             it::getImage shouldBe "\"foo\""
         }
 
         "\"foo\\t\"" should matchExpr<ASTStringLiteral> {
-            it::getUnescapedValue shouldBe "foo\t"
+            it::getConstValue shouldBe "foo\t"
             it::getImage shouldBe "\"foo\\t\""
         }
 
@@ -146,16 +146,16 @@ $delim
 
     parserTest("String literal escapes") {
         "\"abc\u1234abc\"" should matchExpr<ASTStringLiteral> {
-            it::getUnescapedValue shouldBe "abc\u1234abc"
+            it::getConstValue shouldBe "abc\u1234abc"
             it::getImage shouldBe "\"abc\u1234abc\""
         }
 
         "\"abc\\u1234abc\"" should matchExpr<ASTStringLiteral> {
-            it::getUnescapedValue shouldBe "abc\u1234abc"
+            it::getConstValue shouldBe "abc\u1234abc"
             it::getImage shouldBe "\"abc\\u1234abc\""
         }
         "\"abcüabc\"" should matchExpr<ASTStringLiteral> {
-            it::getUnescapedValue shouldBe "abcüabc"
+            it::getConstValue shouldBe "abcüabc"
             it::getImage shouldBe "\"abcüabc\""
         }
     }
