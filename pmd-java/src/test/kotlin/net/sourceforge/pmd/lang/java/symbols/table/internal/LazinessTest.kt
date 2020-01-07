@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JValueSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.firstOrNull
-import net.sourceforge.pmd.lang.java.symbols.internal.testResolveHelper
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import org.checkerframework.checker.nullness.qual.Nullable

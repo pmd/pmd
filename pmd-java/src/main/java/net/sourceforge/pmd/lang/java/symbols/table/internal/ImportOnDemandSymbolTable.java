@@ -43,7 +43,7 @@ final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
      * @param helper          Resolve helper
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
      */
-    public ImportOnDemandSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> importsOnDemand) {
+    ImportOnDemandSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> importsOnDemand) {
         super(parent, helper);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {

@@ -2,9 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
@@ -75,7 +72,7 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
 
     @Override
     public void visit(ASTCompilationUnit node, Void data) {
-        Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.findChildrenOfType(ASTImportDeclaration.class).stream()
+        Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.children(ASTImportDeclaration.class)
                                                                         .collect(Collectors.partitioningBy(ASTImportDeclaration::isImportOnDemand));
 
         int pushed = 0;

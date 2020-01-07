@@ -32,7 +32,7 @@ final class SamePackageSymbolTable extends AbstractSymbolTable {
      * @param parent Parent table
      * @param helper Resolve helper
      */
-    public SamePackageSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+    SamePackageSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
         super(parent, helper);
     }
 

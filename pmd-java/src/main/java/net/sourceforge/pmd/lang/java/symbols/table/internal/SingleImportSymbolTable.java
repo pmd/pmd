@@ -34,7 +34,7 @@ final class SingleImportSymbolTable extends AbstractImportSymbolTable {
      * @param helper        Resolve helper
      * @param singleImports Import declarations, must not be on-demand!
      */
-    public SingleImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> singleImports) {
+    SingleImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> singleImports) {
         super(parent, helper);
 
         for (ASTImportDeclaration anImport : singleImports) {

@@ -46,16 +46,16 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).comment(comment);
     }
 
-    public static void setModifier(AccessNode node, AccessNode modifier) {
-        ((AbstractJavaAccessNode) node).setModifier(modifier);
+    public static void setModifier(AccessNode node, int modifier) {
+        ((AbstractJavaAccessNode) node).setModifier(true, modifier);
     }
 
     public static void setQname(ASTAnyTypeDeclaration declaration, JavaTypeQualifiedName qualifiedName) {
         ((AbstractAnyTypeDeclaration) declaration).setQualifiedName(qualifiedName);
     }
 
-    public static void setQname(ASTMethodOrConstructorDeclaration node, JavaOperationQualifiedName qualifiedName) {
-        ((AbstractMethodOrConstructorDeclaration<?>) node).setQualifiedName(qualifiedName);
+    public static void setQname(MethodLikeNode node, JavaOperationQualifiedName qualifiedName) {
+        ((AbstractMethodLikeNode) node).setQualifiedName(qualifiedName);
     }
 
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {

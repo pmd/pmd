@@ -2,29 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext
-import net.sourceforge.pmd.lang.java.JavaLanguageModule
-import net.sourceforge.pmd.lang.java.ParserTstUtil
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.internal.HeaderScopesTest
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolveHelper
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -32,35 +19,13 @@ import java.util.stream.Stream
 
 /** Testing utilities */
 
-fun Class<*>.getAst(): ASTCompilationUnit = ParserTstUtil.parseJavaDefaultVersion(this)
-
-fun Class<*>.getTypeDeclaration(): ASTAnyTypeDeclaration =
-        ParserTstUtil.parseJavaDefaultVersion(this).let { acu ->
-            if (this.enclosingClass == null) {
-                acu.getFirstDescendantOfType(ASTAnyTypeDeclaration::class.java)
-            } else {
-                val qname = QualifiedNameFactory.ofClass(this)
-                acu.findDescendantsOfType(ASTAnyTypeDeclaration::class.java, true)
-                        .stream().filter { it.qualifiedName == qname }
-                        .findFirst()
-                        .get()
-            }
-        }
-
-object DefaultAnalysisConfiguration : AstAnalysisContext {
-    override fun getTypeResolutionClassLoader(): ClassLoader = ParserTstUtil::class.java.classLoader
-
-    override fun getLanguageVersion(): LanguageVersion = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).defaultVersion
-}
-
-fun Class<*>.parse(): ASTCompilationUnit = ParserTstUtil.parseJavaDefaultVersion(this)
 
 fun <T> Stream<T>.firstOrNull(): T? = findFirst().orElse(null)
 
 val testSymFactory = ReflectionSymFactory()
 val testSymResolver = ClasspathSymbolResolver(HeaderScopesTest::class.java.classLoader, testSymFactory)
-fun classSym(klass: Class<*>?) = testSymFactory.getClassSymbol(klass)
 
+fun classSym(klass: Class<*>?) = testSymFactory.getClassSymbol(klass)
 
 fun <T, K> List<T>.groupByUnique(keySelector: (T) -> K): Map<K, T> =
         groupBy(keySelector).mapValues { (_, vs) ->

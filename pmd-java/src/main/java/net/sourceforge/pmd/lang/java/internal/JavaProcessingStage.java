@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
@@ -39,6 +40,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 @Experimental
 public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStage> {
 
+    /**
+     * This acts as a merged stage, non-optional. Ideally this would be encapsulated
+     * in the {@link JavaLanguageParser}, like the {@link LanguageLevelChecker}.
+     */
     JAVA_PROCESSING("Java processing") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
@@ -59,7 +64,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             // Qualified name resolver now resolves also symbols for type declarations
             bench("Qualified name resolution",
-                  () -> new QualifiedNameResolver().initializeWith(classLoader, acu));
+                () -> new QualifiedNameResolver().initializeWith(classLoader, acu));
 
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 
@@ -67,7 +72,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             // Resolve symbol tables
             bench("Symbol table resolution",
-                  () -> new SymbolTableResolver(symResolver, jdkVersion, acu).traverse());
+                () -> new SymbolTableResolver(symResolver, jdkVersion, acu).traverse());
 
         }
     },

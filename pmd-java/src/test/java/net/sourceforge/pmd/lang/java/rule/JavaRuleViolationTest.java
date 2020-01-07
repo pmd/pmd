@@ -51,7 +51,7 @@ public class JavaRuleViolationTest {
                 new StringReader(code));
         // set scope of AST nodes
         ast.jjtAccept(new ScopeAndDeclarationFinder(), null);
-        JavaProcessingStage.QNAME_RESOLUTION.processAST(ast, new AstAnalysisContext() {
+        JavaProcessingStage.JAVA_PROCESSING.processAST(ast, new AstAnalysisContext() {
             @Override
             public ClassLoader getTypeResolutionClassLoader() {
                 return JavaRuleViolation.class.getClassLoader();

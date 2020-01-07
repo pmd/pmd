@@ -159,7 +159,7 @@ final class JavaLangSymbolTable extends AbstractSymbolTable {
      * @param parent Parent table
      * @param helper Resolve helper
      */
-    public JavaLangSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+    JavaLangSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
         super(parent, helper);
         this.javaLangTypes = getJavaLangForJdkVersion(helper.getJdkVersion());
     }

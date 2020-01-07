@@ -154,6 +154,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          var packageName: String = "",
                          var genClassHeader: String = "class Foo") {
 
+    val parser get() = javaVersion.parser
+
     var fullSource: String? = null
 
     /** Imports to add to the top of the parsing contexts. */

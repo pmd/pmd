@@ -2,6 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+@file:Suppress("RemoveRedundantQualifierName")
+
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.matchers.collections.containExactly
@@ -17,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
-import net.sourceforge.pmd.lang.java.symbols.internal.parse
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import kotlin.streams.toList
 
@@ -45,11 +46,11 @@ class HeaderScopesTest : ParserTestSpec({
     fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s).shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = resolveMethodName(s).toList()
 
-    fun ASTCompilationUnit.firstImportTable() = symbolTable.parent
+    fun ASTCompilationUnit.firstImportTable() = symbolTable
 
     parserTest("Test same-package scope") {
 
-        val acu = javasymbols.testdata.TestCase1::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
         acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
             it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
@@ -59,7 +60,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$javalangTypes should be shadowed by $typesInTheSamePackage") {
 
-        val acu = javasymbols.testdata.TestCase1::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
         acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
 
@@ -75,7 +76,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$typesInTheSamePackage should be shadowed by $singleTypeImports") {
 
-        val acu = javasymbols.testdata.deep.SomewhereElse::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
 
         acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
@@ -92,7 +93,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$javalangTypes should be shadowed by $singleTypeImports") {
 
-        val acu = javasymbols.testdata.deep.SomewhereElse::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
 
         acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
@@ -113,7 +114,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$onDemandTypeImports should be shadowed by everything") {
 
-        val acu = javasymbols.testdata.deep.TypeImportsOnDemand::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.TypeImportsOnDemand::class.java)
         // import javasymbols.testdata.*;
 
         acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {
@@ -152,7 +153,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$onDemandStaticImports should import only accessible members") {
 
-        val acu = javasymbols.testdata.deep.StaticImportOnDemand::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
         // import javasymbols.testdata.Statics.*;
 
 
@@ -179,7 +180,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$onDemandStaticImports should import only static members") {
 
-        val acu = javasymbols.testdata.deep.StaticImportOnDemand::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
         // import javasymbols.testdata.Statics.*;
 
 
@@ -199,7 +200,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("Types imported through $onDemandStaticImports should be shadowed by $typesInTheSamePackage") {
 
-        val acu = javasymbols.testdata.deep.StaticImportOnDemand::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
         // import javasymbols.testdata.Statics.*;
 
 
@@ -219,7 +220,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("Types imported through $onDemandStaticImports should be shadowed by $singleTypeImports") {
 
-        val acu = javasymbols.testdata.deep.StaticIOD2::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticIOD2::class.java)
         // import javasymbols.testdata.Statics.*;
 
 
@@ -241,7 +242,7 @@ class HeaderScopesTest : ParserTestSpec({
 
     parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
 
-        val acu = javasymbols.testdata.deep.StaticCollisionImport::class.java.parse()
+        val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
         // import javasymbols.testdata.Statics.*;
 
         acu.firstImportTable().shouldBeA<SingleImportSymbolTable> {

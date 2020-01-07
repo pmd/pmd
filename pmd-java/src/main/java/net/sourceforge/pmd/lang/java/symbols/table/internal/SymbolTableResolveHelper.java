@@ -22,9 +22,9 @@ final class SymbolTableResolveHelper {
     private final int jdkVersion;
 
 
-    public SymbolTableResolveHelper(String thisPackage,
-                                    SymbolResolver symbolResolver,
-                                    int jdkVersion) {
+    SymbolTableResolveHelper(String thisPackage,
+                             SymbolResolver symbolResolver,
+                             int jdkVersion) {
 
         this.thisPackage = thisPackage;
         this.symbolResolver = symbolResolver;
