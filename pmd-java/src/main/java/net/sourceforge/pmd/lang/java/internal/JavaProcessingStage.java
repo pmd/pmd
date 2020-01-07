@@ -18,19 +18,16 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
-import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 
 
 /**
@@ -46,25 +43,23 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             /*
-                - qname resolution, setting symbols on declarations
-                  - AST symbols are only partially initialized, their type-related methods will fail
+                PASSES:
+
+                - qname resolution, TODO setting symbols on declarations
+                  - now AST symbols are only partially initialized, their type-related methods will fail
                 - symbol table resolution
                   - AST symbols are now functional
                 - TODO AST disambiguation here
-                - type resolution initialization
-
+                - TODO type resolution initialization
              */
+
             ASTCompilationUnit acu = (ASTCompilationUnit) rootNode;
-
-            AstSymFactory astSymFactory = new AstSymFactory();
-
-
-            // Qualified name resolver now resolves also symbols for type declarations
-            bench("Qualified name resolution",
-                  () -> new QualifiedNameResolver(astSymFactory, acu).traverse());
 
             ClassLoader classLoader = PMDASMClassLoader.getInstance(configuration.getTypeResolutionClassLoader());
 
+            // Qualified name resolver now resolves also symbols for type declarations
+            bench("Qualified name resolution",
+                  () -> new QualifiedNameResolver().initializeWith(classLoader, acu));
 
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 
@@ -74,10 +69,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
             bench("Symbol table resolution",
                   () -> new SymbolTableResolver(symResolver, jdkVersion, acu).traverse());
 
-            // At this point at least explicit types should be handled,
-            // so AstTypeFactory::fromAst should properly work
-
-            InternalApiBridge.setTypeResolver(acu, new LazyTypeResolver(astSymFactory));
         }
     },
 

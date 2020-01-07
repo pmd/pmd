@@ -144,7 +144,7 @@ final class JavaLangSymbolTable extends AbstractSymbolTable {
 
         for (Class<?> aClass : classes) {
 
-            JClassSymbol reference = ReflectSymInternals.STATIC_TYPE_FACTORY.symbols().getClassSymbol(aClass);
+            JClassSymbol reference = ReflectSymInternals.createSharedSym(aClass);
 
             theJavaLang.put(aClass.getSimpleName(), reference);
             theJavaLang.put(aClass.getCanonicalName(), reference);

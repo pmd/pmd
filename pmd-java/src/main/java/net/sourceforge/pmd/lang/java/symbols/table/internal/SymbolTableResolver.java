@@ -13,11 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
@@ -86,40 +83,12 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
         pushed += pushOnStack(JavaLangSymbolTable::new);
         pushed += pushOnStack(SamePackageSymbolTable::new);
         pushed += pushOnStack((p, h) -> new SingleImportSymbolTable(p, h, isImportOnDemand.get(false)));
-        // types declared inside the compilation unit
-        pushed += pushOnStack((p, h) -> new MemberTypeSymTable(p, h, node));
 
         // All of the header symbol tables belong to the CompilationUnit
         setTopSymbolTableAndRecurse(node);
         popStack(pushed);
     }
 
-
-    @Override
-    public void visit(ASTAnyTypeDeclaration node, Void data) {
-        int pushed = 0;
-        pushed += pushOnStack((p, h) -> new MemberTypeSymTable(p, h, node));
-        pushed += pushOnStack((p, h) -> new TypeParamOwnerSymTable(p, h, node.getSymbol()));
-
-        setTopSymbolTableAndRecurse(node);
-
-        popStack(pushed);
-    }
-
-
-    @Override
-    public void visit(ASTMethodDeclaration node, Void data) {
-        int pushed = pushOnStack((p, h) -> new TypeParamOwnerSymTable(p, h, node.getSymbol()));
-        setTopSymbolTableAndRecurse(node);
-        popStack(pushed);
-    }
-
-    @Override
-    public void visit(ASTConstructorDeclaration node, Void data) {
-        int pushed = pushOnStack((p, h) -> new TypeParamOwnerSymTable(p, h, node.getSymbol()));
-        setTopSymbolTableAndRecurse(node);
-        popStack(pushed);
-    }
 
     private void setTopSymbolTableAndRecurse(JavaNode node) {
         InternalApiBridge.setSymbolTable(node, peekStack());
