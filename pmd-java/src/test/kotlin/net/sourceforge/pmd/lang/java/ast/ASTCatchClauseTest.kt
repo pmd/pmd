@@ -22,22 +22,15 @@ class ASTCatchClauseTest : ParserTestSpec({
         importedTypes += IOException::class.java
 
         "try { } catch (IOException ioe) { }" should matchStmt<ASTTryStatement> {
-            block()
+            it::getBody shouldBe block { }
             catchClause("ioe") {
-                it::isMulticatchStatement shouldBe false
-                it::getExceptionName shouldBe "ioe"
-
-                var types: List<ASTClassOrInterfaceType>? = null
-
                 catchFormal("ioe") {
-                    types = listOf(classType("IOException"))
+                    it::isMulticatch shouldBe false
+                    it::getTypeNode shouldBe classType("IOException")
 
                     variableId("ioe")
                 }
-
-                block()
-
-                it::getCaughtExceptionTypeNodes shouldBe types!!
+                it::getBody shouldBe block { }
             }
         }
 
@@ -48,26 +41,49 @@ class ASTCatchClauseTest : ParserTestSpec({
         importedTypes += IOException::class.java
 
         "try { } catch (IOException | AssertionError e) { }" should matchStmt<ASTTryStatement> {
-            block()
+            it::getBody shouldBe block { }
             catchClause("e") {
-                it::isMulticatchStatement shouldBe true
-                it::getExceptionName shouldBe "e"
-
-                var types: List<ASTClassOrInterfaceType>? = null
-
                 catchFormal("e") {
-                    unionType {
-                        val t1 = classType("IOException")
-                        val t2 = classType("AssertionError")
+                    it::isMulticatch shouldBe true
 
-                        types = listOf(t1, t2)
+                    it::getTypeNode shouldBe unionType {
+                        classType("IOException")
+                        classType("AssertionError")
                     }
+
                     variableId("e")
                 }
 
-                block()
 
-                it::getCaughtExceptionTypeNodes shouldBe types!!
+                it::getBody shouldBe block { }
+            }
+        }
+
+    }
+
+    parserTest("Test annotated multicatch", javaVersions = J1_8..Latest) {
+
+        importedTypes += IOException::class.java
+
+        "try { } catch (@B IOException | @A AssertionError e) { }" should matchStmt<ASTTryStatement> {
+            it::getBody shouldBe block { }
+            catchClause("e") {
+                catchFormal("e") {
+                    it::isMulticatch shouldBe true
+
+                    annotation("B") // not a type annotation
+
+                    unionType {
+                        classType("IOException")
+                        classType("AssertionError") {
+                            annotation("A")
+                        }
+                    }
+
+                    variableId("e")
+                }
+
+                block {}
             }
         }
 

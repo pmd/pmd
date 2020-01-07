@@ -69,7 +69,7 @@ public final class ASTTryStatement extends AbstractStatement {
      * Returns the body of this try statement.
      */
     public ASTBlock getBody() {
-        return (ASTBlock) jjtGetChild(1);
+        return children(ASTBlock.class).first();
     }
 
     /**

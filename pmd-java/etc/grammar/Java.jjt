@@ -1802,6 +1802,7 @@ void FormalParameter() :
    VariableDeclaratorId()
 }
 
+
 void ConstructorDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);
 JavaccToken t;}
@@ -1927,15 +1928,10 @@ void AnnotatedClassOrInterfaceType() #void:
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
 void Type() #void:
+{}
 {
-    JavaccToken t;
-}
-{
- // lookahead to catch arrays of primitive types.
- // we can't lookahead for just PrimitiveType() "["
- // because the "[" may be preceded by annotations
- LOOKAHEAD(PrimitiveType() ArrayTypeDim() | <IDENTIFIER>) ReferenceType()
- | PrimitiveType()
+   PrimitiveType()        [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
+ | ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
 }
 
 void Dims() #ArrayDimensions:
@@ -2522,7 +2518,6 @@ void LambdaParameterList():
 void LambdaParameter():
 {
   boolean isVarType = false;
-  ASTLambdaParameter me = jjtThis;
   boolean isFinal = false;
 }
 {
@@ -2985,22 +2980,12 @@ void CatchClause() :
 }
 
 
-void CatchParameter() :
-{boolean isFinal = false;}
+void CatchParameter():
+{boolean isFinal = false; boolean multi=false;}
 {
-   isFinal=LocalVarModifierList() UnionType() VariableDeclaratorId()
-   {jjtThis.setFinal(isFinal);}
-}
-
-// Special type for catch formal parameters
-// Eg `IOException | ParseException`
-void UnionType() #UnionType(isUnion):
-{boolean isUnion=false;}
-{
-  // Annotations of the first class type belong to the
-  // catch parameter (the variable) because of syntactic ambiguity
-  // This is similar to how a local var type works.
-  ClassOrInterfaceType() ( "|" {isUnion=true;} AnnotatedClassOrInterfaceType() )*
+   isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+   ( AnnotatedClassOrInterfaceType() ( "|" AnnotatedClassOrInterfaceType()  {multi=true;} )* ) #UnionType(multi)
+   VariableDeclaratorId()
 }
 
 void FinallyClause() :

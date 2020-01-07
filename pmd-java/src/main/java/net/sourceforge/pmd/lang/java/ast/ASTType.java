@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;

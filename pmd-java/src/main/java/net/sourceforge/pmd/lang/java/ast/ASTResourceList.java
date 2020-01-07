@@ -16,7 +16,9 @@ import java.util.List;
  *
  * </pre>
  */
-public final class ASTResourceList extends AbstractJavaNode implements Iterable<ASTResource>, JSingleChildNode<ASTResource> {
+public final class ASTResourceList extends AbstractJavaNode
+    implements Iterable<ASTResource>,
+               InternalInterfaces.AtLeastOneChildOfType<ASTResource> {
 
     private boolean trailingSemi;
 

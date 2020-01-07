@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
  * </pre>
  */
-public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, Annotatable {
+public final class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, Annotatable {
 
     private boolean isVarargs;
 

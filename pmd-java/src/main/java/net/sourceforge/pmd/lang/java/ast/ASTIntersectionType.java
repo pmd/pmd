@@ -24,7 +24,10 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTIntersectionType extends AbstractJavaTypeNode implements ASTReferenceType, JSingleChildNode<ASTType>, Iterable<ASTType> {
+public final class ASTIntersectionType extends AbstractJavaTypeNode
+    implements ASTReferenceType,
+               InternalInterfaces.AtLeastOneChildOfType<ASTType>,
+               Iterable<ASTType> {
 
     ASTIntersectionType(int id) {
         super(id);

@@ -1,13 +1,15 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+
 /**
- * Formal parameter of a {@linkplain ASTCatchStatement catch statement}.
- * The type node may be a {@link ASTUnionType union type}, which represents
- * multi-catch clauses.
+ * Formal parameter of a {@linkplain ASTCatchClause catch clause}
+ * to represent the declared exception variable.
  *
  * <pre class="grammar">
  *
@@ -15,7 +17,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatable {
+public class ASTCatchParameter extends AbstractJavaNode implements InternalInterfaces.VariableIdOwner {
 
     private boolean isFinal;
 
@@ -28,14 +30,6 @@ public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatab
     }
 
 
-    public boolean isFinal() {
-        return isFinal;
-    }
-
-    void setFinal(boolean f) {
-        isFinal = f;
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -47,28 +41,43 @@ public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatab
         visitor.visit(this, data);
     }
 
-    /** Returns the name of the variable. */
-    public String getName() {
-        return getVariableId().getVariableName();
+    public boolean isFinal() {
+        return isFinal;
     }
 
-    /** Returns the declarator ID of this catch parameter. */
-    public ASTVariableDeclaratorId getVariableId() {
+    void setFinal(boolean aFinal) {
+        isFinal = aFinal;
+    }
+
+    /**
+     * Returns true if this is a multi-catch parameter,
+     * that is, it catches several unrelated exception types
+     * at the same time. For example:
+     *
+     * <pre>catch (IllegalStateException | IllegalArgumentException e) {}</pre>
+     */
+    public boolean isMulticatch() {
+        return getTypeNode() instanceof ASTUnionType;
+    }
+
+    @Override
+    @NonNull
+    public ASTVariableDeclaratorId getVarId() {
         return (ASTVariableDeclaratorId) getLastChild();
     }
 
-    /**
-     * Returns the type node of this formal parameter. This may be
-     * a {@linkplain ASTUnionType union type}.
-     */
-    public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+    /** Returns the name of this parameter. */
+    public String getName() {
+        return getVarId().getVariableName();
     }
 
+
     /**
-     * Returns true if this is a multi-catch node.
+     * Returns the type node of this catch parameter. May be a
+     * {@link ASTUnionType UnionType}.
      */
-    public boolean isMultiCatch() {
-        return getTypeNode() instanceof ASTUnionType;
+    public ASTType getTypeNode() {
+        return children(ASTType.class).first();
     }
+
 }

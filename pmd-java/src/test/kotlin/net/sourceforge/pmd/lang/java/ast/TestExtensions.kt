@@ -56,9 +56,9 @@ fun TreeNodeWrapper<Node, *>.annotation(name: String, spec: NodeSpec<ASTAnnotati
             spec()
         }
 
-fun TreeNodeWrapper<Node, *>.catchClause(name:String, spec: NodeSpec<ASTCatchClause> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.catchClause(name: String, spec: NodeSpec<ASTCatchClause> = EmptyAssertions) =
         child<ASTCatchClause> {
-            it::getExceptionName shouldBe name
+            it.parameter::getName shouldBe name
             spec()
         }
 
@@ -280,6 +280,7 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
             it::getSimpleName shouldBe simpleName
             contents()
         }
+
 fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyAssertions) =
         child<ASTUnionType>(ignoreChildren = contents == EmptyAssertions) {
             contents()
