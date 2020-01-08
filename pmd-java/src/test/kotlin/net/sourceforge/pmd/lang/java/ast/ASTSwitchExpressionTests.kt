@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
@@ -25,7 +26,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
 
-        """
+            """
             switch (day) {
                 case FRIDAY, SUNDAY -> 6;
                 case WEDNESDAY      -> 9;
@@ -44,7 +45,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     parserTest("No yield stmt before j13 preview", javaVersions = !J13__PREVIEW) {
         inContext(ExpressionParsingCtx) {
 
-        """
+            """
             switch (day) {
                 default             -> {
                     yield result * 4;
@@ -62,7 +63,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
 
-        """
+            """
             switch (day) {
                 case FRIDAY, SUNDAY -> 6;
                 case WEDNESDAY      -> 9;
@@ -122,7 +123,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
 
-        """ 
+            """ 
             switch (day) {
                 case a + b, 4 * 2 / Math.PI -> 6;
             }
@@ -203,38 +204,42 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 switchExpr {
                     it::getTestedExpression shouldBe variableAccess("day")
 
-                    switchArrow {
-                        switchLabel {
-                            variableAccess("FRIDAY")
-                        }
-                        int(6)
-                    }
 
-                    switchArrow {
-                        switchLabel {
-                            variableAccess("WEDNESDAY")
-                        }
-
-                        switchExpr {
-                            it::getTestedExpression shouldBe variableAccess("foo")
+                    it.branches.toList() shouldBe listOf(
 
                             switchArrow {
                                 switchLabel {
-                                    int(2)
+                                    variableAccess("FRIDAY")
                                 }
-                                int(5)
-                            }
+                                int(6)
+                            },
+
+                            switchArrow {
+                                switchLabel {
+                                    variableAccess("WEDNESDAY")
+                                }
+
+                                switchExpr {
+                                    it::getTestedExpression shouldBe variableAccess("foo")
+
+                                    switchArrow {
+                                        switchLabel {
+                                            int(2)
+                                        }
+                                        int(5)
+                                    }
+                                    switchArrow {
+                                        switchDefaultLabel()
+                                        int(3)
+                                    }
+                                }
+                            },
+
                             switchArrow {
                                 switchDefaultLabel()
                                 int(3)
                             }
-                        }
-                    }
-
-                    switchArrow {
-                        switchDefaultLabel()
-                        int(3)
-                    }
+                    )
                 }
             }
         }
@@ -260,34 +265,37 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                     it::isExhaustiveEnumSwitch shouldBe false
                     it::getTestedExpression shouldBe variableAccess("day")
 
-                    switchFallthrough {
-                        switchLabel {
-                            variableAccess("FRIDAY")
-                        }
-                        exprStatement()
-                        breakStatement()
-                    }
+                    it.branches.toList() shouldBe listOf(
 
-                    switchFallthrough {
-                        switchLabel {
-                            variableAccess("WEDNESDAY")
-                        }
-                        switchStmt {
-                            variableAccess("foo")
-                            switchArrow {
-                                switchLabel()
-                                int(5)
-                            }
-                            switchArrow {
+
+                            switchFallthrough {
+                                switchLabel {
+                                    variableAccess("FRIDAY")
+                                }
+                                exprStatement()
+                                breakStatement()
+                            },
+                            switchFallthrough {
+                                switchLabel {
+                                    variableAccess("WEDNESDAY")
+                                }
+                                switchStmt {
+                                    variableAccess("foo")
+                                    switchArrow {
+                                        switchLabel()
+                                        int(5)
+                                    }
+                                    switchArrow {
+                                        switchDefaultLabel()
+                                        int(3)
+                                    }
+                                }
+                            },
+                            switchFallthrough {
                                 switchDefaultLabel()
-                                int(3)
+                                exprStatement()
                             }
-                        }
-                    }
-                    switchFallthrough {
-                        switchDefaultLabel()
-                        exprStatement()
-                    }
+                    )
                 }
             }
         }

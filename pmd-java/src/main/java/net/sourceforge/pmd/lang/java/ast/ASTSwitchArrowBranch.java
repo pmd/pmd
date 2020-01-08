@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTSwitchArrowBranch extends AbstractJavaNode implements LeftRecursiveNode {
+public final class ASTSwitchArrowBranch extends AbstractJavaNode implements LeftRecursiveNode, ASTSwitchBranch {
 
     ASTSwitchArrowBranch(int id) {
         super(id);
@@ -32,12 +32,6 @@ public final class ASTSwitchArrowBranch extends AbstractJavaNode implements Left
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    /** Returns the label, which may be compound. */
-    public ASTSwitchLabel getLabel() {
-        return (ASTSwitchLabel) getFirstChild();
     }
 
     /** Returns the right hand side of the arrow. */
