@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,9 +16,7 @@ public class StringLiteralsTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseStringLiterals() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("StringLiterals.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("StringLiterals.pls");
         List<ASTStringLiteral> strings = input.findDescendantsOfType(ASTStringLiteral.class);
         Assert.assertEquals(20, strings.size());
 
@@ -35,9 +31,7 @@ public class StringLiteralsTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseMultilineVarchar() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("MultilineVarchar.pls"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("MultilineVarchar.pls");
         List<ASTStringLiteral> strings = input.findDescendantsOfType(ASTStringLiteral.class);
         Assert.assertEquals(1, strings.size());
         Assert.assertTrue(normalizeEol(strings.get(0).getString()).startsWith("\ncreate or replace and"));

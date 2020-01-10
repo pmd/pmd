@@ -25,8 +25,8 @@ declare
 
   qliteral1 clob := q'!name LIKE '%DBMS_%%'!';
   qliteral2 clob := Q'{SELECT * FROM employees WHERE last_name = 'Smith';}';
-  qliteral1a clob := q'! test !';
-  qliteral2a clob := q'{
+  qliteral2a clob := q'! test !';
+  qliteral2b clob := q'{
     also multiple
     lines
   }';
