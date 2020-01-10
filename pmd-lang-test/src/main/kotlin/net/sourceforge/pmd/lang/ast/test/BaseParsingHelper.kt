@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ParserOptions
 import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.RootNode
 import org.apache.commons.io.IOUtils
@@ -105,34 +106,40 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    open fun parse(sourceCode: String, version: String? = null): T {
+    fun parse(sourceCode: String, version: String? = null): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
         val options = params.parserOptions ?: handler.defaultParserOptions
         val parser = handler.getParser(options)
         val rootNode = rootClass.cast(parser.parse(null, StringReader(sourceCode)))
         if (params.doProcess) {
-            if (!handler.processingStages.isEmpty()) {
-                var astAnalysisContext = object : AstAnalysisContext {
-                    override fun getTypeResolutionClassLoader() : ClassLoader {
-                        return javaClass.classLoader
-                    }
-                    override fun getLanguageVersion() : LanguageVersion {
-                        return lversion
-                    }
-                }
-                handler.processingStages.forEach {
-                    it.processAST(rootNode, astAnalysisContext)
-                }
-            } else {
-                handler.getQualifiedNameResolutionFacade(javaClass.classLoader).start(rootNode)
-                handler.getSymbolFacade(javaClass.classLoader).start(rootNode)
-                handler.dataFlowFacade.start(rootNode)
-                handler.getTypeResolutionFacade(javaClass.classLoader).start(rootNode)
-                handler.multifileFacade.start(rootNode)
-            }
+            postProcessing(handler, lversion, rootNode)
         }
         return rootNode
+    }
+
+    /**
+     * Select the processing stages that this should run in [postProcessing],
+     * by default runs everything.
+     */
+    protected open fun selectProcessingStages(handler: LanguageVersionHandler): List<AstProcessingStage<*>> =
+            handler.processingStages
+
+    /**
+     * Called only if [Params.doProcess] is true.
+     */
+    protected open fun postProcessing(handler: LanguageVersionHandler, lversion: LanguageVersion, rootNode: T?) {
+        val astAnalysisContext = object : AstAnalysisContext {
+            override fun getTypeResolutionClassLoader(): ClassLoader = javaClass.classLoader
+
+            override fun getLanguageVersion(): LanguageVersion = lversion
+        }
+
+        val stages = selectProcessingStages(handler).sortedWith(Comparator { o1, o2 -> o1.compare(o2) })
+
+        stages.forEach {
+            it.processAST(rootNode, astAnalysisContext)
+        }
     }
 
     /**
