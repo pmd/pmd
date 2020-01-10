@@ -4,32 +4,21 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 
 public abstract class EcmascriptParserTestBase {
-    public ASTAstRoot parse(String code) {
-        EcmascriptParser parser = new EcmascriptParser(new EcmascriptParserOptions());
-        Reader sourceCode = new StringReader(code);
-        return (ASTAstRoot) parser.parse(sourceCode);
-    }
 
-    public ASTAstRoot parse18(String code) {
+    protected final JsParsingHelper js = JsParsingHelper.DEFAULT.withResourceContext(getClass());
+
+    protected final JsParsingHelper js18 = JsParsingHelper.DEFAULT.withResourceContext(getClass())
+                                                                  .withParserOptions(parserVersion(Version.VERSION_1_8));
+
+    public ParserOptions parserVersion(EcmascriptParserOptions.Version version) {
         EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
-        parserOptions.setRhinoLanguageVersion(EcmascriptParserOptions.Version.VERSION_1_8);
-        EcmascriptParser parser = new EcmascriptParser(parserOptions);
-        Reader sourceCode = new StringReader(code);
-        return (ASTAstRoot) parser.parse(sourceCode);
+        parserOptions.setRhinoLanguageVersion(version);
+        return parserOptions;
     }
 
-    public String dump(EcmascriptNode<?> node) {
-        DumpFacade dumpFacade = new DumpFacade();
-        StringWriter writer = new StringWriter();
-        dumpFacade.initializeWith(writer, "", true, node);
-        dumpFacade.visit(node, "");
-        return writer.toString();
-    }
 }

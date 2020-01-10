@@ -13,8 +13,7 @@ public class CursorForLoopTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseCursorForLoopSimple() {
-        String code = loadTestResource("CursorForLoopSimple.pls");
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("CursorForLoopSimple.pls");
         ASTCursorForLoopStatement forloop = input.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
         Assert.assertNotNull(forloop);
         ASTForIndex forindex = forloop.getFirstChildOfType(ASTForIndex.class);
@@ -24,8 +23,7 @@ public class CursorForLoopTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseCursorForLoopNested() {
-        String code = loadTestResource("CursorForLoopNested.pls");
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("CursorForLoopNested.pls");
         ASTCursorForLoopStatement forloop = input.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
         Assert.assertNotNull(forloop);
         ASTForIndex forindex = forloop.getFirstChildOfType(ASTForIndex.class);
@@ -43,22 +41,19 @@ public class CursorForLoopTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseCursorForLoop1047a() {
-        String code = loadTestResource("CursorForLoop1047a.pls");
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("CursorForLoop1047a.pls");
         Assert.assertNotNull(input);
     }
 
     @Test
     public void parseCursorForLoop1047b() {
-        String code = loadTestResource("CursorForLoop1047b.pls");
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("CursorForLoop1047b.pls");
         Assert.assertNotNull(input);
     }
 
     @Test
     public void parseCursorForLoop681() {
-        String code = loadTestResource("CursorForLoop681.pls");
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("CursorForLoop681.pls");
         Assert.assertNotNull(input);
     }
 }
