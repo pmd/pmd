@@ -13,9 +13,10 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -35,9 +36,8 @@ public class PLSQLParser extends AbstractParser {
      * Subclass should override this method to modify the PLSQLParser as needed.
      */
     protected net.sourceforge.pmd.lang.plsql.ast.PLSQLParser createPLSQLParser(Reader source) throws ParseException {
-        Reader in = IOUtil.skipBOM(source);
         // Wrapped PLSQL AST Parser
-        return new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(in);
+        return new net.sourceforge.pmd.lang.plsql.ast.PLSQLParser(CharStreamFactory.simpleCharStream(IOUtil.skipBOM(source)));
     }
 
     @Override

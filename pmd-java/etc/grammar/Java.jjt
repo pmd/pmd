@@ -250,7 +250,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -394,7 +394,7 @@ TOKEN_MGR_DECLS :
 
 SPECIAL_TOKEN :
 {
-  // those are private, just for code organisation
+ // those are private, just for code organisation
   < #HORIZONTAL_WHITESPACE: [" ", "\t", "\f"] >
 | < #LINE_TERMINATOR: "\n" | "\r" | "\r\n" >
   // this one is pushed, notice the (..)+ construct, to avoid
@@ -1551,7 +1551,7 @@ ASTCompilationUnit CompilationUnit() :
   <EOF>
   {
      jjtThis.setComments(token_source.comments);
-     jjtThis.setTokenDocument(((net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream) token_source.input_stream).getTokenDocument());
+     jjtThis.setTokenDocument(((net.sourceforge.pmd.lang.ast.JavaCharStream) token_source.input_stream).getTokenDocument());
      return jjtThis;
   }
 }
@@ -3003,15 +3003,15 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT() #void:
 {}
 {
-    LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
-    ">" ">" ">"
+   LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+   ">" ">" ">"
 }
 
 void RSIGNEDSHIFT() #void:
 {}
 {
-    LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RSIGNEDSHIFT})
-    ">" ">"
+  LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+  ">" ">"
 }
 
 /* Annotation syntax follows. */

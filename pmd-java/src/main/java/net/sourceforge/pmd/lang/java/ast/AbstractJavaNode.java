@@ -7,10 +7,14 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
@@ -58,6 +62,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         }
     }
 
+
     @Override
     public JavaNode jjtGetParent() {
         return (JavaNode) super.jjtGetParent();
@@ -104,7 +109,6 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         }
         return scope;
     }
-
 
     @Override
     public CharSequence getText() {
@@ -295,7 +299,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     @Override
-    public String getXPathNodeName() {
+    public final String getXPathNodeName() {
         return JavaParserTreeConstants.jjtNodeName[id];
     }
 

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ecmascript5;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5ParserTokenManager;
 
 /**
@@ -23,7 +23,7 @@ public class Ecmascript5TokenManager implements TokenManager {
      *            the source code
      */
     public Ecmascript5TokenManager(Reader source) {
-        tokenManager = new Ecmascript5ParserTokenManager(new SimpleCharStream(source));
+        tokenManager = new Ecmascript5ParserTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override

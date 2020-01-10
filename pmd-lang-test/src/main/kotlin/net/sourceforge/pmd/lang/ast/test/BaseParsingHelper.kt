@@ -128,7 +128,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     /**
      * Called only if [Params.doProcess] is true.
      */
-    protected open fun postProcessing(handler: LanguageVersionHandler, lversion: LanguageVersion, rootNode: T?) {
+    protected open fun postProcessing(handler: LanguageVersionHandler, lversion: LanguageVersion, rootNode: T) {
         val astAnalysisContext = object : AstAnalysisContext {
             override fun getTypeResolutionClassLoader(): ClassLoader = javaClass.classLoader
 

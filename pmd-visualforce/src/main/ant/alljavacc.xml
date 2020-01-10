@@ -46,7 +46,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/TokenMgrError.java" />
         <replace file="${target}/net/sourceforge/pmd/lang/vf/ast/VfParserTokenManager.java"
                  token="class VfParserTokenManager"
-                 value="class VfParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
+                 value="class VfParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/vf/ast/VfParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />

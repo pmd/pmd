@@ -115,7 +115,7 @@ options {
 	JAVA_UNICODE_ESCAPE = false; //true
 	UNICODE_INPUT = true;
 	USER_TOKEN_MANAGER = false;
-	USER_CHAR_STREAM = false;
+	USER_CHAR_STREAM = true;
 	BUILD_PARSER = true;
 	BUILD_TOKEN_MANAGER = true;
 	SANITY_CHECK = true;
@@ -155,31 +155,10 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.*;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PLSQLParser {
-
-  /**
-   * main method, for testing only.
-   * @param args
-   */
-  public static void main(String[] args)
-      throws ParseException {
-
-    PLSQLParser parser = new PLSQLParser(System.in);
-    PLSQLNode node = parser.Input("");
-
-    String s;
-    s = "qwerty";
-//    System.err.println(s + " -> " + parser.purifyIdentifier(s));
-    s = "\"qwerty\"";
-//    System.err.println(s + " -> " + parser.purifyIdentifier(s));
-    s = "\"qwerty\".uiop";
-//    System.err.println(s + " -> " + parser.purifyIdentifier(s));
-    s = "\"qwerty\".\"uiop\"";
-//    System.err.println(s + " -> " + parser.purifyIdentifier(s));
-  }
 
   /**
    Return canonical version of the Oracle

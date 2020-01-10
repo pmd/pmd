@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl.javacc;
+package net.sourceforge.pmd.lang.ast;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,6 +11,7 @@ import java.io.StringReader;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
  * This stream buffers the whole file in memory before parsing,
@@ -18,6 +19,8 @@ import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
  * The buffer is assumed to be composed of only ASCII characters,
  * and the stream unescapes Unicode escapes. The {@link #getTokenDocument() token document}
  * stores the original file with escapes and all.
+ *
+ * TODO this is to be moved into the impl.javacc subpackage
  */
 public class JavaCharStream extends JavaCharStreamBase {
 
