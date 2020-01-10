@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.xml;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.pom.PomLanguageModule;
 import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
-import net.sourceforge.pmd.lang.xml.ast.XmlParser.RootXmlNode;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  * @author Clément Fournier
