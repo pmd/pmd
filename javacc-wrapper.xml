@@ -13,17 +13,19 @@
                              By convention the grammar file must be named exactly
                              so with a .jj[t] extension.
          - lang-terse-name: Terse name, used in the conventional package names
-         - target:          Directory in which to root the generated package tree
-         - source-dir:      Root of the package tree in which the main sources live (src/main/java).
-                            This is used to check for duplicate files, any duplicate
-                            JJTree nodes will be removed automatically.
+
+         It also uses the following maven properties:
+
+         - javacc.outputDirectory:  Directory in which to root the generated package tree
+         - javacc.jar:              JAR of JavaCC in the local maven repository
+         - some properties of project.build
 
     -->
 
-    <property name="target-package-dir" value="${target}/net/sourceforge/pmd/lang/${lang-terse-name}/ast" />
-    <property name="stamp-file" value="${target}/../../last-generated-timestamp" />
+    <property name="target-package-dir" value="${javacc.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast" />
+    <property name="stamp-file" value="${project.build.directory}/last-generated-timestamp" />
 
-    <property name="javacc-home.path" value="target/lib" />
+    <property name="javacc-home.path" value="${project.build.directory}/lib/javacc" />
 
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.javacc" />
@@ -74,7 +76,7 @@
         <mkdir dir="${javacc-home.path}" />
         <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
 
-        <mkdir dir="${target}" />
+        <mkdir dir="${javacc.outputDirectory}" />
         <touch file="${stamp-file}" />
         <delete dir="${target-package-dir}" />
         <mkdir dir="${target-package-dir}" />
@@ -118,8 +120,8 @@
         <delete file="${target-package-dir}/TokenMgrError.java" />
         <!-- Remove all duplicate files       -->
         <delete>
-            <fileset dir="${target}">
-                <present present="both" targetdir="${source-dir}" />
+            <fileset dir="${javacc.outputDirectory}">
+                <present present="both" targetdir="${project.build.sourceDirectory}" />
             </fileset>
         </delete>
 

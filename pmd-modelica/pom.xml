@@ -40,8 +40,6 @@
                         <configuration>
                             <target>
                                 <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="source-dir" value="${project.basedir}/src/main/java" />
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="Modelica" />
                                     <property name="lang-terse-name" value="modelica" />
