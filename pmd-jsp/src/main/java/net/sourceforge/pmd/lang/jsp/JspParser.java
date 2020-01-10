@@ -9,10 +9,10 @@ import java.io.Reader;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 /**
  * Adapter for the JspParser.
@@ -31,7 +31,7 @@ public class JspParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
-        return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new SimpleCharStream(source)).CompilationUnit();
+        return new net.sourceforge.pmd.lang.jsp.ast.JspParser(CharStreamFactory.simpleCharStream(source)).CompilationUnit();
     }
 
 }

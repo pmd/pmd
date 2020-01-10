@@ -5,7 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.TextAvailableNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -13,7 +17,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode {
+public interface JavaNode extends ScopedNode, TextAvailableNode {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
@@ -64,5 +68,23 @@ public interface JavaNode extends ScopedNode {
     @InternalApi
     @Deprecated
     void setScope(Scope scope);
+
+
+    @Override
+    JavaNode jjtGetChild(int index);
+
+
+    @Override
+    JavaNode jjtGetParent();
+
+
+    JavaccToken jjtGetFirstToken();
+
+
+    JavaccToken jjtGetLastToken();
+
+
+    @Override
+    @NonNull ASTCompilationUnit getRoot();
 
 }

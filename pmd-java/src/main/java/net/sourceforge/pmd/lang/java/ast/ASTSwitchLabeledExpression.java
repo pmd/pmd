@@ -27,6 +27,11 @@ public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTS
     }
 
     @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+    @Override
     public void jjtClose() {
         super.jjtClose();
         if (jjtGetNumChildren() > 0) {

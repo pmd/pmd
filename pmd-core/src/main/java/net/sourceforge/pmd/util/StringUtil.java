@@ -31,6 +31,55 @@ public final class StringUtil {
     }
 
     /**
+     * Returns the (1-based) column number of the character at the given index.
+     * Line terminators are by convention taken to be part of the line they end,
+     * and not the new line they start. Each character has width 1 (including {@code \t}).
+     * The method also accepts that the given offset be the length of the
+     * string (in which case there's no targeted character), to get the column
+     * number of a character that would be inserted at the end of the string.
+     *
+     * <pre>
+     *
+     *     columnNumberAt("a\nb", 0)  = 1
+     *     columnNumberAt("a\nb", 1)  = 2
+     *     columnNumberAt("a\nb", 2)  = 1
+     *     columnNumberAt("a\nb", 3)  = 2   // charAt(3) doesn't exist though
+     *     columnNumberAt("a\nb", 4)  = -1
+     *
+     *     columnNumberAt("a\r\n", 2)  = 3
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the column number
+     */
+    public static int columnNumberAt(CharSequence charSeq, final int offsetInclusive) {
+        if (offsetInclusive == charSeq.length()) {
+            return charSeq.length() == 0 ? 1 : 1 + columnNumberAt(charSeq, offsetInclusive - 1);
+        } else if (offsetInclusive > charSeq.length() || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int col = 0;
+        char next = 0;
+        for (int i = offsetInclusive; i >= 0; i--) {
+            char c = charSeq.charAt(i);
+
+            if (offsetInclusive != i) {
+                if (c == '\n' || c == '\r' && next != '\n') {
+                    return col;
+                }
+            }
+
+            col++;
+            next = c;
+        }
+        return col;
+    }
+
+    /**
      * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
      *
      * @param val         a double value between 0 and 1

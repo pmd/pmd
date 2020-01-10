@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.matlab;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.matlab.ast.MatlabParserTokenManager;
 
 /**
@@ -23,7 +23,7 @@ public class MatlabTokenManager implements TokenManager {
      *            the source code
      */
     public MatlabTokenManager(Reader source) {
-        tokenManager = new MatlabParserTokenManager(new SimpleCharStream(source));
+        tokenManager = new MatlabParserTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override

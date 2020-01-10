@@ -11,6 +11,7 @@ import java.util.Map;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
@@ -19,6 +20,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
+    private TokenDocument tokenDocument;
 
     @InternalApi
     @Deprecated
@@ -40,6 +42,16 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     @Deprecated
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public CharSequence getText() {
+        return tokenDocument.getFullText();
+    }
+
+
+    void setTokenDocument(TokenDocument document) {
+        this.tokenDocument = document;
     }
 
     @Override
@@ -84,6 +96,12 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     @Deprecated
     public ClassTypeResolver getClassTypeResolver() {
         return classTypeResolver;
+    }
+
+
+    @Override
+    public ASTCompilationUnit getRoot() {
+        return this;
     }
 
     @InternalApi

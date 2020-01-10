@@ -22,6 +22,11 @@ public class ASTYieldStatement extends AbstractJavaTypeNode {
     }
 
     @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+    @Override
     public String getImage() {
         String result = super.getImage();
         if (result == null && hasDescendantOfType(ASTName.class)) {

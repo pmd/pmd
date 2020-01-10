@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 public class CommentTest {
     @Test
@@ -97,8 +98,7 @@ public class CommentTest {
     }
 
     private String filter(String comment) {
-        Token t = new Token();
-        t.image = comment;
+        JavaccToken t = new JavaccToken(comment);
         Comment node = new Comment(t) {
             @Override
             public String getXPathNodeName() {
