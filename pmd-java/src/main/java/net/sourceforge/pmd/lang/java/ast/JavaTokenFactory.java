@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 
 /**
  * Support methods for the token manager. The call to {@link #newToken(int, CharStream)}
@@ -69,7 +69,7 @@ final class JavaTokenFactory {
 
     private static final class LazyImageToken extends JavaccToken {
 
-        LazyImageToken(int kind, int startInclusive, int endExclusive, TokenDocument document) {
+        LazyImageToken(int kind, int startInclusive, int endExclusive, JavaccTokenDocument document) {
             super(kind, null, startInclusive, endExclusive, document);
         }
 
@@ -83,7 +83,7 @@ final class JavaTokenFactory {
 
         final int realKind;
 
-        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, TokenDocument doc) {
+        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, JavaccTokenDocument doc) {
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }

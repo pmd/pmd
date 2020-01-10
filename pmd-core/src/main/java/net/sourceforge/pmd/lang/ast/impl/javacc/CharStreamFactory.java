@@ -11,11 +11,7 @@ import java.util.function.Function;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 
-@SuppressWarnings("PMD.UnusedFormalParameter") // for later
 public final class CharStreamFactory {
 
     private CharStreamFactory() {
@@ -26,29 +22,32 @@ public final class CharStreamFactory {
      * A char stream that doesn't perform any escape translation.
      */
     public static CharStream simpleCharStream(Reader input) {
-        return simpleCharStream(input, TokenDocument::new);
+        return simpleCharStream(input, JavaccTokenDocument::new);
     }
 
     /**
      * A char stream that doesn't perform any escape translation.
      */
-    public static CharStream simpleCharStream(Reader input, Function<? super String, ? extends TokenDocument> documentMaker) {
-        return new SimpleCharStream(input);
+    public static CharStream simpleCharStream(Reader input, Function<? super String, ? extends JavaccTokenDocument> documentMaker) {
+        String source = toString(input);
+        JavaccTokenDocument document = documentMaker.apply(source);
+        return new SimpleCharStream(source, document);
     }
 
     /**
      * A char stream that translates java unicode sequences.
      */
     public static CharStream javaCharStream(Reader input) {
-        return javaCharStream(input, TokenDocument::new);
+        return javaCharStream(input, JavaccTokenDocument::new);
     }
 
     /**
      * A char stream that translates java unicode sequences.
      */
-    public static CharStream javaCharStream(Reader input, Function<? super String, ? extends TokenDocument> documentMaker) {
+    public static CharStream javaCharStream(Reader input, Function<? super String, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
-        return new JavaCharStream(source);
+        JavaccTokenDocument tokens = documentMaker.apply(source);
+        return new JavaCharStream(source, tokens);
     }
 
     /**

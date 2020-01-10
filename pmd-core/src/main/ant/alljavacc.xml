@@ -9,8 +9,8 @@
     <property name="base-ast-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="base-ast-package.dir" value="${target}/net/sourceforge/pmd/lang/ast" />
 
-    <property name="target-package" value="${base-ast-package}" />
-    <property name="target-package.dir" value="${base-ast-package.dir}" />
+    <property name="target-package" value="${base-ast-package}.impl.javacc" />
+    <property name="target-package.dir" value="${base-ast-package.dir}/impl/javacc" />
 
 
     <target name="alljavacc"
@@ -70,67 +70,39 @@
 
         <!-- Patch JavaCharStream        -->
 
-        <replace file="${tmp-package.dir}/JavaCharStream.java"
-                 token="JavaCharStream"
-                 value="JavaCharStreamBase"/>
-        <replace file="${tmp-package.dir}/JavaCharStream.java"
-                 token="class JavaCharStreamBase"
-                 value="abstract class JavaCharStreamBase implements ${target-package}.CharStream" />
-        <replace file="${tmp-package.dir}/JavaCharStream.java"
-                 token="char c;"
-                 value="char c; beforeReadChar();" />
-         <replace file="${tmp-package.dir}/JavaCharStream.java"
-                 token="/** Read a character. */"
-                 value="protected void beforeReadChar() { }" />
-
-       <move overwrite="true"
-              file="${tmp-package.dir}/JavaCharStream.java"
-              tofile="${target-package.dir}/JavaCharStreamBase.java" />
-
-        <!-- Generate ASCII w/o Unicode Escapes CharStream implementation -->
-        <javacc usercharstream="false"
-                unicodeinput="false"
-                javaunicodeescape="false"
-                static="false"
-                target="${tmp-package.dir}/dummy.jj"
-                outputdirectory="${tmp-package.dir}"
-                javacchome="${javacc-home.path}" />
-
-        <replace file="${tmp-package.dir}/SimpleCharStream.java"
-                 token="public class SimpleCharStream"
-                 value="public class SimpleCharStream implements CharStream" />
-
-        <replace file="${tmp-package.dir}/TokenMgrError.java"
-                 token="${target-package}"
-                 value="${base-ast-package}" />
-
-        <replace file="${tmp-package.dir}/TokenMgrError.java"
-                 token="extends Error"
-                 value="extends RuntimeException" />
-
-        <replace file="${tmp-package.dir}/TokenMgrError.java"
-                 token="static final int"
-                 value="public static final int" />
-
-        <replace file="${tmp-package.dir}/TokenMgrError.java">
-            <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
-            <replacevalue>&quot;Lexical error in file &quot; + net.sourceforge.pmd.lang.ast.AbstractTokenManager.getFileName() + &quot; at line &quot;</replacevalue>
-        </replace>
-
-        <move overwrite="true"
-              file="${tmp-package.dir}/TokenMgrError.java"
-              tofile="${base-ast-package.dir}/TokenMgrError.java" />
-
-        <move overwrite="true"
-              todir="${target-package.dir}">
-            <fileset dir="${tmp-package.dir}">
-                <include name="SimpleCharStream.java" />
-                <include name="CharStream.java" />
-            </fileset>
-        </move>
+        <antcall target="patch-char-stream">
+            <param name="cs.prefix" value="Java" />
+        </antcall>
 
         <delete dir="${tmp-package.dir}" />
 
     </target>
+
+
+    <target name="patch-char-stream">
+
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="${cs.prefix}CharStream"
+                 value="${cs.prefix}CharStreamBase"/>
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="class ${cs.prefix}CharStreamBase"
+                 value="abstract class ${cs.prefix}CharStreamBase implements ${base-ast-package}.CharStream" />
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="char c;"
+                 value="char c; beforeReadChar();" />
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="/** Read a character. */"
+                 value="protected void beforeReadChar() { }protected boolean doEscape() { return true; }" />
+        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+                 token="if ((buffer[bufpos] = c = ReadByte()) == '\\')"
+                 value="if ((buffer[bufpos] = c = ReadByte()) == '\\' &amp;&amp; doEscape())" />
+
+        <move overwrite="true"
+              file="${tmp-package.dir}/${cs.prefix}CharStream.java"
+              tofile="${target-package.dir}/${cs.prefix}CharStreamBase.java" />
+
+
+    </target>
+
 
 </project>

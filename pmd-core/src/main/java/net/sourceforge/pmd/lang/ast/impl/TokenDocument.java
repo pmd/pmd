@@ -5,15 +5,15 @@
 package net.sourceforge.pmd.lang.ast.impl;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Maybe this can be used to eg double link tokens, provide an identity
- * for them, idk.
+ * Token layer of a parsed file.
  */
 @Experimental
-public class TokenDocument {
+public abstract class TokenDocument<T extends GenericToken> {
 
     private final String fullText;
     private final SourceCodePositioner positioner;

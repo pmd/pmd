@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,
@@ -23,9 +25,10 @@ public class CppCharStream extends SimpleCharStream {
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
 
-    public CppCharStream(Reader dstream) {
-        super(dstream);
+    public CppCharStream(String fulltext, JavaccTokenDocument document) {
+        super(fulltext, document);
     }
+
 
     @Override
     public char readChar() throws IOException {
@@ -58,5 +61,11 @@ public class CppCharStream extends SimpleCharStream {
     public String GetImage() {
         String image = super.GetImage();
         return CONTINUATION.matcher(image).replaceAll("");
+    }
+
+    public static CppCharStream newCppCharStream(Reader dstream) {
+        String source = CharStreamFactory.toString(dstream);
+        JavaccTokenDocument document = new JavaccTokenDocument(source);
+        return new CppCharStream(source, document);
     }
 }

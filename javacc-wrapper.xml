@@ -1,0 +1,315 @@
+<!--
+  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  -->
+
+<project name="pmd" default="alljavacc" basedir="/">
+
+    <!-- Wraps a JavaCC/JJTree task and adapts the generated sources to the PMD
+         codebase.
+
+    Input parameters:
+
+         - lang-name:       Capitalized name of the language eg Jsp or Java.
+                             By convention the grammar file must be named exactly
+                             so with a .jj[t] extension.
+         - lang-terse-name: Terse name, used in the conventional package names
+         - target:          Directory in which to root the generated package tree
+         - source-dir:      Root of the package tree in which the main sources live (src/main/java).
+                            This is used to check for duplicate files, any duplicate
+                            JJTree nodes will be removed automatically.
+
+    -->
+
+    <property name="target-package-dir" value="${target}/net/sourceforge/pmd/lang/${lang-terse-name}/ast" />
+    <property name="stamp-file" value="${target}/../../last-generated-timestamp" />
+
+    <property name="javacc-home.path" value="target/lib" />
+
+    <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
+    <property name="ast-impl-package" value="${ast-api-package}.impl.javacc" />
+
+    <property name="grammar-file" value="etc/grammar/${lang-name}.jjt" />
+    <property name="parser-name" value="${lang-name}Parser" />
+
+    <property name="node-name" value="${lang-name}Node" />
+    <property name="base-class-name" value="Abstract${lang-name}Node" />
+
+    <!-- This will be moved to impl package when all language modules have been ported   -->
+    <property name="base-tokenmgr" value="${ast-api-package}.AbstractTokenManager"/>
+    <property name="charstream-itf" value="${ast-api-package}.CharStream"/>
+
+
+    <property name="tokenmgr-name" value="${parser-name}TokenManager" />
+    <property name="tokenmgr-file" value="${target-package-dir}/${tokenmgr-name}.java" />
+
+
+    <!-- TARGETS -->
+
+    <target name="alljavacc"
+            description="Generates JavaCC sources and cleans them up"
+            depends="checkUpToDate,init,jjtree,jjtree-ersatz,javacc,adapt-generated,default-visitor,cleanup" />
+
+    <target name="alljavacc-visitor+"
+            description="Like alljavacc, and adds another visitor"
+            depends="alljavacc,side-effecting-visitor" />
+
+    <target name="checkUpToDate"
+            description="Checks the input files are up to date">
+
+        <uptodate property="javaccBuildNotRequired" targetfile="${stamp-file}">
+            <srcfiles dir="etc/grammar" includes="${lang-name}.jj*" />
+            <srcfiles file="${ant.file}" />
+        </uptodate>
+        <echo message="Up-to-date check: javaccBuildNotRequired=${javaccBuildNotRequired}" />
+        <condition property="jjtreeBuildNotRequired">
+            <or>
+                <isset property="no-jjtree" />
+                <isset property="javaccBuildNotRequired" />
+            </or>
+        </condition>
+    </target>
+
+
+    <target name="init" unless="javaccBuildNotRequired" description="Initialize build">
+        <mkdir dir="${javacc-home.path}" />
+        <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
+
+        <mkdir dir="${target}" />
+        <touch file="${stamp-file}" />
+        <delete dir="${target-package-dir}" />
+        <mkdir dir="${target-package-dir}" />
+    </target>
+
+    <target name="cleanup" unless="javaccBuildNotRequired">
+        <delete dir="${javacc-home.path}" />
+    </target>
+
+
+    <target name="jjtree" unless="jjtreeBuildNotRequired" description="Runs JJTree">
+        <jjtree target="etc/grammar/${lang-name}.jjt"
+                outputdirectory="${target-package-dir}"
+                javacchome="${javacc-home.path}" />
+    </target>
+
+    <target name="jjtree-ersatz" if="no-jjtree" unless="javaccBuildNotRequired">
+        <!--  If no jjtree is run, then we look for a .jj file to place
+              in the target dir for the javacc target to pick up on it -->
+        <copy file="etc/grammar/${lang-name}.jj" todir="${target-package-dir}" />
+    </target>
+
+    <target name="javacc" depends="jjtree" unless="javaccBuildNotRequired">
+        <javacc static="false"
+                usercharstream="true"
+                target="${target-package-dir}/${lang-name}.jj"
+                outputdirectory="${target-package-dir}"
+                javacchome="${javacc-home.path}" />
+
+    </target>
+
+    <target name="adapt-generated" unless="javaccBuildNotRequired">
+
+        <delete failonerror="false" file="${target-package-dir}/Node.java" />
+        <delete failonerror="false" file="${target-package-dir}/SimpleNode.java" />
+        <delete failonerror="false" file="${target-package-dir}/JJT${parser-name}State.java" />
+
+        <delete file="${target-package-dir}/CharStream.java" />
+        <delete file="${target-package-dir}/ParseException.java" />
+        <delete file="${target-package-dir}/Token.java" />
+        <delete file="${target-package-dir}/TokenMgrError.java" />
+        <!-- Remove all duplicate files       -->
+        <delete>
+            <fileset dir="${target}">
+                <present present="both" targetdir="${source-dir}" />
+            </fileset>
+        </delete>
+
+
+        <!-- Patch token creation routine, delegates to the token document. -->
+        <replaceregexp flags="s">
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="protected Token jjFillToken.*?(?=int curLexState = )" />
+            <substitution expression="protected Token jjFillToken() {return input_stream.getTokenDocument().createToken(jjmatchedKind, input_stream, jjstrLiteralImages[jjmatchedKind]);}" />
+        </replaceregexp>
+
+        <!-- This is used to allow for tokens to be immutable. The lexical actions
+             return the new token instead of mutating it. -->
+        <replaceregexp flags="sg">
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="void ((Token|Skip)LexicalActions\(Token matchedToken\))\n\{(.*?)}\n(?=(private )?void)" />
+            <substitution expression="Token \1 { \3
+             return matchedToken;
+        }" />
+        </replaceregexp>
+
+        <!-- Update call sites for the previous routines -->
+        <replaceregexp>
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="(Token|Skip)LexicalActions\(matchedToken\);" />
+            <substitution expression="matchedToken = \0" />
+        </replaceregexp>
+
+
+        <!-- Fix end column being now exclusive -->
+        <!-- JavaCC assumes it's inclusive, uses it for character positions of errors -->
+        <!-- This is also used in debug mode -->
+        <replaceregexp flags="sg">
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="input_stream.getEndColumn\(\)" />
+            <substitution expression="(input_stream.getEndColumn() - 1)" />
+        </replaceregexp>
+
+        <!-- Renamed methods of CharStream       -->
+        <!--        <replaceregexp flags="g">-->
+        <!--            <regexp pattern="\bBeginToken\(" />-->
+        <!--            <substitution expression="markTokenStart(" />-->
+        <!--            <file name="${tokenmgr-file}" />-->
+        <!--        </replaceregexp>-->
+        <!--        <replaceregexp flags="g">-->
+        <!--            <regexp pattern="\bGetImage\(" />-->
+        <!--            <substitution expression="tokenImage(" />-->
+        <!--            <file name="${tokenmgr-file}" />-->
+        <!--        </replaceregexp>-->
+        <!--        <replaceregexp flags="g">-->
+        <!--            <regexp pattern="\bGetSuffix\(" />-->
+        <!--            <substitution expression="imageSuffix(" />-->
+        <!--            <file name="${tokenmgr-file}" />-->
+        <!--        </replaceregexp>-->
+        <!--        <replaceregexp flags="g">-->
+        <!--            <regexp pattern="\binput_stream.getEndLine\(" />-->
+        <!--            <substitution expression="input_stream.getCharLine(" />-->
+        <!--            <file name="${tokenmgr-file}" />-->
+        <!--        </replaceregexp>-->
+        <!--        <replaceregexp flags="g">-->
+        <!--            <regexp pattern="\binput_stream.getEndColumn\(" />-->
+        <!--            <substitution expression="input_stream.getCharColumn(" />-->
+        <!--            <file name="${tokenmgr-file}" />-->
+        <!--        </replaceregexp>-->
+
+        <!-- This is a programming error and should be caught in tests -->
+        <replaceregexp>
+            <regexp pattern='throw new TokenMgrError\("Error: Ignoring invalid lexical state.*?\);' />
+            <substitution expression='throw new IllegalArgumentException("Invalid lexical state " + lexState);' />
+            <file name="${tokenmgr-file}" />
+        </replaceregexp>
+
+        <!-- Useless argument -->
+        <replaceregexp>
+            <regexp pattern='curChar, TokenMgrError.LEXICAL_ERROR\)' />
+            <substitution expression='curChar)' />
+            <file name="${tokenmgr-file}" />
+        </replaceregexp>
+
+
+        <replace token="new Token()" value="${ast-impl-package}.JavaccToken.undefined()">
+            <fileset dir="${target-package-dir}" />
+        </replace>
+
+        <!-- Map Javacc names to our names -->
+
+        <replaceregexp flags="g">
+            <regexp pattern="\bToken\b" />
+            <substitution expression="${ast-impl-package}.JavaccToken" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
+
+        <replaceregexp flags="g">
+            <regexp pattern="(?&lt;!\.)\bCharStream\b" />
+            <substitution expression="${charstream-itf}" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
+
+        <!-- The tree builder is generic now -->
+        <replaceregexp flags="g">
+            <regexp pattern="\bJJT${parser-name}State\b" />
+            <substitution expression="${ast-impl-package}.JjtreeBuilder&lt;${node-name}&gt;" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
+
+        <replaceregexp flags="g">
+            <regexp pattern="\bParseException\b" />
+            <substitution expression="${ast-api-package}.ParseException" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
+
+        <replaceregexp flags="g">
+            <regexp pattern="extends SimpleNode\b" />
+            <substitution expression="extends ${base-class-name}" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
+
+
+        <!-- For compatibility -->
+
+        <replaceregexp flags="g">
+            <regexp pattern="\.image(?!Suffix)" />
+            <substitution expression=".getImage()" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
+
+        <replace token=".beginLine" value=".getBeginLine()">
+            <fileset dir="${target-package-dir}" />
+        </replace>
+
+        <replace token=".beginColumn" value=".getBeginColumn()">
+            <fileset dir="${target-package-dir}" />
+        </replace>
+
+        <!-- Used by debug modes -->
+        <replace token="TokenMgrError.addEscapes" value="net.sourceforge.pmd.util.StringUtil.escapeJava">
+            <fileset dir="${target-package-dir}" />
+        </replace>
+
+        <replace file="${tokenmgr-file}"
+                 token="public class ${tokenmgr-name}"
+                 value="public class ${tokenmgr-name} extends ${base-tokenmgr}" />
+
+
+    </target>
+
+
+    <!-- Visitor names -->
+    <property name="base-visitor-interface-name" value="${parser-name}Visitor" />
+    <property name="base-visitor-interface-file" value="${target-package-dir}/${base-visitor-interface-name}.java" />
+
+    <property name="generic-sideeffect-visitor-interface-name" value="SideEffectingVisitor" />
+    <property name="generic-sideeffect-visitor-interface-file"
+              value="${target-package-dir}/${generic-sideeffect-visitor-interface-name}.java" />
+
+
+    <target name="default-visitor" depends="jjtree" unless="jjtreeBuildNotRequired">
+
+
+        <!-- Base visitor with Object everywhere -->
+        <!-- We perform most changes like adding default methods, etc on this one -->
+        <!-- Changes are then copied on other visitors -->
+        <replace file="${base-visitor-interface-file}">
+            <replacefilter token="public interface" value="
+public interface" />
+            <replacefilter token="${parser-name}Visitor" value="${base-visitor-interface-name}" />
+            <replacefilter token="SimpleNode" value="${node-name}" />
+            <!-- Default methods -->
+            <replacefilter token="public Object visit(" value="default Object visit(" />
+            <replacefilter token=");" value=") { return visit((${node-name}) node, data); }" />
+            <replacefilter
+                    token="default Object visit(${node-name} node, Object data) { return visit((${node-name}) node, data); }"
+                    value="default Object visit(${node-name} node, Object data) { for (int i = 0, len = node.jjtGetNumChildren(); i &lt; len; i++) node.jjtGetChild(i).jjtAccept(this, data); return data; }">
+            </replacefilter>
+        </replace>
+
+    </target>
+
+    <target name="side-effecting-visitor" depends="default-visitor" unless="jjtreeBuildNotRequired">
+        <!-- Side effecting visitor, no return type, one generic parameter -->
+        <copy file="${base-visitor-interface-file}" tofile="${generic-sideeffect-visitor-interface-file}" />
+        <replace file="${generic-sideeffect-visitor-interface-file}">
+            <replacefilter token="${base-visitor-interface-name}"
+                           value="${generic-sideeffect-visitor-interface-name}&lt;T>" />
+
+            <replacefilter token="Object" value="T" />
+            <replacefilter token="T visit" value="void visit" />
+            <replacefilter token="return data;" value="" />
+            <replacefilter token="return " value="" />
+        </replace>
+    </target>
+
+</project>

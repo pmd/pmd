@@ -25,7 +25,7 @@ package TestPackage
 end TestPackage;
       """.trim().parseModelica() should matchNode<ASTStoredDefinition> {
 
-            it.assertBounds(1, 1, 4, 16)
+            it.assertBounds(1, 1, 4, 17)
 
             child<ASTClassDefinition> {
                 it.assertBounds(1, 1, 4, 15)
