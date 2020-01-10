@@ -7,6 +7,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ParserOptions
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.RootNode
 import org.apache.commons.io.IOUtils
@@ -111,11 +112,25 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val parser = handler.getParser(options)
         val rootNode = rootClass.cast(parser.parse(null, StringReader(sourceCode)))
         if (params.doProcess) {
-            handler.getQualifiedNameResolutionFacade(javaClass.classLoader).start(rootNode)
-            handler.getSymbolFacade(javaClass.classLoader).start(rootNode)
-            handler.dataFlowFacade.start(rootNode)
-            handler.getTypeResolutionFacade(javaClass.classLoader).start(rootNode)
-            handler.multifileFacade.start(rootNode)
+            if (!handler.processingStages.isEmpty()) {
+                var astAnalysisContext = object : AstAnalysisContext {
+                    override fun getTypeResolutionClassLoader() : ClassLoader {
+                        return javaClass.classLoader
+                    }
+                    override fun getLanguageVersion() : LanguageVersion {
+                        return lversion
+                    }
+                }
+                handler.processingStages.forEach {
+                    it.processAST(rootNode, astAnalysisContext)
+                }
+            } else {
+                handler.getQualifiedNameResolutionFacade(javaClass.classLoader).start(rootNode)
+                handler.getSymbolFacade(javaClass.classLoader).start(rootNode)
+                handler.dataFlowFacade.start(rootNode)
+                handler.getTypeResolutionFacade(javaClass.classLoader).start(rootNode)
+                handler.multifileFacade.start(rootNode)
+            }
         }
         return rootNode
     }
