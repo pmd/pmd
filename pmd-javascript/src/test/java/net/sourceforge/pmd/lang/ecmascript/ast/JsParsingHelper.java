@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 
@@ -13,13 +11,12 @@ public final class JsParsingHelper extends BaseParsingHelper<JsParsingHelper, AS
 
     public static final JsParsingHelper DEFAULT = new JsParsingHelper(Params.getDefaultProcess());
 
-    private JsParsingHelper(@NotNull Params params) {
+    private JsParsingHelper(Params params) {
         super(EcmascriptLanguageModule.NAME, ASTAstRoot.class, params);
     }
 
-    @NotNull
     @Override
-    protected JsParsingHelper clone(@NotNull Params params) {
+    protected JsParsingHelper clone(Params params) {
         return new JsParsingHelper(params);
     }
 }

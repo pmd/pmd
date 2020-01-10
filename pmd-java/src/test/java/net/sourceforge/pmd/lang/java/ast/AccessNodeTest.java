@@ -150,10 +150,10 @@ public class AccessNodeTest extends BaseParserTest {
     public static <T extends Node> T getDeclWithModifiers(String[] access, Class<T> target, String declRest) {
         ASTCompilationUnit acu = JavaParsingHelper.JUST_PARSE.parse(makeAccessJavaCode(access, declRest));
 
-        List<T> fields = acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class)
+        List<T> declarations = acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class)
                             .findDescendantsOfType(target);
 
-        assertEquals("Wrong number of declarations", 1, fields.size());
-        return fields.get(0);
+        assertEquals("Wrong number of declarations", 1, declarations.size());
+        return declarations.get(0);
     }
 }

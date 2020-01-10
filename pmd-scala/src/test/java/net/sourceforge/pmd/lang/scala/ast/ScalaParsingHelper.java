@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.scala.ast;
 import java.io.File;
 import java.io.StringReader;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -24,13 +22,12 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
 
     public static final ScalaParsingHelper DEFAULT = new ScalaParsingHelper(Params.getDefaultProcess());
 
-    private ScalaParsingHelper(@NotNull Params params) {
+    private ScalaParsingHelper(Params params) {
         super(ScalaLanguageModule.NAME, ASTSource.class, params);
     }
 
-    @NotNull
     @Override
-    protected ScalaParsingHelper clone(@NotNull Params params) {
+    protected ScalaParsingHelper clone(Params params) {
         return new ScalaParsingHelper(params);
     }
 

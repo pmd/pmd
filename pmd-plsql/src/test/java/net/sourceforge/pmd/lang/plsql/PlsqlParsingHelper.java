@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 
@@ -20,9 +18,8 @@ public class PlsqlParsingHelper extends BaseParsingHelper<PlsqlParsingHelper, AS
         super(PLSQLLanguageModule.NAME, ASTInput.class, params);
     }
 
-    @NotNull
     @Override
-    protected PlsqlParsingHelper clone(@NotNull Params params) {
+    protected PlsqlParsingHelper clone(Params params) {
         return new PlsqlParsingHelper(params);
     }
 

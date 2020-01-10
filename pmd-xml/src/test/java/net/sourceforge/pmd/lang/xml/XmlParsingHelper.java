@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.pom.PomLanguageModule;
 import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
@@ -21,13 +19,12 @@ public final class XmlParsingHelper extends BaseParsingHelper<XmlParsingHelper, 
     public static final XmlParsingHelper POM = new XmlParsingHelper(PomLanguageModule.NAME, Params.getDefaultProcess());
 
 
-    private XmlParsingHelper(@NotNull String langName, @NotNull Params params) {
+    private XmlParsingHelper(String langName, Params params) {
         super(langName, RootXmlNode.class, params);
     }
 
-    @NotNull
     @Override
-    protected XmlParsingHelper clone(@NotNull Params params) {
+    protected XmlParsingHelper clone(Params params) {
         return new XmlParsingHelper(this.getLangName(), params);
     }
 }

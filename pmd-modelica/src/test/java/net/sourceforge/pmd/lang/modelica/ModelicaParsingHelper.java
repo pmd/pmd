@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import org.jetbrains.annotations.NotNull;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
@@ -18,9 +17,8 @@ public class ModelicaParsingHelper extends BaseParsingHelper<ModelicaParsingHelp
         super(ModelicaLanguageModule.NAME, ASTStoredDefinition.class, params);
     }
 
-    @NotNull
     @Override
-    protected ModelicaParsingHelper clone(@NotNull Params params) {
+    protected ModelicaParsingHelper clone(Params params) {
         return new ModelicaParsingHelper(params);
     }
 

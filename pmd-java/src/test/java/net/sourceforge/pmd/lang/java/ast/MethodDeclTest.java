@@ -71,7 +71,7 @@ public class MethodDeclTest {
         assertTrue("Expecting method to be public.", amd.isPublic());
     }
 
-    public ASTMethodDeclaration getMethodDecl(String[] access) {
+    private ASTMethodDeclaration getMethodDecl(String[] access) {
         return AccessNodeTest.getDeclWithModifiers(access, ASTMethodDeclaration.class, "void stuff(){}");
     }
 }
