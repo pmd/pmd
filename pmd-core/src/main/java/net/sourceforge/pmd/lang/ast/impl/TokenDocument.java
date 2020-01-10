@@ -36,4 +36,12 @@ public abstract class TokenDocument<T extends GenericToken> {
         return StringUtil.columnNumberAt(fullText, offsetInclusive);
     }
 
+    /**
+     * Returns the first token of the token chain.
+     *
+     * @throws IllegalStateException If the document has not been parsed yet
+     */
+    public abstract T getFirstToken();
+
+
 }

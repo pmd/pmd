@@ -14,10 +14,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @param <N> Type of node this takes
  */
-public class JjtreeBuilder<N extends Node> {
+public class JjtreeBuilder<N extends AbstractJjtreeNode<?>> {
 
-    private List<N> nodes = new ArrayList<>();
-    private List<Integer> marks = new ArrayList<>();
+    private final List<N> nodes = new ArrayList<>();
+    private final List<Integer> marks = new ArrayList<>();
 
     private int sp = 0;        // number of nodes on stack
     private int mk = 0;        // current mark
@@ -126,7 +126,7 @@ public class JjtreeBuilder<N extends Node> {
     }
 
 
-    public void clearNodeScope(Node n) {
+    public void clearNodeScope(N n) {
         while (sp > mk) {
             popNode();
         }
@@ -134,7 +134,7 @@ public class JjtreeBuilder<N extends Node> {
     }
 
 
-    public void openNodeScope(Node n) {
+    public void openNodeScope(N n, JavaccToken firstToken) {
         marks.add(mk);
 
         mk = sp;
@@ -143,51 +143,71 @@ public class JjtreeBuilder<N extends Node> {
             numPendingInjection = 0;
         }
 
+        n.jjtSetFirstToken(firstToken);
         n.jjtOpen();
     }
 
 
     /**
-     * A definite node is constructed from a specified number of
+     * Close the node scope and adds the given number of children to the
+     * node. A definite node is constructed from a specified number of
      * children.  That number of nodes are popped from the stack and
      * made the children of the definite node.  Then the definite node
      * is pushed on to the stack.
      */
-    public void closeNodeScope(N n, int num) {
+    public void closeNodeScope(N n, int num, JavaccToken lastToken) {
         mk = marks.remove(marks.size() - 1);
         while (num-- > 0) {
             Node c = popNode();
             c.jjtSetParent(n);
             n.jjtAddChild(c, num);
         }
-        n.jjtClose();
-        pushNode(n);
-        nodeCreated = true;
+        closeImpl(n, lastToken);
     }
 
 
     /**
-     * A conditional node is constructed if its condition is true.  All
-     * the nodes that have been pushed since the node was opened are
-     * made children of the conditional node, which is then pushed
-     * on to the stack.  If the condition is false the node is not
-     * constructed and they are left on the stack.
+     * Close the node scope if the condition is true.
+     * All the nodes that have been pushed since the node was opened are
+     * made children of the conditional node, which is then pushed on to
+     * the stack.  If the condition is false the node is not constructed
+     * and they are left on the stack.
+     *
+     * @param n         Node to close
+     * @param condition Whether to close the node or not
+     * @param lastToken Last token that was consumed while the node scope was open
      */
-    public void closeNodeScope(N n, boolean condition) {
+    public void closeNodeScope(N n, boolean condition, JavaccToken lastToken) {
         if (condition) {
-            int a = nodeArity();
             mk = marks.remove(marks.size() - 1);
+            int a = nodeArity();
             while (a-- > 0) {
                 N c = popNode();
                 c.jjtSetParent(n);
                 n.jjtAddChild(c, a);
             }
-            n.jjtClose();
-            pushNode(n);
-            nodeCreated = true;
+
+            closeImpl(n, lastToken);
         } else {
             mk = marks.remove(marks.size() - 1);
             nodeCreated = false;
         }
+    }
+
+    private void closeImpl(N n, JavaccToken lastToken) {
+        if (lastToken.getNext() == n.jjtGetFirstToken()) {
+            // this means, that the node has zero length.
+            // create an implicit token to represent this case.
+            JavaccToken implicit = JavaccToken.implicitBefore(lastToken);
+
+            n.jjtSetFirstToken(implicit);
+            n.jjtSetLastToken(implicit);
+        } else {
+            n.jjtSetLastToken(lastToken);
+        }
+        // note that the last token has been set before jjtClose
+        n.jjtClose();
+        pushNode(n);
+        nodeCreated = true;
     }
 }

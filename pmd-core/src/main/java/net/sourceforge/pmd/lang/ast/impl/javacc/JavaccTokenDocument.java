@@ -38,10 +38,8 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return first;
     }
 
-    /**
-     * Returns the first token of the token chain.
-     */
-    // technically the first non-implicit, though this is stupid
+
+    @Override
     public JavaccToken getFirstToken() {
         if (first == null || first.next == null) {
             throw new IllegalStateException("Document has not been opened");

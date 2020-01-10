@@ -209,7 +209,7 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
-  TRACK_TOKENS = true;
+  TRACK_TOKENS = false;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
   //DEBUG_PARSER = true;

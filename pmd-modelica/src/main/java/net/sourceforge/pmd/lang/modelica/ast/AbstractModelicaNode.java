@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
 
 /**
@@ -39,26 +37,6 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> imp
     @Override
     public String getXPathNodeName() {
         return getClass().getSimpleName().substring(3);
-    }
-
-    @Override
-    public void jjtClose() {
-
-        // in jjtClose, jjtSetLastToken has not been called yet, so we use parser.token.next
-        if (parser.token.next == jjtGetFirstToken()) {
-            JavaccToken implicit = JavaccToken.implicitBefore(parser.token.next);
-
-            jjtSetFirstToken(implicit);
-            jjtSetLastToken(implicit);
-        }
-    }
-
-    @Override
-    public void jjtSetLastToken(GenericToken token) {
-        // don't let jjtree override tokens we've chosen
-        if (lastToken == null) {
-            super.jjtSetLastToken(token);
-        }
     }
 
     @Override

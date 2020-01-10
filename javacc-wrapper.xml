@@ -27,11 +27,14 @@
 
     <property name="javacc-home.path" value="${project.build.directory}/lib/javacc" />
 
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-terse-name}.ast" />
     <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="ast-impl-package" value="${ast-api-package}.impl.javacc" />
 
     <property name="grammar-file" value="etc/grammar/${lang-name}.jjt" />
+
     <property name="parser-name" value="${lang-name}Parser" />
+    <property name="parser-file" value="${target-package-dir}/${parser-name}.java" />
 
     <property name="node-name" value="${lang-name}Node" />
     <property name="base-class-name" value="Abstract${lang-name}Node" />
@@ -88,8 +91,10 @@
 
 
     <target name="jjtree" unless="jjtreeBuildNotRequired" description="Runs JJTree">
+        <!-- Token-tracking behavior is reimplemented -->
         <jjtree target="etc/grammar/${lang-name}.jjt"
                 outputdirectory="${target-package-dir}"
+                nodepackage="${lang-ast-package}"
                 javacchome="${javacc-home.path}" />
     </target>
 
@@ -206,6 +211,19 @@
             <fileset dir="${target-package-dir}" />
         </replace>
 
+        <replaceregexp flags="g">
+            <regexp pattern='jjtree.openNodeScope\((jjtn.*?)\);' />
+            <substitution expression='jjtree.openNodeScope(\1, getToken(1));' />
+            <file name="${parser-file}" />
+        </replaceregexp>
+
+        <replaceregexp flags="g">
+            <regexp pattern='jjtree.closeNodeScope\((jjtn.*?)\);' />
+            <substitution expression='jjtree.closeNodeScope(\1, getToken(0));' />
+            <file name="${parser-file}" />
+        </replaceregexp>
+
+
         <!-- Map Javacc names to our names -->
 
         <replaceregexp flags="g">
@@ -223,7 +241,7 @@
         <!-- The tree builder is generic now -->
         <replaceregexp flags="g">
             <regexp pattern="\bJJT${parser-name}State\b" />
-            <substitution expression="${ast-impl-package}.JjtreeBuilder&lt;${node-name}&gt;" />
+            <substitution expression="${ast-impl-package}.JjtreeBuilder&lt;${base-class-name}&gt;" />
             <fileset dir="${target-package-dir}" />
         </replaceregexp>
 

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -31,10 +29,15 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 public class JavaccToken implements GenericToken {
 
     /**
+     * Kind for EOF tokens.
+     */
+    public static final int EOF = 0;
+
+    /**
      * Kind for implicit tokens. Negative because JavaCC only picks
      * positive numbers for token kinds.
      */
-    static final int IMPLICIT_TOKEN = -1;
+    public static final int IMPLICIT_TOKEN = -1;
 
     /**
      * An integer that describes the kind of this token.  This numbering
@@ -72,11 +75,6 @@ public class JavaccToken implements GenericToken {
      */
     public JavaccToken specialToken;
 
-
-    /** {@link #undefined()} */
-    private JavaccToken() {
-        this(":undefined:");
-    }
 
     /**
      * @deprecated This is used by a few deprecated tests about comments,
@@ -200,13 +198,6 @@ public class JavaccToken implements GenericToken {
         return tok;
     }
 
-    /**
-     * This is a transient token which JavaCC uses to simplify its logic.
-     * It will never be found in a parsed token chain.
-     */
-    public static JavaccToken undefined() {
-        return new JavaccToken();
-    }
 
     /**
      * Creates an implicit token, with zero length, that is linked to
@@ -234,7 +225,6 @@ public class JavaccToken implements GenericToken {
         return implicit;
     }
 
-    @NonNull
     public static JavaccToken newImplicit(int offset, JavaccTokenDocument document) {
         return new JavaccToken(IMPLICIT_TOKEN,
                                "",
