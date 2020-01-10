@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
-
 import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ASTUserTriggerTest {
+public class ASTUserTriggerTest extends ApexParserTestBase {
 
     @Test
     public void testTriggerName() {

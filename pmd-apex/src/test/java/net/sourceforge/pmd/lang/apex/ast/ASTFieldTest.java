@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
-public class ASTFieldTest {
+public class ASTFieldTest extends ApexParserTestBase {
 
     @Test
     public void testGetType() {
