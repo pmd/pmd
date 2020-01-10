@@ -17,7 +17,7 @@ import org.mozilla.javascript.ast.AstRoot;
 public class ASTTryStatementTest extends EcmascriptParserTestBase {
 
     private ASTTryStatement getTryStmt(String js) {
-        EcmascriptNode<AstRoot> node = parse(js);
+        EcmascriptNode<AstRoot> node = this.js.parse(js);
         List<ASTTryStatement> trys = node.findDescendantsOfType(ASTTryStatement.class);
         Assert.assertEquals(1, trys.size());
         ASTTryStatement tryStmt = trys.get(0);

@@ -4,30 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
-public class ASTPrimarySuffixTest {
+public class ASTPrimarySuffixTest extends BaseParserTest {
 
     @Test
     public void testArrayDereference() {
-        Set<ASTPrimarySuffix> ops = getNodes(ASTPrimarySuffix.class, TEST1);
-        assertTrue(ops.iterator().next().isArrayDereference());
+        List<ASTPrimarySuffix> ops = java.getNodes(ASTPrimarySuffix.class, TEST1);
+        assertTrue(ops.get(0).isArrayDereference());
     }
 
     @Test
     public void testArguments() {
-        Set<ASTPrimarySuffix> ops = getNodes(ASTPrimarySuffix.class, TEST2);
-        assertTrue(ops.iterator().next().isArguments());
+        List<ASTPrimarySuffix> ops = java.getNodes(ASTPrimarySuffix.class, TEST2);
+        assertTrue(ops.get(0).isArguments());
     }
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + "  {x[0] = 2;}" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n  {x[0] = 2;}\n}";
 
-    private static final String TEST2 = "public class Foo {" + PMD.EOL + "  {foo(a);}" + PMD.EOL + "}";
+    private static final String TEST2 = "public class Foo {\n  {foo(a);}\n}";
 }
