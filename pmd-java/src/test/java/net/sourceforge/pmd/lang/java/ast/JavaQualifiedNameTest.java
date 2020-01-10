@@ -16,7 +16,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
@@ -27,8 +28,9 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  */
 public class JavaQualifiedNameTest {
 
-    private <T> List<T> getNodes(Class<T> nodeType, String source) {
-        return ParserTstUtil.getOrderedNodes(nodeType, source);
+
+    private <T extends Node> List<T> getNodes(Class<T> target, String code) {
+        return JavaParsingHelper.WITH_PROCESSING.getNodes(target, code);
     }
 
     @Test
@@ -49,8 +51,7 @@ public class JavaQualifiedNameTest {
     public void testPackage() {
         final String TEST = "package foo.bar; class Bzaz{}";
 
-        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                                                             TEST);
+        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             JavaTypeQualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
@@ -203,8 +204,7 @@ public class JavaQualifiedNameTest {
     public void testConstructorOverload() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j) {} public Bzaz(int j, String k){}}";
 
-        List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                                                        TEST);
+        List<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class, TEST);
 
         ASTConstructorDeclaration[] arr = nodes.toArray(new ASTConstructorDeclaration[2]);
         assertNotEquals(arr[0].getQualifiedName(), arr[1].getQualifiedName());
@@ -343,7 +343,7 @@ public class JavaQualifiedNameTest {
         final String TEST = "package bar; class Boron { public void foo(String j) { class Local {} } }";
 
         List<ASTClassOrInterfaceDeclaration> classes
-                = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+                = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         JavaQualifiedName qname = QualifiedNameFactory.ofString("bar.Boron$1Local");
 
@@ -356,7 +356,7 @@ public class JavaQualifiedNameTest {
         final String TEST = "package bar; class Bzaz{ void foo() { class Local {} } {// initializer\n class Local {}}}";
 
         List<ASTClassOrInterfaceDeclaration> classes
-                = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+                = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
 
@@ -379,7 +379,7 @@ public class JavaQualifiedNameTest {
                 + "}}";
 
         List<ASTClassOrInterfaceDeclaration> classes
-                = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+                = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         assertNotEquals(classes.get(1).getQualifiedName(), classes.get(2).getQualifiedName());
 
@@ -398,7 +398,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+        List<ASTAllocationExpression> classes = getNodes(ASTAllocationExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
         assertFalse(classes.get(0).getQualifiedName().isLocalClass());
@@ -419,7 +419,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+        List<ASTAllocationExpression> classes = getNodes(ASTAllocationExpression.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
@@ -440,7 +440,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+        List<ASTAllocationExpression> classes = getNodes(ASTAllocationExpression.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
@@ -459,7 +459,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTClassOrInterfaceDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassOrInterfaceDeclaration> classes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         assertTrue(classes.get(1).isLocal());
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1$1FooRunnable"), classes.get(1).getQualifiedName());
@@ -479,7 +479,7 @@ public class JavaQualifiedNameTest {
                 + "}";
 
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$0"), lambdas.get(0).getQualifiedName());
     }
@@ -504,7 +504,7 @@ public class JavaQualifiedNameTest {
                 + "  }"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$0"), lambdas.get(0).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$1"), lambdas.get(1).getQualifiedName());
@@ -524,7 +524,7 @@ public class JavaQualifiedNameTest {
                 + "     };"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$0"), lambdas.get(0).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$1"), lambdas.get(1).getQualifiedName());
@@ -544,7 +544,7 @@ public class JavaQualifiedNameTest {
                 + "     };"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$0"), lambdas.get(0).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$1"), lambdas.get(1).getQualifiedName());
@@ -565,7 +565,7 @@ public class JavaQualifiedNameTest {
                 + "  }"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1Local#lambda$Local$0"), lambdas.get(0).getQualifiedName());
     }
@@ -585,7 +585,7 @@ public class JavaQualifiedNameTest {
                 + "  }"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1#lambda$$0"), lambdas.get(0).getQualifiedName());
 
@@ -623,7 +623,7 @@ public class JavaQualifiedNameTest {
                 + "  }"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$bar$0"), lambdas.get(0).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$fooBar$1"), lambdas.get(1).getQualifiedName());
@@ -662,7 +662,7 @@ public class JavaQualifiedNameTest {
                 + "  }"
                 + "}";
 
-        List<ASTLambdaExpression> lambdas = ParserTstUtil.getOrderedNodes(ASTLambdaExpression.class, TEST);
+        List<ASTLambdaExpression> lambdas = getNodes(ASTLambdaExpression.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$static$0"), lambdas.get(0).getQualifiedName());
         assertEquals(QualifiedNameFactory.ofString("Bzaz#lambda$new$1"), lambdas.get(1).getQualifiedName());
@@ -685,7 +685,6 @@ public class JavaQualifiedNameTest {
         JavaTypeQualifiedName qname = QualifiedNameFactory.ofClass(ASTAdditiveExpression.class);
         assertEquals(qname.getType(), ASTAdditiveExpression.class);
     }
-
 
 }
 

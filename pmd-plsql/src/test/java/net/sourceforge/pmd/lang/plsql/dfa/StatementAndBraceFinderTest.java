@@ -12,13 +12,12 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
-import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
+import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
@@ -27,13 +26,19 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
+    private final PlsqlParsingHelper plsql = PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(StatementAndBraceFinderTest.class);
+
+    private ASTExpression getExpr(String test1) {
+        return plsql.parse(test1).getFirstDescendantOfType(ASTExpression.class);
+    }
+
     /**
      * Java ASTStatementExpression equivalent is inferred as an Expression()
      * which has an UnlabelledStatement as a parent.
      */
     @Test
     public void testExpressionParentChildLinks() {
-        ASTExpression ex = getOrderedNodes(ASTExpression.class, TEST1).get(0);
+        ASTExpression ex = getExpr(TEST1);
         DataFlowNode dfn = ex.getDataFlowNode();
         assertEquals(3, dfn.getLine());
         assertTrue(dfn.getNode() instanceof ASTExpression);
@@ -48,9 +53,10 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         assertEquals(exParent, ex.getDataFlowNode().getParents().get(0).getNode());
     }
 
+
     @Test
     public void testVariableOrConstantDeclaratorParentChildLinks() {
-        ASTVariableOrConstantDeclarator vd = getOrderedNodes(ASTVariableOrConstantDeclarator.class, TEST2).get(0);
+        ASTVariableOrConstantDeclarator vd = plsql.getNodes(ASTVariableOrConstantDeclarator.class, TEST2).get(0);
         // ASTMethodDeclaration vdParent = (ASTMethodDeclaration)
         // ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode();
         ASTProgramUnit vdParent = (ASTProgramUnit) vd.getDataFlowNode().getParents().get(0).getNode();
@@ -61,7 +67,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testIfStmtHasCorrectTypes() {
-        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST3).get(0);
+        ASTExpression exp = getExpr(TEST3);
         assertEquals(5, exp.getDataFlowNode().getFlow().size());
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.IF_EXPR));
@@ -73,7 +79,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testWhileStmtHasCorrectTypes() {
-        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST4).get(0);
+        ASTExpression exp = getExpr(TEST4);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
         dfn = exp.getDataFlowNode().getFlow().get(3);
@@ -82,7 +88,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testForStmtHasCorrectTypes() {
-        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST5).get(0);
+        ASTExpression exp = getExpr(TEST5);
         DataFlowNode dfn = null;
         dfn = exp.getDataFlowNode().getFlow().get(0);
         assertTrue(dfn instanceof StartOrEndDataFlowNode);
@@ -100,7 +106,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testSimpleCaseStmtHasCorrectTypes() {
-        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST6).get(0);
+        ASTExpression exp = getExpr(TEST6);
         DataFlowNode dfn = null;
         dfn = exp.getDataFlowNode().getFlow().get(0);
         assertTrue(dfn instanceof StartOrEndDataFlowNode);
@@ -129,25 +135,25 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
      * { List<ASTStatement> statements = getOrderedNodes(ASTStatement.class,
      * TEST7); List<ASTExpression> expressions =
      * getOrderedNodes(ASTExpression.class, TEST7);
-     * 
+     *
      * ASTStatement st = statements.get(0); ASTStatement st1 =
      * statements.get(1); ASTStatement st2 = statements.get(2); ASTStatement st3
      * = statements.get(3);
      * System.err.println("testSearchedCaseStmtHasCorrectTypes-st(0)="+st.
      * getBeginLine());
-     * 
+     *
      * ASTExpression ex = expressions.get(0); ASTExpression ex1 =
      * expressions.get(1); ASTExpression ex2 = expressions.get(2); ASTExpression
      * ex3 = expressions.get(3); ASTExpression ex4 = expressions.get(4);
      * System.err.println("ASTExpression="+ex );
-     * 
+     *
      * DataFlowNode dfn = null; //dfn = ex.getDataFlowNode().getFlow().get(0);
      * //dfn = st.getDataFlowNode().getFlow().get(0); dfn = (DataFlowNode)
      * st.getDataFlowNode(); System.err.println("DataFlowNode(st-0)="+dfn ) ;
      * System.err.println("DataFlowNode(st-1)="+st1.getDataFlowNode() ) ;
      * System.err.println("DataFlowNode(st-2)="+st2.getDataFlowNode() ) ;
      * System.err.println("DataFlowNode(st-3)="+st3.getDataFlowNode() ) ;
-     * 
+     *
      * System.err.println("DataFlowNode(ex-0)="+ex.getDataFlowNode() ) ;
      * System.err.println("DataFlowNode(ex-1)="+ex1.getDataFlowNode() ) ;
      * System.err.println("DataFlowNode(ex-2)="+ex2.getDataFlowNode() ) ;
@@ -178,7 +184,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
      */
     @Test
     public void testLabelledStmtHasCorrectTypes() {
-        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST8).get(0);
+        ASTExpression exp = getExpr(TEST8);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertEquals(3, dfn.getLine());
         assertTrue(dfn.isType(NodeType.LABEL_STATEMENT));
@@ -186,8 +192,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME)
-                .getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
+        StatementAndBraceFinder sbf = new StatementAndBraceFinder(plsql.getDefaultHandler().getDataFlowHandler());
         PLSQLNode node = new ASTMethodDeclaration(1);
         ((AbstractNode) node).testingOnlySetBeginColumn(1);
         sbf.buildDataFlowFor(node);

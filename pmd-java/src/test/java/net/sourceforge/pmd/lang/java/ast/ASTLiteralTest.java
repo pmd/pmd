@@ -4,59 +4,56 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
-public class ASTLiteralTest {
+public class ASTLiteralTest extends BaseParserTest {
 
     @Test
     public void testIsStringLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST1);
-        assertTrue((literals.iterator().next()).isStringLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST1);
+        assertTrue(literals.get(0).isStringLiteral());
     }
 
     @Test
     public void testIsNotStringLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST2);
-        assertFalse((literals.iterator().next()).isStringLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST2);
+        assertFalse(literals.get(0).isStringLiteral());
     }
 
     @Test
     public void testIsIntIntLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST3);
-        assertTrue((literals.iterator().next()).isIntLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST3);
+        assertTrue(literals.get(0).isIntLiteral());
     }
 
     @Test
     public void testIsIntLongLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST4);
-        assertTrue((literals.iterator().next()).isLongLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST4);
+        assertTrue(literals.get(0).isLongLiteral());
     }
 
     @Test
     public void testIsFloatFloatLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST5);
-        assertTrue((literals.iterator().next()).isFloatLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST5);
+        assertTrue(literals.get(0).isFloatLiteral());
     }
 
     @Test
     public void testIsFloatDoubleLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST6);
-        assertTrue((literals.iterator().next()).isDoubleLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST6);
+        assertTrue(literals.get(0).isDoubleLiteral());
     }
 
     @Test
     public void testIsCharLiteral() {
-        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST7);
-        assertTrue((literals.iterator().next()).isCharLiteral());
+        List<ASTLiteral> literals = java.getNodes(ASTLiteral.class, TEST7);
+        assertTrue(literals.get(0).isCharLiteral());
     }
 
     @Test
@@ -68,7 +65,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(1___234, literal.getValueAsInt());
     }
-    
+
     @Test
     public void testIntValueParsingBinary() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -78,7 +75,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(0b0000_0010, literal.getValueAsInt());
     }
-    
+
     @Test
     public void testIntValueParsingNegativeHexa() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -88,7 +85,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(-0X0000_000f, literal.getValueAsInt());
     }
-    
+
     @Test
     public void testFloatValueParsingNegative() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -98,7 +95,7 @@ public class ASTLiteralTest {
         literal.testingOnlySetEndColumn(7);
         assertEquals(-3_456.123_456f, literal.getValueAsFloat(), 0);
     }
-    
+
     @Test
     public void testStringUnicodeEscapesNotEscaped() {
         ASTLiteral literal = new ASTLiteral(1);
@@ -143,17 +140,17 @@ public class ASTLiteralTest {
         assertEquals("0", literal.getImage());
     }
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + "  String x = \"foo\";" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n  String x = \"foo\";\n}";
 
-    private static final String TEST2 = "public class Foo {" + PMD.EOL + "  int x = 42;" + PMD.EOL + "}";
+    private static final String TEST2 = "public class Foo {\n  int x = 42;\n}";
 
-    private static final String TEST3 = "public class Foo {" + PMD.EOL + "  int x = 42;" + PMD.EOL + "}";
+    private static final String TEST3 = "public class Foo {\n  int x = 42;\n}";
 
-    private static final String TEST4 = "public class Foo {" + PMD.EOL + "  long x = 42L;" + PMD.EOL + "}";
+    private static final String TEST4 = "public class Foo {\n  long x = 42L;\n}";
 
-    private static final String TEST5 = "public class Foo {" + PMD.EOL + "  float x = 3.14159f;" + PMD.EOL + "}";
+    private static final String TEST5 = "public class Foo {\n  float x = 3.14159f;\n}";
 
-    private static final String TEST6 = "public class Foo {" + PMD.EOL + "  double x = 3.14159;" + PMD.EOL + "}";
+    private static final String TEST6 = "public class Foo {\n  double x = 3.14159;\n}";
 
-    private static final String TEST7 = "public class Foo {" + PMD.EOL + "  char x = 'x';" + PMD.EOL + "}";
+    private static final String TEST7 = "public class Foo {\n  char x = 'x';\n}";
 }
