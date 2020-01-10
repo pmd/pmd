@@ -125,11 +125,12 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
                                                 .getNode()
                                                 .getFirstParentOfType(ASTFieldDeclaration.class);
 
-
-                Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
-                String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
-
-                fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
+                if (field != null) {
+                    Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
+                    String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
+    
+                    fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
+                }
             }
 
             return isGetter(node, fieldNames) || isSetter(node, fieldNames);
