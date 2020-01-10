@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 
@@ -24,4 +28,11 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         return new JavaParsingHelper(params);
     }
 
+    public static <T> List<T> convertList(List<Node> nodes, Class<T> target) {
+        List<T> converted = new ArrayList<>();
+        for (Node n : nodes) {
+            converted.add(target.cast(n));
+        }
+        return converted;
+    }
 }

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.selectNodes;
+import static net.sourceforge.pmd.lang.java.JavaParsingHelper.convertList;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition.forClass;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
@@ -1918,7 +1918,7 @@ public class ClassTypeResolverTest {
     }
 
 
-    private <T> List<T> selectNodes(Class<?> source, Class<T> resultType) {
+    private <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType) {
         return java5.parseClass(source).findDescendantsOfType(resultType);
     }
 
@@ -1930,15 +1930,6 @@ public class ClassTypeResolverTest {
     private <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
         ASTCompilationUnit acu = java4.parseClass(source, version);
         return convertList(acu.findChildNodesWithXPath(xpath), resultType);
-    }
-
-
-    private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class<?>... classes) {
-        JavaTypeDefinition typeDef = ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
-
-        for (int index = 0; index < classes.length; ++index) {
-            assertSame(classes[index], typeDef.getGenericType(index).getType());
-        }
     }
 
 
