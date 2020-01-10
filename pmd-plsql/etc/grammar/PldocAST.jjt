@@ -788,7 +788,7 @@ ASTCollectionTypeName CollectionTypeName() :
 
     {
       if (sb.length() ==  0) {
-        sb.append(token.toString());
+        sb.append(token.getImage());
       }
     }
 	(LOOKAHEAD(2) "(" size=NumericLiteral() {sb.append( "(" + size);}
@@ -860,7 +860,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 
     {
       if (name.length() == 0 ) {
-        name.append(token.toString());
+        name.append(token.getImage());
       }
     }
 	(LOOKAHEAD(2) "(" size=NumericLiteral() {name.append("("); name.append(size.getImage()) ;}
@@ -964,11 +964,11 @@ ASTDateTimeLiteral DateTimeLiteral() :
 
 
     [
-     (<WITH> {sb.append(" "); sb.append(token.toString()) ;}
-      (<LOCAL>   {sb.append(" "); sb.append(token.toString()) ;} )?
+     (<WITH> {sb.append(" "); sb.append(token.getImage()) ;}
+      (<LOCAL>   {sb.append(" "); sb.append(token.getImage()) ;} )?
       <TIME><ZONE> {sb.append(" "); sb.append("TIME ZONE") ;}
      )
-    |(<TO> {sb.append(" "); sb.append(token.toString()) ;}
+    |(<TO> {sb.append(" "); sb.append(token.getImage()) ;}
         (  <YEAR>
          | <MONTH>
          | <DAY>
@@ -1428,7 +1428,7 @@ ASTRegexpLikeCondition RegexpLikeCondition() :
     <REGEXP_LIKE> "("
         SqlExpression() ","
         SqlExpression()
-        [ "," ( matchParam = <CHARACTER_LITERAL> | matchParam = <STRING_LITERAL> ) {jjtThis.setMatchParam(matchParam.toString());} ]
+        [ "," ( matchParam = <CHARACTER_LITERAL> | matchParam = <STRING_LITERAL> ) {jjtThis.setMatchParam(matchParam.getImage());} ]
     ")"
     { return jjtThis; }
 }
@@ -2992,7 +2992,7 @@ ASTLikeExpression LikeExpression() :
 	//[ ")" { sb.append(")");} ]
 	[
 	<ESCAPE> { sb.append(" ESCAPE ");}
-	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }
+	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.getImage()); }
 	  | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	)
 	]
@@ -3011,7 +3011,7 @@ ASTTrimExpression TrimExpression() :
 {
   (
      "(" { sb.append("(");}
-     [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
+     [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.getImage()); } ]
      [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
      [ <FROM> { sb.append(" ").append(token.getImage()); } ]
      simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
@@ -3155,7 +3155,7 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
     [
       <ESCAPE> { sb.append(" ESCAPE ");}
       (
-        <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }
+        <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.getImage()); }
         | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }
       )
     ]
@@ -3413,7 +3413,7 @@ ASTLiteral Literal() :
 |
   t = <CHARACTER_LITERAL>
 |
-  //<STRING_LITERAL> {literal = token.toString(); }
+  //<STRING_LITERAL> {literal = token.getImage(); }
   simpleNode = StringLiteral() //SRT 2010526 Cope with Q-QuotedStrings
 |
   simpleNode = BooleanLiteral()
@@ -3899,7 +3899,7 @@ ASTTypeMethod TypeMethod()  :
         //inheritance CLAUSE
         {
         getToken(1);
-        //System.err.println("typeMethod: Result of getToken(1) is \"" + startToken.toString() + "\"" );
+        //System.err.println("typeMethod: Result of getToken(1) is \"" + starttoken.getImage() + "\"" );
         } //SRT added to check Token List walking
         ( [ <NOT> ] ( <OVERRIDING> | <INSTANTIABLE> | <FINAL> )  )*
 
@@ -4481,7 +4481,7 @@ ASTDDLEvent DDLEvent(): {}
   | <REVOKE>
   | <TRUNCATE>
   )
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 
@@ -4494,7 +4494,7 @@ ASTDatabaseEvent DatabaseEvent(): {}
   | <SERVERERROR>
   | <SUSPEND>
   )
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 ASTNonDMLEvent NonDMLEvent(): {}
@@ -6324,7 +6324,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <INLINE> // PRAGMA INLINE is not a PLSQL reserved word
 )
 
-{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 //SRT 2011-04-17 - END  */
@@ -6513,7 +6513,7 @@ ASTID ID(): {}
 		//20120427 | <MODIFY>
 		//SRT 20110524 | <SELF>
 	)
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 /**
@@ -6545,7 +6545,7 @@ ASTUnqualifiedID UnqualifiedID(): {}
 		//| <RESULT>
 	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
 	)
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 /**
@@ -6763,7 +6763,7 @@ ASTQualifiedID QualifiedID(): {}
 		//| <LIMIT>
 	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
 	)
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 ASTTypeKeyword TypeKeyword(): {}
@@ -6798,7 +6798,7 @@ ASTTypeKeyword TypeKeyword(): {}
 	<YEAR> | <LOCAL> | <WITH> | <ZONE>
 	| <JAVA_INTERFACE_CLASS> | <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 ASTJavaInterfaceClass JavaInterfaceClass(): {}
@@ -6806,6 +6806,6 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
 	(
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
-	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
