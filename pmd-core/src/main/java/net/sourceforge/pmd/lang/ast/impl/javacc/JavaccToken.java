@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -216,11 +218,7 @@ public class JavaccToken implements GenericToken {
      */
     public static JavaccToken implicitBefore(JavaccToken next) {
 
-        JavaccToken implicit = new JavaccToken(IMPLICIT_TOKEN,
-                                               "",
-                                               next.getStartInDocument(),
-                                               next.getStartInDocument(),
-                                               next.document);
+        JavaccToken implicit = newImplicit(next.getStartInDocument(), next.document);
 
         // insert it right before the next token
         // as a special token
@@ -234,6 +232,15 @@ public class JavaccToken implements GenericToken {
         next.specialToken = implicit;
 
         return implicit;
+    }
+
+    @NonNull
+    public static JavaccToken newImplicit(int offset, JavaccTokenDocument document) {
+        return new JavaccToken(IMPLICIT_TOKEN,
+                               "",
+                               offset,
+                               offset,
+                               document);
     }
 
 }

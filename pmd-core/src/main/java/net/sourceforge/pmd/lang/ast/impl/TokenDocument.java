@@ -28,7 +28,6 @@ public abstract class TokenDocument<T extends GenericToken> {
         return fullText;
     }
 
-
     public int lineNumberFromOffset(int offset) {
         return positioner.lineNumberFromOffset(offset);
     }

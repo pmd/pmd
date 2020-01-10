@@ -29,9 +29,19 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
 
     @Override
     public CharSequence getText() {
-        String fullText = ((JavaccToken) jjtGetFirstToken()).document.getFullText();
-        int realEnd = min(getEndOffset(), fullText.length()); // EOF token messes things up?
+        String fullText = jjtGetFirstToken().document.getFullText();
+        int realEnd = min(getEndOffset(), fullText.length()); // TODO EOF token messes things up?
         return fullText.substring(getStartOffset(), realEnd);
+    }
+
+    @Override
+    public JavaccToken jjtGetFirstToken() {
+        return (JavaccToken) super.jjtGetFirstToken();
+    }
+
+    @Override
+    public JavaccToken jjtGetLastToken() {
+        return (JavaccToken) super.jjtGetLastToken();
     }
 
     @Override

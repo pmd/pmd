@@ -2757,14 +2757,14 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
-   LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+   LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
    ">" ">" ">"
 }
 
 void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
-  LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+  LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RSIGNEDSHIFT})
   ">" ">"
 }
 

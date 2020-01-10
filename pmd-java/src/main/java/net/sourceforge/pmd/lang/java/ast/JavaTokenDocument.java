@@ -4,24 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 
 /**
- * Support methods for the token manager. The call to {@link #newToken(int, CharStream)}
- * is hacked in via search/replace on {@link JavaParserTokenManager}.
+ * {@link JavaccTokenDocument} for Java.
  */
-final class JavaTokenFactory {
+final class JavaTokenDocument extends JavaccTokenDocument {
 
-    private JavaTokenFactory() {
-
+    JavaTokenDocument(String fullText) {
+        super(fullText);
     }
 
-    static JavaccToken newToken(int kind, CharStream charStream) {
-        JavaCharStream jcs = (JavaCharStream) charStream;
+    @Override
+    protected @Nullable String describeKindImpl(int kind) {
+        return 0 <= kind && kind < JavaParserConstants.tokenImage.length
+               ? JavaParserConstants.tokenImage[kind]
+               : null;
+    }
 
+    @Override
+    public JavaccToken createToken(int kind, CharStream jcs, @Nullable String image) {
         switch (kind) {
         case JavaParserConstants.RUNSIGNEDSHIFT:
         case JavaParserConstants.RSIGNEDSHIFT:
@@ -48,18 +54,7 @@ final class JavaTokenFactory {
             );
 
         default:
-            // Most tokens have an entry in there, it's used to share the
-            // image string for keywords & punctuation. Those represent ~40%
-            // of token instances
-            String image = JavaParserTokenManager.jjstrLiteralImages[kind];
-
-            return new JavaccToken(
-                kind,
-                image == null ? charStream.GetImage() : image,
-                jcs.getStartOffset(),
-                jcs.getEndOffset(),
-                jcs.getTokenDocument()
-            );
+            return super.createToken(kind, jcs, image);
         }
     }
 

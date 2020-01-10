@@ -11,9 +11,9 @@ import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaTokenManager;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.

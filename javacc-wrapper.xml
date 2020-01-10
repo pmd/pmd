@@ -202,7 +202,7 @@
         </replaceregexp>
 
 
-        <replace token="new Token()" value="${ast-impl-package}.JavaccToken.undefined()">
+        <replace token="new Token()" value="token_source.input_stream.getTokenDocument().open()">
             <fileset dir="${target-package-dir}" />
         </replace>
 

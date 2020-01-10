@@ -3,6 +3,7 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 

@@ -29,7 +29,7 @@ public final class InternalApiBridge {
     }
 
     public static ASTCompilationUnit parseInternal(String fileName, Reader source, int jdkVersion, boolean preview, ParserOptions options) {
-        JavaParser parser = new JavaParser(CharStreamFactory.javaCharStream(source));
+        JavaParser parser = new JavaParser(CharStreamFactory.javaCharStream(source, JavaTokenDocument::new));
         String suppressMarker = options.getSuppressMarker();
         if (suppressMarker != null) {
             parser.setSuppressMarker(suppressMarker);
