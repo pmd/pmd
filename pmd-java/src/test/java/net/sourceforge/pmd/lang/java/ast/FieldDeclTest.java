@@ -4,30 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
-import static org.junit.Assert.assertEquals;
+import static net.sourceforge.pmd.lang.java.ast.AccessNodeTest.getDeclWithModifiers;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
 
 import org.junit.Test;
 
-public class FieldDeclTest {
+public class FieldDeclTest extends BaseParserTest {
 
-    public String makeAccessJavaCode(String[] access) {
-        String result = "public class Test { ";
-        for (int i = 0; i < access.length; i++) {
-            result += access[i] + " ";
-        }
-        return result + " int j;  }";
-    }
 
     public ASTFieldDeclaration getFieldDecl(String[] access) {
-        Set<ASTFieldDeclaration> fields = getNodes(ASTFieldDeclaration.class, makeAccessJavaCode(access));
-
-        assertEquals("Wrong number of fields", 1, fields.size());
-        return fields.iterator().next();
+        return getDeclWithModifiers(access, ASTFieldDeclaration.class, "int j;");
     }
+
 
     @Test
     public void testPublic() {

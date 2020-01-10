@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,8 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
-public class StatementAndBraceFinderTest {
+public class StatementAndBraceFinderTest extends BaseNonParserTest {
+
 
     @Test
     public void testStatementExpressionParentChildLinks() {

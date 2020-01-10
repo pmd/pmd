@@ -12,15 +12,16 @@ import java.util.Map;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class MethodScopeTest extends STBBaseTst {
+public class MethodScopeTest extends BaseNonParserTest {
 
     @Test
     public void testMethodParameterOccurrenceRecorded() {
-        parseCode(TEST1);
+        ASTCompilationUnit acu = parseCode(TEST1);
         Map<NameDeclaration, List<NameOccurrence>> m = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0)
                 .getScope().getDeclarations();
         NameDeclaration vnd = m.keySet().iterator().next();
@@ -32,7 +33,7 @@ public class MethodScopeTest extends STBBaseTst {
 
     @Test
     public void testMethodName() {
-        parseCode(TEST1);
+        ASTCompilationUnit acu = parseCode(TEST1);
         ASTMethodDeclaration meth = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         MethodScope ms = (MethodScope) meth.getScope();
         assertEquals(ms.getName(), "foo");
