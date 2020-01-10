@@ -3,7 +3,7 @@ package net.sourceforge.pmd.lang.java.symbols
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
-import net.sourceforge.pmd.lang.java.ParserTstUtil
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory
@@ -15,10 +15,10 @@ import java.util.*
 
 /** Testing utilities */
 
-fun Class<*>.getAst(): ASTCompilationUnit = ParserTstUtil.parseJavaDefaultVersion(this)
+fun Class<*>.getAst(): ASTCompilationUnit = JavaParsingHelper.WITH_PROCESSING.parseClass(this)
 
 fun Class<*>.getTypeDeclaration(): ASTAnyTypeDeclaration =
-        ParserTstUtil.parseJavaDefaultVersion(this).let { acu ->
+        JavaParsingHelper.WITH_PROCESSING.parseClass(this).let { acu ->
             if (this.enclosingClass == null) {
                 acu.getFirstDescendantOfType(ASTAnyTypeDeclaration::class.java)
             } else {

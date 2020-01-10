@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.buildDFA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -17,23 +16,24 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 @Ignore
-public class GeneralFiddlingTest {
+public class GeneralFiddlingTest extends BaseNonParserTest {
 
     /**
      * Unit test for https://sourceforge.net/p/pmd/bugs/1325/
      */
     @Test
     public void innerClassShouldWork() {
-        ASTCompilationUnit acu = buildDFA(
+        ASTCompilationUnit acu = java.parse(
                 "class Foo {" + "    void bar() {" + "        class X {}" + "        int i;" + "    }" + "}");
         assertNotNull(acu);
     }
 
     @Test
     public void test1() {
-        ASTCompilationUnit acu = buildDFA(TEST1);
+        ASTCompilationUnit acu = java.parse(TEST1);
         ASTMethodDeclarator meth = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0);
         DataFlowNode n = meth.getDataFlowNode();
         List<DataFlowNode> f = n.getFlow();

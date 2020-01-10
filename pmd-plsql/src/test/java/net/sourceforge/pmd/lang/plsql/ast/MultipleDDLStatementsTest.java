@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,9 +15,7 @@ public class MultipleDDLStatementsTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseDDLCommands() throws Exception {
-        String code = IOUtils.toString(this.getClass().getResourceAsStream("DDLCommands.sql"),
-                StandardCharsets.UTF_8);
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("DDLCommands.sql");
         List<ASTDDLCommand> ddlcommands = input.findDescendantsOfType(ASTDDLCommand.class);
         Assert.assertEquals(4, ddlcommands.size());
         List<ASTComment> comments = input.findDescendantsOfType(ASTComment.class);

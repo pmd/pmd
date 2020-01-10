@@ -10,17 +10,13 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -29,22 +25,18 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 @Ignore("These tests are failing because type resolution has not been updated")
 public class Java10Test {
 
-    private static String loadSource(String name) {
-        try {
-            return IOUtils.toString(Java10Test.class.getResourceAsStream("jdkversiontests/java10/" + name),
-                    StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private final JavaParsingHelper java10 =
+        JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("10")
+                                         .withResourceContext(Java10Test.class, "jdkversiontests/java10/");
+
+    private final JavaParsingHelper java9 = java10.withDefaultVersion("9");
 
     @Test
     public void testLocalVarInferenceBeforeJava10() {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("9",
-                loadSource("LocalVariableTypeInference.java"));
 
-        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> localVars = java9.parseResource("LocalVariableTypeInference.java")
+                                                           .findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(3, localVars.size());
 
         // first: var list = new ArrayList<String>();
@@ -64,8 +56,7 @@ public class Java10Test {
 
     @Test
     public void testLocalVarInferenceCanBeParsedJava10() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInference.java"));
+        ASTCompilationUnit compilationUnit = java10.parseResource("LocalVariableTypeInference.java");
         List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(3, localVars.size());
 
@@ -97,9 +88,8 @@ public class Java10Test {
 
     @Test
     public void testForLoopWithVar() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInferenceForLoop.java"));
-        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoop.java")
+                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
@@ -109,9 +99,8 @@ public class Java10Test {
 
     @Test
     public void testForLoopEnhancedWithVar() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInferenceForLoopEnhanced.java"));
-        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoopEnhanced.java")
+                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
@@ -121,9 +110,8 @@ public class Java10Test {
 
     @Test
     public void testForLoopEnhancedWithVar2() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInferenceForLoopEnhanced2.java"));
-        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoopEnhanced2.java")
+                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(4, localVars.size());
 
         assertNull(localVars.get(1).getTypeNode());
@@ -139,9 +127,8 @@ public class Java10Test {
 
     @Test
     public void testTryWithResourcesWithVar() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInferenceTryWithResources.java"));
-        List<ASTResource> resources = compilationUnit.findDescendantsOfType(ASTResource.class);
+        List<ASTResource> resources = java10.parseResource("LocalVariableTypeInferenceTryWithResources.java")
+                                            .findDescendantsOfType(ASTResource.class);
         assertEquals(1, resources.size());
 
         assertNull(resources.get(0).asLocalVariableDeclaration().getTypeNode());
@@ -151,33 +138,26 @@ public class Java10Test {
 
     @Test
     public void testTypeResNullPointer() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInference_typeres.java"));
-        Assert.assertNotNull(compilationUnit);
+        java10.parseResource("LocalVariableTypeInference_typeres.java");
     }
 
     @Test
     public void testVarAsIdentifier() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInference_varAsIdentifier.java"));
-        Assert.assertNotNull(compilationUnit);
+        java10.parseResource("LocalVariableTypeInference_varAsIdentifier.java");
     }
 
     @Test(expected = ParseException.class)
     public void testVarAsTypeIdentifier() {
-        ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInference_varAsTypeIdentifier.java"));
+        java10.parseResource("LocalVariableTypeInference_varAsTypeIdentifier.java");
     }
 
     @Test(expected = ParseException.class)
     public void testVarAsAnnotationName() {
-        ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInference_varAsAnnotationName.java"));
+        java10.parseResource("LocalVariableTypeInference_varAsAnnotationName.java");
     }
 
     @Test(expected = ParseException.class)
     public void testVarAsEnumName() {
-        ParserTstUtil.parseAndTypeResolveJava("10",
-                loadSource("LocalVariableTypeInference_varAsEnumName.java"));
+        java10.parseResource("LocalVariableTypeInference_varAsEnumName.java");
     }
 }
