@@ -55,6 +55,7 @@ public class JavaCharStream extends JavaCharStreamBase {
     @Override
     protected void UpdateLineColumn(char c) {
         startOffsets[bufpos] = nextCharInd;
+        super.UpdateLineColumn(c);
     }
 
     @Override
