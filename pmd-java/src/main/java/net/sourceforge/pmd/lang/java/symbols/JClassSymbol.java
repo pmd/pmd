@@ -109,6 +109,17 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     List<JClassSymbol> getDeclaredClasses();
 
 
+    /** Returns a field with the given name accessed defined in this class. */
+    @Nullable
+    default JClassSymbol getDeclaredClass(String name) {
+        for (JClassSymbol klass : getDeclaredClasses()) {
+            if (klass.getSimpleName().equals(name)) {
+                return klass;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns the methods declared directly in this class.
      * <i>This excludes bridges and other synthetic methods.</i>

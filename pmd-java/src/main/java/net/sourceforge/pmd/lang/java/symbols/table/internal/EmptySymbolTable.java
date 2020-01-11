@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.stream.Stream;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 
 
 /**
@@ -29,7 +30,6 @@ final class EmptySymbolTable implements JSymbolTable {
 
     }
 
-
     @Override
     public JSymbolTable getParent() {
         return null;
@@ -37,14 +37,14 @@ final class EmptySymbolTable implements JSymbolTable {
 
 
     @Override
-    public @Nullable JTypeDeclSymbol resolveTypeName(String simpleName) {
-        return null;
+    public @NonNull ResolveResult<JTypeDeclSymbol> resolveTypeName(String simpleName) {
+        return ResolveResultImpl.failed();
     }
 
 
     @Override
-    public @Nullable JValueSymbol resolveValueName(String simpleName) {
-        return null;
+    public @NonNull ResolveResult<JValueSymbol> resolveValueName(String simpleName) {
+        return ResolveResultImpl.failed();
     }
 
 

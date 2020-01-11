@@ -9,17 +9,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ClassResolveResult;
 
 
 /**
@@ -28,8 +26,6 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  * @since 7.0.0
  */
 final class JavaLangSymbolTable extends AbstractSymbolTable {
-
-    private static final Logger LOG = Logger.getLogger(SamePackageSymbolTable.class.getName());
 
     private static final Map<String, JTypeDeclSymbol> JAVA_8_LANG;
     private final Map<String, JTypeDeclSymbol> javaLangTypes;
@@ -166,26 +162,9 @@ final class JavaLangSymbolTable extends AbstractSymbolTable {
 
 
     @Override
-    protected @Nullable JTypeDeclSymbol resolveTypeNameImpl(String simpleName) {
-        return javaLangTypes.get(simpleName);
-    }
-
-
-    @Override
-    protected Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName) {
-        return Stream.empty();
-    }
-
-
-    @Override
-    protected @Nullable JValueSymbol resolveValueNameImpl(String simpleName) {
-        return null;
-    }
-
-
-    @Override
-    protected Logger getLogger() {
-        return LOG;
+    protected @Nullable ResolveResult<JTypeDeclSymbol> resolveTypeNameImpl(String simpleName) {
+        JTypeDeclSymbol got = javaLangTypes.get(simpleName);
+        return got == null ? null : new ClassResolveResult(got, this, null);
     }
 
 

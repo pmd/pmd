@@ -5,20 +5,21 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ClassResolveResult;
 
 
 /**
@@ -30,54 +31,45 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
-    private static final Logger LOG = Logger.getLogger(ImportOnDemandSymbolTable.class.getName());
-
     /** Stores the names of packages and types for which all their types are imported. */
-    private final List<String> importedPackagesAndTypes = new ArrayList<>();
+    private final Map<String, ASTImportDeclaration> importedPackagesAndTypes = new HashMap<>();
 
 
     /**
-     * Creates a new import-on-demand table.
-     *
-     * @param parent          Parent table
-     * @param helper          Resolve helper
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
      */
     ImportOnDemandSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> importsOnDemand) {
         super(parent, helper);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
-            if (!anImport.isImportOnDemand()) {
-                throw new IllegalArgumentException();
-            }
+            assert anImport.isImportOnDemand() : "Expected import on demand: " + anImport;
 
             if (anImport.isStatic()) {
                 // Static-Import-on-Demand Declaration
                 // A static-import-on-demand declaration allows all accessible static members of a named type to be imported as needed.
                 // includes types members, methods & fields
 
-                @Nullable JClassSymbol containerClass = loadClassReportFailure(anImport.getImportedName());
+                @Nullable JClassSymbol containerClass = loadClassReportFailure(anImport, anImport.getImportedName());
                 if (containerClass != null) {
                     // populate the inherited state
 
-                    Map<String, List<JMethodSymbol>> methods = containerClass.getDeclaredMethods()
-                                                                             .stream()
-                                                                             .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                                             .filter(this::canBeImported)
-                                                                             .collect(Collectors.groupingBy(JMethodSymbol::getSimpleName));
+                    for (JMethodSymbol m : containerClass.getDeclaredMethods()) {
+                        if (Modifier.isStatic(m.getModifiers()) && canBeImported(m)) {
+                            importMethod(anImport, m);
+                        }
+                    }
 
-                    importedStaticMethods.putAll(methods);
+                    for (JFieldSymbol f : containerClass.getDeclaredFields()) {
+                        if (Modifier.isStatic(f.getModifiers()) && canBeImported(f)) {
+                            importField(anImport, f);
+                        }
+                    }
 
-                    containerClass.getDeclaredFields()
-                                  .stream()
-                                  .filter(f -> Modifier.isStatic(f.getModifiers()))
-                                  .filter(this::canBeImported)
-                                  .forEach(f -> importedStaticFields.put(f.getSimpleName(), f));
-
-                    containerClass.getDeclaredClasses().stream()
-                                  .filter(t -> Modifier.isStatic(t.getModifiers()))
-                                  .filter(this::canBeImported)
-                                  .forEach(t -> importedTypes.put(t.getSimpleName(), t));
+                    for (JClassSymbol t : containerClass.getDeclaredClasses()) {
+                        if (Modifier.isStatic(t.getModifiers()) && canBeImported(t)) {
+                            importType(anImport, t);
+                        }
+                    }
                 }
 
                 // can't be resolved sorry
@@ -86,41 +78,36 @@ final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
                 // Type-Import-on-Demand Declaration
                 // This is of the kind <packageName>.*;
 
-                importedPackagesAndTypes.add(anImport.getPackageName());
+                importedPackagesAndTypes.put(anImport.getPackageName(), anImport);
             }
         }
     }
 
 
     @Override
-    protected @Nullable JTypeDeclSymbol resolveTypeNameImpl(String simpleName) {
+    protected @Nullable ResolveResult<JTypeDeclSymbol> resolveTypeNameImpl(String simpleName) {
 
         // Check for static import-on-demand
-        @Nullable JTypeDeclSymbol typename = super.resolveTypeNameImpl(simpleName);
+        @Nullable ResolveResult<JTypeDeclSymbol> typename = super.resolveTypeNameImpl(simpleName);
         if (typename != null) {
             return typename;
         }
 
         // This comes from a Type-Import-on-Demand Declaration
         // We'll try to brute force it:
-        return importedPackagesAndTypes.stream()
-                                       // here 'pack' may be a package or a type name
-                                       // but can't be the unnamed package (you can't write "import .*;")
-                                       .map(pack -> pack + "." + simpleName)
-                                       // ignore the exception. We don't know if the classpath is badly configured
-                                       // or if the type was never in this package in the first place
-                                       .map(this::loadClassIgnoreFailure)
-                                       .filter(Objects::nonNull)
-                                       .filter(this::canBeImported)
-                                       .findAny()
-                                       .orElse(null);
+        for (Entry<String, ASTImportDeclaration> it : importedPackagesAndTypes.entrySet()) {// here 'pack' may be a package or a type name
+            // but can't be the unnamed package (you can't write "import .*;")
+            String name = it.getKey() + "." + simpleName;
+            // ignore the exception. We don't know if the classpath is badly configured
+            // or if the type was never there in the first place
+            JClassSymbol sym = loadClassIgnoreFailure(name);
+            if (sym != null && canBeImported(sym)) {
+                return new ClassResolveResult(sym, this, it.getValue());
+            }
+        }
+        return null;
     }
 
-
-    @Override
-    protected Logger getLogger() {
-        return LOG;
-    }
 
     @Override
     boolean isPrunable() {

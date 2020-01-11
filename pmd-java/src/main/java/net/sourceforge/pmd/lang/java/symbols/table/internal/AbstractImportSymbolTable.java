@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -20,6 +22,9 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ClassResolveResult;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ValueResolveResult;
 
 
 /**
@@ -34,9 +39,9 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
-    final Map<String, JClassSymbol> importedTypes = new HashMap<>();
+    final Map<String, ResolveResult<JTypeDeclSymbol>> importedTypes = new HashMap<>();
     final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
-    final Map<String, JFieldSymbol> importedStaticFields = new HashMap<>();
+    final Map<String, ResolveResult<JValueSymbol>> importedStaticFields = new HashMap<>();
 
     /**
      * Constructor with the parent table and the auxclasspath classloader.
@@ -50,7 +55,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
 
     @Override
-    protected @Nullable JTypeDeclSymbol resolveTypeNameImpl(String simpleName) {
+    protected @Nullable ResolveResult<JTypeDeclSymbol> resolveTypeNameImpl(String simpleName) {
         return importedTypes.get(simpleName);
     }
 
@@ -62,8 +67,22 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
 
     @Override
-    protected @Nullable JValueSymbol resolveValueNameImpl(String simpleName) {
+    protected @Nullable ResolveResult<JValueSymbol> resolveValueNameImpl(String simpleName) {
         return importedStaticFields.get(simpleName);
+    }
+
+    protected void importType(ASTImportDeclaration decl, JClassSymbol sym) {
+        importedTypes.put(sym.getSimpleName(), new ClassResolveResult(sym, this, decl));
+    }
+
+
+    protected void importField(ASTImportDeclaration decl, JFieldSymbol sym) {
+        importedStaticFields.put(sym.getSimpleName(), new ValueResolveResult(sym, this, decl));
+    }
+
+
+    protected void importMethod(ASTImportDeclaration decl, JMethodSymbol sym) {
+        importedStaticMethods.computeIfAbsent(sym.getSimpleName(), k -> new ArrayList<>()).add(sym);
     }
 
 

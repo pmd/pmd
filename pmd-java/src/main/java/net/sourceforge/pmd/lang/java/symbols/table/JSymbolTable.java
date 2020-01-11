@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.table;
 
 import java.util.stream.Stream;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -85,10 +85,10 @@ public interface JSymbolTable {
      *
      * @param simpleName Simple name of the type to look for
      *
-     * @return The type reference if it can be found, otherwise {@code null}
+     * @return A result for the search
      */
-    @Nullable
-    JTypeDeclSymbol resolveTypeName(String simpleName);
+    @NonNull
+    ResolveResult<JTypeDeclSymbol> resolveTypeName(String simpleName);
 
 
     /**
@@ -97,10 +97,10 @@ public interface JSymbolTable {
      *
      * @param simpleName simple name of the value to find
      *
-     * @return The reference to the variable if it can be found, otherwise {@code null}
+     * @return A result for the search
      */
-    @Nullable
-    JValueSymbol resolveValueName(String simpleName);
+    @NonNull
+    ResolveResult<JValueSymbol> resolveValueName(String simpleName);
 
 
     /**

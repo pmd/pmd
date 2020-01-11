@@ -20,15 +20,18 @@ final class SymbolTableResolveHelper {
     private final String thisPackage;
     private final SymbolResolver symbolResolver;
     private final int jdkVersion;
+    private final SemanticChecksLogger logger;
 
 
     SymbolTableResolveHelper(String thisPackage,
                              SymbolResolver symbolResolver,
-                             int jdkVersion) {
+                             int jdkVersion,
+                             SemanticChecksLogger logger) {
 
         this.thisPackage = thisPackage;
         this.symbolResolver = symbolResolver;
         this.jdkVersion = jdkVersion;
+        this.logger = logger;
 
         assert symbolResolver != null;
         assert thisPackage != null;
@@ -55,6 +58,10 @@ final class SymbolTableResolveHelper {
     @Nullable
     JClassSymbol loadClassOrFail(String fqcn) {
         return symbolResolver.resolveClassFromCanonicalName(fqcn);
+    }
+
+    SemanticChecksLogger getLogger() {
+        return logger;
     }
 
     public String getThisPackage() {

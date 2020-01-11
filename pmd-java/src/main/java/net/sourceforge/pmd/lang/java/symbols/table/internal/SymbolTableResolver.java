@@ -43,9 +43,10 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
      */
     public SymbolTableResolver(SymbolResolver symResolver,
                                int jdkVersion,
-                               ASTCompilationUnit root) {
+                               ASTCompilationUnit root,
+                               SemanticChecksLogger logger) {
         this.root = root;
-        myResolveHelper = new SymbolTableResolveHelper(root.getPackageName(), symResolver, jdkVersion);
+        myResolveHelper = new SymbolTableResolveHelper(root.getPackageName(), symResolver, jdkVersion, logger);
         // this is the only place pushOnStack can be circumvented
         myStackTop = EmptySymbolTable.getInstance();
 
@@ -78,7 +79,7 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
         int pushed = 0;
         pushed += pushOnStack((p, h) -> new ImportOnDemandSymbolTable(p, h, isImportOnDemand.get(true)));
         pushed += pushOnStack(JavaLangSymbolTable::new);
-        pushed += pushOnStack(SamePackageSymbolTable::new);
+        pushed += pushOnStack((p, h) -> new SamePackageSymbolTable(p, h, node.getPackageDeclaration()));
         pushed += pushOnStack((p, h) -> new SingleImportSymbolTable(p, h, isImportOnDemand.get(false)));
 
         // All of the header symbol tables belong to the CompilationUnit

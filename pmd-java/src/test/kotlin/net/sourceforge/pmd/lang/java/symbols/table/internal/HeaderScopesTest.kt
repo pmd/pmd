@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
+import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
 import kotlin.streams.toList
 
 /**
@@ -40,13 +41,19 @@ class HeaderScopesTest : ParserTestSpec({
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
     fun JSymbolTable.resolveClass(s: String): Class<*> =
-            resolveTypeName(s)!!.jvmRepr!!
+            resolveTypeName(s).result!!.jvmRepr!!
 
 
-    fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s).shouldBeA()
+    fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s).result.shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = resolveMethodName(s).toList()
 
     fun ASTCompilationUnit.firstImportTable() = symbolTable
+
+    fun ResolveResult<*>.shouldFail() {
+        this.result shouldBe null
+        this.contributor shouldBe null
+        this.symbolTable shouldBe null
+    }
 
     parserTest("Test same-package scope") {
 
@@ -160,9 +167,9 @@ class HeaderScopesTest : ParserTestSpec({
         acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
 
             it.resolveValueName("PUBLIC_FIELD") shouldNotBe null
-            it.resolveValueName("PACKAGE_FIELD") shouldBe null
-            it.resolveValueName("PRIVATE_FIELD") shouldBe null
-            it.resolveValueName("PROTECTED_FIELD") shouldBe null
+            it.resolveValueName("PACKAGE_FIELD").shouldFail()
+            it.resolveValueName("PRIVATE_FIELD").shouldFail()
+            it.resolveValueName("PROTECTED_FIELD").shouldFail()
 
             it.resolveMethodName("packageMethod").shouldHaveSize(0)
             it.resolveMethodName("privateMethod").shouldHaveSize(0)
@@ -171,9 +178,9 @@ class HeaderScopesTest : ParserTestSpec({
             it.resolveMethodName("publicMethod2").shouldHaveSize(1)
 
             it.resolveTypeName("PublicStatic") shouldNotBe null
-            it.resolveTypeName("PackageStatic") shouldBe null
-            it.resolveTypeName("ProtectedStatic") shouldBe null
-            it.resolveTypeName("PrivateStatic") shouldBe null
+            it.resolveTypeName("PackageStatic").shouldFail()
+            it.resolveTypeName("ProtectedStatic").shouldFail()
+            it.resolveTypeName("PrivateStatic").shouldFail()
 
         }
     }
@@ -187,13 +194,13 @@ class HeaderScopesTest : ParserTestSpec({
         acu.firstImportTable().shouldBeA<SamePackageSymbolTable> {
 
             it.resolveValueName("PUBLIC_FIELD") shouldNotBe null
-            it.resolveValueName("publicField") shouldBe null
+            it.resolveValueName("publicField").shouldFail()
 
             it.resolveMethodName("publicMethod").shouldHaveSize(1)
             it.resolveMethodName("publicInstanceMethod").shouldHaveSize(0)
 
             it.resolveTypeName("PublicStatic") shouldNotBe null
-            it.resolveTypeName("PublicInner") shouldBe null
+            it.resolveTypeName("PublicInner").shouldFail()
 
         }
     }

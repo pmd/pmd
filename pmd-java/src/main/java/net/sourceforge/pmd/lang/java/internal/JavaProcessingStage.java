@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -18,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
@@ -25,6 +28,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
@@ -70,9 +74,16 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             int jdkVersion = ((JavaLanguageHandler) configuration.getLanguageVersion().getLanguageVersionHandler()).getJdkVersion();
 
+            SemanticChecksLogger logger = new SemanticChecksLogger() {
+                @Override
+                public void warning(JavaNode location, String message, Object... args) {
+                    Logger.getLogger(getClass().getName()).fine(() -> MessageFormat.format(message, args));
+                }
+            };
+
             // Resolve symbol tables
             bench("Symbol table resolution",
-                () -> new SymbolTableResolver(symResolver, jdkVersion, acu).traverse());
+                () -> new SymbolTableResolver(symResolver, jdkVersion, acu, logger).traverse());
 
         }
     },

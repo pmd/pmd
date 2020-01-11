@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -23,17 +21,6 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
-    private static final Logger LOG = Logger.getLogger(SingleImportSymbolTable.class.getName());
-
-
-    /**
-     * Creates a scope for single imports, linking it to its parent, which cares about
-     * import on demand declarations.
-     *
-     * @param parent        Parent table
-     * @param helper        Resolve helper
-     * @param singleImports Import declarations, must not be on-demand!
-     */
     SingleImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> singleImports) {
         super(parent, helper);
 
@@ -49,9 +36,11 @@ final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                 // Single-Static-Import Declaration
                 // types, fields or methods having the same name
 
-                String className = name.substring(0, name.lastIndexOf('.'));
+                int idx = name.lastIndexOf('.');
+                assert idx > 0;
+                String className = name.substring(0, idx);
 
-                JClassSymbol containerClass = loadClassReportFailure(className);
+                JClassSymbol containerClass = loadClassReportFailure(anImport, className);
 
                 if (containerClass == null) {
                     // the auxclasspath is wrong
@@ -60,20 +49,18 @@ final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                     continue;
                 }
 
-                List<JMethodSymbol> methods = containerClass.getDeclaredMethods()
-                                                            .stream()
-                                                            .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                            .filter(this::canBeImported)
-                                                            .filter(m -> m.getSimpleName().equals(simpleName))
-                                                            .collect(Collectors.toList());
+                for (JMethodSymbol jMethodSymbol : containerClass.getDeclaredMethods(simpleName)) {
+                    if (Modifier.isStatic(jMethodSymbol.getModifiers()) && canBeImported(jMethodSymbol)) {
+                        importMethod(anImport, jMethodSymbol);
+                    }
+                }
 
-                importedStaticMethods.put(simpleName, methods);
 
                 // check for fields
 
                 JFieldSymbol field = containerClass.getDeclaredField(simpleName);
                 if (field != null && Modifier.isStatic(field.getModifiers())) {
-                    importedStaticFields.put(simpleName, field);
+                    importField(anImport, field);
                 }
 
                 // check for member types
@@ -81,24 +68,16 @@ final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                 // We don't use named directly, because if containerClass is itself an inner class then its
                 // dot to dollar conversion would have already been handled
 
-                containerClass.getDeclaredClasses().stream()
-                              .filter(m -> Modifier.isStatic(m.getModifiers()))
-                              .filter(this::canBeImported)
-                              .filter(m -> m.getSimpleName().equals(simpleName))
-                              .findFirst()
-                              .ifPresent(imported -> importedTypes.put(simpleName, imported));
+                JClassSymbol klass = containerClass.getDeclaredClass(simpleName);
+                if (klass != null && Modifier.isStatic(klass.getModifiers()) && canBeImported(klass)) {
+                    importType(anImport, klass);
+                }
 
             } else {
                 // Single-Type-Import Declaration
-                importedTypes.put(simpleName, helper.findSymbolCannotFail(name));
+                importType(anImport, helper.findSymbolCannotFail(name));
             }
         }
-    }
-
-
-    @Override
-    protected Logger getLogger() {
-        return LOG;
     }
 
 

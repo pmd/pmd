@@ -7,11 +7,9 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JValueSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
-import net.sourceforge.pmd.lang.java.symbols.internal.firstOrNull
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import org.checkerframework.checker.nullness.qual.Nullable
-import java.util.logging.Logger
+import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
@@ -41,21 +39,21 @@ class LazinessTest : FunSpec({
     }
 
     test("Test resolveTypeName doesn't query parents if not needed") {
-        lazinessTest(::MyTypeTable, JSymbolTable::resolveTypeName) {
+        lazinessTest(::MyTypeTable, { t, n -> t.resolveTypeName(n).result }) {
             testSymFactory.getClassSymbol(LazinessTest::class.java)!!
         }
     }
 
 
     test("Test resolveValueName doesn't query parents if not needed") {
-        lazinessTest(::MyValueTable, JSymbolTable::resolveValueName) {
+        lazinessTest(::MyValueTable, { t, n -> t.resolveValueName(n).result }) {
             classSym(Statics::class.java)!!.getDeclaredField("PUBLIC_FIELD")
         }
     }
 
 
     test("Test resolveMethodName doesn't trigger evaluation of parent streams") {
-        lazinessTest<JMethodSymbol>(::MyMethodTable, { t, n -> t.resolveMethodName(n).firstOrNull() }) {
+        lazinessTest<JMethodSymbol>(::MyMethodTable, { t, n -> t.resolveMethodName(n).findFirst().get() }) {
             classSym(Statics::class.java)!!.getDeclaredMethods("publicMethod")[0]
         }
     }
@@ -78,40 +76,33 @@ class LazinessTest : FunSpec({
 
 })
 
-private class MyTypeTable(parent: JSymbolTable,
-                          resolveHelper: SymbolTableResolveHelper,
-                          private val typeSymbolGetter: () -> JTypeDeclSymbol?)
-    : AbstractSymbolTable(parent, resolveHelper) {
+private class MyTypeTable(
+        parent: JSymbolTable,
+        resolveHelper: SymbolTableResolveHelper,
+        private val typeSymbolGetter: () -> JTypeDeclSymbol?
+) : AbstractSymbolTable(parent, resolveHelper) {
 
-    override fun resolveTypeNameImpl(simpleName: String): JTypeDeclSymbol? = typeSymbolGetter()
+    override fun resolveTypeNameImpl(simpleName: String): ResolveResult<JTypeDeclSymbol> =
+            ResolveResultImpl.ClassResolveResult(typeSymbolGetter(), this, null)
 
-    override fun resolveValueNameImpl(simpleName: String): JValueSymbol? = null
-
-    override fun resolveMethodNameImpl(simpleName: String): Stream<JMethodSymbol> = Stream.empty()
-
-    override fun getLogger(): Logger = Logger.getLogger(LazinessTest::class.java.canonicalName)
 }
 
-private class MyValueTable(parent: JSymbolTable,
-                           resolveHelper: SymbolTableResolveHelper,
-                           private val valueSymbolGetter: () -> JValueSymbol?) : AbstractSymbolTable(parent, resolveHelper) {
-    override fun resolveTypeNameImpl(simpleName: String): JTypeDeclSymbol? = null
+private class MyValueTable(
+        parent: JSymbolTable,
+        resolveHelper: SymbolTableResolveHelper,
+        private val valueSymbolGetter: () -> JValueSymbol?
+) : AbstractSymbolTable(parent, resolveHelper) {
 
-    override fun resolveValueNameImpl(simpleName: String): @Nullable JValueSymbol? = valueSymbolGetter()
+    override fun resolveValueNameImpl(simpleName: String): ResolveResult<JValueSymbol>? =
+            ResolveResultImpl.ValueResolveResult(valueSymbolGetter(), this, null)
 
-    override fun resolveMethodNameImpl(simpleName: String): Stream<JMethodSymbol> = Stream.empty()
 
-    override fun getLogger(): Logger = Logger.getLogger(LazinessTest::class.java.canonicalName)
 }
 
 private class MyMethodTable(parent: JSymbolTable, resolveHelper: SymbolTableResolveHelper,
                             private val methodSymbolGetter: () -> JMethodSymbol?) : AbstractSymbolTable(parent, resolveHelper) {
-    override fun resolveTypeNameImpl(simpleName: String): JTypeDeclSymbol? = null
 
-    override fun resolveValueNameImpl(simpleName: String): JValueSymbol? = null
+    override fun resolveMethodNameImpl(simpleName: String): Stream<JMethodSymbol>? =
+            methodSymbolGetter()?.let { Stream.of(it) } ?: Stream.empty()
 
-    override fun resolveMethodNameImpl(simpleName: String): Stream<JMethodSymbol> = methodSymbolGetter()?.let { Stream.of(it) }
-            ?: Stream.empty()
-
-    override fun getLogger(): Logger = Logger.getLogger(LazinessTest::class.java.canonicalName)
 }
