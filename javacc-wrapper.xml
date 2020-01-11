@@ -125,6 +125,7 @@
     <target name="javacc" depends="jjtree" unless="javaccBuildNotRequired">
         <javacc static="false"
                 usercharstream="true"
+                unicodeinput="true"
                 target="${target-package-dir}/${lang-name}.jj"
                 outputdirectory="${target-package-dir}"
                 javacchome="${javacc-home.path}" />
@@ -170,6 +171,12 @@
         <antcall target="constants-files" />
 
         <!-- For compatibility -->
+
+        <replaceregexp flags="g">
+            <regexp pattern="\.image(?!Suffix)" />
+            <substitution expression=".getImage()" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
 
         <replace token=".beginLine" value=".getBeginLine()">
             <fileset dir="${target-package-dir}" />
@@ -231,9 +238,11 @@
 
     <target name="cleanup-token-manager">
 
-        <replace file="${tokenmgr-file}"
-                 token="(public )?class ${tokenmgr-name}"
-                 value="class ${tokenmgr-name} extends ${base-tokenmgr}" />
+        <replaceregexp>
+            <regexp pattern='(public )?class ${tokenmgr-name}' />
+            <substitution expression='class ${tokenmgr-name} extends ${base-tokenmgr}' />
+            <file name="${tokenmgr-file}" />
+        </replaceregexp>
 
         <!-- This is a programming error and should be caught in tests -->
         <replaceregexp>

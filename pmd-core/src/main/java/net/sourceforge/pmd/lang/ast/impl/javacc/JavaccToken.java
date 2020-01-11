@@ -8,8 +8,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
 /**
- * A generic token implementation for JavaCC parsers. Will probably help
- * remove those duplicated implementations that all have the same name.
+ * A generic token implementation for JavaCC parsers.
  *
  * <p>Largely has the same interface as the default generated token class.
  * The main difference is that the position of the token is encoded as
@@ -86,7 +85,13 @@ public class JavaccToken implements GenericToken {
     }
 
     /**
-     * Builds of the specified kind.
+     * Builds a new token of the specified kind.
+     *
+     * @param kind           Kind of token
+     * @param image          Image of the token (after translating escapes if any)
+     * @param startInclusive Start character of the token in the text file (before translating escapes)
+     * @param endExclusive   End of the token in the text file (before translating escapes)
+     * @param document       Document owning the token
      */
     public JavaccToken(int kind,
                        CharSequence image,
@@ -100,6 +105,13 @@ public class JavaccToken implements GenericToken {
         this.startInclusive = startInclusive;
         this.endExclusive = endExclusive;
         this.document = document;
+    }
+
+    /**
+     * Returns the document owning this token.
+     */
+    public JavaccTokenDocument getDocument() {
+        return document;
     }
 
 
@@ -198,10 +210,6 @@ public class JavaccToken implements GenericToken {
         return tok;
     }
 
-    public JavaccTokenDocument getDocument() {
-        return document;
-    }
-
 
     /**
      * Creates an implicit token, with zero length, that is linked to
@@ -209,7 +217,7 @@ public class JavaccToken implements GenericToken {
      *
      * @param next Token before which to insert the new token
      *
-     * @return The implicit token
+     * @return A new token
      */
     public static JavaccToken implicitBefore(JavaccToken next) {
 
@@ -229,6 +237,14 @@ public class JavaccToken implements GenericToken {
         return implicit;
     }
 
+    /**
+     * Returns a new implicit token, positioned at the given offset.
+     *
+     * @param offset   Offset of the token
+     * @param document Document owning the token
+     *
+     * @return A new token
+     */
     public static JavaccToken newImplicit(int offset, JavaccTokenDocument document) {
         return new JavaccToken(IMPLICIT_TOKEN,
                                "",

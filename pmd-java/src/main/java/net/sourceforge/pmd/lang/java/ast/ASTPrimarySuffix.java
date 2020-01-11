@@ -19,12 +19,6 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     @InternalApi
     @Deprecated
-    public ASTPrimarySuffix(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @InternalApi
-    @Deprecated
     public void setIsArrayDereference() {
         isArrayDereference = true;
     }

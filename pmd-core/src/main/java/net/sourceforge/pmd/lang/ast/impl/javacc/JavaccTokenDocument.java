@@ -23,8 +23,11 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     }
 
     /**
-     * Open the document. This is only meant to be used by
-     * Javacc-generated file.
+     * Open the document. This is only meant to be used by a Javacc-generated
+     * parser.
+     *
+     * @return The token for the document start. This token is implicit and
+     *     will never end up in the final token chain.
      *
      * @throws IllegalStateException If the document has already been opened
      */
@@ -56,13 +59,13 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
      */
     public final @NonNull String describeKind(int kind) {
         if (kind == JavaccToken.IMPLICIT_TOKEN) {
-            return "implicit token";
+            return "<implicit token>";
         }
         String impl = describeKindImpl(kind);
         if (impl != null) {
             return impl;
         }
-        return "token of kind " + kind;
+        return "<token of kind " + kind + ">";
     }
 
     /**
@@ -82,9 +85,11 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return null;
     }
 
+
     /**
      * Creates a new token with the given kind. This is called back to
-     * by JavaCC-generated token managers (jjFillToken).
+     * by JavaCC-generated token managers (jjFillToken). Note that a
+     * created token is not guaranteed to end up in the final token chain.
      *
      * @param kind  Kind of the token
      * @param cs    Char stream of the file. This can be used to get text

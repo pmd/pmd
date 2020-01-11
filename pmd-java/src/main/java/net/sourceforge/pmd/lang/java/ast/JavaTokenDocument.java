@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.GT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.WHITESPACE;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
@@ -21,19 +26,17 @@ final class JavaTokenDocument extends JavaccTokenDocument {
 
     @Override
     protected @Nullable String describeKindImpl(int kind) {
-        return 0 <= kind && kind < JavaParserConstants.tokenImage.length
-               ? JavaParserConstants.tokenImage[kind]
-               : null;
+        return JavaTokenKinds.describe(kind);
     }
 
     @Override
     public JavaccToken createToken(int kind, CharStream jcs, @Nullable String image) {
         switch (kind) {
-        case JavaParserConstants.RUNSIGNEDSHIFT:
-        case JavaParserConstants.RSIGNEDSHIFT:
-        case JavaParserConstants.GT:
+        case RUNSIGNEDSHIFT:
+        case RSIGNEDSHIFT:
+        case GT:
             return new GTToken(
-                JavaParserConstants.GT,
+                GT,
                 kind,
                 ">",
                 jcs.getStartOffset(),
@@ -41,7 +44,7 @@ final class JavaTokenDocument extends JavaccTokenDocument {
                 jcs.getTokenDocument()
             );
 
-        case JavaParserConstants.WHITESPACE:
+        case WHITESPACE:
             // We don't create a new string for the image of whitespace tokens eagerly
 
             // It's unlikely that anybody cares about that, and since

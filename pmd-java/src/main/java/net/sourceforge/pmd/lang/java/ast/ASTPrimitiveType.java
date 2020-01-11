@@ -25,12 +25,6 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensiona
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimitiveType(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public boolean isBoolean() {
         return "boolean".equals(getImage());
     }

@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
@@ -63,7 +64,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new JavaLanguageParser(jdkVersion, preview, parserOptions);
+        return new JavaParser(jdkVersion, preview, parserOptions);
     }
 
 

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 /**
- *
+ * A char stream that does not perform unicode escaping.
  */
 public class SimpleCharStream extends JavaCharStream {
 

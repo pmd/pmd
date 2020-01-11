@@ -12,8 +12,9 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 /**
  * PMD flavour of character streams used by JavaCC parsers.
  *
- * <p>Part of the methods are mandated by JavaCC. Some of them have
- * been renamed to match decent naming conventions though.
+ * TODO for when all JavaCC languages are aligned:
+ *   * rename methods to match decent naming conventions
+ *   * move to impl.javacc package
  */
 public interface CharStream {
 

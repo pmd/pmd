@@ -39,12 +39,6 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public boolean isFindBoundary() {
         return isNested() || isLocal();

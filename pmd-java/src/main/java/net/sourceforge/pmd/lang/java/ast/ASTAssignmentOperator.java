@@ -25,12 +25,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAssignmentOperator(JavaParser p, int id) {
-        super(p, id);
-    }
-
     // TODO this could be determined from the image of the operator, no need to set it in the parser...
     @InternalApi
     @Deprecated

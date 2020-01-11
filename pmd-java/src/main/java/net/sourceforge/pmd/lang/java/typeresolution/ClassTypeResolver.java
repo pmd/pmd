@@ -96,6 +96,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -894,7 +895,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // skip children which already have their type assigned
             if (currentChild.getType() == null) {
                 // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
-                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+                if (currentChild.jjtGetLastToken().kind == JavaTokenKinds.THIS) {
 
                     if (previousChild != null) { // Qualified 'this' expression
                         currentChild.setTypeDefinition(previousChild.getTypeDefinition());
@@ -908,7 +909,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     }
 
                     // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
-                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+                } else if (currentChild.jjtGetLastToken().kind == JavaTokenKinds.SUPER) {
 
                     if (previousChild != null) { // Qualified 'super' expression
                         // anonymous classes can't have qualified super expression, thus
@@ -926,7 +927,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     String currentChildImage = currentChild.getImage();
                     if (currentChildImage == null) {
                         // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
-                        currentChildImage = currentChild.jjtGetLastToken().toString();
+                        currentChildImage = currentChild.jjtGetLastToken().getImage();
                     }
 
                     ASTArguments astArguments = nextChild != null

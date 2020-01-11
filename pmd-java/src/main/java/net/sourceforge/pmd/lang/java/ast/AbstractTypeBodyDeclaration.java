@@ -33,11 +33,6 @@ abstract class AbstractTypeBodyDeclaration extends AbstractJavaNode implements A
     }
 
 
-    AbstractTypeBodyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public JavaNode getDeclarationNode() {
         if (jjtGetNumChildren() == 0) {

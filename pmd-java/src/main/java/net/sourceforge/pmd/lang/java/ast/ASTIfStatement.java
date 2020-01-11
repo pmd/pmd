@@ -31,13 +31,6 @@ public class ASTIfStatement extends AbstractJavaNode {
 
     @InternalApi
     @Deprecated
-    public ASTIfStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @InternalApi
-    @Deprecated
     public void setHasElse() {
         this.hasElse = true;
     }

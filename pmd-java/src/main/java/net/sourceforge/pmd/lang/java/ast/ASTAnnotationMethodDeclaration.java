@@ -14,12 +14,6 @@ public class ASTAnnotationMethodDeclaration extends AbstractMethodLikeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAnnotationMethodDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

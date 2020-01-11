@@ -53,7 +53,7 @@
 
         <!-- Generate ASCII w/ Unicode Escapes CharStream implementation -->
         <javacc usercharstream="false"
-                unicodeinput="false"
+                unicodeinput="true"
                 javaunicodeescape="true"
                 static="false"
                 target="${tmp-package.dir}/dummy.jj"
@@ -88,11 +88,8 @@
                  token="class ${cs.prefix}CharStreamBase"
                  value="abstract class ${cs.prefix}CharStreamBase implements ${base-ast-package}.CharStream" />
         <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
-                 token="char c;"
-                 value="char c; beforeReadChar();" />
-        <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
                  token="/** Read a character. */"
-                 value="protected void beforeReadChar() { }protected boolean doEscape() { return true; }" />
+                 value="protected boolean doEscape() { return true; }" />
         <replace file="${tmp-package.dir}/${cs.prefix}CharStream.java"
                  token="if ((buffer[bufpos] = c = ReadByte()) == '\\')"
                  value="if ((buffer[bufpos] = c = ReadByte()) == '\\' &amp;&amp; doEscape())" />

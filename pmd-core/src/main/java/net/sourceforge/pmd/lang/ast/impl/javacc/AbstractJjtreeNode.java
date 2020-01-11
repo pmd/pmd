@@ -74,10 +74,12 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
         return jjtGetLastToken().getEndColumn();
     }
 
-    /** The toString is only meant for debugging purposes. */
+    /**
+     * This toString implementation is only meant for debugging purposes.
+     */
     @Override
     public String toString() {
-        return "[" + getXPathNodeName() + "|" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
+        return "[" + getXPathNodeName() + ":" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
     }
 
     private int getStartOffset() {

@@ -23,12 +23,6 @@ public class ASTTryStatement extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTryStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

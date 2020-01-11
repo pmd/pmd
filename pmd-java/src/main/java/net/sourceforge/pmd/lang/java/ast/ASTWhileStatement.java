@@ -25,13 +25,6 @@ public class ASTWhileStatement extends AbstractJavaNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTWhileStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.

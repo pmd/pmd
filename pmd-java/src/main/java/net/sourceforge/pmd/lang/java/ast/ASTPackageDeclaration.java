@@ -14,12 +14,6 @@ public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPackageDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

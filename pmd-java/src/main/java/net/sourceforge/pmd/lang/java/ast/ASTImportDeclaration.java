@@ -36,12 +36,6 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTImportDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * @deprecated Will be made private with 7.0.0

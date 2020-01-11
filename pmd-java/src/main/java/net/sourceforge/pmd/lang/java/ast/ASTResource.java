@@ -14,12 +14,6 @@ public class ASTResource extends ASTFormalParameter {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTResource(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

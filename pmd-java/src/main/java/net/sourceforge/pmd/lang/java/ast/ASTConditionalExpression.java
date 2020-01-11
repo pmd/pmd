@@ -31,12 +31,6 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTConditionalExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * @deprecated To be removed in 7.0.0

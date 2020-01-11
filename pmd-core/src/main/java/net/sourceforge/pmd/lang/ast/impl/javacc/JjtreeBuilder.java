@@ -136,10 +136,10 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<?>> {
         marks.add(mk);
         mk = sp;
 
-//        if (isInjectionPending()) {
-//            mk -= numPendingInjection;
-//            numPendingInjection = 0;
-//        }
+        if (isInjectionPending()) {
+            mk -= numPendingInjection;
+            numPendingInjection = 0;
+        }
 
         n.jjtSetFirstToken(firstToken);
         n.jjtOpen();

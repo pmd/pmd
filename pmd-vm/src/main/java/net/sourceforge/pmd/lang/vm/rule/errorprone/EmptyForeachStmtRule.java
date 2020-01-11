@@ -20,7 +20,7 @@ public class EmptyForeachStmtRule extends AbstractVmRule {
         if (block.jjtGetNumChildren() == 0) {
             addViolation(data, node);
         } else if (block.jjtGetNumChildren() == 1 && block.jjtGetChild(0) instanceof ASTText
-                && StringUtils.isBlank(((AbstractVmNode) block.jjtGetChild(0)).getFirstToken().toString())) {
+                && StringUtils.isBlank(((AbstractVmNode) block.jjtGetChild(0)).getFirstToken().getImage())) {
             addViolation(data, node);
         }
         return super.visit(node, data);

@@ -25,11 +25,6 @@ public class ASTType extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTType(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

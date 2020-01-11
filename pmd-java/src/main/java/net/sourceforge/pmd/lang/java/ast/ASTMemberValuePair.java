@@ -24,13 +24,6 @@ public class ASTMemberValuePair extends AbstractJavaNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTMemberValuePair(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the name of the member set by this pair.
      */

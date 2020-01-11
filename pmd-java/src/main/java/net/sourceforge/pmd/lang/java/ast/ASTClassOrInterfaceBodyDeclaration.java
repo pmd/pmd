@@ -15,12 +15,6 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public boolean isFindBoundary() {
         return isAnonymousInnerClass();

@@ -53,10 +53,8 @@ public class JavaCharStream extends JavaCharStreamBase {
     }
 
     @Override
-    protected void beforeReadChar() {
-        if (bufpos + 1 < available) {
-            startOffsets[bufpos + 1] = nextCharInd + 1;
-        }
+    protected void UpdateLineColumn(char c) {
+        startOffsets[bufpos] = nextCharInd;
     }
 
     @Override

@@ -22,12 +22,6 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
         super(i);
     }
 
-    @Deprecated
-    @InternalApi
-    public AbstractJavaAccessTypeNode(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
     @Override
     public Class<?> getType() {
         if (typeDefinition != null) {

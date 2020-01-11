@@ -36,12 +36,6 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAnnotation(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Returns the name of the annotation as it is used,
