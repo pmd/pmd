@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-
 
 class ASTRelationalExpressionTest : ParserTestSpec({
 

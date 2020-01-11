@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 /**
