@@ -198,6 +198,10 @@ public class JavaccToken implements GenericToken {
         return tok;
     }
 
+    public JavaccTokenDocument getDocument() {
+        return document;
+    }
+
 
     /**
      * Creates an implicit token, with zero length, that is linked to

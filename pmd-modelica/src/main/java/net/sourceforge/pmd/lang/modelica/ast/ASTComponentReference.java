@@ -18,10 +18,6 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
         super(id);
     }
 
-    ASTComponentReference(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     void markAbsolute() {
         absolute = true;
     }

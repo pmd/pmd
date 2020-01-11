@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class ParseException extends RuntimeException {
@@ -52,9 +53,8 @@ public class ParseException extends RuntimeException {
      * This constructor is called by Javacc.
      */
     public ParseException(@NonNull JavaccToken currentTokenVal,
-                          int[][] expectedTokenSequencesVal,
-                          String[] tokenImageVal) {
-        super(makeMessage(currentTokenVal, expectedTokenSequencesVal, tokenImageVal));
+                          int[][] expectedTokenSequencesVal) {
+        super(makeMessage(currentTokenVal, expectedTokenSequencesVal));
         currentToken = currentTokenVal;
     }
 
@@ -66,9 +66,9 @@ public class ParseException extends RuntimeException {
      * gets displayed.
      */
     private static String makeMessage(@NonNull JavaccToken currentToken,
-                                      int[][] expectedTokenSequences,
-                                      String[] tokenImage) {
+                                      int[][] expectedTokenSequences) {
 
+        JavaccTokenDocument document = currentToken.getDocument();
         String eol = System.lineSeparator();
         Set<String> expectedBranches = new LinkedHashSet<>();
         int maxSize = 0;
@@ -78,7 +78,7 @@ public class ParseException extends RuntimeException {
                 maxSize = expectedTokenSequence.length;
             }
             for (int i : expectedTokenSequence) {
-                expected.append(tokenImage[i]).append(' ');
+                expected.append(document.describeKind(i)).append(' ');
             }
             if (expectedTokenSequence[expectedTokenSequence.length - 1] != 0) {
                 expected.append("...");
@@ -98,11 +98,11 @@ public class ParseException extends RuntimeException {
                 retval.append(' ');
             }
             if (tok.kind == 0) {
-                retval.append(tokenImage[0]);
+                retval.append(document.describeKind(0));
                 break;
             }
 
-            String kindStr = tokenImage[tok.kind];
+            String kindStr = document.describeKind(tok.kind);
 
             String image = StringUtil.escapeJava(tok.getImage());
 

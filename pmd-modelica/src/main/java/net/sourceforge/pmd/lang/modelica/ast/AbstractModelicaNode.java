@@ -19,16 +19,10 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  */
 abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> implements Node, ModelicaNode {
 
-    private ModelicaParser parser;
     private ModelicaScope ownScope;
 
     AbstractModelicaNode(int id) {
         super(id);
-    }
-
-    AbstractModelicaNode(ModelicaParser parser, int id) {
-        super(id);
-        this.parser = parser;
     }
 
     @Override

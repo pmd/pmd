@@ -11,8 +11,8 @@ import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.modelica.ModelicaTokenManager;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaParser;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenManager;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenKinds;
 
 
 public class ModelicaTokenizer extends JavaCCTokenizer {
@@ -37,18 +37,18 @@ public class ModelicaTokenizer extends JavaCCTokenizer {
 
         private void skipWithinAndImport(JavaccToken currentToken) {
             final int type = currentToken.kind;
-            if (type == ModelicaParser.IMPORT || type == ModelicaParser.WITHIN) {
+            if (type == ModelicaTokenKinds.IMPORT || type == ModelicaTokenKinds.WITHIN) {
                 discardingWithinAndImport = true;
-            } else if (discardingWithinAndImport && type == ModelicaParser.SC) {
+            } else if (discardingWithinAndImport && type == ModelicaTokenKinds.SC) {
                 discardingWithinAndImport = false;
             }
         }
 
         private void skipAnnotation(JavaccToken currentToken) {
             final int type = currentToken.kind;
-            if (type == ModelicaParser.ANNOTATION) {
+            if (type == ModelicaTokenKinds.ANNOTATION) {
                 discardingAnnotation = true;
-            } else if (discardingAnnotation && type == ModelicaParser.SC) {
+            } else if (discardingAnnotation && type == ModelicaTokenKinds.SC) {
                 discardingAnnotation = false;
             }
         }

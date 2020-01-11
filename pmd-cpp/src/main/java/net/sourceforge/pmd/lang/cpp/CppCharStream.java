@@ -8,9 +8,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.cpp.ast.CppParserConstants;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,
@@ -65,7 +68,14 @@ public class CppCharStream extends SimpleCharStream {
 
     public static CppCharStream newCppCharStream(Reader dstream) {
         String source = CharStreamFactory.toString(dstream);
-        JavaccTokenDocument document = new JavaccTokenDocument(source);
+        JavaccTokenDocument document = new JavaccTokenDocument(source) {
+            @Override
+            protected @Nullable String describeKindImpl(int kind) {
+                return 0 <= kind && kind < CppParserConstants.tokenImage.length
+                       ? CppParserConstants.tokenImage[kind]
+                       : null;
+            }
+        };
         return new CppCharStream(source, document);
     }
 }

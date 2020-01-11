@@ -65,7 +65,6 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return "token of kind " + kind;
     }
 
-
     /**
      * Describe the given kind. If this returns a non-null value, then
      * that's what {@link #describeKind(int)} will use. Otherwise a default

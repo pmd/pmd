@@ -77,7 +77,7 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
     /** The toString is only meant for debugging purposes. */
     @Override
     public String toString() {
-        return "|" + getXPathNodeName() + "|" + getStartOffset() + "," + getEndOffset() + "|" + getText();
+        return "[" + getXPathNodeName() + "|" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
     }
 
     private int getStartOffset() {
