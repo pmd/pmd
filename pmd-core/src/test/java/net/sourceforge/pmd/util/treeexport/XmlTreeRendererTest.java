@@ -5,6 +5,11 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -145,7 +150,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testInvalidAttributeName() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        MyDummyNode dummy = dummyTree1();
 
         dummy.setXPathAttribute("&notAName", "foo");
 
@@ -166,7 +171,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testEscapeAttributes() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        MyDummyNode dummy = dummyTree1();
 
         dummy.setXPathAttribute("eh", " 'a &> b\" ");
 
@@ -189,7 +194,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testEscapeDoubleAttributes() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        MyDummyNode dummy = dummyTree1();
 
         dummy.setXPathAttribute("eh", " 'a &> b\" ");
 
@@ -252,21 +257,44 @@ public class XmlTreeRendererTest {
     }
 
 
-    public DummyNode dummyTree1() {
-        DummyNode dummy = new DummyNode();
+    public MyDummyNode dummyTree1() {
+        MyDummyNode dummy = new MyDummyNode();
 
         dummy.setXPathAttribute("foo", "bar");
         dummy.setXPathAttribute("ohio", "4");
 
-        DummyNode dummy1 = new DummyNode();
+        MyDummyNode dummy1 = new MyDummyNode();
 
         dummy1.setXPathAttribute("o", "ha");
 
-        DummyNode dummy2 = new DummyNode();
+        MyDummyNode dummy2 = new MyDummyNode();
 
         dummy.jjtAddChild(dummy1, 0);
         dummy.jjtAddChild(dummy2, 1);
         return dummy;
+    }
+
+    private static class MyDummyNode extends DummyNode {
+
+
+        private final Map<String, String> attributes = new HashMap<>();
+
+        public void setXPathAttribute(String name, String value) {
+            attributes.put(name, value);
+        }
+
+        @Override
+        public Iterator<Attribute> getXPathAttributesIterator() {
+
+            List<Attribute> attrs = new ArrayList<>();
+            for (String name : attributes.keySet()) {
+                attrs.add(new Attribute(this, name, attributes.get(name)));
+            }
+
+            return attrs.iterator();
+        }
+
+
     }
 
 

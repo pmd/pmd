@@ -131,7 +131,7 @@ public final class XmlTreeRenderer implements TreeRenderer {
            .append('=')
            .append(attrDelim)
            .append(escapeXmlAttribute(value, strategy.singleQuoteAttributes))
-           .append(attrDelim);
+            .append(attrDelim);
     }
 
     private void checkValidName(String name) {
@@ -170,6 +170,7 @@ public final class XmlTreeRenderer implements TreeRenderer {
     /**
      * A strategy to parameterize an {@link XmlTreeRenderer}.
      */
+    @Experimental
     public static class XmlRenderingConfig {
 
         private String indentString = "    ";
