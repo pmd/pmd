@@ -30,4 +30,8 @@ public interface VmNode extends Node {
     @Override
     VmNode getParent();
 
+
+    @Override
+    Iterable<VmNode> children();
+
 }

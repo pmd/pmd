@@ -33,4 +33,8 @@ public interface PLSQLNode extends Node, ScopedNode {
 
     @Override
     PLSQLNode getParent();
+
+
+    @Override
+    Iterable<PLSQLNode> children();
 }

@@ -59,4 +59,8 @@ public interface ScalaNode<T extends Tree> extends Node {
 
     @Override
     ScalaNode<?> getParent();
+
+
+    @Override
+    Iterable<ScalaNode<?>> children();
 }

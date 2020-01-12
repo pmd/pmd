@@ -29,4 +29,8 @@ public interface JspNode extends Node {
 
     @Override
     JspNode getParent();
+
+
+    @Override
+    Iterable<JspNode> children();
 }

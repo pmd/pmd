@@ -8,8 +8,8 @@ public class ModelicaParserVisitorAdapter implements ModelicaParserVisitor {
 
     @Override
     public Object visit(ModelicaNode node, Object data) {
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            node.getChild(i).jjtAccept(this, data);
+        for (ModelicaNode child : node.children()) {
+            child.jjtAccept(this, data);
         }
         return data;
     }

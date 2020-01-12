@@ -29,12 +29,21 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public N getChild(int index) {
         return (N) super.getChild(index);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public N getParent() {
         return (N) super.getParent();
+    }
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterable<N> children() {
+        return (Iterable<N>) super.children();
     }
 }

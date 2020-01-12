@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  * Public interface for all Modelica AST nodes.
  */
 public interface ModelicaNode extends Node {
+
     /**
      * Returns the lexical scope this node is contained in.
      */
@@ -31,4 +32,8 @@ public interface ModelicaNode extends Node {
 
     @Override
     ModelicaNode getChild(int index);
+
+
+    @Override
+    Iterable<ModelicaNode> children();
 }

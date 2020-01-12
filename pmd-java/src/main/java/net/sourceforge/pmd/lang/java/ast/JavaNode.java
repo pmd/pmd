@@ -50,6 +50,10 @@ public interface JavaNode extends ScopedNode {
     JavaNode getParent();
 
 
+    @Override
+    Iterable<JavaNode> children();
+
+
     @InternalApi
     @Deprecated
     void setScope(Scope scope);

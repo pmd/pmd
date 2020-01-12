@@ -30,4 +30,9 @@ public interface VfNode extends Node {
 
     @Override
     VfNode getChild(int i);
+
+
+
+    @Override
+    Iterable<VfNode> children();
 }

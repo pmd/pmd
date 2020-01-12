@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -559,6 +560,47 @@ public abstract class AbstractNode implements Node {
     @Deprecated
     public void jjtSetLastToken(final GenericToken token) {
         this.lastToken = token;
+    }
+
+
+    @Override
+    public Iterable<? extends Node> children() {
+        return new Iterable<Node>() {
+            @Override
+            public Iterator<Node> iterator() {
+                return childrenIterator(AbstractNode.this);
+            }
+        };
+    }
+
+
+    private static Iterator<Node> childrenIterator(final Node parent) {
+        assert parent != null : "parent should not be null";
+
+        final int numChildren = parent.getNumChildren();
+        if (numChildren == 0) {
+            return Collections.emptyIterator();
+        }
+
+        return new Iterator<Node>() {
+
+            private int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return i < numChildren;
+            }
+
+            @Override
+            public Node next() {
+                return parent.getChild(i++);
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Remove");
+            }
+        };
     }
 
     /**

@@ -457,4 +457,21 @@ public interface Node {
      */
     Iterator<Attribute> getXPathAttributesIterator();
 
+    /**
+     * Returns an iterable enumerating the children of this node.
+     * Use it with a foreach loop:
+     * <pre>{@code
+     *      for (Node child : node.children()) {
+     *          // process child
+     *      }
+     * }</pre>
+     *
+     * <p>This method's return type will be changed to NodeStream
+     * in PMD 7, which is a more powerful kind of iterable. The
+     * change will be source compatible.
+     *
+     * @return A new iterable for the children of this node
+     */
+    Iterable<? extends Node> children();
+
 }
