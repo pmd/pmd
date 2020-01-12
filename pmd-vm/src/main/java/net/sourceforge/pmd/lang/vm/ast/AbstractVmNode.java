@@ -100,6 +100,14 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
         this.first = t;
     }
 
+    public Token getFirstToken() {
+        return first;
+    }
+
+    public Token getLastToken() {
+        return last;
+    }
+
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
@@ -107,10 +115,8 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
 
     @Override
     public Object childrenAccept(final VmParserVisitor visitor, final Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((VmNode) children[i]).jjtAccept(visitor, data);
-            }
+        for (VmNode c : children()) {
+            c.jjtAccept(visitor, data);
         }
         return data;
     }
