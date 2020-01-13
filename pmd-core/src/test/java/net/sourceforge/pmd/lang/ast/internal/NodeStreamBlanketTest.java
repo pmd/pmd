@@ -145,7 +145,7 @@ public class NodeStreamBlanketTest<T extends Node> {
 
     @Test
     public void testGet() {
-        for (int i = 0; i < 100;i++){
+        for (int i = 0; i < 100; i++) {
             assertSame("stream.get(i) == stream.drop(i-1).first()", stream.get(i), stream.drop(i).first());
         }
     }

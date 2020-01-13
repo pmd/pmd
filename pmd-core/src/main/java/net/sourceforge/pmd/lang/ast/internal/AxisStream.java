@@ -138,7 +138,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
     }
 
-    static abstract class DescendantStreamBase<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
+    abstract static class DescendantStreamBase<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
 
         final TraversalConfig config;
 

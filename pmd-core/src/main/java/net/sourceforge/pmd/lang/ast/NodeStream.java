@@ -23,35 +23,41 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 
 
 /**
- * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
- * a specialized API to navigate abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
+ * A sequence of AST nodes. Conceptually similar to a {@link Stream},
+ * and exposes a specialized API to navigate abstract syntax trees.
+ * This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
  * <h1>API usage</h1>
  *
- * <p>The {@link Node} interface exposes methods like {@link Node#children()} or {@link Node#asStream()}
- * to obtain new NodeStreams. Null-safe construction methods are available here, see {@link #of(Node)},
- * {@link #of(Node[])}, {@link #fromIterable(Iterable)}.
+ * <p>The {@link Node} interface exposes methods like {@link Node#children()}
+ * or {@link Node#asStream()} to obtain new NodeStreams. Null-safe construction
+ * methods are available here, see {@link #of(Node)}, {@link #of(Node[])},
+ * {@link #fromIterable(Iterable)}.
  *
- * <p>Most functions have an equivalent in the {@link Stream} interface and their behaviour is equivalent.
- * Some additional functions are provided to iterate the axes of the tree: {@link #children()}, {@link #descendants()},
- * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
- * {@link #precedingSiblings()}, {@link #followingSiblings()}. Filtering and mapping
- * nodes by type is possible through {@link #filterIs(Class)}, and the specialized {@link #children(Class)},
- * {@link #descendants(Class)}, and {@link #ancestors(Class)}.
+ * <p>Most functions have an equivalent in the {@link Stream} interface
+ * and their behaviour is similar. One important departure from the
+ * {@link Stream} contract is the absence of requirement on the laziness
+ * of pipeline operations. More on that in the details section below.
  *
- * <p>Many complex predicates about nodes can be expressed by testing the emptiness of a node stream. E.g. the
- * following tests if the node is a variable declarator id initialized to the value {@code 0}:
+ * <p>Some additional functions are provided to iterate the axes of the
+ * tree: {@link #children()}, {@link #descendants()}, {@link #descendantsOrSelf()},
+ * {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
+ * {@link #precedingSiblings()}, {@link #followingSiblings()}.
+ * Filtering and mapping nodes by type is possible through {@link #filterIs(Class)},
+ * and the specialized {@link #children(Class)}, {@link #descendants(Class)},
+ * and {@link #ancestors(Class)}.
+ *
+ * <p>Many complex predicates about nodes can be expressed by testing
+ * the emptiness of a node stream. E.g. the following tests if the node
+ * is a variable declarator id initialized to the value {@code 0}:
  * <pre>
  *     {@linkplain #of(Node) NodeStream.of}(someNode)                           <i>// the stream here is empty if the node is null</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)<i>// the stream here is empty if the node was not a variable declarator id</i>
  *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
- *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableInitializer.class)
- *               {@linkplain #children(Class) .children}(ASTExpression.class)
- *               .children(ASTPrimaryExpression.class)
- *               .children(ASTPrimaryPrefix.class)
- *               .children(ASTLiteral.class)
- *               {@linkplain #filterMatching(Function, Object) .filterMatching}(Node::getImage, "0")
- *               {@linkplain #filterNot(Predicate) .filterNot}(ASTLiteral::isStringLiteral)
+ *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
+ *               {@linkplain #filterNot(Predicate) .filterNot}(ASTNumericLiteral::isFloatingPoint)
+ *               {@linkplain #filter(Predicate) .filter}(it -> it.getValueAsInt() == 1)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *
@@ -83,13 +89,19 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * <p>NodeStreams are not necessarily implemented with {@link Stream}, but
  * when a method has an equivalent in the {@link Stream} API, their
- * contract is identical. The same guidelines about statefulness and
- * side-effects apply.
+ * contract is similar. The only difference, is that node streams are not
+ * necessarily lazy, ie, a pipeline operation may be evaluated eagerly
+ * to improve performance. For this reason, relying on side-effects
+ * produced in the middle of the pipeline is a bad idea. {@link Stream}
+ * gives the same guideline about statefulness, but not for the same reason.
+ * Their justification is parallelism and operation reordering, once
+ * the pipeline is fully known.
  *
- * <p>Node streams are meant to be sequential streams, so there is no equivalent to {@link Stream#findAny()}.
- * The method {@link #first()} is an equivalent to {@link Stream#findFirst()}.
- * There is however a {@link #last()} method, which may be implemented
- * efficiently on some streams (eg {@link #children()}).
+ * <p>Node streams are meant to be sequential streams, so there is no
+ * equivalent to {@link Stream#findAny()}. The method {@link #first()}
+ * is an equivalent to {@link Stream#findFirst()}. There is however a
+ * {@link #last()} method, which may be implemented efficiently on some
+ * streams (eg {@link #children()}). TODO maybe implement reverse
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
@@ -989,7 +1001,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * }</pre>
      * is traversed in the order {@code A, B, C, D, E, F}.
      *
-     * <p>By default, traversal also respects {@linkplain #crossFindBoundaries() find boundaries}.
+     * <p>By default, traversal also does not cross {@linkplain #crossFindBoundaries(boolean) find boundaries}.
      *
      * @param <T> Type of node this stream contains
      */
