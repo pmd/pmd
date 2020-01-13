@@ -400,7 +400,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * contained in this stream. The nodes of the returned stream are yielded
      * in a depth-first fashion.
      *
-     * <p>This is equivalent to {@code flatMap(Node::descendants)}.
+     * <p>This is equivalent to {@code flatMap(Node::descendants)}, except
+     * the returned stream is a {@link DescendantNodeStream}.
      *
      * @return A stream of descendants
      *
@@ -408,25 +409,22 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #descendants(Class)
      * @see #descendantsOrSelf()
      */
-    default NodeStream<Node> descendants() {
-        return flatMap(Node::descendants);
-    }
+    DescendantNodeStream<Node> descendants();
 
 
     /**
      * Returns a node stream containing the nodes contained in this stream and their descendants.
      * The nodes of the returned stream are yielded in a depth-first fashion.
      *
-     * <p>This is equivalent to {@code flatMap(Node::descendantsOrSelf)}.
+     * <p>This is equivalent to {@code flatMap(Node::descendantsOrSelf)}, except
+     * the returned stream is a {@link DescendantNodeStream}.
      *
      * @return A stream of descendants
      *
      * @see Node#descendantsOrSelf()
      * @see #descendants()
      */
-    default NodeStream<Node> descendantsOrSelf() {
-        return flatMap(Node::descendantsOrSelf);
-    }
+    DescendantNodeStream<Node> descendantsOrSelf();
 
 
     /**
@@ -474,7 +472,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns the {@linkplain #descendants() descendant stream} of each node
      * in this stream, filtered by the given node type.
      *
-     * <p>This is equivalent to {@code descendants().filterIs(rClass)}.
+     * <p>This is equivalent to {@code descendants().filterIs(rClass)}, except
+     * the returned stream is a {@link DescendantNodeStream}.
      *
      * @param rClass Type of node the returned stream should contain
      * @param <R>    Type of node the returned stream should contain
@@ -484,9 +483,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#descendants(Class)
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
-        return flatMap(it -> it.descendants(rClass));
-    }
+    <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass);
 
 
     /**
@@ -951,6 +948,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * A specialization of {@link NodeStream} that allows configuring
      * tree traversal behaviour when traversing the descendants of a node.
      * Such a stream is returned by methods such as {@link #descendants()}.
+     * When those methods are called on a stream containing more than one
+     * element, the configuration applies to each individual traversal.
      *
      * @param <T> Type of node this stream contains
      */
@@ -961,6 +960,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
          * Returns a node stream that will not stop the tree traversal
          * when encountering a find boundary. Find boundaries are node
          * that by default stop tree traversals, like class declarations.
+         * They are identified via {@link Node#isFindBoundary()}.
          *
          * <p>For example, supposing you have the AST node for the following
          * method:
@@ -984,10 +984,21 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
          * will yield both the {@code "outer"} and {@code "local"} string
          * literals.
          *
+         * @param cross If true, boundaries will be crossed.
+         *
          * @return A new node stream
          */
         DescendantNodeStream<T> crossFindBoundaries(boolean cross);
 
+
+        /**
+         * An alias for {@link #crossFindBoundaries(boolean) crossFindBoundaries(true)}.
+         *
+         * @return A new node stream
+         */
+        default DescendantNodeStream<T> crossFindBoundaries() {
+            return crossFindBoundaries(true);
+        }
 
     }
 

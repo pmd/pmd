@@ -32,8 +32,6 @@ public final class StreamImpl {
     @SuppressWarnings("rawtypes")
     private static final DescendantNodeStream EMPTY = new EmptyNodeStream();
 
-    private static final boolean DEFAULT_CROSS_FIND_BOUNDARY = false;
-
     private StreamImpl() {
         // utility class
     }
@@ -85,16 +83,16 @@ public final class StreamImpl {
     }
 
     public static DescendantNodeStream<Node> descendants(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node, DEFAULT_CROSS_FIND_BOUNDARY);
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node, TraversalConfig.DEFAULT);
     }
 
     public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
         return node.jjtGetNumChildren() == 0 ? empty()
-                                             : new FilteredDescendantStream<>(node, DEFAULT_CROSS_FIND_BOUNDARY, Filtermap.isInstance(rClass));
+                                             : new FilteredDescendantStream<>(node, TraversalConfig.DEFAULT, Filtermap.isInstance(rClass));
     }
 
     public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, DEFAULT_CROSS_FIND_BOUNDARY);
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TraversalConfig.DEFAULT);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {

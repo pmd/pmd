@@ -138,15 +138,36 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
     }
 
-    static class FilteredDescendantStream<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
+    static abstract class DescendantStreamBase<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
 
         final TraversalConfig config;
+
+        DescendantStreamBase(@NonNull Node root,
+                             TraversalConfig config,
+                             Filtermap<Node, T> filter) {
+            super(root, filter);
+            this.config = config;
+        }
+
+        protected abstract <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TraversalConfig config);
+
+        @Override
+        public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
+            return copyWithConfig(this.filter, config.crossFindBoundaries(cross));
+        }
+
+        @Override
+        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
+            return copyWithConfig(filterMap, config);
+        }
+    }
+
+    static class FilteredDescendantStream<T extends Node> extends DescendantStreamBase<T> {
 
         FilteredDescendantStream(Node node,
                                  TraversalConfig config,
                                  Filtermap<Node, T> target) {
-            super(node, target);
-            this.config = config;
+            super(node, config, target);
         }
 
         @Override
@@ -157,13 +178,8 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
+        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TraversalConfig config) {
             return new FilteredDescendantStream<>(node, config, filterMap);
-        }
-
-        @Override
-        public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
-            return new FilteredDescendantStream<>(node, config.crossFindBoundaries(cross), filter);
         }
 
         @Override
@@ -202,15 +218,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
     }
 
-    static class FilteredDescendantOrSelfStream<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
-
-        final TraversalConfig config;
+    static class FilteredDescendantOrSelfStream<T extends Node> extends DescendantStreamBase<T> {
 
         FilteredDescendantOrSelfStream(Node node,
                                        TraversalConfig config,
                                        Filtermap<Node, T> filtermap) {
-            super(node, filtermap);
-            this.config = config;
+            super(node, config, filtermap);
         }
 
         @Override
@@ -219,13 +232,8 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
+        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TraversalConfig config) {
             return new FilteredDescendantOrSelfStream<>(node, config, filterMap);
-        }
-
-        @Override
-        public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
-            return new FilteredDescendantOrSelfStream<>(node, config.crossFindBoundaries(cross), filter);
         }
 
         @Override
@@ -378,6 +386,13 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public Node last() {
             return len > 0 ? node.jjtGetChild(low + len - 1) : null;
+        }
+
+        @Nullable
+        @Override
+        public Node get(int n) {
+            AssertionUtil.requireNonNegative("n", n);
+            return len > 0 && n < len ? node.jjtGetChild(low + n) : null;
         }
 
         @Override

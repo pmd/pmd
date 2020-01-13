@@ -55,7 +55,7 @@ public final class IteratorUtil {
         return tmp.iterator();
     }
 
-    public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends Iterator<? extends R>> f) {
+    public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends @Nullable Iterator<? extends R>> f) {
         return new AbstractIterator<R>() {
             private Iterator<? extends R> current = null;
 

@@ -8,16 +8,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for {@link AbstractNode} tree transversal methods
+ * Unit test for {@link AbstractNode} tree traversal methods
  */
-public class AbstractNodeTransversalTest {
+public class BoundaryTraversalTest {
     private int id;
     private Node rootNode;
 
@@ -44,27 +43,26 @@ public class AbstractNodeTransversalTest {
     @Test
     public void testBoundaryIsHonored() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
-        
-        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class);
+
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
     }
-    
+
     @Test
     public void testSearchFromBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
-        
-        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class).get(0).findDescendantsOfType(DummyNode.class);
+
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).first().descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
         assertFalse(descendantsOfType.get(0).isFindBoundary());
     }
-    
+
     @Test
     public void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
-        
-        List<DummyNode> descendantsOfType = new ArrayList<>();
-        rootNode.findDescendantsOfType(DummyNode.class, descendantsOfType, true);
+
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).crossFindBoundaries().toList();
         assertEquals(2, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
         assertFalse(descendantsOfType.get(1).isFindBoundary());
