@@ -14,4 +14,11 @@ public final class TraversalConfig {
         this.crossFindBoundaries = crossFindBoundaries;
     }
 
+    public boolean isCrossFindBoundaries() {
+        return crossFindBoundaries;
+    }
+
+    TraversalConfig crossFindBoundaries(boolean cross) {
+        return new TraversalConfig(cross);
+    }
 }

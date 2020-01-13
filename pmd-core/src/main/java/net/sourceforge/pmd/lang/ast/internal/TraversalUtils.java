@@ -20,12 +20,12 @@ public final class TraversalUtils {
     }
 
     public static <T extends Node> void findDescendantsOfType(final Node node, Class<T> type, final List<T> results,
-                                                              final boolean crossFindBoundaries) {
-        findDescendantsOfType(node, Filtermap.isInstance(type), results, crossFindBoundaries);
+                                                              final TraversalConfig config) {
+        findDescendantsOfType(node, Filtermap.isInstance(type), results, config);
     }
 
     static <T extends Node> void findDescendantsOfType(final Node node, final Filtermap<Node, T> filtermap, final List<T> results,
-                                                       final boolean crossFindBoundaries) {
+                                                       final TraversalConfig config) {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             final Node child = node.jjtGetChild(i);
@@ -34,21 +34,21 @@ public final class TraversalUtils {
                 results.add(mapped);
             }
 
-            if (crossFindBoundaries || !child.isFindBoundary()) {
-                findDescendantsOfType(child, filtermap, results, crossFindBoundaries);
+            if (config.isCrossFindBoundaries() || !child.isFindBoundary()) {
+                findDescendantsOfType(child, filtermap, results, config);
             }
         }
     }
 
-    static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap, boolean crossFindBoundaries) {
+    static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap, TraversalConfig config) {
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node child = node.jjtGetChild(i);
             final T t = filtermap.apply(child);
             if (t != null) {
                 return t;
-            } else if (crossFindBoundaries || !child.isFindBoundary()) {
-                final T n2 = getFirstDescendantOfType(child, filtermap, crossFindBoundaries);
+            } else if (config.isCrossFindBoundaries() || !child.isFindBoundary()) {
+                final T n2 = getFirstDescendantOfType(child, filtermap, config);
                 if (n2 != null) {
                     return n2;
                 }

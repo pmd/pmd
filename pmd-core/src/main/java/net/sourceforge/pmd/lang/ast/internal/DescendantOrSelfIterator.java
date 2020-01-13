@@ -16,11 +16,11 @@ import net.sourceforge.pmd.lang.ast.Node;
 class DescendantOrSelfIterator implements Iterator<@NonNull Node> {
 
     private final Deque<Node> queue = new ArrayDeque<>();
-    private final boolean crossFindBoundaries;
+    private final TraversalConfig config;
 
     /** Always {@link #hasNext()} after exiting the constructor. */
-    DescendantOrSelfIterator(Node top, boolean crossFindBoundaries) {
-        this.crossFindBoundaries = crossFindBoundaries;
+    DescendantOrSelfIterator(Node top, TraversalConfig config) {
+        this.config = config;
         queue.addFirst(top);
     }
 
@@ -39,7 +39,7 @@ class DescendantOrSelfIterator implements Iterator<@NonNull Node> {
 
 
     private void enqueueChildren(Node n) {
-        if (crossFindBoundaries || !n.isFindBoundary()) {
+        if (config.isCrossFindBoundaries() || !n.isFindBoundary()) {
             for (int i = n.jjtGetNumChildren() - 1; i >= 0; i--) {
                 queue.addFirst(n.jjtGetChild(i));
             }

@@ -140,59 +140,59 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     static class FilteredDescendantStream<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
 
-        private final boolean crossFindBoundaries;
+        final TraversalConfig config;
 
         FilteredDescendantStream(Node node,
-                                 boolean crossFindBoundaries,
+                                 TraversalConfig config,
                                  Filtermap<Node, T> target) {
             super(node, target);
-            this.crossFindBoundaries = crossFindBoundaries;
+            this.config = config;
         }
 
         @Override
         protected Iterator<Node> baseIterator() {
-            DescendantOrSelfIterator iter = new DescendantOrSelfIterator(node, crossFindBoundaries);
+            DescendantOrSelfIterator iter = new DescendantOrSelfIterator(node, config);
             iter.next(); // skip self
             return iter;
         }
 
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
-            return new FilteredDescendantStream<>(node, crossFindBoundaries, filterMap);
+            return new FilteredDescendantStream<>(node, config, filterMap);
         }
 
         @Override
         public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
-            return new FilteredDescendantStream<>(node, cross, filter);
+            return new FilteredDescendantStream<>(node, config.crossFindBoundaries(cross), filter);
         }
 
         @Override
         public @Nullable T first() {
-            return TraversalUtils.getFirstDescendantOfType(node, filter, crossFindBoundaries);
+            return TraversalUtils.getFirstDescendantOfType(node, filter, config);
         }
 
         @Override
         public boolean nonEmpty() {
-            return TraversalUtils.getFirstDescendantOfType(node, filter, crossFindBoundaries) != null;
+            return TraversalUtils.getFirstDescendantOfType(node, filter, config) != null;
         }
 
         @Override
         public List<T> toList() {
             List<T> result = new ArrayList<>();
-            TraversalUtils.findDescendantsOfType(node, filter, result, false);
+            TraversalUtils.findDescendantsOfType(node, filter, result, config);
             return result;
         }
     }
 
     static class DescendantStream extends FilteredDescendantStream<Node> {
 
-        DescendantStream(Node node, boolean crossFindBoundaries) {
-            super(node, crossFindBoundaries, Filtermap.NODE_IDENTITY);
+        DescendantStream(Node node, TraversalConfig config) {
+            super(node, config, Filtermap.NODE_IDENTITY);
         }
 
         @Override
         public DescendantNodeStream<Node> crossFindBoundaries(boolean cross) {
-            return new DescendantStream(node, cross);
+            return new DescendantStream(node, config.crossFindBoundaries(cross));
         }
 
 
@@ -204,28 +204,28 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     static class FilteredDescendantOrSelfStream<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
 
-        private final boolean crossFindBoundaries;
+        final TraversalConfig config;
 
         FilteredDescendantOrSelfStream(Node node,
-                                       boolean crossFindBoundaries,
+                                       TraversalConfig config,
                                        Filtermap<Node, T> filtermap) {
             super(node, filtermap);
-            this.crossFindBoundaries = crossFindBoundaries;
+            this.config = config;
         }
 
         @Override
         public Iterator<Node> baseIterator() {
-            return new DescendantOrSelfIterator(node, crossFindBoundaries);
+            return new DescendantOrSelfIterator(node, config);
         }
 
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
-            return new FilteredDescendantStream<>(node, crossFindBoundaries, filterMap);
+            return new FilteredDescendantOrSelfStream<>(node, config, filterMap);
         }
 
         @Override
         public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
-            return new FilteredDescendantOrSelfStream<>(node, cross, filter);
+            return new FilteredDescendantOrSelfStream<>(node, config.crossFindBoundaries(cross), filter);
         }
 
         @Override
@@ -235,20 +235,20 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             if (top != null) {
                 result.add(top);
             }
-            TraversalUtils.findDescendantsOfType(node, filter, result, crossFindBoundaries);
+            TraversalUtils.findDescendantsOfType(node, filter, result, config);
             return result;
         }
     }
 
     static final class DescendantOrSelfStream extends FilteredDescendantOrSelfStream<Node> {
 
-        DescendantOrSelfStream(Node node, boolean crossFindBoundaries) {
-            super(node, crossFindBoundaries, Filtermap.NODE_IDENTITY);
+        DescendantOrSelfStream(Node node, TraversalConfig config) {
+            super(node, config, Filtermap.NODE_IDENTITY);
         }
 
         @Override
         public DescendantNodeStream<Node> crossFindBoundaries(boolean cross) {
-            return new DescendantOrSelfStream(node, cross);
+            return new DescendantOrSelfStream(node, config.crossFindBoundaries(cross));
         }
 
         @Nullable
