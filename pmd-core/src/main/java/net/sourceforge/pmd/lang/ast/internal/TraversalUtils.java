@@ -13,19 +13,24 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-public final class TraversalUtils {
+final class TraversalUtils {
 
     private TraversalUtils() {
 
     }
 
-    public static <T extends Node> void findDescendantsOfType(final Node node, Class<T> type, final List<T> results,
-                                                              final TraversalConfig config) {
-        findDescendantsOfType(node, Filtermap.isInstance(type), results, config);
+    static <T extends Node> List<T> findDescendantsMatching(final Node node,
+                                                            final Filtermap<Node, T> filtermap,
+                                                            final TraversalConfig config) {
+        List<T> results = new ArrayList<>();
+        findDescendantsMatching(node, filtermap, results, config);
+        return results;
     }
 
-    static <T extends Node> void findDescendantsOfType(final Node node, final Filtermap<Node, T> filtermap, final List<T> results,
-                                                       final TraversalConfig config) {
+    static <T extends Node> void findDescendantsMatching(final Node node,
+                                                         final Filtermap<Node, T> filtermap,
+                                                         final List<T> results,
+                                                         final TraversalConfig config) {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             final Node child = node.jjtGetChild(i);
@@ -35,7 +40,7 @@ public final class TraversalUtils {
             }
 
             if (config.isCrossFindBoundaries() || !child.isFindBoundary()) {
-                findDescendantsOfType(child, filtermap, results, config);
+                findDescendantsMatching(child, filtermap, results, config);
             }
         }
     }

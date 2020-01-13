@@ -194,9 +194,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public List<T> toList() {
-            List<T> result = new ArrayList<>();
-            TraversalUtils.findDescendantsOfType(node, filter, result, config);
-            return result;
+            return TraversalUtils.findDescendantsMatching(node, filter, config);
         }
     }
 
@@ -243,7 +241,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             if (top != null) {
                 result.add(top);
             }
-            TraversalUtils.findDescendantsOfType(node, filter, result, config);
+            TraversalUtils.findDescendantsMatching(node, filter, result, config);
             return result;
         }
     }

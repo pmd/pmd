@@ -68,17 +68,17 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public DescendantNodeStream<Node> descendants() {
-        return new DescendantMapping<>(Node::descendants);
+        return new DescendantMapping<>(this, Node::descendants);
     }
 
     @Override
     public DescendantNodeStream<Node> descendantsOrSelf() {
-        return new DescendantMapping<>(Node::descendantsOrSelf);
+        return new DescendantMapping<>(this, Node::descendantsOrSelf);
     }
 
     @Override
     public <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
-        return new DescendantMapping<>(node -> node.descendants(rClass));
+        return new DescendantMapping<>(this, node -> node.descendants(rClass));
     }
 
     @Override
@@ -263,29 +263,32 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
 
-    private class DescendantMapping<S extends Node> extends IteratorBasedNStream<S> implements DescendantNodeStream<S> {
+    private static class DescendantMapping<T extends Node, S extends Node> extends IteratorBasedNStream<S> implements DescendantNodeStream<S> {
 
         private final Function<T, DescendantNodeStream<S>> fun;
         private final TraversalConfig config;
+        private final IteratorBasedNStream<T> upstream;
 
 
-        private DescendantMapping(Function<T, DescendantNodeStream<S>> fun, TraversalConfig config) {
+        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TraversalConfig config) {
             this.fun = fun;
             this.config = config;
+            this.upstream = upstream;
         }
 
-        private DescendantMapping(Function<T, DescendantNodeStream<S>> fun) {
-            this(fun, TraversalConfig.DEFAULT);
+        DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun) {
+            this(upstream, fun, TraversalConfig.DEFAULT);
         }
 
         @Override
         public Iterator<S> iterator() {
-            return IteratorUtil.flatMap(IteratorBasedNStream.this.iterator(), fun.andThen(config::apply).andThen(NodeStream::iterator));
+            return IteratorUtil.flatMap(upstream.iterator(),
+                                        fun.andThen(config::apply).andThen(NodeStream::iterator));
         }
 
         @Override
         public DescendantNodeStream<S> crossFindBoundaries(boolean cross) {
-            return new IteratorBasedNStream<T>.DescendantMapping<>(fun, config.crossFindBoundaries(cross));
+            return new DescendantMapping<>(upstream, fun, config.crossFindBoundaries(cross));
         }
     }
 }

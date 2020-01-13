@@ -5,7 +5,6 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
@@ -20,7 +19,6 @@ import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
-import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -131,10 +129,17 @@ public interface Node {
 
     void setDataFlowNode(DataFlowNode dataFlowNode);
 
+
     /**
-     * Returns true if this node is considered a boundary by traversal methods. Traversal methods such as {@link
-     * #getFirstDescendantOfType(Class)} don't look past such boundaries by default, which is usually the expected thing
-     * to do. For example, in Java, lambdas and nested classes are considered find boundaries.
+     * Returns true if this node is considered a boundary by traversal
+     * methods. Traversal methods such as {@link #getFirstDescendantOfType(Class)}
+     * don't look past such boundaries by default, which is usually the
+     * expected thing to do. For example, in Java, lambdas and nested
+     * classes are considered find boundaries.
+     *
+     * @return True if this node is a find boundary
+     *
+     * @see DescendantNodeStream#crossFindBoundaries()
      */
     default boolean isFindBoundary() {
         return false;
@@ -399,7 +404,7 @@ public interface Node {
 
     /**
      * Returns a node stream containing all the descendants
-     * of this node, in depth-first order.
+     * of this node. See {@link DescendantNodeStream} for details.
      *
      * @return A node stream of the descendants of this node
      *
@@ -412,7 +417,7 @@ public interface Node {
 
     /**
      * Returns a node stream containing this node, then all its
-     * descendants in depth-first order.
+     * descendants. See {@link DescendantNodeStream} for details.
      *
      * @return A node stream of the whole subtree topped by this node
      *
@@ -469,7 +474,8 @@ public interface Node {
 
     /**
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendants() descendants}
-     * of this node that are of the given type.
+     * of this node that are of the given type. See {@link DescendantNodeStream}
+     * for details.
      *
      * @param rClass Type of node the returned stream should contain
      * @param <R>    Type of node the returned stream should contain

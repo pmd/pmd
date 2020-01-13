@@ -113,6 +113,27 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  */
 public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
+    // TODO relax laziness guarantees.
+    //  * Evaluating some operations strictly may yield better performance.
+    //    Eg when you have node.children(Foo.class).children(ASTBar.class),
+    //    we could have node.children(Foo.class) be evaluated eagerly, and then
+    //    yield a better optimized implementation (empty stream, singleton
+    //    (very common cases) or cached stream).
+    //  * This could greatly reduce the number of flatmapped streams stacked
+    //    onto each other, for all lengths of pipelines
+    //  * This would need to be measured, as it would possibly make call
+    //    sites megamorphic, so decrease performance.
+    //  * In nearly 100% of cases node streams are consumed immediately,
+    //    so laziness is not really important.
+    //  * Laziness has one important upside: it makes node stream behaviour
+    //    very close to Stream behaviour. A departure from the Stream model
+    //    could yield some surprises to users (nothing that good documentation
+    //    cannot alleviate)
+    //  * SingletonNodeStream already does this, which is why even before
+    //    implementing anything about children streams, the doc should be
+    //    updated to remove laziness guarantees. Otherwise SingletonNodeStream
+    //    breaches the contract of the interface
+
 
     /**
      * Returns a new stream of Ts having the pipeline of operations
@@ -397,8 +418,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns a node stream containing all the strict descendants of the nodes
-     * contained in this stream. The nodes of the returned stream are yielded
-     * in a depth-first fashion.
+     * contained in this stream. See {@link DescendantNodeStream} for details.
      *
      * <p>This is equivalent to {@code flatMap(Node::descendants)}, except
      * the returned stream is a {@link DescendantNodeStream}.
@@ -414,7 +434,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns a node stream containing the nodes contained in this stream and their descendants.
-     * The nodes of the returned stream are yielded in a depth-first fashion.
+     * See {@link DescendantNodeStream} for details.
      *
      * <p>This is equivalent to {@code flatMap(Node::descendantsOrSelf)}, except
      * the returned stream is a {@link DescendantNodeStream}.
@@ -470,7 +490,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns the {@linkplain #descendants() descendant stream} of each node
-     * in this stream, filtered by the given node type.
+     * in this stream, filtered by the given node type. See {@link DescendantNodeStream}
+     * for details.
      *
      * <p>This is equivalent to {@code descendants().filterIs(rClass)}, except
      * the returned stream is a {@link DescendantNodeStream}.
@@ -947,13 +968,30 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     /**
      * A specialization of {@link NodeStream} that allows configuring
      * tree traversal behaviour when traversing the descendants of a node.
-     * Such a stream is returned by methods such as {@link #descendants()}.
+     * Such a stream is returned by methods such as {@link Node#descendants()}.
      * When those methods are called on a stream containing more than one
-     * element, the configuration applies to each individual traversal.
+     * element (eg {@link NodeStream#descendants()}), the configuration
+     * applies to each individual traversal.
+     *
+     * <p>By default, traversal is performed depth-first (prefix order). Eg
+     * <pre>{@code
+     * A
+     * + B
+     *   + C
+     *   + D
+     * + E
+     *   + F
+     * }</pre>
+     * is traversed in the order {@code A, B, C, D, E, F}.
+     *
+     * <p>By default, traversal also respects {@linkplain #crossFindBoundaries() find boundaries}.
      *
      * @param <T> Type of node this stream contains
      */
     interface DescendantNodeStream<T extends Node> extends NodeStream<T> {
+
+        // TODO stop recursion on an arbitrary boundary
+        // TODO breadth-first traversal
 
 
         /**
@@ -966,22 +1004,30 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
          * method:
          * <pre>{@code
          *  void method() {
-         *    String outer = "outer";
+         *    String outer = "before";
          *
          *    class Local {
          *      void localMethod() {
          *        String local = "local";
          *      }
          *    }
+         *
+         *    String after = "after";
          *  }
          * }</pre>
-         * Then calling {@code method.descendants(ASTStringLiteral.class).toList()}
-         * will only yield the {@code "outer"} string literal, because the
-         * traversal is stopped at the local class.
+         * Then the stream {@code method.descendants(ASTStringLiteral.class)}
+         * will only yield the literals {@code "before"} and {@code "after"},
+         * because the traversal doesn't go below the local class.
+         *
+         * <p>Note that traversal is stopped only for the subtree of the
+         * find boundary, but continues on the siblings. This is why
+         * {@code "after"} is yielded. This is also why {@link #takeWhile(Predicate)}
+         * is not a substitute for this method: {@code method.descendants(ASTStringLiteral.class).takeWhile(it -> !it.isFindBoundary)}
+         * would yield only {@code "before"}.
          *
          * <p>This behaviour can be opted out of with this method. In the
-         * example, calling {@code method.descendants(ASTStringLiteral.class).crossFindBoundaries().toList()}
-         * will yield both the {@code "outer"} and {@code "local"} string
+         * example, the stream {@code method.descendants(ASTStringLiteral.class).crossFindBoundaries()}
+         * will yield {@code "before"}, {@code "local"} and {@code "after"}
          * literals.
          *
          * @param cross If true, boundaries will be crossed.
