@@ -66,9 +66,6 @@ final class TraversalUtils {
     }
 
     static <T extends Node> int countChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
-        if (filter == Filtermap.NODE_IDENTITY && from == 0 && len == node.jjtGetNumChildren()) {
-            return node.jjtGetNumChildren();
-        }
         int sum = 0;
         for (int i = from, last = from + len; i < last; i++) {
             Node c = node.jjtGetChild(i);
@@ -81,18 +78,13 @@ final class TraversalUtils {
     }
 
 
-    static Iterator<Node> childrenIterator(Node parent) {
-        assert parent != null : "parent should not be null";
-        return childrenIterator(parent, 0, parent.jjtGetNumChildren());
-    }
-
     static Iterator<Node> childrenIterator(Node parent, final int from, final int to) {
         assert parent != null : "parent should not be null";
         assert from >= 0 && from <= parent.jjtGetNumChildren() : "'from' should be a valid index";
         assert to >= 0 && to <= parent.jjtGetNumChildren() : "'to' should be a valid index";
         assert from <= to : "'from' should be lower than 'to'";
 
-        if (parent.jjtGetNumChildren() == 0 || to == from) {
+        if (to == from) {
             return Collections.emptyIterator();
         }
 

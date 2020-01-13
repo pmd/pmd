@@ -132,14 +132,14 @@ public interface Node {
 
     /**
      * Returns true if this node is considered a boundary by traversal
-     * methods. Traversal methods such as {@link #getFirstDescendantOfType(Class)}
+     * methods. Traversal methods such as {@link #descendants()}
      * don't look past such boundaries by default, which is usually the
      * expected thing to do. For example, in Java, lambdas and nested
      * classes are considered find boundaries.
      *
      * @return True if this node is a find boundary
      *
-     * @see DescendantNodeStream#crossFindBoundaries()
+     * @see DescendantNodeStream#crossFindBoundaries(boolean)
      */
     default boolean isFindBoundary() {
         return false;
@@ -256,7 +256,7 @@ public interface Node {
      * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
      */
     default <T extends Node> T getFirstChildOfType(Class<T> childType) {
-        return children().first(childType);
+        return children(childType).first();
     }
 
     /**

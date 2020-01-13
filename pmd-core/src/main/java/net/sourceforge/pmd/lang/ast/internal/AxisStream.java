@@ -281,10 +281,6 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             this.len = len;
         }
 
-        FilteredChildrenStream(Node root, Filtermap<Node, T> filtermap) {
-            this(root, filtermap, 0, root.jjtGetNumChildren());
-        }
-
 
         @Override
         public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends @Nullable NodeStream<? extends R>> mapper) {
