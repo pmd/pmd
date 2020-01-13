@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.AncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.ChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantOrSelfStream;
@@ -29,27 +30,9 @@ import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredDescendantStream
 public final class StreamImpl {
 
     @SuppressWarnings("rawtypes")
-    private static final NodeStream EMPTY = new IteratorBasedNStream() {
-        @Override
-        public Iterator iterator() {
-            return Collections.emptyIterator();
-        }
+    private static final DescendantNodeStream EMPTY = new EmptyNodeStream();
 
-        @Override
-        public List toList() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public List toList(Function mapper) {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public String toString() {
-            return "EmptyStream";
-        }
-    };
+    private static final boolean DEFAULT_CROSS_FIND_BOUNDARY = false;
 
     private StreamImpl() {
         // utility class
@@ -88,28 +71,30 @@ public final class StreamImpl {
 
 
     @SuppressWarnings("unchecked")
-    public static <T extends Node> NodeStream<T> empty() {
+    public static <T extends Node> DescendantNodeStream<T> empty() {
         return EMPTY;
     }
 
     public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new FilteredChildrenStream<>(node, Filtermap.isInstance(target));
+        return node.jjtGetNumChildren() == 0 ? empty()
+                                             : new FilteredChildrenStream<>(node, Filtermap.isInstance(target));
     }
 
     public static NodeStream<Node> children(@NonNull Node node) {
         return node.jjtGetNumChildren() == 0 ? empty() : new ChildrenStream(node);
     }
 
-    public static NodeStream<Node> descendants(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node);
+    public static DescendantNodeStream<Node> descendants(@NonNull Node node) {
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node, DEFAULT_CROSS_FIND_BOUNDARY);
     }
 
-    public static <R extends Node> NodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new FilteredDescendantStream<>(node, Filtermap.isInstance(rClass));
+    public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
+        return node.jjtGetNumChildren() == 0 ? empty()
+                                             : new FilteredDescendantStream<>(node, DEFAULT_CROSS_FIND_BOUNDARY, Filtermap.isInstance(rClass));
     }
 
-    public static NodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node);
+    public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, DEFAULT_CROSS_FIND_BOUNDARY);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
@@ -179,4 +164,46 @@ public final class StreamImpl {
     }
 
 
+    private static class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
+
+        @Override
+        protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<N>, Iterator<R>> fun) {
+            return StreamImpl.empty();
+        }
+
+        @Override
+        public DescendantNodeStream<N> crossFindBoundaries(boolean cross) {
+            return StreamImpl.empty();
+        }
+
+        @Override
+        public Iterator<N> iterator() {
+            return Collections.emptyIterator();
+        }
+
+        @Override
+        public List<N> toList() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public <R> List<R> toList(Function<? super N, ? extends R> mapper) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Spliterator<N> spliterator() {
+            return Spliterators.emptySpliterator();
+        }
+
+        @Override
+        public NodeStream<N> cached() {
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "EmptyStream";
+        }
+    }
 }

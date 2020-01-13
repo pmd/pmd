@@ -219,8 +219,8 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         };
     }
 
-    private <R extends Node> IteratorMapping<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {
-        return new IteratorMapping<R>(fun);
+    protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {
+        return new IteratorMapping<>(fun);
     }
 
     private class IteratorMapping<S extends Node> extends IteratorBasedNStream<S> {

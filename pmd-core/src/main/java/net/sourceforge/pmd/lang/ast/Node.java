@@ -18,6 +18,7 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -406,7 +407,7 @@ public interface Node {
      *
      * @see NodeStream#descendants()
      */
-    default NodeStream<Node> descendants() {
+    default DescendantNodeStream<Node> descendants() {
         return StreamImpl.descendants(this);
     }
 
@@ -419,7 +420,7 @@ public interface Node {
      *
      * @see NodeStream#descendantsOrSelf()
      */
-    default NodeStream<Node> descendantsOrSelf() {
+    default DescendantNodeStream<Node> descendantsOrSelf() {
         return StreamImpl.descendantsOrSelf(this);
     }
 
@@ -479,7 +480,7 @@ public interface Node {
      *
      * @see NodeStream#descendants(Class)
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+    default <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
         return StreamImpl.descendants(this, rClass);
     }
 

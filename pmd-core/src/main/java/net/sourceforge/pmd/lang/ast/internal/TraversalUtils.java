@@ -40,15 +40,15 @@ public final class TraversalUtils {
         }
     }
 
-    static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap) {
+    static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap, boolean crossFindBoundaries) {
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node child = node.jjtGetChild(i);
             final T t = filtermap.apply(child);
             if (t != null) {
                 return t;
-            } else if (!child.isFindBoundary()) {
-                final T n2 = getFirstDescendantOfType(child, filtermap);
+            } else if (crossFindBoundaries || !child.isFindBoundary()) {
+                final T n2 = getFirstDescendantOfType(child, filtermap, crossFindBoundaries);
                 if (n2 != null) {
                     return n2;
                 }

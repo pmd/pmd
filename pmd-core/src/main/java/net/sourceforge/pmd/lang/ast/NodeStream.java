@@ -276,6 +276,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      */
     NodeStream<T> cached();
 
+
     /**
      * Returns a stream consisting of the elements of this stream,
      * truncated to be no longer than maxSize in length.
@@ -583,7 +584,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     }
 
 
-
     // "terminal" operations
 
 
@@ -598,7 +598,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      */
     // ASTs are not so big as to warrant using a 'long' here
     int count();
-
 
 
     /**
@@ -832,6 +831,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
     }
 
+
     /**
      * Returns a node stream containing zero or one node,
      * depending on whether the argument is null or not.
@@ -945,4 +945,51 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     static <T extends Node> NodeStream<T> empty() {
         return StreamImpl.empty();
     }
+
+
+    /**
+     * A specialization of {@link NodeStream} that allows configuring
+     * tree traversal behaviour when traversing the descendants of a node.
+     * Such a stream is returned by methods such as {@link #descendants()}.
+     *
+     * @param <T> Type of node this stream contains
+     */
+    interface DescendantNodeStream<T extends Node> extends NodeStream<T> {
+
+
+        /**
+         * Returns a node stream that will not stop the tree traversal
+         * when encountering a find boundary. Find boundaries are node
+         * that by default stop tree traversals, like class declarations.
+         *
+         * <p>For example, supposing you have the AST node for the following
+         * method:
+         * <pre>{@code
+         *  void method() {
+         *    String outer = "outer";
+         *
+         *    class Local {
+         *      void localMethod() {
+         *        String local = "local";
+         *      }
+         *    }
+         *  }
+         * }</pre>
+         * Then calling {@code method.descendants(ASTStringLiteral.class).toList()}
+         * will only yield the {@code "outer"} string literal, because the
+         * traversal is stopped at the local class.
+         *
+         * <p>This behaviour can be opted out of with this method. In the
+         * example, calling {@code method.descendants(ASTStringLiteral.class).crossFindBoundaries().toList()}
+         * will yield both the {@code "outer"} and {@code "local"} string
+         * literals.
+         *
+         * @return A new node stream
+         */
+        DescendantNodeStream<T> crossFindBoundaries(boolean cross);
+
+
+    }
+
+
 }
