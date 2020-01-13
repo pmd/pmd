@@ -28,8 +28,8 @@ public class CppCharStream extends SimpleCharStream {
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
 
-    public CppCharStream(String fulltext, JavaccTokenDocument document) {
-        super(fulltext, document);
+    public CppCharStream(JavaccTokenDocument document) {
+        super(document);
     }
 
 
@@ -76,6 +76,6 @@ public class CppCharStream extends SimpleCharStream {
                        : null;
             }
         };
-        return new CppCharStream(source, document);
+        return new CppCharStream(document);
     }
 }

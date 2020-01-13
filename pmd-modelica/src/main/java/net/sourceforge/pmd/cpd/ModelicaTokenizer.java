@@ -11,8 +11,8 @@ import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenManager;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenKinds;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenManager;
 
 
 public class ModelicaTokenizer extends JavaCCTokenizer {

@@ -27,9 +27,9 @@ public class JavaCharStream extends JavaCharStreamBase {
 
     private int[] startOffsets;
 
-    public JavaCharStream(String fulltext, JavaccTokenDocument document) {
-        super(new StringReader(fulltext));
-        this.fullText = fulltext;
+    public JavaCharStream(JavaccTokenDocument document) {
+        super(new StringReader(document.getFullText()));
+        this.fullText = document.getFullText();
         this.document = document;
         this.startOffsets = new int[bufsize];
         maxNextCharInd = fullText.length();

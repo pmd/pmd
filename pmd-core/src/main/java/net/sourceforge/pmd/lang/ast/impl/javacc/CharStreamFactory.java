@@ -31,7 +31,7 @@ public final class CharStreamFactory {
     public static CharStream simpleCharStream(Reader input, Function<? super String, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
         JavaccTokenDocument document = documentMaker.apply(source);
-        return new SimpleCharStream(source, document);
+        return new SimpleCharStream(document);
     }
 
     /**
@@ -47,7 +47,7 @@ public final class CharStreamFactory {
     public static CharStream javaCharStream(Reader input, Function<? super String, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
         JavaccTokenDocument tokens = documentMaker.apply(source);
-        return new JavaCharStream(source, tokens);
+        return new JavaCharStream(tokens);
     }
 
     /**

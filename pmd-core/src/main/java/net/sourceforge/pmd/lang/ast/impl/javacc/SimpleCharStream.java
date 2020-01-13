@@ -9,8 +9,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
  */
 public class SimpleCharStream extends JavaCharStream {
 
-    public SimpleCharStream(String fulltext, JavaccTokenDocument document) {
-        super(fulltext, document);
+    public SimpleCharStream(JavaccTokenDocument document) {
+        super(document);
     }
 
     @Override
