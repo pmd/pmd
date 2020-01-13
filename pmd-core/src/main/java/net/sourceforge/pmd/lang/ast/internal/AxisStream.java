@@ -95,8 +95,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             default:
                 // eg for NodeStream.of(a,b,c).drop(2)
                 Node nth = get(n); // get(2) == c
-                return nth == null ? NodeStream.empty()
-                                   : StreamImpl.ancestorsOrSelf(nth, filter); // c.ancestorsOrSelf() == [c]
+                return StreamImpl.ancestorsOrSelf(nth, filter); // c.ancestorsOrSelf() == [c]
             }
         }
 
@@ -140,73 +139,71 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     abstract static class DescendantStreamBase<T extends Node> extends AxisStream<T> implements DescendantNodeStream<T> {
 
-        final TraversalConfig config;
+        final TreeWalker walker;
 
         DescendantStreamBase(@NonNull Node root,
-                             TraversalConfig config,
+                             TreeWalker walker,
                              Filtermap<Node, T> filter) {
             super(root, filter);
-            this.config = config;
+            this.walker = walker;
         }
 
-        protected abstract <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TraversalConfig config);
+        protected abstract <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TreeWalker walker);
 
         @Override
         public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
-            return copyWithConfig(this.filter, config.crossFindBoundaries(cross));
+            return copyWithConfig(this.filter, walker.crossFindBoundaries(cross));
         }
 
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
-            return copyWithConfig(filterMap, config);
+            return copyWithConfig(filterMap, walker);
         }
     }
 
     static class FilteredDescendantStream<T extends Node> extends DescendantStreamBase<T> {
 
         FilteredDescendantStream(Node node,
-                                 TraversalConfig config,
+                                 TreeWalker walker,
                                  Filtermap<Node, T> target) {
-            super(node, config, target);
+            super(node, walker, target);
         }
 
         @Override
         protected Iterator<Node> baseIterator() {
-            DescendantOrSelfIterator iter = new DescendantOrSelfIterator(node, config);
-            iter.next(); // skip self
-            return iter;
+            return walker.descendantIterator(node);
         }
 
         @Override
-        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TraversalConfig config) {
-            return new FilteredDescendantStream<>(node, config, filterMap);
+        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TreeWalker walker) {
+            return new FilteredDescendantStream<>(node, walker, filterMap);
         }
 
         @Override
         public @Nullable T first() {
-            return TraversalUtils.getFirstDescendantOfType(node, filter, config);
+            return walker.getFirstDescendantOfType(node, filter);
         }
 
         @Override
         public boolean nonEmpty() {
-            return TraversalUtils.getFirstDescendantOfType(node, filter, config) != null;
+            return walker.getFirstDescendantOfType(node, filter) != null;
         }
 
         @Override
         public List<T> toList() {
-            return TraversalUtils.findDescendantsMatching(node, filter, config);
+            return walker.findDescendantsMatching(node, filter);
         }
     }
 
     static class DescendantStream extends FilteredDescendantStream<Node> {
 
-        DescendantStream(Node node, TraversalConfig config) {
-            super(node, config, Filtermap.NODE_IDENTITY);
+        DescendantStream(Node node, TreeWalker walker) {
+            super(node, walker, Filtermap.NODE_IDENTITY);
         }
 
         @Override
         public DescendantNodeStream<Node> crossFindBoundaries(boolean cross) {
-            return new DescendantStream(node, config.crossFindBoundaries(cross));
+            return new DescendantStream(node, walker.crossFindBoundaries(cross));
         }
 
 
@@ -219,19 +216,19 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     static class FilteredDescendantOrSelfStream<T extends Node> extends DescendantStreamBase<T> {
 
         FilteredDescendantOrSelfStream(Node node,
-                                       TraversalConfig config,
+                                       TreeWalker walker,
                                        Filtermap<Node, T> filtermap) {
-            super(node, config, filtermap);
+            super(node, walker, filtermap);
         }
 
         @Override
         public Iterator<Node> baseIterator() {
-            return new DescendantOrSelfIterator(node, config);
+            return walker.descendantOrSelfIterator(node);
         }
 
         @Override
-        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TraversalConfig config) {
-            return new FilteredDescendantOrSelfStream<>(node, config, filterMap);
+        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TreeWalker walker) {
+            return new FilteredDescendantOrSelfStream<>(node, walker, filterMap);
         }
 
         @Override
@@ -241,20 +238,20 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             if (top != null) {
                 result.add(top);
             }
-            TraversalUtils.findDescendantsMatching(node, filter, result, config);
+            walker.findDescendantsMatching(node, filter, result);
             return result;
         }
     }
 
     static final class DescendantOrSelfStream extends FilteredDescendantOrSelfStream<Node> {
 
-        DescendantOrSelfStream(Node node, TraversalConfig config) {
-            super(node, config, Filtermap.NODE_IDENTITY);
+        DescendantOrSelfStream(Node node, TreeWalker walker) {
+            super(node, walker, Filtermap.NODE_IDENTITY);
         }
 
         @Override
         public DescendantNodeStream<Node> crossFindBoundaries(boolean cross) {
-            return new DescendantOrSelfStream(node, config.crossFindBoundaries(cross));
+            return new DescendantOrSelfStream(node, walker.crossFindBoundaries(cross));
         }
 
         @Nullable

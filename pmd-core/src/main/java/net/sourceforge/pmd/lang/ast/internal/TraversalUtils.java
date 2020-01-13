@@ -19,49 +19,6 @@ final class TraversalUtils {
 
     }
 
-    static <T extends Node> List<T> findDescendantsMatching(final Node node,
-                                                            final Filtermap<Node, T> filtermap,
-                                                            final TraversalConfig config) {
-        List<T> results = new ArrayList<>();
-        findDescendantsMatching(node, filtermap, results, config);
-        return results;
-    }
-
-    static <T extends Node> void findDescendantsMatching(final Node node,
-                                                         final Filtermap<Node, T> filtermap,
-                                                         final List<T> results,
-                                                         final TraversalConfig config) {
-
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            final Node child = node.jjtGetChild(i);
-            final T mapped = filtermap.apply(child);
-            if (mapped != null) {
-                results.add(mapped);
-            }
-
-            if (config.isCrossFindBoundaries() || !child.isFindBoundary()) {
-                findDescendantsMatching(child, filtermap, results, config);
-            }
-        }
-    }
-
-    static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap, TraversalConfig config) {
-        final int n = node.jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
-            Node child = node.jjtGetChild(i);
-            final T t = filtermap.apply(child);
-            if (t != null) {
-                return t;
-            } else if (config.isCrossFindBoundaries() || !child.isFindBoundary()) {
-                final T n2 = getFirstDescendantOfType(child, filtermap, config);
-                if (n2 != null) {
-                    return n2;
-                }
-            }
-        }
-        return null;
-    }
-
     static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<Node, T> filter) {
         Node n = node;
         while (n != null) {

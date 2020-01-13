@@ -252,18 +252,18 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     private static class DescendantMapping<T extends Node, S extends Node> extends IteratorBasedNStream<S> implements DescendantNodeStream<S> {
 
         private final Function<T, DescendantNodeStream<S>> fun;
-        private final TraversalConfig config;
+        private final TreeWalker config;
         private final IteratorBasedNStream<T> upstream;
 
 
-        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TraversalConfig config) {
+        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TreeWalker config) {
             this.fun = fun;
             this.config = config;
             this.upstream = upstream;
         }
 
         DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun) {
-            this(upstream, fun, TraversalConfig.DEFAULT);
+            this(upstream, fun, TreeWalker.DEFAULT);
         }
 
         @Override

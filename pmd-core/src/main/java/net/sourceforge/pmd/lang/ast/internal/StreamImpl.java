@@ -79,16 +79,16 @@ public final class StreamImpl {
     }
 
     public static DescendantNodeStream<Node> descendants(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node, TraversalConfig.DEFAULT);
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node, TreeWalker.DEFAULT);
     }
 
     public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
         return node.jjtGetNumChildren() == 0 ? empty()
-                                             : new FilteredDescendantStream<>(node, TraversalConfig.DEFAULT, Filtermap.isInstance(rClass));
+                                             : new FilteredDescendantStream<>(node, TreeWalker.DEFAULT, Filtermap.isInstance(rClass));
     }
 
     public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TraversalConfig.DEFAULT);
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
