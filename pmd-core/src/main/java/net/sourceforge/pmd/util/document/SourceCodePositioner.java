@@ -5,11 +5,8 @@
 package net.sourceforge.pmd.util.document;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-
-import org.apache.commons.io.input.CharSequenceReader;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
@@ -23,14 +20,9 @@ public final class SourceCodePositioner {
     // Idea from:
     // http://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/javascript/jscomp/SourceFile.java
 
-    /**
-     * This list has one entry for each line, denoting the start offset of the line.
-     * The start offset of the next line includes the length of the line terminator
-     * (1 for \r|\n, 2 for \r\n).
-     */
-    private final List<Integer> lineOffsets = new ArrayList<>();
+    /** Each entry is the start offset of a line (zero based). Never empty. */
+    private final int[] lineOffsets;
     private final int sourceCodeLength;
-    private final CharSequence sourceCode;
 
     /**
      * Builds a new source code positioner for the given char sequence.
@@ -40,52 +32,14 @@ public final class SourceCodePositioner {
      * @param sourceCode Text to wrap
      */
     public SourceCodePositioner(CharSequence sourceCode) {
-        sourceCodeLength = sourceCode.length();
-        this.sourceCode = sourceCode;
-
-        try (Scanner scanner = new Scanner(new CharSequenceReader(sourceCode))) {
-            int currentGlobalOffset = 0;
-
-            while (scanner.hasNextLine()) {
-                lineOffsets.add(currentGlobalOffset);
-                currentGlobalOffset += getLineLengthWithLineSeparator(scanner);
-            }
-        }
-
-        // empty text, consider it a single empty line
-        if (lineOffsets.isEmpty()) {
-            lineOffsets.add(0);
-        }
-    }
-
-    /**
-     * Returns the source passed as parameter.
-     */
-    public CharSequence getText() {
-        return sourceCode;
+        int len = sourceCode.length();
+        this.lineOffsets = makeLineOffsets(sourceCode, len);
+        this.sourceCodeLength = len;
     }
 
     // test only
-    List<Integer> getLineOffsets() {
+    int[] getLineOffsets() {
         return lineOffsets;
-    }
-
-    /**
-     * Sums the line length without the line separation and the characters which matched the line separation pattern
-     *
-     * @param scanner the scanner from which to read the line's length
-     *
-     * @return the length of the line with the line separator.
-     */
-    private int getLineLengthWithLineSeparator(final Scanner scanner) {
-        int lineLength = scanner.nextLine().length();
-        final String lineSeparationMatch = scanner.match().group(1);
-
-        if (lineSeparationMatch != null) {
-            lineLength += lineSeparationMatch.length();
-        }
-
-        return lineLength;
     }
 
     /**
@@ -105,7 +59,7 @@ public final class SourceCodePositioner {
             return -1;
         }
 
-        int search = Collections.binarySearch(lineOffsets, offset);
+        int search = Arrays.binarySearch(lineOffsets, offset);
         return search >= 0 ? search + 1 // 1-based line numbers
                            : -(search + 1); // see spec of binarySearch
     }
@@ -124,11 +78,11 @@ public final class SourceCodePositioner {
      */
     public int columnFromOffset(final int lineNumber, final int globalOffset) {
         int lineIndex = lineNumber - 1;
-        if (lineIndex < 0 || lineIndex >= lineOffsets.size()) {
+        if (lineIndex < 0 || lineIndex >= lineOffsets.length) {
             throw new IllegalArgumentException("Line " + lineNumber + " does not exist");
         }
 
-        int bound = lineIndex + 1 < lineOffsets.size() ? lineOffsets.get(lineIndex + 1)
+        int bound = lineIndex + 1 < lineOffsets.length ? lineOffsets[lineIndex + 1]
                                                        : sourceCodeLength;
 
         if (globalOffset > bound) {
@@ -136,7 +90,7 @@ public final class SourceCodePositioner {
             return -1;
         }
 
-        return globalOffset - lineOffsets.get(lineIndex) + 1; // 1-based column offsets
+        return globalOffset - lineOffsets[lineIndex] + 1; // 1-based column offsets
     }
 
     /**
@@ -152,15 +106,15 @@ public final class SourceCodePositioner {
     public int offsetFromLineColumn(final int line, final int column) {
         final int lineIdx = line - 1;
 
-        if (lineIdx < 0 || lineIdx >= lineOffsets.size()) {
+        if (lineIdx < 0 || lineIdx >= lineOffsets.length) {
             return -1;
         }
 
-        int bound = line == lineOffsets.size()  // last line?
+        int bound = line == lineOffsets.length  // last line?
                     ? sourceCodeLength
-                    : lineOffsets.get(line);
+                    : lineOffsets[line];
 
-        int off = lineOffsets.get(lineIdx) + column - 1;
+        int off = lineOffsets[lineIdx] + column - 1;
         return off > bound ? -1 : off;
     }
 
@@ -169,7 +123,7 @@ public final class SourceCodePositioner {
      * last line.
      */
     public int getLastLine() {
-        return lineOffsets.size();
+        return lineOffsets.length;
     }
 
     /**
@@ -177,5 +131,29 @@ public final class SourceCodePositioner {
      */
     public int getLastLineColumn() {
         return columnFromOffset(getLastLine(), sourceCodeLength - 1);
+    }
+
+    private static int[] makeLineOffsets(CharSequence sourceCode, int len) {
+        List<Integer> buffer = new ArrayList<>();
+
+        int off = 0;
+        while (off < len) {
+            char c = sourceCode.charAt(off);
+            if (c == '\n') {
+                buffer.add(off);
+            }
+            off++;
+        }
+
+        if (buffer.isEmpty()) {
+            // empty text, consider it a single empty line
+            return new int[] {0};
+        } else {
+            int[] lineOffsets = new int[buffer.size()];
+            for (int i = 0; i < buffer.size(); i++) {
+                lineOffsets[i] = buffer.get(i);
+            }
+            return lineOffsets;
+        }
     }
 }

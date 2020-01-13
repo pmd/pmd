@@ -6,9 +6,6 @@ package net.sourceforge.pmd.util.document;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 /**
@@ -109,14 +106,9 @@ public class SourceCodePositionerTest {
             + "int var;\n"
             + "}";
 
-        final List<Integer> expectedLineToOffset = new ArrayList<>();
-        expectedLineToOffset.add(0);
-        expectedLineToOffset.add(40);
-        expectedLineToOffset.add(49);
-
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertEquals(expectedLineToOffset, positioner.getLineOffsets());
+        assertEquals(new int[] { 0, 40, 49 }, positioner.getLineOffsets());
     }
 
     @Test
@@ -125,14 +117,9 @@ public class SourceCodePositionerTest {
             + "int var;\r\n"
             + "}";
 
-        final List<Integer> expectedLineToOffset = new ArrayList<>();
-        expectedLineToOffset.add(0);
-        expectedLineToOffset.add(41);
-        expectedLineToOffset.add(51);
-
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertEquals(expectedLineToOffset, positioner.getLineOffsets());
+        assertEquals(new int[] { 0, 41, 51 }, positioner.getLineOffsets());
     }
 
     @Test
@@ -141,14 +128,9 @@ public class SourceCodePositionerTest {
             + "int var;\n"
             + "}";
 
-        final List<Integer> expectedLineToOffset = new ArrayList<>();
-        expectedLineToOffset.add(0);
-        expectedLineToOffset.add(41);
-        expectedLineToOffset.add(50);
-
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertEquals(expectedLineToOffset, positioner.getLineOffsets());
+        assertEquals(new int[] { 0, 41, 50 }, positioner.getLineOffsets());
     }
 
 }
