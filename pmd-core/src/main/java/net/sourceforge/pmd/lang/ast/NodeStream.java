@@ -125,20 +125,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  */
 public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
-    // TODO relax laziness guarantees.
-    //  * Evaluating some operations strictly may yield better performance.
-    //    Eg when you have node.children(Foo.class).children(ASTBar.class),
-    //    we could have node.children(Foo.class) be evaluated eagerly, and then
-    //    yield a better optimized implementation (empty stream, singleton
-    //    (very common cases) or cached stream).
-    //  * This could greatly reduce the number of flatmapped streams stacked
-    //    onto each other, for all lengths of pipelines
-    //  * This would need to be measured, as it could make call sites megamorphic, so decrease performance.
-    //  * SingletonNodeStream already does this, which is why the doc
-    //    has been updated
-    //  * In nearly 100% of cases node streams are consumed immediately,
-    //    so laziness is not really important (except to stick to the Stream contract).
-
+    // TODO measure performance of eager child stream
 
     /**
      * Returns a node stream consisting of the results of replacing each
@@ -237,9 +224,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     /**
      * Returns a node stream containing all the elements of this node stream,
      * but which will evaluate the upstream pipeline only once. The returned
-     * stream is also lazy, which means the elements of this stream are not
-     * eagerly evaluated when calling this method, but only on the first
-     * terminal operation called on the downstream of the returned stream.
+     * stream is not necessarily lazy, which means it may evaluate the upstream
+     * pipeline as soon as the call to this method is made.
      *
      * <p>This is useful e.g. if you want to call several terminal operations
      * without executing the pipeline several times. For example,
@@ -453,7 +439,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return flatMap(it -> it.children(rClass));
     }
 
-    // todo maybe having a firstChild(rClass) -> children(rClass).take(1) would be nice
+    // todo maybe having a firstChild(rClass) -> flatMap(it -> it.children(rClass).take(1)) would be nice
 
     /**
      * Returns the {@linkplain #descendants() descendant stream} of each node

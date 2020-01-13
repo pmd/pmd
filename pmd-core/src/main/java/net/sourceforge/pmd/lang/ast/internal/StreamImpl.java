@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredAncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredDescendantStream;
+import net.sourceforge.pmd.lang.ast.internal.GreedyNStream.GreedyKnownNStream;
 
 public final class StreamImpl {
 
@@ -40,22 +42,17 @@ public final class StreamImpl {
         return new SingletonNodeStream<>(node);
     }
 
-    public static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
-        return new IteratorBasedNStream<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return IteratorUtil.filterNotNull(iterable.iterator());
+    public static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+        if (iterable instanceof Collection) {
+            Collection<@Nullable T> coll = (Collection<T>) iterable;
+            if (coll.isEmpty()) {
+                return empty();
+            } else if (coll.size() == 1) {
+                return NodeStream.of(coll.iterator().next());
             }
+        }
 
-            @Override
-            public Spliterator<T> spliterator() {
-                Spliterator<T> spliter = iterable.spliterator();
-                return Spliterators.spliterator(iterator(), spliter.estimateSize(),
-                                                (spliter.characteristics() | Spliterator.NONNULL)
-                                                    & ~Spliterator.SIZED
-                                                    & ~Spliterator.SUBSIZED);
-            }
-        };
+        return fromNonNullList(IteratorUtil.toNonNullList(iterable.iterator()));
     }
 
     public static <T extends Node> NodeStream<T> union(Iterable<? extends @Nullable NodeStream<? extends T>> streams) {
@@ -165,6 +162,16 @@ public final class StreamImpl {
         return ancestorsOrSelf(node.jjtGetParent(), Filtermap.isInstance(target));
     }
 
+    static <T extends Node> NodeStream<T> fromNonNullList(List<@NonNull T> coll) {
+        if (coll.isEmpty()) {
+            return empty();
+        } else if (coll.size() == 1) {
+            return singleton(coll.get(0));
+        }
+
+        return new GreedyKnownNStream<>(coll);
+    }
+
 
     private static class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
 
@@ -213,4 +220,5 @@ public final class StreamImpl {
             return "EmptyStream";
         }
     }
+
 }

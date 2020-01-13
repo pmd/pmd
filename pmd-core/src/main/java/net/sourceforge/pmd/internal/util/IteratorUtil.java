@@ -166,6 +166,17 @@ public final class IteratorUtil {
         return list;
     }
 
+    public static <T> List<@NonNull T> toNonNullList(Iterator<@Nullable T> it) {
+        List<@NonNull T> list = new ArrayList<>();
+        while (it.hasNext()) {
+            T next = it.next();
+            if (next != null) {
+                list.add(next);
+            }
+        }
+        return list;
+    }
+
     public static <T> Iterable<T> toIterable(final Iterator<T> it) {
         return () -> it;
     }

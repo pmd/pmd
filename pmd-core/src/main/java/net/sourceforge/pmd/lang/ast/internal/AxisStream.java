@@ -52,7 +52,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     }
 
     @Override
-    public NodeStream<T> filter(Predicate<? super T> predicate) {
+    public NodeStream<T> filter(Predicate<? super @NonNull T> predicate) {
         return copyWithFilter(filter.thenApply(Filtermap.filter(predicate)));
     }
 
@@ -288,6 +288,15 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             this(root, filtermap, 0, root.jjtGetNumChildren());
         }
 
+
+        @Override
+        public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends @Nullable NodeStream<? extends R>> mapper) {
+            // all operations like #children, #followingSiblings, etc
+            // operate on an eagerly evaluated stream. May be empty or
+            // singleton
+            return StreamImpl.fromNonNullList(toList()).flatMap(mapper);
+        }
+
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
             return new FilteredChildrenStream<>(node, filterMap, low, len);
@@ -302,7 +311,6 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         protected Iterator<Node> baseIterator() {
             return TraversalUtils.childrenIterator(node, low, low + len);
         }
-
 
         @Override
         public @Nullable T first() {
@@ -368,10 +376,6 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         ChildrenStream(@NonNull Node root, int low, int len) {
             super(root, Filtermap.NODE_IDENTITY, low, len);
-        }
-
-        ChildrenStream(@NonNull Node root) {
-            super(root, Filtermap.NODE_IDENTITY);
         }
 
         @Nullable

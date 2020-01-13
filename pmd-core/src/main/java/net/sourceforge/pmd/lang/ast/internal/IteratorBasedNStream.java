@@ -62,8 +62,13 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public NodeStream<T> filter(Predicate<? super T> predicate) {
+    public NodeStream<T> filter(Predicate<? super @NonNull T> predicate) {
         return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.filter(predicate)));
+    }
+
+    @Override
+    public <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
+        return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.isInstance(rClass)));
     }
 
     @Override
@@ -212,33 +217,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public NodeStream<T> cached() {
-        return new IteratorBasedNStream<T>() {
-
-            private List<T> cache;
-
-            @Override
-            public Iterator<T> iterator() {
-                return toList().iterator();
-            }
-
-            @Override
-            public int count() {
-                return toList().size();
-            }
-
-            @Override
-            public List<T> toList() {
-                if (cache == null) {
-                    cache = IteratorBasedNStream.this.toList();
-                }
-                return cache;
-            }
-
-            @Override
-            public String toString() {
-                return "CachedStream[" + IteratorBasedNStream.this + "]";
-            }
-        };
+        return StreamImpl.fromNonNullList(toList());
     }
 
     protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {

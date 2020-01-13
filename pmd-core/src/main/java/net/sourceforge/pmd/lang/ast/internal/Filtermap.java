@@ -28,14 +28,14 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
     /**
      * Returns a null value if the filter accepts the value. Otherwise
-     * returns the transformed value.
+     * returns the transformed value. MUST return null for null parameter.
      */
     @Override
-    @Nullable O apply(@NonNull I i);
+    @Nullable O apply(@Nullable I i);
 
 
     @Override
-    default boolean test(@NonNull I i) {
+    default boolean test(@Nullable I i) {
         return apply(i) != null;
     }
 
@@ -86,15 +86,15 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
 
-    static <I> Filtermap<I, I> filter(Predicate<? super I> pred) {
-        return i -> pred.test(i) ? i : null;
+    static <I> Filtermap<I, I> filter(Predicate<? super @NonNull I> pred) {
+        return i -> i != null && pred.test(i) ? i : null;
     }
 
 
     static <I, O> Filtermap<I, O> isInstance(Class<O> oClass) {
         return new Filtermap<I, O>() {
             @Override
-            public @Nullable O apply(@NonNull I i) {
+            public @Nullable O apply(@Nullable I i) {
                 return oClass.isInstance(i) ? oClass.cast(i) : null;
             }
 
