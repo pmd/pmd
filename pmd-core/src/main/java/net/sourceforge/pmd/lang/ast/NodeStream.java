@@ -453,6 +453,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return flatMap(it -> it.children(rClass));
     }
 
+    // todo maybe having a firstChild(rClass) -> children(rClass).take(1) would be nice
 
     /**
      * Returns the {@linkplain #descendants() descendant stream} of each node

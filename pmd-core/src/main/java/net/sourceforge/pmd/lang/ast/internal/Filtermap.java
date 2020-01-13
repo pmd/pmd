@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@NonNull I> {
 
 
-    Filtermap<Node, Node> NODE_IDENTITY = emptyFilter();
+    Filtermap<Node, Node> NODE_IDENTITY = identityFilter();
 
 
     /**
@@ -60,7 +60,7 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
 
-    static <I> Filtermap<I, I> emptyFilter() {
+    static <I> Filtermap<I, I> identityFilter() {
         return new Filtermap<I, I>() {
             @Override
             public I apply(@NonNull I i) {
@@ -77,6 +77,11 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
             public Iterator<I> filterMap(Iterator<I> iter) {
                 return iter;
             }
+
+            @Override
+            public String toString() {
+                return "IdentityFilter";
+            }
         };
     }
 
@@ -87,7 +92,17 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
 
     static <I, O> Filtermap<I, O> isInstance(Class<O> oClass) {
-        return i -> oClass.isInstance(i) ? oClass.cast(i) : null;
+        return new Filtermap<I, O>() {
+            @Override
+            public @Nullable O apply(@NonNull I i) {
+                return oClass.isInstance(i) ? oClass.cast(i) : null;
+            }
+
+            @Override
+            public String toString() {
+                return "IsInstance[" + oClass + "]";
+            }
+        };
     }
 
 }

@@ -174,6 +174,11 @@ public final class StreamImpl {
         }
 
         @Override
+        protected @NonNull <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<N, DescendantNodeStream<R>> mapper) {
+            return StreamImpl.empty();
+        }
+
+        @Override
         public DescendantNodeStream<N> crossFindBoundaries(boolean cross) {
             return StreamImpl.empty();
         }

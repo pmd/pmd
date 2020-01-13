@@ -68,18 +68,25 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public DescendantNodeStream<Node> descendants() {
-        return new DescendantMapping<>(this, Node::descendants);
+        return flatMapDescendants(Node::descendants);
     }
 
     @Override
     public DescendantNodeStream<Node> descendantsOrSelf() {
-        return new DescendantMapping<>(this, Node::descendantsOrSelf);
+        return flatMapDescendants(Node::descendantsOrSelf);
     }
 
     @Override
     public <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
-        return new DescendantMapping<>(this, node -> node.descendants(rClass));
+        return flatMapDescendants(node -> node.descendants(rClass));
     }
+
+
+    @NonNull
+    protected <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<T, DescendantNodeStream<R>> mapper) {
+        return new DescendantMapping<>(this, mapper);
+    }
+
 
     @Override
     public void forEach(Consumer<? super T> action) {
