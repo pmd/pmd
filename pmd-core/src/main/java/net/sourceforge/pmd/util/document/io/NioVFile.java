@@ -19,14 +19,14 @@ import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 
 /**
- * A {@link TextFile} backed by a file in some {@link FileSystem}.
+ * A {@link VirtualFile} backed by a file in some {@link FileSystem}.
  */
-class FileSysTextFile extends BaseCloseable implements TextFile {
+class NioVFile extends BaseCloseable implements VirtualFile {
 
     private final Path path;
     private final Charset charset;
 
-    FileSysTextFile(Path path, Charset charset) throws IOException {
+    NioVFile(Path path, Charset charset) throws IOException {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
 
@@ -82,6 +82,6 @@ class FileSysTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public String toString() {
-        return "FsTextFile[charset=" + charset + ", path=" + path + ']';
+        return "NioVFile[charset=" + charset + ", path=" + path + ']';
     }
 }

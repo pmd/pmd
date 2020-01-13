@@ -25,7 +25,7 @@ import org.junit.rules.TemporaryFolder;
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.VirtualFile;
 
 public class TextEditorTest {
 
@@ -122,7 +122,7 @@ public class TextEditorTest {
     public void testExternalModification() throws IOException {
         String content = "static void main(String[] args) {}";
         // mock it, because file modification date is not precise enough
-        MockTextFile mockFile = new MockTextFile(content);
+        MockVirtualFile mockFile = new MockVirtualFile(content);
         TextDocument doc = TextDocument.create(mockFile);
 
         assertTextIs(content, doc);
@@ -408,7 +408,7 @@ public class TextEditorTest {
 
     @Test
     public void textReadOnlyDocumentCannotBeEdited() throws IOException {
-        TextFile someFooBar = TextFile.readOnlyString("someFooBar");
+        VirtualFile someFooBar = VirtualFile.readOnlyString("someFooBar");
         assertTrue(someFooBar.isReadOnly());
         TextDocument doc = TextDocument.create(someFooBar);
 
@@ -433,7 +433,7 @@ public class TextEditorTest {
         try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             writer.write(content);
         }
-        return TextDocument.create(TextFile.forPath(temporaryFile, StandardCharsets.UTF_8));
+        return TextDocument.create(VirtualFile.forPath(temporaryFile, StandardCharsets.UTF_8));
     }
 
 }

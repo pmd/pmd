@@ -8,6 +8,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 /**
  * Token layer of a parsed file.

@@ -8,14 +8,14 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.VirtualFile;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
  * and address regions of text. A text document delegates IO operations
- * to a {@link TextFile}. It reflects some snapshot of the file,
+ * to a {@link VirtualFile}. It reflects some snapshot of the file,
  * though the file may still be edited externally. We do not poll for
- * external modifications, instead {@link TextFile} provides a
+ * external modifications, instead {@link VirtualFile} provides a
  * very simple stamping system to avoid overwriting external modifications
  * (by failing in {@link TextEditor#close()}).
  */
@@ -25,7 +25,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns the current text of this document. Note that this can only
      * be updated through {@link #newEditor()} and that this doesn't take
-     * external modifications to the {@link TextFile} into account.
+     * external modifications to the {@link VirtualFile} into account.
      */
     CharSequence getText();
 
@@ -99,7 +99,7 @@ public interface TextDocument extends Closeable {
      * @see #newEditor(EditorCommitHandler)
      */
     default TextEditor newEditor() throws IOException {
-        return newEditor(TextFile::writeContents);
+        return newEditor(VirtualFile::writeContents);
     }
 
 
@@ -116,7 +116,7 @@ public interface TextDocument extends Closeable {
      * <p>Only a single editor may be open at a time.
      *
      * @param handler Handles closing of the {@link TextEditor}.
-     *                {@link EditorCommitHandler#commitNewContents(TextFile, CharSequence) commitNewContents}
+     *                {@link EditorCommitHandler#commitNewContents(VirtualFile, CharSequence) commitNewContents}
      *                is called with the backend file and the new text
      *                as parameters.
      *
@@ -131,11 +131,11 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Closing a document closes the underlying {@link TextFile}.
+     * Closing a document closes the underlying {@link VirtualFile}.
      * New editors cannot be produced after that, and the document otherwise
      * remains in its current state.
      *
-     * @throws IOException           If {@link TextFile#close()} throws
+     * @throws IOException           If {@link VirtualFile#close()} throws
      * @throws IllegalStateException If an editor is currently open. In this case
      *                               the editor is rendered ineffective before the
      *                               exception is thrown. This indicates a programming
@@ -150,8 +150,8 @@ public interface TextDocument extends Closeable {
      *
      * @throws IOException If an error occurs eg while reading the file contents
      */
-    static TextDocument create(TextFile textFile) throws IOException {
-        return new TextDocumentImpl(textFile);
+    static TextDocument create(VirtualFile virtualFile) throws IOException {
+        return new TextDocumentImpl(virtualFile);
     }
 
 
@@ -160,7 +160,7 @@ public interface TextDocument extends Closeable {
      */
     static TextDocument readOnlyString(final String source) {
         try {
-            return new TextDocumentImpl(TextFile.readOnlyString(source));
+            return new TextDocumentImpl(VirtualFile.readOnlyString(source));
         } catch (IOException e) {
             throw new AssertionError("ReadonlyStringBehavior should never throw IOException", e);
         }
@@ -178,7 +178,7 @@ public interface TextDocument extends Closeable {
          *
          * @throws IOException If an I/O error occurs
          */
-        void commitNewContents(TextFile originalFile, CharSequence newContents) throws IOException;
+        void commitNewContents(VirtualFile originalFile, CharSequence newContents) throws IOException;
 
     }
 

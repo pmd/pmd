@@ -13,12 +13,12 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Read-only view on a string.
  */
-class StringFile implements TextFile {
+class StringVFile implements VirtualFile {
 
     private final String buffer;
     private final String name;
 
-    StringFile(String source, @Nullable String name) {
+    StringVFile(String source, @Nullable String name) {
         AssertionUtil.requireParamNotNull("source text", source);
 
         this.buffer = source;

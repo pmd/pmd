@@ -9,7 +9,7 @@ import java.io.IOException;
 import net.sourceforge.pmd.util.document.TextDocument.EditorCommitHandler;
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.VirtualFile;
 
 /**
  * Helper that buffers operations of a {@link TextEditor} to delay IO
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  */
 class EditorBuffer {
 
-    private final TextFile backend;
+    private final VirtualFile backend;
     private final long originalStamp;
     private final CharSequence original;
     private final EditorCommitHandler handler;
@@ -25,7 +25,7 @@ class EditorBuffer {
 
 
     /** @throws ReadOnlyFileException If the backend is read-only */
-    EditorBuffer(CharSequence sequence, long stamp, final TextFile backend, EditorCommitHandler handler) {
+    EditorBuffer(CharSequence sequence, long stamp, final VirtualFile backend, EditorCommitHandler handler) {
         if (backend.isReadOnly()) {
             throw new ReadOnlyFileException(backend + " is readonly");
         }

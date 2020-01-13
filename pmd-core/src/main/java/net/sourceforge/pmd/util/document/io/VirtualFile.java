@@ -21,7 +21,8 @@ import net.sourceforge.pmd.util.document.TextDocument;
 /**
  * Represents some location containing character data. Despite the name,
  * it's not necessarily backed by a file in the file-system: it may be
- * eg an in-memory buffer, or a zip entry.
+ * eg an in-memory buffer, or a zip entry. Virtual files are the input
+ * files which PMD processes.
  *
  * <p>Text files must provide read access, and may provide write access.
  * This interface only provides block IO operations, while {@link TextDocument} adds logic
@@ -31,7 +32,7 @@ import net.sourceforge.pmd.util.document.TextDocument;
  * is not an appropriate name for a file which can be written to, also,
  * the "data" it should provide is text.
  */
-public interface TextFile extends Closeable {
+public interface VirtualFile extends Closeable {
 
     /**
      * Returns the full file name of the file. This name is used for
@@ -112,8 +113,8 @@ public interface TextFile extends Closeable {
      *
      * @throws IOException If the file is not a regular file (see {@link Files#isRegularFile(Path, LinkOption...)})
      */
-    static TextFile forPath(final Path path, final Charset charset) throws IOException {
-        return new FileSysTextFile(path, charset);
+    static VirtualFile forPath(final Path path, final Charset charset) throws IOException {
+        return new NioVFile(path, charset);
     }
 
 
@@ -122,8 +123,8 @@ public interface TextFile extends Closeable {
      *
      * @param source Text of the file
      */
-    static TextFile readOnlyString(String source) {
-        return new StringFile(source, null);
+    static VirtualFile readOnlyString(String source) {
+        return new StringVFile(source, null);
     }
 
 
@@ -133,7 +134,7 @@ public interface TextFile extends Closeable {
      * @param source Text of the file
      * @param name   File name to use
      */
-    static TextFile readOnlyString(String source, String name) {
-        return new StringFile(source, name);
+    static VirtualFile readOnlyString(String source, String name) {
+        return new StringVFile(source, name);
     }
 }

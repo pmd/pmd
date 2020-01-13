@@ -9,17 +9,17 @@ import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.VirtualFile;
 
 /**
  * File modification date is not precise enough to write tests directly on it.
  */
-public class MockTextFile extends BaseCloseable implements TextFile {
+public class MockVirtualFile extends BaseCloseable implements VirtualFile {
 
     private CharSequence curContents;
     private long modCount = 0;
 
-    public MockTextFile(CharSequence initialValue) {
+    public MockVirtualFile(CharSequence initialValue) {
         this.curContents = initialValue;
     }
 

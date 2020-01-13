@@ -8,7 +8,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.VirtualFile;
 
 /**
  * Used to update regions of a {@link TextDocument}.
@@ -66,12 +66,15 @@ public interface TextEditor extends AutoCloseable {
     /**
      * Commits the document. If there are some changes, the {@linkplain TextDocument#getText() text}
      * of the associated document is updated to reflect them, and the
-     * {@link TextFile} is written to. This editor becomes unusable
-     * after being closed.
+     * commit handler of this editor is called (which may write to the
+     * {@link VirtualFile} backing the document). This editor becomes
+     * unusable after being closed.
+     *
+     * <p>Closing an editor several times has no effect.
      *
      * @throws IOException                   If an IO exception occurs, eg while writing to a file
      * @throws ExternalModificationException If external modifications were detected,
-     *                                       in which case the {@link TextFile} is not
+     *                                       in which case the {@link VirtualFile} is not
      *                                       overwritten
      */
     @Override

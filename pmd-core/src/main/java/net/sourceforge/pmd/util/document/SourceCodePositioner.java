@@ -11,9 +11,9 @@ import java.util.List;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
- * Wraps a piece of text, and converts absolute offsets to line/column coordinates, and back.
- * This is used by some language implementations (JS, XML, Apex) and by
- * the {@link TextDocument} implementation.
+ * Wraps a piece of text, and converts absolute offsets to line/column
+ * coordinates, and back. This is used by some language implementations
+ * (JS, XML, Apex) and by the {@link TextDocument} implementation.
  */
 public final class SourceCodePositioner {
 
@@ -25,7 +25,7 @@ public final class SourceCodePositioner {
     private final int sourceCodeLength;
 
     /**
-     * Builds a new source code positioner for the given char sequence.
+     * Builds a new positioner for the given char sequence.
      * The char sequence should not change state (eg a {@link StringBuilder})
      * after construction, otherwise this positioner becomes unreliable.
      *

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.util.document.io;
 
 /**
- * Thrown when an attempt to write through a {@link TextFile}
+ * Thrown when an attempt to write through a {@link VirtualFile}
  * fails because the file is read-only.
  */
 public class ReadOnlyFileException extends UnsupportedOperationException {
