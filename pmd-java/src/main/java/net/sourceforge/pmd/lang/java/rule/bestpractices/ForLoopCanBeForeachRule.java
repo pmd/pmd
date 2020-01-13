@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.forkJoin;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -204,28 +206,28 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                     return Optional.empty();
                 }
 
-                return guardCondition.children(ASTRelationalExpression.class)
-                                     .forkJoin(
-                                         rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
-                                         rel -> NodeStream.of(rel)
-                                                          .filterMatching(Node::getImage, "<=")
-                                                          .children(ASTAdditiveExpression.class)
-                                                          .filter(expr ->
-                                                               expr.jjtGetNumChildren() == 2
-                                                                   && expr.getOperator().equals("-")
-                                                                   && expr.children(ASTPrimaryExpression.class)
-                                                                          .children(ASTPrimaryPrefix.class)
-                                                                          .children(ASTLiteral.class)
-                                                                          .filterMatching(Node::getImage, "1")
-                                                                          .nonEmpty()
-                                                   )
-                                     )
-                                     .children(ASTPrimaryExpression.class)
-                                     .children(ASTPrimaryPrefix.class)
-                                     .children(ASTName.class)
-                                     .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
-                                     .firstOpt()
-                                     .map(astName -> astName.getImage().split("\\.")[0]);
+                return forkJoin(
+                        guardCondition.children(ASTRelationalExpression.class),
+                        rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
+                        rel -> NodeStream.of(rel)
+                                         .filterMatching(Node::getImage, "<=")
+                                         .children(ASTAdditiveExpression.class)
+                                         .filter(expr ->
+                                                     expr.jjtGetNumChildren() == 2
+                                                         && expr.getOperator().equals("-")
+                                                         && expr.children(ASTPrimaryExpression.class)
+                                                                .children(ASTPrimaryPrefix.class)
+                                                                .children(ASTLiteral.class)
+                                                                .filterMatching(Node::getImage, "1")
+                                                                .nonEmpty()
+                                         )
+                    )
+                    .children(ASTPrimaryExpression.class)
+                    .children(ASTPrimaryPrefix.class)
+                    .children(ASTName.class)
+                    .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
+                    .firstOpt()
+                    .map(astName -> astName.getImage().split("\\.")[0]);
 
             }
         }

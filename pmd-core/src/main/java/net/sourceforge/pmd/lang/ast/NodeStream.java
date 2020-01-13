@@ -216,36 +216,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     NodeStream<T> peek(Consumer<? super @NonNull T> action);
 
 
-    /**
-     * Applies the given mapping functions to this node stream in order and merges the
-     * results into a new node stream. This allows exploring several paths at once on the
-     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
-     *
-     * @param fst  First mapper
-     * @param snd  Second mapper
-     * @param rest Rest of the mappers
-     * @param <R>  Common supertype for the element type of the streams returned by the mapping functions
-     *
-     * @return A merged node stream
-     */
-    default <R extends Node> NodeStream<R> forkJoin(Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
-                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
-                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
-        Objects.requireNonNull(fst);
-        Objects.requireNonNull(snd);
-
-        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
-        mappers.add(fst);
-        mappers.add(snd);
-        mappers.addAll(Arrays.asList(rest));
-
-        Function<? super T, NodeStream<R>> aggregate =
-            t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
-
-        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
-        return cached().flatMap(aggregate);
-    }
-
 
     /**
      * Returns a new node stream that contains all the elements of this stream, then
@@ -963,6 +933,41 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     static <T extends Node> NodeStream<T> empty() {
         return StreamImpl.empty();
     }
+
+
+    /**
+     * Applies the given mapping functions to the given upstream in order and merges the
+     * results into a new node stream. This allows exploring several paths at once on the
+     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
+     *
+     * @param upstream Source of the stream
+     * @param fst      First mapper
+     * @param snd      Second mapper
+     * @param rest     Rest of the mappers
+     * @param <R>      Common supertype for the element type of the streams returned by the mapping functions
+     *
+     * @return A merged node stream
+     */
+    @SafeVarargs // this method is static because of the generic varargs
+    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<T> upstream,
+                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
+                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
+                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
+        Objects.requireNonNull(fst);
+        Objects.requireNonNull(snd);
+
+        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
+        mappers.add(fst);
+        mappers.add(snd);
+        mappers.addAll(Arrays.asList(rest));
+
+        Function<? super T, NodeStream<R>> aggregate =
+            t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
+
+        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
+        return upstream.cached().flatMap(aggregate);
+    }
+
 
 
     /**

@@ -217,8 +217,9 @@ public class NodeStreamTest {
 
         MutableInt numEvals = new MutableInt();
         NodeStream<Node> stream =
-            hook(numEvals::increment, tree1.descendants())
+            NodeStream
                 .forkJoin(
+                    hook(numEvals::increment, tree1.descendants()),
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("0")),
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("1"))
                 );
