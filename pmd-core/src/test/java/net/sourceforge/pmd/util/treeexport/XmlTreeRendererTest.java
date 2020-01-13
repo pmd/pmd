@@ -104,7 +104,7 @@ public class XmlTreeRendererTest {
             public boolean takeAttribute(Node node, Attribute attribute) {
                 return false;
             }
-        };
+        }.lineSeparator("\n");
 
         XmlTreeRenderer renderer = new XmlTreeRenderer(strat);
 
@@ -131,7 +131,7 @@ public class XmlTreeRendererTest {
             public boolean takeAttribute(Node node, Attribute attribute) {
                 return attribute.getName().equals("ohio");
             }
-        };
+        }.lineSeparator("\n");
 
         XmlTreeRenderer renderer = new XmlTreeRenderer(strategy);
 
