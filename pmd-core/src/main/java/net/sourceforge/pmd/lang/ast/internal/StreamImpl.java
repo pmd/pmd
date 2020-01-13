@@ -74,12 +74,11 @@ public final class StreamImpl {
     }
 
     public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
-        return node.jjtGetNumChildren() == 0 ? empty()
-                                             : new FilteredChildrenStream<>(node, Filtermap.isInstance(target));
+        return sliceChildren(node, Filtermap.isInstance(target), 0, node.jjtGetNumChildren());
     }
 
     public static NodeStream<Node> children(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? empty() : new ChildrenStream(node);
+        return sliceChildren(node, Filtermap.NODE_IDENTITY, 0, node.jjtGetNumChildren());
     }
 
     public static DescendantNodeStream<Node> descendants(@NonNull Node node) {
@@ -129,7 +128,12 @@ public final class StreamImpl {
                                            : (NodeStream<T>) new ChildrenStream(parent, from, length);
             return res;
         } else {
-            return new FilteredChildrenStream<>(parent, filtermap, from, length);
+            if (length == 1) {
+                // eager evaluation, empty or singleton
+                return NodeStream.of(filtermap.apply(parent.jjtGetChild(from)));
+            } else {
+                return new FilteredChildrenStream<>(parent, filtermap, from, length);
+            }
         }
     }
 

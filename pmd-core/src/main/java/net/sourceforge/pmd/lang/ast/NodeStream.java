@@ -133,34 +133,17 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     //    (very common cases) or cached stream).
     //  * This could greatly reduce the number of flatmapped streams stacked
     //    onto each other, for all lengths of pipelines
-    //  * This would need to be measured, as it would possibly make call
-    //    sites megamorphic, so decrease performance.
+    //  * This would need to be measured, as it could make call sites megamorphic, so decrease performance.
+    //  * SingletonNodeStream already does this, which is why the doc
+    //    has been updated
     //  * In nearly 100% of cases node streams are consumed immediately,
-    //    so laziness is not really important.
-    //  * Laziness has one important upside: it makes node stream behaviour
-    //    very close to Stream behaviour. A departure from the Stream model
-    //    could yield some surprises to users (nothing that good documentation
-    //    cannot alleviate)
-    //  * SingletonNodeStream already does this, which is why even before
-    //    implementing anything about children streams, the doc should be
-    //    updated to remove laziness guarantees. Otherwise SingletonNodeStream
-    //    breaches the contract of the interface
-
-
-    /**
-     * Returns a new stream of Ts having the pipeline of operations
-     * defined by this node stream. This can be called multiple times.
-     *
-     * @return A stream containing the same elements as this node stream
-     */
-    Stream<@NonNull T> toStream();
+    //    so laziness is not really important (except to stick to the Stream contract).
 
 
     /**
      * Returns a node stream consisting of the results of replacing each
-     * node of this stream with the contents of a mapped stream
-     * produced by applying the given mapping function to each
-     * node. If a mapped stream is null an empty stream is used, instead.
+     * node of this stream with the contents of a stream produced by the
+     * given mapping function. If a mapped stream is null, it is discarded.
      *
      * <p>If you want to flatMap this node stream to a {@link Stream} with
      * arbitrary elements (ie not nodes), use {@link #toStream()} then
@@ -318,13 +301,14 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param predicate The predicate used to test elements.
      *
      * @return the longest prefix of this stream whose elements all satisfy
-     *     the predicate `p`.
+     *     the predicate.
      */
     NodeStream<T> takeWhile(Predicate<? super T> predicate);
 
 
     /**
-     * Returns a stream consisting of the distinct elements (w.r.t {@link Object#equals(Object)}) of this stream.
+     * Returns a stream consisting of the distinct elements (w.r.t
+     * {@link Object#equals(Object)}) of this stream.
      *
      * @return a stream consisting of the distinct elements of this stream
      */
@@ -796,6 +780,15 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #toList(Function)
      */
     <R, A> R collect(Collector<? super T, A, R> collector);
+
+
+    /**
+     * Returns a new stream of Ts having the pipeline of operations
+     * defined by this node stream. This can be called multiple times.
+     *
+     * @return A stream containing the same elements as this node stream
+     */
+    Stream<@NonNull T> toStream();
 
 
     /**
