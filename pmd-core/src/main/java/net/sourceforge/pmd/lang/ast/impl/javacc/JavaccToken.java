@@ -98,7 +98,7 @@ public class JavaccToken implements GenericToken {
                        int startInclusive,
                        int endExclusive,
                        JavaccTokenDocument document) {
-        assert startInclusive <= endExclusive : "Offsets should be correctly ordered";
+        assert startInclusive <= endExclusive : "Offsets should be correctly ordered: " + startInclusive + " <= " + endExclusive;
 
         this.kind = kind;
         this.image = image;
@@ -147,7 +147,7 @@ public class JavaccToken implements GenericToken {
 
     @Override
     public int getEndLine() {
-        return document == null ? -1 : document.lineNumberFromOffset(endExclusive - 1);
+        return document == null ? -1 : document.lineNumberFromOffset(endExclusive);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class JavaccToken implements GenericToken {
 
     @Override
     public int getEndColumn() {
-        return document == null ? -1 : document.columnFromOffset(endExclusive - 1);
+        return document == null ? -1 : document.columnFromOffset(endExclusive);
     }
 
 

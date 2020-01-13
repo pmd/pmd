@@ -191,7 +191,7 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<?>> {
         if (lastToken.getNext() == n.jjtGetFirstToken()) {
             // this means, that the node has zero length.
             // create an implicit token to represent this case.
-            JavaccToken implicit = JavaccToken.implicitBefore(lastToken);
+            JavaccToken implicit = JavaccToken.implicitBefore(lastToken.getNext());
 
             n.jjtSetFirstToken(implicit);
             n.jjtSetLastToken(implicit);

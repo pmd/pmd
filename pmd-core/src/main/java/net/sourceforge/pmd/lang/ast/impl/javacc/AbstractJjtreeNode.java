@@ -8,6 +8,7 @@ import static java.lang.Integer.min;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 
@@ -42,6 +43,18 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
     @Override
     public JavaccToken jjtGetLastToken() {
         return (JavaccToken) super.jjtGetLastToken();
+    }
+
+    // the super methods query line & column, which we want to avoid
+
+    @Override
+    public void jjtSetLastToken(GenericToken token) {
+        this.lastToken = token;
+    }
+
+    @Override
+    public void jjtSetFirstToken(GenericToken token) {
+        this.firstToken = token;
     }
 
     @Override

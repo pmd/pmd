@@ -8,6 +8,7 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -65,7 +66,7 @@ public class JavaCharStream extends JavaCharStreamBase {
 
     @Override
     public int getEndOffset() {
-        if (bufpos >= startOffsets.length) {
+        if (isAtEof()) {
             return fullText.length();
         } else {
             return startOffsets[bufpos] + 1; // + 1 for exclusive
@@ -81,18 +82,25 @@ public class JavaCharStream extends JavaCharStreamBase {
     protected char ReadByte() throws IOException {
         ++nextCharInd;
 
-        if (nextCharInd >= fullText.length()) {
+        if (isAtEof()) {
             if (bufpos != 0) {
                 --bufpos;
-                backup(0);
+                if (bufpos < 0) {
+                    bufpos += bufsize;
+                }
             } else {
                 bufline[bufpos] = line;
                 bufcolumn[bufpos] = column;
+                startOffsets[bufpos] = fullText.length();
             }
-            throw new IOException();
+            throw new EOFException();
         }
 
         return fullText.charAt(nextCharInd);
+    }
+
+    private boolean isAtEof() {
+        return nextCharInd >= fullText.length();
     }
 
 
