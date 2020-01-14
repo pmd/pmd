@@ -17,7 +17,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 
 /**
- * Configuration object for a tree traversal.
+ * Object performing tree traversals. Configuration options can be
+ * extended later on.
  *
  * @see DescendantNodeStream
  */

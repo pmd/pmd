@@ -148,16 +148,18 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             this.walker = walker;
         }
 
-        protected abstract <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TreeWalker walker);
+        protected abstract <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, S> filterMap, TreeWalker walker);
 
         @Override
         public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
-            return copyWithConfig(this.filter, walker.crossFindBoundaries(cross));
+            return walker.isCrossFindBoundaries() == cross
+                   ? this
+                   : copyWithWalker(this.filter, walker.crossFindBoundaries(cross));
         }
 
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
-            return copyWithConfig(filterMap, walker);
+            return copyWithWalker(filterMap, walker);
         }
     }
 
@@ -175,7 +177,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TreeWalker walker) {
+        protected <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, S> filterMap, TreeWalker walker) {
             return new FilteredDescendantStream<>(node, walker, filterMap);
         }
 
@@ -227,7 +229,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> DescendantNodeStream<S> copyWithConfig(Filtermap<Node, S> filterMap, TreeWalker walker) {
+        protected <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, S> filterMap, TreeWalker walker) {
             return new FilteredDescendantOrSelfStream<>(node, walker, filterMap);
         }
 
@@ -351,10 +353,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public NodeStream<T> drop(int n) {
             AssertionUtil.requireNonNegative("n", n);
+            if (n == 0) {
+                return this;
+            }
             int newLow = min(low + n, node.jjtGetNumChildren());
             int newLen = max(len - n, 0);
-
-            return n == 0 ? this : StreamImpl.sliceChildren(node, filter, newLow, newLen);
+            return StreamImpl.sliceChildren(node, filter, newLow, newLen);
         }
 
         @Override

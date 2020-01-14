@@ -252,13 +252,13 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     private static class DescendantMapping<T extends Node, S extends Node> extends IteratorBasedNStream<S> implements DescendantNodeStream<S> {
 
         private final Function<T, DescendantNodeStream<S>> fun;
-        private final TreeWalker config;
+        private final TreeWalker walker;
         private final IteratorBasedNStream<T> upstream;
 
 
-        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TreeWalker config) {
+        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TreeWalker walker) {
             this.fun = fun;
-            this.config = config;
+            this.walker = walker;
             this.upstream = upstream;
         }
 
@@ -269,12 +269,14 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         @Override
         public Iterator<S> iterator() {
             return IteratorUtil.flatMap(upstream.iterator(),
-                                        fun.andThen(config::apply).andThen(NodeStream::iterator));
+                                        fun.andThen(walker::apply).andThen(NodeStream::iterator));
         }
 
         @Override
         public DescendantNodeStream<S> crossFindBoundaries(boolean cross) {
-            return new DescendantMapping<>(upstream, fun, config.crossFindBoundaries(cross));
+            return walker.isCrossFindBoundaries() == cross
+                   ? this
+                   : new DescendantMapping<>(upstream, fun, walker.crossFindBoundaries(cross));
         }
     }
 }
