@@ -56,9 +56,9 @@ final class TreeWalker {
         return stream.crossFindBoundaries(crossFindBoundaries);
     }
 
-    <T extends Node> void findDescendantsMatching(final Node node,
-                                                  final Filtermap<Node, T> filtermap,
-                                                  final List<T> results) {
+    <T> void findDescendantsMatching(final Node node,
+                                     final Filtermap<? super Node, ? extends T> filtermap,
+                                     final List<T> results) {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             final Node child = node.jjtGetChild(i);
@@ -73,7 +73,7 @@ final class TreeWalker {
         }
     }
 
-    <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap) {
+    <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<? super Node, ? extends T> filtermap) {
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node child = node.jjtGetChild(i);
@@ -90,7 +90,7 @@ final class TreeWalker {
         return null;
     }
 
-    <T extends Node> List<T> findDescendantsMatching(final Node node, final Filtermap<Node, T> filtermap) {
+    <T> List<T> findDescendantsMatching(final Node node, final Filtermap<? super Node, ? extends T> filtermap) {
         List<T> results = new ArrayList<>();
         findDescendantsMatching(node, filtermap, results);
         return results;

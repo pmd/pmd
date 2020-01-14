@@ -40,7 +40,7 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
     /** Filter an iterator. */
-    default Iterator<O> filterMap(Iterator<I> iter) {
+    default Iterator<O> filterMap(Iterator<? extends I> iter) {
         return IteratorUtil.mapNotNull(iter, this);
     }
 
@@ -49,6 +49,9 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     default <R> Filtermap<I, R> thenApply(Function<@NonNull ? super O, @Nullable ? extends R> then) {
         Objects.requireNonNull(then);
         return i -> {
+            if (i == null) {
+                return null;
+            }
             O o = this.apply(i);
             return o == null ? null : then.apply(o);
         };
@@ -60,22 +63,28 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
 
+    default Filtermap<I, O> thenFilter(Predicate<? super O> rClass) {
+        return thenApply(filter(rClass));
+    }
+
+
     static <I> Filtermap<I, I> identityFilter() {
         return new Filtermap<I, I>() {
             @Override
-            public I apply(@NonNull I i) {
+            public I apply(@Nullable I i) {
                 return i;
             }
 
             @Override
             @SuppressWarnings("unchecked")
             public <R> Filtermap<I, R> thenApply(Function<@NonNull ? super I, @Nullable ? extends R> then) {
-                return then instanceof Filtermap ? (Filtermap<I, R>) then : then::apply;
+                return then instanceof Filtermap ? (Filtermap<I, R>) then : Filtermap.super.thenApply(then);
             }
 
             @Override
-            public Iterator<I> filterMap(Iterator<I> iter) {
-                return iter;
+            @SuppressWarnings("unchecked")
+            public Iterator<I> filterMap(Iterator<? extends I> iter) {
+                return (Iterator<I>) iter;
             }
 
             @Override
@@ -94,8 +103,9 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     static <I, O> Filtermap<I, O> isInstance(Class<O> oClass) {
         return new Filtermap<I, O>() {
             @Override
+            @SuppressWarnings("unchecked")
             public @Nullable O apply(@Nullable I i) {
-                return oClass.isInstance(i) ? oClass.cast(i) : null;
+                return oClass.isInstance(i) ? (O) i : null;
             }
 
             @Override

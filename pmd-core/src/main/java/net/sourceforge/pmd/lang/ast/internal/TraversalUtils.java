@@ -19,7 +19,7 @@ final class TraversalUtils {
 
     }
 
-    static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<Node, T> filter) {
+    static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<? super Node, ? extends T> filter) {
         Node n = node;
         while (n != null) {
             T t = filter.apply(n);
@@ -31,7 +31,7 @@ final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+    static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
         for (int i = from, last = from + len; i < last; i++) {
             Node c = node.jjtGetChild(i);
             T t = filter.apply(c);
@@ -42,7 +42,7 @@ final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+    static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
         for (int i = from + len - 1; i >= from; i--) {
             Node c = node.jjtGetChild(i);
             T t = filter.apply(c);
@@ -53,7 +53,7 @@ final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> List<T> findChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+    static <T> List<T> findChildrenMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
         List<T> list = new ArrayList<>();
         for (int i = from, last = from + len; i < last; i++) {
             Node c = node.jjtGetChild(i);

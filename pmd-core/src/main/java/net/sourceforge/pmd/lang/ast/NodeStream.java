@@ -56,8 +56,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
  *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
- *               {@linkplain #filterNot(Predicate) .filterNot}(ASTNumericLiteral::isFloatingPoint)
- *               {@linkplain #filter(Predicate) .filter}(it -> it.getValueAsInt() == 1)
+ *               {@linkplain #filter(Predicate) .filter}(it -> !it.isFloatingPoint() && it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *

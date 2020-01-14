@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -53,12 +54,67 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     @Override
     public NodeStream<T> filter(Predicate<? super @NonNull T> predicate) {
-        return copyWithFilter(filter.thenApply(Filtermap.filter(predicate)));
+        return copyWithFilter(filter.thenFilter(predicate));
     }
 
     @Override
     public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
         return copyWithFilter(filter.thenCast(r1Class));
+    }
+
+    /*
+     * Override one of these three to implement all the overloads of first/last/toList
+     */
+
+    protected <O extends Node> @Nullable O firstImpl(Filtermap<? super Node, ? extends O> filter) {
+        Iterator<? extends O> iter = filter.filterMap(baseIterator());
+        return iter.hasNext() ? iter.next() : null;
+    }
+
+    protected <O extends Node> @Nullable O lastImpl(Filtermap<? super Node, ? extends O> filter) {
+        Iterator<? extends O> iter = filter.filterMap(baseIterator());
+        return IteratorUtil.last(iter);
+    }
+
+    protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
+        Iterator<? extends O> iter = filter.filterMap(baseIterator());
+        return IteratorUtil.toList(iter);
+    }
+
+    @Override
+    public @Nullable T first() {
+        return firstImpl(filter);
+    }
+
+    @Override
+    public <R extends Node> @Nullable R first(Class<R> r1Class) {
+        return firstImpl(filter.thenCast(r1Class));
+    }
+
+    @Override
+    public @Nullable T first(Predicate<? super T> predicate) {
+        return firstImpl(filter.thenFilter(predicate));
+    }
+
+    @Nullable
+    @Override
+    public T last() {
+        return lastImpl(filter);
+    }
+
+    @Override
+    public List<T> toList() {
+        return toListImpl(this.filter);
+    }
+
+    @Override
+    public <R> List<R> toList(Function<? super T, ? extends R> mapper) {
+        return toListImpl(this.filter.thenApply(mapper));
+    }
+
+    @Override
+    public <R extends Node> @Nullable R last(Class<R> rClass) {
+        return lastImpl(filter.thenCast(rClass));
     }
 
     @Override
@@ -105,7 +161,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        public @Nullable T first() {
+        protected <O extends Node> @Nullable O firstImpl(Filtermap<? super Node, ? extends O> filter) {
             return TraversalUtils.getFirstParentOrSelfMatching(node, filter);
         }
     }
@@ -182,7 +238,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        public @Nullable T first() {
+        protected <O extends Node> @Nullable O firstImpl(Filtermap<? super Node, ? extends O> filter) {
             return walker.getFirstDescendantOfType(node, filter);
         }
 
@@ -192,7 +248,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        public List<T> toList() {
+        protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
             return walker.findDescendantsMatching(node, filter);
         }
     }
@@ -234,9 +290,9 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        public List<T> toList() {
-            List<T> result = new ArrayList<>();
-            T top = filter.apply(node);
+        protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
+            List<O> result = new ArrayList<>();
+            O top = filter.apply(node);
             if (top != null) {
                 result.add(top);
             }
@@ -308,24 +364,13 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        public @Nullable T first() {
+        protected <O extends Node> @Nullable O firstImpl(Filtermap<? super Node, ? extends O> filter) {
             return TraversalUtils.getFirstChildMatching(node, filter, low, len);
         }
 
         @Override
-        public @Nullable T last() {
+        protected <O extends Node> @Nullable O lastImpl(Filtermap<? super Node, ? extends O> filter) {
             return TraversalUtils.getLastChildMatching(node, filter, low, len);
-        }
-
-
-        @Override
-        public <R extends Node> @Nullable R first(Class<R> rClass) {
-            return TraversalUtils.getFirstChildMatching(node, filter.thenCast(rClass), low, len);
-        }
-
-        @Override
-        public <R extends Node> @Nullable R last(Class<R> rClass) {
-            return TraversalUtils.getLastChildMatching(node, filter.thenCast(rClass), low, len);
         }
 
         @Override
@@ -339,10 +384,9 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        public List<T> toList() {
+        protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
             return TraversalUtils.findChildrenMatching(node, filter, low, len);
         }
-
 
         @Override
         public NodeStream<T> take(int maxSize) {
