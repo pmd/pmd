@@ -207,20 +207,20 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                 }
 
                 return forkJoin(
-                        guardCondition.children(ASTRelationalExpression.class),
-                        rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
-                        rel -> NodeStream.of(rel)
-                                         .filterMatching(Node::getImage, "<=")
-                                         .children(ASTAdditiveExpression.class)
-                                         .filter(expr ->
-                                                     expr.jjtGetNumChildren() == 2
-                                                         && expr.getOperator().equals("-")
-                                                         && expr.children(ASTPrimaryExpression.class)
-                                                                .children(ASTPrimaryPrefix.class)
-                                                                .children(ASTLiteral.class)
-                                                                .filterMatching(Node::getImage, "1")
-                                                                .nonEmpty()
-                                         )
+                    guardCondition.children(ASTRelationalExpression.class),
+                    rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
+                    rel -> NodeStream.of(rel)
+                                     .filterMatching(Node::getImage, "<=")
+                                     .children(ASTAdditiveExpression.class)
+                                     .filter(expr ->
+                                                 expr.jjtGetNumChildren() == 2
+                                                     && expr.getOperator().equals("-")
+                                                     && expr.children(ASTPrimaryExpression.class)
+                                                            .children(ASTPrimaryPrefix.class)
+                                                            .children(ASTLiteral.class)
+                                                            .filterMatching(Node::getImage, "1")
+                                                            .nonEmpty()
+                                     )
                     )
                     .children(ASTPrimaryExpression.class)
                     .children(ASTPrimaryPrefix.class)
