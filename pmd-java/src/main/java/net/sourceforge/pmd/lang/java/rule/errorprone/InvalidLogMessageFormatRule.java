@@ -91,8 +91,8 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         }
 
         // find the arguments
-        final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
-                .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
+        final List<ASTExpression> argumentList = new ArrayList<>(parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
+                .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class));
 
         // remove the message parameter
         final ASTExpression messageParam = argumentList.remove(0);

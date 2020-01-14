@@ -778,7 +778,10 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
 
     /**
-     * Collects the elements of this node stream into a list.
+     * Collects the elements of this node stream into a list. Just like
+     * for {@link Collectors#toList()}, there are no guarantees on the
+     * type, mutability, serializability, or thread-safety of the returned
+     * list.
      *
      * <p>This is equivalent to {@code collect(Collectors.toList())}.
      *
