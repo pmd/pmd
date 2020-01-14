@@ -269,7 +269,7 @@
              return the new token instead of mutating it. -->
         <replaceregexp flags="sg">
             <file name="${tokenmgr-file}" />
-            <regexp pattern="void ((Token|Skip)LexicalActions\(Token matchedToken\))\n\{(.*?)}\n(?=(private )?void)" />
+            <regexp pattern="void ((Token|Skip)LexicalActions\(Token matchedToken\))\R\{(.*?)}\R(?=(private )?void)" />
             <substitution expression="Token \1 { \3
              return matchedToken;
         }" />
@@ -295,12 +295,6 @@
     </target>
 
     <target name="constants-files">
-
-        <replaceregexp flags="g">
-            <regexp pattern="implements ${constants-itf-name}," />
-            <substitution expression="implements" />
-            <fileset dir="${target-package-dir}" />
-        </replaceregexp>
 
         <replaceregexp flags="g">
             <regexp pattern="implements ${constants-itf-name}," />
@@ -339,7 +333,7 @@
         </replaceregexp>
 
         <replaceregexp flags="g">
-            <regexp pattern="/\*\* RegularExpression Id. \*/\n" />
+            <regexp pattern="/\*\* RegularExpression Id. \*/\R" />
             <substitution expression="public static final " />
             <fileset file="${token-constants-file}" />
         </replaceregexp>
@@ -352,7 +346,7 @@
 
         <!-- Lexical states are kept package-private -->
         <replaceregexp flags="g">
-            <regexp pattern="/\*\* Lexical state. \*/\n" />
+            <regexp pattern="/\*\* Lexical state. \*/\R" />
             <substitution expression="static final " />
             <fileset file="${token-constants-file}" />
         </replaceregexp>
