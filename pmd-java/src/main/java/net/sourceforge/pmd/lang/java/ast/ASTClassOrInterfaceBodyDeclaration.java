@@ -34,6 +34,13 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
         return false;
     }
 
+
+    @Override
+    public boolean isFindBoundary() {
+        // TODO remove from java-grammar
+        return isAnonymousInnerClass();
+    }
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
