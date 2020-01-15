@@ -288,6 +288,9 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTAnyTypeDeclaration node, T data) {
+            if ("var".equals(node.getSimpleName())) {
+                check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);
+            }
             checkIdent(node, node.getSimpleName(), data);
             visitChildren(node, data);
         }
@@ -299,9 +302,7 @@ public class LanguageLevelChecker<T> {
         }
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {
-            if ("var".equals(simpleName)) {
-                check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, acc);
-            } else if ("enum".equals(simpleName)) {
+            if ("enum".equals(simpleName)) {
                 check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER, acc);
             } else if ("assert".equals(simpleName)) {
                 check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER, acc);
