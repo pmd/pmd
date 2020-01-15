@@ -25,6 +25,27 @@ class LanguageLevelCheckTests : ParserTestSpec({
                 }
             }
 
+            inContext(EnclosedDeclarationParsingCtx) {
+
+                "public enum var { A }" should throwParseException { ex ->
+                    ex.message.shouldContain("'var' is reserved and cannot be used as a type name")
+                }
+
+                "public class var {  }" should throwParseException { ex ->
+                    ex.message.shouldContain("'var' is reserved and cannot be used as a type name")
+                }
+
+                "public interface var {  }" should throwParseException { ex ->
+                    ex.message.shouldContain("'var' is reserved and cannot be used as a type name")
+                }
+
+                "public @interface var {  }" should throwParseException { ex ->
+                    ex.message.shouldContain("'var' is reserved and cannot be used as a type name")
+                }
+
+                "public void var() { return; }" should parse()
+            }
+
             inContext(StatementParsingCtx) {
                 "/*Local*/ class var { }" should throwParseException { ex ->
                     ex.message.shouldContain("'var' is reserved and cannot be used as a type name")

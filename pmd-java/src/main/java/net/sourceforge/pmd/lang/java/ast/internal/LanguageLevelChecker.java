@@ -330,7 +330,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visitChildren(node, data);
+            super.visit(node, data);
         }
 
         //        @Override
