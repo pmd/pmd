@@ -148,6 +148,13 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
                  */
                 fun parse(): Matcher<String> = this@VersionedTestCtx.parseIn(nodeParsingCtx)
 
+                /**
+                 * A matcher that succeeds if parsing throws a ParseException.
+                 */
+                fun throwParseException(expected: (ParseException) -> Unit = {}): Assertions<String> =
+                        this@VersionedTestCtx.notParseIn(nodeParsingCtx, expected)
+
+
                 fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
                     val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
                     val idx = node.jjtGetChildIndex()

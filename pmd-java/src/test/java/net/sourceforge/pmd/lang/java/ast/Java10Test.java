@@ -141,23 +141,4 @@ public class Java10Test {
         java10.parseResource("LocalVariableTypeInference_typeres.java");
     }
 
-    @Test
-    public void testVarAsIdentifier() {
-        java10.parseResource("LocalVariableTypeInference_varAsIdentifier.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testVarAsTypeIdentifier() {
-        java10.parseResource("LocalVariableTypeInference_varAsTypeIdentifier.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testVarAsAnnotationName() {
-        java10.parseResource("LocalVariableTypeInference_varAsAnnotationName.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testVarAsEnumName() {
-        java10.parseResource("LocalVariableTypeInference_varAsEnumName.java");
-    }
 }

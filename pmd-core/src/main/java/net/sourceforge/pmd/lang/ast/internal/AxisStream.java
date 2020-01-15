@@ -199,7 +199,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
-            return new FilteredDescendantStream<>(node, filterMap);
+            return new FilteredDescendantOrSelfStream<>(node, filterMap);
         }
 
         @Override

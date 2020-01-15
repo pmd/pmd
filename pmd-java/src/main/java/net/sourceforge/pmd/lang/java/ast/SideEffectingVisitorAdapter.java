@@ -44,4 +44,21 @@ public class SideEffectingVisitorAdapter<T> implements SideEffectingVisitor<T> {
     public void visit(ASTAnyTypeDeclaration node, T data) {
         visit((JavaNode) node, data);
     }
+
+    @Override
+    public void visit(ASTClassOrInterfaceDeclaration node, T data) {
+        visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+    // public void visit(ASTAnonymousClassDeclaration node, T data) {visit((ASTAnyTypeDeclaration) node, data);}
+
+    @Override
+    public void visit(ASTEnumDeclaration node, T data) {
+        visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+    @Override
+    public void visit(ASTAnnotationTypeDeclaration node, T data) {
+        visit((ASTAnyTypeDeclaration) node, data);
+    }
 }

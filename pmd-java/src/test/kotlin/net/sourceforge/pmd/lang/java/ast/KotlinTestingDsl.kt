@@ -248,10 +248,11 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             ignoreChildren: Boolean = false,
             noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx, ignoreChildren, nodeSpec)
 
-    fun notParseIn(nodeParsingCtx: NodeParsingCtx<*>): Assertions<String> = {
-        shouldThrow<ParseException> {
+    fun notParseIn(nodeParsingCtx: NodeParsingCtx<*>, expected: (ParseException) -> Unit = {}): Assertions<String> = {
+        val e = shouldThrow<ParseException> {
             nodeParsingCtx.parseNode(it, this)
         }
+        expected(e)
     }
 
     fun parseIn(nodeParsingCtx: NodeParsingCtx<*>) = object : Matcher<String> {
