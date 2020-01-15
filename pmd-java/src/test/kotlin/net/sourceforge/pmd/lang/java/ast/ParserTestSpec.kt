@@ -151,7 +151,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
                 /**
                  * A matcher that succeeds if parsing throws a ParseException.
                  */
-                fun failParsingWith(expected: (ParseException) -> Unit = {}): Assertions<String> =
+                fun throwParseException(expected: (ParseException) -> Unit = {}): Assertions<String> =
                         this@VersionedTestCtx.notParseIn(nodeParsingCtx, expected)
 
 

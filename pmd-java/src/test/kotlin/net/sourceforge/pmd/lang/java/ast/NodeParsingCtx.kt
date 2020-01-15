@@ -133,7 +133,10 @@ object TypeParsingCtx : NodeParsingCtx<ASTType>("type") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTType =
             StatementParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTCastExpression::class.java).castType
+                    .descendants(ASTCastExpression::class.java)
+                    .first()!!
+                    .children(ASTType::class.java)
+                    .first()!!
 }
 
 object AnnotationParsingCtx : NodeParsingCtx<ASTAnnotation>("annotation") {
@@ -152,6 +155,6 @@ object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parame
     override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeParameters =
             EnclosedDeclarationParsingCtx.retrieveNode(acu)
                     .descendantsOrSelf()
-                    .first(ASTMethodDeclaration::class.java)!!
+                    .last(ASTMethodDeclaration::class.java)!!
                     .typeParameters!!
 }
