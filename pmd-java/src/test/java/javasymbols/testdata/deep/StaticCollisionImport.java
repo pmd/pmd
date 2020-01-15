@@ -6,10 +6,7 @@ package javasymbols.testdata.deep;
 
 import static javasymbols.testdata.StaticNameCollision.Ola;
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
+
 public class StaticCollisionImport {
 
     Ola o;

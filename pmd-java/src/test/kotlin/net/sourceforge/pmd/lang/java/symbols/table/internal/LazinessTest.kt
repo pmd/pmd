@@ -3,6 +3,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.DummyJavaNode
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
@@ -39,14 +40,14 @@ class LazinessTest : FunSpec({
     }
 
     test("Test resolveTypeName doesn't query parents if not needed") {
-        lazinessTest(::MyTypeTable, { t, n -> t.resolveTypeName(n).result }) {
+        lazinessTest(::MyTypeTable, { t, n -> t.resolveTypeName(n)!!.result }) {
             testSymFactory.getClassSymbol(LazinessTest::class.java)!!
         }
     }
 
 
     test("Test resolveValueName doesn't query parents if not needed") {
-        lazinessTest(::MyValueTable, { t, n -> t.resolveValueName(n).result }) {
+        lazinessTest(::MyValueTable, { t, n -> t.resolveValueName(n)!!.result }) {
             classSym(Statics::class.java)!!.getDeclaredField("PUBLIC_FIELD")
         }
     }
@@ -83,7 +84,7 @@ private class MyTypeTable(
 ) : AbstractSymbolTable(parent, helper) {
 
     override fun resolveTypeNameImpl(simpleName: String): ResolveResult<JTypeDeclSymbol> =
-            ResolveResultImpl.ClassResolveResult(typeSymbolGetter(), this, null)
+            ResolveResultImpl.ClassResolveResult(typeSymbolGetter(), this, DummyJavaNode(0))
 
 }
 
@@ -94,7 +95,7 @@ private class MyValueTable(
 ) : AbstractSymbolTable(parent, helper) {
 
     override fun resolveValueNameImpl(simpleName: String): ResolveResult<JVariableSymbol>? =
-            ResolveResultImpl.VarResolveResult(variableSymbolGetter(), this, null)
+            ResolveResultImpl.VarResolveResult(variableSymbolGetter(), this, DummyJavaNode(0))
 
 
 }

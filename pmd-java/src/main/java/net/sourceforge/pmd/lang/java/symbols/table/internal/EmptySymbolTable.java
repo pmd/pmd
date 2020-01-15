@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 
 
 /**
- * Dummy empty scope representing the top of all scope stacks.
+ * Dummy empty scope representing the top of all symbol table stacks.
  *
  * @since 7.0.0
  */

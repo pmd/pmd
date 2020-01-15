@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -15,59 +16,44 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 abstract class ResolveResultImpl<T> implements ResolveResult<T> {
 
 
-    @SuppressWarnings("rawtypes")
-    private static final ResolveResult UNRESOLVED =
-        new ResolveResult() {
-            @Override
-            public @Nullable JSymbolTable getSymbolTable() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public Object getResult() {
-                return null;
-            }
-
-            @Override
-            public JavaNode getContributor() {
-                return null;
-            }
-        };
-
     protected final AbstractSymbolTable symbolTable;
     private final JavaNode contributor;
     private final T sym;
 
     ResolveResultImpl(T sym,
-                      AbstractSymbolTable symbolTable,
+                      AbstractSymbolTable table,
                       JavaNode contributor) {
-        this.symbolTable = symbolTable;
+        assert sym != null : "Null symbol";
+        assert table != null : "Null symbol table";
+        assert contributor != null : "Null contributor node";
+        this.symbolTable = table;
         this.contributor = contributor;
         this.sym = sym;
     }
 
 
+    @NonNull
     @Override
     public T getResult() {
         return sym;
     }
 
+    @NonNull
     @Override
     public JavaNode getContributor() {
         return contributor;
     }
 
 
+    @NonNull
     @Override
     public JSymbolTable getSymbolTable() {
         return symbolTable;
     }
 
 
-    @SuppressWarnings("unchecked")
-    static <T> ResolveResult<T> failed() {
-        return (ResolveResult<T>) UNRESOLVED;
+    static @Nullable <T> ResolveResult<T> failed() {
+        return null;
     }
 
 

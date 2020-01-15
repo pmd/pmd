@@ -4,9 +4,6 @@
 
 package javasymbols.testdata.deep;
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
+
 public class PublicShadowed {
 }

@@ -41,18 +41,16 @@ class HeaderScopesTest : ParserTestSpec({
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
     fun JSymbolTable.resolveClass(s: String): Class<*> =
-            resolveTypeName(s).result!!.jvmRepr!!
+            resolveTypeName(s)!!.result.jvmRepr!!
 
 
-    fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s).result.shouldBeA()
+    fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s)!!.result.shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = resolveMethodName(s).toList()
 
     fun ASTCompilationUnit.firstImportTable() = symbolTable
 
-    fun ResolveResult<*>.shouldFail() {
-        this.result shouldBe null
-        this.contributor shouldBe null
-        this.symbolTable shouldBe null
+    fun ResolveResult<*>?.shouldFail() {
+        this shouldBe null
     }
 
     parserTest("Test same-package scope") {

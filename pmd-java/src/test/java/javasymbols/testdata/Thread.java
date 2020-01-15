@@ -7,8 +7,6 @@ package javasymbols.testdata;
 /**
  * Shadows java.lang.Thread
  *
- * @author Clément Fournier
- * @since 7.0.0
  */
 public class Thread {
 }

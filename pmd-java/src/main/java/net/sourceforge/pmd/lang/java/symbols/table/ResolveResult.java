@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
@@ -18,25 +22,35 @@ public interface ResolveResult<T> {
 
 
     /**
-     * Returns the result of the search. Is null if the search has failed.
-     * Note that the
+     * Returns the result of the search.
      */
-    @Nullable T getResult();
+    @NonNull T getResult();
 
 
     /**
      * Returns the node in the compilation unit that brings the
-     * {@linkplain #getResult() result} in scope. Null if the
-     * info is not available.
+     * {@linkplain #getResult() result} in scope.
+     *
+     * <p>Examples:
+     * <ul>
+     * <li>If a type is imported via an import declaration, this returns
+     * the relevant {@link ASTImportDeclaration}
+     * <li>If a field is declared in the current compilation unit, this
+     * returns the field declaration (the {@link ASTVariableDeclaratorId})
+     * <li>If a field or class is inherited from a superclass on the
+     * enclosing class, this returns the enclosing {@link ASTAnyTypeDeclaration}
+     * <li>If a type is implicitly imported from {@code java.lang}, this
+     * returns the {@link ASTCompilationUnit}.
+     * </ul>
+     *
      */
-    @Nullable JavaNode getContributor();
+    @NonNull JavaNode getContributor();
 
 
     /**
-     * Returns the symbol table that found this declaration. This is
-     * null for a failed result.
+     * Returns the symbol table that found this declaration.
      */
-    @Nullable JSymbolTable getSymbolTable();
+    @NonNull JSymbolTable getSymbolTable();
 
 
 }

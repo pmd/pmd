@@ -4,10 +4,7 @@
 
 package javasymbols.testdata;
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
+
 public class StaticNameCollision {
 
     public static final int Ola = 0;

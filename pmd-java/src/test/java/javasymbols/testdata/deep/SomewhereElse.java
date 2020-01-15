@@ -8,10 +8,7 @@ import javasymbols.testdata.SomeClassA;
 import javasymbols.testdata.Thread;
 
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
+
 public class SomewhereElse {
     SomeClassA a;
     Thread b;
