@@ -277,15 +277,15 @@ public class LanguageLevelChecker<T> {
             visitChildren(node, data);
         }
 
-//        @Override
-//        public void visit(ASTConstructorCall node, T data) {
-//            if (node.usesDiamondTypeArgs()) {
-//                if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
-//                    check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
-//                }
-//            }
-//            visitChildren(node, data);
-//        }
+        //        @Override
+        //        public void visit(ASTConstructorCall node, T data) {
+        //            if (node.usesDiamondTypeArgs()) {
+        //                if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
+        //                    check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
+        //                }
+        //            }
+        //            visitChildren(node, data);
+        //        }
 
         @Override
         public void visit(ASTTypeArguments node, T data) {
