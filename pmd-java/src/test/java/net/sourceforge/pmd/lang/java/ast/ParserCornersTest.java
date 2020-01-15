@@ -15,7 +15,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -141,13 +140,6 @@ public class ParserCornersTest {
         java8.parse("// just a comment");
     }
 
-    @Test
-    public void testMultipleExceptionCatchingJava5() {
-        expect.expect(ParseException.class);
-        expect.expectMessage("Line 1, Column 94: Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
-
-        java5.parse(MULTICATCH);
-    }
 
     @Test
     public void testMultipleExceptionCatchingJava7() {
