@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import static java.lang.Integer.min;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -31,8 +29,7 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
     @Override
     public CharSequence getText() {
         String fullText = jjtGetFirstToken().document.getFullText();
-        int realEnd = min(getEndOffset(), fullText.length()); // TODO EOF token messes things up?
-        return fullText.substring(getStartOffset(), realEnd);
+        return fullText.substring(getStartOffset(), getEndOffset());
     }
 
     @Override
