@@ -47,11 +47,7 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
     override fun takePropertyDescriptorIf(node: Node, prop: PropertyDescriptor): Boolean =
             when {
                 prop.readMethod?.declaringClass !== node.javaClass -> false
-                // avoid outputting too much, it's bad for readability
-                node is ASTNumericLiteral -> when {
-                    node.isIntLiteral || node.isLongLiteral -> prop.name == "valueAsInt"
-                    else -> prop.name == "valueAsDouble"
-                }
+
                 else -> true
             }
 
@@ -82,24 +78,6 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
 // invariants that should be preserved always
 private val javaImplicitAssertions: Assertions<Node> = {
     DefaultMatchingConfig.implicitAssertions(it)
-
-    if (it is ASTLiteral) {
-        it::isNumericLiteral shouldBe (it is ASTNumericLiteral)
-        it::isCharLiteral shouldBe (it is ASTCharLiteral)
-        it::isStringLiteral shouldBe (it is ASTStringLiteral)
-        it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
-        it::isNullLiteral shouldBe (it is ASTNullLiteral)
-    }
-
-    if (it is ASTExpression) run {
-        it::isParenthesized shouldBe (it.parenthesisDepth > 0)
-    }
-
-    if (it is InternalInterfaces.AtLeastOneChild) {
-        assert(it.numChildren > 0) {
-            "Expected at least one child for $it"
-        }
-    }
 
 }
 
@@ -199,7 +177,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      *
      */
-    inline fun <reified N : ASTExpression> matchExpr(ignoreChildren: Boolean = false,
+    inline fun <reified N : JavaNode> matchExpr(ignoreChildren: Boolean = false,
                                                      noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(ExpressionParsingCtx, ignoreChildren, nodeSpec)
 
@@ -216,7 +194,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * Returns a String matcher that parses the node using [parseType] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
-    inline fun <reified N : ASTType> matchType(ignoreChildren: Boolean = false,
+    inline fun <reified N : JavaNode> matchType(ignoreChildren: Boolean = false,
                                                noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(TypeParsingCtx, ignoreChildren, nodeSpec)
 
@@ -265,7 +243,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
             return Result(pass,
                     "Expected '$value' to parse in $nodeParsingCtx, got $e",
-                    "Expected '$value' not to parse in ${nodeParsingCtx.toString().addArticle()}"
+                    "Expected '$value' not to parse in $nodeParsingCtx"
             )
 
         }

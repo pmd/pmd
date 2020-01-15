@@ -71,8 +71,8 @@ abstract class NodeParsingCtx<T : Node>(val constructName: String) {
 fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
     return when {
         klass.isInstance(this) -> klass.cast(this)
-        this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
-        else -> null
+        this.numChildren == 1  -> getChild(0).findFirstNodeOnStraightLine(klass)
+        else                   -> null
     }
 }
 
@@ -87,15 +87,17 @@ object ExpressionParsingCtx : NodeParsingCtx<ASTExpression>("expression") {
                     .getFirstDescendantOfType(ASTExpression::class.java)!!
 }
 
-object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
+object StatementParsingCtx : NodeParsingCtx<JavaNode>("statement") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
             EnclosedDeclarationParsingCtx.getTemplate("{\n$construct}", ctx)
 
 
-    override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =
+    override fun retrieveNode(acu: ASTCompilationUnit): JavaNode =
             EnclosedDeclarationParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTBlock::class.java).jjtGetChild(0)
+                    .descendants(ASTBlock::class.java)
+                    .children()
+                    .get(0) as JavaNode
 }
 
 object EnclosedDeclarationParsingCtx : NodeParsingCtx<JavaNode>("enclosed declaration") {
@@ -133,7 +135,10 @@ object TypeParsingCtx : NodeParsingCtx<ASTType>("type") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTType =
             StatementParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTCastExpression::class.java).castType
+                    .descendants(ASTCastExpression::class.java)
+                    .first()!!
+                    .children(ASTType::class.java)
+                    .first()!!
 }
 
 object AnnotationParsingCtx : NodeParsingCtx<ASTAnnotation>("annotation") {
@@ -152,6 +157,7 @@ object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parame
     override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeParameters =
             EnclosedDeclarationParsingCtx.retrieveNode(acu)
                     .descendantsOrSelf()
-                    .first(ASTMethodDeclaration::class.java)!!
-                    .typeParameters!!
+                    .last(ASTMethodDeclaration::class.java)!!
+                    .children(ASTTypeParameters::class.java)
+                    .first()!!
 }
