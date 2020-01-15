@@ -241,170 +241,6 @@ class JavaParser {
     this.preview = preview;
   }
 
-  private void throwParseException(String message) {
-    int line = -1;
-    int col = -1;
-    if (jj_lastpos != null) {
-      line = jj_lastpos.beginLine;
-      col = jj_lastpos.beginColumn;
-    }
-    throw new ParseException("Line " + line + ", Column " + col + ": " + message);
-  }
-
-  private void checkForBadAssertUsage(String in, String usage) {
-    if (jdkVersion > 3 && in.equals("assert")) {
-      throwParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
-    }
-  }
-
-  private void checkForBadStaticImportUsage() {
-    if (jdkVersion < 5) {
-      throwParseException("Can't use static imports when running in JDK 1.4 mode!");
-    }
-  }
-
-  private void checkForBadAnnotationUsage() {
-    if (jdkVersion < 5) {
-      throwParseException("Can't use annotations when running in JDK 1.4 mode!");
-    }
-  }
-
-  private void checkForBadGenericsUsage() {
-    if (jdkVersion < 5) {
-      throwParseException("Can't use generics unless running in JDK 1.5 mode!");
-    }
-  }
-
-  private void checkForBadVariableArgumentsUsage() {
-    if (jdkVersion < 5) {
-      throwParseException("Can't use variable arguments (varargs) when running in JDK 1.4 mode!");
-    }
-  }
-
-  private void checkForBadJDK15ForLoopSyntaxArgumentsUsage() {
-    if (jdkVersion < 5) {
-      throwParseException("Can't use JDK 1.5 for loop syntax when running in JDK 1.4 mode!");
-    }
-  }
-
-  private void checkForBadEnumUsage(String in, String usage) {
-    if (jdkVersion >= 5 && in.equals("enum")) {
-      throwParseException("Can't use 'enum' as " + usage + " when running in JDK 1.5 mode!");
-    }
-  }
-
-  private void checkForBadHexFloatingPointLiteral() {
-    if (jdkVersion < 5) {
-      throwParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
-    }
-  }
-
-  private void checkForBadNumericalLiteralslUsage(Token token) {
-    if (jdkVersion < 7) {
-      if (token.image.contains("_")) {
-        throwParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
-      }
-
-      if (token.image.startsWith("0b") || token.image.startsWith("0B")) {
-        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");
-      }
-    }
-  }
-
-  private void checkForBadDiamondUsage() {
-  	if (jdkVersion < 7) {
-      throwParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
-  	}
-  }
-
-  private void checkForBadTryWithResourcesUsage() {
-  	if (jdkVersion < 7) {
-      throwParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
-  	}
-  }
-
-  private void checkForBadMultipleExceptionsCatching() {
-  	if (jdkVersion < 7) {
-      throwParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!");
-  	}
-  }
-
-  private void checkForBadLambdaUsage() {
-    if (jdkVersion < 8) {
-      throwParseException("Cannot use lambda expressions when running in JDK inferior to 1.8 mode!");
-    }
-  }
-  private void checkForBadMethodReferenceUsage() {
-    if (jdkVersion < 8) {
-      throwParseException("Cannot use method references when running in JDK inferior to 1.8 mode!");
-    }
-  }
-  private void checkForBadDefaultImplementationUsage() {
-    if (jdkVersion < 8) {
-      throwParseException("Cannot use default implementations in interfaces when running in JDK inferior to 1.8 mode!");
-    }
-  }
-  private void checkForBadIntersectionTypesInCasts() {
-    if (jdkVersion < 8) {
-      throwParseException("Cannot use intersection types in casts when running in JDK inferior to 1.8 mode!");
-    }
-  }
-  private void checkForBadTypeAnnotations() {
-    if (jdkVersion < 8) {
-      throwParseException("Cannot use type annotations when running in JDK inferior to 1.8 mode!");
-    }
-  }
-  private void checkforBadExplicitReceiverParameter() {
-    if (jdkVersion < 8) {
-      throwParseException("Cannot use explicit receiver parameters when running in JDK inferior to 1.8 mode!");
-    }
-  }
-  private void checkForBadAnonymousDiamondUsage() {
-    if (jdkVersion < 9) {
-      ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
-      ASTTypeArguments types = node.getFirstChildOfType(ASTClassOrInterfaceType.class).getFirstChildOfType(ASTTypeArguments.class);
-      if (node.isAnonymousClass() && types != null && types.isDiamond()) {
-        throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
-      }
-    }
-  }
-  /**
-   * Keeps track whether we are dealing with an interface or not. Needed since the tree is
-   * is not fully constructed yet, when we check for private interface methods.
-   * The flag is updated, if entering ClassOrInterfaceDeclaration and reset when leaving.
-   * The flag is also reset, if entering a anonymous inner class or enums.
-   */
-  private boolean inInterface = false;
-  private void checkForBadPrivateInterfaceMethod(ASTMethodDeclaration node) {
-    if (jdkVersion < 9 && inInterface && node.isPrivate()) {
-      throwParseException("Cannot use private interface methods when running in JDK inferior to 9 mode!");
-    }
-  }
-  private void checkForBadIdentifier(String image) {
-    if (jdkVersion >= 9 && "_".equals(image)) {
-      throwParseException("With JDK 9, '_' is a keyword, and may not be used as an identifier!");
-    }
-  }
-  private void checkForBadModuleUsage() {
-    if (jdkVersion < 9) {
-      throwParseException("Cannot use module declaration when running in JDK inferior to 9 mode!");
-    }
-  }
-  private void checkForBadConciseTryWithResourcesUsage() {
-    if (jdkVersion < 9) {
-      throwParseException("Cannot use concise try-with-resources when running in JDK inferior to 9 mode!");
-    }
-  }
-  private void checkForBadTypeIdentifierUsage(String image) {
-    if (jdkVersion >= 10 && "var".equals(image)) {
-      throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
-    }
-  }
-  private void checkForMultipleCaseLabels() {
-    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 12 or 13 Preview");
-    }
-  }
   /**
    * Keeps track during tree construction, whether we are currently building a switch label.
    * A switch label must not contain a LambdaExpression.
@@ -414,35 +250,6 @@ class JavaParser {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
-  private void checkForSwitchRules() {
-    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
-      throwParseException("Switch rules in switch statements are only supported with Java 12 or 13 Preview");
-    }
-  }
-  private void checkForSwitchExpression() {
-    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
-      throwParseException("Switch expressions are only supported with Java 12 or 13 Preview");
-    }
-  }
-
-  private void checkForBreakExpression() {
-    if (jdkVersion != 12 || !preview) {
-      throwParseException("Expressions in break statements are only supported with Java 12 Preview");
-    }
-  }
-
-  private void checkForYieldStatement() {
-    if (jdkVersion != 13 || !preview) {
-      throwParseException("Yield statements are only supported with Java 13 Preview");
-    }
-  }
-
-  private void checkForTextBlockLiteral() {
-    if (jdkVersion != 13 || !preview) {
-      throwParseException("Text block literals are only supported with Java 13 Preview");
-    }
-  }
-
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -1682,7 +1489,7 @@ void PackageDeclaration() :
 void ImportDeclaration() :
 {}
 {
-  "import" [ "static" {checkForBadStaticImportUsage();jjtThis.setStatic();} ] Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
+  "import" [ "static" {jjtThis.setStatic();} ] Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 /*
@@ -1709,7 +1516,7 @@ int Modifiers() #void:
   | "transient" { modifiers |= AccessNode.TRANSIENT; }
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
-  | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
+  | "default" { modifiers |= AccessNode.DEFAULT; }
   | Annotation()
   )
  )*
@@ -1740,17 +1547,14 @@ void ClassOrInterfaceDeclaration(int modifiers):
 {
     Token t = null;
     jjtThis.setModifiers(modifiers);
-    boolean inInterfaceOld = inInterface;
-    inInterface = false;
 }
 {
-  ( "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
-  t=<IDENTIFIER> { checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image); }
+  ( "class" | "interface" { jjtThis.setInterface(); } )
+  t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
   ClassOrInterfaceBody()
-  { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
 }
 
 void ExtendsList():
@@ -1780,29 +1584,20 @@ jjtThis.setModifiers(modifiers);
     if (!"enum".equals(t.image)) {
       throw new ParseException("ERROR: expecting enum");
     }
-
-    if (jdkVersion < 5) {
-      throw new ParseException("ERROR: Can't use enum as a keyword in pre-JDK 1.5 target");
-    }
   }
-  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
+  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
   [ ImplementsList() ]
   EnumBody()
 }
 
 void EnumBody():
-{
-    boolean inInterfaceOld = inInterface;
-    inInterface = false;
-}
+{}
 {
    "{"
    [( Annotation() )* EnumConstant() ( LOOKAHEAD(2) "," ( Annotation() )* EnumConstant() )* ]
 	[ "," ]
    [ ";" ( ClassOrInterfaceBodyDeclaration() )* ]
    "}"
-
-   { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
 }
 
 void EnumConstant():
@@ -1814,7 +1609,7 @@ void EnumConstant():
 void TypeParameters():
 {}
 {
-   "<" {checkForBadGenericsUsage();} TypeParameter() ( "," TypeParameter() )* ">"
+   "<" TypeParameter() ( "," TypeParameter() )* ">"
 }
 
 void TypeParameter():
@@ -1872,16 +1667,11 @@ void VariableDeclaratorId() :
   String image;
 }
 {
-  (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
-   | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
+  (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
+   | t=<THIS> { jjtThis.setExplicitReceiverParameter(); image = t.image;}
    | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   )
-  {
-    checkForBadAssertUsage(image, "a variable name");
-    checkForBadEnumUsage(image, "a variable name");
-    checkForBadIdentifier(image);
-    jjtThis.setImage( image );
-  }
+  { jjtThis.setImage( image ); }
 }
 
 void VariableInitializer() :
@@ -1900,7 +1690,6 @@ void ArrayInitializer() :
 void MethodDeclaration(int modifiers) :
 {
     jjtThis.setModifiers(modifiers);
-    { checkForBadPrivateInterfaceMethod(jjtThis); }
 }
 {
   [ TypeParameters() ]
@@ -1911,12 +1700,7 @@ void MethodDeclaration(int modifiers) :
 void MethodDeclarator() :
 {Token t;}
 {
-  t=<IDENTIFIER>
-  {
-    checkForBadAssertUsage(t.image, "a method name");
-    checkForBadEnumUsage(t.image, "a method name");
-    jjtThis.setImage( t.image );
-  }
+  t=<IDENTIFIER> { jjtThis.setImage( t.image ); }
   FormalParameters() ( "[" "]" )*
 }
 
@@ -1932,8 +1716,8 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
-   [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+   Type() ("|" Type())*
+   [ "..." {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 
@@ -2007,9 +1791,9 @@ void TypeArguments():
 {}
 {
    LOOKAHEAD(2)
-   "<" {checkForBadGenericsUsage();} TypeArgument() ( "," TypeArgument() )* ">"
+   "<" TypeArgument() ( "," TypeArgument() )* ">"
  |
-   "<" {checkForBadDiamondUsage();} ">"
+   "<" ">"
 }
 
 void TypeArgument():
@@ -2253,13 +2037,12 @@ void CastExpression() :
   LOOKAHEAD(
     "(" (Annotation())* PrimitiveType() ")"
   ) "(" (TypeAnnotation())* Type() ")" UnaryExpression()
-| "(" (TypeAnnotation())* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
+| "(" (TypeAnnotation())* Type() ( "&" {jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
 }
 
 void SwitchExpression() :
 {}
 {
-    {checkForSwitchExpression();}
     "switch" "(" Expression() ")" SwitchBlock()
 }
 
@@ -2279,7 +2062,7 @@ Token t;
 }
 
 void MethodReference() :
-{Token t; checkForBadMethodReferenceUsage();}
+{Token t;}
 {
   "::" [TypeArguments()] ( "new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
@@ -2302,7 +2085,7 @@ void PrimaryPrefix() :
 }
 
 void LambdaExpression() :
-{ checkForBadLambdaUsage(); }
+{}
 {
   VariableDeclaratorId() "->" ( Expression() | Block() )
 | LOOKAHEAD(3) LambdaParameters() "->" ( Expression() | Block() )
@@ -2326,7 +2109,7 @@ void LambdaParameter() #FormalParameter :
 {
     ( "final" {jjtThis.setFinal(true);} | Annotation() )*
     LambdaParameterType()
-    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    [ "..." {jjtThis.setVarargs();} ]
     VariableDeclaratorId()
 }
 
@@ -2351,12 +2134,12 @@ void PrimarySuffix() :
 void Literal() :
 { Token t;}
 {
-  t=<INTEGER_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
-| t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
-| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
+  t=<INTEGER_LITERAL> { jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
+| t=<FLOATING_POINT_LITERAL> { jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
+| t=<HEX_FLOATING_POINT_LITERAL> { jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
 | t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
-| t=<TEXT_BLOCK_LITERAL> { checkForTextBlockLiteral(); jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
+| t=<TEXT_BLOCK_LITERAL> { jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
 | BooleanLiteral()
 | NullLiteral()
 }
@@ -2396,12 +2179,9 @@ void AllocationExpression():
      |
       Arguments()
         [
-            { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
             ClassOrInterfaceBody()
-            { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
         ]
      )
-    { checkForBadAnonymousDiamondUsage(); }
   )
 }
 
@@ -2555,13 +2335,13 @@ void SwitchBlock() #void :
 }
 
 void SwitchLabeledRule() #void :
-{checkForSwitchRules();}
+{}
 {
     SwitchLabel() "->" SwitchLabeledRulePart()
 }
 
 void SwitchLabeledRulePart() #void:
-{checkForSwitchRules();}
+{}
 {
     (
         ( Expression() ";" ) #SwitchLabeledExpression(2)
@@ -2587,7 +2367,7 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ( ConditionalExpression() #Expression ) ({checkForMultipleCaseLabels();} "," ( ConditionalExpression() #Expression ) )*
+  "case" ( ConditionalExpression() #Expression ) ("," ( ConditionalExpression() #Expression ) )*
 |
   "default" {jjtThis.setDefault();}
 )
@@ -2595,7 +2375,7 @@ void SwitchLabel() :
 }
 
 void YieldStatement() :
-{ checkForYieldStatement(); }
+{}
 {
   <IDENTIFIER> Expression() ";"
 }
@@ -2629,7 +2409,6 @@ void ForStatement() :
   "for" "("
 (
       LOOKAHEAD(LocalVariableDeclaration() ":")
-      {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
       LocalVariableDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
@@ -2663,7 +2442,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() {checkForBreakExpression();} ] ";"
+  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() ] ";"
 }
 
 void ContinueStatement() :
@@ -2705,8 +2484,7 @@ void TryStatement() :
 void ResourceSpecification() :
 {}
 {
-    {checkForBadTryWithResourcesUsage();}
-	"("
+    "("
 	Resources()
 	(LOOKAHEAD(2) ";")?
 	")"
@@ -2723,7 +2501,7 @@ void Resource() :
 {
    LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
    |
-   Name() {checkForBadConciseTryWithResourcesUsage();}
+   Name()
 }
 
 void CatchStatement() :
@@ -2785,19 +2563,19 @@ void Annotation():
 void NormalAnnotation():
 {}
 {
-   "@" Name() "(" [ MemberValuePairs() ] ")" {checkForBadAnnotationUsage();}
+   "@" Name() "(" [ MemberValuePairs() ] ")"
 }
 
 void MarkerAnnotation():
 {}
 {
-  "@" Name() {checkForBadAnnotationUsage();}
+  "@" Name()
 }
 
 void SingleMemberAnnotation():
 {}
 {
-  "@" Name() "(" MemberValue() ")" {checkForBadAnnotationUsage();}
+  "@" Name() "(" MemberValue() ")"
 }
 
 void MemberValuePairs():
@@ -2834,7 +2612,7 @@ void  MemberValueArrayInitializer():
 void TypeAnnotation() #void:
 {}
 {
-    Annotation() {checkForBadTypeAnnotations();}
+    Annotation()
 }
 
 
@@ -2846,12 +2624,7 @@ Token t;
 jjtThis.setModifiers(modifiers);
 }
 {
-  "@" "interface" t=<IDENTIFIER>
-    {
-        checkForBadAnnotationUsage();
-        checkForBadTypeIdentifierUsage(t.image);
-        jjtThis.setImage(t.image);
-    }
+  "@" "interface" t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   AnnotationTypeBody()
 }
 
@@ -2904,7 +2677,6 @@ void ModuleDeclaration():
 {
     StringBuilder s = new StringBuilder();
     Token t;
-    checkForBadModuleUsage();
 }
 {
   ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
