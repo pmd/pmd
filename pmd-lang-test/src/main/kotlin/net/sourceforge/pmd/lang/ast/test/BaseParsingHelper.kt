@@ -180,7 +180,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      *
      * @throws IllegalArgumentException if the source file wasn't found
      */
-    private fun readClassSource(clazz: Class<*>): String {
+    fun readClassSource(clazz: Class<*>): String {
         var sourceFile = clazz.name.replace('.', '/') + ".java"
         // Consider nested classes
         if (clazz.name.contains("$")) {
