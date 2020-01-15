@@ -184,10 +184,27 @@ public final class XmlTreeRenderer implements TreeRenderer {
             while (iter.hasNext()) {
                 Attribute next = iter.next();
                 if (takeAttribute(node, next)) {
-                    attrs.put(next.getName(), next.getStringValue());
+                    try {
+
+                        attrs.put(next.getName(), next.getStringValue());
+                    } catch (Exception e) {
+                        handleAttributeFetchException(next, e);
+                    }
                 }
             }
             return attrs;
+        }
+
+        /**
+         * Handle an exception that occurred while fetching the value
+         * of an attribute. The default does nothing, it's meant to be
+         * overridden if you want to handle it.
+         *
+         * @param attr Attribute for which the fetch failed
+         * @param e    Exception that occurred
+         */
+        protected void handleAttributeFetchException(Attribute attr, Exception e) {
+            // to be overridden
         }
 
         /**
