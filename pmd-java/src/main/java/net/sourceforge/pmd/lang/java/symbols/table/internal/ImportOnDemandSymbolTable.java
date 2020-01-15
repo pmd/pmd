@@ -38,7 +38,7 @@ final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
     /**
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
      */
-    ImportOnDemandSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> importsOnDemand) {
+    ImportOnDemandSymbolTable(JSymbolTable parent, SymbolTableHelper helper, List<ASTImportDeclaration> importsOnDemand) {
         super(parent, helper);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
@@ -95,7 +95,7 @@ final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
         // This comes from a Type-Import-on-Demand Declaration
         // We'll try to brute force it:
-        for (Entry<String, ASTImportDeclaration> it : importedPackagesAndTypes.entrySet()) {// here 'pack' may be a package or a type name
+        for (Entry<String, ASTImportDeclaration> it : importedPackagesAndTypes.entrySet()) { // here 'pack' may be a package or a type name
             // but can't be the unnamed package (you can't write "import .*;")
             String name = it.getKey() + "." + simpleName;
             // ignore the exception. We don't know if the classpath is badly configured

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  */
 public interface SemanticChecksLogger {
 
-    String CANNOT_FIND_CLASSPATH_SYMBOL = "Cannot find symbol on classpath {0}";
+    String CANNOT_FIND_CLASSPATH_SYMBOL = "Symbol is not on the classpath: {0}";
 
 
     /**

@@ -15,22 +15,19 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
  *
  * @since 7.0.0
  */
-final class SymbolTableResolveHelper {
+final class SymbolTableHelper {
 
     private final String thisPackage;
     private final SymbolResolver symbolResolver;
-    private final int jdkVersion;
     private final SemanticChecksLogger logger;
 
 
-    SymbolTableResolveHelper(String thisPackage,
-                             SymbolResolver symbolResolver,
-                             int jdkVersion,
-                             SemanticChecksLogger logger) {
+    SymbolTableHelper(String thisPackage,
+                      SymbolResolver symbolResolver,
+                      SemanticChecksLogger logger) {
 
         this.thisPackage = thisPackage;
         this.symbolResolver = symbolResolver;
-        this.jdkVersion = jdkVersion;
         this.logger = logger;
 
         assert symbolResolver != null;
@@ -38,23 +35,18 @@ final class SymbolTableResolveHelper {
     }
 
 
-    /** Analysed language version. */
-    int getJdkVersion() {
-        return jdkVersion;
-    }
-
     /** Prepend the package name, handling empty package. */
     String prependPackageName(String name) {
         return thisPackage.isEmpty() ? name : thisPackage + "." + name;
     }
 
 
-    /** @see  SymbolResolver#resolveClassOrDefault(String)  */
+    /** @see SymbolResolver#resolveClassOrDefault(String) */
     public JClassSymbol findSymbolCannotFail(String name) {
         return symbolResolver.resolveClassOrDefault(name);
     }
 
-    /** @see  SymbolResolver#resolveClassFromCanonicalName(String) */
+    /** @see SymbolResolver#resolveClassFromCanonicalName(String) */
     @Nullable
     JClassSymbol loadClassOrFail(String fqcn) {
         return symbolResolver.resolveClassFromCanonicalName(fqcn);

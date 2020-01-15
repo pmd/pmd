@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 /**
  * Reference to a method.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodDeclaration> {

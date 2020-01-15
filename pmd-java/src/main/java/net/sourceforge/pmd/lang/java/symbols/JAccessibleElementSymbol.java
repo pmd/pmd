@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * Represents declarations having access modifiers common to {@link JFieldSymbol},
  * {@link JClassSymbol}, {@link JMethodSymbol}, and {@link JConstructorSymbol}.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JAccessibleElementSymbol extends JElementSymbol {

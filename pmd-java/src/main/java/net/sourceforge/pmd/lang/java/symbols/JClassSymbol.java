@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
  * intersection types, parameterized types, wildcard types, etc., which are only
  * compile-time constructs.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JClassSymbol extends JTypeDeclSymbol,
@@ -41,7 +40,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      */
     @NonNull
     String getBinaryName();
-
 
 
     /**
@@ -119,6 +117,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
         return null;
     }
+
 
     /**
      * Returns the methods declared directly in this class.
@@ -213,6 +212,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     boolean isLocalClass();
 
     boolean isAnonymousClass();
+
 
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();

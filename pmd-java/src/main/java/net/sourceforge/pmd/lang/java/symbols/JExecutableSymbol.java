@@ -13,8 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * Common supertype for {@linkplain JMethodSymbol method}
  * and {@linkplain JConstructorSymbol constructor symbols}.
- *
- * @author Clément Fournier
  */
 public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParameterOwnerSymbol {
 

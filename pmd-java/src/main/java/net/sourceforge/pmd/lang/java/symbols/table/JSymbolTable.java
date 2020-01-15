@@ -12,7 +12,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 // @formatter:off
 /**
@@ -100,7 +100,7 @@ public interface JSymbolTable {
      * @return A result for the search
      */
     @NonNull
-    ResolveResult<JValueSymbol> resolveValueName(String simpleName);
+    ResolveResult<JVariableSymbol> resolveValueName(String simpleName);
 
 
     /**
@@ -117,7 +117,7 @@ public interface JSymbolTable {
      * @param simpleName Simple name of the method
      *
      * @return A stream yielding all methods with the given name accessible and applicable to the
-     * implicit receiver in the scope of this symbol table.
+     *     implicit receiver in the scope of this symbol table.
      */
     Stream<JMethodSymbol> resolveMethodName(String simpleName);
 

@@ -38,8 +38,6 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  * <p>By storing no reference, we ensure that code references can be shared across the
  * analysed project, allowing reflective resolution to be only done once.
  *
- *
- * @author Clément Fournier
  * @since 7.0.0
  */
 @Experimental

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 
 /**
- * @author Clément Fournier
+ *
  */
 abstract class AbstractReflectedSymbol implements JElementSymbol {
 

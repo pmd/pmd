@@ -24,7 +24,7 @@ final class SamePackageSymbolTable extends AbstractSymbolTable {
 
     private final @Nullable ASTPackageDeclaration packageDeclaration;
 
-    SamePackageSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, @Nullable ASTPackageDeclaration packageDeclaration) {
+    SamePackageSymbolTable(JSymbolTable parent, SymbolTableHelper helper, @Nullable ASTPackageDeclaration packageDeclaration) {
         super(parent, helper);
         this.packageDeclaration = packageDeclaration;
     }

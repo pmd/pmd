@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -25,9 +24,9 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  *
  * @since 7.0.0
  */
-public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void> {
+public final class SymbolTableResolver {
 
-    private final SymbolTableResolveHelper myResolveHelper;
+    private final SymbolTableHelper myResolveHelper;
     private final ASTCompilationUnit root;
     // current top of the stack
     private JSymbolTable myStackTop;
@@ -37,16 +36,13 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
      * Initialize this resolver using an analysis context and a root node.
      *
      * @param symResolver Resolver for external references
-     * @param jdkVersion  JDK version, determines which classes are present
-     *                    in the java.lang package
      * @param root        The root node
      */
     public SymbolTableResolver(SymbolResolver symResolver,
-                               int jdkVersion,
-                               ASTCompilationUnit root,
-                               SemanticChecksLogger logger) {
+                               SemanticChecksLogger logger,
+                               ASTCompilationUnit root) {
         this.root = root;
-        myResolveHelper = new SymbolTableResolveHelper(root.getPackageName(), symResolver, jdkVersion, logger);
+        myResolveHelper = new SymbolTableHelper(root.getPackageName(), symResolver, logger);
         // this is the only place pushOnStack can be circumvented
         myStackTop = EmptySymbolTable.getInstance();
 
@@ -54,59 +50,31 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
 
     /**
      * Start the analysis.
-     *
      */
     public void traverse() {
         assert myStackTop instanceof EmptySymbolTable
             : "Top should be an empty symtable when starting the traversal";
 
-        root.jjtAccept(this, null);
+        root.jjtAccept(new MyVisitor(), null);
 
         assert myStackTop instanceof EmptySymbolTable
             : "Unbalanced stack push/pop! Top is " + myStackTop;
     }
 
-    // The AstAnalysisConfiguration is only used in the constructor
-    // The parameter on the visit methods is unnecessary
-    // TODO introduce another visitor with `void visit(Node);` signature
-
-
-    @Override
-    public void visit(ASTCompilationUnit node, Void data) {
-        Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.children(ASTImportDeclaration.class)
-                                                                        .collect(Collectors.partitioningBy(ASTImportDeclaration::isImportOnDemand));
-
-        int pushed = 0;
-        pushed += pushOnStack((p, h) -> new ImportOnDemandSymbolTable(p, h, isImportOnDemand.get(true)));
-        pushed += pushOnStack(JavaLangSymbolTable::new);
-        pushed += pushOnStack((p, h) -> new SamePackageSymbolTable(p, h, node.getPackageDeclaration()));
-        pushed += pushOnStack((p, h) -> new SingleImportSymbolTable(p, h, isImportOnDemand.get(false)));
-
-        // All of the header symbol tables belong to the CompilationUnit
-        setTopSymbolTableAndRecurse(node);
-        popStack(pushed);
-    }
-
-
-    private void setTopSymbolTableAndRecurse(JavaNode node) {
-        InternalApiBridge.setSymbolTable(node, peekStack());
-
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-            node.jjtGetChild(i).jjtAccept(this, null);
-        }
-    }
-
     /**
-     * Create a new symbol table using {@link TableLinker#createAndLink(JSymbolTable, SymbolTableResolveHelper)},
+     * Create a new symbol table using {@link TableLinker#createAndLink(JSymbolTable, SymbolTableHelper, Object)},
      * linking it to the top of the stack as its parent.
      *
      * Pushes must naturally be balanced with {@link #popStack()} calls.
      *
+     * @param data Additional param passed to the linker. Passing parameters
+     *             like this avoids having to create a capturing lambda.
+     *
      * @return 1 if the table was pushed, 0 if not
      */
-    private int pushOnStack(TableLinker tableLinker) {
-        JSymbolTable parent = Objects.requireNonNull(peekStack(), "Cannot link to null parent");
-        AbstractSymbolTable created = tableLinker.createAndLink(parent, myResolveHelper);
+    private <T> int pushOnStack(TableLinker<T> tableLinker, T data) {
+        JSymbolTable parent = peekStack();
+        AbstractSymbolTable created = tableLinker.createAndLink(parent, myResolveHelper, data);
         if (created.isPrunable()) {
             return 0; // and don't set the stack top
         }
@@ -126,17 +94,59 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<Void>
         }
     }
 
-
     private JSymbolTable peekStack() {
         return this.myStackTop;
     }
 
 
     @FunctionalInterface
-    private interface TableLinker {
+    private interface TableLinker<T> {
 
-        /** Create a symbol table, linking it to the top of the stack (param 0). */
-        AbstractSymbolTable createAndLink(JSymbolTable stackTop, SymbolTableResolveHelper helper);
+        /**
+         * Create a symbol table, given its parent, a helper instance,
+         * and some other data passed by {@link #pushOnStack(TableLinker, Object)}.
+         *
+         * @param stackTop Top of the stack, becomes the parent of the new node
+         * @param helper   Shared helper
+         * @param data     Additional parameter
+         */
+        AbstractSymbolTable createAndLink(JSymbolTable stackTop, SymbolTableHelper helper, T data);
+    }
+
+    private class MyVisitor extends SideEffectingVisitorAdapter<Void> {
+
+
+        // The AstAnalysisConfiguration is only used in the constructor
+        // The parameter on the visit methods is unnecessary
+        // TODO introduce another visitor with `void visit(Node);` signature
+
+
+        @Override
+        public void visit(ASTCompilationUnit node, Void data) {
+            Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.children(ASTImportDeclaration.class)
+                                                                            .collect(Collectors.partitioningBy(ASTImportDeclaration::isImportOnDemand));
+
+            int pushed = 0;
+            pushed += pushOnStack(ImportOnDemandSymbolTable::new, isImportOnDemand.get(true));
+            pushed += pushOnStack(JavaLangSymbolTable::new, node);
+            pushed += pushOnStack(SamePackageSymbolTable::new, node.getPackageDeclaration());
+            pushed += pushOnStack(SingleImportSymbolTable::new, isImportOnDemand.get(false));
+            // types declared inside the compilation unit
+            // pushed += pushOnStack(MemberTypeSymTable::new, node);
+
+            // All of the header symbol tables belong to the CompilationUnit
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+
+        private void setTopSymbolTableAndRecurse(JavaNode node) {
+            InternalApiBridge.setSymbolTable(node, peekStack());
+
+            for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+                node.jjtGetChild(i).jjtAccept(this, null);
+            }
+        }
     }
 
 }

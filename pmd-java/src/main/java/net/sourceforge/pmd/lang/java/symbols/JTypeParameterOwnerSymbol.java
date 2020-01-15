@@ -12,7 +12,6 @@ import java.util.List;
  * Represents a declaration that can declare type parameters,
  * {@literal i.e.} {@link JClassSymbol} or {@link JMethodSymbol}.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {

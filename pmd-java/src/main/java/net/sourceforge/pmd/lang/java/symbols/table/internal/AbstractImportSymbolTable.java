@@ -20,11 +20,11 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ClassResolveResult;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ValueResolveResult;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.VarResolveResult;
 
 
 /**
@@ -41,7 +41,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
     final Map<String, ResolveResult<JTypeDeclSymbol>> importedTypes = new HashMap<>();
     final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
-    final Map<String, ResolveResult<JValueSymbol>> importedStaticFields = new HashMap<>();
+    final Map<String, ResolveResult<JVariableSymbol>> importedStaticFields = new HashMap<>();
 
     /**
      * Constructor with the parent table and the auxclasspath classloader.
@@ -49,7 +49,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
      * @param parent Parent table
      * @param helper Resolve helper
      */
-    AbstractImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+    AbstractImportSymbolTable(JSymbolTable parent, SymbolTableHelper helper) {
         super(parent, helper);
     }
 
@@ -67,7 +67,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
 
     @Override
-    protected @Nullable ResolveResult<JValueSymbol> resolveValueNameImpl(String simpleName) {
+    protected @Nullable ResolveResult<JVariableSymbol> resolveValueNameImpl(String simpleName) {
         return importedStaticFields.get(simpleName);
     }
 
@@ -77,7 +77,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
 
     protected void importField(ASTImportDeclaration decl, JFieldSymbol sym) {
-        importedStaticFields.put(sym.getSimpleName(), new ValueResolveResult(sym, this, decl));
+        importedStaticFields.put(sym.getSimpleName(), new VarResolveResult(sym, this, decl));
     }
 
 

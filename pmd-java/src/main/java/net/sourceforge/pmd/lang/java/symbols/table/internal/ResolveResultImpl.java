@@ -8,14 +8,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 
 abstract class ResolveResultImpl<T> implements ResolveResult<T> {
 
 
-    @SuppressWarnings( {"rawtypes"})
+    @SuppressWarnings("rawtypes")
     private static final ResolveResult UNRESOLVED =
         new ResolveResult() {
             @Override
@@ -39,9 +39,9 @@ abstract class ResolveResultImpl<T> implements ResolveResult<T> {
     private final JavaNode contributor;
     private final T sym;
 
-    public ResolveResultImpl(T sym,
-                             AbstractSymbolTable symbolTable,
-                             JavaNode contributor) {
+    ResolveResultImpl(T sym,
+                      AbstractSymbolTable symbolTable,
+                      JavaNode contributor) {
         this.symbolTable = symbolTable;
         this.contributor = contributor;
         this.sym = sym;
@@ -71,9 +71,9 @@ abstract class ResolveResultImpl<T> implements ResolveResult<T> {
     }
 
 
-    static class ValueResolveResult extends ResolveResultImpl<JValueSymbol> {
+    static class VarResolveResult extends ResolveResultImpl<JVariableSymbol> {
 
-        ValueResolveResult(JValueSymbol sym, AbstractSymbolTable symbolTable, JavaNode contributor) {
+        VarResolveResult(JVariableSymbol sym, AbstractSymbolTable symbolTable, JavaNode contributor) {
             super(sym, symbolTable, contributor);
         }
 

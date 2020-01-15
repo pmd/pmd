@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
-    SingleImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> singleImports) {
+    SingleImportSymbolTable(JSymbolTable parent, SymbolTableHelper helper, List<ASTImportDeclaration> singleImports) {
         super(parent, helper);
 
         for (ASTImportDeclaration anImport : singleImports) {

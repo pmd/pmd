@@ -72,8 +72,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 
-            int jdkVersion = ((JavaLanguageHandler) configuration.getLanguageVersion().getLanguageVersionHandler()).getJdkVersion();
-
             SemanticChecksLogger logger = new SemanticChecksLogger() {
                 @Override
                 public void warning(JavaNode location, String message, Object... args) {
@@ -83,7 +81,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             // Resolve symbol tables
             bench("Symbol table resolution",
-                () -> new SymbolTableResolver(symResolver, jdkVersion, acu, logger).traverse());
+                () -> new SymbolTableResolver(symResolver, logger, acu).traverse());
 
         }
     },

@@ -3,13 +3,14 @@
  */
 
 /**
- *
  * <h2>Implementation</h3>
  *
- * <p>In PMD, program points are modelled as AST nodes. Each node has {@linkplain net.sourceforge.pmd.lang.java.ast.JavaNode#getSymbolTable() a reference}
+ * <p>In PMD, program points are modelled as AST nodes. Each node has {@linkplain net.sourceforge.pmd.lang.java.ast.JavaNode#getSymbolTable()
+ * a reference}
  * to the innermost enclosing symbol table which dominates it. Since each symbol table
  * has a reference to its parent, an AST node has in fact a reference to a whole <i>table stack</i>.
- * These references are resolved by a {@link net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver} after parsing the file.
+ * These references are resolved by a {@link net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver}
+ * after parsing the file.
  *
  * <p>The following describes the most general form of the bottom part of any stack
  * (before the top-level type declaration), in increasing order of precedence:
@@ -18,7 +19,7 @@
  *          implementation simplicity.
  *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable}: Types imported from a package or type by an import-on-demand,
  *          and static method or field names imported from a type by a static-import-on-demand;
- *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable}: Top-level types implicitly imported from {@literal java.lang};
+ *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable}: Top-level types implicitly imported from {@code java.lang};
  *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable}: Top-level types from the same package, which are implicitly imported
  *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable}: types imported by single-type-imports, and static methods and
  *          fields imported by a single-static-import.
@@ -117,6 +118,6 @@
  *
  * <p>Some other rules could use the symbol table stack, e.g. UnnecessaryQualifiedName, UnusedImports,
  * MissingOverride, etc.
- *
  */
+
 package net.sourceforge.pmd.lang.java.symbols.table.internal;

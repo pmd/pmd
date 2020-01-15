@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymResolver
 
 internal fun testResolveHelper(packageName: String, jdkVersion: Int = 11, logger: TestCheckLogger = TestCheckLogger()) =
-        SymbolTableResolveHelper(packageName, testSymResolver, jdkVersion, logger)
+        SymbolTableHelper(packageName, testSymResolver, logger)
 
 class TestCheckLogger : SemanticChecksLogger {
 

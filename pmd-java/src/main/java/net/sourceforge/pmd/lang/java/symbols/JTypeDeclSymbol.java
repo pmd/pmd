@@ -17,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <p>Note: type symbols are not <i>types</i>, they <i>declare</i> types.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbol {

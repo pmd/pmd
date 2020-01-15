@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 
@@ -27,10 +27,10 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 abstract class AbstractSymbolTable implements JSymbolTable {
 
     /** Additional info about the context. */
-    final SymbolTableResolveHelper myResolveHelper;
+    final SymbolTableHelper myResolveHelper;
     private final JSymbolTable myParent;
 
-    AbstractSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+    AbstractSymbolTable(JSymbolTable parent, SymbolTableHelper helper) {
         this.myParent = parent;
         this.myResolveHelper = helper;
     }
@@ -53,8 +53,8 @@ abstract class AbstractSymbolTable implements JSymbolTable {
 
     @NonNull
     @Override
-    public final ResolveResult<JValueSymbol> resolveValueName(String simpleName) {
-        @Nullable ResolveResult<JValueSymbol> result = resolveValueNameImpl(simpleName);
+    public final ResolveResult<JVariableSymbol> resolveValueName(String simpleName) {
+        @Nullable ResolveResult<JVariableSymbol> result = resolveValueNameImpl(simpleName);
         return result != null ? result : myParent.resolveValueName(simpleName);
     }
 
@@ -89,7 +89,7 @@ abstract class AbstractSymbolTable implements JSymbolTable {
 
 
     /** Finds a value among the declarations tracked by this table without asking the parent. */
-    protected @Nullable ResolveResult<JValueSymbol> resolveValueNameImpl(String simpleName) {
+    protected @Nullable ResolveResult<JVariableSymbol> resolveValueNameImpl(String simpleName) {
         return ResolveResultImpl.failed();
     }
 

@@ -10,8 +10,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Resolves symbols from their global name. This abstracts over whether
  * we're looking on a classpath, in a file tree, in a serialized index, etc.
- *
- * @author Clément Fournier
  */
 public interface SymbolResolver {
 

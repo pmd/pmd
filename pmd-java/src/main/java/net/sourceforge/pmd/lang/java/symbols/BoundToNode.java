@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  * in the way most of the time. Not visible outside this package, it's just
  * a code organisation device.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 interface BoundToNode<N extends Node> extends JElementSymbol {

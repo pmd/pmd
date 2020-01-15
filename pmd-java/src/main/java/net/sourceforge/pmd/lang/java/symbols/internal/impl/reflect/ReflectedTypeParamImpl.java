@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
-@SuppressWarnings("PMD")
 // yeah this looks weird for now
 // but it will fall into place when we introduce type mirrors
+@SuppressWarnings("PMD")
 class ReflectedTypeParamImpl implements JTypeParameterSymbol {
 
     private final ReflectionSymFactory factory;

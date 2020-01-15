@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 /**
  * Represents a constructor declaration.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JConstructorSymbol extends JExecutableSymbol, BoundToNode<ASTConstructorDeclaration> {

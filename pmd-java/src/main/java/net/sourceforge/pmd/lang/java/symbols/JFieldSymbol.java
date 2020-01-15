@@ -12,10 +12,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * Represents a field declaration.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JFieldSymbol extends JAccessibleElementSymbol, JValueSymbol {
+public interface JFieldSymbol extends JAccessibleElementSymbol, JVariableSymbol {
 
 
     /** Returns true if this field is an enum constant. */

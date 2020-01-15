@@ -5,7 +5,7 @@ import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 class LazinessTest : FunSpec({
 
     fun <T> lazinessTest(
-            dummyTableConstructor: (JSymbolTable, SymbolTableResolveHelper, () -> T?) -> JSymbolTable,
+            dummyTableConstructor: (JSymbolTable, SymbolTableHelper, () -> T?) -> JSymbolTable,
             testedMethod: (JSymbolTable, String) -> T?,
             resultGetter: () -> T) {
 
@@ -78,9 +78,9 @@ class LazinessTest : FunSpec({
 
 private class MyTypeTable(
         parent: JSymbolTable,
-        resolveHelper: SymbolTableResolveHelper,
+        helper: SymbolTableHelper,
         private val typeSymbolGetter: () -> JTypeDeclSymbol?
-) : AbstractSymbolTable(parent, resolveHelper) {
+) : AbstractSymbolTable(parent, helper) {
 
     override fun resolveTypeNameImpl(simpleName: String): ResolveResult<JTypeDeclSymbol> =
             ResolveResultImpl.ClassResolveResult(typeSymbolGetter(), this, null)
@@ -89,18 +89,18 @@ private class MyTypeTable(
 
 private class MyValueTable(
         parent: JSymbolTable,
-        resolveHelper: SymbolTableResolveHelper,
-        private val valueSymbolGetter: () -> JValueSymbol?
-) : AbstractSymbolTable(parent, resolveHelper) {
+        helper: SymbolTableHelper,
+        private val variableSymbolGetter: () -> JVariableSymbol?
+) : AbstractSymbolTable(parent, helper) {
 
-    override fun resolveValueNameImpl(simpleName: String): ResolveResult<JValueSymbol>? =
-            ResolveResultImpl.ValueResolveResult(valueSymbolGetter(), this, null)
+    override fun resolveValueNameImpl(simpleName: String): ResolveResult<JVariableSymbol>? =
+            ResolveResultImpl.VarResolveResult(variableSymbolGetter(), this, null)
 
 
 }
 
-private class MyMethodTable(parent: JSymbolTable, resolveHelper: SymbolTableResolveHelper,
-                            private val methodSymbolGetter: () -> JMethodSymbol?) : AbstractSymbolTable(parent, resolveHelper) {
+private class MyMethodTable(parent: JSymbolTable, helper: SymbolTableHelper,
+                            private val methodSymbolGetter: () -> JMethodSymbol?) : AbstractSymbolTable(parent, helper) {
 
     override fun resolveMethodNameImpl(simpleName: String): Stream<JMethodSymbol>? =
             methodSymbolGetter()?.let { Stream.of(it) } ?: Stream.empty()

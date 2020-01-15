@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
  * types, but not class or interface types. They're also not declared with the same node. For those
  * reasons this type of references is distinct from {@link JClassSymbol}.
  *
- * @author Clément Fournier
  * @since 7.0.0
  */
 public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTypeParameter> {

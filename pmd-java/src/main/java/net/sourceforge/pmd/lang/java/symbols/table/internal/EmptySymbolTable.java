@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 
@@ -43,7 +43,7 @@ final class EmptySymbolTable implements JSymbolTable {
 
 
     @Override
-    public @NonNull ResolveResult<JValueSymbol> resolveValueName(String simpleName) {
+    public @NonNull ResolveResult<JVariableSymbol> resolveValueName(String simpleName) {
         return ResolveResultImpl.failed();
     }
 

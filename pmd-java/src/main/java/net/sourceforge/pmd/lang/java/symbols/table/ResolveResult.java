@@ -9,31 +9,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
- * The result of resolution by a symbol table. This includes scope-specific
- * information that symbols do not provide directly.
- *
- * <p>For example, when looking in the supertypes of the
- * current class for a field:
- * <pre>{@code
- *
- * abstract class Sup<K> {
- *      K field;
- * }
- *
- *
- * class Foo extends Sup<Integer> {
- *
- *      {
- *         super.field = 2;
- *      }
- *
- * }
- *
- * }</pre>
- *
- * <p>A lookup for the field in the initializer will give the symbol
- * {@code Sup#K}, the substitution {@code K -> Integer}, and as contributor
- * the node {@code Sup<Integer>} (part of the extends clause).
+ * The result of resolution by a symbol table. This is provided as a way
+ * to extend the usefulness of symbol tables at minimal cost later on. For
+ * example, {@link #getSymbolTable()} can be used to check for hidden or
+ * shadowed declarations.
  */
 public interface ResolveResult<T> {
 
@@ -47,7 +26,7 @@ public interface ResolveResult<T> {
 
     /**
      * Returns the node in the compilation unit that brings the
-     * {@linkplain #getResult() result} in scope. Nullable if the
+     * {@linkplain #getResult() result} in scope. Null if the
      * info is not available.
      */
     @Nullable JavaNode getContributor();
@@ -55,7 +34,7 @@ public interface ResolveResult<T> {
 
     /**
      * Returns the symbol table that found this declaration. This is
-     * null for a failed result, and also
+     * null for a failed result.
      */
     @Nullable JSymbolTable getSymbolTable();
 

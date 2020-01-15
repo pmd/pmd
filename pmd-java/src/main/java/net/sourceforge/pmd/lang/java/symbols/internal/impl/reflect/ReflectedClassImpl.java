@@ -220,7 +220,6 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
 
-
     static ReflectedClassImpl createWithEnclosing(ReflectionSymFactory symbolFactory,
                                                   @Nullable JClassSymbol enclosing,
                                                   Class<?> myClass) {
