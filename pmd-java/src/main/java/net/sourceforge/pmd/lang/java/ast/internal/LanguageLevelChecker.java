@@ -10,6 +10,7 @@ import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
@@ -21,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
@@ -225,15 +227,27 @@ public class LanguageLevelChecker<T> {
 
     private class CheckVisitor extends SideEffectingVisitorAdapter<T> {
 
-//        @Override
-//        public void visit(ASTStringLiteral node, T data) {
-//            if (jdkVersion != 13 || !preview) {
-//                if (node.isTextBlock()) {
-//                    check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
-//                }
-//            }
-//            visitChildren(node, data);
-//        }
+        //        @Override
+        //        public void visit(ASTStringLiteral node, T data) {
+        //            if (jdkVersion != 13 || !preview) {
+        //                if (node.isTextBlock()) {
+        //                    check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
+        //                }
+        //            }
+        //            visitChildren(node, data);
+        //        }
+
+
+        @Override
+        public void visit(ASTLiteral node, T data) {
+            if (jdkVersion != 13 || !preview) {
+                if (node.isTextBlock()) {
+                    check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
+                }
+            }
+            visitChildren(node, data);
+        }
+
 
         @Override
         public void visit(ASTImportDeclaration node, T data) {
@@ -275,7 +289,14 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTTypeArguments node, T data) {
-            check(node, RegularLanguageFeature.GENERICS, data);
+            if (check(node, RegularLanguageFeature.GENERICS, data)) {
+                if (node.isDiamond() && check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data)) {
+                    if (node.getNthParent(2) instanceof ASTAllocationExpression
+                        && ((ASTAllocationExpression) node.getNthParent(2)).isAnonymousClass()) {
+                        check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
+                    }
+                }
+            }
             visitChildren(node, data);
         }
 
