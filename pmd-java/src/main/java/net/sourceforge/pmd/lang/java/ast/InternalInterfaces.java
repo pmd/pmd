@@ -92,4 +92,38 @@ final class InternalInterfaces {
         }
     }
 
+    /**
+     * Tags a node that has at least one child, then some methods never
+     * return null.
+     */
+    interface AtLeastOneChildOfType<T extends JavaNode> extends JavaNode {
+
+        @Override
+        T jjtGetChild(int index);
+
+
+        /** Returns the first child of this node, never null. */
+        @Override
+        @NonNull
+        default T getFirstChild() {
+            assert jjtGetNumChildren() > 0;
+            return jjtGetChild(0);
+        }
+
+
+        /** Returns the last child of this node, never null. */
+        @Override
+        @NonNull
+        default T getLastChild() {
+            assert jjtGetNumChildren() > 0;
+            return jjtGetChild(jjtGetNumChildren() - 1);
+        }
+    }
+
+    interface VariableIdOwner extends JavaNode {
+
+        /** Returns the id of the declared variable. */
+        ASTVariableDeclaratorId getVarId();
+    }
+
 }

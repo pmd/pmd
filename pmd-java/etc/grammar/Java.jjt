@@ -1794,13 +1794,14 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" Type())*
+   Type()
    // TODO there may be annotations before the "..." of the varargs
    //  the ... is treated analogously to a pair of brackets
    //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
    [ "..." {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
+
 
 void ConstructorDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);
@@ -1927,15 +1928,10 @@ void AnnotatedClassOrInterfaceType() #void:
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
 void Type() #void:
+{}
 {
-    JavaccToken t;
-}
-{
- // lookahead to catch arrays of primitive types.
- // we can't lookahead for just PrimitiveType() "["
- // because the "[" may be preceded by annotations
- LOOKAHEAD(PrimitiveType() ArrayTypeDim() | <IDENTIFIER>) ReferenceType()
- | PrimitiveType()
+   PrimitiveType()        [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
+ | ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
 }
 
 void Dims() #ArrayDimensions:
@@ -2522,7 +2518,6 @@ void LambdaParameterList():
 void LambdaParameter():
 {
   boolean isVarType = false;
-  ASTLambdaParameter me = jjtThis;
   boolean isFinal = false;
 }
 {
@@ -2980,8 +2975,17 @@ void CatchClause() :
 {}
 {
   "catch"
-  "(" FormalParameter() ")"
+  "(" CatchParameter() ")"
   Block()
+}
+
+
+void CatchParameter():
+{boolean isFinal = false; boolean multi=false;}
+{
+   isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+   ( AnnotatedClassOrInterfaceType() ( "|" AnnotatedClassOrInterfaceType()  {multi=true;} )* ) #UnionType(multi)
+   VariableDeclaratorId()
 }
 
 void FinallyClause() :
