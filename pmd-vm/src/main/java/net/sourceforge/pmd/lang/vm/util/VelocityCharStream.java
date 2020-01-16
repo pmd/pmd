@@ -1,7 +1,7 @@
 
 package net.sourceforge.pmd.lang.vm.util;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.CharStream;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

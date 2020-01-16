@@ -21,10 +21,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
-    
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isA(node, String.class) || node.isArray()) {
+        if (!TypeHelper.isA(node, String.class) || node.hasArrayType()) {
             return data;
         }
         Node parent = node.jjtGetParent().jjtGetParent();

@@ -6,19 +6,25 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
 
 
 /**
  * Represents array type dimensions. This node may occur in several contexts:
  * <ul>
  * <li>In an {@linkplain ASTArrayType array type}</li>
- * <li>TODO At the end {@linkplain ASTMethodDeclarator method declarator}</li>
- * <li>TODO After a {@link ASTVariableDeclaratorId variable declarator id}</li>
+ * <li>As the {@linkplain ASTMethodDeclaration#getExtraDimensions() extra dimensions of a method declaration},
+ * after the formal parameter list. For example:
+ * <pre>public int newIntArray(int length) [];</pre>
+ * </li>
+ * <li>As the {@linkplain ASTVariableDeclaratorId#getExtraDimensions() extra dimensions of a variable declarator id},
+ * in a {@linkplain ASTVariableDeclarator variable declarator}. For example:
+ * <pre>public int a[], b[][];</pre>
+ * </li>
  * </ul>
  *
  * <p>Some dimensions may be initialized with an expression, but only in
- * the array type of an {@link ASTArrayAllocation array allocation expression}.
+ * the array type of an {@linkplain ASTArrayAllocation array allocation expression}.
  *
  * <pre class="grammar">
  *
@@ -26,7 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
  *
  * </pre>
  */
-public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, AtLeastOneChild {
+public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, AtLeastOneChildOfType<ASTArrayTypeDim> {
 
     ASTArrayDimensions(int id) {
         super(id);
@@ -55,6 +61,10 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
         return children(ASTArrayTypeDim.class).iterator();
     }
 
+    @Override
+    public ASTArrayTypeDim jjtGetChild(int index) {
+        return (ASTArrayTypeDim) super.jjtGetChild(index);
+    }
 
     /**
      * Returns the number of array dimensions of this type.

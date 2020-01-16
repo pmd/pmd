@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -19,7 +20,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTLambdaParameter extends AbstractJavaTypeNode {
+public final class ASTLambdaParameter extends AbstractJavaTypeNode
+    implements InternalInterfaces.VariableIdOwner {
 
     private boolean isVarargs;
     private boolean isFinal;
@@ -87,7 +89,9 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode {
     /**
      * Returns the declarator ID of this formal parameter.
      */
-    public ASTVariableDeclaratorId getVariableDeclaratorId() {
+    @Override
+    @NonNull
+    public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 
@@ -114,13 +118,13 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode {
      */
     @Override
     public Class<?> getType() {
-        return getVariableDeclaratorId().getType();
+        return getVarId().getType();
     }
 
 
     @Override
     public JavaTypeDefinition getTypeDefinition() {
-        return getVariableDeclaratorId().getTypeDefinition();
+        return getVarId().getTypeDefinition();
     }
 
 

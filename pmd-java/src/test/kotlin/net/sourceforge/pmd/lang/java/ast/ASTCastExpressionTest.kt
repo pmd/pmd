@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 class ASTCastExpressionTest : ParserTestSpec({
 
@@ -100,9 +99,9 @@ class ASTCastExpressionTest : ParserTestSpec({
 
 
             "(modifiers & InputEvent.Foo) != 0" should parseAs {
-                equalityExpr(BinaryOp.NE) {
+                infixExpr(BinaryOp.NE) {
                     parenthesized {
-                        andExpr {
+                        infixExpr(BinaryOp.AND) {
                             variableAccess("modifiers")
                             fieldAccess("Foo") {
                                 unspecifiedChild()
@@ -116,7 +115,7 @@ class ASTCastExpressionTest : ParserTestSpec({
 
 
             "(modifiers) != 0" should parseAs {
-                equalityExpr(BinaryOp.NE) {
+                infixExpr(BinaryOp.NE) {
                     parenthesized {
                         variableAccess("modifiers")
                     }
@@ -127,7 +126,7 @@ class ASTCastExpressionTest : ParserTestSpec({
 
 
             "(modifiers) * 0" should parseAs {
-                multiplicativeExpr(BinaryOp.MUL) {
+                infixExpr(BinaryOp.MUL) {
                     parenthesized {
                         variableAccess("modifiers")
                     }

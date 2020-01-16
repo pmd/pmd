@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -20,15 +19,15 @@ class ASTShiftExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "1 >> 2" should parseAs {
-                shiftExpr(RIGHT_SHIFT) {
+                infixExpr(RIGHT_SHIFT) {
                     int(1)
                     int(2)
                 }
             }
 
             "1 << 2 << 2" should parseAs {
-                shiftExpr(LEFT_SHIFT) {
-                    shiftExpr(LEFT_SHIFT) {
+                infixExpr(LEFT_SHIFT) {
+                    infixExpr(LEFT_SHIFT) {
                         int(1)
                         int(2)
                     }
@@ -37,8 +36,8 @@ class ASTShiftExpressionTest : ParserTestSpec({
             }
 
             "1 >>> 2 >>> 3" should parseAs {
-                shiftExpr(UNSIGNED_RIGHT_SHIFT) {
-                    shiftExpr(UNSIGNED_RIGHT_SHIFT) {
+                infixExpr(UNSIGNED_RIGHT_SHIFT) {
+                    infixExpr(UNSIGNED_RIGHT_SHIFT) {
                         int(1)
                         int(2)
                     }
@@ -48,9 +47,9 @@ class ASTShiftExpressionTest : ParserTestSpec({
 
             // this is a corner case whereby < width > matches type arguments
             "i < width >> 1" should parseAs {
-                compExpr(LT) {
+                infixExpr(LT) {
                     variableAccess("i")
-                    shiftExpr(RIGHT_SHIFT) {
+                    infixExpr(RIGHT_SHIFT) {
                         variableAccess("width")
                         int(1)
                     }
@@ -58,9 +57,9 @@ class ASTShiftExpressionTest : ParserTestSpec({
             }
 
             "1 >> 2 << 3" should parseAs {
-                shiftExpr(LEFT_SHIFT) {
+                infixExpr(LEFT_SHIFT) {
 
-                    shiftExpr(RIGHT_SHIFT) {
+                    infixExpr(RIGHT_SHIFT) {
                         int(1)
                         int(2)
                     }
@@ -70,10 +69,10 @@ class ASTShiftExpressionTest : ParserTestSpec({
             }
 
             "1 << 2 << 3 >> 4 >> 5" should parseAs {
-                shiftExpr(RIGHT_SHIFT) {
-                    shiftExpr(RIGHT_SHIFT) {
-                        shiftExpr(LEFT_SHIFT) {
-                            shiftExpr(LEFT_SHIFT) {
+                infixExpr(RIGHT_SHIFT) {
+                    infixExpr(RIGHT_SHIFT) {
+                        infixExpr(LEFT_SHIFT) {
+                            infixExpr(LEFT_SHIFT) {
                                 int(1)
                                 int(2)
                             }
@@ -91,8 +90,8 @@ class ASTShiftExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "2 >> 2 < 3" should parseAs {
-                compExpr(LT) {
-                    shiftExpr(RIGHT_SHIFT) {
+                infixExpr(LT) {
+                    infixExpr(RIGHT_SHIFT) {
                         int(2)
                         int(2)
                     }
@@ -101,10 +100,10 @@ class ASTShiftExpressionTest : ParserTestSpec({
             }
 
             "2 >> 2 + 3" should parseAs {
-                shiftExpr(RIGHT_SHIFT) {
+                infixExpr(RIGHT_SHIFT) {
                     int(2)
 
-                    additiveExpr(ADD) {
+                    infixExpr(ADD) {
                         int(2)
                         int(3)
                     }

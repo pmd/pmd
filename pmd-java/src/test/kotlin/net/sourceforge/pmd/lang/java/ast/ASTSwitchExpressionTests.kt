@@ -11,8 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J12__PREVIEW
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J13__PREVIEW
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 
@@ -158,21 +156,21 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "2 * switch (day) {default -> 6;}" should parseAs {
-                multiplicativeExpr(MUL) {
+                infixExpr(MUL) {
                     number()
                     switchExpr()
                 }
             }
 
             "switch (day) {default -> 6;} * 4" should parseAs {
-                multiplicativeExpr(MUL) {
+                infixExpr(MUL) {
                     switchExpr()
                     number()
                 }
             }
 
             "switch (day) {default -> 6;} + 6" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     switchExpr()
                     number()
                 }

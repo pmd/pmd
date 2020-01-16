@@ -202,11 +202,13 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialVersionUID(ASTFieldDeclaration field) {
-        return "serialVersionUID".equals(field.getVariableName())
-               && field.isStatic()
-               && field.isFinal()
-               && field.getType() == long.class;
+        return false; // FIXME, commented out because of incompatibility, needs typeres
+        //        return "serialVersionUID".equals(field.getVariableName())
+        //               && field.isStatic()
+        //               && field.isFinal()
+        //               && field.getType() == long.class;
     }
 
     /**
@@ -219,13 +221,15 @@ public class CommentRequiredRule extends AbstractCommentRule {
      * @return true if the field is a serialPersistentFields variable, otherwise false
      * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
      */
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
-        return "serialPersistentFields".equals(field.getVariableName())
-                && field.isPrivate()
-                && field.isStatic()
-                && field.isFinal()
-                && field.isArray()
-                && "ObjectStreamField".equals(field.jjtGetFirstToken().getImage()); // .getType() returns null
+        return false; // FIXME, commented out because of incompatibility, needs typeres
+        //        return "serialPersistentFields".equals(field.getVariableName())
+        //            && field.isPrivate()
+        //            && field.isStatic()
+        //            && field.isFinal()
+        //            && field.isArray()
+        //            && "ObjectStreamField".equals(field.jjtGetFirstToken().getImage()); // .getType() returns null
     }
 
     @Override

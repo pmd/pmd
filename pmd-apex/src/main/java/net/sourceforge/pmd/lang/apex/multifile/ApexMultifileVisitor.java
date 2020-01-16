@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorReducedAdapter;
 
 /**
@@ -32,6 +33,11 @@ public class ApexMultifileVisitor extends ApexParserVisitorReducedAdapter {
         stack.pop();
 
         return data;
+    }
+
+    @Override
+    public Object visit(ASTUserTrigger node, Object data) {
+        return data; // ignore
     }
 
 

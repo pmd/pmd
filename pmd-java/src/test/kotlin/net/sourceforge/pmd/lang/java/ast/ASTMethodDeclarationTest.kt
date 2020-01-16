@@ -6,7 +6,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.EnclosedDeclarationParsingCtx
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 
@@ -81,7 +80,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "void bar() throws IOException, java.io.Bar { }" should matchDeclaration<ASTMethodDeclaration> {
             it::isAbstract shouldBe false
-            it::getMethodName shouldBe "bar"
+            it::getName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
             it::getArity shouldBe 0
@@ -129,6 +128,80 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
     }
 
+    parserTest("Varargs can be annotated") {
+
+        "void bar(@Oha IOException @Aha ... java) { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getResultType shouldBe voidResult()
+
+            it::getFormalParameters shouldBe formalsList(1) {
+                child<ASTFormalParameter> {
+                    annotation("Oha")
+                    arrayType {
+                        classType("IOException")
+                        it::getDimensions shouldBe child {
+                            varargsArrayDim {
+                                annotation("Aha")
+                            }
+                        }
+                    }
+
+                    variableId("java")
+                }
+            }
+
+            it::getBody shouldBe block()
+        }
+
+
+        "void bar(@Oha IOException []@O[] @Aha ... java) { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getResultType shouldBe voidResult()
+
+            it::getFormalParameters shouldBe formalsList(1) {
+                child<ASTFormalParameter> {
+                    annotation("Oha")
+                    arrayType {
+                        classType("IOException")
+                        it::getDimensions shouldBe child {
+                            arrayDim { }
+                            arrayDim {
+                                annotation("O")
+                            }
+                            varargsArrayDim {
+                                annotation("Aha")
+                            }
+                        }
+                    }
+
+                    variableId("java")
+                }
+            }
+
+            it::getBody shouldBe block()
+        }
+    }
+
+
+    parserTest("Extra dimensions can be annotated") {
+
+        "void bar() [] @O[] { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getResultType shouldBe voidResult()
+
+            it::getFormalParameters shouldBe formalsList(0)
+
+            it::getExtraDimensions shouldBe child {
+                arrayDim {}
+                arrayDim {
+                    annotation("O")
+                }
+            }
+
+            it::getBody shouldBe block()
+        }
+    }
+
     parserTest("Annotation methods") {
 
         genClassHeader = "@interface Foo"
@@ -147,6 +220,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     formalsList(0)
                 }
             }
+
             "int bar() default 2;" should parseAs {
                 annotationMethod {
                     it::getResultType shouldBe resultType {
@@ -155,6 +229,22 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe defaultValue { int(2) }
+                }
+            }
+
+            "int bar() @NonZero [];" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        primitiveType(PrimitiveType.INT)
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe null
+                    it::getExtraDimensions shouldBe child {
+                        arrayDim {
+                            annotation("NonZero")
+                        }
+                    }
                 }
             }
 
@@ -176,6 +266,9 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     }
                     it::getFormalParameters shouldBe formalsList(0)
 
+                    it::getExtraDimensions shouldBe child {
+                        arrayDim {}
+                    }
                     it::getDefaultClause shouldBe defaultValue {
                         memberValueArray {
                             annotation("Override")
@@ -195,7 +288,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "void bar(@A Foo this);" should matchDeclaration<ASTMethodDeclaration> {
             it::isAbstract shouldBe false
-            it::getMethodName shouldBe "bar"
+            it::getName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
             // notice that arity is zero
@@ -221,7 +314,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "void bar(@A Foo this, int other);" should matchDeclaration<ASTMethodDeclaration> {
             it::isAbstract shouldBe false
-            it::getMethodName shouldBe "bar"
+            it::getName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
             it::getArity shouldBe 1
@@ -276,5 +369,4 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             block()
         }
     }
-
 })

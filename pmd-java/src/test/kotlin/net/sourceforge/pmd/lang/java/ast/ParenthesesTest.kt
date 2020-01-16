@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 /**
  * @author Clément Fournier
@@ -93,14 +91,14 @@ class ParenthesesTest : ParserTestSpec({
             "int a = ((1 + 2) + f);" should matchStmt<ASTLocalVariableDeclaration> {
                 primitiveType(INT)
                 variableDeclarator("a") {
-                    it::getInitializer shouldBe additiveExpr(BinaryOp.ADD) {
+                    it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
                         it::getParenthesisDepth shouldBe 1
                         it::isParenthesized shouldBe true
 
                         it.tokenList().map { it.image } shouldBe
                                 listOf("(", "(", "1", "+", "2", ")", "+", "f", ")")
 
-                        additiveExpr(BinaryOp.ADD) {
+                        infixExpr(BinaryOp.ADD) {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
 
@@ -123,13 +121,13 @@ class ParenthesesTest : ParserTestSpec({
             "int a = (1 + (2 + f));" should matchStmt<ASTLocalVariableDeclaration> {
                 primitiveType(INT)
                 variableDeclarator("a") {
-                    it::getInitializer shouldBe additiveExpr(BinaryOp.ADD) {
+                    it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
                         it::getParenthesisDepth shouldBe 1
                         it::isParenthesized shouldBe true
 
                         int(1)
 
-                        additiveExpr(BinaryOp.ADD) {
+                        infixExpr(BinaryOp.ADD) {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
 

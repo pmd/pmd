@@ -9,8 +9,8 @@
     <property name="base-ast-package" value="net.sourceforge.pmd.lang.ast" />
     <property name="base-ast-package.dir" value="${target}/net/sourceforge/pmd/lang/ast" />
 
-    <property name="target-package" value="${base-ast-package}.impl.javacc" />
-    <property name="target-package.dir" value="${base-ast-package.dir}/impl/javacc" />
+    <property name="target-package" value="${base-ast-package}" />
+    <property name="target-package.dir" value="${base-ast-package.dir}" />
 
 
     <target name="alljavacc"
@@ -114,7 +114,7 @@
 
         <replace file="${tmp-package.dir}/TokenMgrError.java">
             <replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
-            <replacevalue>&quot;Lexical error in file &quot; + net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager.getFileName() + &quot; at line &quot;</replacevalue>
+            <replacevalue>&quot;Lexical error in file &quot; + net.sourceforge.pmd.lang.ast.AbstractTokenManager.getFileName() + &quot; at line &quot;</replacevalue>
         </replace>
 
         <move overwrite="true"

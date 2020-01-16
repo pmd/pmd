@@ -13,7 +13,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -29,13 +29,14 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 @Ignore("metrics are like rules, they've not been ported to the new grammar yet")
 public class JavaMetricsProviderTest {
 
+    private final JavaParsingHelper java8 = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("1.8");
+
     @Test
     public void testComputeAllMetrics() {
 
-        LanguageMetricsProvider<?, ?> provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
+        LanguageMetricsProvider<?, ?> provider = java8.getHandler("1.8").getLanguageMetricsProvider();
 
-        ASTCompilationUnit acu = ParserTstUtil.parseAndTypeResolveJava("1.8",
-                                                                       "class Foo { void bar() { System.out.println(1); } }");
+        ASTCompilationUnit acu = java8.parse("class Foo { void bar() { System.out.println(1); } }");
 
         ASTAnyTypeDeclaration type = acu.getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
 
@@ -58,16 +59,16 @@ public class JavaMetricsProviderTest {
     @Test
     public void testThereIsNoMemoisation() {
 
-        LanguageMetricsProvider<?, ?> provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
+        LanguageMetricsProvider<?, ?> provider = java8.getHandler("1.8").getLanguageMetricsProvider();
 
-        ASTAnyTypeDeclaration tdecl1 = ParserTstUtil.parseAndTypeResolveJava("1.8",
-                                                                             "class Foo { void bar() { System.out.println(1); } }").getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+        ASTAnyTypeDeclaration tdecl1 = java8.parse("class Foo { void bar() { System.out.println(1); } }")
+                                            .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
 
         Map<MetricKey<?>, Double> reference = provider.computeAllMetricsFor(tdecl1);
 
-        ASTAnyTypeDeclaration tdecl2 = ParserTstUtil.parseAndTypeResolveJava("1.8",
-                                                                             // same name, different characteristics
-                                                                             "class Foo { void bar(){} \npublic void hey() { System.out.println(1); } }").getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+        // same name, different characteristics
+        ASTAnyTypeDeclaration tdecl2 = java8.parse("class Foo { void bar(){} \npublic void hey() { System.out.println(1); } }")
+                                            .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
 
         Map<MetricKey<?>, Double> secondTest = provider.computeAllMetricsFor(tdecl2);
 

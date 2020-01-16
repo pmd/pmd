@@ -179,7 +179,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 }
 
                 if (!isAllowedResourceType(type) && !isMethodParameter(var, node)) {
-                    ids.put(var.getVariableId(), type);
+                    ids.put(var.getVarId(), type);
                 }
             }
         }

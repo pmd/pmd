@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,

@@ -15,7 +15,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTEnumConstant extends AbstractJavaNode implements Annotatable {
+public final class ASTEnumConstant extends AbstractJavaNode
+    implements Annotatable,
+               InternalInterfaces.VariableIdOwner {
 
 
     ASTEnumConstant(int id) {
@@ -38,13 +40,14 @@ public final class ASTEnumConstant extends AbstractJavaNode implements Annotatab
     }
 
 
-    public ASTVariableDeclaratorId getId() {
+    @Override
+    public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 
     @Override
     public String getImage() {
-        return getId().getImage();
+        return getVarId().getImage();
     }
 
     /**

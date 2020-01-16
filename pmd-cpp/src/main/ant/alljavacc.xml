@@ -36,7 +36,7 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/cpp/ast/CppParserTokenManager.java"
                  token="class CppParserTokenManager"
-                 value="class CppParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
+                 value="class CppParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
         <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />

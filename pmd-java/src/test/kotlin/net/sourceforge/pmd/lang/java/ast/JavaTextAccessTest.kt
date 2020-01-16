@@ -8,7 +8,6 @@ import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 // Use a string for comparison because CharSequence are not necessarily
 // equatable to string
@@ -70,10 +69,10 @@ class JavaTextAccessTest : ParserTestSpec({
                 variableDeclarator("a") {
                     it.textStr shouldBe "a = ((1 + 2) + f)"
 
-                    it::getInitializer shouldBe additiveExpr(BinaryOp.ADD) {
+                    it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
                         it.textStr shouldBe "((1 + 2) + f)"
 
-                        additiveExpr(BinaryOp.ADD) {
+                        infixExpr(BinaryOp.ADD) {
                             it.textStr shouldBe "(1 + 2)"
 
                             int(1) {

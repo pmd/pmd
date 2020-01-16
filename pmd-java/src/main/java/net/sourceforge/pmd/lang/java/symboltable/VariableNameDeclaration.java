@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
@@ -82,6 +83,8 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
             return (AccessNode) node.jjtGetParent().jjtGetParent().jjtGetParent();
         } else if (node.jjtGetParent() instanceof ASTEnumConstant) {
             return (AccessNode) node.jjtGetParent().jjtGetParent().jjtGetParent();
+        } else if (node.jjtGetParent() instanceof ASTCatchParameter) {
+            return (AccessNode) node.jjtGetParent();
         }
         return (AccessNode) node.jjtGetParent().jjtGetParent();
     }

@@ -252,6 +252,110 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((MethodLikeNode) node, data);
     }
 
+    @Override
+    public Object visit(ASTAssertStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTBlock node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTBreakStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTContinueStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTDoStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTEmptyStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTExpressionStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTForeachStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTForStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTIfStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTLabeledStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTLocalClassStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTReturnStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTStatementExpressionList node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSynchronizedStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTThrowStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTTryStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTWhileStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
+        return visit((ASTStatement) node, data);
+    }
 
     public Object visit(ASTStatement node, Object data) {
         return visit((JavaNode) node, data);

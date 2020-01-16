@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 
@@ -15,8 +14,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
             "1 * 2 * 3" should parseAs {
-                multiplicativeExpr(MUL) {
-                    multiplicativeExpr(MUL) {
+                infixExpr(MUL) {
+                    infixExpr(MUL) {
                         int(1)
                         int(2)
                     }
@@ -25,8 +24,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
             }
 
             "1 / 2 / -4" should parseAs {
-                multiplicativeExpr(DIV) {
-                    multiplicativeExpr(DIV) {
+                infixExpr(DIV) {
+                    infixExpr(DIV) {
                         int(1)
                         int(2)
                     }
@@ -37,8 +36,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
             }
 
             "1 % 2 % 3" should parseAs {
-                multiplicativeExpr(MOD) {
-                    multiplicativeExpr(MOD) {
+                infixExpr(MOD) {
+                    infixExpr(MOD) {
                         int(1)
                         int(2)
                     }
@@ -52,9 +51,9 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "1 * 2 / 3 % 2" should parseAs {
-                multiplicativeExpr(MOD) {
-                    multiplicativeExpr(DIV) {
-                        multiplicativeExpr(MUL) {
+                infixExpr(MOD) {
+                    infixExpr(DIV) {
+                        infixExpr(MUL) {
                             int(1)
                             int(2)
                         }

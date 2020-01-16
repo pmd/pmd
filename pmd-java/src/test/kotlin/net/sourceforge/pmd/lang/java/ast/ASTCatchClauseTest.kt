@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.shouldBe
+import io.kotlintest.matchers.string.shouldContain
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -12,10 +12,14 @@ class ASTCatchClauseTest : ParserTestSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
-        expectParseException("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly") {
-            parseStatement<ASTTryStatement>("try { } catch (IOException | AssertionError e) { }")
-        }
 
+        inContext(StatementParsingCtx) {
+
+            "try { } catch (IOException | AssertionError e) { }" should throwParseException {
+                it.message.shouldContain("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly")
+            }
+
+        }
     }
 
     parserTest("Test single type", javaVersions = J1_5..Latest) {
@@ -23,11 +27,15 @@ class ASTCatchClauseTest : ParserTestSpec({
         importedTypes += IOException::class.java
 
         "try { } catch (IOException ioe) { }" should matchStmt<ASTTryStatement> {
-            child<ASTBlock> { }
-            child<ASTCatchClause> {
-                it.isMulticatchStatement shouldBe false
+            it::getBody shouldBe block { }
+            catchClause("ioe") {
+                catchFormal("ioe") {
+                    it::isMulticatch shouldBe false
+                    it::getTypeNode shouldBe classType("IOException")
 
-                unspecifiedChildren(2)
+                    variableId("ioe")
+                }
+                it::getBody shouldBe block { }
             }
         }
 
@@ -38,32 +46,49 @@ class ASTCatchClauseTest : ParserTestSpec({
         importedTypes += IOException::class.java
 
         "try { } catch (IOException | AssertionError e) { }" should matchStmt<ASTTryStatement> {
-            child<ASTBlock> { }
-            child<ASTCatchClause> {
-                it.isMulticatchStatement shouldBe true
+            it::getBody shouldBe block { }
+            catchClause("e") {
+                catchFormal("e") {
+                    it::isMulticatch shouldBe true
 
-                val types = fromChild<ASTFormalParameter, List<ASTType>> {
-                    val ioe = child<ASTType>(ignoreChildren = true) {
-                        it.type shouldBe IOException::class.java
+                    it::getTypeNode shouldBe unionType {
+                        classType("IOException")
+                        classType("AssertionError")
                     }
 
-                    val aerr = child<ASTType>(ignoreChildren = true) {
-                        it.type shouldBe AssertionError::class.java
-                    }
-
-                    child<ASTVariableDeclaratorId> {
-                        it.image shouldBe "e"
-                    }
-
-                    listOf(ioe, aerr)
+                    variableId("e")
                 }
 
-                it.caughtExceptionTypeNodes.shouldContainExactly(types)
-                it.caughtExceptionTypes.shouldContainExactly(types.map { it.type })
 
-                it.exceptionName shouldBe "e"
+                it::getBody shouldBe block { }
+            }
+        }
 
-                child<ASTBlock> { }
+    }
+
+    parserTest("Test annotated multicatch", javaVersions = J1_8..Latest) {
+
+        importedTypes += IOException::class.java
+
+        "try { } catch (@B IOException | @A AssertionError e) { }" should matchStmt<ASTTryStatement> {
+            it::getBody shouldBe block { }
+            catchClause("e") {
+                catchFormal("e") {
+                    it::isMulticatch shouldBe true
+
+                    annotation("B") // not a type annotation
+
+                    unionType {
+                        classType("IOException")
+                        classType("AssertionError") {
+                            annotation("A")
+                        }
+                    }
+
+                    variableId("e")
+                }
+
+                block {}
             }
         }
 

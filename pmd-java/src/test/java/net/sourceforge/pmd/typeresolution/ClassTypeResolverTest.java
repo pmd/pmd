@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static junit.framework.TestCase.assertTrue;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.selectNodes;
+import static net.sourceforge.pmd.lang.java.JavaParsingHelper.convertList;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition.forClass;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,11 +33,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -142,12 +138,19 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
 @Ignore
 public class ClassTypeResolverTest {
 
+    private final JavaParsingHelper java8 = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("1.8");
+    private final JavaParsingHelper java4 = java8.withDefaultVersion("1.4");
+    private final JavaParsingHelper java5 = java8.withDefaultVersion("1.5");
+    private final JavaParsingHelper java7 = java8.withDefaultVersion("1.7");
+    private final JavaParsingHelper java11 = java8.withDefaultVersion("11");
+    private final JavaParsingHelper java9 = java8.withDefaultVersion("9");
+
+
     @Test
     public void stackOverflowTest() {
         // See #831 https://github.com/pmd/pmd/issues/831 - [java] StackOverflow in JavaTypeDefinitionSimple.toString
-        parseAndTypeResolveForClass15(PmdStackOverflow.class);
+        java5.parseClass(PmdStackOverflow.class);
     }
-
 
     @Test
     public void testClassNameExists() {
@@ -160,7 +163,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void acceptanceTest() {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ArrayListFound.class);
+        ASTCompilationUnit acu = java5.parseClass(ArrayListFound.class);
         assertEquals(ArrayListFound.class, acu.getFirstDescendantOfType(ASTTypeDeclaration.class).getType());
         assertEquals(ArrayListFound.class,
                      acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
@@ -170,9 +173,8 @@ public class ClassTypeResolverTest {
         assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTType.class).getType());
         assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTVariableDeclaratorId.class).getType());
         assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTVariableDeclarator.class).getType());
-        assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTFieldDeclaration.class).getType());
 
-        acu = parseAndTypeResolveForClass15(DefaultJavaLangImport.class);
+        acu = java5.parseClass(DefaultJavaLangImport.class);
         assertEquals(String.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType());
         assertEquals(Override.class, acu.findDescendantsOfType(ASTName.class).get(1).getType());
     }
@@ -183,7 +185,7 @@ public class ClassTypeResolverTest {
      */
     @Test
     public void testEnumAnonymousInnerClass() {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(EnumWithAnonymousInnerClass.class);
+        ASTCompilationUnit acu = java5.parseClass(EnumWithAnonymousInnerClass.class);
         // try it in jshell, an enum constant with a body is compiled to an anonymous class,
         // the counter is shared with other anonymous classes of the enum
         Class<?> enumAnon = acu.getFirstDescendantOfType(ASTAnonymousClassDeclaration.class).getQualifiedName().getType();
@@ -202,13 +204,13 @@ public class ClassTypeResolverTest {
     @Test
     public void testNPEInJavaTypeDefinitionToString() {
         // Just parsing this file throws a NPE
-        parseAndTypeResolveForClass(JavaTypeDefinitionToStringNPE.class, "1.8");
+        java8.parseClass(JavaTypeDefinitionToStringNPE.class);
     }
 
 
     @Test
     public void testExtraTopLevelClass() throws ClassNotFoundException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ExtraTopLevelClass.class);
+        ASTCompilationUnit acu = java5.parseClass(ExtraTopLevelClass.class);
         Class<?> theExtraTopLevelClass = Class
                 .forName("net.sourceforge.pmd.typeresolution.testdata.TheExtraTopLevelClass");
         // First class
@@ -226,7 +228,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testInnerClass() throws ClassNotFoundException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(InnerClass.class);
+        ASTCompilationUnit acu = java5.parseClass(InnerClass.class);
         Class<?> theInnerClass = Class.forName("net.sourceforge.pmd.typeresolution.testdata.InnerClass$TheInnerClass");
         // Outer class
         ASTTypeDeclaration typeDeclaration = acu.getFirstDescendantOfType(ASTTypeDeclaration.class);
@@ -251,11 +253,11 @@ public class ClassTypeResolverTest {
      */
     @Test
     public void testInnerClassNotCompiled() throws Exception {
-        Node acu = parseAndTypeResolveForString("public class TestInnerClass {\n" + "    public void foo() {\n"
+        Node acu = java8.parse("public class TestInnerClass {\n" + "    public void foo() {\n"
                                                         + "        Statement statement = new Statement();\n" + "    "
                                                         + "}\n" + "    static class Statement {\n"
                                                         + "    }\n"
-                                                        + "}", "1.8");
+                                                        + "}");
         ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
     }
@@ -263,7 +265,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testAnonymousClassFromInterface() throws Exception {
-        Node acu = parseAndTypeResolveForClass(AnonymousClassFromInterface.class, "1.8");
+        Node acu = java8.parseClass(AnonymousClassFromInterface.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
         TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
         Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
@@ -273,7 +275,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testNestedAnonymousClass() throws Exception {
-        Node acu = parseAndTypeResolveForClass(NestedAnonymousClass.class, "1.8");
+        Node acu = java8.parseClass(NestedAnonymousClass.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
         ASTAllocationExpression nestedAllocation
                 = allocationExpression.getFirstDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class) // get the declaration (boundary)
@@ -286,7 +288,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testAnonymousExtendingObject() throws Exception {
-        Node acu = parseAndTypeResolveForClass(AnoymousExtendingObject.class, "1.8");
+        Node acu = java8.parseClass(AnoymousExtendingObject.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
         TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
         Assert.assertTrue(Object.class.isAssignableFrom(child.getType()));
@@ -295,7 +297,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testAnonymousInnerClass() throws ClassNotFoundException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(AnonymousInnerClass.class);
+        ASTCompilationUnit acu = java5.parseClass(AnonymousInnerClass.class);
         Class<?> theAnonymousInnerClass = Class
                 .forName("net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass$1");
         // Outer class
@@ -462,9 +464,12 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testUnaryNumericPromotion() throws JaxenException {
-        List<ASTExpression> expressions = selectNodes(Promotion.class, ASTExpression.class,
-                                                      "//Block[preceding-sibling::MethodDeclarator[@Image = "
-                                                              + "'unaryNumericPromotion']]//Expression[UnaryExpression]");
+        ASTCompilationUnit acu = java5.parseClass(Promotion.class);
+        List<ASTExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'unaryNumericPromotion']]//Expression[UnaryExpression]"),
+                ASTExpression.class);
         int index = 0;
 
         assertEquals(Integer.TYPE, expressions.get(index++).getType());
@@ -482,9 +487,12 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testBinaryNumericPromotion() throws JaxenException {
-        List<ASTExpression> expressions = selectNodes(Promotion.class, ASTExpression.class,
-                                                      "//Block[preceding-sibling::MethodDeclarator[@Image = "
-                                                              + "'binaryNumericPromotion']]//Expression[AdditiveExpression]");
+        ASTCompilationUnit acu = java5.parseClass(Promotion.class);
+        List<ASTExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'binaryNumericPromotion']]//Expression[AdditiveExpression]"),
+                ASTExpression.class);
         int index = 0;
 
         // LHS = byte
@@ -551,8 +559,11 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testBinaryStringPromotion() throws JaxenException {
-        List<ASTExpression> expressions = selectNodes(Promotion.class, ASTExpression.class,
-                                                      "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryStringPromotion']]//Expression");
+        ASTCompilationUnit acu = java5.parseClass(Promotion.class);
+        List<ASTExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryStringPromotion']]//Expression"),
+                ASTExpression.class);
         int index = 0;
 
         assertEquals(String.class, expressions.get(index++).getType());
@@ -582,8 +593,11 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testBinaryLogicalOperators() throws JaxenException {
-        List<ASTExpression> expressions = selectNodes(Operators.class, ASTExpression.class,
-                                                      "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryLogicalOperators']]//Expression");
+        ASTCompilationUnit acu = java5.parseClass(Operators.class);
+        List<ASTExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryLogicalOperators']]//Expression"),
+                ASTExpression.class);
         int index = 0;
 
         assertEquals(Boolean.TYPE, expressions.get(index++).getType());
@@ -607,9 +621,13 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testUnaryNumericOperators() throws JaxenException {
-        List<TypeNode> expressions = selectNodes(Operators.class, TypeNode.class,
-                                               "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]"
-                                                       + "//*[self::Expression or self::PostfixExpression or self::PreIncrementExpression or self::PreDecrementExpression]");
+        ASTCompilationUnit acu = java5.parseClass(Operators.class);
+        List<TypeNode> expressions = new ArrayList<>();
+        expressions.addAll(convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]"
+                                + "//*[self::Expression or self::PostfixExpression or self::PreIncrementExpression or self::PreDecrementExpression]"),
+                TypeNode.class));
 
         int index = 0;
         assertEquals(Integer.TYPE, expressions.get(index++).getType());
@@ -626,8 +644,11 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testBinaryNumericOperators() throws JaxenException {
-        List<ASTExpression> expressions = selectNodes(Operators.class, ASTExpression.class,
-                                                      "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryNumericOperators']]//Expression");
+        ASTCompilationUnit acu = java5.parseClass(Operators.class);
+        List<ASTExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryNumericOperators']]//Expression"),
+                ASTExpression.class);
         int index = 0;
 
         assertEquals(Integer.TYPE, expressions.get(index++).getType());
@@ -646,9 +667,12 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testAssignmentOperators() throws JaxenException {
-        List<ASTStatementExpression> expressions = selectNodes(Operators.class, ASTStatementExpression.class,
-                                                               "//Block[preceding-sibling::MethodDeclarator[@Image = "
-                                                                       + "'assignmentOperators']]//StatementExpression");
+        ASTCompilationUnit acu = java5.parseClass(Operators.class);
+        List<ASTStatementExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'assignmentOperators']]//StatementExpression"),
+                ASTStatementExpression.class);
         int index = 0;
 
         assertEquals(Long.TYPE, expressions.get(index++).getType());
@@ -679,7 +703,7 @@ public class ClassTypeResolverTest {
                 + "        java.util.StringTokenizer st = new StringTokenizer(\"a.b.c.d\", \".\");\n"
                 + "        while (st.hasMoreTokens()) {\n" + "            System.out.println(st.nextToken());\n"
                 + "        }\n" + "    }\n" + "}";
-        ASTCompilationUnit acu = parseAndTypeResolveForString(source, "1.5");
+        ASTCompilationUnit acu = java5.parse(source);
         List<ASTName> names = acu.findDescendantsOfType(ASTName.class);
         ASTName theStringTokenizer = null;
         for (ASTName name : names) {
@@ -702,7 +726,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testThisExpression() {
-        ASTCompilationUnit compilationUnit = parseAndTypeResolveForClass15(ThisExpression.class);
+        ASTCompilationUnit compilationUnit = java5.parseClass(ThisExpression.class);
         // need to cross borders, to find expressions of the nested classes
         List<ASTThisExpression> expressions = compilationUnit.findDescendantsOfType(ASTThisExpression.class, true);
 
@@ -872,15 +896,11 @@ public class ClassTypeResolverTest {
         ASTVariableDeclaratorId aID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(aID);
         assertEquals("a", aID.getImage());
-        assertFalse(aID.isArray());
-        assertEquals(0, aID.getArrayDepth());
         assertEquals(int[].class, aID.getType());
 
         ASTVariableDeclaratorId bID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(bID);
         assertEquals("b", bID.getImage());
-        assertTrue(bID.isArray());
-        assertEquals(1, bID.getArrayDepth());
         assertEquals(int[][].class, bID.getType());
     }
 
@@ -902,15 +922,11 @@ public class ClassTypeResolverTest {
         ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(cID);
         assertEquals("c", cID.getImage());
-        assertFalse(cID.isArray());
-        assertEquals(0, cID.getArrayDepth());
         assertEquals(String[].class, cID.getType());
 
         ASTVariableDeclaratorId dID = declaration.findChildrenOfType(ASTVariableDeclarator.class).get(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(dID);
         assertEquals("d", dID.getImage());
-        assertTrue(dID.isArray());
-        assertEquals(1, dID.getArrayDepth());
         assertEquals(String[][].class, dID.getType());
     }
 
@@ -1836,7 +1852,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testNestedAllocationExpressions() {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(NestedAllocationExpressions.class);
+        ASTCompilationUnit acu = java5.parseClass(NestedAllocationExpressions.class);
         List<ASTAllocationExpression> allocs = acu.findDescendantsOfType(ASTAllocationExpression.class);
 
         assertFalse(allocs.get(0).isAnonymousClass());
@@ -1850,48 +1866,48 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testAnnotatedTypeParams() {
-        parseAndTypeResolveForString("public class Foo { public static <T extends @NonNull Enum<?>> T getEnum() { return null; } }", "1.8");
+        java8.parse("public class Foo { public static <T extends @NonNull Enum<?>> T getEnum() { return null; } }");
     }
 
 
     @Test
     public void testMethodOverrides() throws Exception {
-        parseAndTypeResolveForClass(SubTypeUsage.class, "1.8");
+        java8.parseClass(SubTypeUsage.class);
     }
 
 
     @Test
     public void testMethodWildcardParam() throws Exception {
-        parseAndTypeResolveForClass(MethodGenericParam.class, "1.8");
+        java8.parseClass(MethodGenericParam.class);
     }
 
 
     @Test
     public void testAbstractMethodReturnType() throws Exception {
-        parseAndTypeResolveForClass(AbstractReturnTypeUseCase.class, "1.8");
+        java8.parseClass(AbstractReturnTypeUseCase.class);
     }
 
 
     @Test
     public void testMethodOverloaded() throws Exception {
-        parseAndTypeResolveForClass(OverloadedMethodsUsage.class, "1.8");
+        java8.parseClass(OverloadedMethodsUsage.class);
     }
 
 
     @Test
     public void testVarArgsMethodUseCase() throws Exception {
-        parseAndTypeResolveForClass(VarArgsMethodUseCase.class, "1.8");
+        java8.parseClass(VarArgsMethodUseCase.class);
     }
 
 
     @Test
     public void testLocalGenericClass() throws Exception {
-        parseAndTypeResolveForClass(LocalGenericClass.class, "9");
+        java9.parseClass(LocalGenericClass.class);
     }
 
     @Test
     public void testMethodCallExpressionTypes() throws Exception {
-        ASTCompilationUnit cu = parseAndTypeResolveForClass(MethodCallExpressionTypes.class, "11");
+        ASTCompilationUnit cu = java11.parseClass(MethodCallExpressionTypes.class);
         ASTPrimaryExpression expr = cu.getFirstDescendantOfType(ASTPrimaryExpression.class);
         assertEquals(forClass(String.class), expr.getTypeDefinition());
         assertEquals(forClass(Objects.class), expr.getFirstChildOfType(ASTPrimaryPrefix.class).getTypeDefinition());
@@ -1907,30 +1923,29 @@ public class ClassTypeResolverTest {
     }
 
 
-    private ASTCompilationUnit parseAndTypeResolveForClass15(Class<?> clazz) {
-        return parseAndTypeResolveForClass(clazz, "1.5");
+    private <T> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(source, "1.5", resultType, xpath);
+    }
+
+    // This is the master overload, others just default the parameters
+    private <T> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
+        ASTCompilationUnit acu = java4.parse(source, version);
+        return convertList(acu.findChildNodesWithXPath(xpath), resultType);
     }
 
 
-    // Note: If you're using Eclipse or some other IDE to run this test, you
-    // _must_ have the src/test/java folder in
-    // the classpath. Normally the IDE doesn't put source directories themselves
-    // directly in the classpath, only
-    // the output directories are in the classpath.
-    private ASTCompilationUnit parseAndTypeResolveForClass(Class<?> clazz, String version) {
-        return parseAndTypeResolveForString(ParserTstUtil.getSourceFromClass(clazz), version);
+    private <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType) {
+        return java5.parseClass(source).findDescendantsOfType(resultType);
+    }
+
+    private <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
+        return selectNodes(source, "1.5", resultType, xpath);
     }
 
 
-    private ASTCompilationUnit parseAndTypeResolveForString(String source, String version) {
-        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                                                                        .getVersion(version).getLanguageVersionHandler();
-        ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler
-                .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
-        languageVersionHandler.getQualifiedNameResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
-        languageVersionHandler.getSymbolFacade().start(acu);
-        languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
-        return acu;
+    private <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
+        ASTCompilationUnit acu = java4.parseClass(source, version);
+        return convertList(acu.findChildNodesWithXPath(xpath), resultType);
     }
 
 

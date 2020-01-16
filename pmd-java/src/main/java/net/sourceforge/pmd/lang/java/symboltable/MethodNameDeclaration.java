@@ -120,10 +120,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         int hash = declaration.getName().hashCode() * 31 + declaration.getArity();
 
         for (ASTFormalParameter myParam : declaration.getFormalParameters()) {
-            if (!myParam.isTypeInferred()) {
-                String myTypeImg = myParam.getTypeNode().getTypeImage();
-                hash = hash * 31 + myTypeImg.hashCode();
-            }
+            String myTypeImg = myParam.getTypeNode().getTypeImage();
+            hash = hash * 31 + myTypeImg.hashCode();
         }
 
         return hash;

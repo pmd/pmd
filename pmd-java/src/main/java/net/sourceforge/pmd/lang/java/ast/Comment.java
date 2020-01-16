@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 public abstract class Comment extends AbstractNode {
     // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
@@ -24,16 +24,19 @@ public abstract class Comment extends AbstractNode {
     // Same as "\\R" - but \\R is only available with java8+
     static final Pattern NEWLINES_PATTERN = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
-    protected Comment(GenericToken t) {
+    protected Comment(JavaccToken t) {
         super(-1);
 
         setImage(t.getImage());
+        jjtSetFirstToken(t);
+        jjtSetLastToken(t);
     }
 
     @Override
     public String toString() {
         return getImage();
     }
+
 
     /**
      * Filters the comment by removing the leading comment marker (like {@code *}) of each line

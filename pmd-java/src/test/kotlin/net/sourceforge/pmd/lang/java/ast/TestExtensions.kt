@@ -7,6 +7,7 @@ import io.kotlintest.should
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
@@ -56,6 +57,17 @@ fun TreeNodeWrapper<Node, *>.annotation(name: String, spec: NodeSpec<ASTAnnotati
             spec()
         }
 
+fun TreeNodeWrapper<Node, *>.catchClause(name: String, spec: NodeSpec<ASTCatchClause> = EmptyAssertions) =
+        child<ASTCatchClause> {
+            it.parameter::getName shouldBe name
+            spec()
+        }
+
+fun TreeNodeWrapper<Node, *>.catchFormal(name: String, spec: NodeSpec<ASTCatchParameter> = EmptyAssertions) =
+        child<ASTCatchParameter> {
+            it::getName shouldBe name
+            spec()
+        }
 
 fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumConstant> = EmptyAssertions) =
         child<ASTEnumConstant> {
@@ -68,15 +80,20 @@ fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpressio
             it::getQualifier shouldBe qualifier()
         }
 
-fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
-        child<ASTVariableDeclaratorId>(ignoreChildren = true) {
+fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<ASTVariableDeclaratorId> = EmptyAssertions) =
+        child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getVariableName shouldBe name
-            otherAssertions(it)
+            otherAssertions()
         }
 
 fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: NodeSpec<ASTVariableDeclarator> = EmptyAssertions) =
         child<ASTVariableDeclarator> {
-            it::getVariableId shouldBe variableId(name)
+            it::getVarId shouldBe variableId(name)
+            spec()
+        }
+
+fun TreeNodeWrapper<Node, *>.varDeclarator(spec: NodeSpec<ASTVariableDeclarator> = EmptyAssertions) =
+        child<ASTVariableDeclarator> {
             spec()
         }
 
@@ -283,6 +300,11 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
             contents()
         }
 
+fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyAssertions) =
+        child<ASTUnionType>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
 
 fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression, ASTType>) =
         child<ASTTypeExpression>(ignoreChildren = contents == EmptyAssertions) {
@@ -296,7 +318,7 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
         }
 
 
-fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getModelConstant shouldBe type
             it::getTypeImage shouldBe type.token
@@ -332,7 +354,7 @@ fun TreeNodeWrapper<Node, *>.classLiteral(contents: ValuedNodeSpec<ASTClassLiter
 
 fun TreeNodeWrapper<Node, *>.ambiguousName(image: String, contents: NodeSpec<ASTAmbiguousName> = EmptyAssertions) =
         child<ASTAmbiguousName> {
-            it::getImage shouldBe image
+            it::getName shouldBe image
             contents()
         }
 
@@ -342,29 +364,12 @@ fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: ValuedNodeS
             it::getMemberValue shouldBe contents()
         }
 
-// TODO inline those more specific methods and remove them (infixExpr is enough)
-//  not in this PR to reduce diff
-
-fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
 
 fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSpec<ASTAssignmentExpression> = EmptyAssertions) =
         child<ASTAssignmentExpression>(ignoreChildren = assertions == EmptyAssertions) {
             it::getOperator shouldBe op
             assertions()
         }
-
-fun TreeNodeWrapper<Node, *>.equalityExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
-
-fun TreeNodeWrapper<Node, *>.shiftExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
-
-fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
 
 
 fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
@@ -374,15 +379,30 @@ fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInf
         }
 
 
-fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(BinaryOp.INSTANCEOF, assertions)
 
-fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(BinaryOp.AND, assertions)
+fun TreeNodeWrapper<Node, *>.blockLambda(assertions: ValuedNodeSpec<ASTLambdaExpression, ASTBlock?> = {null}) =
+        child<ASTLambdaExpression> {
+            it::isBlockBody shouldBe true
+            it::isExpressionBody shouldBe false
+            val block = assertions()
+            if (block == null) unspecifiedChildren(2)
+            else it::getBlockBody shouldBe block
+        }
 
 
-fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
+fun TreeNodeWrapper<Node, *>.lambdaParam(assertions: NodeSpec<ASTLambdaParameter> = EmptyAssertions) =
+        child<ASTLambdaParameter> {
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.exprLambda(assertions: ValuedNodeSpec<ASTLambdaExpression, ASTExpression?> = {null}) =
+        child<ASTLambdaExpression> {
+            it::isBlockBody shouldBe false
+            it::isExpressionBody shouldBe true
+            val block = assertions()
+            if (block == null) unspecifiedChildren(2)
+            else it::getExpressionBody shouldBe block
+        }
 
 
 fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference> = EmptyAssertions) =
@@ -435,7 +455,7 @@ fun TreeNodeWrapper<Node, *>.switchDefaultLabel(assertions: NodeSpec<ASTSwitchLa
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.number(primitiveType: ASTPrimitiveType.PrimitiveType? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.number(primitiveType: PrimitiveType? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
         child<ASTNumericLiteral> {
             if (primitiveType != null) {
                 it::getPrimitiveType shouldBe primitiveType
@@ -474,6 +494,13 @@ fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType,
 
 fun TreeNodeWrapper<Node, *>.arrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =
         child<ASTArrayTypeDim> {
+            it::isVarargs shouldBe false
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.varargsArrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =
+        child<ASTArrayTypeDim> {
+            it::isVarargs shouldBe true
             assertions()
         }
 

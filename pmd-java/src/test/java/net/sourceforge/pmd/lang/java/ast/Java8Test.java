@@ -6,18 +6,22 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.typeresolution.testdata.java8.UsesJavaStreams;
 import net.sourceforge.pmd.typeresolution.testdata.java8.UsesRepeatableAnnotations;
 
 public class Java8Test {
+    private final JavaParsingHelper java8 =
+            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("8")
+                                             .withResourceContext(Java8Test.class);
+
     @Test
     public void interfaceMethodShouldBeParseable() {
-        ParserTstUtil.parseJava18(UsesJavaStreams.class);
+        java8.parseClass(UsesJavaStreams.class);
     }
 
     @Test
     public void repeatableAnnotationsMethodShouldBeParseable() {
-        ParserTstUtil.parseJava18(UsesRepeatableAnnotations.class);
+        java8.parseClass(UsesRepeatableAnnotations.class);
     }
 }

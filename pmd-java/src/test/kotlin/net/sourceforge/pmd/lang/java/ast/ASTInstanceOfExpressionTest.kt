@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 class ASTInstanceOfExpressionTest : ParserTestSpec({
 
@@ -16,7 +15,7 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "f instanceof @A K" should parseAs {
-                instanceOfExpr {
+                infixExpr(BinaryOp.INSTANCEOF) {
                     it::getLeftOperand shouldBe variableAccess("f")
                     it::getRightOperand shouldBe typeExpr {
                         classType("K") {

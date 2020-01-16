@@ -9,10 +9,10 @@ import java.io.Reader;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 
 public class ModelicaParser extends AbstractParser {
@@ -28,7 +28,7 @@ public class ModelicaParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
-        return new net.sourceforge.pmd.lang.modelica.ast.ModelicaParser(new SimpleCharStream(source)).StoredDefinition();
+        return new net.sourceforge.pmd.lang.modelica.ast.ModelicaParser(CharStreamFactory.simpleCharStream(source)).StoredDefinition();
     }
 
 }

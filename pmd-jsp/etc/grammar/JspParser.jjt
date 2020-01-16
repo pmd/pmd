@@ -31,7 +31,7 @@ options {
 PARSER_BEGIN(JspParser)
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
