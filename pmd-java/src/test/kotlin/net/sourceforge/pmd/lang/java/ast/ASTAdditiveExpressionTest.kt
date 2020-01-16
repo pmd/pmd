@@ -13,8 +13,8 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
             "1 + 2 + 3" should parseAs {
-                additiveExpr(ADD) {
-                    additiveExpr(ADD) {
+                infixExpr(ADD) {
+                    infixExpr(ADD) {
                         int(1)
                         int(2)
                     }
@@ -23,15 +23,15 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
             }
 
             "1 + 2 + 3 + 4 * 5" should parseAs {
-                additiveExpr(ADD) {
-                    additiveExpr(ADD) {
-                        additiveExpr(ADD) {
+                infixExpr(ADD) {
+                    infixExpr(ADD) {
+                        infixExpr(ADD) {
                             int(1)
                             int(2)
                         }
                         int(3)
                     }
-                    multiplicativeExpr(MUL) {
+                    infixExpr(MUL) {
                         int(4)
                         int(5)
                     }
@@ -39,13 +39,13 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
             }
 
             "1 + 2 + 3 * 4 + 5" should parseAs {
-                additiveExpr(ADD) {
-                    additiveExpr(ADD) {
-                        additiveExpr(ADD) {
+                infixExpr(ADD) {
+                    infixExpr(ADD) {
+                        infixExpr(ADD) {
                             int(1)
                             int(2)
                         }
-                        multiplicativeExpr(MUL) {
+                        infixExpr(MUL) {
                             int(3)
                             int(4)
                         }
@@ -55,13 +55,13 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
             }
 
             "1 * 2 + 3 * 4 + 5" should parseAs {
-                additiveExpr(ADD) {
-                    additiveExpr(ADD) {
-                        multiplicativeExpr(MUL) {
+                infixExpr(ADD) {
+                    infixExpr(ADD) {
+                        infixExpr(MUL) {
                             int(1)
                             int(2)
                         }
-                        multiplicativeExpr(MUL) {
+                        infixExpr(MUL) {
                             int(3)
                             int(4)
                         }
@@ -75,8 +75,8 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
     parserTest("Changing operators should push a new node") {
         inContext(ExpressionParsingCtx) {
             "1 + 2 - 3" should parseAs {
-                additiveExpr(SUB) {
-                    additiveExpr(ADD) {
+                infixExpr(SUB) {
+                    infixExpr(ADD) {
                         int(1)
                         int(2)
                     }
@@ -85,9 +85,9 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
             }
 
             "1 + 4 + 2 - 3" should parseAs {
-                additiveExpr(SUB) {
-                    additiveExpr(ADD) {
-                        additiveExpr(ADD) {
+                infixExpr(SUB) {
+                    infixExpr(ADD) {
+                        infixExpr(ADD) {
                             int(1)
                             int(4)
                         }
@@ -100,11 +100,11 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
             // ((((1 + 4 + 2) - 3) + 4) - 1)
             "1 + 4 + 2 - 3 + 4 - 1" should parseAs {
 
-                additiveExpr(SUB) {
-                    additiveExpr(ADD) {
-                        additiveExpr(SUB) {
-                            additiveExpr(ADD) {
-                                additiveExpr(ADD) {
+                infixExpr(SUB) {
+                    infixExpr(ADD) {
+                        infixExpr(SUB) {
+                            infixExpr(ADD) {
+                                infixExpr(ADD) {
                                     int(1)
                                     int(4)
                                 }
