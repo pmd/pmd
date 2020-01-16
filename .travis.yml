@@ -48,7 +48,7 @@ jobs:
       env: BUILD=publish
 
 before_install:
-  - bash .travis/before_install.sh "11.0.5+10"
+  - bash .travis/before_install.sh "11.0.6+10"
   - source ${HOME}/java.env
 install: true
 before_script: true
