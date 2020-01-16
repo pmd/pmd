@@ -3160,7 +3160,7 @@ void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
   Type() #ResultType
   t=<IDENTIFIER>
   ("(" ")") #FormalParameters(true)
-  ( "[" "]" )* // TODO use ArrayTypeDims
+  [ Dims() ]
   [ DefaultValue() ] ";"
   {
     jjtThis.setImage(t.image);

@@ -220,6 +220,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     formalsList(0)
                 }
             }
+
             "int bar() default 2;" should parseAs {
                 annotationMethod {
                     it::getResultType shouldBe resultType {
@@ -228,6 +229,22 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getFormalParameters shouldBe formalsList(0)
 
                     it::getDefaultClause shouldBe defaultValue { int(2) }
+                }
+            }
+
+            "int bar() @NonZero [];" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        primitiveType(PrimitiveType.INT)
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe null
+                    it::getExtraDimensions shouldBe child {
+                        arrayDim {
+                            annotation("NonZero")
+                        }
+                    }
                 }
             }
 
@@ -249,6 +266,9 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     }
                     it::getFormalParameters shouldBe formalsList(0)
 
+                    it::getExtraDimensions shouldBe child {
+                        arrayDim {}
+                    }
                     it::getDefaultClause shouldBe defaultValue {
                         memberValueArray {
                             annotation("Override")
