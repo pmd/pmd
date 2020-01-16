@@ -8,6 +8,9 @@ package javasymbols.testdata.deep;
 // SomeClassA is imported but shadowed by same package scope
 // TestCase1 is imported but shadowed by single type import
 // Thread is shadowed by java.lang.Thread and not imported
+import javasymbols.testdata.*;
+import javasymbols.testdata.TestCase1;
+
 
 public class TypeImportsOnDemand {
     SomeClassA a;
