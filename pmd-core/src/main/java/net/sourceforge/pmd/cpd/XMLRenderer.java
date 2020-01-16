@@ -124,10 +124,10 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
             final int beginCol = mark.getBeginColumn();
             final int endCol = mark.getEndColumn();
             if (beginCol != -1) {
-                file.setAttribute("column", String.valueOf(mark.getBeginColumn()));
+                file.setAttribute("column", String.valueOf(beginCol));
             }
             if (endCol != -1) {
-                file.setAttribute("endcolumn", String.valueOf(mark.getEndColumn()));
+                file.setAttribute("endcolumn", String.valueOf(endCol));
             }
             duplication.appendChild(file);
         }
