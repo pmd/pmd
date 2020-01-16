@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.modelica.ModelicaLoader;
+import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper;
 import net.sourceforge.pmd.lang.modelica.ast.ASTExtendsClause;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
@@ -17,6 +17,9 @@ import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
 
 public class ModelicaResolverTest {
+
+    private final ModelicaParsingHelper modelica = ModelicaParsingHelper.DEFAULT;
+
     private static class NodeFinder extends ModelicaParserVisitorAdapter {
         private ModelicaNode result;
         private Class<?> nodeClass;
@@ -54,13 +57,13 @@ public class ModelicaResolverTest {
     }
 
     private ResolutionResult<ResolvableEntity> resolveIn(int best, int hidden, ResolutionState state, SubcomponentResolver resolver, boolean absolute, String[] names) {
-        ResolutionResult result = resolver.safeResolveComponent(ResolvableEntity.class, state, CompositeName.create(absolute, names));
+        ResolutionResult<ResolvableEntity> result = resolver.safeResolveComponent(ResolvableEntity.class, state, CompositeName.create(absolute, names));
         ensureCounts(result, best, hidden);
         return result;
     }
 
     private ResolutionResult<ResolvableEntity> resolveIn(int best, int hidden, ResolutionState state, ModelicaScope resolver, boolean absolute, String[] names) {
-        ResolutionResult result = resolver.safeResolveLexically(ResolvableEntity.class, state, CompositeName.create(absolute, names));
+        ResolutionResult<ResolvableEntity> result = resolver.safeResolveLexically(ResolvableEntity.class, state, CompositeName.create(absolute, names));
         ensureCounts(result, best, hidden);
         return result;
     }
@@ -91,7 +94,7 @@ public class ModelicaResolverTest {
             + "  Real x;"
             + "end TestPackage;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
         Assert.assertNotNull(ast);
 
         Assert.assertTrue(ast.getMostSpecificScope() instanceof ModelicaSourceFileScope);
@@ -114,7 +117,7 @@ public class ModelicaResolverTest {
             + "  Real x;"
             + "end TestPackage;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
         ModelicaSourceFileScope sourceFileScope = (ModelicaSourceFileScope) ast.getMostSpecificScope();
 
         Assert.assertEquals(1, sourceFileScope.getContainedDeclarations().size());
@@ -143,7 +146,7 @@ public class ModelicaResolverTest {
                 + "  end B;"
                 + "end Test;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         List<ASTExtendsClause> extendsClauses = ast.findDescendantsOfType(ASTExtendsClause.class);
         Assert.assertEquals(1, extendsClauses.size());
@@ -161,7 +164,7 @@ public class ModelicaResolverTest {
             + "  end TestModel;"
             + "end TestPackage;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), true, "TestPackage", "TestModel", "TestSubmodel");
     }
 
@@ -176,7 +179,7 @@ public class ModelicaResolverTest {
             + "  end TestModel;"
             + "end TestPackage;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "TestPackage", "TestModel", "TestSubmodel");
     }
 
@@ -193,7 +196,7 @@ public class ModelicaResolverTest {
             + "  Real x;"
             + "end TestPackage;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         ResolutionResult<ResolvableEntity> testModelCandidates = testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), true, "TestPackage", "TestModel");
         ModelicaClassScope testModelScope = ((ModelicaClassType) testModelCandidates.getBestCandidates().get(0)).getClassScope();
@@ -220,7 +223,7 @@ public class ModelicaResolverTest {
             + "  end A;"
             + "end Test;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         List<ResolvableEntity> xs = testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "Test", "A", "x").getBestCandidates();
         Assert.assertEquals(
@@ -236,7 +239,7 @@ public class ModelicaResolverTest {
             + "model Test\n"
             + "end Test;\n";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
         RootScope rootScope = (RootScope) ast.getMostSpecificScope().getParent();
 
         List<ResolvableEntity> nestedTest = testResolvedTypeCount(1, 0, rootScope, false, "TestPackage", "SubPackage", "Test").getBestCandidates();
@@ -263,7 +266,7 @@ public class ModelicaResolverTest {
             + "  extends A;"
             + "end B;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "B", "X");
     }
@@ -284,7 +287,7 @@ public class ModelicaResolverTest {
             + "  extends A;"
             + "end B;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "A", "Z");
         testResolvedTypeCount(0, 0, ast.getMostSpecificScope(), false, "B", "Z");
@@ -299,7 +302,7 @@ public class ModelicaResolverTest {
             + "  end B;"
             + "end A;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         List<ResolvableEntity> xs = testResolvedComponentCount(1, 0, ast.getMostSpecificScope(), true, "A", "B", "x").getBestCandidates();
         ModelicaComponentDeclaration x = (ModelicaComponentDeclaration) xs.get(0);
@@ -321,13 +324,13 @@ public class ModelicaResolverTest {
                 + "  end X;"
                 + "end Test;";
 
-        ASTStoredDefinition ast = ModelicaLoader.parse(null, contents);
+        ASTStoredDefinition ast = modelica.parse(contents);
 
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), true, "Test", "X", "X");
         testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "Test", "X", "X");
 
         ResolutionResult<ResolvableEntity> result = testResolvedComponentCount(1, 0, ast.getMostSpecificScope(), false, "Test", "X", "mdl");
         ModelicaComponentDeclaration mdl = (ModelicaComponentDeclaration) result.getBestCandidates().get(0);
-        ensureCounts(((ModelicaComponentDeclaration) mdl).getTypeCandidates(), 1, 0);
+        ensureCounts(mdl.getTypeCandidates(), 1, 0);
     }
 }

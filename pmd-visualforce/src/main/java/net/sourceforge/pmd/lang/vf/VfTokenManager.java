@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.vf;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.vf.ast.VfParserTokenManager;
 
 /**
@@ -17,7 +17,7 @@ public class VfTokenManager implements TokenManager {
     private final VfParserTokenManager tokenManager;
 
     public VfTokenManager(Reader source) {
-        tokenManager = new VfParserTokenManager(new JavaCharStream(source));
+        tokenManager = new VfParserTokenManager(CharStreamFactory.javaCharStream(source));
     }
 
     @Override

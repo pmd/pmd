@@ -33,14 +33,13 @@
                 javacchome="${javacc-home.path}" />
         <!-- Ensure generated using CharStream interface -->
         <javacc static="false"
-                usercharstream="false"
                 target="${target}/net/sourceforge/pmd/lang/plsql/ast/PldocAST.jj"
                 outputdirectory="${target}/net/sourceforge/pmd/lang/plsql/ast"
                 javacchome="${javacc-home.path}" />
 
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/Node.java" />
-        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/SimpleCharStream.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/TokenMgrError.java" />
 
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTArguments.java" />
@@ -80,7 +79,7 @@
                  value="PLSQLNode" />
         <replace file="${target}/net/sourceforge/pmd/lang/plsql/ast/PLSQLParserTokenManager.java"
                  token="class PLSQLParserTokenManager"
-                 value="class PLSQLParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
+                 value="class PLSQLParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/plsql/ast/JJTPLSQLParserState.java">
             <replacetoken>public class</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;

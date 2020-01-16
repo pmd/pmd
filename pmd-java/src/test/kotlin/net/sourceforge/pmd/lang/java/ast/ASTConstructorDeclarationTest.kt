@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 
 class ASTConstructorDeclarationTest : ParserTestSpec({
 
@@ -44,7 +45,7 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
 
                 it::toList shouldBe listOf(
                         child {
-                            primitiveType(ASTPrimitiveType.PrimitiveType.INT)
+                            primitiveType(PrimitiveType.INT)
                             variableId("other")
                         }
                 )

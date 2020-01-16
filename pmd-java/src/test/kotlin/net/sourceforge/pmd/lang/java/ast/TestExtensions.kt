@@ -7,6 +7,7 @@ import io.kotlintest.should
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
@@ -299,7 +300,7 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
         }
 
 
-fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getModelConstant shouldBe type
             it::getTypeImage shouldBe type.token
@@ -410,7 +411,7 @@ fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.number(primitiveType: ASTPrimitiveType.PrimitiveType? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.number(primitiveType: PrimitiveType? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
         child<ASTNumericLiteral> {
             if (primitiveType != null) {
                 it::getPrimitiveType shouldBe primitiveType

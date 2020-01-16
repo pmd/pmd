@@ -4,7 +4,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.ast.AssignmentOp.*
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * @author Clément Fournier

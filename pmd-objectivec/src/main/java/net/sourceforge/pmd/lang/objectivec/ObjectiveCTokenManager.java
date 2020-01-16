@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.objectivec;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.objectivec.ast.ObjectiveCParserTokenManager;
 
 /**
@@ -23,7 +23,7 @@ public class ObjectiveCTokenManager implements TokenManager {
      *            the source code
      */
     public ObjectiveCTokenManager(Reader source) {
-        tokenManager = new ObjectiveCParserTokenManager(new SimpleCharStream(source));
+        tokenManager = new ObjectiveCParserTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override

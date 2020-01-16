@@ -10,8 +10,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
@@ -24,13 +22,14 @@ import net.sourceforge.pmd.lang.java.multifile.testdata.MultifileVisitorTestData
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 /**
  * Tests of the multifile visitor.
  *
  * @author Clément Fournier
  */
-public class JavaMultifileVisitorTest {
+public class JavaMultifileVisitorTest extends BaseNonParserTest {
 
 
     @Test
@@ -47,7 +46,7 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testOperationsAreThere() {
-        ASTCompilationUnit acu = parseAndVisitForClass(MultifileVisitorTestData2.class);
+        ASTCompilationUnit acu = java.parseClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
@@ -66,7 +65,7 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testFieldsAreThere() {
-        parseAndVisitForClass(MultifileVisitorTestData2.class);
+        java.parseClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
@@ -86,8 +85,8 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testBothClassesOperationsAreThere() {
-        parseAndVisitForClass(MultifileVisitorTestData2.class);
-        parseAndVisitForClass(MultifileVisitorTestData2.class);
+        java.parseClass(MultifileVisitorTestData2.class);
+        java.parseClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
@@ -116,8 +115,8 @@ public class JavaMultifileVisitorTest {
 
     @Test
     public void testBothClassesFieldsAreThere() {
-        parseAndVisitForClass(MultifileVisitorTestData2.class);
-        parseAndVisitForClass(MultifileVisitorTestData2.class);
+        java.parseClass(MultifileVisitorTestData2.class);
+        java.parseClass(MultifileVisitorTestData2.class);
 
         final ProjectMirror toplevel = PackageStats.INSTANCE;
 
@@ -138,12 +137,4 @@ public class JavaMultifileVisitorTest {
     }
 
 
-    static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz) {
-        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(clazz);
-        LanguageVersionHandler handler = ParserTstUtil.getDefaultLanguageVersionHandler();
-        handler.getQualifiedNameResolutionFacade(JavaMultifileVisitorTest.class.getClassLoader()).start(acu);
-        handler.getTypeResolutionFacade(JavaMultifileVisitorTest.class.getClassLoader()).start(acu);
-        handler.getMultifileFacade().start(acu);
-        return acu;
-    }
 }

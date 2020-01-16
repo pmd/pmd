@@ -95,7 +95,7 @@ public class XmlParserImpl {
     /**
      * The root should implement {@link RootNode}.
      */
-    static class RootXmlNode extends XmlNodeWrapper implements RootNode {
+    public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
         RootXmlNode(XmlParserImpl parser, Node domNode) {
             super(parser, domNode);
         }

@@ -4,39 +4,33 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-
-public class ASTLocalVariableDeclarationTest {
+public class ASTLocalVariableDeclarationTest extends BaseParserTest {
 
     @Test
     public void testSingleDimArray() {
-        ASTCompilationUnit cu = parseJava14(TEST1);
-        ASTLocalVariableDeclaration node = cu.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = java.parse(TEST1).findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
         assertEquals(1, node.getArrayDepth());
     }
 
     @Test
     public void testMultDimArray() {
-        ASTCompilationUnit cu = parseJava14(TEST2);
-        ASTLocalVariableDeclaration node = cu.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = java.parse(TEST2).findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
         assertEquals(2, node.getArrayDepth());
     }
 
     @Test
     public void testMultDimArraySplitBraces() {
-        ASTCompilationUnit cu = parseJava14(TEST3);
-        ASTLocalVariableDeclaration node = cu.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = java.parse(TEST3).findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
         assertEquals(3, node.getArrayDepth());
     }
 
-    private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar() {int x[] = null;}" + PMD.EOL + "}";
+    private static final String TEST1 = "class Foo {\n void bar() {int x[] = null;}\n}";
 
-    private static final String TEST2 = "class Foo {" + PMD.EOL + " void bar() {int x[][] = null;}" + PMD.EOL + "}";
+    private static final String TEST2 = "class Foo {\n void bar() {int x[][] = null;}\n}";
 
-    private static final String TEST3 = "class Foo {" + PMD.EOL + " void bar() {int[] x[][] = null;}" + PMD.EOL + "}";
+    private static final String TEST3 = "class Foo {\n void bar() {int[] x[][] = null;}\n}";
 }

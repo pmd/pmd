@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.modelica;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserTokenManager;
 
 
@@ -16,7 +16,7 @@ public class ModelicaTokenManager implements TokenManager {
     private final ModelicaParserTokenManager modelicaParserTokenManager;
 
     public ModelicaTokenManager(final Reader source) {
-        modelicaParserTokenManager = new ModelicaParserTokenManager(new SimpleCharStream(source));
+        modelicaParserTokenManager = new ModelicaParserTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override

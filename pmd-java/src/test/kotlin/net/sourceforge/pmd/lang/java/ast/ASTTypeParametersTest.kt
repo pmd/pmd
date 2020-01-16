@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.TypeParametersParsingCtx
 
 /**
  * @author Clément Fournier

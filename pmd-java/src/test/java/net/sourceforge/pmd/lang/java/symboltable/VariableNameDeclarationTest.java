@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,11 +21,11 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Ignore
-public class VariableNameDeclarationTest extends STBBaseTst {
+public class VariableNameDeclarationTest extends BaseNonParserTest {
 
     @Test
     public void testConstructor() {
-        parseCode(TEST1);
+        ASTCompilationUnit acu = parseCode(TEST1);
         List<ASTVariableDeclaratorId> nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         Scope s = nodes.get(0).getScope();
         NameDeclaration decl = s.getDeclarations().keySet().iterator().next();
@@ -36,14 +35,14 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testExceptionBlkParam() {
-        ASTCompilationUnit acu = getNodes(ASTCompilationUnit.class, EXCEPTION_PARAMETER).iterator().next();
+        ASTCompilationUnit acu = java.parse(EXCEPTION_PARAMETER);
         ASTVariableDeclaratorId id = acu.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertTrue(new VariableNameDeclaration(id).isExceptionBlockParameter());
     }
 
     @Test
     public void testIsArray() {
-        parseCode(TEST3);
+        ASTCompilationUnit acu = parseCode(TEST3);
         VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations(VariableNameDeclaration.class).keySet().iterator().next();
         assertTrue(decl.isArray());
@@ -51,7 +50,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testPrimitiveType() {
-        parseCode(TEST1);
+        ASTCompilationUnit acu = parseCode(TEST1);
         VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations(VariableNameDeclaration.class).keySet().iterator().next();
         assertTrue(decl.isPrimitiveType());
@@ -59,7 +58,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testArrayIsReferenceType() {
-        parseCode(TEST3);
+        ASTCompilationUnit acu = parseCode(TEST3);
         VariableNameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations(VariableNameDeclaration.class).keySet().iterator().next();
         assertTrue(decl.isReferenceType());
@@ -67,7 +66,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testPrimitiveTypeImage() {
-        parseCode(TEST3);
+        ASTCompilationUnit acu = parseCode(TEST3);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
         assertEquals("int", ((TypedNameDeclaration) decl).getTypeImage());
@@ -75,7 +74,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testRefTypeImage() {
-        parseCode(TEST4);
+        ASTCompilationUnit acu = parseCode(TEST4);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
         assertEquals("String", ((TypedNameDeclaration) decl).getTypeImage());
@@ -83,7 +82,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testParamTypeImage() {
-        parseCode(TEST5);
+        ASTCompilationUnit acu = parseCode(TEST5);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
         assertEquals("String", ((TypedNameDeclaration) decl).getTypeImage());
@@ -91,7 +90,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testVarKeywordTypeImage() {
-        parseCode(TEST6);
+        ASTCompilationUnit acu = parseCode(TEST6);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
         assertEquals("java.util.ArrayList", ((TypedNameDeclaration) decl).getType().getName());
@@ -101,7 +100,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testVarKeywordWithPrimitiveTypeImage() {
-        parseCode(TEST7);
+        ASTCompilationUnit acu = parseCode(TEST7);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
         assertEquals("long", ((TypedNameDeclaration) decl).getType().getName());
@@ -111,7 +110,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testVarKeywordWithIndirectReference() {
-        parseCode(TEST8);
+        ASTCompilationUnit acu = parseCode(TEST8);
         Iterator<NameDeclaration> nameDeclarationIterator = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator();
         nameDeclarationIterator.next(); // first variable 'bar'
@@ -123,7 +122,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testLamdaParameterTypeImage() {
-        parseCode(TEST9);
+        ASTCompilationUnit acu = parseCode(TEST9);
         List<ASTVariableDeclaratorId> variableDeclaratorIds = acu.findDescendantsOfType(
                 ASTVariableDeclaratorId.class,
                 true

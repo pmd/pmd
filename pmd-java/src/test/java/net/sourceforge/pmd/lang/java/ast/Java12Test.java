@@ -4,38 +4,32 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 @Ignore("those tests depend on type resolution")
 public class Java12Test {
-    private static String loadSource(String name) {
-        try {
-            return IOUtils.toString(Java12Test.class.getResourceAsStream("jdkversiontests/java12/" + name),
-                    StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
+
+    private final JavaParsingHelper java11 =
+        JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("11")
+                                         .withResourceContext(Java12Test.class, "jdkversiontests/java12/");
+
+    private final JavaParsingHelper java12p = java11.withDefaultVersion("12-preview");
+
 
     @Test(expected = ParseException.class)
     public void testMultipleCaseLabelsJava11() {
-        ParserTstUtil.parseAndTypeResolveJava("11", loadSource("MultipleCaseLabels.java"));
+        java11.parseResource("MultipleCaseLabels.java");
     }
 
     @Test
     public void testMultipleCaseLabels() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
-                loadSource("MultipleCaseLabels.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java12p.parseResource("MultipleCaseLabels.java");
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
         Assert.assertTrue(switchStatement.jjtGetChild(0) instanceof ASTExpression);
         Assert.assertTrue(switchStatement.jjtGetChild(1) instanceof ASTSwitchLabel);
@@ -45,14 +39,12 @@ public class Java12Test {
 
     @Test(expected = ParseException.class)
     public void testSwitchRulesJava11() {
-        ParserTstUtil.parseAndTypeResolveJava("11", loadSource("SwitchRules.java"));
+        java11.parseResource("SwitchRules.java");
     }
 
     @Test
     public void testSwitchRules() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
-                loadSource("SwitchRules.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java12p.parseResource("SwitchRules.java");
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
         Assert.assertTrue(switchStatement.jjtGetChild(0) instanceof ASTExpression);
         Assert.assertTrue(switchStatement.jjtGetChild(1) instanceof ASTSwitchLabeledExpression);
@@ -74,14 +66,12 @@ public class Java12Test {
 
     @Test(expected = ParseException.class)
     public void testSwitchExpressionsJava11() {
-        ParserTstUtil.parseAndTypeResolveJava("11", loadSource("SwitchExpressions.java"));
+        java11.parseResource("SwitchExpressions.java");
     }
 
     @Test
     public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
-                loadSource("SwitchExpressions.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java12p.parseResource("SwitchExpressions.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
         Assert.assertEquals(6, switchExpression.jjtGetNumChildren());
@@ -96,9 +86,7 @@ public class Java12Test {
 
     @Test
     public void testSwitchExpressionsBreak() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
-                loadSource("SwitchExpressionsBreak.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java12p.parseResource("SwitchExpressionsBreak.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
         Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
