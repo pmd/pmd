@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 // TODO merge the java ASTClassOrInterfaceDeclarationTest into this
 class ASTClassOrInterfaceDeclTest : ParserTestSpec({

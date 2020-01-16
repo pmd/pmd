@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,9 +20,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 @Ignore
-public class StatementAndBraceFinderTest {
+public class StatementAndBraceFinderTest extends BaseNonParserTest {
+
 
     @Test
     public void testStatementExpressionParentChildLinks() {
@@ -76,7 +76,7 @@ public class StatementAndBraceFinderTest {
         StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
 
-        ASTCompilationUnit astCompilationUnit = parseJava15(TEST1);
+        ASTCompilationUnit astCompilationUnit = java.parse(TEST1);
 
         sbf.buildDataFlowFor(astCompilationUnit.getFirstChildOfType(ASTMethodDeclaration.class));
         // FIXME look at history of this test

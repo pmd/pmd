@@ -5,7 +5,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
 
 class ASTUnaryExpressionTest : ParserTestSpec({

@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 /**
  * @author Clément Fournier

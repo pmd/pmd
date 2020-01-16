@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 public class SingleLineComment extends Comment {
 
-    public SingleLineComment(GenericToken t) {
+    public SingleLineComment(JavaccToken t) {
         super(t);
     }
 

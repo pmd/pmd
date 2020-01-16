@@ -15,6 +15,10 @@
     <property name="generic-sideeffect-visitor-interface-file"
               value="${target-package-dir}/${generic-sideeffect-visitor-interface-name}.java" />
 
+    <property name="ast-core-package" value="net.sourceforge.pmd.lang.ast" />
+    <property name="ast-impl-package" value="${ast-core-package}.impl.javacc" />
+
+
     <!-- TARGETS -->
 
     <target name="alljavacc"
@@ -123,25 +127,18 @@
             </replacevalue>
         </replace>
 
-        <replace token="new Token()" value="net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken.undefined()">
-            <fileset dir="${target-package-dir}"/>
+
+        <replace token="new Token()" value="${ast-impl-package}.JavaccToken.undefined()">
+            <fileset dir="${target-package-dir}" />
         </replace>
 
-        <replace token=" Token " value=" net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken ">
-            <fileset dir="${target-package-dir}"/>
-        </replace>
+        <!-- Map Javacc names to our names -->
 
-        <replace token="(Token " value="(net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken ">
-            <fileset dir="${target-package-dir}"/>
-        </replace>
-
-        <replace token=" Token(" value=" net.sourceforge.pmd.lang.ast.impl.JavaccToken(">
-            <fileset dir="${target-package-dir}"/>
-        </replace>
-
-        <replace token=";Token " value=";net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken ">
-            <fileset dir="${target-package-dir}"/>
-        </replace>
+        <replaceregexp flags="g">
+            <regexp pattern="\bToken\b" />
+            <substitution expression="${ast-impl-package}.JavaccToken" />
+            <fileset dir="${target-package-dir}" />
+        </replaceregexp>
 
 
         <replace file="${target-package-dir}/JavaParserTokenManager.java">
@@ -177,8 +174,8 @@
 
 
         <replace file="${target-package-dir}/JavaParserTokenManager.java"
-                 token="public class JavaParserTokenManager"
-                 value="import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken; public class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
+                 token="class JavaParserTokenManager"
+                 value="class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
         <replace file="${target-package-dir}/JavaParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />
@@ -193,8 +190,6 @@
         <!-- We perform most changes like adding default methods, etc on this one -->
         <!-- Changes are then copied on other visitors -->
         <replace file="${base-visitor-interface-file}">
-            <replacefilter token="public interface" value="
-public interface" />
             <replacefilter token="JavaParserVisitor" value="${base-visitor-interface-name}" />
             <replacefilter token="SimpleNode" value="JavaNode" />
             <!-- Default methods -->

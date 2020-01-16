@@ -6,7 +6,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.EnclosedDeclarationParsingCtx
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 

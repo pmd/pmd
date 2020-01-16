@@ -8,7 +8,6 @@ import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 // Use a string for comparison because CharSequence are not necessarily
 // equatable to string

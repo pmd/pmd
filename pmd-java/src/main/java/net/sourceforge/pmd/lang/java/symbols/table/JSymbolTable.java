@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,14 +9,10 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.symbols.internal.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JElementSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JResolvableClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JValueSymbol;
-import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JValueSymbol;
 
 // @formatter:off
 /**
@@ -36,33 +32,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
  * This allows directly encoding shadowing and hiding mechanisms in the parent-child
  * relationships.
  *
- * <h2>Why not keep the current symbol table</h2>
- *
- * <p>The current symbol table framework was not built with the same goals in mind.
- * It indexes the AST to reduce it to a simpler representation, which is mostly
- * shortcuts to nodes. That representation hasn't proved very useful in rules,
- * which mostly only use it to resolve variable accesses.
- *
- * <p>The biggest issue is that it was not designed to abstract over whether we
- * have a node to represent a declaration or not. It can't work on reflection
- * data, and thus cannot really help type resolution, even if a good symbol table
- * would take the burden of resolving references off a type checker. The
- * shortcomings of the current symbol table make the current typeres duplicate
- * logic, and ultimately perform tasks that are not its responsibility,
- * which is probably why {@link ClassTypeResolver} is so huge and nasty.
- *
- * <p>Having an abstraction layer to unify them allows the AST analyses to
- * be complementary, and rely on each other, instead of being so self-reliant.
- * The abstraction provided by {@link JElementSymbol} may in the future be used
- * to build global indices of analysed projects to implement multifile analysis.
- *
- * <p>The goals of this rewrite should be:
- * <ul>
- *      <li>To make our language analyses passes share information and be complementary
- *      <li>To have a symbol table that is precise and exhaustive enough that all rules can depend on it
- *      <li>To modularize the system so that it's more easily testable and documentable
- * </ul>
- *
  * @author Clément Fournier
  * @since 7.0.0
  */
@@ -78,23 +47,21 @@ public interface JSymbolTable {
      */
     JSymbolTable getParent();
 
+    // note that types and value names can be obscured, but that depends on the syntactic
+    // context of the *usage* and is not relevant to the symbol table stack.
+
 
     /**
      * Resolves the type referred to by the given name. This must be a simple name,
      * ie, parameterized types and array types are not available. Primitive types are
      * also not considered because it's probably not useful.
      *
-     * <p>The returned type reference may be a {@link JResolvableClassSymbol}, a
-     * {@link JClassSymbol} if the type was already resolved, or a {@link JTypeParameterSymbol}.
-     *
-     * <p>Doesn't handle primitive types (there's no symbol for them).
-     *
      * @param simpleName Simple name of the type to look for
      *
      * @return The type reference if it can be found, otherwise {@code null}
      */
     @Nullable
-    JSimpleTypeSymbol resolveTypeName(String simpleName);
+    JTypeDeclSymbol resolveTypeName(String simpleName);
 
 
     /**

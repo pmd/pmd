@@ -1,6 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.*
+import io.kotlintest.AbstractSpec
+import io.kotlintest.Matcher
+import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.specs.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
@@ -134,16 +137,23 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
             infix fun String.shouldNot(matcher: Matcher<String>) =
                     should(matcher.invert())
 
-            fun inContext(nodeParsingCtx: Companion.NodeParsingCtx<*>, assertions: ImplicitNodeParsingCtx.() -> Unit) {
+            fun inContext(nodeParsingCtx: NodeParsingCtx<*>, assertions: ImplicitNodeParsingCtx.() -> Unit) {
                 ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
             }
 
-            inner class ImplicitNodeParsingCtx(private val nodeParsingCtx: Companion.NodeParsingCtx<*>) {
+            inner class ImplicitNodeParsingCtx(private val nodeParsingCtx: NodeParsingCtx<*>) {
 
                 /**
                  * A matcher that succeeds if the string parses correctly.
                  */
                 fun parse(): Matcher<String> = this@VersionedTestCtx.parseIn(nodeParsingCtx)
+
+                /**
+                 * A matcher that succeeds if parsing throws a ParseException.
+                 */
+                fun throwParseException(expected: (ParseException) -> Unit = {}): Assertions<String> =
+                        this@VersionedTestCtx.notParseIn(nodeParsingCtx, expected)
+
 
                 fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
                     val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)

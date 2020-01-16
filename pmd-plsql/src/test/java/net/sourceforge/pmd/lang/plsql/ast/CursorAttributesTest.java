@@ -13,17 +13,14 @@ public class CursorAttributesTest extends AbstractPLSQLParserTst {
 
     @Test
     public void parseCursorWithAttribute() {
-        String code = loadTestResource("CursorAttributes.pls");
-        ASTInput input = parsePLSQL(code);
+        ASTInput input = plsql.parseResource("CursorAttributes.pls");
         ASTExpression exp = input.getFirstDescendantOfType(ASTIfStatement.class).getFirstChildOfType(ASTExpression.class);
         Assert.assertEquals("TestSearch%notfound", exp.getImage());
     }
 
     @Test
     public void parseImplicitCursorAttributeBulkExceptions() {
-        String code = loadTestResource("CursorAttributesBulkExceptions.pls");
-        ASTInput input = parsePLSQL(code);
-        Assert.assertNotNull(input);
+        plsql.parseResource("CursorAttributesBulkExceptions.pls");
     }
 
 }

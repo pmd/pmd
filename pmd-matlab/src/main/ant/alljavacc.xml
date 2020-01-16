@@ -36,7 +36,7 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/matlab/ast/MatlabParserTokenManager.java"
                  token="class MatlabParserTokenManager"
-                 value="class MatlabParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
+                 value="class MatlabParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
         <delete file="${target}/net/sourceforge/pmd/lang/matlab/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/matlab/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/matlab/ast/TokenMgrError.java" />

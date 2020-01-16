@@ -4,34 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 @Ignore("those tests depend on type resolution")
 public class Java13Test {
-    private static String loadSource(String name) {
-        try {
-            return IOUtils.toString(Java13Test.class.getResourceAsStream("jdkversiontests/java13/" + name),
-                                    StandardCharsets.UTF_8)
-                .replaceAll("\\R", "\n"); // normalize line separators to \n
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
+
+    private final JavaParsingHelper java12 =
+        JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("12")
+                                         .withResourceContext(Java13Test.class, "jdkversiontests/java13/");
+
+    private final JavaParsingHelper java13p = java12.withDefaultVersion("13-preview");
+
 
     @Test
     public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("SwitchExpressions.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java13p.parseResource("SwitchExpressions.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
         Assert.assertEquals(4, switchExpression.jjtGetNumChildren());
@@ -45,9 +40,7 @@ public class Java13Test {
 
     @Test
     public void testSwitchExpressionsYield() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("SwitchExpressionsYield.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java13p.parseResource("SwitchExpressionsYield.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
         Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
@@ -68,8 +61,33 @@ public class Java13Test {
 
     @Test(expected = ParseException.class)
     public void testSwitchExpressionsBeforeJava13() {
-        ParserTstUtil.parseAndTypeResolveJava("12", loadSource("SwitchExpressions.java"));
+        java12.parseResource("SwitchExpressions.java");
     }
 
+    @Test
+    public void testTextBlocks() {
+        ASTCompilationUnit compilationUnit = java13p.parseResource("TextBlocks.java");
+        List<ASTStringLiteral> literals = compilationUnit.findDescendantsOfType(ASTStringLiteral.class);
+        Assert.assertEquals(10, literals.size());
+        for (int i = 0; i < 8; i++) {
+            ASTStringLiteral literal = literals.get(i);
+            Assert.assertTrue(literal.isTextBlock());
+        }
+        Assert.assertEquals("\"\"\"\n"
+                                + "                <html>\n"
+                                + "                    <body>\n"
+                                + "                        <p>Hello, world</p>\n"
+                                + "                    </body>\n"
+                                + "                </html>\n"
+                                + "                \"\"\"",
+                            literals.get(0).getImage());
+        Assert.assertFalse(literals.get(8).isTextBlock());
+        Assert.assertTrue(literals.get(9).isTextBlock());
+    }
+
+    @Test(expected = ParseException.class)
+    public void testTextBlocksBeforeJava13() {
+        java12.parseResource("TextBlocks.java");
+    }
 
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,14 +21,14 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
-public class ApexParserTest {
+public class ApexParserTest extends ApexParserTestBase {
 
     @Test
     public void understandsSimpleFile() {
 
         // Setup
         String code = "@isTest\n public class SimpleClass {\n" + "    @isTest\n public static void testAnything() {\n"
-                + "        \n" + "    }\n" + "}";
+            + "        \n" + "    }\n" + "}";
 
         // Exercise
         ApexNode<Compilation> rootNode = parse(code);
@@ -136,7 +135,7 @@ public class ApexParserTest {
 
     /**
      * See bug #1485
-     * 
+     *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1485/">#1485 [apex] Analysis of some apex classes cause a stackoverflow error</a>
      */
     @Test

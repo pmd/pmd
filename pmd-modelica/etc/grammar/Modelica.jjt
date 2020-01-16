@@ -48,7 +48,7 @@ options {
 PARSER_BEGIN(ModelicaParser)
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class ModelicaParser {

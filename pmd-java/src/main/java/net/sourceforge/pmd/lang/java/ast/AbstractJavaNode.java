@@ -58,6 +58,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         }
     }
 
+
     @Override
     public JavaNode jjtGetParent() {
         return (JavaNode) super.jjtGetParent();
@@ -104,7 +105,6 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         }
         return scope;
     }
-
 
     @Override
     public CharSequence getText() {
@@ -295,7 +295,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     @Override
-    public String getXPathNodeName() {
+    public final String getXPathNodeName() {
         return JavaParserTreeConstants.jjtNodeName[id];
     }
 

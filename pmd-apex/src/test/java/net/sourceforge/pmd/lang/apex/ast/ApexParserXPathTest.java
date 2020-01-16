@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -17,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
-public class ApexParserXPathTest {
+public class ApexParserXPathTest extends ApexParserTestBase {
 
     @Test
     public void testBooleanExpressions() throws Exception {
