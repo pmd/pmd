@@ -108,7 +108,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
      * a {@code catch} statement.
      */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent() instanceof ASTFormalParameter && jjtGetParent().jjtGetParent() instanceof ASTCatchClause;
+        return jjtGetParent() instanceof ASTCatchParameter;
     }
 
 

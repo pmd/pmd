@@ -17,9 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public class ASTCatchParameter extends AbstractJavaNode implements InternalInterfaces.VariableIdOwner {
-
-    private boolean isFinal;
+public final class ASTCatchParameter extends AbstractJavaAccessNode implements InternalInterfaces.VariableIdOwner {
 
     ASTCatchParameter(int id) {
         super(id);
@@ -39,14 +37,6 @@ public class ASTCatchParameter extends AbstractJavaNode implements InternalInter
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-    public boolean isFinal() {
-        return isFinal;
-    }
-
-    void setFinal(boolean aFinal) {
-        isFinal = aFinal;
     }
 
     /**
