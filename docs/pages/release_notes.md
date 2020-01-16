@@ -94,6 +94,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
 * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
 * {% jdoc java::lang.java.ast.JavaQualifiedName %}
+* {% jdoc !!java::lang.java.ast.ASTCatchStatement#getBlock() %}
 * {% jdoc !!java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
 * {% jdoc java::lang.java.ast.JavaQualifiableNode %}
   * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
