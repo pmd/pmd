@@ -47,12 +47,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * @param beginLine the linenumber, 1-based.
      */
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
-        setImage(image);
-        this.tokenSrcID = tokenSrcID;
-        this.beginLine = beginLine;
-        this.beginColumn = -1;
-        this.endColumn = -1;
-        this.index = TOKEN_COUNT.get().getAndIncrement();
+        this(image, tokenSrcID, beginLine, -1, -1);
     }
 
     /**
