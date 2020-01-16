@@ -259,14 +259,14 @@ public class ParserCornersTest {
     public void testSwitchWithFallthrough() {
         ASTCompilationUnit compilationUnit = java.parseResource("SwitchWithFallthrough.java", "11");
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchFallthroughBranch.class).size());
     }
 
     @Test
     public void testSwitchStatements() {
         ASTCompilationUnit compilationUnit = java.parseResource("SwitchStatements.java", "11");
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchBranch.class).size());
     }
 
 

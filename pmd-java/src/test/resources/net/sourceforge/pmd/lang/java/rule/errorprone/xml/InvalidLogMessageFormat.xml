@@ -745,4 +745,42 @@ public final class Main {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>log4j2: #2196 [java] InvalidLogMessageFormat does not detect extra parameters when no placeholders</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class InvalidLogMessageFormatTest {
+    private static final Logger logger = LogManager.getLogger("MyLogger");
+
+    public static void main(String[] args) {
+        logger.warn("foo {}", "flibble", "moo", "blah", "blah"); // PMD flags this
+        logger.warn("foo", "flibble", "moo", "blah", "blah"); // PMD doesn't flag this
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>slf4j: #2196 [java] InvalidLogMessageFormat does not detect extra parameters when no placeholders</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvalidLogMessageFormatTest {
+    private static final Logger logger = LoggerFactory.getLogger("MyLogger");
+
+    public static void main(String[] args) {
+        logger.warn("foo {}", "flibble", "moo", "blah", "blah"); // PMD flags this
+        logger.warn("foo", "flibble", "moo", "blah", "blah"); // PMD doesn't flag this
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

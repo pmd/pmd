@@ -39,7 +39,7 @@ public class ApexDocRule extends AbstractApexRule {
         addRuleChainVisit(ASTMethod.class);
         addRuleChainVisit(ASTProperty.class);
     }
-    
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         handleClassOrInterface(node, data);

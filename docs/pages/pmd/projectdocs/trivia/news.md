@@ -88,17 +88,16 @@ author: Tom Copeland <tom@infoether.org>
 *   November 2003 - [JavaWorld: "Bug patrol"](http://www.javaworld.com/javaworld/jw-11-2003/jw-1121-quality.html) -
     Various code inspection tools
 
-*   June 2003 - [Software Development Times [link broken]](http://www.sdtimes.com/news/080/story15.htm) - PMD
-    is embedded in QStudio.
+*   June 2003 - [Software Development Times](https://web.archive.org/web/20070914023950/http://www.sdtimes.com/article/story-20030615-15.html) - PMD is embedded in QStudio.
 
 *   May 2003 - [techrepublic.com](http://www.techrepublic.com/article/three-tools-that-make-java-code-review-painless-and-effective/5031836) -
     PMD, Checkstyle, and Jalopy
 
-*   April 2003 - [O'Reilly OnJava.com](http://onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html) - PMD custom rules
+*   April 2003 - [O'Reilly OnJava.com](https://web.archive.org/web/20180505093751/http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html) - PMD custom rules
 
-*   March 2003 - [O'Reilly OnJava.com](http://onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html) - overview of CPD
+*   March 2003 - [O'Reilly OnJava.com](https://web.archive.org/web/20180505092514/http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html) - overview of CPD
 
-*   February 2003 - [O'Reilly OnJava.com](http://onjava.com/pub/a/onjava/2003/02/12/static_analysis.html) - overview of PMD
+*   February 2003 - [O'Reilly OnJava.com](https://web.archive.org/web/20180506055525/http://www.onjava.com/pub/a/onjava/2003/02/12/static_analysis.html) - overview of PMD
 
-*   January 2003 - [Sprout](http://netbeans.org/community/articles/interviews/tom_copeland_ole-martin_fr.html) -
+*   January 2003 - [Sprout](https://netbeans.org/community/articles/interviews/tom_copeland_ole-martin_fr.html) -
     interview with Ole-Martin and Tom

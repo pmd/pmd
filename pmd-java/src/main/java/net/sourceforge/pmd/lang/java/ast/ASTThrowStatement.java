@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTThrowStatement extends AbstractStatement {
+public final class ASTThrowStatement extends AbstractStatement implements ASTSwitchArrowRHS {
 
     ASTThrowStatement(int id) {
         super(id);
@@ -34,7 +34,9 @@ public final class ASTThrowStatement extends AbstractStatement {
         visitor.visit(this, data);
     }
 
-    /** Returns the expression for the thrown exception. */
+    /**
+     * Returns the expression for the thrown exception.
+     */
     public ASTExpression getExpr() {
         return (ASTExpression) getFirstChild();
     }

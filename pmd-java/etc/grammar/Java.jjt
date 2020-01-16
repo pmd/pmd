@@ -2799,49 +2799,36 @@ void SwitchStatement():
   "switch" "(" Expression() ")" SwitchBlock()
 }
 
-void SwitchBlock() #void :
+void SwitchBlock() #void:
 {}
 {
     "{"
         (
-            SwitchLabel()
-            (
-                "->" SwitchLabeledRulePart() (SwitchLabeledRule())*
-            |
-                ":" (LOOKAHEAD(2) SwitchLabel() ":")*
-                    // the lookahead is to prevent choosing BlockStatement when the token is "default",
-                    // which could happen as local class declarations accept the "default" modifier.
-                    (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement())*
-                    (SwitchLabeledStatementGroup())*
-            )
-        )?
+          LOOKAHEAD(SwitchLabel() ":") (SwitchFallthroughBranch())+
+        | (SwitchArrowBranch())*
+        )
     "}"
 }
 
-void SwitchLabeledRule() #void :
+void SwitchArrowLahead() #void:
 {}
 {
-    SwitchLabel() "->" SwitchLabeledRulePart()
+    SwitchLabel() "->"
 }
 
-void SwitchLabeledRulePart() #void:
+void SwitchArrowBranch():
 {}
 {
-    ( Expression() ";" ) #SwitchLabeledExpression(2)
-  |
-    ( Block() ) #SwitchLabeledBlock(2)
-  |
-    ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
+    SwitchLabel() "->" (Expression() ";" | Block() | ThrowStatement())
 }
 
-// For PMD 7, make this a real node to group the labels + statements
-void SwitchLabeledStatementGroup() #void:
+void SwitchFallthroughBranch():
 {}
 {
-    (LOOKAHEAD(2) SwitchLabel() ":")+
-        // the lookahead is to prevent choosing BlockStatement when the token is "default",
-        // which could happen as local class declarations accept the "default" modifier.
-        (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
+    SwitchLabel() ":"
+    // the lookahead is to prevent choosing BlockStatement when the token is "default",
+    // which could happen as local class declarations accept the "default" modifier.
+    (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
 }
 
 void SwitchLabel() :

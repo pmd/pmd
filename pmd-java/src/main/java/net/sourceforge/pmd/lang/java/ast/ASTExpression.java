@@ -36,7 +36,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public interface ASTExpression extends JavaNode, TypeNode, ASTMemberValue {
+public interface ASTExpression
+    extends JavaNode,
+            TypeNode,
+            ASTMemberValue,
+            ASTSwitchArrowRHS {
 
     /**
      * Always returns true. This is to allow XPath queries

@@ -16,7 +16,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTBlock extends AbstractStatement implements Iterable<ASTStatement> {
+public final class ASTBlock extends AbstractStatement implements Iterable<ASTStatement>, ASTSwitchArrowRHS {
 
     private boolean containsComment;
 
