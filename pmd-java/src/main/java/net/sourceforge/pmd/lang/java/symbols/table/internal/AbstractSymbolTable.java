@@ -27,35 +27,35 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 abstract class AbstractSymbolTable implements JSymbolTable {
 
     /** Additional info about the context. */
-    final SymbolTableHelper myResolveHelper;
-    private final JSymbolTable myParent;
+    final SymbolTableHelper helper;
+    private final JSymbolTable parent;
 
     AbstractSymbolTable(JSymbolTable parent, SymbolTableHelper helper) {
-        this.myParent = parent;
-        this.myResolveHelper = helper;
+        this.parent = parent;
+        this.helper = helper;
     }
 
 
     @Override
     @NonNull
     public final JSymbolTable getParent() {
-        return myParent;
+        return parent;
     }
 
 
-    @NonNull
+    @Nullable
     @Override
     public final ResolveResult<JTypeDeclSymbol> resolveTypeName(String simpleName) {
         @Nullable ResolveResult<JTypeDeclSymbol> result = resolveTypeNameImpl(simpleName);
-        return result != null ? result : myParent.resolveTypeName(simpleName);
+        return result != null ? result : parent.resolveTypeName(simpleName);
     }
 
 
-    @NonNull
+    @Nullable
     @Override
     public final ResolveResult<JVariableSymbol> resolveValueName(String simpleName) {
         @Nullable ResolveResult<JVariableSymbol> result = resolveValueNameImpl(simpleName);
-        return result != null ? result : myParent.resolveValueName(simpleName);
+        return result != null ? result : parent.resolveValueName(simpleName);
     }
 
 
@@ -67,7 +67,7 @@ abstract class AbstractSymbolTable implements JSymbolTable {
 
         return Stream.<Supplier<Stream<JMethodSymbol>>>of(
             () -> resolveMethodNameImpl(simpleName),
-            () -> myParent.resolveMethodName(simpleName)
+            () -> parent.resolveMethodName(simpleName)
         ).flatMap(Supplier::get);
     }
 
@@ -104,9 +104,9 @@ abstract class AbstractSymbolTable implements JSymbolTable {
      */
     @Nullable
     final JClassSymbol loadClassReportFailure(ASTImportDeclaration anImport, String fqcn) {
-        JClassSymbol loaded = myResolveHelper.loadClassOrFail(fqcn);
+        JClassSymbol loaded = helper.loadClassOrFail(fqcn);
         if (loaded == null) {
-            myResolveHelper.getLogger().warning(anImport, SemanticChecksLogger.CANNOT_FIND_CLASSPATH_SYMBOL, fqcn);
+            helper.getLogger().warning(anImport, SemanticChecksLogger.CANNOT_FIND_CLASSPATH_SYMBOL, fqcn);
         }
 
         return loaded;
@@ -122,7 +122,7 @@ abstract class AbstractSymbolTable implements JSymbolTable {
      */
     @Nullable
     final JClassSymbol loadClassIgnoreFailure(String canonicalName) {
-        return myResolveHelper.loadClassOrFail(canonicalName);
+        return helper.loadClassOrFail(canonicalName);
     }
 
     /**

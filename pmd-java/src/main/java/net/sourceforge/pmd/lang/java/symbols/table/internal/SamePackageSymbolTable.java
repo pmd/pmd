@@ -36,7 +36,7 @@ final class SamePackageSymbolTable extends AbstractSymbolTable {
         // and we're in the package
         // We ignore load exceptions. We don't know if the classpath is badly configured
         // or if the type was never in this package in the first place
-        JClassSymbol jClassSymbol = loadClassIgnoreFailure(myResolveHelper.prependPackageName(simpleName));
+        JClassSymbol jClassSymbol = loadClassIgnoreFailure(helper.prependPackageName(simpleName));
         return jClassSymbol == null ? null
                                     : new ClassResolveResult(jClassSymbol, this, packageDeclaration);
     }

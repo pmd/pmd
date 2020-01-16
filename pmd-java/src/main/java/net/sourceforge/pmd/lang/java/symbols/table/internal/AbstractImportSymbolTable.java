@@ -107,7 +107,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
             return false;
         } else {
             // then it's package private, or protected
-            return myResolveHelper.getThisPackage().equals(member.getPackageName());
+            return helper.getThisPackage().equals(member.getPackageName());
         }
     }
 
