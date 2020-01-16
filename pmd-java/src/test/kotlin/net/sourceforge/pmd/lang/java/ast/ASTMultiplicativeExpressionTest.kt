@@ -14,8 +14,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
             "1 * 2 * 3" should parseAs {
-                multiplicativeExpr(MUL) {
-                    multiplicativeExpr(MUL) {
+                infixExpr(MUL) {
+                    infixExpr(MUL) {
                         int(1)
                         int(2)
                     }
@@ -24,8 +24,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
             }
 
             "1 / 2 / -4" should parseAs {
-                multiplicativeExpr(DIV) {
-                    multiplicativeExpr(DIV) {
+                infixExpr(DIV) {
+                    infixExpr(DIV) {
                         int(1)
                         int(2)
                     }
@@ -36,8 +36,8 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
             }
 
             "1 % 2 % 3" should parseAs {
-                multiplicativeExpr(MOD) {
-                    multiplicativeExpr(MOD) {
+                infixExpr(MOD) {
+                    infixExpr(MOD) {
                         int(1)
                         int(2)
                     }
@@ -51,9 +51,9 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "1 * 2 / 3 % 2" should parseAs {
-                multiplicativeExpr(MOD) {
-                    multiplicativeExpr(DIV) {
-                        multiplicativeExpr(MUL) {
+                infixExpr(MOD) {
+                    infixExpr(DIV) {
+                        infixExpr(MUL) {
                             int(1)
                             int(2)
                         }

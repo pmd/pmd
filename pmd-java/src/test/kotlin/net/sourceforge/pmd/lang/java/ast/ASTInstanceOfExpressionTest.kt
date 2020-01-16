@@ -15,7 +15,7 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "f instanceof @A K" should parseAs {
-                instanceOfExpr {
+                infixExpr(BinaryOp.INSTANCEOF) {
                     it::getLeftOperand shouldBe variableAccess("f")
                     it::getRightOperand shouldBe typeExpr {
                         classType("K") {
