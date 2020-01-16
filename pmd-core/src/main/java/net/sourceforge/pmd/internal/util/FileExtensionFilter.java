@@ -1,31 +1,22 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.filter;
+package net.sourceforge.pmd.internal.util;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.function.Predicate;
 
-/**
- * @deprecated See {@link Filter}
- */
-@Deprecated
-public class FileExtensionFilter implements Filter<File> {
-    protected final String[] extensions;
-    protected final boolean ignoreCase;
+final class FileExtensionFilter implements Predicate<File> {
 
-    /**
-     * Matches any files with the given extensions, ignoring case
-     */
-    public FileExtensionFilter(String... extensions) {
-        this(true, extensions);
-    }
+    private final String[] extensions;
+    private final boolean ignoreCase;
 
     /**
      * Matches any files with the given extensions, optionally ignoring case.
      */
-    public FileExtensionFilter(boolean ignoreCase, String... extensions) {
+    FileExtensionFilter(boolean ignoreCase, String... extensions) {
         this.extensions = extensions;
         this.ignoreCase = ignoreCase;
         if (ignoreCase) {
@@ -36,7 +27,7 @@ public class FileExtensionFilter implements Filter<File> {
     }
 
     @Override
-    public boolean filter(File file) {
+    public boolean test(File file) {
         boolean accept = extensions == null;
         if (!accept) {
             for (String extension : extensions) {
