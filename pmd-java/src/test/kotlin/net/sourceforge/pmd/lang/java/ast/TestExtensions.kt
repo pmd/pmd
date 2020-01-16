@@ -325,7 +325,7 @@ fun TreeNodeWrapper<Node, *>.classLiteral(contents: ValuedNodeSpec<ASTClassLiter
 
 fun TreeNodeWrapper<Node, *>.ambiguousName(image: String, contents: NodeSpec<ASTAmbiguousName> = EmptyAssertions) =
         child<ASTAmbiguousName> {
-            it::getImage shouldBe image
+            it::getName shouldBe image
             contents()
         }
 
@@ -335,12 +335,6 @@ fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: ValuedNodeS
             it::getMemberValue shouldBe contents()
         }
 
-// TODO inline those more specific methods and remove them (infixExpr is enough)
-//  not in this PR to reduce diff
-
-fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
 
 fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSpec<ASTAssignmentExpression> = EmptyAssertions) =
         child<ASTAssignmentExpression>(ignoreChildren = assertions == EmptyAssertions) {
@@ -348,23 +342,13 @@ fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSp
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.equalityExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
-
-fun TreeNodeWrapper<Node, *>.shiftExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
-
-fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
-
 
 fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
         child<ASTInfixExpression> {
             it::getOperator shouldBe op
             assertions()
         }
+
 
 
 fun TreeNodeWrapper<Node, *>.blockLambda(assertions: ValuedNodeSpec<ASTLambdaExpression, ASTBlock?> = {null}) =
@@ -390,17 +374,6 @@ fun TreeNodeWrapper<Node, *>.exprLambda(assertions: ValuedNodeSpec<ASTLambdaExpr
             if (block == null) unspecifiedChildren(2)
             else it::getExpressionBody shouldBe block
         }
-
-
-fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(BinaryOp.INSTANCEOF, assertions)
-
-fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(BinaryOp.AND, assertions)
-
-
-fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        infixExpr(op, assertions)
 
 
 fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference> = EmptyAssertions) =

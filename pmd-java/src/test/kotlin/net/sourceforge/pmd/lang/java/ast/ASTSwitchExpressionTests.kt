@@ -96,12 +96,12 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    additiveExpr(ADD) {
+                    infixExpr(ADD) {
                         variableAccess("a")
                         variableAccess("b")
                     }
-                    multiplicativeExpr(DIV) {
-                        multiplicativeExpr(MUL) {
+                    infixExpr(DIV) {
+                        infixExpr(MUL) {
                             int(4)
                             int(2)
                         }
@@ -119,21 +119,21 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "2 * switch (day) {default -> 6;}" should parseAs {
-                multiplicativeExpr(MUL) {
+                infixExpr(MUL) {
                     number()
                     switchExpr()
                 }
             }
 
             "switch (day) {default -> 6;} * 4" should parseAs {
-                multiplicativeExpr(MUL) {
+                infixExpr(MUL) {
                     switchExpr()
                     number()
                 }
             }
 
             "switch (day) {default -> 6;} + 6" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     switchExpr()
                     number()
                 }

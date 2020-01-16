@@ -14,8 +14,8 @@ class ASTEqualityExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "1 == 2 == 3" should parseAs {
-                equalityExpr(EQ) {
-                    equalityExpr(EQ) {
+                infixExpr(EQ) {
+                    infixExpr(EQ) {
                         int(1)
                         int(2)
                     }
@@ -24,13 +24,13 @@ class ASTEqualityExpressionTest : ParserTestSpec({
             }
 
             "1 != 2 != 3 * 5" should parseAs {
-                equalityExpr(NE) {
-                    equalityExpr(NE) {
+                infixExpr(NE) {
+                    infixExpr(NE) {
                         int(1)
                         int(2)
                     }
 
-                    multiplicativeExpr(MUL) {
+                    infixExpr(MUL) {
                         int(3)
                         int(5)
                     }
@@ -38,8 +38,8 @@ class ASTEqualityExpressionTest : ParserTestSpec({
             }
 
             "1 == 2 != 3" should parseAs {
-                equalityExpr(NE) {
-                    equalityExpr(EQ) {
+                infixExpr(NE) {
+                    infixExpr(EQ) {
                         int(1)
                         int(2)
                     }
@@ -48,9 +48,9 @@ class ASTEqualityExpressionTest : ParserTestSpec({
             }
 
             "1 == 4 == 2 != 3" should parseAs {
-                equalityExpr(NE) {
-                    equalityExpr(EQ) {
-                        equalityExpr(EQ) {
+                infixExpr(NE) {
+                    infixExpr(EQ) {
+                        infixExpr(EQ) {
                             int(1)
                             int(4)
                         }
@@ -61,11 +61,11 @@ class ASTEqualityExpressionTest : ParserTestSpec({
             }
 
             "1 == 4 == 2 != 3 == 4 != 1" should parseAs {
-                equalityExpr(NE) {
-                    equalityExpr(EQ) {
-                        equalityExpr(NE) {
-                            equalityExpr(EQ) {
-                                equalityExpr(EQ) {
+                infixExpr(NE) {
+                    infixExpr(EQ) {
+                        infixExpr(NE) {
+                            infixExpr(EQ) {
+                                infixExpr(EQ) {
                                     int(1)
                                     int(4)
                                 }

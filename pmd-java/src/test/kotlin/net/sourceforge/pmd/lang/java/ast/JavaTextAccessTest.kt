@@ -69,10 +69,10 @@ class JavaTextAccessTest : ParserTestSpec({
                 variableDeclarator("a") {
                     it.textStr shouldBe "a = ((1 + 2) + f)"
 
-                    it::getInitializer shouldBe additiveExpr(BinaryOp.ADD) {
+                    it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
                         it.textStr shouldBe "((1 + 2) + f)"
 
-                        additiveExpr(BinaryOp.ADD) {
+                        infixExpr(BinaryOp.ADD) {
                             it.textStr shouldBe "(1 + 2)"
 
                             int(1) {
