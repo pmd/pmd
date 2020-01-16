@@ -30,7 +30,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 
 
     private boolean areEquivalent(ASTCatchStatement st1, ASTCatchStatement st2) {
-        return hasSameSubTree(st1.getBlock(), st2.getBlock(), st1.getExceptionName(), st2.getExceptionName());
+        return hasSameSubTree(st1.getBody(), st2.getBody(), st1.getExceptionName(), st2.getExceptionName());
     }
 
 

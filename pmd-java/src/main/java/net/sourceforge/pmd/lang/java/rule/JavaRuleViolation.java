@@ -11,13 +11,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -101,11 +101,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
     private void setClassNameFrom(JavaNode node) {
         String qualifiedName = null;
 
-        if (node.getScope() instanceof ClassScope) {
+        if (node instanceof ASTAnyTypeDeclaration && node.getScope() instanceof ClassScope) {
             qualifiedName = ((ClassScope) node.getScope()).getClassName();
         }
 
-        for (AbstractAnyTypeDeclaration parent : node.getParentsOfType(AbstractAnyTypeDeclaration.class)) {
+        for (ASTAnyTypeDeclaration parent : node.getParentsOfType(ASTAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
             if (qualifiedName == null) {
                 qualifiedName = clsName;
