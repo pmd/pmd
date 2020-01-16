@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -30,7 +29,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 
 
     private boolean areEquivalent(ASTCatchClause st1, ASTCatchClause st2) {
-        return hasSameSubTree(st1.getBlock(), st2.getBlock(), st1.getExceptionName(), st2.getExceptionName());
+        return hasSameSubTree(st1.getBody(), st2.getBody(), st1.getParameter().getName(), st2.getParameter().getName());
     }
 
 
@@ -71,17 +70,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 
     // Gets the representation of the set of catch statements as a single multicatch
     private String getCaughtExceptionsAsString(ASTCatchClause stmt) {
-
-        StringBuilder sb = new StringBuilder();
-
-        final String delim = " | ";
-        for (ASTType type : stmt.getCaughtExceptionTypeNodes()) {
-            sb.append(type.getTypeImage()).append(delim);
-        }
-
-        // remove the last delimiter
-        sb.replace(sb.length() - 3, sb.length(), "");
-        return sb.toString();
+        return stmt.getParameter().getTypeNode().getTypeImage();
     }
 
 

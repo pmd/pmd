@@ -22,7 +22,7 @@ public class StringToStringRule extends AbstractJavaRule {
                 && !TypeHelper.isExactlyAny(node.getNameDeclaration(), String[].class)) {
             return data;
         }
-        boolean isArray = node.isArray();
+        boolean isArray = node.hasArrayType();
         for (NameOccurrence occ : node.getUsages()) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             NameOccurrence qualifier = jocc.getNameForWhichThisIsAQualifier();

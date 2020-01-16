@@ -254,7 +254,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTCatchClause node, T data) {
-            if (node.isMulticatchStatement()) {
+            if (node.getParameter().isMulticatch()) {
                 check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES, data);
             }
             visitChildren(node, data);

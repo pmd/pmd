@@ -1721,7 +1721,7 @@ void ClassOrInterfaceBodyDeclaration():
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
-    | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
+    | LOOKAHEAD( Type() <IDENTIFIER> (AnnotationList() "[" "]")* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
     | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
   )
@@ -1739,14 +1739,20 @@ void FieldDeclaration(int modifiers) :
 void VariableDeclarator() :
 {}
 {
-  VariableDeclaratorId() [ "=" VariableInitializer() ]
+  VariableIdWithDims() [ "=" VariableInitializer() ]
 }
 
-// TODO use ArrayDimensions
 void VariableDeclaratorId() :
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }  ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+}
+
+void VariableIdWithDims() #VariableDeclaratorId :
+{}
+{
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  [ Dims() ]
 }
 
 void ReceiverParameter():
@@ -1777,7 +1783,7 @@ void MethodDeclaration(int modifiers) :
   ResultType()
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
   FormalParameters()
-  ( "[" "]" )* // TODO use ArrayDimensions
+  [ Dims() ]
   [ ThrowsList() ]
   ( Block() | ";" )
 }
@@ -1790,17 +1796,35 @@ void FormalParameters() :
 }
 
 void FormalParameter() :
+{boolean isFinal = false;}
 {
+   isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+   FormalParamType() ("|" FormalParamType())* // remove this stuff when #2202 is merged
+   VariableIdWithDims()
 }
+
+void FormalParamType() #void:
+{}
 {
-   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" Type())*
-   // TODO there may be annotations before the "..." of the varargs
-   //  the ... is treated analogously to a pair of brackets
-   //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
-   [ "..." {jjtThis.setVarargs();} ]
-   VariableDeclaratorId()
+   PrimitiveType()        [ LOOKAHEAD(2) VarargsDimensions() #ArrayType(2) ]
+ | ClassOrInterfaceType() [ LOOKAHEAD(2) VarargsDimensions() #ArrayType(2) ]
 }
+
+void VarargsDimensions() #ArrayDimensions:
+{}
+{
+    // like ArrayDimensions but allows for a varargs ellipsis at the end ("...")
+    LOOKAHEAD(AnnotationList() "[") (LOOKAHEAD(AnnotationList() "[") ArrayTypeDim())+ [ VarargsDim() ]
+  | VarargsDim()
+}
+
+void VarargsDim() #ArrayTypeDim:
+{}
+{
+    TypeAnnotListNoInject() "..." {jjtThis.setVarargs();}
+}
+
+
 
 void ConstructorDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);
@@ -1927,15 +1951,10 @@ void AnnotatedClassOrInterfaceType() #void:
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
 void Type() #void:
+{}
 {
-    JavaccToken t;
-}
-{
- // lookahead to catch arrays of primitive types.
- // we can't lookahead for just PrimitiveType() "["
- // because the "[" may be preceded by annotations
- LOOKAHEAD(PrimitiveType() ArrayTypeDim() | <IDENTIFIER>) ReferenceType()
- | PrimitiveType()
+   PrimitiveType()        [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
+ | ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
 }
 
 void Dims() #ArrayDimensions:
@@ -2522,16 +2541,14 @@ void LambdaParameterList():
 void LambdaParameter():
 {
   boolean isVarType = false;
-  ASTLambdaParameter me = jjtThis;
   boolean isFinal = false;
 }
 {
     [
-       isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
-       isVarType=LambdaParameterType() { jjtThis.setVarType(); }
-       [ "..." {jjtThis.setVarargs();} ]
+       isFinal=LocalVarModifierList()  {jjtThis.setFinal(isFinal);}
+       isVarType=LambdaParameterType()
     ]
-    VariableDeclaratorId()
+    VariableIdWithDims()
 }
 
 /** Returns true if this is "var". */
@@ -2539,8 +2556,8 @@ boolean LambdaParameterType() #void :
 {}
 {
     LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } )
-        <IDENTIFIER> { return true; }
-    | Type() { return false; }
+        <IDENTIFIER>    { return true; }
+    | FormalParamType() { return false; }
 }
 
 void Literal() #void :
@@ -2980,8 +2997,17 @@ void CatchClause() :
 {}
 {
   "catch"
-  "(" FormalParameter() ")"
+  "(" CatchParameter() ")"
   Block()
+}
+
+
+void CatchParameter():
+{boolean isFinal = false; boolean multi=false;}
+{
+   isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+   ( AnnotatedClassOrInterfaceType() ( "|" AnnotatedClassOrInterfaceType()  {multi=true;} )* ) #UnionType(multi)
+   VariableDeclaratorId()
 }
 
 void FinallyClause() :
@@ -3138,7 +3164,7 @@ void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
   Type() #ResultType
   t=<IDENTIFIER>
   ("(" ")") #FormalParameters(true)
-  ( "[" "]" )* // TODO use ArrayTypeDims
+  [ Dims() ]
   [ DefaultValue() ] ";"
   {
     jjtThis.setImage(t.image);

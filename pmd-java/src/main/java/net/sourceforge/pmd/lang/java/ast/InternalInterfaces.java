@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.Iterator;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * Those are some interfaces that are not published, but are used to keep
@@ -90,6 +94,59 @@ final class InternalInterfaces {
             assert jjtGetNumChildren() > 0;
             return jjtGetChild(jjtGetNumChildren() - 1);
         }
+    }
+
+    /**
+     * Tags a node that has at least one child, then some methods never
+     * return null.
+     */
+    interface AtLeastOneChildOfType<T extends JavaNode> extends JavaNode {
+
+        @Override
+        T jjtGetChild(int index);
+
+
+        /** Returns the first child of this node, never null. */
+        @Override
+        @NonNull
+        default T getFirstChild() {
+            assert jjtGetNumChildren() > 0;
+            return jjtGetChild(0);
+        }
+
+
+        /** Returns the last child of this node, never null. */
+        @Override
+        @NonNull
+        default T getLastChild() {
+            assert jjtGetNumChildren() > 0;
+            return jjtGetChild(jjtGetNumChildren() - 1);
+        }
+    }
+
+    interface VariableIdOwner extends JavaNode {
+
+        /** Returns the id of the declared variable. */
+        ASTVariableDeclaratorId getVarId();
+    }
+
+    interface MultiVariableIdOwner extends JavaNode, Iterable<ASTVariableDeclaratorId>, AccessNode {
+
+        /**
+         * Returns a stream of the variable ids declared
+         * by this node.
+         */
+        default NodeStream<ASTVariableDeclaratorId> getVarIds() {
+            return children(ASTVariableDeclarator.class).children(ASTVariableDeclaratorId.class);
+        }
+
+
+        @Override
+        default Iterator<ASTVariableDeclaratorId> iterator() {
+            return getVarIds().iterator();
+        }
+
+        ASTType getTypeNode();
     }
 
 }

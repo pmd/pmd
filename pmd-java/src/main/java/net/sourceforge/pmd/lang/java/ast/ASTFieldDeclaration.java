@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 /**
@@ -34,7 +31,11 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration>, Iterable<ASTVariableDeclaratorId> {
+public final class ASTFieldDeclaration extends AbstractJavaAccessNode
+    implements SignedNode<ASTFieldDeclaration>,
+               Iterable<ASTVariableDeclaratorId>,
+               LeftRecursiveNode,
+               InternalInterfaces.MultiVariableIdOwner {
 
     private JavaFieldSignature signature;
 
@@ -138,35 +139,6 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implem
         return false;
     }
 
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return checkType() + checkDecl() > 0;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        if (!isArray()) {
-            return 0;
-        }
-        return checkType() + checkDecl();
-    }
-
-    private int checkType() {
-        if (jjtGetNumChildren() == 0 || !(jjtGetChild(0) instanceof ASTType)) {
-            return 0;
-        }
-        return ((ASTType) jjtGetChild(0)).getArrayDepth();
-    }
-
-    private int checkDecl() {
-        if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
-            return 0;
-        }
-        return ((ASTVariableDeclaratorId) jjtGetChild(1).jjtGetChild(0)).getArrayDepth();
-    }
-
     /**
      * Gets the variable name of this field. This method searches the first
      * VariableDeclartorId node and returns its image or <code>null</code> if
@@ -196,39 +168,14 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implem
         return signature;
     }
 
+    /**
+     * Returns the type node at the beginning of this field declaration.
+     * The type of this node is not necessarily the type of the variables,
+     * see {@link ASTVariableDeclaratorId#getType()}.
+     */
+    @Override
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
 
-
-    /**
-     * Returns an iterator over the ids of the fields
-     * declared in this statement.
-     */
-    @Override
-    public Iterator<ASTVariableDeclaratorId> iterator() {
-        return ASTVariableDeclarator.iterateIds(this);
-    }
-
-
-    /**
-     * @deprecated FieldDeclaration may declare several variables with a different type
-     *     It won't implement TypeNode anymore come 7.0.0
-     */
-    @Override
-    @Deprecated
-    public Class<?> getType() {
-        return super.getType();
-    }
-
-
-    /**
-     * @deprecated FieldDeclaration may declare several variables with a different type
-     *     It won't implement TypeNode anymore come 7.0.0
-     */
-    @Override
-    @Deprecated
-    public JavaTypeDefinition getTypeDefinition() {
-        return super.getTypeDefinition();
-    }
 }

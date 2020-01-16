@@ -42,7 +42,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
             "2 + -2" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     number()
                     unaryExpr(UNARY_MINUS) {
                         number()
@@ -51,7 +51,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             }
 
             "2 +-2" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     number()
                     unaryExpr(UNARY_MINUS) {
                         number()
@@ -60,7 +60,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             }
 
             "2 + +2" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     number()
                     unaryExpr(UNARY_PLUS) {
                         number()
@@ -103,7 +103,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
             "(p)+q" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     parenthesized {
                         variableAccess("p", READ)
                     }
@@ -144,7 +144,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "(p)--q" shouldNot parse()
 
             "i+++i" should parseAs {
-                additiveExpr(ADD) {
+                infixExpr(ADD) {
                     unaryExpr(POST_INCREMENT) {
                         variableAccess("i", WRITE)
                     }
@@ -153,7 +153,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             }
 
             "i---i" should parseAs {
-                additiveExpr(SUB) {
+                infixExpr(SUB) {
                     unaryExpr(POST_DECREMENT) {
                         variableAccess("i", WRITE)
                     }

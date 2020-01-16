@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.lang.ast.Node;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 /**
@@ -19,11 +18,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre class="grammar">
  *
- * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ( "=" {@linkplain ASTExpression Expression} )?
+ * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} {@link ASTArrayDimensions ArrayDimensions}? ( "=" {@linkplain ASTExpression Expression} )?
  *
  * </pre>
  */
-public class ASTVariableDeclarator extends AbstractJavaTypeNode {
+public class ASTVariableDeclarator extends AbstractJavaTypeNode implements InternalInterfaces.VariableIdOwner {
 
     ASTVariableDeclarator(int id) {
         super(id);
@@ -51,15 +50,16 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
      * Returns the name of the declared variable.
      */
     public String getName() {
-        // first child will be VariableDeclaratorId
-        return jjtGetChild(0).getImage();
+        return getVarId().getVariableName();
     }
 
 
     /**
      * Returns the id of the declared variable.
      */
-    public ASTVariableDeclaratorId getVariableId() {
+    @Override
+    @NonNull
+    public ASTVariableDeclaratorId getVarId() {
         return (ASTVariableDeclaratorId) jjtGetChild(0);
     }
 
@@ -69,41 +69,17 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
      * Otherwise, {@link #getInitializer()} returns null.
      */
     public boolean hasInitializer() {
-        return jjtGetNumChildren() > 1;
+        return getLastChild() instanceof ASTExpression;
     }
 
 
     /**
      * Returns the initializer, of the variable, or null if it doesn't exist.
      */
+    @Nullable
     public ASTExpression getInitializer() {
-        return hasInitializer() ? (ASTExpression) jjtGetChild(1) : null;
+        return hasInitializer() ? (ASTExpression) getLastChild() : null;
     }
 
-
-    /* only for LocalVarDeclaration and FieldDeclaration */
-    static Iterator<ASTVariableDeclaratorId> iterateIds(Node parent) {
-        // TODO this can be made clearer with iterator mapping (Java 8)
-        final Iterator<ASTVariableDeclarator> declarators = parent.children(ASTVariableDeclarator.class).iterator();
-
-        return new Iterator<ASTVariableDeclaratorId>() {
-            @Override
-            public boolean hasNext() {
-                return declarators.hasNext();
-            }
-
-
-            @Override
-            public ASTVariableDeclaratorId next() {
-                return declarators.next().getVariableId();
-            }
-
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
 
 }

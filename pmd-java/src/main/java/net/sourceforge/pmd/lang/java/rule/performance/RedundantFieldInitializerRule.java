@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -131,13 +130,12 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
      *         otherwise.
      */
     private boolean isRef(ASTFieldDeclaration fieldDeclaration, ASTVariableDeclarator variableDeclarator) {
-        Node type = fieldDeclaration.jjtGetChild(0).jjtGetChild(0);
-        if (type instanceof ASTReferenceType) {
+        if (fieldDeclaration.getTypeNode() instanceof ASTReferenceType) {
             // Reference type, array or otherwise
             return true;
         } else {
             // Primitive array?
-            return ((ASTVariableDeclaratorId) variableDeclarator.jjtGetChild(0)).isArray();
+            return variableDeclarator.getVarId().getExtraDimensions() != null;
         }
     }
 

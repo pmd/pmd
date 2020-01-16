@@ -2,16 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-import java.awt.Button;
 import java.io.File;
-import java.io.FileFilter;
-import java.security.PrivilegedAction;
-import java.util.Comparator;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -53,9 +45,9 @@ public class FullTypeAnnotations {
     class UnmodifiableList<T> implements @Readonly List<@Readonly T> {
     }
 
-    // for throws clauses: TODO unsupported
+    // for throws clauses:
 
-    //    void monitorTemperature() throws @Critical TemperatureException { }
+    void monitorTemperature() throws @Critical TemperatureException { }
 
     //  for constructor invocationresults(that is, for object creation):
 
@@ -108,16 +100,27 @@ public class FullTypeAnnotations {
     Document @Readonly [][] docs2 = new Document@Readonly[2][12]; // read-only array of arrays of documents
     Document[] @Readonly [] docs3 = new Document[2]@Readonly[12]; // array of read-only arrays of documents
 
-    // TODO mixed array notation, for now syntax error
-    // Document [] docs2 @Readonly[] = new Document@Readonly[2][12]; // read-only array of arrays of documents
-    // Document @Readonly [] docs3[] = new Document[2]@Readonly[12]; // array of read-only arrays of documents
+    Document[] docs4@Readonly[] = new Document@Readonly[2][12]; // read-only array of arrays of documents
+    Document @Readonly [] docs5[] = new Document[2]@Readonly[12]; // array of read-only arrays of documents
+
+    { // all of the above for local vars
+
+        @Readonly Document[][] docs1 = new @Readonly Document[2][12]; // array of arrays of read-only documents
+        Document @Readonly [][] docs2 = new Document@Readonly[2][12]; // read-only array of arrays of documents
+        Document[] @Readonly [] docs3 = new Document[2]@Readonly[12]; // array of read-only arrays of documents
+
+        Document[] docs4@Readonly[] = new Document@Readonly[2][12]; // read-only array of arrays of documents
+        Document @Readonly [] docs5[] = new Document[2]@Readonly[12]; // array of read-only arrays of documents
+
+    }
+
 
     class MyClass {
 
         public String toString(@Readonly MyClass this) { }
 
-        // TODO unsupported
-        // public boolean equals(Object @Readonly ... other) { }
+        public boolean equals(Object @Readonly ... other) @K[][]{ }
+        MyClass(Object @Readonly [] @ß... other) { }
     }
 
 
