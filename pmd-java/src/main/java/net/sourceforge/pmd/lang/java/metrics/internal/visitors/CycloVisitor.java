@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -59,16 +59,16 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
             ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getTestedExpression()));
         }
 
-        for (ASTSwitchLabel label : node) {
-            if (label.isDefault()) {
+        for (ASTSwitchBranch branch : node) {
+            if (branch.getLabel().isDefault()) {
                 // like for "else", default is not a decision point
                 continue;
             }
 
             if (considerBooleanPaths) {
                 ((MutableInt) data).increment();
-            } else if (node.jjtGetNumChildren() > 1 + label.jjtGetChildIndex()
-                && node.jjtGetChild(label.jjtGetChildIndex() + 1) instanceof ASTBlockStatement) {
+            } else if (node.jjtGetNumChildren() > 1 + branch.jjtGetChildIndex()
+                && node.jjtGetChild(branch.jjtGetChildIndex() + 1) instanceof ASTBlockStatement) {
                 // an empty label is only counted if we count boolean paths
                 ((MutableInt) data).increment();
             }

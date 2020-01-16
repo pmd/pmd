@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J12__PREVIEW
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J13__PREVIEW
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 
@@ -15,10 +20,11 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 class ASTSwitchExpressionTests : ParserTestSpec({
 
 
-    parserTest("Simple switch expressions") {
+    parserTest("No switch expr before j12 preview", javaVersions = !J12__PREVIEW) {
+        inContext(ExpressionParsingCtx) {
 
 
-        """
+            """
             switch (day) {
                 case FRIDAY, SUNDAY -> 6;
                 case WEDNESDAY      -> 9;
@@ -26,94 +32,125 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 default             -> {
                     int k = day * 2;
                     int result = f(k);
-                    break result;
+                    break result * 4;
                 }
             }
-        """.trimIndent() should matchExpr<ASTSwitchExpression> {
-            it::getTestedExpression shouldBe variableAccess("day")
+        """ shouldNot parse()
+        }
 
-            child<ASTSwitchLabeledExpression> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
+    }
 
-                    variableAccess("FRIDAY")
-                    variableAccess("SUNDAY")
+    parserTest("No yield stmt before j13 preview", javaVersions = !J13__PREVIEW) {
+        inContext(ExpressionParsingCtx) {
+
+            """
+            switch (day) {
+                default             -> {
+                    yield result * 4;
                 }
-                int(6)
             }
+        """ shouldNot parse()
+        }
 
-            child<ASTSwitchLabeledExpression> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
+    }
 
-                    variableAccess("WEDNESDAY")
+
+    parserTest("Simple switch expressions", javaVersions = listOf(J13__PREVIEW)) {
+
+
+        inContext(ExpressionParsingCtx) {
+
+
+            """
+            switch (day) {
+                case FRIDAY, SUNDAY -> 6;
+                case WEDNESDAY      -> 9;
+                case SONNABEND      -> throw new MindBlownException();
+                default             -> {
+                    int k = day * 2;
+                    int result = f(k);
+                    yield result;
                 }
-                int(9)
             }
+        """ should parseAs {
+                switchExpr {
+                    it::getTestedExpression shouldBe variableAccess("day")
 
-            child<ASTSwitchLabeledThrowStatement> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
-
-                    variableAccess("SONNABEND")
-                }
-                child<ASTThrowStatement> {
-                    child<ASTConstructorCall> {
-                        child<ASTClassOrInterfaceType> {
-                            it::getTypeImage shouldBe "MindBlownException"
+                    switchArrow {
+                        it::getLabel shouldBe switchLabel {
+                            variableAccess("FRIDAY")
+                            variableAccess("SUNDAY")
                         }
-                        child<ASTArgumentList> {}
+                        int(6)
                     }
-                }
-            }
 
-            child<ASTSwitchLabeledBlock> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe true
-                }
-                block {
-                    localVarDecl()
-                    localVarDecl()
-                    breakStatement(label = "result")
+
+                    switchArrow {
+                        it::getLabel shouldBe switchLabel {
+                            variableAccess("WEDNESDAY")
+                        }
+                        int(9)
+                    }
+
+
+                    switchArrow {
+                        it::getLabel shouldBe switchLabel {
+                            variableAccess("SONNABEND")
+                        }
+                        throwStatement()
+                    }
+
+                    switchArrow {
+                        it::getLabel shouldBe switchDefaultLabel()
+                        block {
+                            localVarDecl()
+                            localVarDecl()
+                            yieldStatement {
+                                variableAccess("result")
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
 
-    parserTest("Non-trivial labels") {
+
+    parserTest("Non-trivial labels", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
+        inContext(ExpressionParsingCtx) {
 
 
-        """ switch (day) {
+            """ 
+            switch (day) {
                 case a + b, 4 * 2 / Math.PI -> 6;
             }
-        """ should matchExpr<ASTSwitchExpression> {
+        """ should parseAs {
+                switchExpr {
+                    it::getTestedExpression shouldBe variableAccess("day")
 
-            it::getTestedExpression shouldBe variableAccess("day")
-
-            child<ASTSwitchLabeledExpression> {
-
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
-
-                    infixExpr(ADD) {
-                        variableAccess("a")
-                        variableAccess("b")
-                    }
-                    infixExpr(DIV) {
-                        infixExpr(MUL) {
-                            int(4)
-                            int(2)
+                    switchArrow {
+                        it::getLabel shouldBe switchLabel {
+                            infixExpr(ADD) {
+                                variableAccess("a")
+                                variableAccess("b")
+                            }
+                            infixExpr(DIV) {
+                                infixExpr(MUL) {
+                                    int(4)
+                                    int(2)
+                                }
+                                fieldAccess("PI")
+                            }
                         }
-                        fieldAccess("PI")
+                        int(6)
                     }
                 }
-                int(6)
             }
         }
     }
 
-    parserTest("Switch precedence") {
+    parserTest("Switch expr precedence", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
 
 
         inContext(ExpressionParsingCtx) {
@@ -147,10 +184,11 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     }
 
 
-    parserTest("Nested switch expressions") {
+    parserTest("Nested switch expressions", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
 
+        inContext(ExpressionParsingCtx) {
 
-        """
+            """
             switch (day) {
                 case FRIDAY -> 6;
                 case WEDNESDAY      -> switch (foo) {
@@ -159,62 +197,58 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 };
                 default             -> 3;
             }
-        """.trimIndent() should matchExpr<ASTSwitchExpression> {
+        """.trimIndent() should parseAs {
 
-            it::getTestedExpression shouldBe variableAccess("day")
+                switchExpr {
+                    it::getTestedExpression shouldBe variableAccess("day")
 
-            child<ASTSwitchLabeledExpression> {
 
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
+                    it.branches.toList() shouldBe listOf(
 
-                    variableAccess("FRIDAY")
+                            switchArrow {
+                                switchLabel {
+                                    variableAccess("FRIDAY")
+                                }
+                                int(6)
+                            },
+
+                            switchArrow {
+                                switchLabel {
+                                    variableAccess("WEDNESDAY")
+                                }
+
+                                switchExpr {
+                                    it::getTestedExpression shouldBe variableAccess("foo")
+
+                                    switchArrow {
+                                        switchLabel {
+                                            int(2)
+                                        }
+                                        int(5)
+                                    }
+                                    switchArrow {
+                                        switchDefaultLabel()
+                                        int(3)
+                                    }
+                                }
+                            },
+
+                            switchArrow {
+                                switchDefaultLabel()
+                                int(3)
+                            }
+                    )
                 }
-                int(6)
-            }
-
-            child<ASTSwitchLabeledExpression> {
-
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
-
-                    variableAccess("WEDNESDAY")
-                }
-
-                child<ASTSwitchExpression> {
-
-                    it::getTestedExpression shouldBe variableAccess("foo")
-
-                    child<ASTSwitchLabeledExpression> {
-                        child<ASTSwitchLabel> {
-                            it::isDefault shouldBe false
-
-                            int(2)
-                        }
-                        int(5)
-                    }
-                    child<ASTSwitchLabeledExpression> {
-                        child<ASTSwitchLabel> {
-                            it::isDefault shouldBe true
-                        }
-                        int(3)
-                    }
-                }
-            }
-            child<ASTSwitchLabeledExpression> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe true
-                }
-                int(3)
             }
         }
     }
 
 
-    parserTest("Non-fallthrough nested in fallthrough") {
+    parserTest("Non-fallthrough nested in fallthrough", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
 
+        inContext(StatementParsingCtx) {
 
-        """
+            """
             switch (day) {
                 case FRIDAY: foo(); break;
                 case WEDNESDAY  : switch (foo) {
@@ -223,120 +257,119 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
                 default             : bar();
             }
-        """.trimIndent() should matchStmt<ASTSwitchStatement> {
-            it::isExhaustiveEnumSwitch shouldBe false
+        """ should parseAs {
+                switchStmt {
 
-            it::getTestedExpression shouldBe variableAccess("day")
+                    it::isExhaustiveEnumSwitch shouldBe false
+                    it::getTestedExpression shouldBe variableAccess("day")
 
-            child<ASTSwitchLabel> {
-                it::isDefault shouldBe false
+                    it.branches.toList() shouldBe listOf(
 
-                child<ASTExpression>(ignoreChildren = true) {}
 
+                            switchFallthrough {
+                                switchLabel {
+                                    variableAccess("FRIDAY")
+                                }
+                                exprStatement()
+                                breakStatement()
+                            },
+                            switchFallthrough {
+                                switchLabel {
+                                    variableAccess("WEDNESDAY")
+                                }
+                                switchStmt {
+                                    variableAccess("foo")
+                                    switchArrow {
+                                        switchLabel()
+                                        int(5)
+                                    }
+                                    switchArrow {
+                                        switchDefaultLabel()
+                                        int(3)
+                                    }
+                                }
+                            },
+                            switchFallthrough {
+                                switchDefaultLabel()
+                                exprStatement()
+                            }
+                    )
+                }
             }
-
-            exprStatement()
-            breakStatement()
-            child<ASTSwitchLabel> {
-                it::isDefault shouldBe false
-
-                child<ASTExpression>(ignoreChildren = true) {}
-
-            }
-
-            child<ASTSwitchStatement> {
-
-                it::getTestedExpression shouldBe child(ignoreChildren = true) {}
-
-                child<ASTSwitchLabeledExpression>(ignoreChildren = true) {}
-                child<ASTSwitchLabeledExpression>(ignoreChildren = true) {}
-
-            }
-
-
-            child<ASTSwitchLabel> {
-                it::isDefault shouldBe true
-            }
-
-            exprStatement()
         }
     }
 
 
-    parserTest("Switch statement with non-fallthrough labels") {
+    parserTest("Switch statement with non-fallthrough labels", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
 
-        """
+        inContext(StatementParsingCtx) {
+            """
         switch (day) {
             case THURSDAY, SATURDAY     -> System.out.println("  8");
             case WEDNESDAY              -> System.out.println("  9");
         }
-        """.trimIndent() should matchStmt<ASTSwitchStatement> {
-            it::isExhaustiveEnumSwitch shouldBe false
+        """ should parseAs {
+                switchStmt {
 
-            it::getTestedExpression shouldBe variableAccess("day")
+                    it::getTestedExpression shouldBe variableAccess("day")
 
-            child<ASTSwitchLabeledExpression> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
 
-                    variableAccess("THURSDAY")
-                    variableAccess("SATURDAY")
-                }
-                child<ASTMethodCall>(ignoreChildren = true) {
-                    it::getMethodName shouldBe "println"
-                }
-            }
-            child<ASTSwitchLabeledExpression> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
-
-                    variableAccess("WEDNESDAY")
-                }
-                child<ASTMethodCall>(ignoreChildren = true) {
-                    it::getMethodName shouldBe "println"
+                    switchArrow {
+                        switchLabel {
+                            variableAccess("THURSDAY")
+                            variableAccess("SATURDAY")
+                        }
+                        methodCall("println")
+                    }
+                    switchArrow {
+                        switchLabel {
+                            variableAccess("WEDNESDAY")
+                        }
+                        methodCall("println")
+                    }
                 }
             }
         }
     }
 
-    parserTest("Fallthrough switch statement") {
+    parserTest("Fallthrough switch statement", javaVersions = Earliest..Latest) {
 
-        """
+        inContext(StatementParsingCtx) {
+            """
           switch (day) {
             case TUESDAY               : System.out.println("  7"); break;
-            case THURSDAY, SATURDAY    : System.out.println("  8"); break;
+            case THURSDAY              : System.out.println("  8"); break;
             default                    : break;
           }
-        """.trimIndent() should matchStmt<ASTSwitchStatement> {
-            it::isExhaustiveEnumSwitch shouldBe false
+        """ should parseAs {
+                switchStmt {
 
-            it::getTestedExpression shouldBe variableAccess("day")
+                    it::getTestedExpression shouldBe variableAccess("day")
 
+                    switchFallthrough {
+                        switchLabel {
+                            variableAccess("TUESDAY")
+                        }
 
-            child<ASTSwitchLabel> {
-                it::isDefault shouldBe false
+                        exprStatement()
+                        breakStatement()
+                    }
 
-                variableAccess("TUESDAY")
+                    switchFallthrough {
+                        switchLabel {
+                            variableAccess("THURSDAY")
+                        }
+
+                        exprStatement()
+                        breakStatement()
+                    }
+
+                    switchFallthrough {
+                        switchDefaultLabel()
+                        breakStatement()
+                    }
+                }
             }
-
-            exprStatement()
-            breakStatement()
-
-            child<ASTSwitchLabel> {
-                it::isDefault shouldBe false
-
-                child<ASTExpression>(ignoreChildren = true) {}
-                child<ASTExpression>(ignoreChildren = true) {}
-            }
-
-            exprStatement()
-            breakStatement()
-
-            child<ASTSwitchLabel> {
-                it::isDefault shouldBe true
-            }
-
-            breakStatement()
         }
     }
 

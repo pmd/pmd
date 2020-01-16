@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -37,8 +38,17 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
         isDefault = true;
     }
 
+    /** Returns true if this is the {@code default} label. */
     public boolean isDefault() {
         return isDefault;
+    }
+
+    /**
+     * Returns the expressions of this label, or an empty list if this
+     * is the default label.
+     */
+    public List<ASTExpression> getExprList() {
+        return findChildrenOfType(ASTExpression.class);
     }
 
     @Override
