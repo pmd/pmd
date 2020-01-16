@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -98,11 +99,27 @@ public class JavaRuleViolationTest {
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1529/">#1529</a>
      */
     @Test
-    public void testPackageAndClassName() {
+    public void testPackageAndClassNameForImport() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public class Foo { }");
         ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
 
         JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        assertEquals("pkg", violation.getPackageName());
+        assertEquals("Foo", violation.getClassName());
+    }
+
+    @Test
+    public void testPackageAndClassNameForField() {
+        ASTCompilationUnit ast = parse("package pkg; public class Foo { int a; }");
+        ASTClassOrInterfaceDeclaration classDeclaration = ast.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTFieldDeclaration field = ast.getFirstDescendantOfType(ASTFieldDeclaration.class);
+
+        JavaRuleViolation violation;
+        violation = new JavaRuleViolation(null, new RuleContext(), classDeclaration, null);
+        assertEquals("pkg", violation.getPackageName());
+        assertEquals("Foo", violation.getClassName());
+
+        violation = new JavaRuleViolation(null, new RuleContext(), field, null);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
     }
@@ -149,10 +166,11 @@ public class JavaRuleViolationTest {
 
     /**
      * Test that the name of the inner class is taken correctly.
+     * Also check fields.
      */
     @Test
     public void testInnerClass() {
-        ASTCompilationUnit ast = parse("class Foo { class Bar { } }");
+        ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; } }");
         List<ASTClassOrInterfaceDeclaration> classes = ast.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
         assertEquals(2, classes.size());
 
@@ -161,5 +179,14 @@ public class JavaRuleViolationTest {
 
         JavaRuleViolation barViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(1), null);
         assertEquals("Foo$Bar", barViolation.getClassName());
+
+        List<ASTFieldDeclaration> fields = ast.findDescendantsOfType(ASTFieldDeclaration.class, true);
+        assertEquals(2, fields.size());
+
+        JavaRuleViolation fieldViolation = new JavaRuleViolation(null, new RuleContext(), fields.get(0), null);
+        assertEquals("Foo", fieldViolation.getClassName());
+
+        JavaRuleViolation innerFieldViolation = new JavaRuleViolation(null, new RuleContext(), fields.get(1), null);
+        assertEquals("Foo$Bar", innerFieldViolation.getClassName());
     }
 }
