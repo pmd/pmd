@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
  * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
@@ -14,7 +11,7 @@ import java.util.Iterator;
  *
  * <p>This statement may define several variables, possibly of different types
  * (see {@link ASTVariableDeclaratorId#getType()}). The nodes corresponding to
- * the declared variables are accessible through {@link #iterator()}.
+ * the declared variables are accessible through {@link #getVarIds()}.
  *
  * <pre class="grammar">
  *
@@ -23,7 +20,10 @@ import java.util.Iterator;
  * </pre>
  */
 // TODO extend AbstractStatement
-public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, Iterable<ASTVariableDeclaratorId>, ASTStatement {
+public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode
+    implements Iterable<ASTVariableDeclaratorId>,
+               ASTStatement,
+               InternalInterfaces.MultiVariableIdOwner {
 
     ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -67,18 +67,6 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode im
         return getTypeNode() == null;
     }
 
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return getArrayDepth() > 0;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return getArrayDimensionOnType() + getArrayDimensionOnDeclaratorId();
-    }
-
     /**
      * Gets the type node for this variable declaration statement.
      * With Java10 and local variable type inference, there might be
@@ -88,54 +76,10 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode im
      *
      * @see #isTypeInferred()
      */
+    @Override
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
 
-    private int getArrayDimensionOnType() {
-        ASTType typeNode = getTypeNode();
-        if (typeNode != null) {
-            return typeNode.getArrayDepth();
-        }
-        return 0;
-    }
 
-    private ASTVariableDeclaratorId getDecl() {
-        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1).jjtGetChild(0);
-    }
-
-    private int getArrayDimensionOnDeclaratorId() {
-        return getDecl().getArrayDepth();
-    }
-
-    /**
-     * Gets the variable name of this declaration. This method searches the first
-     * VariableDeclartorId node and returns it's image or <code>null</code> if
-     * the child node is not found.
-     *
-     * @return a String representing the name of the variable
-     *
-     * @deprecated LocalVariableDeclaration may declare several variables, so this is not exhaustive
-     *     Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
-     */
-    // It would be nice to have a way to inform XPath users of the intended replacement
-    // for a deprecated attribute. We may use another annotation for that.
-    @Deprecated
-    public String getVariableName() {
-        ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        if (decl != null) {
-            return decl.getImage();
-        }
-        return null;
-    }
-
-
-    /**
-     * Returns an iterator over the ids of the variables
-     * declared in this statement.
-     */
-    @Override
-    public Iterator<ASTVariableDeclaratorId> iterator() {
-        return ASTVariableDeclarator.iterateIds(this);
-    }
 }

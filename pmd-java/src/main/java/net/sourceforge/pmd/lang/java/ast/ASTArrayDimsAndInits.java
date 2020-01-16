@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @deprecated Replaced by {@link ASTArrayDimensions}
  */
 @Deprecated
-public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
+public class ASTArrayDimsAndInits extends AbstractJavaNode {
 
     private int arrayDepth;
 
@@ -37,13 +37,11 @@ public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensiona
         arrayDepth++;
     }
 
-    @Override
     @Deprecated
     public int getArrayDepth() {
         return arrayDepth;
     }
 
-    @Override
     @Deprecated
     public boolean isArray() {
         return arrayDepth > 0; // should always be true...

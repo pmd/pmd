@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.Iterator;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * Those are some interfaces that are not published, but are used to keep
@@ -124,6 +128,25 @@ final class InternalInterfaces {
 
         /** Returns the id of the declared variable. */
         ASTVariableDeclaratorId getVarId();
+    }
+
+    interface MultiVariableIdOwner extends JavaNode, Iterable<ASTVariableDeclaratorId>, AccessNode {
+
+        /**
+         * Returns a stream of the variable ids declared
+         * by this node.
+         */
+        default NodeStream<ASTVariableDeclaratorId> getVarIds() {
+            return children(ASTVariableDeclarator.class).children(ASTVariableDeclaratorId.class);
+        }
+
+
+        @Override
+        default Iterator<ASTVariableDeclaratorId> iterator() {
+            return getVarIds().iterator();
+        }
+
+        ASTType getTypeNode();
     }
 
 }

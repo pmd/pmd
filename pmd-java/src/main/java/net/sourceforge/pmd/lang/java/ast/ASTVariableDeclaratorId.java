@@ -33,11 +33,18 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
  * documentation for the contract of this method.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * VariableDeclaratorId ::= &lt;IDENTIFIER&gt; {@link ASTArrayDimensions ArrayDimensions}?
+ *
+ * </pre>
+ *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dimensionable {
+public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
-    private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
 
     @InternalApi
@@ -76,27 +83,15 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
         return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
-    @Deprecated
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
-
-    @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return arrayDepth;
-    }
-
-
     /**
-     * Returns true if the declared variable has an array type.
-     *
-     * @deprecated Use {@link #hasArrayType()}
+     * Returns the extra array dimensions associated with this variable.
+     * For example in the declaration {@code int a[]}, {@link #getTypeNode()}
+     * returns {@code int}, and this method returns the dimensions that follow
+     * the variable ID. Returns null if there are no such dimensions.
      */
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return arrayDepth > 0;
+    @Nullable
+    public ASTArrayDimensions getExtraDimensions() {
+        return children(ASTArrayDimensions.class).first();
     }
 
 
@@ -104,7 +99,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
      * Returns true if the declared variable has an array type.
      */
     public boolean hasArrayType() {
-        return arrayDepth > 0 || !isTypeInferred() && getTypeNode().isArrayType();
+        return getExtraDimensions() != null || getTypeNode() instanceof ASTArrayType;
     }
 
 
@@ -113,7 +108,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
      * a {@code catch} statement.
      */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent().jjtGetParent() instanceof ASTCatchClause;
+        return jjtGetParent() instanceof ASTFormalParameter && jjtGetParent().jjtGetParent() instanceof ASTCatchClause;
     }
 
 
@@ -122,8 +117,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
      * declaration or a lambda expression.
      */
     public boolean isFormalParameter() {
-        return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
-                || isLambdaParameter();
+        return jjtGetParent() instanceof ASTFormalParameter || isLambdaParameter();
     }
 
 
