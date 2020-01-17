@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  * Public interface for all Modelica AST nodes.
  */
 public interface ModelicaNode extends Node {
+
     /**
      * Returns the lexical scope this node is contained in.
      */
@@ -19,15 +20,20 @@ public interface ModelicaNode extends Node {
     /**
      * Returns the most specific lexical scope naturally associated with this node.
      *
-     * @return the scope defined by this node itself or the same as {@link #getContainingScope} otherwise
+     * @return the scope defined by this node itself or the same as {@link #getContainingScope()} otherwise
      */
     ModelicaScope getMostSpecificScope();
 
     Object jjtAccept(ModelicaParserVisitor visitor, Object data);
 
     @Override
-    ModelicaNode jjtGetParent();
+    ModelicaNode getParent();
+
 
     @Override
-    ModelicaNode jjtGetChild(int index);
+    ModelicaNode getChild(int index);
+
+
+    @Override
+    Iterable<ModelicaNode> children();
 }

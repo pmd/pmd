@@ -186,8 +186,8 @@ public class ScalaRule extends AbstractRule implements ScalaParserVisitor<RuleCo
 
     @Override
     public RuleContext visit(ScalaNode<?> node, RuleContext data) {
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-            node.jjtGetChild(i).accept(this, data);
+        for (ScalaNode<?> child : node.children()) {
+            child.accept(this, data);
         }
         return data;
     }

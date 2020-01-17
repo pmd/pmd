@@ -34,8 +34,24 @@ public interface JavaNode extends ScopedNode {
      *
      * @param visitor Visitor to dispatch
      * @param data    Visit data
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(JavaParserVisitor visitor, Object data);
+
+
+    @Override
+    JavaNode getChild(int index);
+
+
+    @Override
+    JavaNode getParent();
+
+
+    @Override
+    Iterable<JavaNode> children();
 
 
     @InternalApi

@@ -179,8 +179,8 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
 
     @Override
     public Object visit(ModelicaNode node, Object data) {
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-            node.jjtGetChild(i).jjtAccept(this, data);
+        for (ModelicaNode child : node.children()) {
+            child.jjtAccept(this, data);
         }
         return data;
     }

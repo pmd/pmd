@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
-public class AbstractVFNode extends AbstractNode implements VfNode {
+public class AbstractVFNode extends AbstractJjtreeNode<VfNode> implements VfNode {
 
     protected VfParser parser;
 

@@ -92,32 +92,37 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 ##### For removal
 
-* {% jdoc java::lang.java.AbstractJavaParser %}
-* {% jdoc java::lang.java.AbstractJavaHandler %}
-* [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
-* {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
-* {% jdoc java::lang.java.ast.JavaQualifiedName %}
-* {% jdoc !!java::lang.java.ast.ASTCatchStatement#getBlock() %}
-* {% jdoc !!java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
-* {% jdoc java::lang.java.ast.JavaQualifiableNode %}
-  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
-  * {% jdoc !!java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
-  * {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
-* {% jdoc_package java::lang.java.qname %} and its contents
-* {% jdoc java::lang.java.ast.MethodLikeNode %}
-  * Its methods will also be removed from its implementations,
-    {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration %},
-    {% jdoc java::lang.java.ast.ASTLambdaExpression %}.
-* {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getImage() %} will be removed. Please use `getSimpleName()`
-  instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
-  {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
-  {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
-* Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
-  have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
-* Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
-  following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
-* {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
-  anymore come 7.0.0. Test the type of the expression nested within it.
+* pmd-core
+  * Many methods on the {% jdoc core::lang.ast.Node %} interface
+  and {% jdoc core::lang.ast.AbstractNode %} base class. See their javadoc for details.
+* pmd-java
+  * {% jdoc java::lang.java.AbstractJavaParser %}
+  * {% jdoc java::lang.java.AbstractJavaHandler %}
+  * [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
+  * {% jdoc java::lang.java.ast.JavaQualifiedName %}
+  * {% jdoc !!java::lang.java.ast.ASTCatchStatement#getBlock() %}
+  * {% jdoc !!java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
+  * {% jdoc java::lang.java.ast.JavaQualifiableNode %}
+    * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
+    * {% jdoc !!java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
+    * {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
+  * {% jdoc_package java::lang.java.qname %} and its contents
+  * {% jdoc java::lang.java.ast.MethodLikeNode %}
+    * Its methods will also be removed from its implementations,
+      {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration %},
+      {% jdoc java::lang.java.ast.ASTLambdaExpression %}.
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getImage() %} will be removed. Please use `getSimpleName()`
+    instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
+    {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
+    {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
+  * Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
+    have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+  * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
+    following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
+  * {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
+    anymore come 7.0.0. Test the type of the expression nested within it.
+
 
 ### External Contributions
 

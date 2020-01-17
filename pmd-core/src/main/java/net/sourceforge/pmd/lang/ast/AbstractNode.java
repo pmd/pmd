@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -28,25 +30,52 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
  * Base class for all implementations of the Node interface.
+ *
+ * <p>Please use the {@link Node} interface wherever possible and
+ * not this class, unless you're compelled to do so.
+ *
+ * <p>Note that nearly all methods of the {@link Node} interface
+ * will have default implementations with PMD 7.0.0, so that it
+ * will not be necessary to extend this class directly.
  */
 public abstract class AbstractNode implements Node {
 
     private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
 
+    /**
+     * @deprecated Use {@link #getParent()}
+     */
+    @Deprecated
     protected Node parent;
+    @Deprecated
     protected Node[] children;
+    /** @deprecated Use {@link #getIndexInParent()} */
+    @Deprecated
     protected int childIndex;
+    /** @deprecated Use {@link #jjtGetId()} if you are a jjtree node. */
+    @Deprecated
     protected int id;
-
-    private String image;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int beginLine = -1;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int endLine;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int beginColumn = -1;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int endColumn;
+    // Those should have been private.
+    @Deprecated
+    protected GenericToken firstToken;
+    @Deprecated
+    protected GenericToken lastToken;
     private DataFlowNode dataFlowNode;
     private Object userData;
-    protected GenericToken firstToken;
-    protected GenericToken lastToken;
+    // @Deprecated?
+    private String image;
 
     public AbstractNode(final int id) {
         this.id = id;
@@ -62,31 +91,69 @@ public abstract class AbstractNode implements Node {
         endColumn = theEndColumn;
     }
 
+
+    @Override
+    public Node getParent() {
+        return jjtGetParent();
+    }
+
+    @Override
+    public int getIndexInParent() {
+        return jjtGetChildIndex();
+    }
+
+    @Override
+    public Node getChild(final int index) {
+        if (children == null) {
+            throw new IndexOutOfBoundsException();
+        }
+        return children[index];
+    }
+
+    @Override
+    public int getNumChildren() {
+        return jjtGetNumChildren();
+    }
+
+
+    /**
+     * @deprecated This is never used and is trivial, will be removed from this class.
+     */
+    @Deprecated
     public boolean isSingleLine() {
         return beginLine == endLine;
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtOpen() {
         // to be overridden by subclasses
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtClose() {
         // to be overridden by subclasses
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtSetParent(final Node parent) {
         this.parent = parent;
     }
 
     @Override
+    @Deprecated
     public Node jjtGetParent() {
         return parent;
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtAddChild(final Node child, final int index) {
         if (children == null) {
             children = new Node[index + 1];
@@ -100,26 +167,37 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtSetChildIndex(final int index) {
         childIndex = index;
     }
 
     @Override
+    @Deprecated
     public int jjtGetChildIndex() {
         return childIndex;
     }
 
+
     @Override
+    @Deprecated
     public Node jjtGetChild(final int index) {
         return children[index];
     }
 
     @Override
+    @Deprecated
     public int jjtGetNumChildren() {
         return children == null ? 0 : children.length;
     }
 
+
+    /**
+     * @deprecated Will be made protected with 7.0.0.
+     */
     @Override
+    @Deprecated
     public int jjtGetId() {
         return id;
     }
@@ -130,6 +208,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public void setImage(final String image) {
         this.image = image;
     }
@@ -144,6 +223,11 @@ public abstract class AbstractNode implements Node {
         return beginLine;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetBeginLine(int i) {
         this.beginLine = i;
     }
@@ -161,6 +245,11 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetBeginColumn(final int i) {
         this.beginColumn = i;
     }
@@ -170,6 +259,11 @@ public abstract class AbstractNode implements Node {
         return endLine;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetEndLine(final int i) {
         this.endLine = i;
     }
@@ -179,6 +273,11 @@ public abstract class AbstractNode implements Node {
         return endColumn;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetEndColumn(final int i) {
         this.endColumn = i;
     }
@@ -431,22 +530,84 @@ public abstract class AbstractNode implements Node {
         this.userData = userData;
     }
 
+    /**
+     * @deprecated Not all nodes are based on tokens, and this is an implementation detail
+     */
+    @Deprecated
     public GenericToken jjtGetFirstToken() {
         return firstToken;
     }
 
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this superclass.
+     */
+    @Deprecated
     public void jjtSetFirstToken(final GenericToken token) {
         this.firstToken = token;
     }
 
+    /**
+     * @deprecated Not all nodes are based on tokens, and this is an implementation detail
+     */
+    @Deprecated
     public GenericToken jjtGetLastToken() {
         return lastToken;
     }
 
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this superclass.
+     */
+    @Deprecated
     public void jjtSetLastToken(final GenericToken token) {
         this.lastToken = token;
     }
 
+
+    @Override
+    public Iterable<? extends Node> children() {
+        return new Iterable<Node>() {
+            @Override
+            public Iterator<Node> iterator() {
+                return childrenIterator(AbstractNode.this);
+            }
+        };
+    }
+
+
+    private static Iterator<Node> childrenIterator(final Node parent) {
+        assert parent != null : "parent should not be null";
+
+        final int numChildren = parent.getNumChildren();
+        if (numChildren == 0) {
+            return Collections.emptyIterator();
+        }
+
+        return new Iterator<Node>() {
+
+            private int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return i < numChildren;
+            }
+
+            @Override
+            public Node next() {
+                return parent.getChild(i++);
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Remove");
+            }
+        };
+    }
+
+    /**
+     * @deprecated This is internal API
+     */
+    @Deprecated
+    @InternalApi
     @Override
     public void remove() {
         // Detach current node of its parent, if any
@@ -459,6 +620,11 @@ public abstract class AbstractNode implements Node {
         // TODO [autofix]: Notify action for handling text edition
     }
 
+    /**
+     * @deprecated This is internal API
+     */
+    @Deprecated
+    @InternalApi
     @Override
     public void removeChildAtIndex(final int childIndex) {
         if (0 <= childIndex && childIndex < jjtGetNumChildren()) {
@@ -477,7 +643,7 @@ public abstract class AbstractNode implements Node {
      * <p>This default implementation adds compatibility with the previous
      * way to get the xpath node name, which used {@link Object#toString()}.
      * <p>
-     * <p>Please override it. It may be removed in a future major version.
+     * <p>Please override it. It will be removed in version 7.0.0.
      */
     @Override
     // @Deprecated // FUTURE 7.0.0 make abstract
