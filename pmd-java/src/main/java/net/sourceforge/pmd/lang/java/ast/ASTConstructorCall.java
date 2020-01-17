@@ -55,7 +55,7 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      * the new instance of Outer.
      */
     public boolean isQualifiedInstanceCreation() {
-        return jjtGetChild(0) instanceof ASTPrimaryExpression;
+        return getChild(0) instanceof ASTPrimaryExpression;
     }
 
     /**
@@ -76,8 +76,8 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
 
 
     public ASTArgumentList getArguments() {
-        int idx = jjtGetNumChildren() - (isAnonymousClass() ? 2 : 1);
-        return (ASTArgumentList) jjtGetChild(idx);
+        int idx = getNumChildren() - (isAnonymousClass() ? 2 : 1);
+        return (ASTArgumentList) getChild(idx);
     }
 
     /** Returns true if type arguments to the constructed instance's type are inferred. */
@@ -101,14 +101,14 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      * method returns false.
      */
     public boolean isAnonymousClass() {
-        return jjtGetChild(jjtGetNumChildren() - 1) instanceof ASTAnonymousClassDeclaration;
+        return getChild(getNumChildren() - 1) instanceof ASTAnonymousClassDeclaration;
     }
 
 
     @Nullable
     public ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
         return isAnonymousClass()
-               ? (ASTAnonymousClassDeclaration) jjtGetChild(jjtGetNumChildren() - 1)
+               ? (ASTAnonymousClassDeclaration) getChild(getNumChildren() - 1)
                : null;
     }
 }

@@ -41,8 +41,8 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
 
 
     @Override
-    public ASTNormalAnnotation jjtGetParent() {
-        return (ASTNormalAnnotation) super.jjtGetParent();
+    public ASTNormalAnnotation getParent() {
+        return (ASTNormalAnnotation) super.getParent();
     }
 
 

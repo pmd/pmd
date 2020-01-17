@@ -42,7 +42,7 @@ public final class ASTArgumentList extends AbstractJavaNode implements Iterable<
      * Returns the number of arguments of this list.
      */
     public int getArgumentCount() {
-        return jjtGetNumChildren();
+        return getNumChildren();
     }
 
     @Override

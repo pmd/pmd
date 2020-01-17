@@ -53,7 +53,7 @@ public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrim
 
     /** Gets the wrapped type node. */
     public ASTType getTypeNode() {
-        return (ASTType) jjtGetChild(0);
+        return (ASTType) getChild(0);
     }
 
 

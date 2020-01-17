@@ -108,7 +108,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
      * a {@code catch} statement.
      */
     public boolean isExceptionBlockParameter() {
-        return jjtGetParent() instanceof ASTCatchParameter;
+        return getParent() instanceof ASTCatchParameter;
     }
 
 
@@ -229,7 +229,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     }
 
     private boolean isLambdaTypeInferred() {
-        return getParent() instanceof ASTLambdaParameter && ((ASTLambdaParameter) jjtGetParent()).isTypeInferred();
+        return getParent() instanceof ASTLambdaParameter && ((ASTLambdaParameter) getParent()).isTypeInferred();
     }
 
 
@@ -269,7 +269,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
      */
     @Nullable
     public ASTType getTypeNode() {
-        Node parent = jjtGetParent();
+        Node parent = getParent();
         if (parent instanceof ASTFormalParameter) {
             // ASTResource is a subclass of ASTFormal parameter for now but this will change
             // and this will need to be corrected here, see #998
@@ -282,7 +282,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
             // lambda expression with lax types. The type is inferred...
             return null;
         } else {
-            Node n = parent.jjtGetParent();
+            Node n = parent.getParent();
             if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
                 return n.getFirstChildOfType(ASTType.class);
             }

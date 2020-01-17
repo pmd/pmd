@@ -43,6 +43,6 @@ public final class ASTLocalClassStatement extends AbstractStatement implements L
      */
     @NonNull
     public ASTClassOrInterfaceDeclaration getDeclaration() {
-        return (ASTClassOrInterfaceDeclaration) jjtGetChild(0);
+        return (ASTClassOrInterfaceDeclaration) getChild(0);
     }
 }

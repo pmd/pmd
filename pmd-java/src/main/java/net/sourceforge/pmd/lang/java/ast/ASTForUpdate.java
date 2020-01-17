@@ -38,7 +38,7 @@ public final class ASTForUpdate extends AbstractJavaNode {
 
     /** Returns the expression list nested within this node. */
     public ASTStatementExpressionList getExprList() {
-        return (ASTStatementExpressionList) jjtGetChild(0);
+        return (ASTStatementExpressionList) getChild(0);
     }
 
 }

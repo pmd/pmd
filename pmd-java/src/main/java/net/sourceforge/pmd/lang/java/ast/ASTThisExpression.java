@@ -30,7 +30,7 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
 
     @Nullable
     public ASTClassOrInterfaceType getQualifier() {
-        return jjtGetNumChildren() > 0 ? (ASTClassOrInterfaceType) jjtGetChild(0) : null;
+        return getNumChildren() > 0 ? (ASTClassOrInterfaceType) getChild(0) : null;
     }
 
 

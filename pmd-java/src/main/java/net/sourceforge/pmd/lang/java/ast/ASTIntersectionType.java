@@ -47,8 +47,8 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
 
 
     @Override
-    public ASTType jjtGetChild(int index) {
-        return (ASTType) super.jjtGetChild(index);
+    public ASTType getChild(int index) {
+        return (ASTType) super.getChild(index);
     }
 
 

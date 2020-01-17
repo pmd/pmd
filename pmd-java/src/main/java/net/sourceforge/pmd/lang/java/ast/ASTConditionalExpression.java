@@ -30,7 +30,7 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
      * That is the expression before the '?'.
      */
     public ASTExpression getCondition() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -48,7 +48,7 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
      * if the guard evaluates to false.
      */
     public ASTExpression getElseBranch() {
-        return (ASTExpression) jjtGetChild(2);
+        return (ASTExpression) getChild(2);
     }
 
 

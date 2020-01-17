@@ -37,7 +37,7 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
 
         // we need to set the name.
 
-        if (getImage() != null || jjtGetChild(0) instanceof ASTSuperExpression) {
+        if (getImage() != null || getChild(0) instanceof ASTSuperExpression) {
             return;
         }
 
@@ -45,7 +45,7 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
         // The LHS stays ambiguous
 
         // the cast serves as an assert
-        ASTAmbiguousName fstChild = (ASTAmbiguousName) jjtGetChild(0);
+        ASTAmbiguousName fstChild = (ASTAmbiguousName) getChild(0);
 
         fstChild.shrinkOrDeleteInParentSetImage();
 
@@ -61,7 +61,7 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
     }
 
     public ASTArgumentList getArguments() {
-        return (ASTArgumentList) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTArgumentList) getChild(getNumChildren() - 1);
     }
 
 

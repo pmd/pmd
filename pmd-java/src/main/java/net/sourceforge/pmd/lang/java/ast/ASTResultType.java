@@ -39,7 +39,7 @@ public final class ASTResultType extends AbstractJavaNode {
      */
     @Nullable
     public ASTType getTypeNode() {
-        return isVoid() ? null : (ASTType) jjtGetChild(0);
+        return isVoid() ? null : (ASTType) getChild(0);
     }
 
 

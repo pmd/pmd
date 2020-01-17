@@ -7,11 +7,10 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
@@ -91,7 +90,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
     @Override
     public Scope getScope() {
         if (scope == null) {
-            return jjtGetParent().getScope();
+            return getParent().getScope();
         }
         return scope;
     }
@@ -144,12 +143,12 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
      */
     void flatten(int idx) {
 
-        AbstractJavaNode child = (AbstractJavaNode) jjtGetChild(idx);
+        AbstractJavaNode child = (AbstractJavaNode) getChild(idx);
         children = ArrayUtils.remove(children, idx);
         child.jjtSetParent(null);
         child.jjtSetChildIndex(-1);
 
-        if (child.jjtGetNumChildren() > 0) {
+        if (child.getNumChildren() > 0) {
             children = ArrayUtils.insert(idx, children, child.children);
         }
         updateChildrenIndices(idx);
@@ -199,8 +198,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
     }
 
     private void enlargeLeft() {
-        if (jjtGetNumChildren() > 0) {
-            enlargeLeft((AbstractJavaNode) jjtGetChild(0));
+        if (getNumChildren() > 0) {
+            enlargeLeft((AbstractJavaNode) getChild(0));
         }
     }
 
@@ -223,14 +222,14 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
     }
 
     /**
-     * Updates the {@link #jjtGetChildIndex()} of the children with their
+     * Updates the {@link #getIndexInParent()} of the children with their
      * real position, starting at [startIndex].
      */
     private void updateChildrenIndices(int startIndex) {
         if (startIndex < 0) {
             startIndex = 0;
         }
-        for (int j = startIndex; j < jjtGetNumChildren(); j++) {
+        for (int j = startIndex; j < getNumChildren(); j++) {
             children[j].jjtSetChildIndex(j); // shift the children to the right
             children[j].jjtSetParent(this);
         }

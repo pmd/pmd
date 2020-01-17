@@ -56,7 +56,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      * This is the expression between the parentheses.
      */
     default ASTExpression getTestedExpression() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 

@@ -36,12 +36,12 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
 
 
     public ASTLambdaParameterList getParameters() {
-        return (ASTLambdaParameterList) jjtGetChild(0);
+        return (ASTLambdaParameterList) getChild(0);
     }
 
 
     public boolean isBlockBody() {
-        return jjtGetChild(1) instanceof ASTBlock;
+        return getChild(1) instanceof ASTBlock;
     }
 
     public boolean isExpressionBody() {

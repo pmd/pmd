@@ -41,8 +41,8 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
     }
 
     @Override
-    public ASTTypeArguments jjtGetParent() {
-        return (ASTTypeArguments) super.jjtGetParent();
+    public ASTTypeArguments getParent() {
+        return (ASTTypeArguments) super.getParent();
     }
 
     /**
@@ -50,7 +50,7 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
      * in {@code <? extends Integer>}.
      */
     public boolean hasUpperBound() {
-        return isUpperBound && jjtGetNumChildren() > 0;
+        return isUpperBound && getNumChildren() > 0;
     }
 
 
@@ -59,7 +59,7 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
      * in {@code <? super Node>}.
      */
     public boolean hasLowerBound() {
-        return !isUpperBound && jjtGetNumChildren() > 0;
+        return !isUpperBound && getNumChildren() > 0;
     }
 
 

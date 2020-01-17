@@ -795,8 +795,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
         return data;
         // visit method arguments in reverse
-        //        for (int i = primaryNode.jjtGetNumChildren() - 1; i >= 0; --i) {
-        //            ((JavaNode) primaryNode.jjtGetChild(i)).jjtAccept(this, data);
+        //        for (int i = primaryNode.getNumChildren() - 1; i >= 0; --i) {
+        //            ((JavaNode) primaryNode.getChild(i)).jjtAccept(this, data);
         //        }
         //
         //        JavaTypeDefinition primaryNodeType = null;
@@ -804,10 +804,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //        AbstractJavaTypeNode nextChild;
         //        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
         //
-        //        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
-        //            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
-        //            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
-        //                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
+        //        for (int childIndex = 0; childIndex < primaryNode.getNumChildren(); ++childIndex) {
+        //            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.getChild(childIndex);
+        //            nextChild = childIndex + 1 < primaryNode.getNumChildren()
+        //                    ? (AbstractJavaTypeNode) primaryNode.getChild(childIndex + 1) : null;
         //
         //            // skip children which already have their type assigned
         //            if (currentChild.getType() == null) {

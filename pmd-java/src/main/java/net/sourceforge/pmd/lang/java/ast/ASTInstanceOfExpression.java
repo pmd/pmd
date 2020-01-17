@@ -43,7 +43,7 @@ public class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpr
     }
 
     public ASTTypeExpression getRightOperand() {
-        return (ASTTypeExpression) jjtGetChild(1);
+        return (ASTTypeExpression) getChild(1);
     }
 
     /** Gets the wrapped type node. */

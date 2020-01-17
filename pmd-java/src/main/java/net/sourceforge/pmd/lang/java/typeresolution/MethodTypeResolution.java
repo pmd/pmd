@@ -187,19 +187,19 @@ public final class MethodTypeResolution {
 
 
     private static boolean isStandAlonePrimitive(ASTExpression expression) {
-        if (expression.jjtGetNumChildren() != 1) {
+        if (expression.getNumChildren() != 1) {
             return false;
         }
 
         ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
 
-        if (primaryExpression == null || primaryExpression.jjtGetNumChildren() != 1) {
+        if (primaryExpression == null || primaryExpression.getNumChildren() != 1) {
             return false;
         }
 
         ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
 
-        if (primaryPrefix == null || primaryPrefix.jjtGetNumChildren() != 1) {
+        if (primaryPrefix == null || primaryPrefix.getNumChildren() != 1) {
             return false;
         }
 
@@ -208,7 +208,7 @@ public final class MethodTypeResolution {
         // if it is not a string literal and not a null, then it is one of
         // byte, short, char, int, long, float, double, boolean
         return literal != null && !literal.isStringLiteral()
-            && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
+            && (literal.getNumChildren() == 0 || !(literal.getChild(0) instanceof ASTNullLiteral));
     }
 
     public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,

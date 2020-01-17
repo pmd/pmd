@@ -38,7 +38,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
     @Override
     public void jjtClose() {
         super.jjtClose();
-        JavaNode lhs = jjtGetChild(0);
+        JavaNode lhs = getChild(0);
         // if constructor ref, then the LHS is unambiguously a type.
         if (lhs instanceof ASTAmbiguousName) {
             if (isConstructorReference()) {
@@ -68,7 +68,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
     @NonNull
     @Override
     public ASTExpression getQualifier() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 

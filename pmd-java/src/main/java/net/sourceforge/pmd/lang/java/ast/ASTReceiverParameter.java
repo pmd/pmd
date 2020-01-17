@@ -69,7 +69,7 @@ public final class ASTReceiverParameter extends AbstractJavaNode {
      */
     @NonNull
     public ASTClassOrInterfaceType getReceiverType() {
-        return (ASTClassOrInterfaceType) jjtGetChild(0);
+        return (ASTClassOrInterfaceType) getChild(0);
     }
 
 }

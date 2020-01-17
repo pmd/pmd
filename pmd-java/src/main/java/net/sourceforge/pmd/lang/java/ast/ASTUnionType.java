@@ -70,7 +70,7 @@ public final class ASTUnionType extends AbstractJavaTypeNode
     }
 
     @Override
-    public ASTClassOrInterfaceType jjtGetChild(int index) {
-        return (ASTClassOrInterfaceType) super.jjtGetChild(index);
+    public ASTClassOrInterfaceType getChild(int index) {
+        return (ASTClassOrInterfaceType) super.getChild(index);
     }
 }

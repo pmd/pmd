@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.getChild
-import net.sourceforge.pmd.lang.ast.test.numChildren
 
 /**
  * Describes a kind of node that can be found commonly in the same contexts.
@@ -95,7 +93,7 @@ object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =
             EnclosedDeclarationParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTBlock::class.java).jjtGetChild(0)
+                    .getFirstDescendantOfType(ASTBlock::class.java).getChild(0)
 }
 
 object EnclosedDeclarationParsingCtx : NodeParsingCtx<JavaNode>("enclosed declaration") {

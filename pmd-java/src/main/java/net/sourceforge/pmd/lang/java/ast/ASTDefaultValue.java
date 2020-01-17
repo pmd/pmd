@@ -27,7 +27,7 @@ public final class ASTDefaultValue extends AbstractJavaNode {
      * Returns the constant value nested in this node.
      */
     public ASTMemberValue getConstant() {
-        return (ASTMemberValue) jjtGetChild(0);
+        return (ASTMemberValue) getChild(0);
     }
 
     @Override

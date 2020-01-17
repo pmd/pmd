@@ -51,7 +51,7 @@ public final class ASTTryStatement extends AbstractStatement {
      * has a ResourceSpecification child node.
      */
     public boolean isTryWithResources() {
-        return jjtGetChild(0) instanceof ASTResourceList;
+        return getChild(0) instanceof ASTResourceList;
     }
 
     @Nullable

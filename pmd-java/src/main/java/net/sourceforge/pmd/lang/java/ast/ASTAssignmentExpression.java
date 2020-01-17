@@ -35,7 +35,7 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
     /** Returns the left-hand side, ie the expression being assigned to. */
     @Override
     public ASTAssignableExpr getLeftOperand() {
-        return (ASTAssignableExpr) jjtGetChild(0);
+        return (ASTAssignableExpr) getChild(0);
     }
 
 

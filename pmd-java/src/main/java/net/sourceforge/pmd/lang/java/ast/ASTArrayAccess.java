@@ -36,12 +36,12 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
     @NonNull
     @Override
     public ASTExpression getQualifier() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
     /** Returns the expression within the brackets. */
     public ASTExpression getIndexExpression() {
-        return (ASTExpression) jjtGetChild(1);
+        return (ASTExpression) getChild(1);
     }
 
 

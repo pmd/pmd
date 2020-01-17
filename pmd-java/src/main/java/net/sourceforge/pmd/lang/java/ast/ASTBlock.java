@@ -55,7 +55,7 @@ public final class ASTBlock extends AbstractStatement implements Iterable<ASTSta
 
 
     @Override
-    public ASTStatement jjtGetChild(int index) {
-        return (ASTStatement) super.jjtGetChild(index);
+    public ASTStatement getChild(int index) {
+        return (ASTStatement) super.getChild(index);
     }
 }

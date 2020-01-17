@@ -49,7 +49,7 @@ public final class ASTResource extends AbstractJavaNode {
      * local variable declaration.
      */
     public boolean isConciseResource() {
-        return jjtGetChild(0) instanceof ASTExpression;
+        return getChild(0) instanceof ASTExpression;
     }
 
     /**
@@ -94,7 +94,7 @@ public final class ASTResource extends AbstractJavaNode {
      * the variable.
      */
     public ASTExpression getInitializer() {
-        Node c = jjtGetChild(0);
+        Node c = getChild(0);
         if (c instanceof ASTExpression) {
             return (ASTExpression) c;
         } else {

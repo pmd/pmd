@@ -20,10 +20,10 @@ final class AstImplUtil {
 
     @Nullable
     public static <T extends Node> T getChildAs(JavaNode javaNode, int idx, Class<T> type) {
-        if (javaNode.jjtGetNumChildren() <= idx || idx < 0) {
+        if (javaNode.getNumChildren() <= idx || idx < 0) {
             return null;
         }
-        Node child = javaNode.jjtGetChild(idx);
+        Node child = javaNode.getChild(idx);
         return type.isInstance(child) ? type.cast(child) : null;
     }
 

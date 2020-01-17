@@ -246,7 +246,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTIntersectionType node, T data) {
-            if (node.jjtGetParent() instanceof ASTCastExpression) {
+            if (node.getParent() instanceof ASTCastExpression) {
                 check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
             }
             visitChildren(node, data);
