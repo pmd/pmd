@@ -57,6 +57,7 @@ public class TreeRenderersTest {
 
         bundle.setProperty(TreeRenderers.XML_RENDER_PROLOG, false);
         bundle.setProperty(TreeRenderers.XML_USE_SINGLE_QUOTES, false);
+        bundle.setProperty(TreeRenderers.XML_LINE_SEPARATOR, "\n");
 
         TreeRenderer renderer = TreeRenderers.XML.produceRenderer(bundle);
 
