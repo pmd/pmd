@@ -30,7 +30,7 @@ public class JSPTokenizer implements Tokenizer {
 
             while (currentToken.image.length() > 0) {
                 tokenEntries.add(new TokenEntry(String.valueOf(currentToken.kind), sourceCode.getFileName(),
-                        currentToken.beginLine));
+                        currentToken.beginLine, currentToken.beginColumn, currentToken.endColumn));
                 currentToken = (Token) tokenMgr.getNextToken();
             }
         } catch (IOException e) {

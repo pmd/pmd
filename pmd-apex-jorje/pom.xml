@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-    <apex.jorje.version>2019-01-18-a041d7</apex.jorje.version>
+    <apex.jorje.version>2019-11-07-964d4a</apex.jorje.version>
   </properties>
 
   <build>

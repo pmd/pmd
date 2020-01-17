@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 
 import java.lang.reflect.Modifier;
 
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
@@ -58,7 +57,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
 
 
     @Override
-    public Object visit(AbstractApexNodeBase node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok

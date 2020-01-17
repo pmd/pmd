@@ -78,8 +78,10 @@ public class MatchAlgorithm {
             for (Mark mark : match) {
                 TokenEntry token = mark.getToken();
                 int lineCount = tokens.getLineCount(token, match);
+                TokenEntry endToken = tokens.getEndToken(token, match);
 
                 mark.setLineCount(lineCount);
+                mark.setEndToken(endToken);
                 SourceCode sourceCode = source.get(token.getTokenSrcID());
                 mark.setSourceCode(sourceCode);
             }

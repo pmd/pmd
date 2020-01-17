@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 public class Mark implements Comparable<Mark> {
     private TokenEntry token;
+    private TokenEntry endToken;
     private int lineCount;
     private SourceCode code;
 
@@ -25,8 +26,26 @@ public class Mark implements Comparable<Mark> {
         return this.token.getBeginLine();
     }
 
+    /**
+     * The column number where this duplication begins.
+     * returns -1 if not available
+     * @return the begin column number
+     */
+    public int getBeginColumn() {
+        return this.token.getBeginColumn(); // TODO Java 1.8 make optional
+    }
+
     public int getEndLine() {
         return getBeginLine() + getLineCount() - 1;
+    }
+
+    /**
+     * The column number where this duplication ends.
+     * returns -1 if not available
+     * @return the end column number
+     */
+    public int getEndColumn() {
+        return this.endToken == null ? -1 : this.endToken.getEndColumn(); // TODO Java 1.8 make optional
     }
 
     public int getLineCount() {
@@ -35,6 +54,10 @@ public class Mark implements Comparable<Mark> {
 
     public void setLineCount(int lineCount) {
         this.lineCount = lineCount;
+    }
+
+    public void setEndToken(TokenEntry endToken) {
+        this.endToken = endToken;
     }
 
     public String getSourceCodeSlice() {
