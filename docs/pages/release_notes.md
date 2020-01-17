@@ -25,6 +25,21 @@ While the language implementation is quite complete, Modelica support is conside
 for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
 the implementation based on your feedback.
 
+#### CPD XML format
+
+The CPD XML output format has been enhanced to also report column information for found duplications
+in addition to the line information. This allows to display the exact tokens, that are considered
+duplicate.
+
+If a CPD language doesn't provide these exact information, then these additional attributes are omitted.
+
+Each `<file>` element in the XML format now has 3 new attributes:
+
+*   attribute `endLine`
+*   attribute `beginColumn` (if there is column information available)
+*   attribute `endColumn` (if there is column information available)
+
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AvoidLiteralsInIfCondition" %} (`java-errorprone`) has a new property
@@ -125,6 +140,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2194](https://github.com/pmd/pmd/pull/2194): \[java] Fix odd logic in AvoidUsingHardCodedIPRule - [Egor Bredikhin](https://github.com/Egor18)
 *   [#2195](https://github.com/pmd/pmd/pull/2195): \[modelica] Normalize invalid node ranges - [Anatoly Trosinenko](https://github.com/atrosinenko)
 *   [#2199](https://github.com/pmd/pmd/pull/2199): \[modelica] Fix Javadoc tags - [Anatoly Trosinenko](https://github.com/atrosinenko)
+*   [#2225](https://github.com/pmd/pmd/pull/2225): \[core] CPD: report endLine / column informations for found duplications - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
