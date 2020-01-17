@@ -45,10 +45,10 @@ abstract class TreeRendererDescriptorImpl implements TreeRendererDescriptor {
 
     @Override
     public String toString() {
-        return "TreeDescriptorImpl{" +
-            "id='" + id + '\'' +
-            ", description='" + description + '\'' +
-            '}';
+        return "TreeDescriptorImpl{"
+            + "id='" + id + '\''
+            + ", description='" + description + '\''
+            + '}';
     }
 
     private static class PropertyBundle extends AbstractPropertySource {
@@ -56,7 +56,7 @@ abstract class TreeRendererDescriptorImpl implements TreeRendererDescriptor {
 
         private final String name;
 
-        public PropertyBundle(String name,
+        PropertyBundle(String name,
                               Set<PropertyDescriptor<?>> available) {
             this.name = name;
             for (PropertyDescriptor<?> p : available) {
