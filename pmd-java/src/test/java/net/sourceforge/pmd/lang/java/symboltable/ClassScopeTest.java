@@ -105,7 +105,7 @@ public class ClassScopeTest extends BaseNonParserTest {
         assertEquals(1, m.size());
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("bar", mnd.getImage());
-        ASTMethodDeclaration node = (ASTMethodDeclaration) mnd.getNode().jjtGetParent();
+        ASTMethodDeclaration node = (ASTMethodDeclaration) mnd.getNode().getParent();
         assertTrue(node.isPrivate());
     }
 

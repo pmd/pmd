@@ -39,8 +39,8 @@ public class ConnectUsingNonConnector extends AbstractModelicaRule {
 
     @Override
     public Object visit(ASTConnectClause node, Object data) {
-        ASTComponentReference lhs = (ASTComponentReference) node.jjtGetChild(0);
-        ASTComponentReference rhs = (ASTComponentReference) node.jjtGetChild(1);
+        ASTComponentReference lhs = (ASTComponentReference) node.getChild(0);
+        ASTComponentReference rhs = (ASTComponentReference) node.getChild(1);
 
         reportIfViolated(lhs, data);
         reportIfViolated(rhs, data);

@@ -31,7 +31,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
         ASTType typeNode = astVariableDeclaratorId.getTypeNode();
         if (typeNode != null) {
-            return ((Dimensionable) typeNode.jjtGetParent()).isArray();
+            return ((Dimensionable) typeNode.getParent()).isArray();
         } else {
             return false;
         }
@@ -41,7 +41,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
         ASTType typeNode = astVariableDeclaratorId.getTypeNode();
         if (typeNode != null) {
-            return ((Dimensionable) typeNode.jjtGetParent()).getArrayDepth();
+            return ((Dimensionable) typeNode.getParent()).getArrayDepth();
         } else {
             return 0;
         }
@@ -71,7 +71,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     public boolean isPrimitiveType() {
         return !isTypeInferred()
-                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0) instanceof ASTPrimitiveType;
     }
 
     @Override
@@ -88,14 +88,14 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
      */
     public boolean isReferenceType() {
         return !isTypeInferred()
-                && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
+                && getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0) instanceof ASTReferenceType;
     }
 
     public AccessNode getAccessNodeParent() {
-        if (node.jjtGetParent() instanceof ASTFormalParameter || node.jjtGetParent() instanceof ASTLambdaExpression) {
-            return (AccessNode) node.jjtGetParent();
+        if (node.getParent() instanceof ASTFormalParameter || node.getParent() instanceof ASTLambdaExpression) {
+            return (AccessNode) node.getParent();
         }
-        return (AccessNode) node.jjtGetParent().jjtGetParent();
+        return (AccessNode) node.getParent().getParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {
@@ -104,10 +104,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     private TypeNode getTypeNode() {
         if (isPrimitiveType()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
+            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0);
         }
         if (!isTypeInferred()) {
-            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
+            return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0).getChild(0);
         }
         return null;
     }

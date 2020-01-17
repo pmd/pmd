@@ -41,7 +41,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (isJUnitMethod(method, data)) {
-            if (!isExpectAnnotated(method.jjtGetParent())) {
+            if (!isExpectAnnotated(method.getParent())) {
                 Map<String, VariableNameDeclaration> variables = getVariables(method);
 
                 Scope classScope = method.getScope().getParent();
@@ -66,8 +66,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 return true;
             }
         } else {
-            for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-                Node c = n.jjtGetChild(i);
+            for (int i = 0; i < n.getNumChildren(); i++) {
+                Node c = n.getChild(i);
                 if (containsExpectOrAssert(c, expectables, variables)) {
                     return true;
                 }
@@ -97,16 +97,16 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         Map<NameDeclaration, List<NameOccurrence>> decls = classScope.getDeclarations();
 
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
-            Node parent = entry.getKey().getNode().jjtGetParent().jjtGetParent().jjtGetParent();
+            Node parent = entry.getKey().getNode().getParent().getParent().getParent();
             if (parent.hasDescendantOfType(ASTMarkerAnnotation.class)
                     && parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
-                String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage();
+                String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).getChild(0).getImage();
                 if (!"Rule".equals(annot) && !"org.junit.Rule".equals(annot)) {
                     continue;
                 }
 
                 Node type = parent.getFirstDescendantOfType(ASTReferenceType.class);
-                if (!"ExpectedException".equals(type.jjtGetChild(0).getImage())) {
+                if (!"ExpectedException".equals(type.getChild(0).getImage())) {
                     continue;
                 }
                 result.put(entry.getKey().getName(), entry.getValue());

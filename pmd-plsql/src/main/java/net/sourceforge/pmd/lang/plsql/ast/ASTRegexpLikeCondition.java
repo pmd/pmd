@@ -30,11 +30,11 @@ public class ASTRegexpLikeCondition extends net.sourceforge.pmd.lang.plsql.ast.A
     }
 
     public ASTSqlExpression getSourceChar() {
-        return (ASTSqlExpression) jjtGetChild(0);
+        return (ASTSqlExpression) getChild(0);
     }
 
     public ASTSqlExpression getPattern() {
-        return (ASTSqlExpression) jjtGetChild(1);
+        return (ASTSqlExpression) getChild(1);
     }
 }
 /* JavaCC - OriginalChecksum=afb8806a0c67f95b736d6e8bc46def15 (do not edit this line) */

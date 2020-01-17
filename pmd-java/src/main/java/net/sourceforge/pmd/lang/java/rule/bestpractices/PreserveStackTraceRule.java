@@ -39,14 +39,14 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCatchStatement catchStmt, Object data) {
-        String target = catchStmt.jjtGetChild(0).findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getImage();
+        String target = catchStmt.getChild(0).findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getImage();
         // Inspect all the throw stmt inside the catch stmt
         List<ASTThrowStatement> lstThrowStatements = catchStmt.findDescendantsOfType(ASTThrowStatement.class);
         for (ASTThrowStatement throwStatement : lstThrowStatements) {
-            Node n = throwStatement.jjtGetChild(0).jjtGetChild(0);
+            Node n = throwStatement.getChild(0).getChild(0);
             if (n instanceof ASTCastExpression) {
-                ASTPrimaryExpression expr = (ASTPrimaryExpression) n.jjtGetChild(1);
-                if (expr.jjtGetNumChildren() > 1 && expr.jjtGetChild(1) instanceof ASTPrimaryPrefix) {
+                ASTPrimaryExpression expr = (ASTPrimaryExpression) n.getChild(1);
+                if (expr.getNumChildren() > 1 && expr.getChild(1) instanceof ASTPrimaryPrefix) {
                     RuleContext ctx = (RuleContext) data;
                     addViolation(ctx, throwStatement);
                 }
@@ -56,18 +56,18 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             // original exception is preserved)
             ASTArgumentList args = throwStatement.getFirstDescendantOfType(ASTArgumentList.class);
             if (args != null) {
-                Node parent = args.jjtGetParent().jjtGetParent();
+                Node parent = args.getParent().getParent();
                 if (parent instanceof ASTAllocationExpression) {
                     // maybe it is used inside a anonymous class
                     ck(data, target, throwStatement, parent);
                 } else {
-                    // Check all arguments used in the throw statement 
+                    // Check all arguments used in the throw statement
                     ck(data, target, throwStatement, throwStatement);
                 }
             } else {
-                Node child = throwStatement.jjtGetChild(0);
-                while (child != null && child.jjtGetNumChildren() > 0 && !(child instanceof ASTName)) {
-                    child = child.jjtGetChild(0);
+                Node child = throwStatement.getChild(0);
+                while (child != null && child.getNumChildren() > 0 && !(child instanceof ASTName)) {
+                    child = child.getChild(0);
                 }
                 if (child != null) {
                     if (child instanceof ASTName && !target.equals(child.getImage())
@@ -80,7 +80,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                             if (decl.getImage().equals(child.getImage())) {
                                 if (!isInitCauseCalled(target, occurrences)) {
                                     // Check how the variable is initialized
-                                    ASTVariableInitializer initializer = decl.getNode().jjtGetParent()
+                                    ASTVariableInitializer initializer = decl.getNode().getParent()
                                             .getFirstDescendantOfType(ASTVariableInitializer.class);
                                     if (initializer != null) {
                                         args = initializer.getFirstDescendantOfType(ASTArgumentList.class);
@@ -133,7 +133,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     /**
      * Checks whether the given target is in the argument list. If this is the
      * case, then the target (root exception) is used as the cause.
-     * 
+     *
      * @param target
      * @param baseNode
      */
@@ -155,7 +155,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
         }
         return match;
     }
-    
+
     /**
      * Checks whether the given childNode is part of an additive expression (String concatenation) limiting search to base Node.
      * @param childNode
@@ -165,7 +165,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     private boolean isStringConcat(Node childNode, Node baseNode) {
         Node currentNode = childNode;
         while (!Objects.equals(currentNode, baseNode)) {
-            currentNode = currentNode.jjtGetParent();
+            currentNode = currentNode.getParent();
             if (currentNode instanceof ASTAdditiveExpression) {
                 return true;
             }

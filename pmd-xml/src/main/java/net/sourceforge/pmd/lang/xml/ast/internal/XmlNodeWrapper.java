@@ -93,12 +93,21 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
         return parser.wrapDomNode(node.getChildNodes().item(index));
     }
 
+    @Override
+    public Node getChild(int index) {
+        return jjtGetChild(index);
+    }
 
     @Override
     public int jjtGetNumChildren() {
         return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
     }
 
+
+    @Override
+    public int getNumChildren() {
+        return jjtGetNumChildren();
+    }
 
     @Override
     public int jjtGetId() {

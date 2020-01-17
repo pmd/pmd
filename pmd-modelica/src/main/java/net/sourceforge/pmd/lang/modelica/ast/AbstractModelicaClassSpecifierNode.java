@@ -35,8 +35,8 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
     }
 
     private void pushExtendsAndImportsFromList(ModelicaClassType classTypeDeclaration, ASTElementList listNode) {
-        for (int i = 0; i < listNode.jjtGetNumChildren(); ++i) {
-            AbstractModelicaNode child = (AbstractModelicaNode) listNode.jjtGetChild(i);
+        for (int i = 0; i < listNode.getNumChildren(); ++i) {
+            AbstractModelicaNode child = (AbstractModelicaNode) listNode.getChild(i);
             if (child instanceof ASTExtendsClause) {
                 InternalModelicaResolverApi.addExtendToClass(
                         classTypeDeclaration,
@@ -55,8 +55,8 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
     }
 
     void pushExtendsAndImports(ModelicaClassType classTypeDeclaration, ASTComposition composition) {
-        for (int i = 0; i < composition.jjtGetNumChildren(); ++i) {
-            ModelicaNode maybeElementList = composition.jjtGetChild(i);
+        for (int i = 0; i < composition.getNumChildren(); ++i) {
+            ModelicaNode maybeElementList = composition.getChild(i);
             if (maybeElementList instanceof ASTElementList) {
                 pushExtendsAndImportsFromList(classTypeDeclaration, (ASTElementList) maybeElementList);
             }

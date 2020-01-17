@@ -21,10 +21,10 @@ public class ASTArguments extends AbstractJavaNode {
     }
 
     public int getArgumentCount() {
-        if (this.jjtGetNumChildren() == 0) {
+        if (this.getNumChildren() == 0) {
             return 0;
         }
-        return this.jjtGetChild(0).jjtGetNumChildren();
+        return this.getChild(0).getNumChildren();
     }
 
     @Override

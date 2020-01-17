@@ -66,7 +66,7 @@ public class ASTSwitchStatement extends AbstractJavaNode implements Iterable<AST
      * This is the expression between the parentheses.
      */
     public ASTExpression getTestedExpression() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 

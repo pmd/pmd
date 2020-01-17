@@ -8,30 +8,57 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
  * Base class for all implementations of the Node interface.
+ *
+ * <p>Please use the {@link Node} interface wherever possible and
+ * not this class, unless you're compelled to do so.
+ *
+ * <p>Note that nearly all methods of the {@link Node} interface
+ * will have default implementations with PMD 7.0.0, so that it
+ * will not be necessary to extend this class directly.
  */
 public abstract class AbstractNode implements Node {
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
+    /**
+     * @deprecated Use {@link #getParent()}
+     */
+    @Deprecated
     protected Node parent;
     // never null, never contains null elements
     protected Node[] children = EMPTY_ARRAY;
+    /** @deprecated Use {@link #getIndexInParent()} */
+    @Deprecated
     protected int childIndex;
+    /** @deprecated Use {@link #jjtGetId()} if you are a jjtree node. */
+    @Deprecated
     protected int id;
-
-    private String image;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int beginLine = -1;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int endLine;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int beginColumn = -1;
+    /** @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens. */
+    @Deprecated
     protected int endColumn;
+    // Those should have been private.
+    @Deprecated
+    protected GenericToken firstToken;
+    @Deprecated
+    protected GenericToken lastToken;
     private DataFlowNode dataFlowNode;
     private Object userData;
-    protected GenericToken firstToken;
-    protected GenericToken lastToken;
+    // @Deprecated?
+    private String image;
 
     public AbstractNode(final int id) {
         this.id = id;
@@ -47,31 +74,69 @@ public abstract class AbstractNode implements Node {
         endColumn = theEndColumn;
     }
 
+
+    @Override
+    public Node getParent() {
+        return jjtGetParent();
+    }
+
+    @Override
+    public int getIndexInParent() {
+        return jjtGetChildIndex();
+    }
+
+    @Override
+    public Node getChild(final int index) {
+        if (children == null) {
+            throw new IndexOutOfBoundsException();
+        }
+        return children[index];
+    }
+
+    @Override
+    public int getNumChildren() {
+        return jjtGetNumChildren();
+    }
+
+
+    /**
+     * @deprecated This is never used and is trivial, will be removed from this class.
+     */
+    @Deprecated
     public boolean isSingleLine() {
         return beginLine == endLine;
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtOpen() {
         // to be overridden by subclasses
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtClose() {
         // to be overridden by subclasses
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtSetParent(final Node parent) {
         this.parent = parent;
     }
 
     @Override
+    @Deprecated
     public Node jjtGetParent() {
         return parent;
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtAddChild(final Node child, final int index) {
         if (index >= children.length) {
             final Node[] newChildren = new Node[index + 1];
@@ -84,26 +149,37 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
+    @InternalApi
     public void jjtSetChildIndex(final int index) {
         childIndex = index;
     }
 
     @Override
+    @Deprecated
     public int jjtGetChildIndex() {
         return childIndex;
     }
 
+
     @Override
+    @Deprecated
     public Node jjtGetChild(final int index) {
         return children[index];
     }
 
     @Override
+    @Deprecated
     public int jjtGetNumChildren() {
         return children.length;
     }
 
+
+    /**
+     * @deprecated Will be made protected with 7.0.0.
+     */
     @Override
+    @Deprecated
     public int jjtGetId() {
         return id;
     }
@@ -114,6 +190,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public void setImage(final String image) {
         this.image = image;
     }
@@ -128,6 +205,11 @@ public abstract class AbstractNode implements Node {
         return beginLine;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetBeginLine(int i) {
         this.beginLine = i;
     }
@@ -145,6 +227,11 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetBeginColumn(final int i) {
         this.beginColumn = i;
     }
@@ -154,6 +241,11 @@ public abstract class AbstractNode implements Node {
         return endLine;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetEndLine(final int i) {
         this.endLine = i;
     }
@@ -163,6 +255,11 @@ public abstract class AbstractNode implements Node {
         return endColumn;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0
+     */
+    @Deprecated
+    @InternalApi
     public void testingOnlySetEndColumn(final int i) {
         this.endColumn = i;
     }
@@ -181,17 +278,6 @@ public abstract class AbstractNode implements Node {
     @Override
     public void setDataFlowNode(final DataFlowNode dataFlowNode) {
         this.dataFlowNode = dataFlowNode;
-    }
-
-    /**
-     * Returns true if this node has a descendant of any type among the provided types.
-     *
-     * @param types Types to test
-     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
-     */
-    @Deprecated
-    public final boolean hasDecendantOfAnyType(final Class<? extends Node>... types) {
-        return hasDescendantOfAnyType(types);
     }
 
     /**
@@ -223,46 +309,73 @@ public abstract class AbstractNode implements Node {
         this.userData = userData;
     }
 
+    /**
+     * @deprecated Not all nodes are based on tokens, and this is an implementation detail
+     */
+    @Deprecated
     public GenericToken jjtGetFirstToken() {
         return firstToken;
     }
 
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this superclass.
+     */
+    @Deprecated
     public void jjtSetFirstToken(final GenericToken token) {
         this.firstToken = token;
         this.beginLine = token.getBeginLine();
         this.beginColumn = token.getBeginColumn();
     }
 
+    /**
+     * @deprecated Not all nodes are based on tokens, and this is an implementation detail
+     */
+    @Deprecated
     public GenericToken jjtGetLastToken() {
         return lastToken;
     }
 
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this superclass.
+     */
+    @Deprecated
     public void jjtSetLastToken(final GenericToken token) {
         this.lastToken = token;
         this.endLine = token.getEndLine();
         this.endColumn = token.getEndColumn();
     }
 
+
+    /**
+     * @deprecated This is internal API
+     */
+    @Deprecated
+    @InternalApi
     @Override
     public void remove() {
         // Detach current node of its parent, if any
-        final Node parent = jjtGetParent();
+        final Node parent = getParent();
         if (parent != null) {
-            parent.removeChildAtIndex(jjtGetChildIndex());
+            parent.removeChildAtIndex(getIndexInParent());
             jjtSetParent(null);
         }
 
         // TODO [autofix]: Notify action for handling text edition
     }
 
+    /**
+     * @deprecated This is internal API
+     */
+    @Deprecated
+    @InternalApi
     @Override
     public void removeChildAtIndex(final int childIndex) {
-        if (0 <= childIndex && childIndex < jjtGetNumChildren()) {
+        if (0 <= childIndex && childIndex < getNumChildren()) {
             // Remove the child at the given index
             children = ArrayUtils.remove(children, childIndex);
             // Update the remaining & left-shifted children indexes
-            for (int i = childIndex; i < jjtGetNumChildren(); i++) {
-                jjtGetChild(i).jjtSetChildIndex(i);
+            for (int i = childIndex; i < getNumChildren(); i++) {
+                getChild(i).jjtSetChildIndex(i);
             }
         }
     }

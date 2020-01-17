@@ -17,15 +17,6 @@ import java.util.*
 // kotlin converts getters of java types into property accessors
 // but it doesn't recognise jjtGet* methods as getters
 
-val Node.numChildren: Int
-    get() = this.jjtGetNumChildren()
-
-val Node.childIndex: Int
-    get() = this.jjtGetChildIndex()
-
-val Node.parent: Node?
-    get() = this.jjtGetParent()
-
 
 val Node.firstToken: GenericToken
     get() = (this as AbstractNode).jjtGetFirstToken()
@@ -33,11 +24,8 @@ val Node.firstToken: GenericToken
 val Node.lastToken: GenericToken
     get() = (this as AbstractNode).jjtGetLastToken()
 
-
-fun Node.getChild(i: Int): Node = jjtGetChild(i)
-
 fun Node.safeGetChild(i: Int): Node? = when {
-    i < numChildren -> jjtGetChild(i)
+    i < numChildren -> getChild(i)
     else -> null
 }
 

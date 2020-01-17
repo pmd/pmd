@@ -68,7 +68,9 @@ public abstract class AbstractJspRule extends AbstractRule implements JspParserV
 
     @Override
     public Object visit(JspNode node, Object data) {
-        node.childrenAccept(this, data);
+        for (JspNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
         return null;
     }
 

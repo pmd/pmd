@@ -43,25 +43,25 @@ public class SimpleNodeTest extends BaseParserTest {
     @Test
     public void testHasExplicitExtends() {
         ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS).iterator().next();
-        assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
+        assertTrue(ucd.getChild(0) instanceof ASTExtendsList);
     }
 
     @Test
     public void testNoExplicitExtends() {
         ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_EXTENDS).iterator().next();
-        assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
+        assertFalse(ucd.getChild(0) instanceof ASTExtendsList);
     }
 
     @Test
     public void testHasExplicitImplements() {
         ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_IMPLEMENTS).iterator().next();
-        assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
+        assertTrue(ucd.getChild(0) instanceof ASTImplementsList);
     }
 
     @Test
     public void testNoExplicitImplements() {
         ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_IMPLEMENTS).iterator().next();
-        assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
+        assertFalse(ucd.getChild(0) instanceof ASTImplementsList);
     }
 
     @Test
@@ -175,12 +175,12 @@ public class SimpleNodeTest extends BaseParserTest {
         ASTCompilationUnit u = JavaParsingHelper.JUST_PARSE.parse(TEST1);
 
         ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
-        assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(),
+        assertSame("getFirstParentOfType ASTMethodDeclaration", d.getParent(),
                 d.getFirstParentOfType(ASTMethodDeclaration.class));
         assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
 
-        assertSame("getNthParent 1", d.jjtGetParent(), d.getNthParent(1));
-        assertSame("getNthParent 2", d.jjtGetParent().jjtGetParent(), d.getNthParent(2));
+        assertSame("getNthParent 1", d.getParent(), d.getNthParent(1));
+        assertSame("getNthParent 2", d.getParent().getParent(), d.getNthParent(2));
         assertSame("getNthParent 6", u, d.getNthParent(6));
         assertNull("getNthParent 7", d.getNthParent(7));
         assertNull("getNthParent 8", d.getNthParent(8));

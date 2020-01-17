@@ -25,7 +25,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTCompilationUnit acu = java.parse(TYPE_NAME_NODE);
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().getChild(0);
         assertEquals("String", name.getImage());
     }
 
@@ -34,7 +34,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTCompilationUnit acu = java.parse(TEST_ANNOTATIONS);
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().getChild(0);
         assertEquals("String", name.getImage());
     }
 
@@ -44,7 +44,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
         ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertEquals("File", f.getTypeNode().getTypeImage());
-        assertEquals("File", f.getTypeNameNode().jjtGetChild(0).getImage());
+        assertEquals("File", f.getTypeNameNode().getChild(0).getImage());
     }
 
     @Test

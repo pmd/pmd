@@ -15,7 +15,7 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryExpression exp, Object data) {
-        int n = exp.jjtGetNumChildren();
+        int n = exp.getNumChildren();
         if (n < 4) {
             return data;
         }
@@ -30,10 +30,10 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
             return data;
         }
 
-        if (!(exp.jjtGetChild(first + 1) instanceof ASTPrimarySuffix)) {
+        if (!(exp.getChild(first + 1) instanceof ASTPrimarySuffix)) {
             return data;
         }
-        ASTPrimarySuffix methodCall = (ASTPrimarySuffix) exp.jjtGetChild(first + 1);
+        ASTPrimarySuffix methodCall = (ASTPrimarySuffix) exp.getChild(first + 1);
         if (!methodCall.isArguments() || methodCall.getArgumentCount() > 0) {
             return data;
         }
@@ -45,14 +45,14 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
     private int getBadPrefixOrNull(ASTPrimaryExpression exp, int childrenCount) {
         // verify PrimaryPrefix/Name[ends-with(@Image, 'toUpperCase']
         for (int i = 0; i < childrenCount - 3; i++) {
-            Node child = exp.jjtGetChild(i);
+            Node child = exp.getChild(i);
             String image;
             if (child instanceof ASTPrimaryPrefix) {
-                if (child.jjtGetNumChildren() != 1 || !(child.jjtGetChild(0) instanceof ASTName)) {
+                if (child.getNumChildren() != 1 || !(child.getChild(0) instanceof ASTName)) {
                     continue;
                 }
 
-                ASTName name = (ASTName) child.jjtGetChild(0);
+                ASTName name = (ASTName) child.getChild(0);
                 image = name.getImage();
             } else if (child instanceof ASTPrimarySuffix) {
                 image = ((ASTPrimarySuffix) child).getImage();
@@ -71,11 +71,11 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
 
     private String getBadSuffixOrNull(ASTPrimaryExpression exp, int equalsPosition) {
         // verify PrimarySuffix[@Image='equals']
-        if (!(exp.jjtGetChild(equalsPosition) instanceof ASTPrimarySuffix)) {
+        if (!(exp.getChild(equalsPosition) instanceof ASTPrimarySuffix)) {
             return null;
         }
 
-        ASTPrimarySuffix suffix = (ASTPrimarySuffix) exp.jjtGetChild(equalsPosition);
+        ASTPrimarySuffix suffix = (ASTPrimarySuffix) exp.getChild(equalsPosition);
         if (suffix.getImage() == null
                 || !(suffix.hasImageEqualTo("equals") || suffix.hasImageEqualTo("equalsIgnoreCase"))) {
             return null;

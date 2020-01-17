@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
 
 /**
@@ -18,7 +17,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  *
  * @see ModelicaNode for public API.
  */
-abstract class AbstractModelicaNode extends AbstractNode implements Node, ModelicaNode {
+abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> implements ModelicaNode {
 
     /**
      * Kind for implicit tokens. Negative because JavaCC only picks
@@ -44,16 +43,6 @@ abstract class AbstractModelicaNode extends AbstractNode implements Node, Modeli
     @Override
     public String getXPathNodeName() {
         return getClass().getSimpleName().substring(3);
-    }
-
-    @Override
-    public ModelicaNode jjtGetParent() {
-        return (ModelicaNode) super.jjtGetParent();
-    }
-
-    @Override
-    public ModelicaNode jjtGetChild(int index) {
-        return (ModelicaNode) super.jjtGetChild(index);
     }
 
     @Override

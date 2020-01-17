@@ -33,6 +33,12 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public Iterable<ScalaNode<?>> children() {
+        return (Iterable<ScalaNode<?>>) super.children();
+    }
+
+    @Override
     public boolean isImplicit() {
         return pos.end() - pos.start() == 0;
     }
@@ -86,13 +92,13 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     }
 
     @Override
-    public ScalaNode<?> jjtGetChild(int index) {
-        return (ScalaNode<?>) super.jjtGetChild(index);
+    public ScalaNode<?> getChild(int index) {
+        return (ScalaNode<?>) super.getChild(index);
     }
 
     @Override
-    public ScalaNode<?> jjtGetParent() {
-        return (ScalaNode<?>) super.jjtGetParent();
+    public ScalaNode<?> getParent() {
+        return (ScalaNode<?>) super.getParent();
     }
 
     @Override

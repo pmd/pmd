@@ -49,7 +49,7 @@ public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTy
      * actual type arguments are inferred.
      */
     public boolean isDiamond() {
-        return jjtGetNumChildren() == 0;
+        return getNumChildren() == 0;
     }
 
 
