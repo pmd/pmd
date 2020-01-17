@@ -27,7 +27,8 @@ public class EcmascriptTokenizer extends JavaCCTokenizer {
 
     @Override
     protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String filename) {
-        return new TokenEntry(getTokenImage(currentToken), filename, currentToken.getBeginLine());
+        return new TokenEntry(getTokenImage(currentToken), filename, currentToken.getBeginLine(),
+                currentToken.getBeginColumn(), currentToken.getEndColumn());
     }
 
     private String getTokenImage(GenericToken token) {
