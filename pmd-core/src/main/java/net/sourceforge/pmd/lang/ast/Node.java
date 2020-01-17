@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -202,7 +203,11 @@ public interface Node {
      * look past such boundaries by default, which is usually the expected thing
      * to do. For example, in Java, lambdas and nested classes are considered
      * find boundaries.
+     *
+     * <p>Note: This attribute is deprecated for XPath queries. It is not useful
+     * for XPath queries and will be removed with PMD 7.0.0.
      */
+    @DeprecatedAttribute
     boolean isFindBoundary();
 
 

@@ -119,6 +119,7 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 * pmd-core
   * Many methods on the {% jdoc core::lang.ast.Node %} interface
   and {% jdoc core::lang.ast.AbstractNode %} base class. See their javadoc for details.
+  * {% jdoc !!core::lang.ast.Node#isFindBoundary() %} is deprecated for XPath queries.
 * pmd-java
   * {% jdoc java::lang.java.AbstractJavaParser %}
   * {% jdoc java::lang.java.AbstractJavaHandler %}
