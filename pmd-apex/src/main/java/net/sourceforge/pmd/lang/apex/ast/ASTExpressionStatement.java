@@ -25,8 +25,8 @@ public class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement
             return super.getBeginColumn() - beginColumnDiff;
         }
 
-        if (jjtGetNumChildren() > 0 && jjtGetChild(0) instanceof ASTMethodCallExpression) {
-            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) jjtGetChild(0);
+        if (getNumChildren() > 0 && getChild(0) instanceof ASTMethodCallExpression) {
+            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) getChild(0);
 
             int fullLength = methodCallExpression.getFullMethodName().length();
             int nameLength = methodCallExpression.getMethodName().length();

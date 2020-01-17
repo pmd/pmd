@@ -32,8 +32,8 @@ public class ExcessiveNodeCountRule extends AbstractStatisticalPLSQLRule {
     public Object visit(PLSQLNode node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Integer treeSize = (Integer) ((PLSQLNode) node.jjtGetChild(i)).jjtAccept(this, data);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            Integer treeSize = (Integer) ((PLSQLNode) node.getChild(i)).jjtAccept(this, data);
             numNodes += treeSize;
         }
 

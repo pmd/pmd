@@ -26,6 +26,6 @@ public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
     }
 
     public String getPackageNameImage() {
-        return ((ASTName) jjtGetChild(this.jjtGetNumChildren() - 1)).getImage();
+        return ((ASTName) getChild(this.getNumChildren() - 1)).getImage();
     }
 }

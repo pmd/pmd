@@ -22,7 +22,7 @@ public class ASTModuleDeclarationTest extends BaseParserTest {
         ASTModuleDeclaration module = modules.get(0);
         assertTrue(module.isOpen());
         assertEquals("com.example.foo", module.getImage());
-        assertEquals(7, module.jjtGetNumChildren());
+        assertEquals(7, module.getNumChildren());
         List<ASTModuleDirective> directives = module.findChildrenOfType(ASTModuleDirective.class);
         assertEquals(7, directives.size());
 

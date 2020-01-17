@@ -37,10 +37,10 @@ public class Java10Test {
         // first: var list = new ArrayList<String>();
         ASTType type = localVars.get(0).getFirstChildOfType(ASTType.class);
         assertEquals("var", type.getTypeImage());
-        assertEquals(1, type.jjtGetNumChildren());
+        assertEquals(1, type.getNumChildren());
         ASTReferenceType referenceType = type.getFirstChildOfType(ASTReferenceType.class);
         assertNotNull(referenceType);
-        assertEquals(1, referenceType.jjtGetNumChildren());
+        assertEquals(1, referenceType.getNumChildren());
         ASTClassOrInterfaceType classType = referenceType.getFirstChildOfType(ASTClassOrInterfaceType.class);
         assertNotNull(classType);
         assertEquals("var", classType.getImage());

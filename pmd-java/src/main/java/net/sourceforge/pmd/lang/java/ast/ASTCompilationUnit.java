@@ -53,8 +53,8 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     }
 
     public ASTPackageDeclaration getPackageDeclaration() {
-        if (jjtGetNumChildren() > 0) {
-            Node n = jjtGetChild(0);
+        if (getNumChildren() > 0) {
+            Node n = getChild(0);
             return n instanceof ASTPackageDeclaration ? (ASTPackageDeclaration) n : null;
         }
         return null;

@@ -20,10 +20,10 @@ public class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
     }
 
     public EcmascriptNode<?> getBody() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public EcmascriptNode<?> getCondition() {
-        return (EcmascriptNode<?>) jjtGetChild(1);
+        return (EcmascriptNode<?>) getChild(1);
     }
 }

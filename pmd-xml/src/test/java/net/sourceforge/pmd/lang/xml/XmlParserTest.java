@@ -57,36 +57,36 @@ public class XmlParserTest {
 
         assertNode(document, "document", 2);
         assertLineNumbers(document, 1, 1, 19, 14);
-        Node dtdElement = document.jjtGetChild(0);
+        Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
         assertLineNumbers(dtdElement, 2, 1, 11, 1);
-        Node rootElement = document.jjtGetChild(1);
+        Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 7);
         assertLineNumbers(rootElement, 12, 1, 19, 14);
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertLineNumbers(rootElement.jjtGetChild(0), 12, 14, 13, 4);
-        assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertLineNumbers(rootElement.jjtGetChild(1), 13, 5, 13, 29);
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        assertLineNumbers(rootElement.jjtGetChild(2), 13, 30, 14, 4);
-        Node child1 = rootElement.jjtGetChild(3);
+        assertTextNode(rootElement.getChild(0), "\\n    ");
+        assertLineNumbers(rootElement.getChild(0), 12, 14, 13, 4);
+        assertNode(rootElement.getChild(1), "comment", 0);
+        assertLineNumbers(rootElement.getChild(1), 13, 5, 13, 29);
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        assertLineNumbers(rootElement.getChild(2), 13, 30, 14, 4);
+        Node child1 = rootElement.getChild(3);
         assertNode(child1, "child1", 1, "test", "1");
         assertLineNumbers(child1, 14, 5, 15, 13);
-        assertTextNode(child1.jjtGetChild(0), "entity: Copyright: PMD\\n    ");
-        assertLineNumbers(child1.jjtGetChild(0), 14, 22, 15, 4);
-        assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        assertLineNumbers(rootElement.jjtGetChild(4), 15, 14, 16, 4);
-        Node child2 = rootElement.jjtGetChild(5);
+        assertTextNode(child1.getChild(0), "entity: Copyright: PMD\\n    ");
+        assertLineNumbers(child1.getChild(0), 14, 22, 15, 4);
+        assertTextNode(rootElement.getChild(4), "\\n    ");
+        assertLineNumbers(rootElement.getChild(4), 15, 14, 16, 4);
+        Node child2 = rootElement.getChild(5);
         assertNode(child2, "child2", 3);
         assertLineNumbers(child2, 16, 5, 18, 13);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertLineNumbers(child2.jjtGetChild(0), 16, 13, 17, 6);
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertLineNumbers(child2.jjtGetChild(1), 17, 7, 17, 33);
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertLineNumbers(child2.jjtGetChild(2), 17, 34, 18, 4);
-        assertTextNode(rootElement.jjtGetChild(6), "\\n");
-        assertLineNumbers(rootElement.jjtGetChild(6), 18, 14, 18, 14);
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertLineNumbers(child2.getChild(0), 16, 13, 17, 6);
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertLineNumbers(child2.getChild(1), 17, 7, 17, 33);
+        assertTextNode(child2.getChild(2), "\\n    ");
+        assertLineNumbers(child2.getChild(2), 17, 34, 18, 4);
+        assertTextNode(rootElement.getChild(6), "\\n");
+        assertLineNumbers(rootElement.getChild(6), 18, 14, 18, 14);
     }
 
     /**
@@ -97,23 +97,23 @@ public class XmlParserTest {
         Node document = XML.parse(XML_TEST);
 
         assertNode(document, "document", 2);
-        Node dtdElement = document.jjtGetChild(0);
+        Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        Node rootElement = document.jjtGetChild(1);
+        Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 7);
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        Node child1 = rootElement.jjtGetChild(3);
+        assertTextNode(rootElement.getChild(0), "\\n    ");
+        assertNode(rootElement.getChild(1), "comment", 0);
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        Node child1 = rootElement.getChild(3);
         assertNode(child1, "child1", 1, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: Copyright: PMD\\n    ");
-        assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        Node child2 = rootElement.jjtGetChild(5);
+        assertTextNode(child1.getChild(0), "entity: Copyright: PMD\\n    ");
+        assertTextNode(rootElement.getChild(4), "\\n    ");
+        Node child2 = rootElement.getChild(5);
         assertNode(child2, "child2", 3);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertTextNode(rootElement.jjtGetChild(6), "\\n");
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertTextNode(child2.getChild(2), "\\n    ");
+        assertTextNode(rootElement.getChild(6), "\\n");
     }
 
     /**
@@ -126,21 +126,21 @@ public class XmlParserTest {
         Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
 
         assertNode(document, "document", 2);
-        Node dtdElement = document.jjtGetChild(0);
+        Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        Node rootElement = document.jjtGetChild(1);
+        Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 7);
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        Node child1 = rootElement.jjtGetChild(3);
+        assertTextNode(rootElement.getChild(0), "\\n    ");
+        assertNode(rootElement.getChild(1), "comment", 0);
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        Node child1 = rootElement.getChild(3);
         assertNode(child1, "child1", 1, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: Copyright: PMD\\n    ");
-        assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        Node child2 = rootElement.jjtGetChild(5);
+        assertTextNode(child1.getChild(0), "entity: Copyright: PMD\\n    ");
+        assertTextNode(rootElement.getChild(4), "\\n    ");
+        Node child2 = rootElement.getChild(5);
         assertNode(child2, "child2", 1);
-        assertTextNode(child2.jjtGetChild(0), "\\n       cdata section \\n    ");
-        assertTextNode(rootElement.jjtGetChild(6), "\\n");
+        assertTextNode(child2.getChild(0), "\\n       cdata section \\n    ");
+        assertTextNode(rootElement.getChild(6), "\\n");
     }
 
     /**
@@ -154,33 +154,33 @@ public class XmlParserTest {
         Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
 
         assertNode(document, "document", 2);
-        Node dtdElement = document.jjtGetChild(0);
+        Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        Node rootElement = document.jjtGetChild(1);
+        Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 7);
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        Node child1 = rootElement.jjtGetChild(3);
+        assertTextNode(rootElement.getChild(0), "\\n    ");
+        assertNode(rootElement.getChild(1), "comment", 0);
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        Node child1 = rootElement.getChild(3);
         assertNode(child1, "child1", 3, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: ");
-        assertNode(child1.jjtGetChild(1), "pmd", 0);
+        assertTextNode(child1.getChild(0), "entity: ");
+        assertNode(child1.getChild(1), "pmd", 0);
         // with java13, expandEntityReferences=false works correctly, and the
         // entity &pmd; is not expanded
-        String text = child1.jjtGetChild(2).getImage();
+        String text = child1.getChild(2).getImage();
         if ("\n    ".equals(text)) {
             // java13 and later
-            assertTextNode(child1.jjtGetChild(2), "\\n    ");
+            assertTextNode(child1.getChild(2), "\\n    ");
         } else {
-            assertTextNode(child1.jjtGetChild(2), "Copyright: PMD\\n    ");
+            assertTextNode(child1.getChild(2), "Copyright: PMD\\n    ");
         }
-        assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        Node child2 = rootElement.jjtGetChild(5);
+        assertTextNode(rootElement.getChild(4), "\\n    ");
+        Node child2 = rootElement.getChild(5);
         assertNode(child2, "child2", 3);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertTextNode(rootElement.jjtGetChild(6), "\\n");
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertTextNode(child2.getChild(2), "\\n    ");
+        assertTextNode(rootElement.getChild(6), "\\n");
     }
 
     /**
@@ -193,21 +193,21 @@ public class XmlParserTest {
         Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
 
         assertNode(document, "document", 2);
-        Node dtdElement = document.jjtGetChild(0);
+        Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        Node rootElement = document.jjtGetChild(1);
+        Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 5);
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    \\n    ");
-        Node child1 = rootElement.jjtGetChild(1);
+        assertTextNode(rootElement.getChild(0), "\\n    \\n    ");
+        Node child1 = rootElement.getChild(1);
         assertNode(child1, "child1", 1, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: Copyright: PMD\\n    ");
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        Node child2 = rootElement.jjtGetChild(3);
+        assertTextNode(child1.getChild(0), "entity: Copyright: PMD\\n    ");
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        Node child2 = rootElement.getChild(3);
         assertNode(child2, "child2", 3);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertTextNode(rootElement.jjtGetChild(4), "\\n");
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertTextNode(child2.getChild(2), "\\n    ");
+        assertTextNode(rootElement.getChild(4), "\\n");
     }
 
     /**
@@ -221,19 +221,19 @@ public class XmlParserTest {
         Node document = XML.withParserOptions(parserOptions).parse(XML_TEST);
 
         assertNode(document, "document", 2);
-        Node dtdElement = document.jjtGetChild(0);
+        Node dtdElement = document.getChild(0);
         assertNode(dtdElement, "rootElement", 0);
-        Node rootElement = document.jjtGetChild(1);
+        Node rootElement = document.getChild(1);
         assertNode(rootElement, "rootElement", 3);
-        assertNode(rootElement.jjtGetChild(0), "comment", 0);
-        Node child1 = rootElement.jjtGetChild(1);
+        assertNode(rootElement.getChild(0), "comment", 0);
+        Node child1 = rootElement.getChild(1);
         assertNode(child1, "child1", 1, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: Copyright: PMD\\n    ");
-        Node child2 = rootElement.jjtGetChild(2);
+        assertTextNode(child1.getChild(0), "entity: Copyright: PMD\\n    ");
+        Node child2 = rootElement.getChild(2);
         assertNode(child2, "child2", 3);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertTextNode(child2.getChild(2), "\\n    ");
     }
 
     /**
@@ -244,25 +244,25 @@ public class XmlParserTest {
         Node document = XML.parse(XML_NAMESPACE_TEST);
 
         assertNode(document, "document", 1);
-        Node rootElement = document.jjtGetChild(0);
+        Node rootElement = document.getChild(0);
         assertNode(rootElement, "pmd:rootElement", 7, "xmlns:pmd", "http://pmd.sf.net");
         Assert.assertEquals("http://pmd.sf.net", ((XmlNode) rootElement).getNode().getNamespaceURI());
         Assert.assertEquals("pmd", ((XmlNode) rootElement).getNode().getPrefix());
         Assert.assertEquals("rootElement", ((XmlNode) rootElement).getNode().getLocalName());
         Assert.assertEquals("pmd:rootElement", ((XmlNode) rootElement).getNode().getNodeName());
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        Node child1 = rootElement.jjtGetChild(3);
+        assertTextNode(rootElement.getChild(0), "\\n    ");
+        assertNode(rootElement.getChild(1), "comment", 0);
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        Node child1 = rootElement.getChild(3);
         assertNode(child1, "pmd:child1", 1, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: &\\n    ");
-        assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        Node child2 = rootElement.jjtGetChild(5);
+        assertTextNode(child1.getChild(0), "entity: &\\n    ");
+        assertTextNode(rootElement.getChild(4), "\\n    ");
+        Node child2 = rootElement.getChild(5);
         assertNode(child2, "pmd:child2", 3);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertTextNode(rootElement.jjtGetChild(6), "\\n");
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertTextNode(child2.getChild(2), "\\n    ");
+        assertTextNode(rootElement.getChild(6), "\\n");
     }
 
     /**
@@ -276,25 +276,25 @@ public class XmlParserTest {
         Node document = XML.withParserOptions(parserOptions).parse(XML_NAMESPACE_TEST);
 
         assertNode(document, "document", 1);
-        Node rootElement = document.jjtGetChild(0);
+        Node rootElement = document.getChild(0);
         assertNode(rootElement, "pmd:rootElement", 7, "xmlns:pmd", "http://pmd.sf.net");
         Assert.assertNull(((XmlNode) rootElement).getNode().getNamespaceURI());
         Assert.assertNull(((XmlNode) rootElement).getNode().getPrefix());
         Assert.assertNull(((XmlNode) rootElement).getNode().getLocalName());
         Assert.assertEquals("pmd:rootElement", ((XmlNode) rootElement).getNode().getNodeName());
-        assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
-        assertNode(rootElement.jjtGetChild(1), "comment", 0);
-        assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
-        Node child1 = rootElement.jjtGetChild(3);
+        assertTextNode(rootElement.getChild(0), "\\n    ");
+        assertNode(rootElement.getChild(1), "comment", 0);
+        assertTextNode(rootElement.getChild(2), "\\n    ");
+        Node child1 = rootElement.getChild(3);
         assertNode(child1, "pmd:child1", 1, "test", "1");
-        assertTextNode(child1.jjtGetChild(0), "entity: &\\n    ");
-        assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
-        Node child2 = rootElement.jjtGetChild(5);
+        assertTextNode(child1.getChild(0), "entity: &\\n    ");
+        assertTextNode(rootElement.getChild(4), "\\n    ");
+        Node child2 = rootElement.getChild(5);
         assertNode(child2, "pmd:child2", 3);
-        assertTextNode(child2.jjtGetChild(0), "\\n      ");
-        assertTextNode(child2.jjtGetChild(1), " cdata section ", "cdata-section");
-        assertTextNode(child2.jjtGetChild(2), "\\n    ");
-        assertTextNode(rootElement.jjtGetChild(6), "\\n");
+        assertTextNode(child2.getChild(0), "\\n      ");
+        assertTextNode(child2.getChild(1), " cdata section ", "cdata-section");
+        assertTextNode(child2.getChild(2), "\\n    ");
+        assertTextNode(rootElement.getChild(6), "\\n");
     }
 
     /**
@@ -318,8 +318,8 @@ public class XmlParserTest {
             String output = bos.toString("UTF-8");
             Assert.assertTrue(output.contains("Element type \"invalidChild\" must be declared."));
             Assert.assertTrue(output.contains("The content of element type \"rootElement\" must match \"(child)\"."));
-            Assert.assertEquals(2, document.jjtGetNumChildren());
-            Assert.assertEquals("invalidChild", String.valueOf(document.jjtGetChild(1).jjtGetChild(1)));
+            Assert.assertEquals(2, document.getNumChildren());
+            Assert.assertEquals("invalidChild", String.valueOf(document.getChild(1).getChild(1)));
         } finally {
             System.setErr(oldErr);
             Locale.setDefault(oldLocale);
@@ -336,8 +336,8 @@ public class XmlParserTest {
         Parser parser = xmlVersionHandler.getParser(options);
         Node document = parser.parse(null, new StringReader(xml));
         Assert.assertNotNull(document);
-        assertNode(document.jjtGetChild(0), "mypi", 0);
-        assertLineNumbers(document.jjtGetChild(0), 1, 22, 1, 29);
+        assertNode(document.getChild(0), "mypi", 0);
+        assertLineNumbers(document.getChild(0), 1, 22, 1, 29);
     }
 
     @Test
@@ -366,7 +366,7 @@ public class XmlParserTest {
      */
     private void assertNode(Node node, String toString, int childs, Object... atts) {
         Assert.assertEquals(toString, String.valueOf(node));
-        Assert.assertEquals(childs, node.jjtGetNumChildren());
+        Assert.assertEquals(childs, node.getNumChildren());
         Iterator<Attribute> attributeIterator = ((XmlNode) node).getAttributeIterator();
         if (atts != null) {
             for (int i = 0; i < atts.length; i += 2) {
@@ -405,7 +405,7 @@ public class XmlParserTest {
      */
     private void assertTextNode(Node node, String text, String toString) {
         Assert.assertEquals(toString, String.valueOf(node));
-        Assert.assertEquals(0, node.jjtGetNumChildren());
+        Assert.assertEquals(0, node.getNumChildren());
         Assert.assertEquals(text, StringUtil.escapeWhitespace(node.getImage()));
         Iterator<Attribute> attributeIterator = ((XmlNode) node).getAttributeIterator();
         Assert.assertTrue(attributeIterator.hasNext());

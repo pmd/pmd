@@ -46,9 +46,9 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
 
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); i++) {
+            if (getChild(i) instanceof ASTAnnotation) {
+                ASTAnnotation a = (ASTAnnotation) getChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }
@@ -102,7 +102,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     private ASTVariableDeclaratorId getDecl() {
-        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1).jjtGetChild(0);
+        return (ASTVariableDeclaratorId) getChild(getNumChildren() - 1).getChild(0);
     }
 
     private int getArrayDimensionOnDeclaratorId() {

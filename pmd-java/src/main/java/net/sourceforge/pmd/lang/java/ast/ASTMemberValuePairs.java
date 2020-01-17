@@ -41,14 +41,14 @@ public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<AS
 
 
     @Override
-    public ASTMemberValuePair jjtGetChild(int index) {
-        return (ASTMemberValuePair) super.jjtGetChild(index);
+    public ASTMemberValuePair getChild(int index) {
+        return (ASTMemberValuePair) super.getChild(index);
     }
 
 
     @Override
-    public ASTNormalAnnotation jjtGetParent() {
-        return (ASTNormalAnnotation) super.jjtGetParent();
+    public ASTNormalAnnotation getParent() {
+        return (ASTNormalAnnotation) super.getParent();
     }
 
 

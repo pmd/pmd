@@ -88,15 +88,15 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         boolean result = suppresses(node, rule);
 
         if (!result && node instanceof ASTCompilationUnit) {
-            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = suppresses(node.jjtGetChild(i), rule);
+            for (int i = 0; !result && i < node.getNumChildren(); i++) {
+                result = suppresses(node.getChild(i), rule);
             }
         }
         if (!result) {
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             while (!result && parent != null) {
                 result = suppresses(parent, rule);
-                parent = parent.jjtGetParent();
+                parent = parent.getParent();
             }
         }
         return result;
@@ -173,7 +173,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         } else if (node instanceof ASTLocalVariableDeclaration) {
             variableName = getVariableNames((ASTLocalVariableDeclaration) node);
         } else if (node instanceof ASTVariableDeclarator) {
-            variableName = node.jjtGetChild(0).getImage();
+            variableName = node.getChild(0).getImage();
         } else if (node instanceof ASTVariableDeclaratorId) {
             variableName = node.getImage();
         } else if (node instanceof ASTFormalParameter) {

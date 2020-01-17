@@ -23,7 +23,7 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
     }
 
     public ASTObjectProperty getObjectProperty(int index) {
-        return (ASTObjectProperty) jjtGetChild(index);
+        return (ASTObjectProperty) getChild(index);
     }
 
     @Override

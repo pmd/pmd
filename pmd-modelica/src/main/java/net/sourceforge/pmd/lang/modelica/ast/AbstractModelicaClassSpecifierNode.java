@@ -35,8 +35,8 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
     }
 
     private void pushExtendsAndImportsFromList(ModelicaClassType classTypeDeclaration, ASTElementList listNode) {
-        for (int i = 0; i < listNode.jjtGetNumChildren(); ++i) {
-            AbstractModelicaNode child = (AbstractModelicaNode) listNode.jjtGetChild(i);
+        for (int i = 0; i < listNode.getNumChildren(); ++i) {
+            AbstractModelicaNode child = (AbstractModelicaNode) listNode.getChild(i);
             if (child instanceof ASTExtendsClause) {
                 InternalModelicaResolverApi.addExtendToClass(
                         classTypeDeclaration,

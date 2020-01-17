@@ -63,26 +63,26 @@ public class ApexParserTest extends ApexParserTestBase {
         // whole source code, well from the beginning of the class
         // name Modifier of the class - doesn't work. This node just
         // sees the identifier ("SimpleClass")
-        // assertPosition(rootNode.jjtGetChild(0), 1, 1, 1, 6);
+        // assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
 
         // "public"
         assertPosition(rootNode, 1, 14, 6, 2);
 
         // "method1" - starts with identifier until end of its block statement
-        Node method1 = rootNode.jjtGetChild(1);
+        Node method1 = rootNode.getChild(1);
         assertPosition(method1, 2, 17, 5, 5);
         // Modifier of method1 - doesn't work. This node just sees the
         // identifier ("method1")
-        // assertPosition(method1.jjtGetChild(0), 2, 17, 2, 20); // "public" for
+        // assertPosition(method1.getChild(0), 2, 17, 2, 20); // "public" for
         // method1
 
         // BlockStatement - the whole method body
-        Node blockStatement = method1.jjtGetChild(1);
+        Node blockStatement = method1.getChild(1);
         assertTrue(((ASTBlockStatement) blockStatement).hasCurlyBrace());
         assertPosition(blockStatement, 2, 27, 5, 5);
 
         // the expression ("System.out...")
-        Node expressionStatement = blockStatement.jjtGetChild(0);
+        Node expressionStatement = blockStatement.getChild(0);
         assertPosition(expressionStatement, 3, 9, 3, 34);
     }
 
@@ -98,11 +98,11 @@ public class ApexParserTest extends ApexParserTestBase {
 
         ApexNode<Compilation> rootNode = parse(code);
 
-        Node method1 = rootNode.jjtGetChild(1);
+        Node method1 = rootNode.getChild(1);
         assertEquals("Wrong begin line", 2, method1.getBeginLine());
         assertEquals("Wrong end line", 3, method1.getEndLine());
 
-        Node method2 = rootNode.jjtGetChild(2);
+        Node method2 = rootNode.getChild(2);
         assertEquals("Wrong begin line", 4, method2.getBeginLine());
         assertEquals("Wrong end line", 5, method2.getEndLine());
     }
@@ -155,8 +155,8 @@ public class ApexParserTest extends ApexParserTestBase {
         Assert.assertTrue(node.getBeginColumn() > 0);
         Assert.assertTrue(node.getEndLine() > 0);
         Assert.assertTrue(node.getEndColumn() > 0);
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            result = visitPosition(node.jjtGetChild(i), result);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            result = visitPosition(node.getChild(i), result);
         }
         return result;
     }

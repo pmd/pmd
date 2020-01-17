@@ -26,7 +26,7 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
 
     public ASTName getFunctionName() {
         if (node.getFunctionName() != null) {
-            return (ASTName) jjtGetChild(0);
+            return (ASTName) getChild(0);
         }
         return null;
     }
@@ -36,11 +36,11 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
         if (node.getFunctionName() != null) {
             paramIndex = index + 1;
         }
-        return (EcmascriptNode<?>) jjtGetChild(paramIndex);
+        return (EcmascriptNode<?>) getChild(paramIndex);
     }
 
     public EcmascriptNode<?> getBody() {
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 
     @Deprecated // use getBody() instead

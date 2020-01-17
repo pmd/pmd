@@ -456,7 +456,7 @@ public class ClassScope extends AbstractJavaScope {
         if (occurrence.getLocation() instanceof ASTPrimarySuffix) {
             nextSibling = getNextSibling(occurrence.getLocation());
         } else {
-            nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
+            nextSibling = getNextSibling(occurrence.getLocation().getParent());
         }
 
         if (nextSibling != null) {
@@ -467,17 +467,17 @@ public class ClassScope extends AbstractJavaScope {
             return Collections.emptyList();
         }
 
-        List<TypedNameDeclaration> argumentTypes = new ArrayList<>(arguments.jjtGetNumChildren());
+        List<TypedNameDeclaration> argumentTypes = new ArrayList<>(arguments.getNumChildren());
         Map<String, Node> qualifiedTypeNames = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames();
 
-        for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
-            Node argument = arguments.jjtGetChild(i);
+        for (int i = 0; i < arguments.getNumChildren(); i++) {
+            Node argument = arguments.getChild(i);
             Node child = null;
             boolean isMethodCall = false;
-            if (argument.jjtGetNumChildren() > 0 && argument.jjtGetChild(0).jjtGetNumChildren() > 0
-                    && argument.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0) {
-                child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
-                isMethodCall = argument.jjtGetChild(0).jjtGetNumChildren() > 1;
+            if (argument.getNumChildren() > 0 && argument.getChild(0).getNumChildren() > 0
+                    && argument.getChild(0).getChild(0).getNumChildren() > 0) {
+                child = argument.getChild(0).getChild(0).getChild(0);
+                isMethodCall = argument.getChild(0).getNumChildren() > 1;
             }
             TypedNameDeclaration type = null;
             if (!isMethodCall) {
@@ -522,13 +522,13 @@ public class ClassScope extends AbstractJavaScope {
                         type = new SimpleTypedNameDeclaration("int", literal.getType());
                     } else if (literal.isLongLiteral()) {
                         type = new SimpleTypedNameDeclaration("long", literal.getType());
-                    } else if (literal.jjtGetNumChildren() == 1
-                            && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                    } else if (literal.getNumChildren() == 1
+                            && literal.getChild(0) instanceof ASTBooleanLiteral) {
                         type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
                     }
                 } else if (child instanceof ASTAllocationExpression
-                        && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.jjtGetChild(0);
+                        && child.getChild(0) instanceof ASTClassOrInterfaceType) {
+                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.getChild(0);
                     type = convertToSimpleType(classInterface);
                 }
             }
@@ -662,8 +662,8 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     private Node getNextSibling(Node current) {
-        if (current.jjtGetParent().jjtGetNumChildren() > current.jjtGetChildIndex() + 1) {
-            return current.jjtGetParent().jjtGetChild(current.jjtGetChildIndex() + 1);
+        if (current.getParent().getNumChildren() > current.getIndexInParent() + 1) {
+            return current.getParent().getChild(current.getIndexInParent() + 1);
         }
         return null;
     }

@@ -93,12 +93,12 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
 
     @Override
     public ScalaNode<?> getChild(int index) {
-        return (ScalaNode<?>) super.jjtGetChild(index);
+        return (ScalaNode<?>) super.getChild(index);
     }
 
     @Override
     public ScalaNode<?> getParent() {
-        return (ScalaNode<?>) super.jjtGetParent();
+        return (ScalaNode<?>) super.getParent();
     }
 
     @Override

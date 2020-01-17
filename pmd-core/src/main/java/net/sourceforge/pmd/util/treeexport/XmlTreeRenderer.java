@@ -105,7 +105,7 @@ public final class XmlTreeRenderer implements TreeRenderer {
             appendAttribute(out, attrName, attributes.get(attrName));
         }
 
-        if (node.jjtGetNumChildren() == 0) {
+        if (node.getNumChildren() == 0) {
             out.append(" />");
             return;
         }
@@ -113,9 +113,9 @@ public final class XmlTreeRenderer implements TreeRenderer {
 
         out.append(">");
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+        for (int i = 0; i < node.getNumChildren(); i++) {
             out.append(strategy.lineSeparator);
-            renderSubtree(depth + 1, node.jjtGetChild(i), out);
+            renderSubtree(depth + 1, node.getChild(i), out);
         }
 
         out.append(strategy.lineSeparator);

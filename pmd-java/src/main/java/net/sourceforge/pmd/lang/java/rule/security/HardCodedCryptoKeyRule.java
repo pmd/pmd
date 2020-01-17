@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 /**
  * Finds hard coded encryption keys that are passed to
  * javax.crypto.spec.SecretKeySpec(key, algorithm).
- * 
+ *
  * @author sergeygorbaty
  * @since 6.4.0
  */
@@ -41,7 +41,7 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
 
             ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
             if (arguments.getArgumentCount() > 0) {
-                firstArgument = arguments.getFirstChildOfType(ASTArgumentList.class).jjtGetChild(0);
+                firstArgument = arguments.getFirstChildOfType(ASTArgumentList.class).getChild(0);
             }
 
             if (firstArgument != null) {

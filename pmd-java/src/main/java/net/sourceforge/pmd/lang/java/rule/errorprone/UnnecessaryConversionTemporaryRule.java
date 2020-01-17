@@ -24,8 +24,8 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || (node.jjtGetChild(0)).jjtGetNumChildren() == 0
-                || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
+        if (node.getNumChildren() == 0 || (node.getChild(0)).getNumChildren() == 0
+                || !(node.getChild(0).getChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }
         // TODO... hmmm... is this inPrimaryExpressionContext gibberish
@@ -40,10 +40,10 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
-        if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
+        if (!inPrimaryExpressionContext || !(node.getChild(0) instanceof ASTClassOrInterfaceType)) {
             return super.visit(node, data);
         }
-        if (!PRIMITIVE_WRAPPERS.contains(node.jjtGetChild(0).getImage())) {
+        if (!PRIMITIVE_WRAPPERS.contains(node.getChild(0).getImage())) {
             return super.visit(node, data);
         }
         usingPrimitiveWrapperAllocation = true;
@@ -54,7 +54,7 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
     public Object visit(ASTPrimarySuffix node, Object data) {
         if (inPrimaryExpressionContext && usingPrimitiveWrapperAllocation) {
             if (node.hasImageEqualTo("toString")) {
-                if (node.jjtGetParent() == primary) {
+                if (node.getParent() == primary) {
                     addViolation(data, node);
                 }
             }

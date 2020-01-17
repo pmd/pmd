@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Finds all .addError method calls that are not HTML escaped on purpose
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -44,9 +44,9 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     }
 
     private void validateBooleanParameter(ASTMethodCallExpression methodCall, Object data) {
-        int numberOfChildren = methodCall.jjtGetNumChildren();
+        int numberOfChildren = methodCall.getNumChildren();
         if (numberOfChildren == 3) { // addError('',false)
-            Object potentialLiteral = methodCall.jjtGetChild(2);
+            Object potentialLiteral = methodCall.getChild(2);
             if (potentialLiteral instanceof ASTLiteralExpression) {
                 ASTLiteralExpression parameter = (ASTLiteralExpression) potentialLiteral;
                 if (parameter.isBoolean()) {

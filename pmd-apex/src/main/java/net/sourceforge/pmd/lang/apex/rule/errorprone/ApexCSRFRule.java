@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 /**
  * Constructor and init method might contain DML, which constitutes a CSRF
  * vulnerability
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -46,7 +46,7 @@ public class ApexCSRFRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTBlockStatement node, Object data) {
-        if (node.jjtGetParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
+        if (node.getParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
             addViolation(data, node);
         }
         return data;

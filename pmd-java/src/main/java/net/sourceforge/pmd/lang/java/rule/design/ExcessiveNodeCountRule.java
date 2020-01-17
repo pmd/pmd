@@ -14,10 +14,10 @@ import net.sourceforge.pmd.stat.DataPoint;
  *
  * <p>It expects all "visit" calls to return an Integer. It will sum all the values
  * it gets, and use that as its score.</p>
- * 
+ *
  * <p>To use it, override the "visit" for the nodes that need to be counted. On
  * those return "new Integer(1)"</p>
- * 
+ *
  * <p>All others will return 0 (or the sum of counted nodes underneath.)</p>
  */
 
@@ -32,8 +32,8 @@ public class ExcessiveNodeCountRule extends AbstractStatisticalJavaRule {
     public Object visit(JavaNode node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Integer treeSize = (Integer) ((JavaNode) node.jjtGetChild(i)).jjtAccept(this, data);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            Integer treeSize = (Integer) ((JavaNode) node.getChild(i)).jjtAccept(this, data);
             numNodes += treeSize;
         }
 

@@ -54,7 +54,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         currentPackage = node.getPackageNameImage();
         return data;
     }
-    
+
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         imports.add(node);
@@ -73,8 +73,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTName node, Object data) {
-        if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
-                && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
+        if (!(node.getParent() instanceof ASTImportDeclaration)
+                && !(node.getParent() instanceof ASTPackageDeclaration)) {
             // This name has no qualification, it can't be unnecessarily qualified
             if (node.getImage().indexOf('.') < 0) {
                 return data;
@@ -98,9 +98,9 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private boolean couldBeMethodCall(JavaNode node) {
         if (node.getNthParent(2) instanceof ASTPrimaryExpression && node.getNthParent(1) instanceof ASTPrimaryPrefix) {
-            int nextSibling = node.jjtGetParent().jjtGetChildIndex() + 1;
-            if (node.getNthParent(2).jjtGetNumChildren() > nextSibling) {
-                return node.getNthParent(2).jjtGetChild(nextSibling) instanceof ASTPrimarySuffix;
+            int nextSibling = node.getParent().getIndexInParent() + 1;
+            if (node.getNthParent(2).getNumChildren() > nextSibling) {
+                return node.getNthParent(2).getChild(nextSibling) instanceof ASTPrimarySuffix;
             }
         }
         return false;
@@ -246,13 +246,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             // with type resolution we can do an exact package match
             Package packageOfType = node.getType().getPackage();
             if (packageOfType != null) {
-                
+
                 // get "package" candidate from name
                 int i = name.lastIndexOf('.');
                 if (i > 0) {
                     name = name.substring(0, i);
                 }
-                
+
                 return node.getType().getPackage().getName().equals(currentPackage)
                         && name.equals(currentPackage);
             }
@@ -271,8 +271,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // package a;
         // name: a.b.c.d(); -> we assume, b is a class, c is a field, d is a method.
         // but it could very well be, that: a.b is a package and c is a class, d is a (static) method.
-        if (node.jjtGetParent() instanceof ASTPrimaryPrefix
-                || node.jjtGetParent() instanceof ASTNameList
+        if (node.getParent() instanceof ASTPrimaryPrefix
+                || node.getParent() instanceof ASTNameList
                 || node instanceof ASTClassOrInterfaceType) {
             return currentPackage != null && name.startsWith(currentPackage);
         }

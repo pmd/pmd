@@ -26,6 +26,6 @@ public class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootN
     }
 
     public ASTComment getComment(int index) {
-        return (ASTComment) jjtGetChild(jjtGetNumChildren() - 1 - getNumComments() + index);
+        return (ASTComment) getChild(getNumChildren() - 1 - getNumComments() + index);
     }
 }

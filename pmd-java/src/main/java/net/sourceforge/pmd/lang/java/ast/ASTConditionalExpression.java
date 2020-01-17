@@ -67,7 +67,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      */
     @Deprecated
     public Node getGuardExpressionNode() {
-        return jjtGetChild(0);
+        return getChild(0);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * That is the expression before the '?'.
      */
     public Node getCondition() {
-        return jjtGetChild(0);
+        return getChild(0);
     }
 
 
@@ -84,7 +84,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * if the guard evaluates to true.
      */
     public ASTExpression getTrueAlternative() {
-        return (ASTExpression) jjtGetChild(1);
+        return (ASTExpression) getChild(1);
     }
 
 
@@ -93,7 +93,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * if the guard evaluates to false.
      */
     public Node getFalseAlternative() {
-        return jjtGetChild(2);
+        return getChild(2);
     }
 
 

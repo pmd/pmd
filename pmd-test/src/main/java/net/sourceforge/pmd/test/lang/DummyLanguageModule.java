@@ -59,8 +59,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
             for (Node n : nodes) {
                 indexNode(n);
                 List<Node> childs = new ArrayList<>();
-                for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-                    childs.add(n.jjtGetChild(i));
+                for (int i = 0; i < n.getNumChildren(); i++) {
+                    childs.add(n.getChild(i));
                 }
                 indexNodes(childs, ctx);
             }

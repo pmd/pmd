@@ -48,7 +48,7 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
      * eg {@code java.lang.Override} or {@code Override}.
      */
     public String getAnnotationName() {
-        return jjtGetChild(0).jjtGetChild(0).getImage();
+        return getChild(0).getChild(0).getImage();
     }
 
     // @formatter:off
@@ -77,7 +77,7 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
     // @formatter:on
     public boolean suppresses(Rule rule) {
 
-        if (jjtGetChild(0) instanceof ASTMarkerAnnotation) {
+        if (getChild(0) instanceof ASTMarkerAnnotation) {
             return false;
         }
 

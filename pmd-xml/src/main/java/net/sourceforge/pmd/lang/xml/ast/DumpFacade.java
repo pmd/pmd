@@ -38,8 +38,8 @@ public class DumpFacade {
     public Object visit(XmlNode node, Object data) {
         dump(node, (String) data);
         if (recurse) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                visit((XmlNode) node.jjtGetChild(i), data + " ");
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                visit((XmlNode) node.getChild(i), data + " ");
             }
             return data;
         } else {

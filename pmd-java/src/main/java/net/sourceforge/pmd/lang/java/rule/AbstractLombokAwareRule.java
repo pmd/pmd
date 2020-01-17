@@ -105,7 +105,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
     @Deprecated
     protected boolean hasLombokAnnotation(Node node) {
         boolean result = false;
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
         List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
         for (ASTAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstDescendantOfType(ASTName.class);

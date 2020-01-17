@@ -33,7 +33,7 @@ public class ASTYieldStatement extends AbstractJavaTypeNode {
 
     /** Returns the yielded expression. */
     public ASTExpression getExpr() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 

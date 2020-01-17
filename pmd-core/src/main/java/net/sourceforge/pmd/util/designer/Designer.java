@@ -348,7 +348,7 @@ public class Designer implements ClipboardOwner {
         ASTTreeNode(Node theNode) {
             node = theNode;
 
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             if (parent != null) {
                 this.parent = new ASTTreeNode(parent);
             }
@@ -361,7 +361,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public int getChildCount() {
-            return node.jjtGetNumChildren();
+            return node.getNumChildren();
         }
 
         @Override
@@ -371,7 +371,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public boolean isLeaf() {
-            return node.jjtGetNumChildren() == 0;
+            return node.getNumChildren() == 0;
         }
 
         @Override
@@ -412,9 +412,9 @@ public class Designer implements ClipboardOwner {
         public TreeNode getChildAt(int childIndex) {
 
             if (kids == null) {
-                kids = new ASTTreeNode[node.jjtGetNumChildren()];
+                kids = new ASTTreeNode[node.getNumChildren()];
                 for (int i = 0; i < kids.length; i++) {
-                    kids[i] = new ASTTreeNode(this.parent, node.jjtGetChild(i));
+                    kids[i] = new ASTTreeNode(this.parent, node.getChild(i));
                 }
             }
             return kids[childIndex];

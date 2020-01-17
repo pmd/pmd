@@ -80,13 +80,13 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
     public Object visit(ASTPrimaryPrefix node, Object data) {
 
         if (!customBoolean) {
-            if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
+            if (node.getNumChildren() == 0 || !(node.getChild(0) instanceof ASTName)) {
                 return super.visit(node, data);
             }
 
-            if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
-                    || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
-                ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
+            if ("Boolean.valueOf".equals(((ASTName) node.getChild(0)).getImage())
+                    || "java.lang.Boolean.valueOf".equals(((ASTName) node.getChild(0)).getImage())) {
+                ASTPrimaryExpression parent = (ASTPrimaryExpression) node.getParent();
                 ASTPrimarySuffix suffix = parent.getFirstDescendantOfType(ASTPrimarySuffix.class);
                 if (suffix == null) {
                     return super.visit(node, data);

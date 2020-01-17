@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule {
@@ -35,7 +35,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 
     /**
      * Count the nodes of the given type using NCSS rules.
-     * 
+     *
      * @param nodeClass
      *            class of node to count
      */
@@ -52,8 +52,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     public Object visit(AbstractApexNodeBase node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            AbstractApexNodeBase n = (AbstractApexNodeBase) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            AbstractApexNodeBase n = (AbstractApexNodeBase) node.getChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
@@ -74,7 +74,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     /**
      * Count the number of children of the given node. Adds one to count the
      * node itself.
-     * 
+     *
      * @param node
      *            node having children counted
      * @param data
@@ -84,8 +84,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     protected Integer countNodeChildren(Node node, Object data) {
         Integer nodeCount;
         int lineCount = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((AbstractApexNodeBase) node.jjtGetChild(i)).jjtAccept(this, data);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            nodeCount = (Integer) ((AbstractApexNodeBase) node.getChild(i)).jjtAccept(this, data);
             lineCount += nodeCount.intValue();
         }
         return ++lineCount;

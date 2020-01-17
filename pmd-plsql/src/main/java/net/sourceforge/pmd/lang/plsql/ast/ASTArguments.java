@@ -23,10 +23,10 @@ public class ASTArguments extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLS
     }
 
     public int getArgumentCount() {
-        if (this.jjtGetNumChildren() == 0) {
+        if (this.getNumChildren() == 0) {
             return 0;
         }
-        return this.jjtGetChild(0).jjtGetNumChildren();
+        return this.getChild(0).getNumChildren();
     }
 }
 /*

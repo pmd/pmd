@@ -47,9 +47,9 @@ public class ASTType extends AbstractJavaTypeNode {
 
     @Deprecated
     public int getArrayDepth() {
-        if (jjtGetNumChildren() != 0
-            && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
-            return ((Dimensionable) jjtGetChild(0)).getArrayDepth();
+        if (getNumChildren() != 0
+            && (getChild(0) instanceof ASTReferenceType || getChild(0) instanceof ASTPrimitiveType)) {
+            return ((Dimensionable) getChild(0)).getArrayDepth();
         }
         return 0; // this is not an array
     }

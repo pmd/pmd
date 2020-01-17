@@ -19,7 +19,7 @@ public class DeleteStatementTest extends AbstractPLSQLParserTst {
         List<ASTDeleteStatement> deleteStatements = input.findDescendantsOfType(ASTDeleteStatement.class);
         Assert.assertEquals(3, deleteStatements.size());
 
-        Assert.assertEquals("product_descriptions", deleteStatements.get(0).jjtGetChild(0)
+        Assert.assertEquals("product_descriptions", deleteStatements.get(0).getChild(0)
                                                                     .getFirstChildOfType(ASTTableName.class).getImage());
     }
 }

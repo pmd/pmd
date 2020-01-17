@@ -33,14 +33,14 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 /**
  * Searches for special nodes and computes based on the sequence, the type of
  * access of a variable.
- * 
+ *
  * @since Created on 14.07.2004
  * @author raik, Sven Jacob
  */
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     public void compute(ASTMethodDeclaration node) {
-        if (node.jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
+        if (node.getParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
             this.computeNow(node);
         }
     }
@@ -50,7 +50,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private void computeNow(Node node) {
-        
+
 
         DataFlowNode inode = node.getDataFlowNode();
 
@@ -88,16 +88,16 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                     // find the nearest assignment, if any
                     Node potentialAssignment = occurrence.getLocation().getFirstParentOfAnyType(ASTStatementExpression.class,
                                                                                             ASTExpression.class);
-                    while (potentialAssignment != null 
-                            && (potentialAssignment.jjtGetNumChildren() < 2
-                                    || !(potentialAssignment.jjtGetChild(1) instanceof ASTAssignmentOperator))) {
+                    while (potentialAssignment != null
+                            && (potentialAssignment.getNumChildren() < 2
+                                    || !(potentialAssignment.getChild(1) instanceof ASTAssignmentOperator))) {
                         potentialAssignment = potentialAssignment.getFirstParentOfAnyType(ASTStatementExpression.class,
                                 ASTExpression.class);
                     }
                     // at this point, potentialAssignment is either a assignment or null
                     occurrencesWithAssignmentExp.add(new SimpleEntry<>(potentialAssignment, occurrence));
                 }
-                
+
                 //The name occurrences are in source code order, the means, the left hand side of
                 //the assignment is first. But this is not the order in which the data flows: first the
                 //right hand side is evaluated before the left hand side is assigned.
@@ -148,7 +148,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     /**
      * Adds a VariableAccess to a dataflow node.
-     * 
+     *
      * @param node
      *            location of the access of a variable
      * @param va

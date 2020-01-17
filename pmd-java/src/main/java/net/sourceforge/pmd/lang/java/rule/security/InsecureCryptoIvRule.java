@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  * </code>
  *
  * <p>{@link javax.crypto.spec.IvParameterSpec} must not be created from a static sources
- * 
+ *
  * @author sergeygorbaty
  * @since 6.3.0
  *
@@ -48,7 +48,7 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
 
             ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
             if (arguments.getArgumentCount() > 0) {
-                firstArgument = arguments.getFirstChildOfType(ASTArgumentList.class).jjtGetChild(0);
+                firstArgument = arguments.getFirstChildOfType(ASTArgumentList.class).getChild(0);
             }
 
             if (firstArgument != null) {
