@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetricsComputer;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -178,6 +179,10 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
             super(ASTAnyTypeDeclaration.class, MethodLikeNode.class, JavaMetricsComputer.getInstance());
         }
 
+        @Override
+        public void initialize() {
+            JavaMetrics.reset();
+        }
 
         @Override
         public List<? extends MetricKey<ASTAnyTypeDeclaration>> getAvailableTypeMetrics() {

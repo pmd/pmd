@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsComputer;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
@@ -80,6 +81,10 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
             super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class, ApexMetricsComputer.getInstance());
         }
 
+        @Override
+        public void initialize() {
+            ApexMetrics.reset();
+        }
 
         @Override
         public List<ApexClassMetricKey> getAvailableTypeMetrics() {
