@@ -102,6 +102,22 @@
 
 
 {
+"title": "Creating XML dump of the AST",
+"tags": "devdocsexperimental",
+"keywords": "",
+"url": "pmd_devdocs_experimental_ast_dump.html",
+"summary": "Creating a XML representation of the AST allows to analyze the AST with other tools."
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Best Practices",
 "tags": "userdocs",
 "keywords": "",

@@ -1132,6 +1132,21 @@
                 </li>
                 
                 
+                
+                <li class="subfolders">
+                    <a href="#">Experimental features</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
 
             
 
@@ -1345,6 +1360,18 @@ The PMD Designer supports syntax highlighting for Modelica.</p>
 <p>While the language implementation is quite complete, Modelica support is considered experimental
 for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
 the implementation based on your feedback.</p>
+
+<h4 id="simple-xml-dump-of-ast">Simple XML dump of AST</h4>
+
+<p>We added a experimental feature to dump the AST of a source file into XML. The XML format
+is of course PMD specific and language dependent. That XML file can be used to execute
+(XPath) queries against without PMD. It can also be used as a textual visualization of the AST
+if you don’t want to use the <a href="https://github.com/pmd/pmd-designer">Designer</a>.</p>
+
+<p>This feature is experimental and might change or even be removed in the future, if it is not
+useful. A short description how to use it is available under <a href="pmd_devdocs_experimental_ast_dump.html">Creating XML dump of the AST</a>.</p>
+
+<p>Any feedback about it, especially about your use cases, is highly appreciated.</p>
 
 <h4 id="modified-rules">Modified Rules</h4>
 
