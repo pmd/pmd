@@ -15,9 +15,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
     public static final TokenEntry EOF = new TokenEntry();
 
     private String tokenSrcID;
-    private int beginLine;
-    private int beginColumn;
-    private int endColumn;
+    private final int beginLine;
+    private final int beginColumn;
+    private final int endColumn;
     private int index;
     private int identifier;
     private int hashCode;
@@ -38,6 +38,9 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private TokenEntry() {
         this.identifier = 0;
         this.tokenSrcID = "EOFMarker";
+        this.beginLine = -1;
+        this.beginColumn = -1;
+        this.endColumn = -1;
     }
 
     /**
@@ -109,12 +112,20 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return beginLine;
     }
 
-    @Deprecated
+    /**
+     * The column number where this token begins.
+     * returns -1 if not available
+     * @return the begin column number
+     */
     public int getBeginColumn() {
         return beginColumn; // TODO Java 1.8 make optional
     }
 
-    @Deprecated
+    /**
+     * The column number where this token ends.
+     * returns -1 if not available
+     * @return the end column number
+     */
     public int getEndColumn() {
         return endColumn; // TODO Java 1.8 make optional
     }
