@@ -17,9 +17,9 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -66,7 +66,9 @@ public interface Node {
      * @deprecated This is JJTree-specific and will be removed from this interface
      */
     @Deprecated
-    void jjtOpen();
+    default void jjtOpen() {
+
+    }
 
 
     /**
@@ -75,7 +77,10 @@ public interface Node {
      * @deprecated This is JJTree-specific and will be removed from this interface
      */
     @Deprecated
-    void jjtClose();
+    default void jjtClose() {
+
+    }
+
 
     /**
      * Sets the parent of this node.
@@ -85,7 +90,10 @@ public interface Node {
      * @deprecated This is JJTree-specific and will be removed from this interface
      */
     @Deprecated
-    void jjtSetParent(Node parent);
+    default void jjtSetParent(Node parent) {
+        throw new UnsupportedOperationException("JJTree specific");
+    }
+
 
     /**
      * Returns the parent of this node.
@@ -96,7 +104,10 @@ public interface Node {
      */
     @Deprecated
     @Nullable
-    Node jjtGetParent();
+    default Node jjtGetParent() {
+        return getParent();
+    }
+
 
     /**
      * This method tells the node to add its argument to the node's list of children.
@@ -107,19 +118,24 @@ public interface Node {
      * @deprecated This is JJTree-specific and will be removed from this interface
      */
     @Deprecated
-    void jjtAddChild(Node child, int index);
+    default void jjtAddChild(Node child, int index) {
+        throw new UnsupportedOperationException("JJTree specific");
+    }
+
 
     /**
      * Sets the index of this node from the perspective of its parent. This
      * means: this.getParent().getChild(index) == this.
      *
-     * @param index
-     *            the child index
+     * @param index the child index
      *
      * @deprecated This is JJTree-specific and will be removed from this interface
      */
     @Deprecated
-    void jjtSetChildIndex(int index);
+    default void jjtSetChildIndex(int index) {
+        throw new UnsupportedOperationException("JJTree specific");
+    }
+
 
     /**
      * Gets the index of this node in the children of its parent.
@@ -129,20 +145,23 @@ public interface Node {
      * @deprecated Use {@link #getIndexInParent()}
      */
     @Deprecated
-    int jjtGetChildIndex();
+    default int jjtGetChildIndex() {
+        return getIndexInParent();
+    }
 
 
     /**
      * This method returns a child node. The children are numbered from zero, left to right.
      *
-     * @param index
-     *            the child index. Must be nonnegative and less than
-     *            {@link #jjtGetNumChildren}.
+     * @param index the child index. Must be nonnegative and less than
+     *              {@link #jjtGetNumChildren}.
      *
      * @deprecated Use {@link #getChild(int)}
      */
     @Deprecated
-    Node jjtGetChild(int index);
+    default Node jjtGetChild(int index) {
+        return getChild(index);
+    }
 
 
     /**
@@ -151,21 +170,28 @@ public interface Node {
      * @deprecated Use {@link #getNumChildren()}
      */
     @Deprecated
-    int jjtGetNumChildren();
+    default int jjtGetNumChildren() {
+        return getNumChildren();
+    }
 
 
     /**
      * @deprecated This is JJTree-specific and will be removed from this interface.
      */
     @Deprecated
-    int jjtGetId();
+    default int jjtGetId() {
+        throw new UnsupportedOperationException("JJTree specific");
+    }
+
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
      * node. This is usually an identifier, but you should check that using the Designer. On most nodes though, this
      * method returns {@code null}.
      */
-    String getImage();
+    default String getImage() {
+        return null;
+    }
 
 
     /**
@@ -173,20 +199,29 @@ public interface Node {
      */
     @InternalApi
     @Deprecated
-    void setImage(String image);
+    default void setImage(String image) {
+        throw new UnsupportedOperationException("setImage");
+    }
+
 
     /**
      * Returns true if this node's image is equal to the given string.
      *
      * @param image The image to check
      */
-    boolean hasImageEqualTo(String image);
+    default boolean hasImageEqualTo(String image) {
+        return getImage() != null && getImage().equals(image);
+    }
+
 
     int getBeginLine();
 
+
     int getBeginColumn();
 
+
     int getEndLine();
+
 
     // FIXME should not be inclusive
     int getEndColumn();
@@ -196,14 +231,19 @@ public interface Node {
      * @deprecated This is Java-specific and will be removed from this interface
      */
     @Deprecated
-    DataFlowNode getDataFlowNode();
+    default DataFlowNode getDataFlowNode() {
+        throw new UnsupportedOperationException("JJTree specific");
+    }
 
 
     /**
      * @deprecated This is Java-specific and will be removed from this interface
      */
     @Deprecated
-    void setDataFlowNode(DataFlowNode dataFlowNode);
+    default void setDataFlowNode(DataFlowNode dataFlowNode) {
+        throw new UnsupportedOperationException("JJTree specific");
+    }
+
 
     /**
      * Returns true if this node is considered a boundary by traversal methods. Traversal methods such as {@link
@@ -425,6 +465,7 @@ public interface Node {
      */
     void setUserData(Object userData);
 
+
     /**
      * Remove the current node from its parent.
      *
@@ -432,20 +473,24 @@ public interface Node {
      */
     @Deprecated
     @InternalApi
-    void remove();
+    default void remove() {
+        throw new UnsupportedOperationException();
+    }
+
 
     /**
      * This method tells the node to remove the child node at the given index from the node's list of children, if any;
      * if not, no changes are done.
      *
-     * @param childIndex
-     *          The index of the child to be removed
+     * @param childIndex The index of the child to be removed
      *
      * @deprecated This is internal API and will be removed from this interface with 7.0.0
      */
     @Deprecated
     @InternalApi
-    void removeChildAtIndex(int childIndex);
+    default void removeChildAtIndex(int childIndex) {
+        throw new UnsupportedOperationException();
+    }
 
 
     /**

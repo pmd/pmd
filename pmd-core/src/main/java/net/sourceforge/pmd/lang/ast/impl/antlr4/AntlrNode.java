@@ -4,72 +4,37 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * Base interface for all Antlr-based implementation of Node interface.
  * <p>
  * Initially all the methods implemented here will be no-op due to scope limitations
  */
-public interface AntlrNode extends Node {
+public interface AntlrNode extends Node, ParseTree {
+
 
     @Override
-    default void jjtOpen() {
-        throw new UnsupportedOperationException("Won't be needed on Antlr implementation");
+    AntlrNode getChild(int index);
+
+
+    @Override
+    AntlrNode getParent();
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default NodeStream<? extends AntlrNode> children() {
+        return (NodeStream<? extends AntlrNode>) Node.super.children();
     }
 
     @Override
-    default void jjtClose() {
-        throw new UnsupportedOperationException("Won't be needed on Antlr implementation");
-    }
-
-    @Override
-    default void jjtSetParent(final Node parent) {
+    default int getIndexInParent() {
+        // FIXME
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }
 
-    @Override
-    default void jjtAddChild(final Node child, final int index) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default void jjtSetChildIndex(final int index) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default int jjtGetChildIndex() {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default int jjtGetId() {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default void setImage(final String image) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default String getImage() {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default boolean hasImageEqualTo(final String image) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default void remove() {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default void removeChildAtIndex(final int childIndex) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
 }

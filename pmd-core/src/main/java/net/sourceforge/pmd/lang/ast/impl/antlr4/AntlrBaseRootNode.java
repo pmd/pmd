@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class AntlrBaseRootNode extends AntlrBaseNode implements RootNode {
+public abstract class AntlrBaseRootNode extends AntlrBaseNode implements RootNode {
 
     /**
      * Constructor required by {@link ParserRuleContext}
