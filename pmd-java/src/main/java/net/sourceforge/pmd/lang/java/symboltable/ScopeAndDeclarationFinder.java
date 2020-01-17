@@ -124,7 +124,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      *             if the scope stack is empty.
      */
     private void createClassScope(JavaNode node) {
-        Scope s = ((JavaNode) node.jjtGetParent()).getScope();
+        Scope s = ((JavaNode) node.getParent()).getScope();
         ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
         s.addDeclaration(classNameDeclaration);
 
@@ -198,11 +198,11 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTBlock node, Object data) {
         // top-level blocks for methods should have the same scope as parameters, just skip them
         // same applies to catch statements defining exceptions + the catch block, and for-blocks
-        if (node.jjtGetParent() instanceof ASTMethodDeclaration
-                || node.jjtGetParent() instanceof ASTConstructorDeclaration
-                || node.jjtGetParent() instanceof ASTLambdaExpression
-                || node.jjtGetParent() instanceof ASTCatchClause
-                || node.jjtGetParent() instanceof ASTForStatement) {
+        if (node.getParent() instanceof ASTMethodDeclaration
+                || node.getParent() instanceof ASTConstructorDeclaration
+                || node.getParent() instanceof ASTLambdaExpression
+                || node.getParent() instanceof ASTCatchClause
+                || node.getParent() instanceof ASTForStatement) {
             super.visit(node, null);
         } else {
             createLocalScope(node);

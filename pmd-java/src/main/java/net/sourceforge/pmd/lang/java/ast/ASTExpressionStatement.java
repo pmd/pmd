@@ -41,6 +41,6 @@ public final class ASTExpressionStatement extends AbstractStatement {
     /** Returns the contained expression. */
     @NonNull
     public ASTExpression getExpr() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 }

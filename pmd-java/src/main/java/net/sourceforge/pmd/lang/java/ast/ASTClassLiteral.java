@@ -41,7 +41,7 @@ public final class ASTClassLiteral extends AbstractJavaExpr implements ASTPrimar
 
 
     public boolean isVoid() {
-        return jjtGetNumChildren() == 0;
+        return getNumChildren() == 0;
     }
 
 
@@ -50,6 +50,6 @@ public final class ASTClassLiteral extends AbstractJavaExpr implements ASTPrimar
      */
     @Nullable
     public ASTType getTypeNode() {
-        return isVoid() ? null : (ASTType) jjtGetChild(0);
+        return isVoid() ? null : (ASTType) getChild(0);
     }
 }

@@ -126,7 +126,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     private Optional<String> simpleForUpdateVarName(ASTForUpdate base) {
         return NodeStream.of(base)
                          .children(ASTStatementExpressionList.class)
-                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .filter(it -> it.getNumChildren() == 1)
                          .children(ASTStatementExpression.class)
                          .children(ASTUnaryExpression.class)
                          .filter(it -> it.getOperator().isIncrement())
@@ -177,10 +177,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     private Optional<String> findIterableName(ASTExpression guardCondition, String itName) {
 
 
-        if (guardCondition.jjtGetNumChildren() > 0
-            && guardCondition.jjtGetChild(0) instanceof ASTRelationalExpression) {
+        if (guardCondition.getNumChildren() > 0
+            && guardCondition.getChild(0) instanceof ASTRelationalExpression) {
 
-            ASTRelationalExpression relationalExpression = (ASTRelationalExpression) guardCondition.jjtGetChild(0);
+            ASTRelationalExpression relationalExpression = (ASTRelationalExpression) guardCondition.getChild(0);
 
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
@@ -204,7 +204,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                      //                      .filterMatching(Node::getImage, "<=")
                                      //                      .children(ASTAdditiveExpression.class)
                                      //                      .filter(expr ->
-                                     //                           expr.jjtGetNumChildren() == 2
+                                     //                           expr.getNumChildren() == 2
                                      //                               && expr.getOperator().equals("-")
                                      //                               && expr.children(ASTPrimaryExpression.class)
                                      //                                      .children(ASTPrimaryPrefix.class)
@@ -280,7 +280,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             return suffix.descendants(ASTExpression.class)
                          .children(ASTPrimaryExpression.class)
-                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .filter(it -> it.getNumChildren() == 1)
                          .children(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
                          .filterMatching(Node::getImage, occ.getImage())
@@ -292,8 +292,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .filterMatching(Node::getImage, arrayName)
                          .nonEmpty()
 
-                && suffix.jjtGetParent()
-                         .jjtGetParent()
+                && suffix.getParent()
+                         .getParent()
                          .children(ASTAssignmentOperator.class)
                          .isEmpty();
         }
@@ -335,16 +335,16 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                 return false;
             }
 
-            Node prefix = suffix.jjtGetParent().jjtGetChild(0);
+            Node prefix = suffix.getParent().getChild(0);
 
-            if (!(prefix instanceof ASTPrimaryPrefix) || prefix.jjtGetNumChildren() != 1
-                || !(prefix.jjtGetChild(0) instanceof ASTName)) {
+            if (!(prefix instanceof ASTPrimaryPrefix) || prefix.getNumChildren() != 1
+                || !(prefix.getChild(0) instanceof ASTName)) {
                 // it's either not a primary prefix, doesn't have children (can happen with this./super.)
                 // or first child is not a name
                 return false;
             }
 
-            String callImage = prefix.jjtGetChild(0).getImage();
+            String callImage = prefix.getChild(0).getImage();
 
             return (listName + ".get").equals(callImage);
 

@@ -71,7 +71,7 @@ public final class ASTForStatement extends AbstractStatement {
 
     /** Returns the statement that represents the body of this loop. */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTStatement) getChild(getNumChildren() - 1);
     }
 
 }

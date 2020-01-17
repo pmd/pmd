@@ -131,16 +131,16 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     public Object visit(ASTSwitchStatement node, Object data) {
         Entry entry = entryStack.peek();
 
-        int childCount = node.jjtGetNumChildren();
+        int childCount = node.getNumChildren();
         int lastIndex = childCount - 1;
         for (int n = 0; n < lastIndex; n++) {
-            Node childNode = node.jjtGetChild(n);
+            Node childNode = node.getChild(n);
             if (childNode instanceof ASTSwitchLabel) {
                 // default is generally not considered a decision (same as
                 // "else")
                 ASTSwitchLabel sl = (ASTSwitchLabel) childNode;
                 if (!sl.isDefault()) {
-                    childNode = node.jjtGetChild(n + 1);
+                    childNode = node.getChild(n + 1);
                     if (childNode instanceof ASTBlockStatement) {
                         entry.bumpDecisionPoints();
                     }
@@ -199,8 +199,8 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;

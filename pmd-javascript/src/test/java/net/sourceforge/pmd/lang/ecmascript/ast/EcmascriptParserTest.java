@@ -131,9 +131,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
     public void testCaseAsIdentifier() {
         ASTAstRoot rootNode = js.parse("function f(a){\n" + "    a.case.flag = 1;\n" + "    return;\n" + "}");
         ASTBlock block = rootNode.getFirstDescendantOfType(ASTBlock.class);
-        assertFalse(block.jjtGetChild(0) instanceof ASTEmptyExpression);
-        assertTrue(block.jjtGetChild(0) instanceof ASTExpressionStatement);
-        assertTrue(block.jjtGetChild(0).jjtGetChild(0) instanceof ASTAssignment);
+        assertFalse(block.getChild(0) instanceof ASTEmptyExpression);
+        assertTrue(block.getChild(0) instanceof ASTExpressionStatement);
+        assertTrue(block.getChild(0).getChild(0) instanceof ASTAssignment);
     }
 
     /**

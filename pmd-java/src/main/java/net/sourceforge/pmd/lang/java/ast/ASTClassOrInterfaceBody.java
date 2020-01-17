@@ -37,10 +37,10 @@ public final class ASTClassOrInterfaceBody extends AbstractJavaNode implements A
 
 
     public boolean isAnonymousInnerClass() {
-        return jjtGetParent() instanceof ASTAllocationExpression;
+        return getParent() instanceof ASTAllocationExpression;
     }
 
     public boolean isEnumChild() {
-        return jjtGetParent() instanceof ASTEnumConstant;
+        return getParent() instanceof ASTEnumConstant;
     }
 }

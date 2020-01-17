@@ -45,7 +45,7 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
     }
 
     public ASTFormalParameters getFormalParameters() {
-        return (ASTFormalParameters) jjtGetChild(0);
+        return (ASTFormalParameters) getChild(0);
     }
 
     /**

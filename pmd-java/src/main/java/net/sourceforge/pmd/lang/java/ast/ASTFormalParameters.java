@@ -43,7 +43,7 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
      * This excludes the receiver parameter, if any.
      */
     public int getParameterCount() {
-        return getFirstChild() instanceof ASTReceiverParameter ? jjtGetNumChildren() - 1 : jjtGetNumChildren();
+        return getFirstChild() instanceof ASTReceiverParameter ? getNumChildren() - 1 : getNumChildren();
     }
 
     @Override

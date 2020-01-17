@@ -16,6 +16,10 @@ public class DummyNode extends AbstractNode {
         this(id, false);
     }
 
+    public DummyNode() {
+        this(0, false);
+    }
+
     public DummyNode(int id, boolean findBoundary) {
         this(id, findBoundary, "dummyNode");
     }

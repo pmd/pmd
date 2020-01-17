@@ -59,7 +59,7 @@ public final class ASTForeachStatement extends AbstractStatement {
      * loop.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTStatement) getChild(getNumChildren() - 1);
     }
 
 }

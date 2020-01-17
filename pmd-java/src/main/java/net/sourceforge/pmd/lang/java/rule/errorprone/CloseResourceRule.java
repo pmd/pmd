@@ -158,7 +158,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         // find all variable references to Connection objects
         for (ASTVariableDeclarator var : vars) {
             // get the type of the local var declaration
-            TypeNode type = ((ASTLocalVariableDeclaration) var.jjtGetParent()).getTypeNode();
+            TypeNode type = ((ASTLocalVariableDeclaration) var.getParent()).getTypeNode();
 
             if (type != null && isResourceTypeOrSubtype(type)) {
                 if (var.hasInitializer()) {
@@ -187,7 +187,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         // if there are closables, ensure each is closed.
         for (Map.Entry<ASTVariableDeclaratorId, TypeNode> entry : ids.entrySet()) {
             ASTVariableDeclaratorId variableId = entry.getKey();
-            ensureClosed((ASTLocalVariableDeclaration) variableId.jjtGetParent().jjtGetParent(), variableId,
+            ensureClosed((ASTLocalVariableDeclaration) variableId.getParent().getParent(), variableId,
                     entry.getValue(), data);
         }
     }
@@ -255,9 +255,9 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private boolean isMethodCall(ASTExpression expression) {
         return expression != null
-             && expression.jjtGetNumChildren() > 0
-             && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
-             && expression.jjtGetChild(0).getFirstChildOfType(ASTPrimarySuffix.class) != null;
+             && expression.getNumChildren() > 0
+             && expression.getChild(0) instanceof ASTPrimaryExpression
+             && expression.getChild(0).getFirstChildOfType(ASTPrimarySuffix.class) != null;
     }
 
     private boolean isResourceTypeOrSubtype(TypeNode refType) {
@@ -267,11 +267,11 @@ public class CloseResourceRule extends AbstractJavaRule {
                     return true;
                 }
             }
-        } else if (refType.jjtGetNumChildren() > 0 && refType.jjtGetChild(0) instanceof ASTReferenceType) {
+        } else if (refType.getNumChildren() > 0 && refType.getChild(0) instanceof ASTReferenceType) {
             // no type information (probably missing auxclasspath) - use simple types
-            ASTReferenceType ref = (ASTReferenceType) refType.jjtGetChild(0);
-            if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
+            ASTReferenceType ref = (ASTReferenceType) refType.getChild(0);
+            if (ref.getChild(0) instanceof ASTClassOrInterfaceType) {
+                ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.getChild(0);
                 if (simpleTypes.contains(toSimpleType(clazz.getImage())) && !clazz.isReferenceToClassSameCompilationUnit()
                         || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
                     return true;
@@ -316,7 +316,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         Node n = var;
 
         while (!(n instanceof ASTBlock) && !(n instanceof ASTConstructorDeclaration)) {
-            n = n.jjtGetParent();
+            n = n.getParent();
         }
 
         Node top = n;
@@ -338,9 +338,9 @@ public class CloseResourceRule extends AbstractJavaRule {
             ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
             // no need to check for critical statements, if
             // the variable has been initialized with null
-            if (!hasNullInitializer(var) && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
+            if (!hasNullInitializer(var) && parentBlock.getParent() == tryBlock.getParent()) {
 
-                List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
+                List<ASTBlockStatement> blocks = parentBlock.getParent().findChildrenOfType(ASTBlockStatement.class);
                 int parentBlockIndex = blocks.indexOf(parentBlock);
                 int tryBlockIndex = blocks.indexOf(tryBlock);
                 boolean criticalStatements = false;

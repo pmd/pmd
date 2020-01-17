@@ -325,10 +325,10 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
             List<ASTElExpression> els = content.findChildrenOfType(ASTElExpression.class);
             assertEquals("Two EL expressions expected!", 2, els.size());
 
-            ASTElExpression node = (ASTElExpression) content.jjtGetChild(0);
+            ASTElExpression node = (ASTElExpression) content.getChild(0);
             ASTIdentifier id = node.getFirstDescendantOfType(ASTIdentifier.class);
             assertEquals("Correct content expected!", "expr1", id.getImage());
-            node = (ASTElExpression) content.jjtGetChild(1);
+            node = (ASTElExpression) content.getChild(1);
             id = node.getFirstDescendantOfType(ASTIdentifier.class);
             assertEquals("Correct content expected!", "expr2", id.getImage());
         }

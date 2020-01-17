@@ -7,13 +7,13 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
+abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
@@ -53,26 +53,15 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     @Override
     public void jjtClose() {
+        super.jjtClose();
         if (this instanceof LeftRecursiveNode) {
             enlargeLeft();
         }
     }
 
-
-    @Override
-    public JavaNode jjtGetParent() {
-        return (JavaNode) super.jjtGetParent();
-    }
-
-    @Override
-    public JavaNode jjtGetChild(int index) {
-        return (JavaNode) super.jjtGetChild(index);
-    }
-
-
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -82,7 +71,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     @Override
     public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -101,7 +90,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     @Override
     public Scope getScope() {
         if (scope == null) {
-            return jjtGetParent().getScope();
+            return getParent().getScope();
         }
         return scope;
     }
@@ -134,7 +123,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {
-            root = jjtGetParent().getRoot();
+            root = getParent().getRoot();
         }
         return root;
     }
@@ -154,12 +143,12 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
      */
     void flatten(int idx) {
 
-        AbstractJavaNode child = (AbstractJavaNode) jjtGetChild(idx);
+        AbstractJavaNode child = (AbstractJavaNode) getChild(idx);
         children = ArrayUtils.remove(children, idx);
         child.jjtSetParent(null);
         child.jjtSetChildIndex(-1);
 
-        if (child.jjtGetNumChildren() > 0) {
+        if (child.getNumChildren() > 0) {
             children = ArrayUtils.insert(idx, children, child.children);
         }
         updateChildrenIndices(idx);
@@ -209,8 +198,8 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     private void enlargeLeft() {
-        if (jjtGetNumChildren() > 0) {
-            enlargeLeft((AbstractJavaNode) jjtGetChild(0));
+        if (getNumChildren() > 0) {
+            enlargeLeft((AbstractJavaNode) getChild(0));
         }
     }
 
@@ -233,14 +222,14 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     /**
-     * Updates the {@link #jjtGetChildIndex()} of the children with their
+     * Updates the {@link #getIndexInParent()} of the children with their
      * real position, starting at [startIndex].
      */
     private void updateChildrenIndices(int startIndex) {
         if (startIndex < 0) {
             startIndex = 0;
         }
-        for (int j = startIndex; j < jjtGetNumChildren(); j++) {
+        for (int j = startIndex; j < getNumChildren(); j++) {
             children[j].jjtSetChildIndex(j); // shift the children to the right
             children[j].jjtSetParent(this);
         }

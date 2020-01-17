@@ -158,7 +158,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
      */
     @Nullable
     public ASTDefaultValue getDefaultClause() {
-        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTDefaultValue.class);
+        return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTDefaultValue.class);
     }
 
     /**

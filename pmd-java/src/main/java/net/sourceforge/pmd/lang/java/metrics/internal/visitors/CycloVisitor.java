@@ -67,8 +67,8 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
 
             if (considerBooleanPaths) {
                 ((MutableInt) data).increment();
-            } else if (node.jjtGetNumChildren() > 1 + branch.jjtGetChildIndex()
-                && node.jjtGetChild(branch.jjtGetChildIndex() + 1) instanceof ASTBlockStatement) {
+            } else if (node.getNumChildren() > 1 + branch.getIndexInParent()
+                && node.getChild(branch.getIndexInParent() + 1) instanceof ASTBlockStatement) {
                 // an empty label is only counted if we count boolean paths
                 ((MutableInt) data).increment();
             }

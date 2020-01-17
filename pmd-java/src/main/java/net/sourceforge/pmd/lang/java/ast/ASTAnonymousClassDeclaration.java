@@ -55,7 +55,7 @@ public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode imp
      * Returns the body of the anonymous class.
      */
     public ASTClassOrInterfaceBody getBody() {
-        return (ASTClassOrInterfaceBody) jjtGetChild(0);
+        return (ASTClassOrInterfaceBody) getChild(0);
     }
 
 

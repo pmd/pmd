@@ -29,7 +29,7 @@ public final class ASTWhileStatement extends AbstractStatement {
      * This may be any expression of type boolean.
      */
     public ASTExpression getCondition() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -38,7 +38,7 @@ public final class ASTWhileStatement extends AbstractStatement {
      * evaluates to true.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(1);
+        return (ASTStatement) getChild(1);
     }
 
 

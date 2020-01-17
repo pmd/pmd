@@ -21,11 +21,11 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
-        for (int i = 0; i < decl.jjtGetNumChildren(); i++) {
-            if (!(decl.jjtGetChild(i) instanceof ASTVariableDeclarator)) {
+        for (int i = 0; i < decl.getNumChildren(); i++) {
+            if (!(decl.getChild(i) instanceof ASTVariableDeclarator)) {
                 continue;
             }
-            ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) decl.jjtGetChild(i).jjtGetChild(0);
+            ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) decl.getChild(i).getChild(0);
             // TODO this isArray() check misses some cases
             // need to add DFAish code to determine if an array
             // is initialized locally or gotten from somewhere else

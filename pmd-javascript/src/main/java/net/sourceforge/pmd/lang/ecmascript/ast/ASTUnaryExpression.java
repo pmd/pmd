@@ -27,7 +27,7 @@ public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> 
     }
 
     public EcmascriptNode<?> getOperand() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public boolean isPrefix() {

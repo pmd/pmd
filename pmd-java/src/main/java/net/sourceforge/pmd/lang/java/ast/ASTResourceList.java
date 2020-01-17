@@ -42,8 +42,8 @@ public final class ASTResourceList extends AbstractJavaNode
     }
 
     @Override
-    public ASTResource jjtGetChild(int index) {
-        return (ASTResource) super.jjtGetChild(index);
+    public ASTResource getChild(int index) {
+        return (ASTResource) super.getChild(index);
     }
 
     void setTrailingSemi() {

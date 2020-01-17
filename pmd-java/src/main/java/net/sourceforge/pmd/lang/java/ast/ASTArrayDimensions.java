@@ -62,8 +62,8 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
     }
 
     @Override
-    public ASTArrayTypeDim jjtGetChild(int index) {
-        return (ASTArrayTypeDim) super.jjtGetChild(index);
+    public ASTArrayTypeDim getChild(int index) {
+        return (ASTArrayTypeDim) super.getChild(index);
     }
 
     /**
@@ -72,6 +72,6 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
      * is always greater than 0.
      */
     public int getSize() {
-        return jjtGetNumChildren();
+        return getNumChildren();
     }
 }

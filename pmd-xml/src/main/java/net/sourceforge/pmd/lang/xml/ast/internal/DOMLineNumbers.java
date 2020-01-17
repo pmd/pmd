@@ -70,9 +70,9 @@ class DOMLineNumbers {
         nextIndex += nodeLength;
 
         if (n.hasChildNodes()) {
-            int numChildren = wrapper.jjtGetNumChildren();
+            int numChildren = wrapper.getNumChildren();
             for (int i = 0; i < numChildren; i++) {
-                nextIndex = determineLocation((XmlNodeWrapper) wrapper.jjtGetChild(i), nextIndex);
+                nextIndex = determineLocation((XmlNodeWrapper) wrapper.getChild(i), nextIndex);
             }
         }
 

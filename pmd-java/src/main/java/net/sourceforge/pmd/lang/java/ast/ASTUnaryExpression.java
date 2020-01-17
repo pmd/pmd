@@ -47,7 +47,7 @@ public final class ASTUnaryExpression extends AbstractJavaExpr implements LeftRe
 
     /** Returns the expression nested within this expression. */
     public ASTExpression getOperand() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 

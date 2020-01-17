@@ -54,7 +54,7 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (node.jjtGetParent() instanceof ASTProperty) {
+        if (node.getParent() instanceof ASTProperty) {
             // Skip property methods, doc is required on the property itself
             return data;
         }

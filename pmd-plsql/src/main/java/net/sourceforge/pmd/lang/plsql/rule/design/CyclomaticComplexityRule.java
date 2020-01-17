@@ -292,7 +292,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
                  * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody ASTTriggerUni ASTProgramUnit
                  * ASTTypeMethod
-                 * 
+                 *
                  */
                 Entry classEntry = entryStack.peek();
                 classEntry.methodCount++;
@@ -304,8 +304,8 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;
@@ -351,8 +351,8 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;
@@ -390,8 +390,8 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             }
 
             ASTMethodDeclarator methodDeclarator = null;
-            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
-                Node childNode = node.jjtGetChild(n);
+            for (int n = 0; n < node.getNumChildren(); n++) {
+                Node childNode = node.getChild(n);
                 if (childNode instanceof ASTMethodDeclarator) {
                     methodDeclarator = (ASTMethodDeclarator) childNode;
                     break;

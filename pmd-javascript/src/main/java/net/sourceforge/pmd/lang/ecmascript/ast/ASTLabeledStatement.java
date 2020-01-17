@@ -24,10 +24,10 @@ public class ASTLabeledStatement extends AbstractEcmascriptNode<LabeledStatement
     }
 
     public ASTLabel getLabel(int index) {
-        return (ASTLabel) jjtGetChild(index);
+        return (ASTLabel) getChild(index);
     }
 
     public EcmascriptNode<?> getStatement() {
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 }

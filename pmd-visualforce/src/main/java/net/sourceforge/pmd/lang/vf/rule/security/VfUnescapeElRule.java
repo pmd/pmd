@@ -61,8 +61,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
         ASTText prevText = null;
 
         // churn thru every child just once instead of twice
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Node n = node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            Node n = node.getChild(i);
 
             if (n instanceof ASTText) {
                 prevText = (ASTText) n;
@@ -164,7 +164,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
                 final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
                 if (attrText != null) {
-                    if (0 == attrText.jjtGetChildIndex()) {
+                    if (0 == attrText.getIndexInParent()) {
                         String lowerCaseImage = attrText.getImage().toLowerCase(Locale.ROOT);
                         if (lowerCaseImage.startsWith("/") || lowerCaseImage.startsWith("http")
                                 || lowerCaseImage.startsWith("mailto")) {
@@ -244,7 +244,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             if (negation != null) {
                 return true;
             }
-            
+
             final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
             if (id != null) {
                 String lowerCaseId = id.getImage().toLowerCase(Locale.ROOT);
@@ -312,7 +312,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         final ASTExpression expression = elExpression.getFirstChildOfType(ASTExpression.class);
         if (expression != null) {
             final ASTLiteral literal = expression.getFirstChildOfType(ASTLiteral.class);
-            if (literal != null && literal.jjtGetChildIndex() == 0) {
+            if (literal != null && literal.getIndexInParent() == 0) {
                 String lowerCaseLiteral = literal.getImage().toLowerCase(Locale.ROOT);
                 if (lowerCaseLiteral.startsWith("'/") || lowerCaseLiteral.startsWith("\"/")
                         || lowerCaseLiteral.startsWith("'http")
@@ -449,8 +449,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private boolean innerContainsSafeFields(final AbstractVFNode expression) {
-        for (int i = 0; i < expression.jjtGetNumChildren(); i++) {
-            Node child = expression.jjtGetChild(i);
+        for (int i = 0; i < expression.getNumChildren(); i++) {
+            Node child = expression.getChild(i);
 
             if (child instanceof ASTIdentifier) {
                 switch (child.getImage().toLowerCase(Locale.ROOT)) {

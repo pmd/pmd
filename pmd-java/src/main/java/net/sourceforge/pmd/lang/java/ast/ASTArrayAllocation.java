@@ -46,13 +46,13 @@ public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPri
      * Returns the node representing the array type being instantiated.
      */
     public ASTArrayType getTypeNode() {
-        return (ASTArrayType) jjtGetChild(0);
+        return (ASTArrayType) getChild(0);
     }
 
     /** Returns the initializer, if present. */
     @Nullable
     public ASTArrayInitializer getArrayInitializer() {
-        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTArrayInitializer.class);
+        return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTArrayInitializer.class);
     }
 
     /**

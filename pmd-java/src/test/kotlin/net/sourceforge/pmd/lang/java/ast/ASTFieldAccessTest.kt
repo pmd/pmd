@@ -2,7 +2,6 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
-import net.sourceforge.pmd.lang.ast.test.parent
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
@@ -47,14 +46,14 @@ class ASTFieldAccessTest : ParserTestSpec({
             it::getQualifier shouldBe child<ASTAmbiguousName> {
                 it::getName shouldBe "a.b"
                 // test the parent is set correctly
-                it::parent shouldBe fieldAccess
+                it::getParent shouldBe fieldAccess
             }
         }
 
 
         "a" should matchExpr<ASTVariableAccess> {
             it::getVariableName shouldBe "a"
-            it::parent shouldNotBe null
+            it::getParent shouldNotBe null
         }
     }
 })

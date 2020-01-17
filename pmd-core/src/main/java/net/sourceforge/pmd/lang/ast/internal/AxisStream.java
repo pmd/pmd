@@ -131,8 +131,8 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public @Nullable Node last() {
             Node last = node;
-            while (last.jjtGetParent() != null) {
-                last = last.jjtGetParent();
+            while (last.getParent() != null) {
+                last = last.getParent();
             }
             return last;
         }
@@ -182,7 +182,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public boolean nonEmpty() {
-            return node.jjtGetNumChildren() > 0;
+            return node.getNumChildren() > 0;
         }
     }
 
@@ -248,7 +248,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         FilteredChildrenStream(Node root, Filtermap<Node, T> filtermap) {
-            this(root, filtermap, 0, root.jjtGetNumChildren());
+            this(root, filtermap, 0, root.getNumChildren());
         }
 
         @Override
@@ -313,7 +313,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public NodeStream<T> drop(int n) {
             AssertionUtil.requireNonNegative("n", n);
-            int newLow = min(low + n, node.jjtGetNumChildren());
+            int newLow = min(low + n, node.getNumChildren());
             int newLen = max(len - n, 0);
 
             return n == 0 ? this : StreamImpl.sliceChildren(node, filter, newLow, newLen);
@@ -340,13 +340,13 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Nullable
         @Override
         public Node first() {
-            return len > 0 ? node.jjtGetChild(low) : null;
+            return len > 0 ? node.getChild(low) : null;
         }
 
         @Nullable
         @Override
         public Node last() {
-            return len > 0 ? node.jjtGetChild(low + len - 1) : null;
+            return len > 0 ? node.getChild(low + len - 1) : null;
         }
 
         @Override

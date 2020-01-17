@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 import scala.meta.Tree;
 import scala.meta.inputs.Position;
@@ -30,6 +31,12 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
         super(0);
         node = treeNode;
         pos = node.pos();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public NodeStream<ScalaNode<?>> children() {
+        return (NodeStream<ScalaNode<?>>) super.children();
     }
 
     @Override
@@ -86,13 +93,13 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     }
 
     @Override
-    public ScalaNode<?> jjtGetChild(int index) {
-        return (ScalaNode<?>) super.jjtGetChild(index);
+    public ScalaNode<?> getChild(int index) {
+        return (ScalaNode<?>) super.getChild(index);
     }
 
     @Override
-    public ScalaNode<?> jjtGetParent() {
-        return (ScalaNode<?>) super.jjtGetParent();
+    public ScalaNode<?> getParent() {
+        return (ScalaNode<?>) super.getParent();
     }
 
     @Override

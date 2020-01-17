@@ -58,15 +58,15 @@ final class AnnotationSuppressionUtil {
         boolean result = suppresses(node, rule);
 
         if (!result && node instanceof ASTCompilationUnit) {
-            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = AnnotationSuppressionUtil.suppresses(node.jjtGetChild(i), rule);
+            for (int i = 0; !result && i < node.getNumChildren(); i++) {
+                result = AnnotationSuppressionUtil.suppresses(node.getChild(i), rule);
             }
         }
         if (!result) {
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             while (!result && parent != null) {
                 result = AnnotationSuppressionUtil.suppresses(parent, rule);
-                parent = parent.jjtGetParent();
+                parent = parent.getParent();
             }
         }
         return result;
@@ -97,7 +97,7 @@ final class AnnotationSuppressionUtil {
             return (Annotatable) node;
         } else if (node instanceof ASTTypeDeclaration) {
             // this is just necessary while we have this node in the tree, it will be removed
-            return (Annotatable) node.jjtGetChild(0);
+            return (Annotatable) node.getChild(0);
         } else {
             return null;
         }

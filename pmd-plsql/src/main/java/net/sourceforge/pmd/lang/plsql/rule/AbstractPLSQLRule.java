@@ -106,7 +106,9 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      */
     @Override
     public Object visit(PLSQLNode node, Object data) {
-        node.childrenAccept(this, data);
+        for (PLSQLNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
         return null;
     }
 

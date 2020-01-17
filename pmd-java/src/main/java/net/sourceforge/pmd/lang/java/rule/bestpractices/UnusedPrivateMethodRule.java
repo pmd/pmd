@@ -55,7 +55,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 .getMethodDeclarations();
         for (MethodNameDeclaration mnd : findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
-            if (!privateAndNotExcluded(mnd) || hasIgnoredAnnotation((Annotatable) mnd.getNode().jjtGetParent())) {
+            if (!privateAndNotExcluded(mnd) || hasIgnoredAnnotation((Annotatable) mnd.getNode().getParent())) {
                 continue;
             }
             if (occs.isEmpty()) {
@@ -103,7 +103,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             }
 
             ASTMethodDeclaration enclosingMethod = occNode.getFirstParentOfType(ASTMethodDeclaration.class);
-            if (enclosingMethod == null || !mnd.getNode().jjtGetParent().equals(enclosingMethod)) {
+            if (enclosingMethod == null || !mnd.getNode().getParent().equals(enclosingMethod)) {
                 callsFromOutsideMethod++;
             }
         }
@@ -112,7 +112,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private boolean privateAndNotExcluded(NameDeclaration mnd) {
         ASTMethodDeclarator node = (ASTMethodDeclarator) mnd.getNode();
-        return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.hasImageEqualTo("readObject")
+        return ((AccessNode) node.getParent()).isPrivate() && !node.hasImageEqualTo("readObject")
                 && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve")
                 && !node.hasImageEqualTo("writeReplace");
     }

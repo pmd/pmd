@@ -29,7 +29,7 @@ public final class ASTCastExpression extends AbstractJavaExpr implements ASTExpr
     }
 
     public ASTExpression getOperand() {
-        return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTExpression) getChild(getNumChildren() - 1);
     }
 
     @Override

@@ -28,7 +28,7 @@ public final class ASTLambdaParameterList extends AbstractJavaNode implements It
     }
 
     public int getParameterCount() {
-        return jjtGetNumChildren();
+        return getNumChildren();
     }
 
 
@@ -45,8 +45,8 @@ public final class ASTLambdaParameterList extends AbstractJavaNode implements It
 
 
     @Override
-    public ASTLambdaParameter jjtGetChild(int index) {
-        return (ASTLambdaParameter) super.jjtGetChild(index);
+    public ASTLambdaParameter getChild(int index) {
+        return (ASTLambdaParameter) super.getChild(index);
     }
 
 

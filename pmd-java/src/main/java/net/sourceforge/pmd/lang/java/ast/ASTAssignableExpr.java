@@ -36,10 +36,10 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
     @NonNull
     default AccessType getAccessType() {
 
-        Node parent = this.jjtGetParent();
+        Node parent = this.getParent();
 
         if (parent instanceof ASTUnaryExpression && !((ASTUnaryExpression) parent).getOperator().isPure()
-            || jjtGetChildIndex() == 0 && parent instanceof ASTAssignmentExpression) {
+            || getIndexInParent() == 0 && parent instanceof ASTAssignmentExpression) {
             return AccessType.WRITE;
         }
 

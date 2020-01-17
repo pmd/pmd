@@ -371,7 +371,7 @@ class JavaParser {
   private void injectTop() {
        AbstractJavaNode top = (AbstractJavaNode) jjtree.popNode();
        AbstractJavaNode prev = (AbstractJavaNode) jjtree.peekNode();
-       prev.jjtAddChild(top, prev.jjtGetNumChildren());
+       prev.jjtAddChild(top, prev.getNumChildren());
        prev.jjtSetLastToken(top.jjtGetLastToken());
   }
 

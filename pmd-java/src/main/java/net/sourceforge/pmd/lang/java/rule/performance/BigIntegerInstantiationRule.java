@@ -28,7 +28,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
-        Node type = node.jjtGetChild(0);
+        Node type = node.getChild(0);
 
         if (!(type instanceof ASTClassOrInterfaceType)) {
             return super.visit(node, data);
@@ -43,7 +43,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
             if (args.getArgumentCount() == 1) {
                 ASTLiteral literal = node.getFirstDescendantOfType(ASTLiteral.class);
                 if (literal == null
-                        || literal.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() != args) {
+                        || literal.getParent().getParent().getParent().getParent().getParent() != args) {
                     return super.visit(node, data);
                 }
 

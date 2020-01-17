@@ -353,13 +353,13 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
 
     private String findLambdaScopeNameSegment(ASTLambdaExpression node) {
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
         while (parent != null
                 && !(parent instanceof ASTFieldDeclaration)
                 && !(parent instanceof ASTEnumConstant)
                 && !(parent instanceof ASTInitializer)
                 && !(parent instanceof MethodLikeNode)) {
-            parent = parent.jjtGetParent();
+            parent = parent.getParent();
         }
 
         if (parent == null) {

@@ -77,9 +77,9 @@ public final class MethodTypeResolution {
         boxedList.add(Character.class);
 
         BOXED_PRIMITIVE_SUBTYPE_ORDER = Collections.unmodifiableList(boxedList);
-        
+
         final Map<Class<?>, Class<?>> boxingRules = new HashMap<>();
-        
+
         boxingRules.put(double.class, Double.class);
         boxingRules.put(float.class, Float.class);
         boxingRules.put(long.class, Long.class);
@@ -89,7 +89,7 @@ public final class MethodTypeResolution {
         boxingRules.put(char.class, Character.class);
         boxingRules.put(boolean.class, Boolean.class);
         boxingRules.put(void.class, Void.class);
-        
+
         PRIMITIVE_BOXING_RULES = Collections.unmodifiableMap(boxingRules);
     }
 
@@ -125,7 +125,7 @@ public final class MethodTypeResolution {
                                                            List<MethodType> methodsToSearch, ASTArgumentList argList) {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
-        final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
+        final int argCount = argList == null ? 0 : argList.getNumChildren();
 
         outter:
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
@@ -143,7 +143,7 @@ public final class MethodTypeResolution {
                     // primitive type; then the method is not applicable and there is no need to proceed with inference.
                     Class<?>[] methodParameterTypes = methodType.getMethod().getParameterTypes();
                     for (int argIndex = 0; argIndex < argCount; ++argIndex) {
-                        if (isStandAlonePrimitive((ASTExpression) argList.jjtGetChild(argIndex))) {
+                        if (isStandAlonePrimitive((ASTExpression) argList.getChild(argIndex))) {
                             if (!methodParameterTypes[argIndex].isPrimitive()) {
                                 continue outter; // this method is not applicable
                             }
@@ -153,7 +153,7 @@ public final class MethodTypeResolution {
                     }
 
                     methodType = parameterizeInvocation(context, methodType.getMethod(), argList);
-                    
+
                     // May be null if the method call is not applicable
                     if (methodType == null) {
                         continue;
@@ -167,7 +167,7 @@ public final class MethodTypeResolution {
                 // try each arguments if it's subtypeable
                 for (int argIndex = 0; argIndex < argCount; ++argIndex) {
                     if (!isSubtypeable(methodType.getParameterTypes().get(argIndex),
-                                       (ASTExpression) argList.jjtGetChild(argIndex))) {
+                                       (ASTExpression) argList.getChild(argIndex))) {
                         methodIsApplicable = false;
                         break;
                     }
@@ -187,19 +187,19 @@ public final class MethodTypeResolution {
 
 
     private static boolean isStandAlonePrimitive(ASTExpression expression) {
-        if (expression.jjtGetNumChildren() != 1) {
+        if (expression.getNumChildren() != 1) {
             return false;
         }
 
         ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
 
-        if (primaryExpression == null || primaryExpression.jjtGetNumChildren() != 1) {
+        if (primaryExpression == null || primaryExpression.getNumChildren() != 1) {
             return false;
         }
 
         ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
 
-        if (primaryPrefix == null || primaryPrefix.jjtGetNumChildren() != 1) {
+        if (primaryPrefix == null || primaryPrefix.getNumChildren() != 1) {
             return false;
         }
 
@@ -208,7 +208,7 @@ public final class MethodTypeResolution {
         // if it is not a string literal and not a null, then it is one of
         // byte, short, char, int, long, float, double, boolean
         return literal != null && !literal.isStringLiteral()
-            && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
+            && (literal.getNumChildren() == 0 || !(literal.getChild(0) instanceof ASTNullLiteral));
     }
 
     public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,
@@ -247,7 +247,7 @@ public final class MethodTypeResolution {
 
             if (typeParamIndex != -1) {
                 // TODO: we are cheating here, it should be a contraint of the form 'var -> expression' not 'var->type'
-                result.add(new Constraint(((TypeNode) argList.jjtGetChild(i)).getTypeDefinition(),
+                result.add(new Constraint(((TypeNode) argList.getChild(i)).getTypeDefinition(),
                                           variables.get(typeParamIndex), LOOSE_INVOCATION));
             }
         }
@@ -310,7 +310,7 @@ public final class MethodTypeResolution {
     public static List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList) {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
-        final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
+        final int argCount = argList == null ? 0 : argList.getNumChildren();
 
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
             MethodType methodType = methodsToSearch.get(methodIndex);
@@ -326,7 +326,7 @@ public final class MethodTypeResolution {
                 // try each arguments if it's method convertible
                 for (int argIndex = 0; argIndex < argCount; ++argIndex) {
                     if (!isMethodConvertible(methodType.getParameterTypes().get(argIndex),
-                                             (ASTExpression) argList.jjtGetChild(argIndex))) {
+                                             (ASTExpression) argList.getChild(argIndex))) {
                         methodIsApplicable = false;
                         break;
                     }
@@ -371,18 +371,18 @@ public final class MethodTypeResolution {
                     methodIsApplicable = getArity(methodType.getMethod()) == 1;
                 } else {
                     // try each arguments if it's method convertible
-                    for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                    for (int argIndex = 0; argIndex < argList.getNumChildren(); ++argIndex) {
                         JavaTypeDefinition parameterType = argIndex < methodParameters.size() - 1
                                 ? methodParameters.get(argIndex) : varargComponentType;
-    
-                        if (!isMethodConvertible(parameterType, (ASTExpression) argList.jjtGetChild(argIndex))) {
+
+                        if (!isMethodConvertible(parameterType, (ASTExpression) argList.getChild(argIndex))) {
                             methodIsApplicable = false;
                             break;
                         }
-    
+
                         // TODO: If k != n, or if k = n and An cannot be converted by method invocation conversion to
                         // Sn[], then the type which is the erasure (§4.6) of Sn is accessible at the point of invocation.
-    
+
                         // TODO: add unchecked conversion in an else if branch
                     }
                 }
@@ -744,8 +744,8 @@ public final class MethodTypeResolution {
 
         List<JavaTypeDefinition> result = new ArrayList<>();
 
-        for (int childIndex = 0; childIndex < typeArguments.jjtGetNumChildren(); ++childIndex) {
-            result.add(((TypeNode) typeArguments.jjtGetChild(childIndex)).getTypeDefinition());
+        for (int childIndex = 0; childIndex < typeArguments.getNumChildren(); ++childIndex) {
+            result.add(((TypeNode) typeArguments.getChild(childIndex)).getTypeDefinition());
         }
 
         return result;

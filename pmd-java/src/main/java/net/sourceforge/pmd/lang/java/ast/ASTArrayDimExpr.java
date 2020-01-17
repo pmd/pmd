@@ -40,7 +40,7 @@ public final class ASTArrayDimExpr extends ASTArrayTypeDim implements Annotatabl
 
 
     public ASTExpression getLengthExpression() {
-        return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTExpression) getChild(getNumChildren() - 1);
     }
 
 }

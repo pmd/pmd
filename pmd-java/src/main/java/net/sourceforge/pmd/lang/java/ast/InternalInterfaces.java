@@ -40,13 +40,13 @@ final class InternalInterfaces {
 
         /** Returns the left-hand-side operand. */
         default ASTExpression getLeftOperand() {
-            return (ASTExpression) jjtGetChild(0);
+            return (ASTExpression) getChild(0);
         }
 
 
         /** Returns the right-hand side operand. */
         default ASTExpression getRightOperand() {
-            return (ASTExpression) jjtGetChild(1);
+            return (ASTExpression) getChild(1);
         }
 
 
@@ -82,8 +82,8 @@ final class InternalInterfaces {
         @Override
         @NonNull
         default JavaNode getFirstChild() {
-            assert jjtGetNumChildren() > 0;
-            return jjtGetChild(0);
+            assert getNumChildren() > 0;
+            return getChild(0);
         }
 
 
@@ -91,8 +91,8 @@ final class InternalInterfaces {
         @Override
         @NonNull
         default JavaNode getLastChild() {
-            assert jjtGetNumChildren() > 0;
-            return jjtGetChild(jjtGetNumChildren() - 1);
+            assert getNumChildren() > 0;
+            return getChild(getNumChildren() - 1);
         }
     }
 
@@ -103,15 +103,15 @@ final class InternalInterfaces {
     interface AtLeastOneChildOfType<T extends JavaNode> extends JavaNode {
 
         @Override
-        T jjtGetChild(int index);
+        T getChild(int index);
 
 
         /** Returns the first child of this node, never null. */
         @Override
         @NonNull
         default T getFirstChild() {
-            assert jjtGetNumChildren() > 0;
-            return jjtGetChild(0);
+            assert getNumChildren() > 0;
+            return getChild(0);
         }
 
 
@@ -119,8 +119,8 @@ final class InternalInterfaces {
         @Override
         @NonNull
         default T getLastChild() {
-            assert jjtGetNumChildren() > 0;
-            return jjtGetChild(jjtGetNumChildren() - 1);
+            assert getNumChildren() > 0;
+            return getChild(getNumChildren() - 1);
         }
     }
 

@@ -39,13 +39,13 @@ public final class ASTSynchronizedStatement extends AbstractStatement {
      * Returns the expression evaluating to the lock object.
      */
     public ASTExpression getLockExpression() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
     /**
      * Returns the body of the statement.
      */
     public ASTBlock getBody() {
-        return (ASTBlock) jjtGetChild(1);
+        return (ASTBlock) getChild(1);
     }
 }

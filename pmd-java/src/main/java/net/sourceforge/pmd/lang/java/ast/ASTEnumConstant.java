@@ -78,7 +78,7 @@ public final class ASTEnumConstant extends AbstractJavaNode
      * there is none.
      */
     public ASTAnonymousClassDeclaration getAnonymousClass() {
-        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTAnonymousClassDeclaration.class);
+        return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTAnonymousClassDeclaration.class);
     }
 
 }

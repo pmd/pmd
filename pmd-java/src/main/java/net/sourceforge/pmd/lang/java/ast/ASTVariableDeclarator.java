@@ -60,7 +60,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode implements Inter
     @Override
     @NonNull
     public ASTVariableDeclaratorId getVarId() {
-        return (ASTVariableDeclaratorId) jjtGetChild(0);
+        return (ASTVariableDeclaratorId) getChild(0);
     }
 
 

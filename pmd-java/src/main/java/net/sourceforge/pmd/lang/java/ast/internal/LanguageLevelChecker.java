@@ -115,7 +115,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTBreakStatement node, T data) {
-            if (node.jjtGetNumChildren() > 0) {
+            if (node.getNumChildren() > 0) {
                 check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS, data);
             }
             visitChildren(node, data);
@@ -164,7 +164,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTAnnotation node, T data) {
-            if (node.jjtGetParent() instanceof ASTType) {
+            if (node.getParent() instanceof ASTType) {
                 check(node, RegularLanguageFeature.TYPE_ANNOTATIONS, data);
             } else {
                 check(node, RegularLanguageFeature.ANNOTATIONS, data);
@@ -246,7 +246,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTIntersectionType node, T data) {
-            if (node.jjtGetParent() instanceof ASTCastExpression) {
+            if (node.getParent() instanceof ASTCastExpression) {
                 check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
             }
             visitChildren(node, data);
@@ -296,8 +296,8 @@ public class LanguageLevelChecker<T> {
         }
 
         private void visitChildren(JavaNode node, T data) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                node.jjtGetChild(i).jjtAccept(visitor, data);
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                node.getChild(i).jjtAccept(visitor, data);
             }
         }
 

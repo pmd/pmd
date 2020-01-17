@@ -42,7 +42,7 @@ public final class ASTSingleMemberAnnotation extends AbstractJavaTypeNode implem
      * set by this annotation.
      */
     public ASTMemberValue getMemberValue() {
-        return (ASTMemberValue) jjtGetChild(0);
+        return (ASTMemberValue) getChild(0);
     }
 
 }

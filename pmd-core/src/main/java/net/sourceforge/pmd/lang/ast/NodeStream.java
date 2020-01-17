@@ -367,7 +367,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns a node stream containing all the (first-degree) parents of the nodes
      * contained in this stream.
      *
-     * <p>This is equivalent to {@code map(Node::jjtGetParent)}.
+     * <p>This is equivalent to {@code map(Node::getParent)}.
      *
      * @return A stream of parents
      *
@@ -375,7 +375,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #ancestorsOrSelf()
      */
     default NodeStream<Node> parents() {
-        return map(Node::jjtGetParent);
+        return map(t -> t.getParent());
     }
 
 

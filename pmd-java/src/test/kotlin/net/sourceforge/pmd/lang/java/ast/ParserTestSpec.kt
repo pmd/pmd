@@ -157,7 +157,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
 
                 fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
                     val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
-                    val idx = node.jjtGetChildIndex()
+                    val idx = node.indexInParent
                     node.parent kotlintestShould matchNode<Node> {
                         if (idx > 0) {
                             unspecifiedChildren(idx)

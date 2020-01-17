@@ -38,8 +38,8 @@ public final class ASTThrowsList extends AbstractJavaNode implements Iterable<AS
 
 
     @Override
-    public ASTClassOrInterfaceType jjtGetChild(int index) {
-        return (ASTClassOrInterfaceType) super.jjtGetChild(index);
+    public ASTClassOrInterfaceType getChild(int index) {
+        return (ASTClassOrInterfaceType) super.getChild(index);
     }
 
     @Override

@@ -33,8 +33,8 @@ public class AvoidMultipleUnaryOperatorsRule extends AbstractJavaRule {
 
     private void checkUnaryDescendent(Node node, Object data) {
         boolean match = false;
-        if (node.jjtGetNumChildren() == 1) {
-            Node child = node.jjtGetChild(0);
+        if (node.getNumChildren() == 1) {
+            Node child = node.getChild(0);
             if (child instanceof ASTUnaryExpression || child instanceof ASTUnaryExpressionNotPlusMinus) {
                 match = true;
             } else if (child instanceof ASTPrimaryExpression) {
@@ -42,12 +42,12 @@ public class AvoidMultipleUnaryOperatorsRule extends AbstractJavaRule {
                 // Skip down PrimaryExpression/PrimaryPrefix/Expression chains
                 // created by parentheses
                 while (true) {
-                    if (primaryExpression.jjtGetNumChildren() == 1
-                            && primaryExpression.jjtGetChild(0) instanceof ASTPrimaryPrefix
-                            && primaryExpression.jjtGetChild(0).jjtGetNumChildren() == 1
-                            && primaryExpression.jjtGetChild(0).jjtGetChild(0) instanceof ASTExpression
-                            && primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 1) {
-                        Node candidate = primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+                    if (primaryExpression.getNumChildren() == 1
+                            && primaryExpression.getChild(0) instanceof ASTPrimaryPrefix
+                            && primaryExpression.getChild(0).getNumChildren() == 1
+                            && primaryExpression.getChild(0).getChild(0) instanceof ASTExpression
+                            && primaryExpression.getChild(0).getChild(0).getNumChildren() == 1) {
+                        Node candidate = primaryExpression.getChild(0).getChild(0).getChild(0);
                         if (candidate instanceof ASTUnaryExpression
                                 || candidate instanceof ASTUnaryExpressionNotPlusMinus) {
                             match = true;

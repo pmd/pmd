@@ -54,10 +54,10 @@ public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory 
         boolean result = suppresses(node, rule);
 
         if (!result) {
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             while (!result && parent != null) {
                 result = suppresses(parent, rule);
-                parent = parent.jjtGetParent();
+                parent = parent.getParent();
             }
         }
 
