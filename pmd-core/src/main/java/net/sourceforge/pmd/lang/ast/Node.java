@@ -31,14 +31,14 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
  * method return an instance of this sub-interface. For example,
  * no JSP node should have a Java node as its child. Embedding nodes from
  * different languages will not be done via these methods, and conforming
- * implementations should ensure, that every node returned by these methods
+ * implementations should ensure that every node returned by these methods
  * are indeed of the same type. Possibly, a type parameter will be added to
  * the Node interface in 7.0.0 to enforce it at compile-time.
  *
  * <p>A number of methods are deprecated and will be removed in 7.0.0.
  * Most of them are implementation details that clutter this API and
  * make implementation more difficult. Some methods prefixed with {@code jjt}
- * have a more conventional counterpart (e.g. {@link #getParent()} and
+ * have a more conventional counterpart (e.g. {@link #jjtGetParent()} and
  * {@link #getParent()}) that should be preferred.
  */
 public interface Node {
