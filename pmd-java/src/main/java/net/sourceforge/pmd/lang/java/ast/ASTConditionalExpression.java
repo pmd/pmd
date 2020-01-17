@@ -39,7 +39,7 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
      * if the guard evaluates to true.
      */
     public ASTExpression getThenBranch() {
-        return (ASTExpression) jjtGetChild(1);
+        return (ASTExpression) getChild(1);
     }
 
 

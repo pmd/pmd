@@ -145,7 +145,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
 
     public boolean isAnonymousClass() {
-        return jjtGetParent().getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
+        return getParent().getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
     }
 
 }

@@ -75,24 +75,24 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     public boolean isOnRightHandSide() {
-        Node node = location.jjtGetParent().jjtGetParent().jjtGetParent();
-        return node instanceof ASTExpression && node.jjtGetNumChildren() == 3;
+        Node node = location.getParent().getParent().getParent();
+        return node instanceof ASTExpression && node.getNumChildren() == 3;
     }
 
     public boolean isOnLeftHandSide() {
         // I detest this method with every atom of my being
         Node primaryExpression;
-        if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = location.jjtGetParent().jjtGetParent();
-        } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = location.jjtGetParent().jjtGetParent().jjtGetParent();
-        } else if (location.jjtGetParent() instanceof ASTResource) {
+        if (location.getParent() instanceof ASTPrimaryExpression) {
+            primaryExpression = location.getParent().getParent();
+        } else if (location.getParent().getParent() instanceof ASTPrimaryExpression) {
+            primaryExpression = location.getParent().getParent().getParent();
+        } else if (location.getParent() instanceof ASTResource) {
             return false;
         } else {
             throw new RuntimeException(
                     "Found a NameOccurrence (" + location + ") that didn't have an ASTPrimary Expression"
                             + " as parent or grandparent nor is a concise resource.  Parent = "
-                            + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent()
+                            + location.getParent() + " and grandparent = " + location.getParent().getParent()
                             + " (location line " + location.getBeginLine() + " col " + location.getBeginColumn() + ")");
         }
 
@@ -100,11 +100,11 @@ public class JavaNameOccurrence implements NameOccurrence {
             return true;
         }
 
-        if (primaryExpression.jjtGetNumChildren() <= 1) {
+        if (primaryExpression.getNumChildren() <= 1) {
             return false;
         }
 
-        if (!(primaryExpression.jjtGetChild(1) instanceof ASTAssignmentOperator)) {
+        if (!(primaryExpression.getChild(1) instanceof ASTAssignmentOperator)) {
             return false;
         }
 
@@ -116,7 +116,7 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     private boolean isCompoundAssignment(Node primaryExpression) {
-        return ((ASTAssignmentOperator) primaryExpression.jjtGetChild(1)).isCompound();
+        return ((ASTAssignmentOperator) primaryExpression.getChild(1)).isCompound();
     }
 
     private boolean isStandAlonePostfix(Node primaryExpression) {
@@ -128,12 +128,12 @@ public class JavaNameOccurrence implements NameOccurrence {
 
         if (unaryExpr.getOperator().isPure()
             || unaryExpr.getOperator().isPrefix()
-            || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
+            || !(primaryExpression.getParent() instanceof ASTStatementExpression)) {
             return false;
         }
 
-        ASTPrimaryPrefix pf = (ASTPrimaryPrefix) ((ASTPrimaryExpression) primaryExpression.jjtGetChild(0))
-            .jjtGetChild(0);
+        ASTPrimaryPrefix pf = (ASTPrimaryPrefix) ((ASTPrimaryExpression) primaryExpression.getChild(0))
+            .getChild(0);
         if (pf.usesThisModifier()) {
             return true;
         }
@@ -142,7 +142,7 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     private boolean thirdChildHasDottedName(Node primaryExpression) {
-        Node thirdChild = primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        Node thirdChild = primaryExpression.getChild(0).getChild(0).getChild(0);
         return thirdChild instanceof ASTName && ((ASTName) thirdChild).getImage().indexOf('.') == -1;
     }
 
@@ -156,9 +156,9 @@ public class JavaNameOccurrence implements NameOccurrence {
     public boolean isSelfAssignment() {
         Node l = location;
         while (true) {
-            Node p = l.jjtGetParent();
-            Node gp = p.jjtGetParent();
-            Node node = gp.jjtGetParent();
+            Node p = l.getParent();
+            Node gp = p.getParent();
+            Node node = gp.getParent();
             if (node instanceof ASTUnaryExpression && !((ASTUnaryExpression) node).getOperator().isPure()) {
                 return true;
             }
@@ -172,10 +172,10 @@ public class JavaNameOccurrence implements NameOccurrence {
             }
 
             // deal with extra parenthesis: "(i)++"
-            if (p instanceof ASTPrimaryPrefix && p.jjtGetNumChildren() == 1 && gp instanceof ASTPrimaryExpression
-                    && gp.jjtGetNumChildren() == 1 && node instanceof ASTExpression && node.jjtGetNumChildren() == 1
-                    && node.jjtGetParent() instanceof ASTPrimaryPrefix
-                    && node.jjtGetParent().jjtGetNumChildren() == 1) {
+            if (p instanceof ASTPrimaryPrefix && p.getNumChildren() == 1 && gp instanceof ASTPrimaryExpression
+                    && gp.getNumChildren() == 1 && node instanceof ASTExpression && node.getNumChildren() == 1
+                    && node.getParent() instanceof ASTPrimaryPrefix
+                    && node.getParent().getNumChildren() == 1) {
                 l = node;
                 continue;
             }
@@ -187,7 +187,7 @@ public class JavaNameOccurrence implements NameOccurrence {
 
     private boolean hasAssignmentOperator(Node node) {
         if (node instanceof ASTStatementExpression || node instanceof ASTExpression) {
-            if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+            if (node.getNumChildren() >= 2 && node.getChild(1) instanceof ASTAssignmentOperator) {
                 return true;
             }
         }
@@ -209,10 +209,10 @@ public class JavaNameOccurrence implements NameOccurrence {
      * @return true, if keyword is used, false otherwise.
      */
     public boolean useThisOrSuper() {
-        Node node = location.jjtGetParent();
+        Node node = location.getParent();
         if (node instanceof ASTPrimaryExpression) {
             ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) node;
-            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primaryExpression.jjtGetChild(0);
+            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primaryExpression.getChild(0);
             if (prefix != null) {
                 return prefix.usesSuperModifier() || prefix.usesThisModifier();
             }

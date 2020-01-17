@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 /**
  * This rule finds places where StringBuffer.toString() is called just to see if
  * the string is 0 length by either using .equals("") or toString().length().
- * 
+ *
  * <pre>
  * StringBuffer sb = new StringBuffer(&quot;some string&quot;);
  * if (sb.toString().equals(&quot;&quot;)) {
@@ -78,7 +78,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
 
     /**
      * Returns true for the following violations:
-     * 
+     *
      * <pre>
      * StringBuffer sb = new StringBuffer(&quot;some string&quot;);
      * if (sb.toString().equals(&quot;&quot;)) {
@@ -94,11 +94,11 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
      */
     private boolean isViolation(ASTName decl) {
         // the (grand)parent of a violation has four children
-        Node parent = decl.jjtGetParent().jjtGetParent();
-        if (parent.jjtGetNumChildren() == 4) {
+        Node parent = decl.getParent().getParent();
+        if (parent.getNumChildren() == 4) {
             // 1. child: sb.toString where sb is a VariableNameDeclaration for a
             // StringBuffer or StringBuilder
-            if (parent.jjtGetChild(0).getFirstChildOfType(ASTName.class).getImage().endsWith(".toString")) {
+            if (parent.getChild(0).getFirstChildOfType(ASTName.class).getImage().endsWith(".toString")) {
                 // 2. child: the arguments of toString
                 // no need to check as both StringBuffer and StringBuilder only
                 // have one toString method
@@ -111,10 +111,10 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
 
     private boolean isEqualsViolation(Node parent) {
         // 3. child: equals
-        if (parent.jjtGetChild(2).hasImageEqualTo("equals")) {
+        if (parent.getChild(2).hasImageEqualTo("equals")) {
             // 4. child: the arguments of equals, there must be exactly one and
             // it must be ""
-            List<ASTArgumentList> argList = parent.jjtGetChild(3).findDescendantsOfType(ASTArgumentList.class);
+            List<ASTArgumentList> argList = parent.getChild(3).findDescendantsOfType(ASTArgumentList.class);
             if (argList.size() == 1) {
                 List<ASTLiteral> literals = argList.get(0).findDescendantsOfType(ASTLiteral.class);
                 return literals.size() == 1 && literals.get(0).hasImageEqualTo("\"\"");
@@ -125,7 +125,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
 
     private boolean isLengthViolation(Node parent) {
         // 3. child: length
-        return parent.jjtGetChild(2).hasImageEqualTo("length");
+        return parent.getChild(2).hasImageEqualTo("length");
         // 4. child: the arguments of length
         // no need to check as String has only one length method
     }

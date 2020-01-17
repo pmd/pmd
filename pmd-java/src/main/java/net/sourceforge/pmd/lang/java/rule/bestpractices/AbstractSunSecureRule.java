@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * Utility methods for the package
  *
  * Created on Jan 17, 2005
- * 
+ *
  * @author mgriffa
  */
 public abstract class AbstractSunSecureRule extends AbstractJavaRule {
@@ -64,7 +64,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      */
     protected final String getReturnedVariableName(ASTReturnStatement ret) {
         if (hasTernaryCondition(ret) && hasTernaryNullCheck(ret)) {
-            return ret.getFirstDescendantOfType(ASTConditionalExpression.class).jjtGetChild(0)
+            return ret.getFirstDescendantOfType(ASTConditionalExpression.class).getChild(0)
                     .getFirstDescendantOfType(ASTName.class).getImage();
         }
 
@@ -81,10 +81,10 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
 
     private boolean hasTernaryNullCheck(ASTReturnStatement ret) {
         ASTConditionalExpression condition = ret.getFirstDescendantOfType(ASTConditionalExpression.class);
-        return condition.jjtGetChild(0) instanceof ASTEqualityExpression
-                && condition.jjtGetChild(0).hasImageEqualTo("==")
-                && condition.jjtGetChild(0).jjtGetChild(0).hasDescendantOfType(ASTName.class)
-                && condition.jjtGetChild(0).jjtGetChild(1).hasDescendantOfType(ASTNullLiteral.class);
+        return condition.getChild(0) instanceof ASTEqualityExpression
+                && condition.getChild(0).hasImageEqualTo("==")
+                && condition.getChild(0).getChild(0).hasDescendantOfType(ASTName.class)
+                && condition.getChild(0).getChild(1).hasDescendantOfType(ASTNullLiteral.class);
     }
 
     private boolean hasTernaryCondition(ASTReturnStatement ret) {
@@ -122,7 +122,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      * of the given node.
      *
      * E.g.
-     * 
+     *
      * <pre>
      * n = Expression || StatementExpression
      *       PrimaryExpression

@@ -46,7 +46,7 @@ public class ASTYieldStatement extends AbstractStatement {
 
     /** Returns the yielded expression. */
     public ASTExpression getExpr() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 }

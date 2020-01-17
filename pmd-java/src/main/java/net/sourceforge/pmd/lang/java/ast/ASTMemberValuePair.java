@@ -36,7 +36,7 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
      * Returns the value of the member set by this pair.
      */
     public ASTMemberValue getMemberValue() {
-        return (ASTMemberValue) jjtGetChild(0);
+        return (ASTMemberValue) getChild(0);
     }
 
 

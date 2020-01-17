@@ -30,11 +30,11 @@ public class StringInstantiationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
-        if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
+        if (!(node.getChild(0) instanceof ASTClassOrInterfaceType)) {
             return data;
         }
 
-        if (!TypeHelper.isA((ASTClassOrInterfaceType) node.jjtGetChild(0), String.class)) {
+        if (!TypeHelper.isA((ASTClassOrInterfaceType) node.getChild(0), String.class)) {
             return data;
         }
 
@@ -76,7 +76,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return false;
         }
 
-        Node firstArg = arguments.getFirstChildOfType(ASTArgumentList.class).jjtGetChild(0);
+        Node firstArg = arguments.getFirstChildOfType(ASTArgumentList.class).getChild(0);
         ASTPrimaryExpression primary = firstArg.getFirstChildOfType(ASTPrimaryExpression.class);
         if (primary == null || primary.getType() != String.class) {
             return false;

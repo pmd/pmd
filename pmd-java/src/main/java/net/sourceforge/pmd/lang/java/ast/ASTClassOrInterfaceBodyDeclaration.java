@@ -32,10 +32,10 @@ public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDe
 
 
     public boolean isAnonymousInnerClass() {
-        return jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression;
+        return getParent().getParent() instanceof ASTAllocationExpression;
     }
 
     public boolean isEnumChild() {
-        return jjtGetParent().jjtGetParent() instanceof ASTEnumConstant;
+        return getParent().getParent() instanceof ASTEnumConstant;
     }
 }

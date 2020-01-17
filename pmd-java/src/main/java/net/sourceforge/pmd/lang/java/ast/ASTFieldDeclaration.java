@@ -132,8 +132,8 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessNode
         if (classOrInterfaceBody == null || classOrInterfaceBody.isAnonymousInnerClass()) {
             return false;
         }
-        if (classOrInterfaceBody.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.jjtGetParent();
+        if (classOrInterfaceBody.getParent() instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.getParent();
             return n.isInterface();
         }
         return false;

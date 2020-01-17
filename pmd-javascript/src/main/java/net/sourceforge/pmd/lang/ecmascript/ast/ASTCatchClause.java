@@ -20,7 +20,7 @@ public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
     }
 
     public ASTName getVariableName() {
-        return (ASTName) jjtGetChild(0);
+        return (ASTName) getChild(0);
     }
 
     public boolean isIf() {
@@ -28,10 +28,10 @@ public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
     }
 
     public EcmascriptNode<?> getCatchCondition() {
-        return (EcmascriptNode<?>) jjtGetChild(1);
+        return (EcmascriptNode<?>) getChild(1);
     }
 
     public ASTBlock getBlock() {
-        return (ASTBlock) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTBlock) getChild(getNumChildren() - 1);
     }
 }

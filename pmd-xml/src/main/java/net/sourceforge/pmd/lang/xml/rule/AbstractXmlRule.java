@@ -71,9 +71,9 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
     }
 
     protected void visit(XmlNode node, RuleContext ctx) {
-        final int numChildren = node.jjtGetNumChildren();
+        final int numChildren = node.getNumChildren();
         for (int i = 0; i < numChildren; i++) {
-            XmlNode child = (XmlNode) node.jjtGetChild(i);
+            XmlNode child = (XmlNode) node.getChild(i);
             visit(child, ctx);
         }
     }

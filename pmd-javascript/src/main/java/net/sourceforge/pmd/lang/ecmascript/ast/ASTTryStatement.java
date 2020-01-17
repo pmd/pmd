@@ -20,7 +20,7 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
     }
 
     public EcmascriptNode<?> getTryBlock() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     @Deprecated // use hasCatch() instead
@@ -40,7 +40,7 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
         if (index >= getNumCatchClause()) {
             return null;
         }
-        return (ASTCatchClause) jjtGetChild(index + 1);
+        return (ASTCatchClause) getChild(index + 1);
     }
 
     @Deprecated // use hasFinally() instead
@@ -56,6 +56,6 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
         if (!hasFinally()) {
             return null;
         }
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 }

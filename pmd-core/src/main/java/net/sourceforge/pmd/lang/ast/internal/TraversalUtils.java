@@ -15,6 +15,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 public final class TraversalUtils {
 
+    /*
+        Note that the methods of this class must not use node streams
+        to iterate on children, because node streams are implemented
+        using these methods.
+     */
+
     private TraversalUtils() {
 
     }
@@ -27,8 +33,8 @@ public final class TraversalUtils {
     static <T extends Node> void findDescendantsOfType(final Node node, final Filtermap<Node, T> filtermap, final List<T> results,
                                                        final boolean crossFindBoundaries) {
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            final Node child = node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            final Node child = node.getChild(i);
             final T mapped = filtermap.apply(child);
             if (mapped != null) {
                 results.add(mapped);
@@ -41,9 +47,9 @@ public final class TraversalUtils {
     }
 
     static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap) {
-        final int n = node.jjtGetNumChildren();
+        final int n = node.getNumChildren();
         for (int i = 0; i < n; i++) {
-            Node child = node.jjtGetChild(i);
+            Node child = node.getChild(i);
             final T t = filtermap.apply(child);
             if (t != null) {
                 return t;
@@ -64,14 +70,14 @@ public final class TraversalUtils {
             if (t != null) {
                 return t;
             }
-            n = n.jjtGetParent();
+            n = n.getParent();
         }
         return null;
     }
 
     static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
         for (int i = from, last = from + len; i < last; i++) {
-            Node c = node.jjtGetChild(i);
+            Node c = node.getChild(i);
             T t = filter.apply(c);
             if (t != null) {
                 return t;
@@ -82,7 +88,7 @@ public final class TraversalUtils {
 
     static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
         for (int i = from + len - 1; i >= from; i--) {
-            Node c = node.jjtGetChild(i);
+            Node c = node.getChild(i);
             T t = filter.apply(c);
             if (t != null) {
                 return t;
@@ -94,7 +100,7 @@ public final class TraversalUtils {
     static <T extends Node> List<T> findChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
         List<T> list = new ArrayList<>();
         for (int i = from, last = from + len; i < last; i++) {
-            Node c = node.jjtGetChild(i);
+            Node c = node.getChild(i);
             T t = filter.apply(c);
             if (t != null) {
                 list.add(t);
@@ -104,12 +110,12 @@ public final class TraversalUtils {
     }
 
     static <T extends Node> int countChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
-        if (filter == Filtermap.NODE_IDENTITY && from == 0 && len == node.jjtGetNumChildren()) {
-            return node.jjtGetNumChildren();
+        if (filter == Filtermap.NODE_IDENTITY && from == 0 && len == node.getNumChildren()) {
+            return node.getNumChildren();
         }
         int sum = 0;
         for (int i = from, last = from + len; i < last; i++) {
-            Node c = node.jjtGetChild(i);
+            Node c = node.getChild(i);
             T t = filter.apply(c);
             if (t != null) {
                 sum++;
@@ -121,16 +127,16 @@ public final class TraversalUtils {
 
     static Iterator<Node> childrenIterator(Node parent) {
         assert parent != null : "parent should not be null";
-        return childrenIterator(parent, 0, parent.jjtGetNumChildren());
+        return childrenIterator(parent, 0, parent.getNumChildren());
     }
 
     static Iterator<Node> childrenIterator(Node parent, final int from, final int to) {
         assert parent != null : "parent should not be null";
-        assert from >= 0 && from <= parent.jjtGetNumChildren() : "'from' should be a valid index";
-        assert to >= 0 && to <= parent.jjtGetNumChildren() : "'to' should be a valid index";
+        assert from >= 0 && from <= parent.getNumChildren() : "'from' should be a valid index";
+        assert to >= 0 && to <= parent.getNumChildren() : "'to' should be a valid index";
         assert from <= to : "'from' should be lower than 'to'";
 
-        if (parent.jjtGetNumChildren() == 0 || to == from) {
+        if (parent.getNumChildren() == 0 || to == from) {
             return Collections.emptyIterator();
         }
 
@@ -146,7 +152,7 @@ public final class TraversalUtils {
             @Override
             public @NonNull
             Node next() {
-                return parent.jjtGetChild(i++);
+                return parent.getChild(i++);
             }
         };
     }

@@ -6,13 +6,15 @@ package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 
 import java.util.List;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftBaseVisitor;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.AttributeContext;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionHeadContext;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.VariableDeclarationHeadContext;
 
-public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Void> {
+public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule {
 
     private static final String IBACTION = "@IBAction";
     private static final String IBOUTLET = "@IBOutlet";
@@ -24,31 +26,37 @@ public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Void> {
     }
 
     @Override
-    public Void visitFunctionHead(FunctionHeadContext ctx) {
-        if (ctx == null || ctx.attributes() == null) {
-            return null;
-        }
+    public SwiftBaseVisitor<Void> buildVisitor(RuleContext ruleCtx) {
+        return new SwiftBaseVisitor<Void>() {
 
-        return visitDeclarationHead(ctx, ctx.attributes().attribute(), IBACTION);
-    }
+            @Override
+            public Void visitFunctionHead(FunctionHeadContext ctx) {
+                if (ctx == null || ctx.attributes() == null) {
+                    return null;
+                }
 
-    @Override
-    public Void visitVariableDeclarationHead(final VariableDeclarationHeadContext ctx) {
-        if (ctx == null || ctx.attributes() == null) {
-            return null;
-        }
+                return visitDeclarationHead(ctx, ctx.attributes().attribute(), IBACTION);
+            }
 
-        return visitDeclarationHead(ctx, ctx.attributes().attribute(), IBOUTLET);
-    }
+            @Override
+            public Void visitVariableDeclarationHead(final VariableDeclarationHeadContext ctx) {
+                if (ctx == null || ctx.attributes() == null) {
+                    return null;
+                }
 
-    private Void visitDeclarationHead(final Node node, final List<SwiftParser.AttributeContext> attributes,
-        final String match) {
+                return visitDeclarationHead(ctx, ctx.attributes().attribute(), IBOUTLET);
+            }
 
-        final boolean violate = attributes.stream().anyMatch(atr -> match.equals(atr.getText()));
-        if (violate) {
-            addViolation(data, node);
-        }
+            private Void visitDeclarationHead(final Node node, final List<AttributeContext> attributes,
+                                              final String match) {
 
-        return null;
+                final boolean violate = attributes.stream().anyMatch(atr -> match.equals(atr.getText()));
+                if (violate) {
+                    addViolation(ruleCtx, node);
+                }
+
+                return null;
+            }
+        };
     }
 }

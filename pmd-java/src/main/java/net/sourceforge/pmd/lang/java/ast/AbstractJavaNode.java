@@ -11,9 +11,10 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
+abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
@@ -53,26 +54,15 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     @Override
     public void jjtClose() {
+        super.jjtClose();
         if (this instanceof LeftRecursiveNode) {
             enlargeLeft();
         }
     }
 
-
-    @Override
-    public JavaNode jjtGetParent() {
-        return (JavaNode) super.jjtGetParent();
-    }
-
-    @Override
-    public JavaNode jjtGetChild(int index) {
-        return (JavaNode) super.jjtGetChild(index);
-    }
-
-
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -82,7 +72,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     @Override
     public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -134,7 +124,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {
-            root = jjtGetParent().getRoot();
+            root = getParent().getRoot();
         }
         return root;
     }

@@ -20,14 +20,14 @@ public class ASTConditionalExpression extends AbstractEcmascriptNode<Conditional
     }
 
     public EcmascriptNode<?> getTestExpression() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public EcmascriptNode<?> getTrueExpression() {
-        return (EcmascriptNode<?>) jjtGetChild(1);
+        return (EcmascriptNode<?>) getChild(1);
     }
 
     public EcmascriptNode<?> getFalseExpression() {
-        return (EcmascriptNode<?>) jjtGetChild(2);
+        return (EcmascriptNode<?>) getChild(2);
     }
 }

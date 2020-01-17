@@ -178,7 +178,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     private boolean isAnnotatedOverride(ASTMethodDeclaration decl) {
-        List<ASTMarkerAnnotation> annotations = decl.jjtGetParent().findDescendantsOfType(ASTMarkerAnnotation.class);
+        List<ASTMarkerAnnotation> annotations = decl.getParent().findDescendantsOfType(ASTMarkerAnnotation.class);
         for (ASTMarkerAnnotation ann : annotations) { // TODO consider making a method to get the annotations of a method
             if (ann.getFirstChildOfType(ASTName.class).getImage().equals("Override")) {
                 return true;

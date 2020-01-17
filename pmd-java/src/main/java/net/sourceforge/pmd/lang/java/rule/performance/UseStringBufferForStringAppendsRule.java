@@ -27,7 +27,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         if (!TypeHelper.isA(node, String.class) || node.hasArrayType()) {
             return data;
         }
-        Node parent = node.jjtGetParent().jjtGetParent();
+        Node parent = node.getParent().getParent();
         if (!(parent instanceof ASTLocalVariableDeclaration)) {
             return data;
         }
@@ -59,8 +59,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                     continue;
                 }
             }
-            if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
-                ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
+            if (statement.getNumChildren() > 0 && statement.getChild(0) instanceof ASTPrimaryExpression) {
+                ASTName astName = statement.getChild(0).getFirstDescendantOfType(ASTName.class);
                 if (astName != null) {
                     if (astName.equals(name)) {
                         ASTAssignmentOperator assignmentOperator = statement

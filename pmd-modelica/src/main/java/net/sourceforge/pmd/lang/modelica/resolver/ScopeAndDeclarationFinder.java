@@ -29,7 +29,7 @@ public class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
     }
 
     private void createClassDeclaration(ASTClassDefinition node) {
-        ModelicaScope containingScope = ((ModelicaNode) node.jjtGetParent()).getMostSpecificScope();
+        ModelicaScope containingScope = node.getParent().getMostSpecificScope();
         ModelicaClassDeclaration declaration = new ModelicaClassDeclaration(node);
         ((AbstractModelicaScope) containingScope).addDeclaration(declaration);
 

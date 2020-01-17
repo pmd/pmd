@@ -219,7 +219,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractJavaRule {
         return super.visit(node,data);
     }
     private boolean hasBlockAsFirstChild(Node node) {
-        return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
+        return (node.getNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
 }
 ```

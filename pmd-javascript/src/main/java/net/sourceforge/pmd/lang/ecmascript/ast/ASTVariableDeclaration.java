@@ -24,7 +24,7 @@ public class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDecla
     }
 
     public ASTVariableInitializer getVariableInitializer(int index) {
-        return (ASTVariableInitializer) jjtGetChild(index);
+        return (ASTVariableInitializer) getChild(index);
     }
 
     public boolean isVar() {

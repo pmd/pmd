@@ -27,9 +27,9 @@ public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
         while (!stack.isEmpty()) {
             Node node = stack.pop();
             indexNode(node);
-            if (node.jjtGetNumChildren() > 0) {
-                for (int i = node.jjtGetNumChildren() - 1; i >= 0; i--) {
-                    stack.push(node.jjtGetChild(i));
+            if (node.getNumChildren() > 0) {
+                for (int i = node.getNumChildren() - 1; i >= 0; i--) {
+                    stack.push(node.getChild(i));
                 }
             }
         }

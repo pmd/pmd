@@ -44,8 +44,8 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         int npath = 1;
         PLSQLNode n;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            n = (PLSQLNode) node.getChild(i);
             npath *= (Integer) n.jjtAccept(this, data);
         }
 
@@ -92,11 +92,11 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class
-                || node.jjtGetChild(i).getClass() == ASTElsifClause.class
-                || node.jjtGetChild(i).getClass() == ASTElseClause.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i).getClass() == ASTStatement.class
+                || node.getChild(i).getClass() == ASTElsifClause.class
+                || node.getChild(i).getClass() == ASTElseClause.class) {
+                statementChildren.add(node.getChild(i));
             }
         }
 
@@ -136,9 +136,9 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i).getClass() == ASTStatement.class) {
+                statementChildren.add((PLSQLNode) node.getChild(i));
             }
         }
 
@@ -166,9 +166,9 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         int complexity = 0;
 
         List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i).getClass() == ASTStatement.class) {
+                statementChildren.add((PLSQLNode) node.getChild(i));
             }
         }
 
@@ -244,8 +244,8 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
 
         int npath = 1;
         int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.jjtAccept(this, data);
@@ -264,8 +264,8 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
 
         int npath = 0;
         int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.jjtAccept(this, data);

@@ -41,8 +41,8 @@ public final class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTyp
         List<MethodLikeNode> operations = new ArrayList<>();
 
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.jjtGetNumChildren() > 0 && decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((MethodLikeNode) decl.jjtGetChild(0));
+            if (decl.getNumChildren() > 0 && decl.getChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+                operations.add((MethodLikeNode) decl.getChild(0));
             }
         }
         return operations;

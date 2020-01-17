@@ -193,7 +193,7 @@ public class NodeStreamTest {
         assertThat(stream.count(), equalTo(8));
 
         assertThat(pathsOf(stream), contains("0", "00", "01", "010", "011", "012", "013", "1"));
-        assertThat(pathsOf(stream.filter(n -> n.jjtGetNumChildren() == 0)),
+        assertThat(pathsOf(stream.filter(n -> n.getNumChildren() == 0)),
                    contains("00", "010", "011", "012", "013", "1"));
     }
 

@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 /**
  * 1. Note all private constructors. 2. Note all instantiations from outside of
  * the class by way of the private constructor. 3. Flag instantiations.
- * 
+ *
  * <p>
  * Parameter types can not be matched because they can come as exposed members
  * of classes. In this case we have no way to know what the type is. We can make
@@ -56,7 +56,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
     @Override
     public Object visit(final ASTConstructorDeclaration node, final Object data) {
         if (node.isPrivate()) {
-            final String className = node.jjtGetParent().jjtGetParent().jjtGetParent().getImage();
+            final String className = node.getParent().getParent().getParent().getImage();
             if (!privateConstructors.containsKey(className)) {
                 privateConstructors.put(className, new ArrayList<ASTConstructorDeclaration>());
             }
@@ -67,8 +67,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTAllocationExpression node, final Object data) {
-        if (node.jjtGetChild(0) instanceof ASTClassOrInterfaceType) { // Ignore primitives
-            final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0);
+        if (node.getChild(0) instanceof ASTClassOrInterfaceType) { // Ignore primitives
+            final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.getChild(0);
             final List<ASTConstructorDeclaration> constructors = privateConstructors.get(type.getImage());
 
             if (constructors != null) {

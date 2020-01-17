@@ -26,8 +26,8 @@ public class SelectForUpdateTest extends AbstractPLSQLParserTst {
         Assert.assertNotNull(input);
         List<ASTForUpdateClause> forUpdateClauses = input.findDescendantsOfType(ASTForUpdateClause.class);
         Assert.assertEquals(2, forUpdateClauses.size());
-        Assert.assertEquals(2, forUpdateClauses.get(1).jjtGetNumChildren());
-        Assert.assertEquals("e", forUpdateClauses.get(1).jjtGetChild(0).getImage());
-        Assert.assertEquals("salary", forUpdateClauses.get(1).jjtGetChild(1).getImage());
+        Assert.assertEquals(2, forUpdateClauses.get(1).getNumChildren());
+        Assert.assertEquals("e", forUpdateClauses.get(1).getChild(0).getImage());
+        Assert.assertEquals("salary", forUpdateClauses.get(1).getChild(1).getImage());
     }
 }

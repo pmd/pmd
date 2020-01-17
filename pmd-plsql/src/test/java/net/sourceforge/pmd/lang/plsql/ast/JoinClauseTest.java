@@ -74,8 +74,8 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
 
         List<ASTSelectStatement> selects = input.findDescendantsOfType(ASTSelectStatement.class);
         Assert.assertEquals(2, selects.size());
-        Assert.assertTrue(selects.get(0).getFromClause().jjtGetChild(0) instanceof ASTJoinClause);
-        Assert.assertTrue(selects.get(1).getFromClause().jjtGetChild(0) instanceof ASTJoinClause);
+        Assert.assertTrue(selects.get(0).getFromClause().getChild(0) instanceof ASTJoinClause);
+        Assert.assertTrue(selects.get(1).getFromClause().getChild(0) instanceof ASTJoinClause);
     }
 
     @Test

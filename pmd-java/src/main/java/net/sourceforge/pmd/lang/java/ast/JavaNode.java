@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -38,7 +40,11 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
      *
      * @param visitor Visitor to dispatch
      * @param data    Visit data
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
 
@@ -68,23 +74,25 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     /** Returns the first child of this node, or null if this node has no children. */
     @Nullable
     default JavaNode getFirstChild() {
-        return jjtGetNumChildren() > 0 ? jjtGetChild(0) : null;
+        return getNumChildren() > 0 ? getChild(0) : null;
     }
 
 
     @Nullable
     default JavaNode getLastChild() {
-        return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
+        return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
     }
 
+    @Override
+    JavaNode getChild(int index);
+
 
     @Override
-    JavaNode jjtGetChild(int index);
+    JavaNode getParent();
 
 
     @Override
-    JavaNode jjtGetParent();
-
+    NodeStream<JavaNode> children();
 
     JavaccToken jjtGetFirstToken();
 

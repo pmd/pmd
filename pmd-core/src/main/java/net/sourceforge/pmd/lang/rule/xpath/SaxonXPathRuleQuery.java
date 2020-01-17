@@ -165,8 +165,8 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
      */
     private Node getRootNode(final Node node) {
         Node root = node;
-        while (root.jjtGetParent() != null) {
-            root = root.jjtGetParent();
+        while (root.getParent() != null) {
+            root = root.getParent();
         }
         return root;
     }
@@ -217,7 +217,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
 
     /**
-     * Gets the Saxon representation of the parameter, if its type corresponds 
+     * Gets the Saxon representation of the parameter, if its type corresponds
      * to an XPath 2.0 atomic datatype.
      *
      * @param value The value to convert

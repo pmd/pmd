@@ -32,7 +32,7 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
 
             List<ASTCatchClause> list = parent.findDescendantsOfType(ASTCatchClause.class);
             for (ASTCatchClause catchStmt : list) {
-                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
+                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.getChild(0);
                 ASTType type = fp.getFirstDescendantOfType(ASTType.class);
                 ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                 if (node.getFirstClassOrInterfaceTypeImage() != null

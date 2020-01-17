@@ -27,7 +27,7 @@ import scala.meta.Type;
 
 /**
  * An Adapter for the Scala Parser that implements the Visitor Pattern.
- * 
+ *
  * @param <D>
  *            The type of the data input
  * @param <R>
@@ -48,8 +48,8 @@ public class ScalaParserVisitorAdapter<D, R> implements ScalaParserVisitor<D, R>
     @Override
     public R visit(ScalaNode<?> node, D data) {
         R returnValue = zero();
-        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.jjtGetChild(i).accept(this, data));
+        for (int i = 0; i < node.getNumChildren(); ++i) {
+            returnValue = combine(returnValue, node.getChild(i).accept(this, data));
         }
         return returnValue;
     }

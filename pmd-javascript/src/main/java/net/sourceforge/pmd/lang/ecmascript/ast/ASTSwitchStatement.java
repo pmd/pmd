@@ -20,7 +20,7 @@ public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> 
     }
 
     public EcmascriptNode<?> getExpression() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public int getNumCases() {
@@ -28,6 +28,6 @@ public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> 
     }
 
     public ASTSwitchCase getSwitchCase(int index) {
-        return (ASTSwitchCase) jjtGetChild(index + 1);
+        return (ASTSwitchCase) getChild(index + 1);
     }
 }

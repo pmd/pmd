@@ -40,8 +40,8 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
     public Object visit(ASTClassOrInterfaceBody decl, Object data) {
         Object result = super.visit(decl, data);
 
-        if (decl.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.jjtGetParent();
+        if (decl.getParent() instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.getParent();
             if (parent.isAbstract() || parent.isInterface() || parent.getSuperClassTypeNode() != null) {
                 return result;
             }
@@ -50,12 +50,12 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
                 return result;
             }
 
-            int i = decl.jjtGetNumChildren();
+            int i = decl.getNumChildren();
             int methodCount = 0;
             boolean isOK = false;
             while (i > 0) {
-                Node p = decl.jjtGetChild(--i);
-                if (p.jjtGetNumChildren() == 0) {
+                Node p = decl.getChild(--i);
+                if (p.getNumChildren() == 0) {
                     continue;
                 }
                 Node n = skipAnnotations(p);
@@ -126,9 +126,9 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
 
     private Node skipAnnotations(Node p) {
         int index = 0;
-        Node n = p.jjtGetChild(index++);
-        while (n instanceof ASTAnnotation && index < p.jjtGetNumChildren()) {
-            n = p.jjtGetChild(index++);
+        Node n = p.getChild(index++);
+        while (n instanceof ASTAnnotation && index < p.getNumChildren()) {
+            n = p.getChild(index++);
         }
         return n;
     }

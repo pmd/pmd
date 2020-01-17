@@ -77,16 +77,16 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public AccessNode getAccessNodeParent() {
-        if (node.jjtGetParent() instanceof ASTFormalParameter) {
+        if (node.getParent() instanceof ASTFormalParameter) {
             return (AccessNode) node.jjtGetParent();
         } else if (node.jjtGetParent() instanceof ASTLambdaParameter) {
             return (AccessNode) node.jjtGetParent().jjtGetParent().jjtGetParent();
         } else if (node.jjtGetParent() instanceof ASTEnumConstant) {
             return (AccessNode) node.jjtGetParent().jjtGetParent().jjtGetParent();
-        } else if (node.jjtGetParent() instanceof ASTCatchParameter) {
-            return (AccessNode) node.jjtGetParent();
+        } else if (node.getParent() instanceof ASTCatchParameter) {
+            return (AccessNode) node.getParent();
         }
-        return (AccessNode) node.jjtGetParent().jjtGetParent();
+        return (AccessNode) node.getParent().getParent();
     }
 
     public ASTVariableDeclaratorId getDeclaratorId() {

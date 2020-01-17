@@ -127,7 +127,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         String loggerTag = "parent";
 
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
 
         // TODO what about throw stmts?
         if (parent instanceof ASTIfStatement) {
@@ -209,37 +209,37 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
         Structure dataFlow = (Structure) data;
 
-        if (node.jjtGetParent() instanceof ASTForStatement) {
+        if (node.getParent() instanceof ASTForStatement) {
             this.addForExpressionNode(node, dataFlow);
             dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
             tryToLog(NodeType.FOR_BEFORE_FIRST_STATEMENT, node);
-        } else if (node.jjtGetParent() instanceof ASTDoStatement) {
+        } else if (node.getParent() instanceof ASTDoStatement) {
             dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
-            dataFlow.createNewNode(node.jjtGetParent());
+            dataFlow.createNewNode(node.getParent());
             tryToLog(NodeType.DO_BEFORE_FIRST_STATEMENT, node);
         }
 
         super.visit(node, data);
 
-        if (node.jjtGetParent() instanceof ASTIfStatement) {
-            ASTIfStatement st = (ASTIfStatement) node.jjtGetParent();
+        if (node.getParent() instanceof ASTIfStatement) {
+            ASTIfStatement st = (ASTIfStatement) node.getParent();
             if (!st.hasElse()) {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
                 tryToLog(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, node);
-            } else if (st.hasElse() && !st.jjtGetChild(1).equals(node)) {
+            } else if (st.hasElse() && !st.getChild(1).equals(node)) {
                 dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
                 tryToLog(NodeType.ELSE_LAST_STATEMENT, node);
             } else {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
                 tryToLog(NodeType.IF_LAST_STATEMENT, node);
             }
-        } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
+        } else if (node.getParent() instanceof ASTWhileStatement) {
             dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
             tryToLog(NodeType.WHILE_LAST_STATEMENT, node);
-        } else if (node.jjtGetParent() instanceof ASTForStatement) {
+        } else if (node.getParent() instanceof ASTForStatement) {
             dataFlow.pushOnStack(NodeType.FOR_END, dataFlow.getLast());
             tryToLog(NodeType.FOR_END, node);
-        } else if (node.jjtGetParent() instanceof ASTLabeledStatement) {
+        } else if (node.getParent() instanceof ASTLabeledStatement) {
             dataFlow.pushOnStack(NodeType.LABEL_LAST_STATEMENT, dataFlow.getLast());
             tryToLog(NodeType.LABEL_LAST_STATEMENT, node);
         }
@@ -265,7 +265,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
         Structure dataFlow = (Structure) data;
         // super.visit(node, data);
-        if (node.jjtGetNumChildren() == 0) {
+        if (node.getNumChildren() == 0) {
             dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
             tryToLog(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, node);
         } else {
@@ -328,17 +328,17 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
      * expression node even if the loop looks like for(;;).
      */
     private void addForExpressionNode(Node node, Structure dataFlow) {
-        ASTForStatement parent = (ASTForStatement) node.jjtGetParent();
+        ASTForStatement parent = (ASTForStatement) node.getParent();
         boolean hasExpressionChild = false;
         boolean hasForInitNode = false;
         boolean hasForUpdateNode = false;
 
-        for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-            if (parent.jjtGetChild(i) instanceof ASTExpression) {
+        for (int i = 0; i < parent.getNumChildren(); i++) {
+            if (parent.getChild(i) instanceof ASTExpression) {
                 hasExpressionChild = true;
-            } else if (parent.jjtGetChild(i) instanceof ASTForUpdate) {
+            } else if (parent.getChild(i) instanceof ASTForUpdate) {
                 hasForUpdateNode = true;
-            } else if (parent.jjtGetChild(i) instanceof ASTForInit) {
+            } else if (parent.getChild(i) instanceof ASTForInit) {
                 hasForInitNode = true;
             }
         }

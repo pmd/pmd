@@ -56,21 +56,21 @@ public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.
     }
 
     public Node getTypeNameNode() {
-        if (jjtGetParent() instanceof ASTFormalParameter) {
-            return findTypeNameNode(jjtGetParent());
-        } else if (jjtGetParent().jjtGetParent() instanceof ASTVariableOrConstantDeclaration
-                || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
-            return findTypeNameNode(jjtGetParent().jjtGetParent());
+        if (getParent() instanceof ASTFormalParameter) {
+            return findTypeNameNode(getParent());
+        } else if (getParent().getParent() instanceof ASTVariableOrConstantDeclaration
+                || getParent().getParent() instanceof ASTFieldDeclaration) {
+            return findTypeNameNode(getParent().getParent());
         }
         throw new RuntimeException(
                 "Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }
 
     public ASTDatatype getTypeNode() {
-        if (jjtGetParent() instanceof ASTFormalParameter) {
-            return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
+        if (getParent() instanceof ASTFormalParameter) {
+            return ((ASTFormalParameter) getParent()).getTypeNode();
         } else {
-            Node n = jjtGetParent().jjtGetParent();
+            Node n = getParent().getParent();
             if (n instanceof ASTVariableOrConstantDeclaration || n instanceof ASTFieldDeclaration) {
                 return n.getFirstChildOfType(ASTDatatype.class);
             }
@@ -80,8 +80,8 @@ public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.
     }
 
     private Node findTypeNameNode(Node node) {
-        ASTDatatype typeNode = (ASTDatatype) node.jjtGetChild(0);
-        return typeNode.jjtGetChild(0);
+        ASTDatatype typeNode = (ASTDatatype) node.getChild(0);
+        return typeNode.getChild(0);
     }
 
 }
