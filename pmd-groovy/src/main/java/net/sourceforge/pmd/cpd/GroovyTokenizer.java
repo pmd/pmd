@@ -30,7 +30,9 @@ public class GroovyTokenizer implements Tokenizer {
             Token token = tokenStream.nextToken();
 
             while (token.getType() != Token.EOF_TYPE) {
-                TokenEntry tokenEntry = new TokenEntry(token.getText(), sourceCode.getFileName(), token.getLine());
+                String tokenText = token.getText();
+                TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(),
+                        token.getColumn(), tokenText.length());
 
                 tokenEntries.add(tokenEntry);
                 token = tokenStream.nextToken();
