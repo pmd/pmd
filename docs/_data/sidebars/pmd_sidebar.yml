@@ -367,6 +367,12 @@ entries:
         - title: Adding metrics support to a language
           url: /pmd_devdocs_major_adding_new_metrics_framework.html
           output: web, pdf
+      - title: Experimental features
+        output: web, pdf
+        subfolderitems:
+        - title: Creating (XML) dump of the AST
+          url: /pmd_devdocs_experimental_ast_dump.html
+          output: web, pdf
   - title: Project documentation
     output: web, pdf
     folderitems:

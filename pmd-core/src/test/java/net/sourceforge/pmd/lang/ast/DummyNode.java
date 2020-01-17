@@ -12,6 +12,10 @@ public class DummyNode extends AbstractNode {
         this(id, false);
     }
 
+    public DummyNode() {
+        this(0, false);
+    }
+
     public DummyNode(int id, boolean findBoundary) {
         this(id, findBoundary, "dummyNode");
     }
@@ -31,7 +35,7 @@ public class DummyNode extends AbstractNode {
     public String getXPathNodeName() {
         return xpathName;
     }
-    
+
     @Override
     public boolean isFindBoundary() {
         return findBoundary;

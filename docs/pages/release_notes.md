@@ -25,6 +25,18 @@ While the language implementation is quite complete, Modelica support is conside
 for now. This is to allow us to change the rule API (e.g. the AST classes) slightly and improve
 the implementation based on your feedback.
 
+#### Simple XML dump of AST
+
+We added a experimental feature to dump the AST of a source file into XML. The XML format
+is of course PMD specific and language dependent. That XML file can be used to execute
+(XPath) queries against without PMD. It can also be used as a textual visualization of the AST
+if you don't want to use the [Designer](https://github.com/pmd/pmd-designer).
+
+This feature is experimental and might change or even be removed in the future, if it is not
+useful. A short description how to use it is available under [Creating XML dump of the AST](pmd_devdocs_experimental_ast_dump.html).
+
+Any feedback about it, especially about your use cases, is highly appreciated.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AvoidLiteralsInIfCondition" %} (`java-errorprone`) has a new property
