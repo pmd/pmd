@@ -348,4 +348,9 @@ public class TestAccessEvaluator implements AccessEvaluator {
     public boolean useTestValueForAnonymousScriptLengthLimit() {
         return false;
     }
+
+    @Override
+    public boolean hasNamespaceGuardedAccess(Namespace namespace, String arg1) {
+        return false;
+    }
 }

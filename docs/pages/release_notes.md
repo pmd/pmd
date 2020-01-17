@@ -37,6 +37,11 @@ useful. A short description how to use it is available under [Creating XML dump 
 
 Any feedback about it, especially about your use cases, is highly appreciated.
 
+#### Updated Apex Support
+
+*   The Apex language support has been bumped to version 48 (Spring '20). All new language features are now properly
+    parsed and processed.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AvoidLiteralsInIfCondition" %} (`java-errorprone`) has a new property
