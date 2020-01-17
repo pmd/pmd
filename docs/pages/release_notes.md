@@ -76,6 +76,7 @@ Each `<file>` element in the XML format now has 3 new attributes:
 *   apex
     *   [#2208](https://github.com/pmd/pmd/issues/2208): \[apex] ASTFormalComment should implement ApexNode&lt;T&gt;
 *   core
+    *   [#1984](https://github.com/pmd/pmd/issues/1984): \[java] Cyclomatic complexity is misreported (lack of clearing metrics cache)
     *   [#2006](https://github.com/pmd/pmd/issues/2006): \[core] PMD should warn about multiple instances of the same rule in a ruleset
     *   [#2161](https://github.com/pmd/pmd/issues/2161): \[core] ResourceLoader is deprecated and marked as internal but is exposed
     *   [#2170](https://github.com/pmd/pmd/issues/2170): \[core] DocumentFile doesn't preserve newlines
