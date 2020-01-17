@@ -1373,6 +1373,13 @@ useful. A short description how to use it is available under <a href="pmd_devdoc
 
 <p>Any feedback about it, especially about your use cases, is highly appreciated.</p>
 
+<h4 id="updated-apex-support">Updated Apex Support</h4>
+
+<ul>
+  <li>The Apex language support has been bumped to version 48 (Spring ‘20). All new language features are now properly
+parsed and processed.</li>
+</ul>
+
 <h4 id="modified-rules">Modified Rules</h4>
 
 <ul>
@@ -1397,6 +1404,11 @@ the name was misleading. (File) header comments are not checked, but class comme
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2208">#2208</a>: [apex] ASTFormalComment should implement ApexNode&lt;T&gt;</li>
+    </ul>
+  </li>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2006">#2006</a>: [core] PMD should warn about multiple instances of the same rule in a ruleset</li>
@@ -1472,7 +1484,13 @@ eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sour
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/rules/RuleFactory.html#"><code class="highlighter-rouge">RuleFactory</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/rules/RuleBuilder.html#"><code class="highlighter-rouge">RuleBuilder</code></a></li>
   <li>Constructors of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleSetFactory.html#"><code class="highlighter-rouge">RuleSetFactory</code></a>, use factory methods from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#"><code class="highlighter-rouge">RulesetsFactoryUtils</code></a> instead</li>
-  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRulesetFactory(net.sourceforge.pmd.PMDConfiguration,net.sourceforge.pmd.util.ResourceLoader)"><code class="highlighter-rouge">getRulesetFactory</code></a></li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRulesetFactory(net.sourceforge.pmd.PMDConfiguration,net.sourceforge.pmd.util.ResourceLoader)"><code class="highlighter-rouge">getRulesetFactory</code></a></p>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code class="highlighter-rouge">AbstractApexNode</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code class="highlighter-rouge">AbstractApexNodeBase</code></a>, and the related <code class="highlighter-rouge">visit</code>
+methods on <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitor.html#"><code class="highlighter-rouge">ApexParserVisitor</code></a> and its implementations.
+ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code class="highlighter-rouge">ApexNode</code></a> instead, now considers comments too.</li>
 </ul>
 
 <h5 id="for-removal">For removal</h5>
