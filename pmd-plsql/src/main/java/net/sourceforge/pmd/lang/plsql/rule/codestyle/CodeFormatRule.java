@@ -48,14 +48,14 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTSelectList node, Object data) {
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
         checkEachChildOnNextLine(data, node, parent.getBeginLine(), parent.getBeginColumn() + 7);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTBulkCollectIntoClause node, Object data) {
-        Node parent = node.jjtGetParent();
+        Node parent = node.getParent();
         checkIndentation(data, node, parent.getBeginColumn() + indentation, "BULK COLLECT INTO");
         checkEachChildOnNextLine(data, node, node.getBeginLine(), parent.getBeginColumn() + 7);
         return super.visit(node, data);
@@ -63,20 +63,20 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTFromClause node, Object data) {
-        checkIndentation(data, node, node.jjtGetParent().getBeginColumn() + indentation, "FROM");
+        checkIndentation(data, node, node.getParent().getBeginColumn() + indentation, "FROM");
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTJoinClause node, Object data) {
         // first child is the table reference
-        Node tableReference = node.jjtGetChild(0);
+        Node tableReference = node.getChild(0);
 
         // remaining children are joins
         int lineNumber = tableReference.getBeginLine();
-        for (int i = 1; i < node.jjtGetNumChildren(); i++) {
+        for (int i = 1; i < node.getNumChildren(); i++) {
             lineNumber++;
-            Node child = node.jjtGetChild(i);
+            Node child = node.getChild(i);
             if (child.getBeginLine() != lineNumber) {
                 addViolationWithMessage(data, child, child.getXPathNodeName() + " should be on line " + lineNumber);
             }
@@ -107,8 +107,8 @@ public class CodeFormatRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTSubqueryOperation node, Object data) {
         // get previous sibling
-        int thisIndex = node.jjtGetChildIndex();
-        Node prevSibling = node.jjtGetParent().jjtGetChild(thisIndex - 1);
+        int thisIndex = node.getIndexInParent();
+        Node prevSibling = node.getParent().getChild(thisIndex - 1);
 
         checkIndentation(data, node, prevSibling.getBeginColumn(), node.getImage());
 
@@ -123,11 +123,11 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     private int checkEachChildOnNextLine(Object data, Node parent, int firstLine, int indentation) {
         int currentLine = firstLine;
-        for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-            Node child = parent.jjtGetChild(i);
+        for (int i = 0; i < parent.getNumChildren(); i++) {
+            Node child = parent.getChild(i);
             String image = child.getImage();
-            if (image == null && child.jjtGetNumChildren() > 0) {
-                image = child.jjtGetChild(0).getImage();
+            if (image == null && child.getNumChildren() > 0) {
+                image = child.getChild(0).getImage();
             }
             if (child.getBeginLine() != currentLine) {
                 addViolationWithMessage(data, child, image + " should be on line " + currentLine);
@@ -156,7 +156,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     @Override
     public Object visit(ASTFormalParameters node, Object data) {
-        int parameterIndentation = node.jjtGetParent().getBeginColumn() + indentation;
+        int parameterIndentation = node.getParent().getBeginColumn() + indentation;
         checkEachChildOnNextLine(data, node, node.getBeginLine() + 1, parameterIndentation);
 
         // check the data type alignment
@@ -227,9 +227,9 @@ public class CodeFormatRule extends AbstractPLSQLRule {
                 checkLineAndIndentation(data, argument, line, indentation, "Parameter " + argument.getImage());
                 line++;
 
-                if (argument.jjtGetChild(0) instanceof ASTUnqualifiedID) {
-                    if (argument.jjtGetChild(0).getEndColumn() > longestParameterEndColumn) {
-                        longestParameterEndColumn = argument.jjtGetChild(0).getEndColumn();
+                if (argument.getChild(0) instanceof ASTUnqualifiedID) {
+                    if (argument.getChild(0).getEndColumn() > longestParameterEndColumn) {
+                        longestParameterEndColumn = argument.getChild(0).getEndColumn();
                     }
                 }
             }
@@ -237,13 +237,13 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             // now check for the indentation of the expressions
             int expectedBeginColumn = longestParameterEndColumn + 3 + "=> ".length();
             // take the indentation from the first one, if it is greater
-            if (!arguments.isEmpty() && arguments.get(0).jjtGetNumChildren() == 2
-                    && arguments.get(0).jjtGetChild(1).getBeginColumn() > expectedBeginColumn) {
-                expectedBeginColumn = arguments.get(0).jjtGetChild(1).getBeginColumn();
+            if (!arguments.isEmpty() && arguments.get(0).getNumChildren() == 2
+                    && arguments.get(0).getChild(1).getBeginColumn() > expectedBeginColumn) {
+                expectedBeginColumn = arguments.get(0).getChild(1).getBeginColumn();
             }
             for (ASTArgument argument : arguments) {
-                if (argument.jjtGetNumChildren() == 2 && argument.jjtGetChild(0) instanceof ASTUnqualifiedID) {
-                    Node expr = argument.jjtGetChild(1);
+                if (argument.getNumChildren() == 2 && argument.getChild(0) instanceof ASTUnqualifiedID) {
+                    Node expr = argument.getChild(1);
                     checkIndentation(data, expr, expectedBeginColumn, expr.getImage());
                 }
             }
@@ -260,7 +260,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
     private boolean usesSimpleParameters(List<ASTArgument> arguments) {
         for (ASTArgument argument : arguments) {
-            if (argument.jjtGetNumChildren() == 1) {
+            if (argument.getNumChildren() == 1) {
                 return true;
             }
         }

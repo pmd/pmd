@@ -59,7 +59,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     /**
      * Creates a new {@link ScopeAndDeclarationFinder}.
-     * 
+     *
      * @param classLoader
      *            the class loader to use to resolve types, see
      *            {@link SourceFileScope} and {@link TypeSet}
@@ -125,7 +125,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      *             if the scope stack is empty.
      */
     private void createClassScope(JavaNode node) {
-        Scope s = ((JavaNode) node.jjtGetParent()).getScope();
+        Scope s = ((JavaNode) node.getParent()).getScope();
         ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
         s.addDeclaration(classNameDeclaration);
 
@@ -149,7 +149,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         SourceFileScope scope;
         ASTPackageDeclaration n = node.getPackageDeclaration();
         if (n != null) {
-            scope = new SourceFileScope(classLoader, n.jjtGetChild(0).getImage());
+            scope = new SourceFileScope(classLoader, n.getChild(0).getImage());
         } else {
             scope = new SourceFileScope(classLoader);
         }
@@ -203,11 +203,11 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTBlock node, Object data) {
         // top-level blocks for methods should have the same scope as parameters, just skip them
         // same applies to catch statements defining exceptions + the catch block, and for-blocks
-        if (node.jjtGetParent() instanceof ASTMethodDeclaration
-                || node.jjtGetParent() instanceof ASTConstructorDeclaration
-                || node.jjtGetParent() instanceof ASTLambdaExpression
-                || node.jjtGetParent() instanceof ASTCatchStatement
-                || node.jjtGetParent() instanceof ASTForStatement) {
+        if (node.getParent() instanceof ASTMethodDeclaration
+                || node.getParent() instanceof ASTConstructorDeclaration
+                || node.getParent() instanceof ASTLambdaExpression
+                || node.getParent() instanceof ASTCatchStatement
+                || node.getParent() instanceof ASTForStatement) {
             super.visit(node, null);
         } else {
             createLocalScope(node);

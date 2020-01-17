@@ -43,8 +43,8 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
     private int multiplyChildrenComplexities(JavaNode node, Object data) {
         int product = 1;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.getChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
             int newProduct = product * childComplexity;
@@ -65,8 +65,8 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
     private int sumChildrenComplexities(JavaNode node, Object data) {
         int sum = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.getChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
             int newSum = sum + childComplexity;
@@ -178,8 +178,8 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
         int npath = 0;
         int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            JavaNode n = (JavaNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             if (n instanceof ASTSwitchLabel) {
@@ -201,7 +201,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
         ASTExpression wrapper = new ASTExpression(Integer.MAX_VALUE);
-        wrapper.jjtAddChild(node.jjtGetChild(0), 0);
+        wrapper.jjtAddChild(node.getChild(0), 0);
         int boolCompTernary = CycloMetric.booleanExpressionComplexity(wrapper);
 
         return boolCompTernary + sumChildrenComplexities(node, data) - 1;

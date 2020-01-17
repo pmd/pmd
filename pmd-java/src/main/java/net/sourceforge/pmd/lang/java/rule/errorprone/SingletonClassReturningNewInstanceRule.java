@@ -95,7 +95,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
         ASTReturnStatement rs = rsl.get(0);
         List<ASTPrimaryExpression> pel = rs.findDescendantsOfType(ASTPrimaryExpression.class);
         ASTPrimaryExpression ape = pel.get(0);
-        Node lastChild = ape.jjtGetChild(0);
+        Node lastChild = ape.getChild(0);
         String returnVariableName = null;
         if (lastChild instanceof ASTPrimaryPrefix) {
             returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
@@ -109,8 +109,8 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
     }
 
     private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
-        if (pp.jjtGetNumChildren() == 1 && pp.jjtGetChild(0) instanceof ASTName) {
-            return ((ASTName) pp.jjtGetChild(0)).getImage();
+        if (pp.getNumChildren() == 1 && pp.getChild(0) instanceof ASTName) {
+            return ((ASTName) pp.getChild(0)).getImage();
         }
         return null;
     }

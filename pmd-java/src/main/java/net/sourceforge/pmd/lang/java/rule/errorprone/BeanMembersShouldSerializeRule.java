@@ -95,7 +95,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic() 
+            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()
                     || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
@@ -127,7 +127,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
             return true;
         }
         if (methodName.startsWith("is")) {
-            ASTResultType ret = ((ASTMethodDeclaration) meth.jjtGetParent()).getResultType();
+            ASTResultType ret = ((ASTMethodDeclaration) meth.getParent()).getResultType();
             List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
             if (!primitives.isEmpty() && primitives.get(0).isBoolean()) {
                 return true;

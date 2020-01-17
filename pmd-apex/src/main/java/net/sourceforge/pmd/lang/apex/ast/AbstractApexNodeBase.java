@@ -57,7 +57,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
         if (this.beginLine > 0) {
             return this.beginLine;
         }
-        Node parent = jjtGetParent();
+        Node parent = getParent();
         if (parent != null) {
             return parent.getBeginLine();
         }
@@ -69,7 +69,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
         if (this.beginColumn > 0) {
             return this.beginColumn;
         }
-        Node parent = jjtGetParent();
+        Node parent = getParent();
         if (parent != null) {
             return parent.getBeginColumn();
         }
@@ -81,7 +81,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
         if (this.endLine > 0) {
             return this.endLine;
         }
-        Node parent = jjtGetParent();
+        Node parent = getParent();
         if (parent != null) {
             return parent.getEndLine();
         }
@@ -93,7 +93,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
         if (this.endColumn > 0) {
             return this.endColumn;
         }
-        Node parent = jjtGetParent();
+        Node parent = getParent();
         if (parent != null) {
             return parent.getEndColumn();
         }

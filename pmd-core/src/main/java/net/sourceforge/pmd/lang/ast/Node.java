@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
  * <p>A number of methods are deprecated and will be removed in 7.0.0.
  * Most of them are implementation details that clutter this API and
  * make implementation more difficult. Some methods prefixed with {@code jjt}
- * have a more conventional counterpart (e.g. {@link #jjtGetParent()} and
+ * have a more conventional counterpart (e.g. {@link #getParent()} and
  * {@link #getParent()}) that should be preferred.
  */
 public interface Node {
@@ -98,7 +98,7 @@ public interface Node {
 
     /**
      * Sets the index of this node from the perspective of its parent. This
-     * means: this.jjtGetParent().jjtGetChild(index) == this.
+     * means: this.getParent().getChild(index) == this.
      *
      * @param index
      *            the child index
@@ -412,7 +412,7 @@ public interface Node {
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
      *
-     * <p>This method should be preferred to {@link #jjtGetParent()}.
+     * <p>This method should be preferred to {@link #getParent()}.
      *
      * @return The parent of this node
      */
@@ -435,7 +435,7 @@ public interface Node {
      * Returns the index of this node in its parent's children. If this
      * node is a {@linkplain RootNode root node}, returns -1.
      *
-     * <p>This method replaces {@link #jjtGetChildIndex()}, whose name was
+     * <p>This method replaces {@link #getIndexInParent()}, whose name was
      * JJTree-specific.
      *
      * @return The index of this node in its parent's children

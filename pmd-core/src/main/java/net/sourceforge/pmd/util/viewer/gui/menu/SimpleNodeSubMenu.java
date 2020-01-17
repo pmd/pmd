@@ -39,7 +39,7 @@ public class SimpleNodeSubMenu extends JMenu {
 
     private void init() {
         StringBuffer buf = new StringBuffer(200);
-        for (Node temp = node; temp != null; temp = temp.jjtGetParent()) {
+        for (Node temp = node; temp != null; temp = temp.getParent()) {
             buf.insert(0, "/" + temp.toString());
         }
         add(new XPathFragmentAddingItem(NLS.nls("AST.MENU.NODE.ADD_ABSOLUTE_PATH"), model, buf.toString()));

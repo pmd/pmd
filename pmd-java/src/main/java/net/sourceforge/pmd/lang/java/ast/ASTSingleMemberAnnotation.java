@@ -43,7 +43,7 @@ public class ASTSingleMemberAnnotation extends AbstractJavaTypeNode {
      * set by this annotation.
      */
     public ASTMemberValue getMemberValue() {
-        return (ASTMemberValue) jjtGetChild(1);
+        return (ASTMemberValue) getChild(1);
     }
 
 
@@ -52,12 +52,12 @@ public class ASTSingleMemberAnnotation extends AbstractJavaTypeNode {
      * eg {@code java.lang.Override} or {@code Override}.
      */
     public String getAnnotationName() {
-        return jjtGetChild(0).getImage();
+        return getChild(0).getImage();
     }
 
 
     @Override
-    public ASTAnnotation jjtGetParent() {
-        return (ASTAnnotation) super.jjtGetParent();
+    public ASTAnnotation getParent() {
+        return (ASTAnnotation) super.getParent();
     }
 }

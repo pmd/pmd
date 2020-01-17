@@ -74,7 +74,7 @@ public class ASTForStatement extends AbstractJavaNode {
      * Returns true if this node represents a foreach loop.
      */
     public boolean isForeach() {
-        return jjtGetChild(0) instanceof ASTLocalVariableDeclaration;
+        return getChild(0) instanceof ASTLocalVariableDeclaration;
     }
 
 
@@ -83,7 +83,7 @@ public class ASTForStatement extends AbstractJavaNode {
      * loop.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(jjtGetNumChildren() - 1);
+        return (ASTStatement) getChild(getNumChildren() - 1);
     }
 
 }

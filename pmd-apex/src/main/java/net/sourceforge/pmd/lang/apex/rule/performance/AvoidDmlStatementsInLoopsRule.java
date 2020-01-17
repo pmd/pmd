@@ -77,14 +77,14 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
     }
 
     private boolean insideLoop(AbstractNode node) {
-        Node n = node.jjtGetParent();
+        Node n = node.getParent();
 
         while (n != null) {
             if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
                     || n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
                 return true;
             }
-            n = n.jjtGetParent();
+            n = n.getParent();
         }
 
         return false;

@@ -133,10 +133,10 @@ false negatives
         <code><![CDATA[
 public class Foo {
    private boolean isSimpleReturn(Node node) {
-      return 
+      return
          ( node instanceof ASTReturnStatement ) // rule triggeres here
          &&
-         ( node.jjtGetNumChildren() == 0 );     // and here
+         ( node.getNumChildren() == 0 );     // and here
     }
     public String getLocalName() {
         int colonIndex = name.indexOf(':');

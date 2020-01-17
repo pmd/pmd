@@ -46,8 +46,8 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
         boolean inAnnotation = false;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Node child = node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            Node child = node.getChild(i);
             if (child instanceof ASTAnnotation) {
                 ASTName annotationName = child.getFirstDescendantOfType(ASTName.class);
                 if ("Test".equals(annotationName.getImage())) {
@@ -81,11 +81,11 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
         for (ASTTryStatement trySt : catches) {
             ASTCatchStatement cStatement = getCatch(trySt);
             if (cStatement != null) {
-                ASTBlock block = (ASTBlock) cStatement.jjtGetChild(1);
-                if (block.jjtGetNumChildren() != 0) {
+                ASTBlock block = (ASTBlock) cStatement.getChild(1);
+                if (block.getNumChildren() != 0) {
                     continue;
                 }
-                List<ASTBlockStatement> blocks = trySt.jjtGetChild(0).findDescendantsOfType(ASTBlockStatement.class);
+                List<ASTBlockStatement> blocks = trySt.getChild(0).findDescendantsOfType(ASTBlockStatement.class);
                 if (blocks.isEmpty()) {
                     continue;
                 }
@@ -106,9 +106,9 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
     }
 
     private ASTCatchStatement getCatch(Node n) {
-        for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-            if (n.jjtGetChild(i) instanceof ASTCatchStatement) {
-                return (ASTCatchStatement) n.jjtGetChild(i);
+        for (int i = 0; i < n.getNumChildren(); i++) {
+            if (n.getChild(i) instanceof ASTCatchStatement) {
+                return (ASTCatchStatement) n.getChild(i);
             }
         }
         return null;

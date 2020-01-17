@@ -28,9 +28,9 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
 
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); i++) {
+            if (getChild(i) instanceof ASTAnnotation) {
+                ASTAnnotation a = (ASTAnnotation) getChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }
@@ -45,10 +45,10 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
     }
 
     public boolean isAnonymousInnerClass() {
-        return jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression;
+        return getParent().getParent() instanceof ASTAllocationExpression;
     }
 
     public boolean isEnumChild() {
-        return jjtGetParent().jjtGetParent() instanceof ASTEnumConstant;
+        return getParent().getParent() instanceof ASTEnumConstant;
     }
 }

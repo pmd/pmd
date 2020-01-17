@@ -25,6 +25,6 @@ public class ASTBreakStatement extends AbstractEcmascriptNode<BreakStatement> {
     }
 
     public ASTName getLabel() {
-        return (ASTName) jjtGetChild(0);
+        return (ASTName) getChild(0);
     }
 }

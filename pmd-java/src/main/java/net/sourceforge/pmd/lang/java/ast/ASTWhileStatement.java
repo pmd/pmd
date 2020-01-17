@@ -40,7 +40,7 @@ public class ASTWhileStatement extends AbstractJavaNode {
      */
     @Deprecated
     public ASTExpression getGuardExpressionNode() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
     /**
@@ -48,7 +48,7 @@ public class ASTWhileStatement extends AbstractJavaNode {
      * This may be any expression of type boolean.
      */
     public ASTExpression getCondition() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -57,7 +57,7 @@ public class ASTWhileStatement extends AbstractJavaNode {
      * evaluates to true.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(1);
+        return (ASTStatement) getChild(1);
     }
 
 

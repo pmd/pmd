@@ -347,13 +347,13 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (stmt.getBeginLine() <= expression.getBeginLine()
                         && stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
                     //now we need to make sure it has the right image name
-                    ASTPrimaryPrefix primaryPrefix = stmt.jjtGetParent()
+                    ASTPrimaryPrefix primaryPrefix = stmt.getParent()
                             .getFirstDescendantOfType(ASTPrimaryPrefix.class);
                     if (primaryPrefix != null) {
                         ASTName prefixName = primaryPrefix.getFirstChildOfType(ASTName.class);
                         if (prefixName != null && prefixName.hasImageEqualTo(baseName)) {
                             //this is an assignment related to the baseName we are working with
-                            boolean allocationFound = stmt.jjtGetParent()
+                            boolean allocationFound = stmt.getParent()
                                     .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
                             boolean iterator = isIterator();
                             assignments
@@ -394,7 +394,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
 
         private boolean isForLoop(ASTVariableDeclarator declarator) {
-            return declarator.jjtGetParent().jjtGetParent() instanceof ASTForStatement;
+            return declarator.getParent().getParent() instanceof ASTForStatement;
         }
 
         public ASTPrimaryExpression getExpression() {

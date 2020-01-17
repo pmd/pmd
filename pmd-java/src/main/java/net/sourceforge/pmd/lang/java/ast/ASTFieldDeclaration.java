@@ -130,8 +130,8 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         if (classOrInterfaceBody == null || classOrInterfaceBody.isAnonymousInnerClass()) {
             return false;
         }
-        if (classOrInterfaceBody.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.jjtGetParent();
+        if (classOrInterfaceBody.getParent() instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.getParent();
             return n.isInterface();
         }
         return false;
@@ -153,17 +153,17 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     }
 
     private int checkType() {
-        if (jjtGetNumChildren() == 0 || !(jjtGetChild(0) instanceof ASTType)) {
+        if (getNumChildren() == 0 || !(getChild(0) instanceof ASTType)) {
             return 0;
         }
-        return ((ASTType) jjtGetChild(0)).getArrayDepth();
+        return ((ASTType) getChild(0)).getArrayDepth();
     }
 
     private int checkDecl() {
-        if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
+        if (getNumChildren() < 2 || !(getChild(1) instanceof ASTVariableDeclarator)) {
             return 0;
         }
-        return ((ASTVariableDeclaratorId) jjtGetChild(1).jjtGetChild(0)).getArrayDepth();
+        return ((ASTVariableDeclaratorId) getChild(1).getChild(0)).getArrayDepth();
     }
 
     /**

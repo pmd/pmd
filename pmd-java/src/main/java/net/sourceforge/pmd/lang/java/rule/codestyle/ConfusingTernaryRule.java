@@ -64,15 +64,15 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
-        if (node.jjtGetNumChildren() == 3) {
-            Node inode = node.jjtGetChild(0);
-            if (inode instanceof ASTExpression && inode.jjtGetNumChildren() == 1) {
-                Node jnode = inode.jjtGetChild(0);
+        if (node.getNumChildren() == 3) {
+            Node inode = node.getChild(0);
+            if (inode instanceof ASTExpression && inode.getNumChildren() == 1) {
+                Node jnode = inode.getChild(0);
                 if (isMatch(jnode)) {
 
                     if (!getProperty(ignoreElseIfProperty)
-                            || !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)
-                                    && !(node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement)) {
+                            || !(node.getChild(2).getChild(0) instanceof ASTIfStatement)
+                                    && !(node.getParent().getParent() instanceof ASTIfStatement)) {
                         addViolation(data, node);
                     }
                 }
@@ -84,8 +84,8 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         // look for "match ? .. : .."
-        if (node.jjtGetNumChildren() > 0) {
-            Node inode = node.jjtGetChild(0);
+        if (node.getNumChildren() > 0) {
+            Node inode = node.getChild(0);
             if (isMatch(inode)) {
                 addViolation(data, node);
             }
@@ -114,12 +114,12 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
         if (!(node instanceof ASTConditionalAndExpression) && !(node instanceof ASTConditionalOrExpression)) {
             return false;
         }
-        int n = node.jjtGetNumChildren();
+        int n = node.getNumChildren();
         if (n <= 0) {
             return false;
         }
         for (int i = 0; i < n; i++) {
-            Node inode = node.jjtGetChild(i);
+            Node inode = node.getChild(i);
             // recurse!
             if (!isMatch(inode)) {
                 return false;
@@ -131,18 +131,18 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
 
     private static boolean isParenthesisAroundMatch(Node node) {
         // look for "(match)"
-        if (!(node instanceof ASTPrimaryExpression) || node.jjtGetNumChildren() != 1) {
+        if (!(node instanceof ASTPrimaryExpression) || node.getNumChildren() != 1) {
             return false;
         }
-        Node inode = node.jjtGetChild(0);
-        if (!(inode instanceof ASTPrimaryPrefix) || inode.jjtGetNumChildren() != 1) {
+        Node inode = node.getChild(0);
+        if (!(inode instanceof ASTPrimaryPrefix) || inode.getNumChildren() != 1) {
             return false;
         }
-        Node jnode = inode.jjtGetChild(0);
-        if (!(jnode instanceof ASTExpression) || jnode.jjtGetNumChildren() != 1) {
+        Node jnode = inode.getChild(0);
+        if (!(jnode instanceof ASTExpression) || jnode.getNumChildren() != 1) {
             return false;
         }
-        Node knode = jnode.jjtGetChild(0);
+        Node knode = jnode.getChild(0);
         // recurse!
         return isMatch(knode);
     }

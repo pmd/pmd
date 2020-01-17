@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * and collections.
  *
  * <p>Example:</p>
- * 
+ *
  * <pre>
  * List&lt;Double&gt; list = new ArrayList&lt;Double&gt;();
  * ...
@@ -87,7 +87,7 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
         List<NameOccurrence> usages = decl.getUsages();
         for (NameOccurrence no : usages) {
             ASTName name = (ASTName) no.getLocation();
-            Node n = name.jjtGetParent().jjtGetParent().jjtGetParent();
+            Node n = name.getParent().getParent().getParent();
             if (n instanceof ASTCastExpression) {
                 addViolation(data, n);
             }

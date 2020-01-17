@@ -36,8 +36,8 @@ public class DumpFacade {
     public Object visit(EcmascriptNode<?> node, Object data) {
         dump(node, (String) data);
         if (recurse) {
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                visit((EcmascriptNode<?>) node.jjtGetChild(i), data + " ");
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                visit((EcmascriptNode<?>) node.getChild(i), data + " ");
             }
             return data;
         } else {

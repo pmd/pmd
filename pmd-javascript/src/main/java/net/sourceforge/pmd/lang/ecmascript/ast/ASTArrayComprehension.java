@@ -20,7 +20,7 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
     }
 
     public EcmascriptNode<?> getResult() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public int getNumArrayComprehensionLoops() {
@@ -28,7 +28,7 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
     }
 
     public ASTArrayComprehensionLoop getArrayComprehensionLoop(int index) {
-        return (ASTArrayComprehensionLoop) jjtGetChild(index + 1);
+        return (ASTArrayComprehensionLoop) getChild(index + 1);
     }
 
     public boolean hasFilter() {
@@ -36,6 +36,6 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
     }
 
     public EcmascriptNode<?> getFilter() {
-        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
     }
 }

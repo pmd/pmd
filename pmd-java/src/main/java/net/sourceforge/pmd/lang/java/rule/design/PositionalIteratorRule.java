@@ -16,11 +16,11 @@ public class PositionalIteratorRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        if (hasNameAsChild(node.jjtGetChild(0))) {
-            String exprName = getName(node.jjtGetChild(0));
-            if (exprName.indexOf(".hasNext") != -1 && node.jjtGetNumChildren() > 1) {
+        if (hasNameAsChild(node.getChild(0))) {
+            String exprName = getName(node.getChild(0));
+            if (exprName.indexOf(".hasNext") != -1 && node.getNumChildren() > 1) {
 
-                Node loopBody = node.jjtGetChild(1);
+                Node loopBody = node.getChild(1);
                 List<String> names = new ArrayList<>();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
@@ -44,9 +44,9 @@ public class PositionalIteratorRule extends AbstractJavaRule {
     }
 
     private void collectNames(String target, List<String> names, Node node) {
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Node child = node.jjtGetChild(i);
-            if (child.jjtGetNumChildren() > 0) {
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            Node child = node.getChild(i);
+            if (child.getNumChildren() > 0) {
                 collectNames(target, names, child);
             } else {
                 if (child instanceof ASTName && isQualifiedName(child)
@@ -58,22 +58,22 @@ public class PositionalIteratorRule extends AbstractJavaRule {
     }
 
     private boolean hasNameAsChild(Node node) {
-        if (node.jjtGetNumChildren() > 0) {
-            if (node.jjtGetChild(0) instanceof ASTName) {
+        if (node.getNumChildren() > 0) {
+            if (node.getChild(0) instanceof ASTName) {
                 return true;
             } else {
-                return hasNameAsChild(node.jjtGetChild(0));
+                return hasNameAsChild(node.getChild(0));
             }
         }
         return false;
     }
 
     private String getName(Node node) {
-        if (node.jjtGetNumChildren() > 0) {
-            if (node.jjtGetChild(0) instanceof ASTName) {
-                return ((ASTName) node.jjtGetChild(0)).getImage();
+        if (node.getNumChildren() > 0) {
+            if (node.getChild(0) instanceof ASTName) {
+                return ((ASTName) node.getChild(0)).getImage();
             } else {
-                return getName(node.jjtGetChild(0));
+                return getName(node.getChild(0));
             }
         }
         throw new IllegalArgumentException("Check with hasNameAsChild() first!");

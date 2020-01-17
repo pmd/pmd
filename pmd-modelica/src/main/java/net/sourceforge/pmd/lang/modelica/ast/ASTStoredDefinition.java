@@ -42,8 +42,8 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
         super.jjtClose();
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < jjtGetNumChildren(); ++i) {
-            AbstractModelicaNode child = (AbstractModelicaNode) jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); ++i) {
+            AbstractModelicaNode child = (AbstractModelicaNode) getChild(i);
             if (child instanceof ASTWithinClause) {
                 if (sb.length() > 0) {
                     sb.append(CompositeName.NAME_COMPONENT_SEPARATOR);

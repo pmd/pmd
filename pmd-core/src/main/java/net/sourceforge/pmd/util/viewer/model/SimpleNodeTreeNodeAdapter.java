@@ -112,9 +112,9 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
      */
     private void checkChildren() {
         if (children == null) {
-            children = new ArrayList<>(node.jjtGetNumChildren());
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                children.add(new SimpleNodeTreeNodeAdapter(this, node.jjtGetChild(i)));
+            children = new ArrayList<>(node.getNumChildren());
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                children.add(new SimpleNodeTreeNodeAdapter(this, node.getChild(i)));
             }
         }
     }

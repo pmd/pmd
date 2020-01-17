@@ -303,21 +303,21 @@ public abstract class AbstractNode implements Node {
         if (n <= 0) {
             throw new IllegalArgumentException();
         }
-        Node result = this.jjtGetParent();
+        Node result = this.getParent();
         for (int i = 1; i < n; i++) {
             if (result == null) {
                 return null;
             }
-            result = result.jjtGetParent();
+            result = result.getParent();
         }
         return result;
     }
 
     @Override
     public <T> T getFirstParentOfType(final Class<T> parentType) {
-        Node parentNode = jjtGetParent();
+        Node parentNode = getParent();
         while (parentNode != null && !parentType.isInstance(parentNode)) {
-            parentNode = parentNode.jjtGetParent();
+            parentNode = parentNode.getParent();
         }
         return parentType.cast(parentNode);
     }
@@ -325,12 +325,12 @@ public abstract class AbstractNode implements Node {
     @Override
     public <T> List<T> getParentsOfType(final Class<T> parentType) {
         final List<T> parents = new ArrayList<>();
-        Node parentNode = jjtGetParent();
+        Node parentNode = getParent();
         while (parentNode != null) {
             if (parentType.isInstance(parentNode)) {
                 parents.add(parentType.cast(parentNode));
             }
-            parentNode = parentNode.jjtGetParent();
+            parentNode = parentNode.getParent();
         }
         return parents;
     }
@@ -338,14 +338,14 @@ public abstract class AbstractNode implements Node {
     @SafeVarargs
     @Override
     public final <T> T getFirstParentOfAnyType(final Class<? extends T>... parentTypes) {
-        Node parentNode = jjtGetParent();
+        Node parentNode = getParent();
         while (parentNode != null) {
             for (final Class<? extends T> c : parentTypes) {
                 if (c.isInstance(parentNode)) {
                     return c.cast(parentNode);
                 }
             }
-            parentNode = parentNode.jjtGetParent();
+            parentNode = parentNode.getParent();
         }
         return null;
     }
@@ -373,8 +373,8 @@ public abstract class AbstractNode implements Node {
     private static <T> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
                                                   final boolean crossFindBoundaries) {
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            final Node child = node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            final Node child = node.getChild(i);
             if (targetType.isAssignableFrom(child.getClass())) {
                 results.add(targetType.cast(child));
             }
@@ -388,8 +388,8 @@ public abstract class AbstractNode implements Node {
     @Override
     public <T> List<T> findChildrenOfType(final Class<T> targetType) {
         final List<T> list = new ArrayList<>();
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            final Node child = jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); i++) {
+            final Node child = getChild(i);
             if (targetType.isInstance(child)) {
                 list.add(targetType.cast(child));
             }
@@ -443,9 +443,9 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public <T> T getFirstChildOfType(final Class<T> childType) {
-        int n = jjtGetNumChildren();
+        int n = getNumChildren();
         for (int i = 0; i < n; i++) {
-            final Node child = jjtGetChild(i);
+            final Node child = getChild(i);
             if (childType.isInstance(child)) {
                 return childType.cast(child);
             }
@@ -454,9 +454,9 @@ public abstract class AbstractNode implements Node {
     }
 
     private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
-        final int n = node.jjtGetNumChildren();
+        final int n = node.getNumChildren();
         for (int i = 0; i < n; i++) {
-            final Node n1 = node.jjtGetChild(i);
+            final Node n1 = node.getChild(i);
             if (descendantType.isAssignableFrom(n1.getClass())) {
                 return descendantType.cast(n1);
             }
@@ -611,9 +611,9 @@ public abstract class AbstractNode implements Node {
     @Override
     public void remove() {
         // Detach current node of its parent, if any
-        final Node parent = jjtGetParent();
+        final Node parent = getParent();
         if (parent != null) {
-            parent.removeChildAtIndex(jjtGetChildIndex());
+            parent.removeChildAtIndex(getIndexInParent());
             jjtSetParent(null);
         }
 
@@ -627,12 +627,12 @@ public abstract class AbstractNode implements Node {
     @InternalApi
     @Override
     public void removeChildAtIndex(final int childIndex) {
-        if (0 <= childIndex && childIndex < jjtGetNumChildren()) {
+        if (0 <= childIndex && childIndex < getNumChildren()) {
             // Remove the child at the given index
             children = ArrayUtils.remove(children, childIndex);
             // Update the remaining & left-shifted children indexes
-            for (int i = childIndex; i < jjtGetNumChildren(); i++) {
-                jjtGetChild(i).jjtSetChildIndex(i);
+            for (int i = childIndex; i < getNumChildren(); i++) {
+                getChild(i).jjtSetChildIndex(i);
             }
         }
     }

@@ -27,8 +27,8 @@ public class Java13Test {
         ASTCompilationUnit compilationUnit = java13p.parseResource("SwitchExpressions.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(4, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertEquals(4, switchExpression.getNumChildren());
+        Assert.assertTrue(switchExpression.getChild(0) instanceof ASTExpression);
         Assert.assertEquals(3, switchExpression.findChildrenOfType(ASTSwitchLabeledRule.class).size());
         Assert.assertEquals(1, switchExpression.findChildrenOfType(ASTSwitchLabeledBlock.class).size());
         Assert.assertEquals(1, switchExpression.findDescendantsOfType(ASTYieldStatement.class).size());
@@ -41,13 +41,13 @@ public class Java13Test {
         ASTCompilationUnit compilationUnit = java13p.parseResource("SwitchExpressionsYield.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertEquals(11, switchExpression.getNumChildren());
+        Assert.assertTrue(switchExpression.getChild(0) instanceof ASTExpression);
         Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabel.class).size());
 
         ASTYieldStatement yieldStatement = switchExpression.getFirstDescendantOfType(ASTYieldStatement.class);
         Assert.assertEquals("SwitchExpressionsBreak.SIX", yieldStatement.getImage());
-        Assert.assertTrue(yieldStatement.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertTrue(yieldStatement.getChild(0) instanceof ASTExpression);
 
         ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class)
                 .get(1);

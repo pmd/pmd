@@ -97,7 +97,7 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
         // doesn't count variable declared inside a for initializer
-        if (!(node.jjtGetParent() instanceof ASTForInit)) {
+        if (!(node.getParent() instanceof ASTForInit)) {
             ((MutableInt) data).increment();
         }
         return data;
@@ -131,7 +131,7 @@ public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
 
     @Override
     public Object visit(ASTStatementExpression node, Object data) {
-        if (!(node.jjtGetParent().jjtGetParent() instanceof ASTForUpdate)) {
+        if (!(node.getParent().getParent() instanceof ASTForUpdate)) {
             ((MutableInt) data).increment();
         }
         return data;

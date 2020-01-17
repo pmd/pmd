@@ -58,8 +58,8 @@ public final class ClassFanOutMetric {
         public double computeFor(MethodLikeNode node, MetricOptions options) {
             MutableInt cfo;
             // look at the parent to catch annotations
-            if (node.jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
-                ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.jjtGetParent();
+            if (node.getParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
+                ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getParent();
                 cfo = (MutableInt) parent.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));
             } else {
                 cfo = (MutableInt) node.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));

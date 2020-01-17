@@ -31,7 +31,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
         if (node.isFinal()) {
             return data;
         }
-        if (getProperty(IGNORE_FOR_EACH) && node.jjtGetParent() instanceof ASTForStatement) {
+        if (getProperty(IGNORE_FOR_EACH) && node.getParent() instanceof ASTForStatement) {
             return data;
         }
         Scope s = node.getScope();

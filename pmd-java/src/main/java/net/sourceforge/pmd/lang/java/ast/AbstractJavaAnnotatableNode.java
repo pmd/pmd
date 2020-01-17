@@ -22,7 +22,7 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
 
     @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
-        return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        return this.getParent().findChildrenOfType(ASTAnnotation.class);
     }
 
     @Override

@@ -263,7 +263,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
-            parent.jjtAddChild(node, parent.jjtGetNumChildren());
+            parent.jjtAddChild(node, parent.getNumChildren());
             node.jjtSetParent(parent);
         }
 
@@ -291,8 +291,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                         tokenLocation.index + tokenLocation.token.getText().length());
 
                 // move existing nodes so that we can insert the comment as the first node
-                for (int i = parent.jjtGetNumChildren(); i > 0; i--) {
-                    parent.jjtAddChild(parent.jjtGetChild(i - 1), i);
+                for (int i = parent.getNumChildren(); i > 0; i--) {
+                    parent.jjtAddChild(parent.getChild(i - 1), i);
                 }
 
                 parent.jjtAddChild(comment, 0);

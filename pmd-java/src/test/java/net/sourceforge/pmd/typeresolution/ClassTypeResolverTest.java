@@ -207,12 +207,12 @@ public class ClassTypeResolverTest {
         Class<?> theExtraTopLevelClass = Class
                 .forName("net.sourceforge.pmd.typeresolution.testdata.TheExtraTopLevelClass");
         // First class
-        ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration) acu.jjtGetChild(1);
+        ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration) acu.getChild(1);
         assertEquals(ExtraTopLevelClass.class, typeDeclaration.getType());
         assertEquals(ExtraTopLevelClass.class,
                      typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Second class
-        typeDeclaration = (ASTTypeDeclaration) acu.jjtGetChild(2);
+        typeDeclaration = (ASTTypeDeclaration) acu.getChild(2);
         assertEquals(theExtraTopLevelClass, typeDeclaration.getType());
         assertEquals(theExtraTopLevelClass,
                      typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
@@ -257,7 +257,7 @@ public class ClassTypeResolverTest {
     public void testAnonymousClassFromInterface() throws Exception {
         Node acu = java8.parseClass(AnonymousClassFromInterface.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
-        TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
+        TypeNode child = (TypeNode) allocationExpression.getChild(0);
         Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
         Assert.assertSame(Integer.class, child.getTypeDefinition().getGenericType(0).getType());
     }
@@ -269,7 +269,7 @@ public class ClassTypeResolverTest {
         ASTAllocationExpression nestedAllocation
                 = allocationExpression.getFirstDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class) // get the declaration (boundary)
                 .getFirstDescendantOfType(ASTAllocationExpression.class); // and dive for the nested allocation
-        TypeNode child = (TypeNode) nestedAllocation.jjtGetChild(0);
+        TypeNode child = (TypeNode) nestedAllocation.getChild(0);
         Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));
         Assert.assertSame(String.class, child.getTypeDefinition().getGenericType(0).getType());
     }
@@ -278,7 +278,7 @@ public class ClassTypeResolverTest {
     public void testAnonymousExtendingObject() throws Exception {
         Node acu = java8.parseClass(AnoymousExtendingObject.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
-        TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
+        TypeNode child = (TypeNode) allocationExpression.getChild(0);
         Assert.assertTrue(Object.class.isAssignableFrom(child.getType()));
     }
 
@@ -304,7 +304,7 @@ public class ClassTypeResolverTest {
         int index = 0;
 
         // String s = "s";
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(String.class, literals.get(index++).getType());
 
         // boolean boolean1 = false;
@@ -320,127 +320,127 @@ public class ClassTypeResolverTest {
         assertNull(literals.get(index++).getType());
 
         // byte byte1 = 0;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // byte byte2 = 0x0F;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // byte byte3 = -007;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // short short1 = 0;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // short short2 = 0x0F;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // short short3 = -007;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // char char1 = 0;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // char char2 = 0x0F;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // char char3 = 007;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // char char4 = 'a';
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Character.TYPE, literals.get(index++).getType());
 
         // int int1 = 0;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // int int2 = 0x0F;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // int int3 = -007;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // int int4 = 'a';
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Character.TYPE, literals.get(index++).getType());
 
         // long long1 = 0;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // long long2 = 0x0F;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // long long3 = -007;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // long long4 = 0L;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Long.TYPE, literals.get(index++).getType());
 
         // long long5 = 0x0Fl;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Long.TYPE, literals.get(index++).getType());
 
         // long long6 = -007L;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Long.TYPE, literals.get(index++).getType());
 
         // long long7 = 'a';
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Character.TYPE, literals.get(index++).getType());
 
         // float float1 = 0.0f;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Float.TYPE, literals.get(index++).getType());
 
         // float float2 = -10e+01f;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Float.TYPE, literals.get(index++).getType());
 
         // float float3 = 0x08.08p3f;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Float.TYPE, literals.get(index++).getType());
 
         // float float4 = 0xFF;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // float float5 = 'a';
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Character.TYPE, literals.get(index++).getType());
 
         // double double1 = 0.0;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Double.TYPE, literals.get(index++).getType());
 
         // double double2 = -10e+01;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Double.TYPE, literals.get(index++).getType());
 
         // double double3 = 0x08.08p3;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Double.TYPE, literals.get(index++).getType());
 
         // double double4 = 0xFF;
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Integer.TYPE, literals.get(index++).getType());
 
         // double double5 = 'a';
-        assertEquals(0, literals.get(index).jjtGetNumChildren());
+        assertEquals(0, literals.get(index).getNumChildren());
         assertEquals(Character.TYPE, literals.get(index++).getType());
 
         // Make sure we got them all.
@@ -742,7 +742,7 @@ public class ClassTypeResolverTest {
         // Qualified this
         assertEquals(ThisExpression.class, expressions.get(index).getType());
         assertEquals(ThisExpression.class, prefixes.get(index).getType());
-        assertEquals(ThisExpression.class, ((TypeNode) expressions.get(index++).jjtGetChild(1)).getType());
+        assertEquals(ThisExpression.class, ((TypeNode) expressions.get(index++).getChild(1)).getType());
 
         assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index).getType());
         assertEquals(ThisExpression.ThisExprStaticNested.class, prefixes.get(index++).getType());
@@ -763,9 +763,9 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
-        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0))
+        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).getParent().getChild(0))
                 .getType());
-        assertEquals(SuperClassA.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
+        assertEquals(SuperClassA.class, ((TypeNode) expressions.get(index++).getParent().getChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
@@ -1871,11 +1871,11 @@ public class ClassTypeResolverTest {
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
-        return ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
+        return ((TypeNode) node.getChild(childIndex)).getTypeDefinition();
     }
 
     private Class<?> getChildType(Node node, int childIndex) {
-        return ((TypeNode) node.jjtGetChild(childIndex)).getType();
+        return ((TypeNode) node.getChild(childIndex)).getType();
     }
 
 
@@ -1906,7 +1906,7 @@ public class ClassTypeResolverTest {
 
 
     private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class<?>... classes) {
-        JavaTypeDefinition typeDef = ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
+        JavaTypeDefinition typeDef = ((TypeNode) node.getChild(childIndex)).getTypeDefinition();
 
         for (int index = 0; index < classes.length; ++index) {
             assertSame(classes[index], typeDef.getGenericType(index).getType());
