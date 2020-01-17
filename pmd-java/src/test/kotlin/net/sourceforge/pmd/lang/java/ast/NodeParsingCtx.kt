@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.getChild
-import net.sourceforge.pmd.lang.ast.test.numChildren
 
 /**
  * Describes a kind of node that can be found commonly in the same contexts.
