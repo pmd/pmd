@@ -8,11 +8,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -51,13 +54,19 @@ public final class TreeRenderers {
                        .defaultValue(System.lineSeparator())
                        .build();
 
+    static final PropertyDescriptor<Boolean> XML_RENDER_COMMON_ATTRIBUTES =
+        PropertyFactory.booleanProperty("renderCommonAttributes")
+                       .desc("True to render attributes like BeginLine, EndLine, etc.")
+                       .defaultValue(false)
+                       .build();
+
 
     static final TreeRendererDescriptor XML =
         new TreeRendererDescriptorImpl("xml", "XML format will the same structure as the one used in XPath") {
 
             private final Set<PropertyDescriptor<?>> myDescriptors
                 = Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.<PropertyDescriptor<?>>asList(
-                XML_USE_SINGLE_QUOTES, XML_LINE_SEPARATOR, XML_RENDER_PROLOG
+                XML_USE_SINGLE_QUOTES, XML_LINE_SEPARATOR, XML_RENDER_PROLOG, XML_RENDER_COMMON_ATTRIBUTES
             )));
 
             @Override
@@ -66,10 +75,21 @@ public final class TreeRenderers {
             }
 
             @Override
-            public TreeRenderer produceRenderer(PropertySource properties) {
+            public TreeRenderer produceRenderer(final PropertySource properties) {
 
                 XmlRenderingConfig config =
-                    new XmlRenderingConfig()
+                    new XmlRenderingConfig() {
+
+                        private final List<String> excluded = Arrays.asList("BeginLine", "BeginColumn", "EndLine", "EndColumn", "SingleLine", "FindBoundary");
+
+                        @Override
+                        protected boolean takeAttribute(Node node, Attribute attribute) {
+                            if (!properties.getProperty(XML_RENDER_COMMON_ATTRIBUTES)) {
+                                return !excluded.contains(attribute.getName());
+                            }
+                            return true;
+                        }
+                    }
                         .singleQuoteAttributes(properties.getProperty(XML_USE_SINGLE_QUOTES))
                         .renderProlog(properties.getProperty(XML_RENDER_PROLOG))
                         .lineSeparator(properties.getProperty(XML_LINE_SEPARATOR));

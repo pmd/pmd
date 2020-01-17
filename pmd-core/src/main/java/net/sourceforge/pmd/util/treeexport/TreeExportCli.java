@@ -7,12 +7,16 @@ package net.sourceforge.pmd.util.treeexport;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -22,29 +26,34 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
+import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
 @Experimental
 public class TreeExportCli {
-    @Parameter(names = { "--format", "-f" }, description = "The output format.", required = true)
-    private String format;
-    @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.", required = true)
-    private String language;
+    @Parameter(names = { "--format", "-f" }, description = "The output format.")
+    private String format = "xml";
+    @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.")
+    private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
     @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();
-    @Parameter(names = {"-P"}, arity = 2, description = "Specify a property for the renderer.")
+    @DynamicParameter(names = {"-P"}, description = "Properties for the renderer.")
     private Map<String, String> properties = new HashMap<>();
 
     @Parameter(names = { "--help", "-h" }, description = "Display usage.", help = true)
     private boolean help;
 
-    @Parameter(description = "The file to dump", required = true)
+    @Parameter(names = { "--file" }, description = "The file to dump")
     private String file;
+
+    @Parameter(names = { "--read-stdin", "-i" }, description = "Read source from standard input")
+    private boolean readStdin;
 
 
     public static void main(String[] args) throws IOException {
@@ -71,6 +80,12 @@ public class TreeExportCli {
             throw cli.bail("Unknown format '" + cli.format + "'");
         }
 
+        PropertySource bundle = parseProperties(cli, descriptor);
+
+        cli.run(descriptor.produceRenderer(bundle));
+    }
+
+    public static PropertySource parseProperties(TreeExportCli cli, TreeRendererDescriptor descriptor) {
         PropertySource bundle = descriptor.newPropertyBundle();
 
         for (String key : cli.properties.keySet()) {
@@ -81,8 +96,7 @@ public class TreeExportCli {
 
             setProperty(d, bundle, cli.properties.get(key));
         }
-
-        cli.run(descriptor.produceRenderer(bundle));
+        return bundle;
     }
 
 
@@ -145,14 +159,37 @@ public class TreeExportCli {
                 .getDefaultVersion().getLanguageVersionHandler();
         Parser parser = languageHandler.getParser(languageHandler.getDefaultParserOptions());
 
+        Reader source;
+        if (file == null && !readStdin) {
+            throw bail("One of --file or --read-stdin must be mentioned");
+        } else if (readStdin) {
+            System.err.println("Reading from stdin...");
+            source = new StringReader(readFromSystemIn());
+        } else {
+            source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
+        }
 
-        try (Reader reader = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding))) {
+        // disable warnings for deprecated attributes
+        Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
+
+        try (Reader reader = source) {
             Node root = parser.parse(file, reader);
             languageHandler.getQualifiedNameResolutionFacade(this.getClass().getClassLoader()).start(root);
 
-
             renderer.renderSubtree(root, System.out);
         }
+    }
+
+    private String readFromSystemIn() {
+
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder sb = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            sb.append(scanner.nextLine());
+        }
+
+        return sb.toString();
+
     }
 
     private void printWarning() {
@@ -169,7 +206,7 @@ public class TreeExportCli {
 
     private RuntimeException bail(String message) {
         System.err.println(message);
-        System.err.println("Use --help to obtain information about available formats");
+        System.err.println("Use --help for usage information");
         System.exit(1);
         return new RuntimeException();
     }
