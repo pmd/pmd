@@ -55,7 +55,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 
 options {
     contextSuperClass = AntlrBaseNode;
-    superClass = PmdBaseAntlrParser;
+    superClass = PmdAntlrParserBase;
 }
 
 topLevel : statements? EOF ;

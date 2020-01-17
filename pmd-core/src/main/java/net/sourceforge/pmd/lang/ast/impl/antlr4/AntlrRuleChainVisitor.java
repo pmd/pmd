@@ -27,7 +27,7 @@ public class AntlrRuleChainVisitor extends AbstractRuleChainVisitor {
     @Override
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
         for (final Node node : nodes) {
-           indexSubtree(node);
+            indexSubtree(node);
         }
     }
 

@@ -67,7 +67,7 @@ public interface Node {
      */
     @Deprecated
     default void jjtOpen() {
-
+        // do nothing
     }
 
 
@@ -78,7 +78,7 @@ public interface Node {
      */
     @Deprecated
     default void jjtClose() {
-
+        // do nothing
     }
 
 
