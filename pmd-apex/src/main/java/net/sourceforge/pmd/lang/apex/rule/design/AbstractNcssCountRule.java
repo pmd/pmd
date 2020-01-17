@@ -17,16 +17,15 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule {
@@ -35,7 +34,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 
     /**
      * Count the nodes of the given type using NCSS rules.
-     * 
+     *
      * @param nodeClass
      *            class of node to count
      */
@@ -49,13 +48,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
-    public Object visit(AbstractApexNodeBase node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            AbstractApexNodeBase n = (AbstractApexNodeBase) node.jjtGetChild(i);
-            Integer treeSize = (Integer) n.jjtAccept(this, data);
-            numNodes += treeSize.intValue();
+        for (ApexNode<?> child : node.children()) {
+            numNodes += (Integer) child.jjtAccept(this, data);
         }
 
         if (this.nodeClass.isInstance(node)) {
@@ -74,19 +71,19 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     /**
      * Count the number of children of the given node. Adds one to count the
      * node itself.
-     * 
+     *
      * @param node
      *            node having children counted
      * @param data
      *            node data
      * @return count of the number of children of the node, plus one
      */
-    protected Integer countNodeChildren(Node node, Object data) {
+    protected Integer countNodeChildren(ApexNode<?> node, Object data) {
         Integer nodeCount;
         int lineCount = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((AbstractApexNodeBase) node.jjtGetChild(i)).jjtAccept(this, data);
-            lineCount += nodeCount.intValue();
+        for (ApexNode<?> child : node.children()) {
+            nodeCount = (Integer) child.jjtAccept(this, data);
+            lineCount += nodeCount;
         }
         return ++lineCount;
     }

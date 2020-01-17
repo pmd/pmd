@@ -8,6 +8,10 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
+/**
+ * @deprecated Use {@link ApexNode}
+ */
+@Deprecated
 public abstract class AbstractApexNodeBase extends AbstractNode {
 
     public AbstractApexNodeBase(Class<?> klass) {

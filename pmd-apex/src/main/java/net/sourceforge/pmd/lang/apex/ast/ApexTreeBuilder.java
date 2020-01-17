@@ -288,7 +288,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
                 comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
-                        tokenLocation.index + tokenLocation.token.length());
+                        tokenLocation.index + tokenLocation.token.getText().length());
 
                 // move existing nodes so that we can insert the comment as the first node
                 for (int i = parent.jjtGetNumChildren(); i > 0; i--) {
@@ -354,7 +354,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
                 // Filter only block comments starting with "/**"
                 if (token.getText().startsWith("/**")) {
-                    tokenLocations.add(new ApexDocTokenLocation(startIndex, token.getText()));
+                    tokenLocations.add(new ApexDocTokenLocation(startIndex, token));
                 }
             }
             // TODO : Check other non-doc comments and tokens of type ApexLexer.EOL_COMMENT for "NOPMD" suppressions
@@ -368,11 +368,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static class ApexDocTokenLocation {
         int index;
-        String token;
+        Token token;
         ApexNode<?> nearestNode;
         int nearestNodeDistance;
 
-        ApexDocTokenLocation(int index, String token) {
+        ApexDocTokenLocation(int index, Token token) {
             this.index = index;
             this.token = token;
         }
