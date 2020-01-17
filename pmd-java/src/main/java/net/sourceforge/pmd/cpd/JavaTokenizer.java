@@ -72,7 +72,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.processToken(javaToken);
 
-        return new TokenEntry(image, fileName, currentToken.getBeginLine());
+        return new TokenEntry(image, fileName, currentToken.getBeginLine(), currentToken.getBeginColumn(), currentToken.getEndColumn());
     }
 
     public void setIgnoreLiterals(boolean ignore) {

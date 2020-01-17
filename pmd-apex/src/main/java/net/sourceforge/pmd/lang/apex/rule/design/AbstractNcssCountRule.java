@@ -55,7 +55,7 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
     private static class NcssVisitor extends ApexParserVisitorAdapter {
 
         @Override
-        public Object visit(AbstractApexNodeBase node, Object data) {
+        public Object visit(ApexNode<?> node, Object data) {
             return countNodeChildren(node, data);
         }
 
