@@ -45,6 +45,7 @@ public class TreeRenderersTest {
 
         Assert.assertThat(properties.getPropertyDescriptors(),
                           Matchers.<PropertyDescriptor<?>>containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
+                                                                             TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
                                                                              TreeRenderers.XML_RENDER_PROLOG,
                                                                              TreeRenderers.XML_USE_SINGLE_QUOTES));
 
