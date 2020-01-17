@@ -87,14 +87,6 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     void setScope(Scope scope);
 
 
-    @Override
-    JavaNode jjtGetChild(int index);
-
-
-    @Override
-    JavaNode jjtGetParent();
-
-
     JavaccToken jjtGetFirstToken();
 
 

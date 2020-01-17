@@ -66,8 +66,8 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
          */
         protected Integer countNodeChildren(Node node, Object data) {
             int nodeCount = 0;
-            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-                nodeCount += (Integer) ((PLSQLNode) node.jjtGetChild(i)).jjtAccept(this, data);
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                nodeCount += (Integer) ((PLSQLNode) node.getChild(i)).jjtAccept(this, data);
             }
             return nodeCount;
         }
@@ -141,7 +141,7 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
         @Override
         public Object visit(ASTExpression node, Object data) {
             // "For" update expressions do not count as separate lines of code
-            return node.jjtGetParent() instanceof ASTStatement ? 0 : 1;
+            return node.getParent() instanceof ASTStatement ? 0 : 1;
         }
 
         @Override

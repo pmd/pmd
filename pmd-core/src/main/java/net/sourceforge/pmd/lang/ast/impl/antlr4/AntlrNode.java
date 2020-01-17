@@ -33,7 +33,7 @@ public interface AntlrNode extends Node, ParseTree {
 
     @Override
     default int getIndexInParent() {
-        // FIXME
+        // FIXME, relied on by node streams
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }
 

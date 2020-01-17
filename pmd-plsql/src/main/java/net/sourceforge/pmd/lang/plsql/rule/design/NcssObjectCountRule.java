@@ -31,7 +31,7 @@ public class NcssObjectCountRule extends AbstractNcssCountRule<OracleObject> {
     protected boolean isIgnored(OracleObject node) {
         // Treat Schema-level ProgramUnits as Oracle Objects, otherwise as
         // subprograms
-        return node instanceof ASTProgramUnit && !(node.jjtGetParent() instanceof ASTGlobal);
+        return node instanceof ASTProgramUnit && !(node.getParent() instanceof ASTGlobal);
     }
 
     @Override

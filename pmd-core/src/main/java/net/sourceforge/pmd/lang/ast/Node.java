@@ -675,7 +675,7 @@ public interface Node {
     default RootNode getRoot() {
         Node r = this;
         while (r != null && !(r instanceof RootNode)) {
-            r = r.jjtGetParent();
+            r = r.getParent();
         }
         if (r == null) {
             throw new IllegalStateException("No root node in tree ?");

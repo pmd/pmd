@@ -131,7 +131,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     private Optional<String> simpleForUpdateVarName(ASTForUpdate base) {
         return NodeStream.of(base)
                          .children(ASTStatementExpressionList.class)
-                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .filter(it -> it.getNumChildren() == 1)
                          .children(ASTStatementExpression.class)
                          .children()
                          .filter(
@@ -211,7 +211,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                                           .filterMatching(Node::getImage, "<=")
                                                           .children(ASTAdditiveExpression.class)
                                                           .filter(expr ->
-                                                               expr.jjtGetNumChildren() == 2
+                                                               expr.getNumChildren() == 2
                                                                    && expr.getOperator().equals("-")
                                                                    && expr.children(ASTPrimaryExpression.class)
                                                                           .children(ASTPrimaryPrefix.class)
@@ -287,7 +287,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             return suffix.descendants(ASTExpression.class)
                          .children(ASTPrimaryExpression.class)
-                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .filter(it -> it.getNumChildren() == 1)
                          .children(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
                          .filterMatching(Node::getImage, occ.getImage())
@@ -299,8 +299,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .filterMatching(Node::getImage, arrayName)
                          .nonEmpty()
 
-                && suffix.jjtGetParent()
-                         .jjtGetParent()
+                && suffix.getParent()
+                         .getParent()
                          .children(ASTAssignmentOperator.class)
                          .isEmpty();
         }

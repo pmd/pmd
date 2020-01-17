@@ -19,7 +19,6 @@ import org.w3c.dom.Text;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
 
@@ -43,40 +42,15 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
         this.parser = parser;
     }
 
-
     @Override
-    public void jjtClose() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public void jjtSetParent(Node parent) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public XmlNode jjtGetParent() {
+    public XmlNode getParent() {
         org.w3c.dom.Node parent = node.getParentNode();
         return parent != null ? parser.wrapDomNode(parent) : null;
     }
 
 
     @Override
-    public void jjtAddChild(Node child, int index) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public void jjtSetChildIndex(int index) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public int jjtGetChildIndex() {
+    public int getIndexInParent() {
         org.w3c.dom.Node parent = node.getParentNode();
         NodeList childNodes = parent.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -89,61 +63,25 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
 
 
     @Override
-    public XmlNode jjtGetChild(int index) {
-        return parser.wrapDomNode(node.getChildNodes().item(index));
-    }
-
-    @Override
     public Node getChild(int index) {
-        return jjtGetChild(index);
-    }
-
-    @Override
-    public int jjtGetNumChildren() {
-        return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
+        return parser.wrapDomNode(node.getChildNodes().item(index));
     }
 
 
     @Override
     public int getNumChildren() {
-        return jjtGetNumChildren();
+        return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
     }
-
-    @Override
-    public int jjtGetId() {
-        return 0;
-    }
-
 
     @Override
     public String getImage() {
         return node instanceof Text ? ((Text) node).getData() : null;
     }
 
-
-    @Override
-    public void setImage(String image) {
-        throw new UnsupportedOperationException();
-    }
-
-
     @Override
     public boolean hasImageEqualTo(String image) {
         return Objects.equals(image, getImage());
     }
-
-
-    @Override
-    public DataFlowNode getDataFlowNode() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public void setDataFlowNode(DataFlowNode dataFlowNode) {
-        throw new UnsupportedOperationException();
-    }
-
 
     @Override
     public boolean isFindBoundary() {
@@ -165,18 +103,6 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
     @Override
     public void setUserData(Object userData) {
         this.userData = userData;
-    }
-
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public void removeChildAtIndex(int childIndex) {
-        throw new UnsupportedOperationException();
     }
 
 

@@ -56,18 +56,6 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
         return jjtGetLastToken().getEndColumn();
     }
 
-
-    @Override
-    public JavaNode jjtGetParent() {
-        return (JavaNode) super.jjtGetParent();
-    }
-
-    @Override
-    public JavaNode jjtGetChild(int index) {
-        return (JavaNode) super.jjtGetChild(index);
-    }
-
-
     /**
      * Accept the visitor. *
      */
@@ -129,7 +117,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {
-            root = jjtGetParent().getRoot();
+            root = getParent().getRoot();
         }
         return root;
     }
