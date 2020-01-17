@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
@@ -37,8 +38,9 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
     }
 
     @Override
-    public Iterable<? extends ApexNode<?>> children() {
-        return (Iterable<? extends ApexNode<?>>) super.children();
+    @SuppressWarnings("unchecked")
+    public NodeStream<? extends ApexNode<?>> children() {
+        return (NodeStream<? extends ApexNode<?>>) super.children();
     }
 
     void calculateLineNumbers(SourceCodePositioner positioner) {
