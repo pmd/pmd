@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 /**
  * Represents an XPath attribute of a specific node.

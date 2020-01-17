@@ -12,7 +12,7 @@ import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.DeprecatedAttribute;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**

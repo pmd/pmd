@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath;
+package net.sourceforge.pmd.lang.ast.xpath.internal;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
