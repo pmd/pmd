@@ -1552,7 +1552,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">visit</span><span class="o">(</span><span class="n">node</span><span class="o">,</span><span class="n">data</span><span class="o">);</span>
     <span class="o">}</span>
     <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">hasBlockAsFirstChild</span><span class="o">(</span><span class="n">Node</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">jjtGetNumChildren</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">jjtGetChild</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="k">instanceof</span> <span class="n">ASTBlock</span><span class="o">));</span>
+        <span class="k">return</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">getNumChildren</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">jjtGetChild</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="k">instanceof</span> <span class="n">ASTBlock</span><span class="o">));</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
