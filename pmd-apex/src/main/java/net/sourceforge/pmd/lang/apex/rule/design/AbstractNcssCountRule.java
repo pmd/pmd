@@ -17,9 +17,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -49,13 +48,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
-    public Object visit(AbstractApexNodeBase node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            AbstractApexNodeBase n = (AbstractApexNodeBase) node.getChild(i);
-            Integer treeSize = (Integer) n.jjtAccept(this, data);
-            numNodes += treeSize.intValue();
+        for (ApexNode<?> child : node.children()) {
+            numNodes += (Integer) child.jjtAccept(this, data);
         }
 
         if (this.nodeClass.isInstance(node)) {
@@ -81,12 +78,12 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
      *            node data
      * @return count of the number of children of the node, plus one
      */
-    protected Integer countNodeChildren(Node node, Object data) {
+    protected Integer countNodeChildren(ApexNode<?> node, Object data) {
         Integer nodeCount;
         int lineCount = 0;
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            nodeCount = (Integer) ((AbstractApexNodeBase) node.getChild(i)).jjtAccept(this, data);
-            lineCount += nodeCount.intValue();
+        for (ApexNode<?> child : node.children()) {
+            nodeCount = (Integer) child.jjtAccept(this, data);
+            lineCount += nodeCount;
         }
         return ++lineCount;
     }

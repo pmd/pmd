@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -105,6 +108,36 @@ public class ApexParserTest extends ApexParserTestBase {
         Node method2 = rootNode.getChild(2);
         assertEquals("Wrong begin line", 4, method2.getBeginLine());
         assertEquals("Wrong end line", 5, method2.getEndLine());
+    }
+
+    @Test
+    public void checkComments() {
+
+        String code = "public  /** Comment on Class */ class SimpleClass {\n" // line 1
+            + "    /** Comment on m1 */"
+            + "    public void method1() {\n" // line 2
+            + "    }\n" // line 3
+            + "    public void method2() {\n" // line 4
+            + "    }\n" // line 5
+            + "}\n"; // line 6
+
+        ApexNode<Compilation> root = parse(code);
+
+        assertThat(root, instanceOf(ASTUserClass.class));
+        ApexNode<?> comment = root.getChild(0);
+        assertThat(comment, instanceOf(ASTFormalComment.class));
+
+        assertNotEquals(comment.getNode(), null);
+        assertThat(comment.getNode(), instanceOf(ASTFormalComment.AstComment.class));
+        assertPosition(comment, 1, 9, 1, 31);
+        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken());
+
+        ApexNode<?> m1 = root.getChild(2);
+        assertThat(m1, instanceOf(ASTMethod.class));
+
+        ApexNode<?> comment2 = m1.getChild(0);
+        assertThat(comment2, instanceOf(ASTFormalComment.class));
+        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getToken());
     }
 
     @Test

@@ -204,7 +204,7 @@ accordingly and this rule won't be executed.
 The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Possible values are:
 
-    <sourceLanguage name="apex" version="45"/>
+    <sourceLanguage name="apex" version="48"/>
     <sourceLanguage name="ecmascript" version="3"/>
     <sourceLanguage name="java" version="1.3"/>
     <sourceLanguage name="java" version="1.4"/>

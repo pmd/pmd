@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 import scala.collection.Iterator;
 import scala.meta.Dialect;
 import scala.meta.inputs.Input;
+import scala.meta.inputs.Position;
 import scala.meta.internal.tokenizers.ScalametaTokenizer;
 import scala.meta.tokens.Token;
 
@@ -74,7 +75,9 @@ public class ScalaTokenizer implements Tokenizer {
             Token token;
             while ((token = filter.getNextToken()) != null) {
                 String tokenText = token.text() != null ? token.text() : token.name();
-                TokenEntry cpdToken = new TokenEntry(tokenText, filename, token.pos().startLine());
+                Position tokenPosition = token.pos();
+                TokenEntry cpdToken = new TokenEntry(tokenText, filename, tokenPosition.startLine(),
+                        tokenPosition.startColumn(), tokenPosition.endColumn());
                 tokenEntries.add(cpdToken);
             }
         } finally {

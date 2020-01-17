@@ -37,6 +37,25 @@ useful. A short description how to use it is available under [Creating XML dump 
 
 Any feedback about it, especially about your use cases, is highly appreciated.
 
+#### Updated Apex Support
+
+*   The Apex language support has been bumped to version 48 (Spring '20). All new language features are now properly
+    parsed and processed.
+
+#### CPD XML format
+
+The CPD XML output format has been enhanced to also report column information for found duplications
+in addition to the line information. This allows to display the exact tokens, that are considered
+duplicate.
+
+If a CPD language doesn't provide these exact information, then these additional attributes are omitted.
+
+Each `<file>` element in the XML format now has 3 new attributes:
+
+*   attribute `endLine`
+*   attribute `beginColumn` (if there is column information available)
+*   attribute `endColumn` (if there is column information available)
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AvoidLiteralsInIfCondition" %} (`java-errorprone`) has a new property
@@ -54,6 +73,8 @@ Any feedback about it, especially about your use cases, is highly appreciated.
 
 ### Fixed Issues
 
+*   apex
+    *   [#2208](https://github.com/pmd/pmd/issues/2208): \[apex] ASTFormalComment should implement ApexNode&lt;T&gt;
 *   core
     *   [#2006](https://github.com/pmd/pmd/issues/2006): \[core] PMD should warn about multiple instances of the same rule in a ruleset
     *   [#2161](https://github.com/pmd/pmd/issues/2161): \[core] ResourceLoader is deprecated and marked as internal but is exposed
@@ -102,6 +123,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
 * {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
 
+* {% jdoc apex::lang.apex.ast.AbstractApexNode %}
+* {% jdoc apex::lang.apex.ast.AbstractApexNodeBase %}, and the related `visit`
+methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementations.
+ Use {% jdoc apex::lang.apex.ast.ApexNode %} instead, now considers comments too.
+
 ##### For removal
 
 * pmd-core
@@ -146,6 +172,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   [#2194](https://github.com/pmd/pmd/pull/2194): \[java] Fix odd logic in AvoidUsingHardCodedIPRule - [Egor Bredikhin](https://github.com/Egor18)
 *   [#2195](https://github.com/pmd/pmd/pull/2195): \[modelica] Normalize invalid node ranges - [Anatoly Trosinenko](https://github.com/atrosinenko)
 *   [#2199](https://github.com/pmd/pmd/pull/2199): \[modelica] Fix Javadoc tags - [Anatoly Trosinenko](https://github.com/atrosinenko)
+*   [#2225](https://github.com/pmd/pmd/pull/2225): \[core] CPD: report endLine / column informations for found duplications - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
