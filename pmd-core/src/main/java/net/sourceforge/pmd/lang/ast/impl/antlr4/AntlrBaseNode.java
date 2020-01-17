@@ -29,6 +29,16 @@ public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNo
         super(parent, invokingStateNumber);
     }
 
+    /**
+     * TODO @NoAttribute (port swift rules)
+     */
+    @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    public String getText() {
+        return super.getText();
+    }
+
+
     // FIXME these coordinates are not accurate
 
     @Override
