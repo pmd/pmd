@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 import apex.jorje.semantic.ast.AstNode;
 
@@ -40,7 +41,7 @@ public interface ApexNode<T extends AstNode> extends Node {
 
 
     @Override
-    Iterable<? extends ApexNode<?>> children();
+    NodeStream<? extends ApexNode<?>> children();
 
 
     @Override
