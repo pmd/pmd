@@ -82,7 +82,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public int getIndexInParent() {
-        return jjtGetChildIndex();
+        return childIndex;
     }
 
     @Override
@@ -128,6 +128,7 @@ public abstract class AbstractNode implements Node {
         this.parent = parent;
     }
 
+    @Override
     @Deprecated
     public Node jjtGetParent() {
         return parent;
@@ -154,13 +155,8 @@ public abstract class AbstractNode implements Node {
         childIndex = index;
     }
 
+
     @Override
-    @Deprecated
-    public int jjtGetChildIndex() {
-        return childIndex;
-    }
-
-
     @Deprecated
     public Node jjtGetChild(final int index) {
         return children[index];

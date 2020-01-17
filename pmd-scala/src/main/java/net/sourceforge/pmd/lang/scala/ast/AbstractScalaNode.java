@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 import scala.meta.Tree;
 import scala.meta.inputs.Position;
@@ -34,8 +35,8 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<ScalaNode<?>> children() {
-        return (Iterable<ScalaNode<?>>) super.children();
+    public NodeStream<ScalaNode<?>> children() {
+        return (NodeStream<ScalaNode<?>>) super.children();
     }
 
     @Override

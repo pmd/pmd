@@ -138,19 +138,6 @@ public interface Node {
 
 
     /**
-     * Gets the index of this node in the children of its parent.
-     *
-     * @return The index of the node
-     *
-     * @deprecated Use {@link #getIndexInParent()}
-     */
-    @Deprecated
-    default int jjtGetChildIndex() {
-        return getIndexInParent();
-    }
-
-
-    /**
      * This method returns a child node. The children are numbered from zero, left to right.
      *
      * @param index the child index. Must be nonnegative and less than
