@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
 import net.sourceforge.pmd.stat.DataPoint;
 
@@ -35,12 +35,11 @@ public class ExcessiveNodeCountRule extends AbstractStatisticalApexRule {
     }
 
     @Override
-    public Object visit(AbstractApexNodeBase node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Integer treeSize = (Integer) ((AbstractApexNodeBase) node.jjtGetChild(i)).jjtAccept(this, data);
-            numNodes += treeSize;
+        for (ApexNode<?> child : node.children()) {
+            numNodes += (Integer) child.jjtAccept(this, data);
         }
 
         if (nodeClass.isInstance(node)) {

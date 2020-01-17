@@ -54,6 +54,8 @@ Any feedback about it, especially about your use cases, is highly appreciated.
 
 ### Fixed Issues
 
+*   apex
+    *   [#2208](https://github.com/pmd/pmd/issues/2208): \[apex] ASTFormalComment should implement ApexNode&lt;T&gt;
 *   core
     *   [#2006](https://github.com/pmd/pmd/issues/2006): \[core] PMD should warn about multiple instances of the same rule in a ruleset
     *   [#2161](https://github.com/pmd/pmd/issues/2161): \[core] ResourceLoader is deprecated and marked as internal but is exposed
@@ -101,6 +103,11 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * {% jdoc core::rules.RuleBuilder %}
 * Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
 * {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
+
+* {% jdoc apex::lang.apex.ast.AbstractApexNode %}
+* {% jdoc apex::lang.apex.ast.AbstractApexNodeBase %}, and the related `visit`
+methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementations.
+ Use {% jdoc apex::lang.apex.ast.ApexNode %} instead, now considers comments too.
 
 ##### For removal
 
