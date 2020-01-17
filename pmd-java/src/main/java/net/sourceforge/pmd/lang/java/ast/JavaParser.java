@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -23,13 +24,11 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
  */
 public class JavaParser extends AbstractParser {
 
-    private final int jdkVersion;
-    private final boolean preview;
+    private final LanguageLevelChecker<?> checker;
 
-    public JavaParser(int jdkVersion, boolean preview, ParserOptions parserOptions) {
+    public JavaParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
         super(parserOptions);
-        this.jdkVersion = jdkVersion;
-        this.preview = preview;
+        this.checker = checker;
     }
 
     @Override
@@ -46,12 +45,13 @@ public class JavaParser extends AbstractParser {
         if (suppressMarker != null) {
             parser.setSuppressMarker(suppressMarker);
         }
-        parser.setJdkVersion(jdkVersion);
-        parser.setPreview(preview);
+        parser.setJdkVersion(checker.getJdkVersion());
+        parser.setPreview(checker.isPreviewEnabled());
 
         AbstractTokenManager.setFileName(fileName);
         ASTCompilationUnit acu = parser.CompilationUnit();
         acu.setNoPmdComments(parser.getSuppressMap());
+        checker.check(acu);
         return acu;
     }
 }

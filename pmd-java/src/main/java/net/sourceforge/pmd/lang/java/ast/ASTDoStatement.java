@@ -42,7 +42,7 @@ public class ASTDoStatement extends AbstractJavaNode {
      * This may be any expression of type boolean.
      */
     public ASTExpression getCondition() {
-        return (ASTExpression) jjtGetChild(1);
+        return (ASTExpression) getChild(1);
     }
 
 
@@ -51,7 +51,7 @@ public class ASTDoStatement extends AbstractJavaNode {
      * evaluates to true.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(0);
+        return (ASTStatement) getChild(0);
     }
 
 

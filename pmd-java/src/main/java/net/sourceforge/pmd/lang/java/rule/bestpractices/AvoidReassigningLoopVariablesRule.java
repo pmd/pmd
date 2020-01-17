@@ -88,9 +88,9 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             loopVariables.add(declaratorId.getImage());
         }
 
-        if (node.jjtGetParent() instanceof ASTForInit) {
+        if (node.getParent() instanceof ASTForInit) {
             // regular for loop: LocalVariableDeclaration -> ForInit -> ForStatement
-            final ASTStatement loopBody = node.jjtGetParent().jjtGetParent().getFirstChildOfType(ASTStatement.class);
+            final ASTStatement loopBody = node.getParent().getParent().getFirstChildOfType(ASTStatement.class);
             final ForReassignOption forReassign = getProperty(FOR_REASSIGN);
 
             if (forReassign != ForReassignOption.ALLOW) {
@@ -106,9 +106,9 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
                 }
             }
 
-        } else if (node.jjtGetParent() instanceof ASTForStatement) {
+        } else if (node.getParent() instanceof ASTForStatement) {
             // for-each loop: LocalVariableDeclaration -> ForStatement
-            final ASTStatement loopBody = node.jjtGetParent().getFirstChildOfType(ASTStatement.class);
+            final ASTStatement loopBody = node.getParent().getFirstChildOfType(ASTStatement.class);
             final ForeachReassignOption foreachReassign = getProperty(FOREACH_REASSIGN);
 
             if (foreachReassign == ForeachReassignOption.FIRST_ONLY) {
@@ -193,7 +193,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
                 continue;
             }
 
-            final ASTPrimaryExpression primaryExpression = operator.jjtGetParent().getFirstChildOfType(ASTPrimaryExpression.class);
+            final ASTPrimaryExpression primaryExpression = operator.getParent().getFirstChildOfType(ASTPrimaryExpression.class);
             checkVariable(data, loopVariables, singleVariableName(primaryExpression));
         }
     }
@@ -246,7 +246,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         }
 
         // is the first statement in the loop body?
-        return block.equals(statement.jjtGetParent()) && statement.jjtGetChildIndex() == 0;
+        return block.equals(statement.getParent()) && statement.getIndexInParent() == 0;
     }
 
     /**
@@ -261,8 +261,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         // check if we're inside the conditionally executed block of a control flow statement
 
         Node checkNode = node;
-        while (checkNode.jjtGetParent() != null && !checkNode.jjtGetParent().equals(loopBody)) {
-            final Node parent = checkNode.jjtGetParent();
+        while (checkNode.getParent() != null && !checkNode.getParent().equals(loopBody)) {
+            final Node parent = checkNode.getParent();
 
             // if/switch/while-statement, excluding the expression
             if (parent instanceof ASTIfStatement || parent instanceof ASTSwitchStatement || parent instanceof ASTWhileStatement || parent instanceof ASTDoStatement) {
@@ -280,8 +280,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         // continue statement before the increment statement
         final ASTBlock block = loopBody.getFirstDescendantOfType(ASTBlock.class);
         if (block != null) {
-            for (int i = 0; i < block.jjtGetNumChildren(); i++) {
-                final Node statement = block.jjtGetChild(i);
+            for (int i = 0; i < block.getNumChildren(); i++) {
+                final Node statement = block.getChild(i);
 
                 if (statement.hasDescendantOfType(ASTContinueStatement.class)) {
                     return true;
@@ -297,11 +297,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
 
     private boolean isParent(Node possibleParent, Node node) {
         Node checkNode = node;
-        while (checkNode.jjtGetParent() != null) {
-            if (checkNode.jjtGetParent().equals(possibleParent)) {
+        while (checkNode.getParent() != null) {
+            if (checkNode.getParent().equals(possibleParent)) {
                 return true;
             }
-            checkNode = checkNode.jjtGetParent();
+            checkNode = checkNode.getParent();
         }
         return false;
     }

@@ -1,9 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.should
+import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -14,10 +13,13 @@ class ASTCatchStatementTest : ParserTestSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
-        expectParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode") {
-            parseAstStatement("try { } catch (IOException | AssertionError e) { }")
-        }
+        inContext(StatementParsingCtx) {
 
+            "try { } catch (IOException | AssertionError e) { }" should throwParseException {
+                it.message.shouldContain("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly")
+            }
+
+        }
     }
 
     parserTest("Test single type", javaVersions = J1_5..Latest) {

@@ -28,8 +28,12 @@ public class Tokens {
         return tokens.size();
     }
 
+    public TokenEntry getEndToken(TokenEntry mark, Match match) {
+        return get(mark.getIndex() + match.getTokenCount() - 1);
+    }
+
     public int getLineCount(TokenEntry mark, Match match) {
-        TokenEntry endTok = get(mark.getIndex() + match.getTokenCount() - 1);
+        TokenEntry endTok = getEndToken(mark, match);
         if (endTok == TokenEntry.EOF) {
             endTok = get(mark.getIndex() + match.getTokenCount() - 2);
         }

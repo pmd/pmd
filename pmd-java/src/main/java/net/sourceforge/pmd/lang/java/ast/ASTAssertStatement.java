@@ -49,7 +49,7 @@ public class ASTAssertStatement extends AbstractJavaNode {
      * Returns the expression tested by this assert statement.
      */
     public ASTExpression getCondition() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -59,7 +59,7 @@ public class ASTAssertStatement extends AbstractJavaNode {
      * return null.
      */
     public boolean hasDetailMessage() {
-        return jjtGetNumChildren() == 2;
+        return getNumChildren() == 2;
     }
 
 
@@ -68,7 +68,7 @@ public class ASTAssertStatement extends AbstractJavaNode {
      * i.e. the expression after the colon, if it's present.
      */
     public ASTExpression getDetailMessageNode() {
-        return hasDetailMessage() ? (ASTExpression) jjtGetChild(1) : null;
+        return hasDetailMessage() ? (ASTExpression) getChild(1) : null;
     }
 
 }

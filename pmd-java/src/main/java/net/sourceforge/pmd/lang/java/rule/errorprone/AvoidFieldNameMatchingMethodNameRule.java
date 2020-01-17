@@ -29,15 +29,15 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceBody node, Object data) {
-        int n = node.jjtGetNumChildren();
+        int n = node.getNumChildren();
         List<ASTFieldDeclaration> fields = new ArrayList<>();
         Set<String> methodNames = new HashSet<>();
         for (int i = 0; i < n; i++) {
-            Node child = node.jjtGetChild(i);
-            if (child.jjtGetNumChildren() == 0) {
+            Node child = node.getChild(i);
+            if (child.getNumChildren() == 0) {
                 continue;
             }
-            child = child.jjtGetChild(child.jjtGetNumChildren() - 1);
+            child = child.getChild(child.getNumChildren() - 1);
             if (child instanceof ASTFieldDeclaration) {
                 fields.add((ASTFieldDeclaration) child);
             } else if (child instanceof ASTMethodDeclaration) {

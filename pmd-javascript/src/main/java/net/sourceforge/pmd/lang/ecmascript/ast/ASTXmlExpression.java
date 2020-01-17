@@ -20,7 +20,7 @@ public class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
     }
 
     public EcmascriptNode<?> getExpression() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public boolean isXmlAttribute() {

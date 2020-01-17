@@ -45,12 +45,12 @@ public class ASTNormalAnnotation extends AbstractJavaTypeNode {
      * eg {@code java.lang.Override} or {@code Override}.
      */
     public String getAnnotationName() {
-        return jjtGetChild(0).getImage();
+        return getChild(0).getImage();
     }
 
 
     @Override
-    public ASTAnnotation jjtGetParent() {
-        return (ASTAnnotation) super.jjtGetParent();
+    public ASTAnnotation getParent() {
+        return (ASTAnnotation) super.getParent();
     }
 }

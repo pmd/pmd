@@ -127,15 +127,15 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
         // Only process functions with one BlockStatement
-        if (block.jjtGetNumChildren() != 1 || block.findDescendantsOfType(ASTStatement.class).size() != 1) {
+        if (block.getNumChildren() != 1 || block.findDescendantsOfType(ASTStatement.class).size() != 1) {
             return super.visit(node, data);
         }
 
-        Node statement = block.jjtGetChild(0).jjtGetChild(0);
-        if (statement.jjtGetChild(0).jjtGetNumChildren() == 0) {
+        Node statement = block.getChild(0).getChild(0);
+        if (statement.getChild(0).getNumChildren() == 0) {
             return data; // skips empty return statements
         }
-        Node statementGrandChild = statement.jjtGetChild(0).jjtGetChild(0);
+        Node statementGrandChild = statement.getChild(0).getChild(0);
         ASTPrimaryExpression primaryExpression;
 
         if (statementGrandChild instanceof ASTPrimaryExpression) {
@@ -169,20 +169,20 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         }
         // Process arguments
         primarySuffix = primarySuffixList.get(1);
-        ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
-        ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
-        if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren()) {
+        ASTArguments arguments = (ASTArguments) primarySuffix.getChild(0);
+        ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.getChild(0);
+        if (formalParameters.getNumChildren() != arguments.getNumChildren()) {
             return super.visit(node, data);
         }
 
         if (!ignoreAnnotations) {
-            ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.jjtGetParent();
-            for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-                Node n = parent.jjtGetChild(i);
+            ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getParent();
+            for (int i = 0; i < parent.getNumChildren(); i++) {
+                Node n = parent.getChild(i);
                 if (n instanceof ASTAnnotation) {
-                    if (n.jjtGetChild(0) instanceof ASTMarkerAnnotation) {
+                    if (n.getChild(0) instanceof ASTMarkerAnnotation) {
                         // @Override is ignored
-                        if ("Override".equals(((ASTName) n.jjtGetChild(0).jjtGetChild(0)).getImage())) {
+                        if ("Override".equals(((ASTName) n.getChild(0).getChild(0)).getImage())) {
                             continue;
                         }
                     }
@@ -191,35 +191,35 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             }
         }
 
-        if (arguments.jjtGetNumChildren() == 0) {
+        if (arguments.getNumChildren() == 0) {
             addViolation(data, node, getMessage());
         } else {
-            ASTArgumentList argumentList = (ASTArgumentList) arguments.jjtGetChild(0);
-            for (int i = 0; i < argumentList.jjtGetNumChildren(); i++) {
-                Node expressionChild = argumentList.jjtGetChild(i).jjtGetChild(0);
-                if (!(expressionChild instanceof ASTPrimaryExpression) || expressionChild.jjtGetNumChildren() != 1) {
+            ASTArgumentList argumentList = (ASTArgumentList) arguments.getChild(0);
+            for (int i = 0; i < argumentList.getNumChildren(); i++) {
+                Node expressionChild = argumentList.getChild(i).getChild(0);
+                if (!(expressionChild instanceof ASTPrimaryExpression) || expressionChild.getNumChildren() != 1) {
                     // The arguments are not simply passed through
                     return super.visit(node, data);
                 }
 
                 ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) expressionChild;
-                ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.jjtGetChild(0);
-                if (argumentPrimaryPrefix.jjtGetNumChildren() == 0) {
+                ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.getChild(0);
+                if (argumentPrimaryPrefix.getNumChildren() == 0) {
                     // The arguments are not simply passed through (using "this" for instance)
                     return super.visit(node, data);
                 }
-                Node argumentPrimaryPrefixChild = argumentPrimaryPrefix.jjtGetChild(0);
+                Node argumentPrimaryPrefixChild = argumentPrimaryPrefix.getChild(0);
                 if (!(argumentPrimaryPrefixChild instanceof ASTName)) {
                     // The arguments are not simply passed through
                     return super.visit(node, data);
                 }
 
-                if (formalParameters.jjtGetNumChildren() < i + 1) {
+                if (formalParameters.getNumChildren() < i + 1) {
                     return super.visit(node, data); // different number of args
                 }
 
                 ASTName argumentName = (ASTName) argumentPrimaryPrefixChild;
-                ASTFormalParameter formalParameter = (ASTFormalParameter) formalParameters.jjtGetChild(i);
+                ASTFormalParameter formalParameter = (ASTFormalParameter) formalParameters.getChild(i);
                 ASTVariableDeclaratorId variableId = findFirstDegreeChildrenOfType(formalParameter,
                         ASTVariableDeclaratorId.class).get(0);
                 if (!argumentName.hasImageEqualTo(variableId.getImage())) {
@@ -254,8 +254,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return;
         }
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            Node child = node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            Node child = node.getChild(i);
             if (child.getClass().equals(targetType)) {
                 results.add((T) child);
             }

@@ -39,19 +39,19 @@ public class ASTExpression extends AbstractJavaTypeNode {
 
 
     public boolean isStandAlonePrimitive() {
-        if (jjtGetNumChildren() != 1) {
+        if (getNumChildren() != 1) {
             return false;
         }
 
         ASTPrimaryExpression primaryExpression = getFirstChildOfType(ASTPrimaryExpression.class);
 
-        if (primaryExpression == null || primaryExpression.jjtGetNumChildren() != 1) {
+        if (primaryExpression == null || primaryExpression.getNumChildren() != 1) {
             return false;
         }
 
         ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
 
-        if (primaryPrefix == null || primaryPrefix.jjtGetNumChildren() != 1) {
+        if (primaryPrefix == null || primaryPrefix.getNumChildren() != 1) {
             return false;
         }
 
@@ -60,6 +60,6 @@ public class ASTExpression extends AbstractJavaTypeNode {
         // if it is not a string literal and not a null, then it is one of
         // byte, short, char, int, long, float, double, boolean
         return literal != null && !literal.isStringLiteral()
-            && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
+            && (literal.getNumChildren() == 0 || !(literal.getChild(0) instanceof ASTNullLiteral));
     }
 }

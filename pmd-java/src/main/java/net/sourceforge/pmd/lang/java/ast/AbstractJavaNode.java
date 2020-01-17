@@ -27,7 +27,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
 
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -37,7 +37,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
 
     @Override
     public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -75,7 +75,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {
-            root = jjtGetParent().getRoot();
+            root = getParent().getRoot();
         }
         return root;
     }

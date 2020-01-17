@@ -25,6 +25,6 @@ public class ASTFunctionNodeTest extends EcmascriptParserTestBase {
         Assert.assertTrue(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();
         Assert.assertTrue(body instanceof ASTBlock);
-        Assert.assertTrue(body.jjtGetChild(0) instanceof ASTReturnStatement);
+        Assert.assertTrue(body.getChild(0) instanceof ASTReturnStatement);
     }
 }

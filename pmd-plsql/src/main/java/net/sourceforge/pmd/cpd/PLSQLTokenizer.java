@@ -68,7 +68,8 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
             image = String.valueOf(plsqlToken.kind);
         }
 
-        return new TokenEntry(image, fileName, currentToken.getBeginLine());
+        return new TokenEntry(image, fileName, currentToken.getBeginLine(),
+                currentToken.getBeginColumn(), currentToken.getEndColumn());
     }
 
     @Override

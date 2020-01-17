@@ -22,13 +22,13 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public boolean isVarargs() {
-        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
+        ASTFormalParameters params = (ASTFormalParameters) node.getChild(0);
         if (params.getParameterCount() == 0) {
             return false;
         }
 
         // If it's a varargs, it HAS to be the last parameter
-        ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(params.getParameterCount() - 1);
+        ASTFormalParameter p = (ASTFormalParameter) params.getChild(params.getParameterCount() - 1);
         return p.isVarargs();
     }
 
@@ -38,11 +38,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public String getParameterDisplaySignature() {
         StringBuilder sb = new StringBuilder("(");
-        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
+        ASTFormalParameters params = (ASTFormalParameters) node.getChild(0);
         // TODO - this can be optimized - add [0] then ,[n] in a loop.
         // no need to trim at the end
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
+            ASTFormalParameter p = (ASTFormalParameter) params.getChild(i);
             sb.append(p.getTypeNode().getTypeImage());
             if (p.isVarargs()) {
                 sb.append("...");
@@ -77,19 +77,19 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         }
 
         // compare parameter types
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        ASTFormalParameters otherParams = (ASTFormalParameters) other.node.jjtGetChild(0);
+        ASTFormalParameters myParams = (ASTFormalParameters) node.getChild(0);
+        ASTFormalParameters otherParams = (ASTFormalParameters) other.node.getChild(0);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
+            ASTFormalParameter myParam = (ASTFormalParameter) myParams.getChild(i);
+            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.getChild(i);
 
             // Compare vararg
             if (myParam.isVarargs() != otherParam.isVarargs()) {
                 return false;
             }
 
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
-            Node otherTypeNode = otherParam.getTypeNode().jjtGetChild(0);
+            Node myTypeNode = myParam.getTypeNode().getChild(0);
+            Node otherTypeNode = otherParam.getTypeNode().getChild(0);
 
             // compare primitive vs reference type
             if (myTypeNode.getClass() != otherTypeNode.getClass()) {
@@ -106,8 +106,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                 myTypeImg = myTypeNode.getImage();
                 otherTypeImg = otherTypeNode.getImage();
             } else {
-                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
-                otherTypeImg = otherTypeNode.jjtGetChild(0).getImage();
+                myTypeImg = myTypeNode.getChild(0).getImage();
+                otherTypeImg = otherTypeNode.getChild(0).getImage();
             }
 
             if (!myTypeImg.equals(otherTypeImg)) {
@@ -124,16 +124,16 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     public int hashCode() {
         int hash = node.getImage().hashCode() * 31 + ((ASTMethodDeclarator) node).getParameterCount();
 
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
+        ASTFormalParameters myParams = (ASTFormalParameters) node.getChild(0);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
+            ASTFormalParameter myParam = (ASTFormalParameter) myParams.getChild(i);
+            Node myTypeNode = myParam.getTypeNode().getChild(0);
 
             String myTypeImg;
             if (myTypeNode instanceof ASTPrimitiveType) {
                 myTypeImg = myTypeNode.getImage();
             } else {
-                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
+                myTypeImg = myTypeNode.getChild(0).getImage();
             }
 
             hash = hash * 31 + myTypeImg.hashCode();

@@ -38,10 +38,10 @@ public class ElementNode extends AbstractNodeInfo {
         this.node = node;
         this.id = idGenerator.getNextId();
         this.siblingPosition = siblingPosition;
-        if (node.jjtGetNumChildren() > 0) {
-            this.children = new NodeInfo[node.jjtGetNumChildren()];
+        if (node.getNumChildren() > 0) {
+            this.children = new NodeInfo[node.getNumChildren()];
             for (int i = 0; i < children.length; i++) {
-                children[i] = new ElementNode(document, idGenerator, this, node.jjtGetChild(i), i);
+                children[i] = new ElementNode(document, idGenerator, this, node.getChild(i), i);
             }
         } else {
             this.children = null;

@@ -19,6 +19,6 @@ public class XMLElementTest extends AbstractPLSQLParserTst {
         List<ASTXMLElement> xmlelements = input.findDescendantsOfType(ASTXMLElement.class);
         Assert.assertEquals(10, xmlelements.size());
         Assert.assertEquals("\"Emp\"", xmlelements.get(0).getFirstChildOfType(ASTID.class).getImage());
-        Assert.assertTrue(xmlelements.get(3).jjtGetChild(1) instanceof ASTXMLAttributesClause);
+        Assert.assertTrue(xmlelements.get(3).getChild(1) instanceof ASTXMLAttributesClause);
     }
 }

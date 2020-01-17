@@ -66,7 +66,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
      */
     public boolean isLocal() {
         if (!isLocalComputed) {
-            Node current = jjtGetParent();
+            Node current = getParent();
             while (current != null) {
                 if (current instanceof ASTAnyTypeDeclaration) {
                     isLocal = false;
@@ -76,7 +76,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
                     isLocal = true;
                     break;
                 }
-                current = current.jjtGetParent();
+                current = current.getParent();
             }
             if (current == null) {
                 isLocal = false;

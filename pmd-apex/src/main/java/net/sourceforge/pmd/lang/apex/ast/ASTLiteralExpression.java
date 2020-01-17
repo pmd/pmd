@@ -66,8 +66,8 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
     }
 
     public String getName() {
-        if (jjtGetParent() instanceof ASTNewKeyValueObjectExpression) {
-            ASTNewKeyValueObjectExpression parent = (ASTNewKeyValueObjectExpression) jjtGetParent();
+        if (getParent() instanceof ASTNewKeyValueObjectExpression) {
+            ASTNewKeyValueObjectExpression parent = (ASTNewKeyValueObjectExpression) getParent();
             try {
                 Field exprField = NameValueParameter.class.getDeclaredField("expression");
                 exprField.setAccessible(true);

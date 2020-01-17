@@ -39,7 +39,7 @@ public class ApexDocRule extends AbstractApexRule {
         addRuleChainVisit(ASTMethod.class);
         addRuleChainVisit(ASTProperty.class);
     }
-    
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         handleClassOrInterface(node, data);
@@ -54,7 +54,7 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (node.jjtGetParent() instanceof ASTProperty) {
+        if (node.getParent() instanceof ASTProperty) {
             // Skip property methods, doc is required on the property itself
             return data;
         }

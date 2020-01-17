@@ -37,7 +37,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * package.class#member(param, param) label} {@link
      * package.class#member(param, param) label} {@link package.class#field}
      * {@value package.class#field}
-     * 
+     *
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
@@ -63,8 +63,8 @@ public class UnusedImportsRule extends AbstractJavaRule {
          * package-info.java package annotations are processed before the import
          * clauses so they need to be examined again later on.
          */
-        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
-            visit((ASTPackageDeclaration) node.jjtGetChild(0), data);
+        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPackageDeclaration) {
+            visit((ASTPackageDeclaration) node.getChild(0), data);
         }
         for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
@@ -84,7 +84,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);
-                    
+
                     if (s != null) { // may be null for "@see #" and "@link #"
                         imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
                     }
@@ -117,11 +117,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         if (node.isImportOnDemand()) {
-            ASTName importedType = (ASTName) node.jjtGetChild(0);
+            ASTName importedType = (ASTName) node.getChild(0);
             imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
         } else {
             if (!node.isImportOnDemand()) {
-                ASTName importedType = (ASTName) node.jjtGetChild(0);
+                ASTName importedType = (ASTName) node.getChild(0);
                 String className;
                 if (isQualifiedName(importedType)) {
                     int lastDot = importedType.getImage().lastIndexOf('.') + 1;
@@ -199,13 +199,13 @@ public class UnusedImportsRule extends AbstractJavaRule {
         //         Name
         //     PrimarySuffix
 
-        if (node.jjtGetParent() instanceof ASTPrimaryPrefix && node.getNthParent(2) instanceof ASTPrimaryExpression) {
-            Node primaryPrefix = node.jjtGetParent();
-            Node expression = primaryPrefix.jjtGetParent();
+        if (node.getParent() instanceof ASTPrimaryPrefix && node.getNthParent(2) instanceof ASTPrimaryExpression) {
+            Node primaryPrefix = node.getParent();
+            Node expression = primaryPrefix.getParent();
 
-            boolean hasNextSibling = expression.jjtGetNumChildren() > primaryPrefix.jjtGetChildIndex() + 1;
+            boolean hasNextSibling = expression.getNumChildren() > primaryPrefix.getIndexInParent() + 1;
             if (hasNextSibling) {
-                Node nextSibling = expression.jjtGetChild(primaryPrefix.jjtGetChildIndex() + 1);
+                Node nextSibling = expression.getChild(primaryPrefix.getIndexInParent() + 1);
                 if (nextSibling instanceof ASTPrimarySuffix) {
                     return true;
                 }

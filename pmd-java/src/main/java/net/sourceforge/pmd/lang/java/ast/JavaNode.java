@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -38,7 +39,11 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
      *
      * @param visitor Visitor to dispatch
      * @param data    Visit data
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
 
@@ -65,17 +70,21 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
 
+    @Override
+    JavaNode getChild(int index);
+
+
+    @Override
+    JavaNode getParent();
+
+
+    @Override
+    NodeStream<JavaNode> children();
+
+
     @InternalApi
     @Deprecated
     void setScope(Scope scope);
-
-
-    @Override
-    JavaNode jjtGetChild(int index);
-
-
-    @Override
-    JavaNode jjtGetParent();
 
 
     JavaccToken jjtGetFirstToken();

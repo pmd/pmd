@@ -31,7 +31,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
 
     /**
      * The name of the type the method will be invoked against.
-     * 
+     *
      * @return String
      */
     protected abstract String targetTypename();
@@ -81,7 +81,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
 
     /**
      * Method visit.
-     * 
+     *
      * @param node
      *            ASTVariableDeclaratorId
      * @param data
@@ -99,7 +99,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
         for (NameOccurrence occ : node.getUsages()) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (isNotedMethod(jocc.getNameForWhichThisIsAQualifier())) {
-                Node parent = jocc.getLocation().jjtGetParent().jjtGetParent();
+                Node parent = jocc.getLocation().getParent().getParent();
                 if (parent instanceof ASTPrimaryExpression) {
                     // bail out if it's something like indexOf("a" + "b")
                     if (parent.hasDescendantOfType(ASTAdditiveExpression.class)) {

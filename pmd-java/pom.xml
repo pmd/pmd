@@ -83,6 +83,17 @@
                             </sources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>add-kotlin-test-sources</id>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/test/kotlin</source>
+                            </sources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

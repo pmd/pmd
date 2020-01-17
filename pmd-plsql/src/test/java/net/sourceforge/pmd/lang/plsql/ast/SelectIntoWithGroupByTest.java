@@ -43,6 +43,6 @@ public class SelectIntoWithGroupByTest extends AbstractPLSQLParserTst {
 
         List<ASTFromClause> fromClauses = input.findDescendantsOfType(ASTFromClause.class);
         Assert.assertEquals(1, fromClauses.size());
-        Assert.assertEquals(5, fromClauses.get(0).jjtGetNumChildren());
+        Assert.assertEquals(5, fromClauses.get(0).getNumChildren());
     }
 }

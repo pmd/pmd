@@ -45,17 +45,17 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
  * literals are used It would be much better to make these calls using one call
  * to <code>.append</code>
- * 
+ *
  * <p>Example:</p>
- * 
+ *
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello&quot;);
  * buf.append(&quot; &quot;).append(&quot;World&quot;);
  * </pre>
- * 
+ *
  * <p>This would be more eloquently put as:</p>
- * 
+ *
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello World&quot;);
@@ -122,9 +122,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
             if (InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
                 // append method call detected
                 ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
-                int numChildren = s.jjtGetNumChildren();
+                int numChildren = s.getNumChildren();
                 for (int jx = 0; jx < numChildren; jx++) {
-                    Node sn = s.jjtGetChild(jx);
+                    Node sn = s.getChild(jx);
                     if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
                         continue;
                     }
@@ -187,9 +187,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
      * @return 1 if the constructor contains string argument, else 0
      */
     private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
-        Node parent = node.jjtGetParent();
-        if (parent.jjtGetNumChildren() >= 2) {
-            ASTAllocationExpression allocationExpression = parent.jjtGetChild(1)
+        Node parent = node.getParent();
+        if (parent.getNumChildren() >= 2) {
+            ASTAllocationExpression allocationExpression = parent.getChild(1)
                     .getFirstDescendantOfType(ASTAllocationExpression.class);
             ASTArgumentList list = null;
             if (allocationExpression != null) {
@@ -214,22 +214,22 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
      * @return
      */
     private int checkInitializerExpressions(ASTVariableDeclaratorId node) {
-        ASTVariableInitializer initializer = node.jjtGetParent().getFirstChildOfType(ASTVariableInitializer.class);
+        ASTVariableInitializer initializer = node.getParent().getFirstChildOfType(ASTVariableInitializer.class);
         ASTPrimaryExpression primary = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
 
         int result = 0;
         boolean previousWasAppend = false;
-        for (int i = 0; i < primary.jjtGetNumChildren(); i++) {
-            Node child = primary.jjtGetChild(i);
-            if (child.jjtGetNumChildren() > 0 && child.jjtGetChild(0) instanceof ASTAllocationExpression) {
+        for (int i = 0; i < primary.getNumChildren(); i++) {
+            Node child = primary.getChild(i);
+            if (child.getNumChildren() > 0 && child.getChild(0) instanceof ASTAllocationExpression) {
                 // skip the constructor call, that has already been checked
                 continue;
             }
             if (child instanceof ASTPrimarySuffix) {
                 ASTPrimarySuffix suffix = (ASTPrimarySuffix) child;
-                if (suffix.jjtGetNumChildren() == 0 && suffix.hasImageEqualTo("append")) {
+                if (suffix.getNumChildren() == 0 && suffix.hasImageEqualTo("append")) {
                     previousWasAppend = true;
-                } else if (suffix.jjtGetNumChildren() > 0 && previousWasAppend) {
+                } else if (suffix.getNumChildren() > 0 && previousWasAppend) {
                     previousWasAppend = false;
 
                     ASTLiteral literal = suffix.getFirstDescendantOfType(ASTLiteral.class);
@@ -251,7 +251,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     }
 
     private boolean hasInitializer(ASTVariableDeclaratorId node) {
-        return node.jjtGetParent().hasDescendantOfType(ASTVariableInitializer.class);
+        return node.getParent().hasDescendantOfType(ASTVariableInitializer.class);
     }
 
     private int processAdditive(Object data, int concurrentCount, Node sn, Node rootNode) {
@@ -275,9 +275,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
         int count = concurrentCount;
         boolean found = false;
-        for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
-            Node childNode = additive.jjtGetChild(ix);
-            if (childNode.jjtGetNumChildren() != 1 || childNode.hasDescendantOfType(ASTName.class)) {
+        for (int ix = 0; ix < additive.getNumChildren(); ix++) {
+            Node childNode = additive.getChild(ix);
+            if (childNode.getNumChildren() != 1 || childNode.hasDescendantOfType(ASTName.class)) {
                 if (!found) {
                     checkForViolation(rootNode, data, count);
                     found = true;
@@ -335,12 +335,12 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
      * @return The first parent block
      */
     private Node getFirstParentBlock(Node node) {
-        Node parentNode = node.jjtGetParent();
+        Node parentNode = node.getParent();
 
         Node lastNode = node;
         while (parentNode != null && !BLOCK_PARENTS.contains(parentNode.getClass())) {
             lastNode = parentNode;
-            parentNode = parentNode.jjtGetParent();
+            parentNode = parentNode.getParent();
         }
         if (parentNode instanceof ASTIfStatement) {
             parentNode = lastNode;
@@ -360,11 +360,11 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
      * @return The parent node for the switch statement
      */
     private Node getSwitchParent(Node parentNode, Node lastNode) {
-        int allChildren = parentNode.jjtGetNumChildren();
+        int allChildren = parentNode.getNumChildren();
         Node result = parentNode;
         ASTSwitchLabel label = null;
         for (int ix = 0; ix < allChildren; ix++) {
-            Node n = result.jjtGetChild(ix);
+            Node n = result.getChild(ix);
             if (n instanceof ASTSwitchLabel) {
                 label = (ASTSwitchLabel) n;
             } else if (n.equals(lastNode)) {
@@ -388,8 +388,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     private boolean isAppendingStringLiteral(Node node) {
         Node n = node;
-        while (n.jjtGetNumChildren() != 0 && !(n instanceof ASTLiteral)) {
-            n = n.jjtGetChild(0);
+        while (n.getNumChildren() != 0 && !(n instanceof ASTLiteral)) {
+            n = n.getChild(0);
         }
         return n instanceof ASTLiteral;
     }
@@ -399,9 +399,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
             return TypeHelper.isEither(node, StringBuffer.class, StringBuilder.class);
         }
         Node nn = node.getTypeNameNode();
-        if (nn == null || nn.jjtGetNumChildren() == 0) {
+        if (nn == null || nn.getNumChildren() == 0) {
             return false;
         }
-        return TypeHelper.isEither((TypeNode) nn.jjtGetChild(0), StringBuffer.class, StringBuilder.class);
+        return TypeHelper.isEither((TypeNode) nn.getChild(0), StringBuffer.class, StringBuilder.class);
     }
 }

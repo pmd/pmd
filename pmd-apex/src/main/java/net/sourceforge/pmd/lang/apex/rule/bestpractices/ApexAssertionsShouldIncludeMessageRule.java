@@ -17,13 +17,13 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
     public Object visit(ASTMethodCallExpression node, Object data) {
         String methodName = node.getFullMethodName();
 
-        if (ASSERT.equalsIgnoreCase(methodName) && node.jjtGetNumChildren() == 2) {
+        if (ASSERT.equalsIgnoreCase(methodName) && node.getNumChildren() == 2) {
             addViolationWithMessage(data, node,
                     "''{0}'' should have 2 parameters.",
                     new Object[] { ASSERT });
         } else if ((ASSERT_EQUALS.equalsIgnoreCase(methodName)
                 || ASSERT_NOT_EQUALS.equalsIgnoreCase(methodName))
-                && node.jjtGetNumChildren() == 3) {
+                && node.getNumChildren() == 3) {
             addViolationWithMessage(data, node,
                     "''{0}'' should have 3 parameters.",
                     new Object[] { methodName });

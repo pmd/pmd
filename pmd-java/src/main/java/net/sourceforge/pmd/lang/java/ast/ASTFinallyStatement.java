@@ -30,6 +30,6 @@ public class ASTFinallyStatement extends AbstractJavaNode {
      * Returns the body of this finally clause.
      */
     public ASTBlock getBody() {
-        return (ASTBlock) jjtGetChild(0);
+        return (ASTBlock) getChild(0);
     }
 }

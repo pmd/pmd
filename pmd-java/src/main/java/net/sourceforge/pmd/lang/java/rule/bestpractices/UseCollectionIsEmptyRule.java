@@ -75,7 +75,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
             }
 
             if (type != null && CollectionUtil.isCollectionType(type.getType(), true)) {
-                Node expr = node.jjtGetParent().jjtGetParent();
+                Node expr = node.getParent().getParent();
                 checkNodeAndReport(data, node, expr);
             }
         }
@@ -84,7 +84,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
 
     private ASTClassOrInterfaceType getTypeOfMethodCall(ASTPrimarySuffix node) {
         ASTClassOrInterfaceType type = null;
-        ASTName methodName = node.jjtGetParent().getFirstChildOfType(ASTPrimaryPrefix.class)
+        ASTName methodName = node.getParent().getFirstChildOfType(ASTPrimaryPrefix.class)
                 .getFirstChildOfType(ASTName.class);
         if (methodName != null) {
             ClassScope classScope = node.getScope().getEnclosingScope(ClassScope.class);
@@ -102,7 +102,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
     }
 
     private ASTClassOrInterfaceType getTypeOfPrimaryPrefix(ASTPrimarySuffix node) {
-        return node.jjtGetParent().getFirstChildOfType(ASTPrimaryPrefix.class)
+        return node.getParent().getFirstChildOfType(ASTPrimaryPrefix.class)
                 .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
     }
 }

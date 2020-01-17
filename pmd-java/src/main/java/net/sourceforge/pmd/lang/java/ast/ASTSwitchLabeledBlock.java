@@ -28,8 +28,8 @@ public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitch
     @Override
     public void jjtClose() {
         super.jjtClose();
-        if (jjtGetNumChildren() > 0) {
-            AbstractNode firstChild = (AbstractNode) jjtGetChild(0);
+        if (getNumChildren() > 0) {
+            AbstractNode firstChild = (AbstractNode) getChild(0);
             jjtSetFirstToken(firstChild.jjtGetFirstToken());
         }
     }

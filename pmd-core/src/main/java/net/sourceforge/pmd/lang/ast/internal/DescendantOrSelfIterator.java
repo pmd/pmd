@@ -37,8 +37,8 @@ class DescendantOrSelfIterator implements Iterator<@NonNull Node> {
 
 
     private void enqueueChildren(Node n) {
-        for (int i = n.jjtGetNumChildren() - 1; i >= 0; i--) {
-            queue.addFirst(n.jjtGetChild(i));
+        for (int i = n.getNumChildren() - 1; i >= 0; i--) {
+            queue.addFirst(n.getChild(i));
         }
     }
 }

@@ -24,15 +24,15 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
     }
 
     private boolean fourthParentNotThrow(ASTAllocationExpression node) {
-        return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTThrowStatement);
+        return !(node.getParent().getParent().getParent().getParent() instanceof ASTThrowStatement);
     }
 
     private boolean fourthParentNotReturn(ASTAllocationExpression node) {
-        return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTReturnStatement);
+        return !(node.getParent().getParent().getParent().getParent() instanceof ASTReturnStatement);
     }
 
     private boolean insideLoop(ASTAllocationExpression node) {
-        Node n = node.jjtGetParent();
+        Node n = node.getParent();
         while (n != null) {
             if (n instanceof ASTDoStatement || n instanceof ASTWhileStatement || n instanceof ASTForStatement) {
                 return true;
@@ -41,9 +41,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
                  * init part is not technically inside the loop. Skip parent
                  * ASTForStatement but continue higher up to detect nested loops
                  */
-                n = n.jjtGetParent();
-            } else if (n.jjtGetParent() instanceof ASTForStatement && n.jjtGetParent().jjtGetNumChildren() > 1
-                    && n == n.jjtGetParent().jjtGetChild(1)) {
+                n = n.getParent();
+            } else if (n.getParent() instanceof ASTForStatement && n.getParent().getNumChildren() > 1
+                    && n == n.getParent().getChild(1)) {
                 // it is the second child of a ForStatement - which means
                 // we are dealing with a for-each construct
                 // In that case, we can ignore this allocation expression, as
@@ -51,9 +51,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
                 // is the expression, over which to iterate.
                 // Skip this parent but continue higher up
                 // to detect nested loops
-                n = n.jjtGetParent();
+                n = n.getParent();
             }
-            n = n.jjtGetParent();
+            n = n.getParent();
         }
         return false;
     }

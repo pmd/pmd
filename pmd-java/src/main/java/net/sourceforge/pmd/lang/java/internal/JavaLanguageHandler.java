@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
+import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetricsComputer;
@@ -47,8 +49,7 @@ import net.sf.saxon.sxpath.IndependentContext;
 
 public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
-    private final int jdkVersion;
-    private final boolean preview;
+    private final LanguageLevelChecker<?> levelChecker;
     private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
 
     public JavaLanguageHandler(int jdkVersion) {
@@ -57,14 +58,13 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     public JavaLanguageHandler(int jdkVersion, boolean preview) {
         super(JavaProcessingStage.class);
-        this.jdkVersion = jdkVersion;
-        this.preview = preview;
+        this.levelChecker = new LanguageLevelChecker<>(jdkVersion, preview, ReportingStrategy.reporterThatThrows());
     }
 
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new JavaParser(jdkVersion, preview, parserOptions);
+        return new JavaParser(levelChecker, parserOptions);
     }
 
 

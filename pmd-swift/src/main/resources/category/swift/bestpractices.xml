@@ -11,6 +11,7 @@ Rules which enforce generally accepted best practices.
 
     <rule name="ProhibitedInterfaceBuilder"
           since="7.0"
+          language="swift"
           message="Creating views using Interface Builder should be avoided."
           class="net.sourceforge.pmd.lang.swift.rule.bestpractices.ProhibitedInterfaceBuilderRule"
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder">
@@ -36,6 +37,7 @@ class ViewController: UIViewController {
 
     <rule name="UnavailableFunction"
           since="7.0"
+          language="swift"
           message="Unimplemented functions should be marked as unavailable."
           class="net.sourceforge.pmd.lang.swift.rule.bestpractices.UnavailableFunctionRule"
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#unavailablefunction">

@@ -30,7 +30,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
 
 
     private boolean areEquivalent(ASTCatchStatement st1, ASTCatchStatement st2) {
-        return hasSameSubTree(st1.getBlock(), st2.getBlock(), st1.getExceptionName(), st2.getExceptionName());
+        return hasSameSubTree(st1.getBody(), st2.getBody(), st1.getExceptionName(), st2.getExceptionName());
     }
 
 
@@ -124,18 +124,18 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
         }
 
         //numbers of child node are different
-        if (node1.jjtGetNumChildren() != node2.jjtGetNumChildren()) {
+        if (node1.getNumChildren() != node2.getNumChildren()) {
             return false;
         }
 
-        for (int num = 0; num < node1.jjtGetNumChildren(); num++) {
+        for (int num = 0; num < node1.getNumChildren(); num++) {
 
-            if (!basicEquivalence(node1.jjtGetChild(num), node2.jjtGetChild(num), exceptionName1, exceptionName2)) {
+            if (!basicEquivalence(node1.getChild(num), node2.getChild(num), exceptionName1, exceptionName2)) {
                 return false;
             }
 
             //subtree of nodes are different
-            if (!hasSameSubTree(node1.jjtGetChild(num), node2.jjtGetChild(num),
+            if (!hasSameSubTree(node1.getChild(num), node2.getChild(num),
                 exceptionName1, exceptionName2)) {
                 return false;
             }
@@ -167,14 +167,14 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRule {
     private boolean isNoMethodName(Node name) {
 
         if (name instanceof ASTName
-                && (name.jjtGetParent() instanceof ASTPrimaryPrefix || name.jjtGetParent() instanceof ASTPrimarySuffix)) {
+                && (name.getParent() instanceof ASTPrimaryPrefix || name.getParent() instanceof ASTPrimarySuffix)) {
 
-            Node prefixOrSuffix = name.jjtGetParent();
+            Node prefixOrSuffix = name.getParent();
 
-            if (prefixOrSuffix.jjtGetParent().jjtGetNumChildren() > 1 + prefixOrSuffix.jjtGetChildIndex()) {
+            if (prefixOrSuffix.getParent().getNumChildren() > 1 + prefixOrSuffix.getIndexInParent()) {
                 // there's one next sibling
 
-                Node next = prefixOrSuffix.jjtGetParent().jjtGetChild(prefixOrSuffix.jjtGetChildIndex() + 1);
+                Node next = prefixOrSuffix.getParent().getChild(prefixOrSuffix.getIndexInParent() + 1);
                 if (next instanceof ASTPrimarySuffix) {
                     return !((ASTPrimarySuffix) next).isArguments();
                 }

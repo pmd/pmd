@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -38,10 +37,10 @@ public class Java10Test {
         // first: var list = new ArrayList<String>();
         ASTType type = localVars.get(0).getFirstChildOfType(ASTType.class);
         assertEquals("var", type.getTypeImage());
-        assertEquals(1, type.jjtGetNumChildren());
+        assertEquals(1, type.getNumChildren());
         ASTReferenceType referenceType = type.getFirstChildOfType(ASTReferenceType.class);
         assertNotNull(referenceType);
-        assertEquals(1, referenceType.jjtGetNumChildren());
+        assertEquals(1, referenceType.getNumChildren());
         ASTClassOrInterfaceType classType = referenceType.getFirstChildOfType(ASTClassOrInterfaceType.class);
         assertNotNull(classType);
         assertEquals("var", classType.getImage());
@@ -144,23 +143,4 @@ public class Java10Test {
         java10.parseResource("LocalVariableTypeInference_typeres.java");
     }
 
-    @Test
-    public void testVarAsIdentifier() {
-        java10.parseResource("LocalVariableTypeInference_varAsIdentifier.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testVarAsTypeIdentifier() {
-        java10.parseResource("LocalVariableTypeInference_varAsTypeIdentifier.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testVarAsAnnotationName() {
-        java10.parseResource("LocalVariableTypeInference_varAsAnnotationName.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testVarAsEnumName() {
-        java10.parseResource("LocalVariableTypeInference_varAsEnumName.java");
-    }
 }

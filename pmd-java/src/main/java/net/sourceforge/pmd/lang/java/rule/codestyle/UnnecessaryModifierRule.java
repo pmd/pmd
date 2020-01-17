@@ -273,7 +273,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private void checkDeclarationInInterfaceType(Object data, Node fieldOrMethod, Set<Modifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
-        Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
+        Node parent = fieldOrMethod.getParent().getParent().getParent();
         if (parent instanceof ASTAnnotationTypeDeclaration
                 || parent instanceof ASTClassOrInterfaceDeclaration
                 && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {

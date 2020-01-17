@@ -8,6 +8,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 
 /**
@@ -55,13 +56,21 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
     }
 
     @Override
-    public N jjtGetChild(int index) {
+    @SuppressWarnings("unchecked")
+    public N getChild(int index) {
         return (N) super.jjtGetChild(index);
     }
 
     @Override
-    public N jjtGetParent() {
+    @SuppressWarnings("unchecked")
+    public N getParent() {
         return (N) super.jjtGetParent();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public NodeStream<N> children() {
+        return (NodeStream<N>) super.children();
     }
 
     @Override

@@ -23,7 +23,7 @@ public class ASTMethodDeclarator extends net.sourceforge.pmd.lang.plsql.ast.Abst
     }
 
     public int getParameterCount() {
-        return this.jjtGetChild(0).jjtGetNumChildren();
+        return this.getChild(0).getNumChildren();
     }
 }
 /*

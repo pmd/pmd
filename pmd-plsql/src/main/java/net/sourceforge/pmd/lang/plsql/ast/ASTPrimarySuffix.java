@@ -53,7 +53,7 @@ public class ASTPrimarySuffix extends net.sourceforge.pmd.lang.plsql.ast.Abstrac
         if (!this.isArguments()) {
             return -1;
         }
-        return ((ASTArguments) jjtGetChild(jjtGetNumChildren() - 1)).getArgumentCount();
+        return ((ASTArguments) getChild(getNumChildren() - 1)).getArgumentCount();
     }
 }
 /*

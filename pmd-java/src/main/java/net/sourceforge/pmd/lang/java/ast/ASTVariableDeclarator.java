@@ -47,7 +47,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
      */
     public String getName() {
         // first child will be VariableDeclaratorId
-        return jjtGetChild(0).getImage();
+        return getChild(0).getImage();
     }
 
 
@@ -55,7 +55,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
      * Returns the id of the declared variable.
      */
     public ASTVariableDeclaratorId getVariableId() {
-        return (ASTVariableDeclaratorId) jjtGetChild(0);
+        return (ASTVariableDeclaratorId) getChild(0);
     }
 
 
@@ -64,7 +64,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
      * Otherwise, {@link #getInitializer()} returns null.
      */
     public boolean hasInitializer() {
-        return jjtGetNumChildren() > 1;
+        return getNumChildren() > 1;
     }
 
 
@@ -72,7 +72,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
      * Returns the initializer, of the variable, or null if it doesn't exist.
      */
     public ASTVariableInitializer getInitializer() {
-        return hasInitializer() ? (ASTVariableInitializer) jjtGetChild(1) : null;
+        return hasInitializer() ? (ASTVariableInitializer) getChild(1) : null;
     }
 
 

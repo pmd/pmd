@@ -55,7 +55,8 @@ public class ApexTokenizer implements Tokenizer {
                     if (!caseSensitive) {
                         tokenText = tokenText.toLowerCase(Locale.ROOT);
                     }
-                    TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine());
+                    TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(),
+                            token.getCharPositionInLine(), token.getCharPositionInLine() + tokenText.length());
                     tokenEntries.add(tokenEntry);
                 }
                 token = lexer.nextToken();
