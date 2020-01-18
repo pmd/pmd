@@ -143,8 +143,8 @@ public final class SymbolTableResolver {
         private void setTopSymbolTableAndRecurse(JavaNode node) {
             InternalApiBridge.setSymbolTable(node, peekStack());
 
-            for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-                node.jjtGetChild(i).jjtAccept(this, null);
+            for (JavaNode child : node.children()) {
+                child.jjtAccept(this, null);
             }
         }
     }
