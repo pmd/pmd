@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -128,20 +129,20 @@ public class TreeExportCli {
 
 
         sb.append(String.format("%-" + marginWidth + "s%s", descriptor.id(), descriptor.description()))
-          .append(System.lineSeparator());
+            .append(System.lineSeparator());
 
         List<PropertyDescriptor<?>> props = descriptor.newPropertyBundle().getPropertyDescriptors();
 
         if (!props.isEmpty()) {
 
             sb.append(String.format("%-" + marginWidth + "s", "+ Properties"))
-              .append(System.lineSeparator());
+                .append(System.lineSeparator());
 
             for (PropertyDescriptor<?> prop : props) {
                 sb.append(String.format(
                     "  + %-" + marginWidth + "s%s %s",
                     prop.name(), prop.description(), "(default " + getDefault(prop) + ")"))
-                  .append(System.lineSeparator());
+                    .append(System.lineSeparator());
             }
         } else {
             sb.append(System.lineSeparator());
@@ -159,6 +160,7 @@ public class TreeExportCli {
                 .getDefaultVersion().getLanguageVersionHandler();
         Parser parser = languageHandler.getParser(languageHandler.getDefaultParserOptions());
 
+        @SuppressWarnings("PMD.CloseResource")
         Reader source;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
@@ -182,12 +184,13 @@ public class TreeExportCli {
 
     private String readFromSystemIn() {
 
-        Scanner scanner = new Scanner(System.in);
-        StringBuilder sb = new StringBuilder();
-        while (scanner.hasNextLine()) {
-            sb.append(scanner.nextLine());
-        }
 
+        StringBuilder sb = new StringBuilder();
+        try (Scanner scanner = new Scanner(new CloseShieldInputStream(System.in))) {
+            while (scanner.hasNextLine()) {
+                sb.append(scanner.nextLine());
+            }
+        }
         return sb.toString();
 
     }
