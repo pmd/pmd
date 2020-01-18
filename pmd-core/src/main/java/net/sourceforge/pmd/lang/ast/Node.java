@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 
@@ -236,7 +237,11 @@ public interface Node {
      * Returns true if this node is considered a boundary by traversal methods. Traversal methods such as {@link
      * #getFirstDescendantOfType(Class)} don't look past such boundaries by default, which is usually the expected thing
      * to do. For example, in Java, lambdas and nested classes are considered find boundaries.
+     *
+     * <p>Note: This attribute is deprecated for XPath queries. It is not useful
+     * for XPath queries and will be removed with PMD 7.0.0.
      */
+    @DeprecatedAttribute
     default boolean isFindBoundary() {
         return false;
     }
