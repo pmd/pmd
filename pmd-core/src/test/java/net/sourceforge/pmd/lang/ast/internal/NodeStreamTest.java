@@ -93,7 +93,7 @@ public class NodeStreamTest {
 
     @Test
     public void testChildrenEagerEvaluation() {
-        NodeStream<Node> children = tree1.children();
+        NodeStream<? extends Node> children = tree1.children();
         assertEquals(AxisStream.ChildrenStream.class, children.getClass());
         NodeStream<Node> children1 = children.children();
         assertEquals(GreedyNStream.GreedyKnownNStream.class, children1.getClass());
