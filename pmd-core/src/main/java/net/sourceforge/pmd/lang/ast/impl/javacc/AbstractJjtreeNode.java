@@ -75,22 +75,22 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
 
     @Override
     public int getBeginLine() {
-        return jjtGetFirstToken().getBeginLine();
+        return firstToken.getBeginLine();
     }
 
     @Override
     public int getBeginColumn() {
-        return jjtGetFirstToken().getBeginColumn();
+        return firstToken.getBeginColumn();
     }
 
     @Override
     public int getEndLine() {
-        return jjtGetLastToken().getEndLine();
+        return lastToken.getEndLine();
     }
 
     @Override
     public int getEndColumn() {
-        return jjtGetLastToken().getEndColumn();
+        return lastToken.getEndColumn();
     }
 
     /**
