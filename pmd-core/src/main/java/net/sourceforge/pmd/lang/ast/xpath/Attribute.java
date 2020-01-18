@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 /**
  * Represents an XPath attribute of a specific node.
@@ -31,7 +32,7 @@ public class Attribute {
 
 
     private static final Logger LOG = Logger.getLogger(Attribute.class.getName());
-    private static final ConcurrentMap<String, Boolean> DETECTED_DEPRECATED_ATTRIBUTES = new ConcurrentHashMap<>();
+    static final ConcurrentMap<String, Boolean> DETECTED_DEPRECATED_ATTRIBUTES = new ConcurrentHashMap<>();
 
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
@@ -72,12 +73,17 @@ public class Attribute {
         return method == null ? String.class : method.getReturnType();
     }
 
+    private boolean isAttributeDeprecated() {
+        return method != null && (method.isAnnotationPresent(Deprecated.class)
+                || method.isAnnotationPresent(DeprecatedAttribute.class));
+    }
+
     public Object getValue() {
         if (value != null) {
             return value.get(0);
         }
 
-        if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING)
+        if (LOG.isLoggable(Level.WARNING) && isAttributeDeprecated()
                 && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getLoggableAttributeName(), Boolean.TRUE) == null) {
             // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
             LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in XPath query");

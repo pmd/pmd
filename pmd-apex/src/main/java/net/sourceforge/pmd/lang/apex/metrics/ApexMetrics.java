@@ -37,7 +37,10 @@ public final class ApexMetrics {
     }
 
 
-    /** Resets the entire data structure. Used for tests. */
+    /**
+     * Resets the entire data structure.
+     * This needs to be done in case PMD is executed multiple times within one JVM run.
+     */
     static void reset() {
         FACADE.reset();
     }
