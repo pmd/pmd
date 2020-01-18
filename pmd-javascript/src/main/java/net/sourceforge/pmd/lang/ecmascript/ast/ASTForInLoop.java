@@ -20,15 +20,15 @@ public class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
     }
 
     public EcmascriptNode<?> getIterator() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public EcmascriptNode<?> getIteratedObject() {
-        return (EcmascriptNode<?>) jjtGetChild(1);
+        return (EcmascriptNode<?>) getChild(1);
     }
 
     public EcmascriptNode<?> getBody() {
-        return (EcmascriptNode<?>) jjtGetChild(2);
+        return (EcmascriptNode<?>) getChild(2);
     }
 
     public boolean isForEach() {

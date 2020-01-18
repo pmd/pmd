@@ -29,7 +29,7 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
 
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        ASTVariableDeclarationStatements parent = (ASTVariableDeclarationStatements) jjtGetParent();
+        ASTVariableDeclarationStatements parent = (ASTVariableDeclarationStatements) getParent();
 
         for (ASTModifierNode modifier : parent.findChildrenOfType(ASTModifierNode.class)) {
             for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {

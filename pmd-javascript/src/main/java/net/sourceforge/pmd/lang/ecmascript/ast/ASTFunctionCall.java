@@ -20,7 +20,7 @@ public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
     }
 
     public EcmascriptNode<?> getTarget() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public int getNumArguments() {
@@ -28,7 +28,7 @@ public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
     }
 
     public EcmascriptNode<?> getArgument(int index) {
-        return (EcmascriptNode<?>) jjtGetChild(index + 1);
+        return (EcmascriptNode<?>) getChild(index + 1);
     }
 
     public boolean hasArguments() {

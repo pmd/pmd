@@ -41,41 +41,41 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
         // VariableDeclarator/VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal
         for (ASTVariableDeclarator variableDeclarator : fieldDeclaration
                 .findChildrenOfType(ASTVariableDeclarator.class)) {
-            if (variableDeclarator.jjtGetNumChildren() > 1) {
-                final Node variableInitializer = variableDeclarator.jjtGetChild(1);
-                if (variableInitializer.jjtGetChild(0) instanceof ASTExpression) {
-                    final Node expression = variableInitializer.jjtGetChild(0);
+            if (variableDeclarator.getNumChildren() > 1) {
+                final Node variableInitializer = variableDeclarator.getChild(1);
+                if (variableInitializer.getChild(0) instanceof ASTExpression) {
+                    final Node expression = variableInitializer.getChild(0);
                     final Node primaryExpression;
-                    if (expression.jjtGetNumChildren() == 1) {
-                        if (expression.jjtGetChild(0) instanceof ASTPrimaryExpression) {
-                            primaryExpression = expression.jjtGetChild(0);
-                        } else if (expression.jjtGetChild(0) instanceof ASTCastExpression
-                                && expression.jjtGetChild(0).jjtGetChild(1) instanceof ASTPrimaryExpression) {
-                            primaryExpression = expression.jjtGetChild(0).jjtGetChild(1);
+                    if (expression.getNumChildren() == 1) {
+                        if (expression.getChild(0) instanceof ASTPrimaryExpression) {
+                            primaryExpression = expression.getChild(0);
+                        } else if (expression.getChild(0) instanceof ASTCastExpression
+                                && expression.getChild(0).getChild(1) instanceof ASTPrimaryExpression) {
+                            primaryExpression = expression.getChild(0).getChild(1);
                         } else {
                             continue;
                         }
                     } else {
                         continue;
                     }
-                    final Node primaryPrefix = primaryExpression.jjtGetChild(0);
-                    if (primaryPrefix.jjtGetNumChildren() == 1 && primaryPrefix.jjtGetChild(0) instanceof ASTLiteral) {
-                        final ASTLiteral literal = (ASTLiteral) primaryPrefix.jjtGetChild(0);
+                    final Node primaryPrefix = primaryExpression.getChild(0);
+                    if (primaryPrefix.getNumChildren() == 1 && primaryPrefix.getChild(0) instanceof ASTLiteral) {
+                        final ASTLiteral literal = (ASTLiteral) primaryPrefix.getChild(0);
                         if (isRef(fieldDeclaration, variableDeclarator)) {
                             // Reference type
-                            if (literal.jjtGetNumChildren() == 1 && literal.jjtGetChild(0) instanceof ASTNullLiteral) {
+                            if (literal.getNumChildren() == 1 && literal.getChild(0) instanceof ASTNullLiteral) {
                                 addViolation(data, variableDeclarator);
                             }
                         } else {
                             // Primitive type
-                            if (literal.jjtGetNumChildren() == 1
-                                    && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                            if (literal.getNumChildren() == 1
+                                    && literal.getChild(0) instanceof ASTBooleanLiteral) {
                                 // boolean type
-                                ASTBooleanLiteral booleanLiteral = (ASTBooleanLiteral) literal.jjtGetChild(0);
+                                ASTBooleanLiteral booleanLiteral = (ASTBooleanLiteral) literal.getChild(0);
                                 if (!booleanLiteral.isTrue()) {
                                     addViolation(data, variableDeclarator);
                                 }
-                            } else if (literal.jjtGetNumChildren() == 0) {
+                            } else if (literal.getNumChildren() == 0) {
                                 // numeric type
                                 // Note: Not catching NumberFormatException, as
                                 // it shouldn't be happening on valid source
@@ -130,17 +130,17 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
      *         otherwise.
      */
     private boolean isRef(ASTFieldDeclaration fieldDeclaration, ASTVariableDeclarator variableDeclarator) {
-        Node type = fieldDeclaration.jjtGetChild(0).jjtGetChild(0);
+        Node type = fieldDeclaration.getChild(0).getChild(0);
         if (type instanceof ASTReferenceType) {
             // Reference type, array or otherwise
             return true;
         } else {
             // Primitive array?
-            return ((ASTVariableDeclaratorId) variableDeclarator.jjtGetChild(0)).isArray();
+            return ((ASTVariableDeclaratorId) variableDeclarator.getChild(0)).isArray();
         }
     }
 
     private void addViolation(Object data, ASTVariableDeclarator variableDeclarator) {
-        super.addViolation(data, variableDeclarator, variableDeclarator.jjtGetChild(0).getImage());
+        super.addViolation(data, variableDeclarator, variableDeclarator.getChild(0).getImage());
     }
 }

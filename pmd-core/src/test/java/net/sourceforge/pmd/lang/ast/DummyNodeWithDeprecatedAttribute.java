@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+
 /**
  * @author Clément Fournier
  * @since 6.3.0
@@ -19,5 +21,12 @@ public class DummyNodeWithDeprecatedAttribute extends DummyNode {
     @Deprecated
     public int getSize() {
         return 2;
+    }
+
+    // this is a attribute that is deprecated for xpath, because it will be removed.
+    // it should still be available via Java.
+    @DeprecatedAttribute
+    public String getName() {
+        return "foo";
     }
 }

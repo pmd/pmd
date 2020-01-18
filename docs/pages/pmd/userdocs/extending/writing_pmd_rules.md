@@ -219,7 +219,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractJavaRule {
         return super.visit(node,data);
     }
     private boolean hasBlockAsFirstChild(Node node) {
-        return (node.jjtGetNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
+        return (node.getNumChildren() != 0 && (node.jjtGetChild(0) instanceof ASTBlock));
     }
 }
 ```
@@ -232,7 +232,7 @@ Daniel Sheppard integrated an XPath engine into PMD, so now you can write rules 
 
 `//WhileStatement[not(Statement/Block)]`
 
-Concise, eh? Here’s an [article](http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html) with a lot more detail.
+Concise, eh?
 
 Note that for XPath rules you’ll need to set the `class` attribute in the rule definition to `net.sourceforge.pmd.lang.rule.XPathRule.` Like this:
 

@@ -27,9 +27,9 @@ public class SelectExpressionsTest extends AbstractPLSQLParserTst {
         Assert.assertEquals(1, simpleExpressions.size());
         ASTSimpleExpression exp = simpleExpressions.get(0);
         Assert.assertEquals("e.first_name", exp.getImage());
-        Assert.assertEquals(2, exp.jjtGetNumChildren());
-        Assert.assertEquals(ASTTableName.class, exp.jjtGetChild(0).getClass());
-        Assert.assertEquals(ASTColumn.class, exp.jjtGetChild(1).getClass());
+        Assert.assertEquals(2, exp.getNumChildren());
+        Assert.assertEquals(ASTTableName.class, exp.getChild(0).getClass());
+        Assert.assertEquals(ASTColumn.class, exp.getChild(1).getClass());
     }
 
     @Test

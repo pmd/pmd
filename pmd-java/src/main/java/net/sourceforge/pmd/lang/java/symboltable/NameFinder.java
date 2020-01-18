@@ -24,14 +24,14 @@ public class NameFinder {
     private List<JavaNameOccurrence> names = new ArrayList<>();
 
     public NameFinder(ASTPrimaryExpression node) {
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.getChild(0);
         if (prefix.usesSuperModifier()) {
             add(new JavaNameOccurrence(prefix, "super"));
         } else if (prefix.usesThisModifier()) {
             add(new JavaNameOccurrence(prefix, "this"));
         }
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild((JavaNode) node.jjtGetChild(i));
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            checkForNameChild((JavaNode) node.getChild(i));
         }
     }
 
@@ -43,14 +43,14 @@ public class NameFinder {
         if (node.getImage() != null) {
             add(new JavaNameOccurrence(node, node.getImage()));
         }
-        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTName) {
-            ASTName grandchild = (ASTName) node.jjtGetChild(0);
+        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTName) {
+            ASTName grandchild = (ASTName) node.getChild(0);
             for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens();) {
                 add(new JavaNameOccurrence(grandchild, st.nextToken()));
             }
         }
-        if (node.jjtGetNumChildren() > 1 && node.jjtGetChild(1) instanceof ASTMethodReference) {
-            ASTMethodReference methodRef = (ASTMethodReference) node.jjtGetChild(1);
+        if (node.getNumChildren() > 1 && node.getChild(1) instanceof ASTMethodReference) {
+            ASTMethodReference methodRef = (ASTMethodReference) node.getChild(1);
             add(new JavaNameOccurrence(methodRef, methodRef.getImage()));
         }
         if (node instanceof ASTPrimarySuffix) {
@@ -58,12 +58,12 @@ public class NameFinder {
             if (suffix.isArguments()) {
                 JavaNameOccurrence occurrence = names.get(names.size() - 1);
                 occurrence.setIsMethodOrConstructorInvocation();
-                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
+                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).getChild(0);
                 occurrence.setArgumentCount(args.getArgumentCount());
-            } else if (suffix.jjtGetNumChildren() == 1 && suffix.jjtGetChild(0) instanceof ASTMemberSelector) {
-                ASTMemberSelector member = (ASTMemberSelector) suffix.jjtGetChild(0);
-                if (member.jjtGetNumChildren() == 1 && member.jjtGetChild(0) instanceof ASTMethodReference) {
-                    ASTMethodReference methodRef = (ASTMethodReference) member.jjtGetChild(0);
+            } else if (suffix.getNumChildren() == 1 && suffix.getChild(0) instanceof ASTMemberSelector) {
+                ASTMemberSelector member = (ASTMemberSelector) suffix.getChild(0);
+                if (member.getNumChildren() == 1 && member.getChild(0) instanceof ASTMethodReference) {
+                    ASTMethodReference methodRef = (ASTMethodReference) member.getChild(0);
                     add(new JavaNameOccurrence(methodRef, methodRef.getImage()));
                 } else {
                     add(new JavaNameOccurrence(member, member.getImage()));

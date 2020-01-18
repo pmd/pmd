@@ -23,9 +23,9 @@ public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.Abstr
     }
 
     public ASTDatatype getTypeNode() {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTDatatype) {
-                return (ASTDatatype) jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); i++) {
+            if (getChild(i) instanceof ASTDatatype) {
+                return (ASTDatatype) getChild(i);
             }
         }
         throw new IllegalStateException("ASTType not found");

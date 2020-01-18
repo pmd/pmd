@@ -37,8 +37,25 @@ grammar Swift;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 }
 
+
+
+@classMembers {
+
+    @Override
+	public TerminalNode createTerminalNode(ParserRuleContext parent, Token t) {
+		return new PmdAntlrTerminalNodeImpl(t);
+	}
+
+    @Override
+	public ErrorNode createErrorNode(ParserRuleContext parent, Token t) {
+		return new PmdAntlrErrorNodeImpl(t);
+	}
+
+}
+
 options {
     contextSuperClass = AntlrBaseNode;
+    superClass = PmdAntlrParserBase;
 }
 
 topLevel : statements? EOF ;

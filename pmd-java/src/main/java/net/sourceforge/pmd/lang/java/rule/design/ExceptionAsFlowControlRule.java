@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
  * Catches the use of exception statements as a flow control device.
- * 
+ *
  * @author Will Sargent
  */
 public class ExceptionAsFlowControlRule extends AbstractJavaRule {
@@ -32,7 +32,7 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
 
             List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
             for (ASTCatchStatement catchStmt : list) {
-                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
+                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.getChild(0);
                 ASTType type = fp.getFirstDescendantOfType(ASTType.class);
                 ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                 if (node.getFirstClassOrInterfaceTypeImage() != null

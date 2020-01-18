@@ -62,12 +62,12 @@ public class NPathComplexityRule extends AbstractCounterCheckRule<ExecutableCode
         int children = 0;
 
         for (ASTConditionalOrExpression element : orNodes) {
-            children += element.jjtGetNumChildren();
+            children += element.getNumChildren();
             children--;
         }
 
         for (ASTConditionalAndExpression element : andNodes) {
-            children += element.jjtGetNumChildren();
+            children += element.getNumChildren();
             children--;
         }
 

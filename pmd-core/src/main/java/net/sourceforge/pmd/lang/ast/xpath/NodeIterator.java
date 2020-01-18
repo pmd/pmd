@@ -51,38 +51,38 @@ public abstract class NodeIterator implements Iterator<Node> {
     protected abstract Node getNextNode(Node contextNode);
 
     protected Node getPreviousSibling(Node contextNode) {
-        Node parentNode = contextNode.jjtGetParent();
+        Node parentNode = contextNode.getParent();
         if (parentNode != null) {
-            int prevPosition = contextNode.jjtGetChildIndex() - 1;
+            int prevPosition = contextNode.getIndexInParent() - 1;
             if (prevPosition >= 0) {
-                return parentNode.jjtGetChild(prevPosition);
+                return parentNode.getChild(prevPosition);
             }
         }
         return null;
     }
 
     protected Node getNextSibling(Node contextNode) {
-        Node parentNode = contextNode.jjtGetParent();
+        Node parentNode = contextNode.getParent();
         if (parentNode != null) {
-            int nextPosition = contextNode.jjtGetChildIndex() + 1;
-            if (nextPosition < parentNode.jjtGetNumChildren()) {
-                return parentNode.jjtGetChild(nextPosition);
+            int nextPosition = contextNode.getIndexInParent() + 1;
+            if (nextPosition < parentNode.getNumChildren()) {
+                return parentNode.getChild(nextPosition);
             }
         }
         return null;
     }
 
     protected Node getFirstChild(Node contextNode) {
-        if (contextNode.jjtGetNumChildren() > 0) {
-            return contextNode.jjtGetChild(0);
+        if (contextNode.getNumChildren() > 0) {
+            return contextNode.getChild(0);
         } else {
             return null;
         }
     }
 
     protected Node getLastChild(Node contextNode) {
-        if (contextNode.jjtGetNumChildren() > 0) {
-            return contextNode.jjtGetChild(contextNode.jjtGetNumChildren() - 1);
+        if (contextNode.getNumChildren() > 0) {
+            return contextNode.getChild(contextNode.getNumChildren() - 1);
         } else {
             return null;
         }

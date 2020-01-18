@@ -7,14 +7,14 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Deprecated
 @InternalApi
-public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
+public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
@@ -55,24 +55,12 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return jjtGetLastToken().getEndColumn();
     }
 
-
-    @Override
-    public JavaNode jjtGetParent() {
-        return (JavaNode) super.jjtGetParent();
-    }
-
-    @Override
-    public JavaNode jjtGetChild(int index) {
-        return (JavaNode) super.jjtGetChild(index);
-    }
-
-
     /**
      * Accept the visitor. *
      */
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -82,7 +70,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
     @Override
     public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JavaNode) child).jjtAccept(visitor, data);
         }
 
@@ -128,7 +116,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {
-            root = jjtGetParent().getRoot();
+            root = getParent().getRoot();
         }
         return root;
     }

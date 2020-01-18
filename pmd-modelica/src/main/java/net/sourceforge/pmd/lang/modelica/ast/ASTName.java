@@ -32,17 +32,17 @@ public final class ASTName extends AbstractModelicaNode implements ResolvableMod
         super.jjtClose();
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < jjtGetNumChildren(); ++i) {
+        for (int i = 0; i < getNumChildren(); ++i) {
             if (i != 0 || absolute) {
                 sb.append('.');
             }
-            sb.append(((ASTSimpleName) jjtGetChild(i)).getImage());
+            sb.append(((ASTSimpleName) getChild(i)).getImage());
         }
         setImage(sb.toString());
 
-        nameComponents = new String[jjtGetNumChildren()];
-        for (int i = 0; i < jjtGetNumChildren(); ++i) {
-            nameComponents[i] = jjtGetChild(i).getImage();
+        nameComponents = new String[getNumChildren()];
+        for (int i = 0; i < getNumChildren(); ++i) {
+            nameComponents[i] = getChild(i).getImage();
         }
     }
 

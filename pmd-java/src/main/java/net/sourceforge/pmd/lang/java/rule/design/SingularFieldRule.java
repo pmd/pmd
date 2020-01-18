@@ -65,7 +65,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
 
         if (node.isPrivate() && !node.isStatic() && !hasClassLombokAnnotation() && !hasIgnoredAnnotation(node)) {
             for (ASTVariableDeclarator declarator : node.findChildrenOfType(ASTVariableDeclarator.class)) {
-                ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.jjtGetChild(0);
+                ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.getChild(0);
                 List<NameOccurrence> usages = declaration.getUsages();
                 Node decl = null;
                 boolean violation = true;
@@ -87,7 +87,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                         }
 
                         // Is the first usage in an assignment?
-                        Node potentialStatement = primaryExpressionParent.jjtGetParent();
+                        Node potentialStatement = primaryExpressionParent.getParent();
                         // Check that the assignment is not to a field inside
                         // the field object
                         boolean assignmentToField = no.getImage().equals(location.getImage());
@@ -124,7 +124,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                         }
                     }
 
-                    if (primaryExpressionParent.jjtGetParent() instanceof ASTSynchronizedStatement) {
+                    if (primaryExpressionParent.getParent() instanceof ASTSynchronizedStatement) {
                         // This usage is directly in an expression of a
                         // synchronized block
                         violation = false;

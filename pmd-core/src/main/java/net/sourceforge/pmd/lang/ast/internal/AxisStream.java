@@ -186,8 +186,8 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public @Nullable Node last() {
             Node last = node;
-            while (last.jjtGetParent() != null) {
-                last = last.jjtGetParent();
+            while (last.getParent() != null) {
+                last = last.getParent();
             }
             return last;
         }
@@ -267,7 +267,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public boolean nonEmpty() {
-            return node.jjtGetNumChildren() > 0;
+            return node.getNumChildren() > 0;
         }
     }
 
@@ -400,7 +400,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             if (n == 0) {
                 return this;
             }
-            int newLow = min(low + n, node.jjtGetNumChildren());
+            int newLow = min(low + n, node.getNumChildren());
             int newLen = max(len - n, 0);
             return StreamImpl.sliceChildren(node, filter, newLow, newLen);
         }
@@ -422,20 +422,20 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Nullable
         @Override
         public Node first() {
-            return len > 0 ? node.jjtGetChild(low) : null;
+            return len > 0 ? node.getChild(low) : null;
         }
 
         @Nullable
         @Override
         public Node last() {
-            return len > 0 ? node.jjtGetChild(low + len - 1) : null;
+            return len > 0 ? node.getChild(low + len - 1) : null;
         }
 
         @Nullable
         @Override
         public Node get(int n) {
             AssertionUtil.requireNonNegative("n", n);
-            return len > 0 && n < len ? node.jjtGetChild(low + n) : null;
+            return len > 0 && n < len ? node.getChild(low + n) : null;
         }
 
         @Override

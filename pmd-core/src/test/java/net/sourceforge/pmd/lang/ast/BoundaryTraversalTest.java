@@ -29,7 +29,7 @@ public class BoundaryTraversalTest {
     }
 
     private Node addChild(final Node parent, final Node child) {
-        parent.jjtAddChild(child, parent.jjtGetNumChildren()); // Append child at the end
+        parent.jjtAddChild(child, parent.getNumChildren()); // Append child at the end
         child.jjtSetParent(parent);
         return parent;
     }

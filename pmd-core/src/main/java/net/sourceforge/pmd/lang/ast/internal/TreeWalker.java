@@ -60,8 +60,8 @@ final class TreeWalker {
                                      final Filtermap<? super Node, ? extends T> filtermap,
                                      final List<T> results) {
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            final Node child = node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            final Node child = node.getChild(i);
             final T mapped = filtermap.apply(child);
             if (mapped != null) {
                 results.add(mapped);
@@ -74,9 +74,9 @@ final class TreeWalker {
     }
 
     <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<? super Node, ? extends T> filtermap) {
-        final int n = node.jjtGetNumChildren();
+        final int n = node.getNumChildren();
         for (int i = 0; i < n; i++) {
-            Node child = node.jjtGetChild(i);
+            Node child = node.getChild(i);
             final T t = filtermap.apply(child);
             if (t != null) {
                 return t;
@@ -135,8 +135,8 @@ final class TreeWalker {
 
         private void enqueueChildren(Node n) {
             if (config.isCrossFindBoundaries() || !n.isFindBoundary()) {
-                for (int i = n.jjtGetNumChildren() - 1; i >= 0; i--) {
-                    queue.addFirst(n.jjtGetChild(i));
+                for (int i = n.getNumChildren() - 1; i >= 0; i--) {
+                    queue.addFirst(n.getChild(i));
                 }
             }
         }

@@ -78,11 +78,11 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return isJUnit4Class && doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT4_CLASS_NAME);
+        return isJUnit4Class && doesNodeContainJUnitAnnotation(method.getParent(), JUNIT4_CLASS_NAME);
     }
 
     private boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return isJUnit5Class && doesNodeContainJUnitAnnotation(method.jjtGetParent(), JUNIT5_CLASS_NAME);
+        return isJUnit5Class && doesNodeContainJUnitAnnotation(method.getParent(), JUNIT5_CLASS_NAME);
     }
 
     private boolean isJUnit3Method(ASTMethodDeclaration method) {
@@ -102,7 +102,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
             if (extendsList == null) {
                 return false;
             }
-            if (((ASTClassOrInterfaceType) extendsList.jjtGetChild(0)).getImage().endsWith("TestCase")) {
+            if (((ASTClassOrInterfaceType) extendsList.getChild(0)).getImage().endsWith("TestCase")) {
                 return true;
             }
             String className = cid.getImage();
@@ -124,7 +124,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     private boolean doesNodeContainJUnitAnnotation(Node node, String annotationTypeClassName) {
         List<ASTAnnotation> annotations = node.findDescendantsOfType(ASTAnnotation.class);
         for (ASTAnnotation annotation : annotations) {
-            Node annotationTypeNode = annotation.jjtGetChild(0);
+            Node annotationTypeNode = annotation.getChild(0);
             TypeNode annotationType = (TypeNode) annotationTypeNode;
             if (annotationType.getType() == null) {
                 ASTName name = annotationTypeNode.getFirstChildOfType(ASTName.class);

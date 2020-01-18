@@ -23,7 +23,7 @@ public class ApexParserVisitorReducedAdapter extends ApexParserVisitorAdapter {
 
 
     public Object visit(ASTUserClassOrInterface<?> node, Object data) {
-        return visit((AbstractApexNodeBase) node, data);
+        return visit((ApexNode<?>) node, data);
     }
 
 }

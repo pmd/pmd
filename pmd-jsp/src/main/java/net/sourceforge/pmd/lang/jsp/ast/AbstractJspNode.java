@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
-public class AbstractJspNode extends AbstractNode implements JspNode {
+public class AbstractJspNode extends AbstractJjtreeNode<JspNode> implements JspNode {
 
     protected JspParser parser;
 
@@ -53,7 +53,7 @@ public class AbstractJspNode extends AbstractNode implements JspNode {
      */
     @Override
     public Object childrenAccept(JspParserVisitor visitor, Object data) {
-        for (Node child : children) {
+        for (Node child : children()) {
             ((JspNode) child).jjtAccept(visitor, data);
         }
 

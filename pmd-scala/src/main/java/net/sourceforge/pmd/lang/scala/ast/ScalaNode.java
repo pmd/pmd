@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 import scala.meta.Tree;
 
@@ -54,9 +55,13 @@ public interface ScalaNode<T extends Tree> extends Node {
 
 
     @Override
-    ScalaNode<?> jjtGetChild(int idx);
+    ScalaNode<?> getChild(int idx);
 
 
     @Override
-    ScalaNode<?> jjtGetParent();
+    ScalaNode<?> getParent();
+
+
+    @Override
+    NodeStream<ScalaNode<?>> children();
 }

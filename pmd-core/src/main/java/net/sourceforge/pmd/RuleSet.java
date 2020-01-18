@@ -14,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -24,12 +25,11 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.ChecksumAware;
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.filter.Filter;
-import net.sourceforge.pmd.util.filter.Filters;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -58,7 +58,7 @@ public class RuleSet implements ChecksumAware {
     private final List<Pattern> excludePatterns;
     private final List<Pattern> includePatterns;
 
-    private final Filter<File> filter;
+    private final Predicate<File> filter;
 
     /**
      * Creates a new RuleSet with the given checksum.
@@ -76,12 +76,8 @@ public class RuleSet implements ChecksumAware {
         excludePatterns = Collections.unmodifiableList(new ArrayList<>(builder.excludePatterns));
         includePatterns = Collections.unmodifiableList(new ArrayList<>(builder.includePatterns));
 
-        // Remapping back to string is not great but the only way to keep the Filter API
-        // compatible in PMD 6. The Filter API can be replaced
-        // entirely with standard JDK Predicates in PMD 7, so we can forget about this until 7.0.0.
-
-        final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(getIncludePatterns(), getExcludePatterns());
-        filter = Filters.toNormalizedFileFilter(regexFilter);
+        final Predicate<String> regexFilter = PredicateUtil.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
+        filter = PredicateUtil.toNormalizedFileFilter(regexFilter);
     }
 
     public RuleSet(final RuleSet rs) {
@@ -542,7 +538,7 @@ public class RuleSet implements ChecksumAware {
      *         <code>false</code> otherwise
      */
     public boolean applies(File file) {
-        return file == null || filter.filter(file);
+        return file == null || filter.test(file);
     }
 
     /**

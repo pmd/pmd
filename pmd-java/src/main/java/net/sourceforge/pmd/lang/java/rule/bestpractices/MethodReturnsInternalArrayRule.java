@@ -86,10 +86,10 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
     private boolean hasClone(ASTReturnStatement ret, String varName) {
         List<ASTPrimaryExpression> expressions = ret.findDescendantsOfType(ASTPrimaryExpression.class);
         for (ASTPrimaryExpression e : expressions) {
-            if (e.jjtGetChild(0) instanceof ASTPrimaryPrefix && e.jjtGetNumChildren() == 2
-                    && e.jjtGetChild(1) instanceof ASTPrimarySuffix
-                    && ((ASTPrimarySuffix) e.jjtGetChild(1)).isArguments()
-                    && ((ASTPrimarySuffix) e.jjtGetChild(1)).getArgumentCount() == 0) {
+            if (e.getChild(0) instanceof ASTPrimaryPrefix && e.getNumChildren() == 2
+                    && e.getChild(1) instanceof ASTPrimarySuffix
+                    && ((ASTPrimarySuffix) e.getChild(1)).isArguments()
+                    && ((ASTPrimarySuffix) e.getChild(1)).getArgumentCount() == 0) {
                 ASTName name = e.getFirstDescendantOfType(ASTName.class);
                 if (name != null && name.hasImageEqualTo(varName + ".clone")) {
                     return true;
@@ -102,9 +102,9 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
     private boolean hasArraysCopyOf(ASTReturnStatement ret) {
         List<ASTPrimaryExpression> expressions = ret.findDescendantsOfType(ASTPrimaryExpression.class);
         for (ASTPrimaryExpression e : expressions) {
-            if (e.jjtGetNumChildren() == 2 && e.jjtGetChild(0) instanceof ASTPrimaryPrefix
-                    && e.jjtGetChild(0).jjtGetNumChildren() == 1 && e.jjtGetChild(0).jjtGetChild(0) instanceof ASTName
-                    && e.jjtGetChild(0).jjtGetChild(0).getImage().endsWith("Arrays.copyOf")) {
+            if (e.getNumChildren() == 2 && e.getChild(0) instanceof ASTPrimaryPrefix
+                    && e.getChild(0).getNumChildren() == 1 && e.getChild(0).getChild(0) instanceof ASTName
+                    && e.getChild(0).getChild(0).getImage().endsWith("Arrays.copyOf")) {
                 return true;
             }
         }
@@ -118,9 +118,9 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
                 final ASTVariableDeclaratorId vid = fd.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
                 if (vid != null && vid.hasImageEqualTo(varName)) {
                     ASTVariableInitializer initializer = fd.getFirstDescendantOfType(ASTVariableInitializer.class);
-                    if (initializer != null && initializer.jjtGetNumChildren() == 1) {
-                        Node child = initializer.jjtGetChild(0);
-                        if (child instanceof ASTArrayInitializer && child.jjtGetNumChildren() == 0) {
+                    if (initializer != null && initializer.getNumChildren() == 1) {
+                        Node child = initializer.getChild(0);
+                        if (child instanceof ASTArrayInitializer && child.getNumChildren() == 0) {
                             return true;
                         } else if (child instanceof ASTExpression) {
                             try {

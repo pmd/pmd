@@ -160,7 +160,7 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
 
     @Override
     public NodeStream<Node> parents() {
-        return NodeStream.of(node.jjtGetParent());
+        return NodeStream.of(node.getParent());
     }
 
     @Override
