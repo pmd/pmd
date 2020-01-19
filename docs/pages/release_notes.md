@@ -166,8 +166,10 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
     following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
   * {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
     anymore come 7.0.0. Test the type of the expression nested within it.
-  * {% jdoc core::lang.java.metrics.JavaMetrics %}, {% jdoc core::lang.java.metrics.JavaMetricsComputer %},
-  {% jdoc core::lang.java.metrics.JavaMetricsProvider %}
+  * {% jdoc java::lang.java.metrics.JavaMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+* pmd-apex
+  * {% jdoc java::lang.apex.metrics.ApexMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+
 
 
 ### External Contributions

@@ -10,12 +10,15 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
+import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 
 /**
  * Computes metrics for the Apex framework.
  *
  * @author Clément Fournier
+ * @deprecated See {@link MetricsComputer}
  */
+@Deprecated
 public class ApexMetricsComputer extends AbstractMetricsComputer<ASTUserClassOrInterface<?>, ASTMethod> {
 
     private static final ApexMetricsComputer INSTANCE = new ApexMetricsComputer();

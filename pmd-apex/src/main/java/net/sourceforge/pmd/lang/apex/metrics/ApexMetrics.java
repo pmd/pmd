@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  *
  * @author Clément Fournier
  * @since 6.0.0
- *
  * @deprecated Use {@link MetricsUtil}
  */
 @Deprecated
@@ -138,7 +137,7 @@ public final class ApexMetrics {
 
 
     @NonNull
-    static List<ASTMethod> findOps(ASTUserClassOrInterface<?> node) {
+    public static List<ASTMethod> findOps(ASTUserClassOrInterface<?> node) {
         List<ASTMethod> candidates = node.findChildrenOfType(ASTMethod.class);
         List<ASTMethod> result = new ArrayList<>(candidates);
         for (ASTMethod method : candidates) {

@@ -139,7 +139,7 @@ public final class JavaMetrics {
         return MetricsUtil.computeAggregate(key, findOps(node), options, resultOption);
     }
 
-    static List<MethodLikeNode> findOps(ASTAnyTypeDeclaration node) {
+    public static List<MethodLikeNode> findOps(ASTAnyTypeDeclaration node) {
         List<MethodLikeNode> operations = new ArrayList<>();
 
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
