@@ -44,7 +44,7 @@ public class JavaLanguageHandler extends AbstractJavaHandler {
 
     public static class JavaMetricsProvider extends AbstractLanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> {
 
-        public JavaMetricsProvider() {
+        JavaMetricsProvider() {
             super(ASTAnyTypeDeclaration.class, MethodLikeNode.class);
         }
 

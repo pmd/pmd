@@ -74,7 +74,7 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
     private static class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
 
         @SuppressWarnings("unchecked")
-        public ApexMetricsProvider() {
+        ApexMetricsProvider() {
             // a wild double cast
             super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class);
         }
