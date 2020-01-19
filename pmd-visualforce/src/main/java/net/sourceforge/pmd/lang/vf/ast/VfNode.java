@@ -34,5 +34,5 @@ public interface VfNode extends Node {
 
 
     @Override
-    Iterable<VfNode> children();
+    Iterable<? extends VfNode> children();
 }

@@ -35,5 +35,5 @@ public interface ModelicaNode extends Node {
 
 
     @Override
-    Iterable<ModelicaNode> children();
+    Iterable<? extends ModelicaNode> children();
 }

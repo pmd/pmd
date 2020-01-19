@@ -43,7 +43,7 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<N> children() {
+    public Iterable<? extends N> children() {
         return (Iterable<N>) super.children();
     }
 }

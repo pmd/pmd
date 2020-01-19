@@ -51,7 +51,7 @@ public interface JavaNode extends ScopedNode {
 
 
     @Override
-    Iterable<JavaNode> children();
+    Iterable<? extends JavaNode> children();
 
 
     @InternalApi

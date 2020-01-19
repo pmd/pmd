@@ -34,7 +34,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<ScalaNode<?>> children() {
+    public Iterable<? extends ScalaNode<?>> children() {
         return (Iterable<ScalaNode<?>>) super.children();
     }
 

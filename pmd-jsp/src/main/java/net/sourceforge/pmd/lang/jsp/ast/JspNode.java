@@ -32,5 +32,5 @@ public interface JspNode extends Node {
 
 
     @Override
-    Iterable<JspNode> children();
+    Iterable<? extends JspNode> children();
 }

@@ -32,6 +32,6 @@ public interface VmNode extends Node {
 
 
     @Override
-    Iterable<VmNode> children();
+    Iterable<? extends VmNode> children();
 
 }
