@@ -8,11 +8,14 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
- * An opaque, strongly typed heterogeneous data container.
+ * An opaque, strongly typed heterogeneous data container. Data maps can
+ * be set to accept only a certain type of key, with the type parameter.
+ * The key can itself constrain the type of values, using its own type
+ * parameter {@code T}.
  *
- * @param <K> Type of keys in this map
+ * @param <K> Type of keys in this map.
  */
-public class DataMap<K> {
+public final class DataMap<K> {
 
     private final Map<DataKey<? extends K, ?>, Object> map = new IdentityHashMap<>();
 

@@ -135,6 +135,10 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
   * Many methods on the {% jdoc core::lang.ast.Node %} interface
   and {% jdoc core::lang.ast.AbstractNode %} base class. See their javadoc for details.
   * {% jdoc !!core::lang.ast.Node#isFindBoundary() %} is deprecated for XPath queries.
+  * Many APIs of {% jdoc_package core::lang.metrics %}, though most of them were internal and
+  probably not used directly outside of PMD. Use {% jdoc core::lang.metrics.MetricsUtil %} as
+  a replacement for the language-specific façades too.
+  * {% jdoc core::lang.ast.QualifiableNode %}, {% jdoc core::lang.ast.QualifiedName %}
 * pmd-java
   * {% jdoc java::lang.java.AbstractJavaParser %}
   * {% jdoc java::lang.java.AbstractJavaHandler %}
@@ -162,6 +166,8 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
     following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
   * {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
     anymore come 7.0.0. Test the type of the expression nested within it.
+  * {% jdoc core::lang.java.metrics.JavaMetrics %}, {% jdoc core::lang.java.metrics.JavaMetricsComputer %},
+  {% jdoc core::lang.java.metrics.JavaMetricsProvider %}
 
 
 ### External Contributions

@@ -18,12 +18,7 @@ public class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUser
     @SuppressWarnings("unchecked")
     public ApexMetricsProvider() {
         // a wild double cast
-        super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class, ApexMetricsComputer.getInstance());
-    }
-
-    @Override
-    public void initialize() {
-        ApexMetrics.reset();
+        super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class);
     }
 
     @Override
@@ -31,6 +26,11 @@ public class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUser
         return Arrays.asList(ApexClassMetricKey.values());
     }
 
+
+    @Override
+    protected List<ASTMethod> findOps(ASTUserClassOrInterface<?> astUserClassOrInterface) {
+        return ApexMetrics.findOps(astUserClassOrInterface);
+    }
 
     @Override
     public List<ApexOperationMetricKey> getAvailableOperationMetrics() {

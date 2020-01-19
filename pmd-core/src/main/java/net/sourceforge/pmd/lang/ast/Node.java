@@ -373,6 +373,7 @@ public interface Node {
      * unless it has been set via {@link #setUserData(Object)}.
      *
      * @return The user data set on this node.
+     * @deprecated Use {@link #getUserMap()}
      */
     Object getUserData();
 
@@ -389,6 +390,7 @@ public interface Node {
      *
      * @param userData
      *            The data to set on this node.
+     * @deprecated Use {@link #getUserMap()}
      */
     void setUserData(Object userData);
 

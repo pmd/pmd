@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -94,7 +95,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
         super.visit(node, data);
 
         if (JavaClassMetricKey.NCSS.supports(node)) {
-            int classSize = (int) JavaMetrics.get(JavaClassMetricKey.NCSS, node, ncssOptions);
+            int classSize = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NCSS, node, ncssOptions);
             int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions, ResultOption.HIGHEST);
 
             if (classSize >= classReportLevel) {
@@ -112,7 +113,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
 
-        int methodSize = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions);
+        int methodSize = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NCSS, node, ncssOptions);
         if (methodSize >= methodReportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                    PrettyPrintingUtil.displaySignature(node), "" + methodSize, });

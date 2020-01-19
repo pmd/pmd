@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 
@@ -41,9 +41,9 @@ public class GodClassRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
-        double tcc = JavaMetrics.get(JavaClassMetricKey.TCC, node);
-        int atfd = (int) JavaMetrics.get(JavaClassMetricKey.ATFD, node);
+        int wmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node);
+        double tcc = MetricsUtil.computeMetric(JavaClassMetricKey.TCC, node);
+        int atfd = (int) MetricsUtil.computeMetric(JavaClassMetricKey.ATFD, node);
 
         super.visit(node, data);
 

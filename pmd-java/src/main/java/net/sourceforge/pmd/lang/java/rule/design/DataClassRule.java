@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -30,10 +30,10 @@ public class DataClassRule extends AbstractJavaMetricsRule {
         boolean isDataClass = interfaceRevealsData(node) && classRevealsDataAndLacksComplexity(node);
 
         if (isDataClass) {
-            double woc = JavaMetrics.get(JavaClassMetricKey.WOC, node);
-            int nopa = (int) JavaMetrics.get(JavaClassMetricKey.NOPA, node);
-            int noam = (int) JavaMetrics.get(JavaClassMetricKey.NOAM, node);
-            int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
+            double woc = MetricsUtil.computeMetric(JavaClassMetricKey.WOC, node);
+            int nopa = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NOPA, node);
+            int noam = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NOAM, node);
+            int wmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node);
 
             addViolation(data, node, new Object[] {node.getSimpleName(),
                                                    StringUtil.percentageString(woc, 3),
@@ -45,15 +45,15 @@ public class DataClassRule extends AbstractJavaMetricsRule {
 
 
     private boolean interfaceRevealsData(ASTAnyTypeDeclaration node) {
-        double woc = JavaMetrics.get(JavaClassMetricKey.WOC, node);
+        double woc = MetricsUtil.computeMetric(JavaClassMetricKey.WOC, node);
         return woc < WOC_LEVEL;
     }
 
 
     private boolean classRevealsDataAndLacksComplexity(ASTAnyTypeDeclaration node) {
-        int nopa = (int) JavaMetrics.get(JavaClassMetricKey.NOPA, node);
-        int noam = (int) JavaMetrics.get(JavaClassMetricKey.NOAM, node);
-        int wmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node);
+        int nopa = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NOPA, node);
+        int noam = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NOAM, node);
+        int wmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node);
 
         return nopa + noam > ACCESSOR_OR_FIELD_FEW_LEVEL && wmc < WMC_HIGH_LEVEL
             || nopa + noam > ACCESSOR_OR_FIELD_MANY_LEVEL && wmc < WMC_VERY_HIGH_LEVEL;

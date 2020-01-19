@@ -32,12 +32,6 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
 public interface LanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> {
 
     /**
-     * Provides a hook to do any initializing before the first file is processed by PMD.
-     * This can be used by the metrics implementations to reset the cache.
-     */
-    void initialize();
-
-    /**
      * Returns a list of all supported type metric keys
      * for the language.
      */

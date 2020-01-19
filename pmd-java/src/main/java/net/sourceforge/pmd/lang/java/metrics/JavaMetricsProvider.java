@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
@@ -14,15 +15,20 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
 
+/**
+ * @deprecated This is internal API
+ */
+@Deprecated
+@InternalApi
 public class JavaMetricsProvider extends AbstractLanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> {
 
     public JavaMetricsProvider() {
-        super(ASTAnyTypeDeclaration.class, MethodLikeNode.class, JavaMetricsComputer.getInstance());
+        super(ASTAnyTypeDeclaration.class, MethodLikeNode.class);
     }
 
     @Override
-    public void initialize() {
-        JavaMetrics.reset();
+    protected List<MethodLikeNode> findOps(ASTAnyTypeDeclaration astAnyTypeDeclaration) {
+        return JavaMetrics.findOps(astAnyTypeDeclaration);
     }
 
     @Override
