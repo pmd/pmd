@@ -153,11 +153,22 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<?>> {
      * made the children of the definite node.  Then the definite node
      * is pushed on to the stack.
      */
-    public void closeNodeScope(N n, int num, JavaccToken lastToken) {
+    public void closeNodeScope(N n, final int num, JavaccToken lastToken) {
+        int a = nodeArity();
         mk = marks.remove(marks.size() - 1);
-        while (num-- > 0) {
-            n.jjtAddChild(popNode(), num);
+        N child = null;
+        int i = num;
+        while (i-- > 0) {
+            child = popNode();
+            n.jjtAddChild(child, i);
         }
+
+        if (child != null && num > a) {
+            // this node has more children that what was in its node scope
+            // (ie first token is wrong)
+            n.jjtSetFirstToken(child.jjtGetFirstToken());
+        }
+
         closeImpl(n, lastToken);
     }
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import java.util.Comparator;
+
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -25,18 +27,22 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  *
  * <p>TODO replace duplicates over PMD.
  */
-public class JavaccToken implements GenericToken {
+public class JavaccToken implements GenericToken, Comparable<JavaccToken> {
 
     /**
      * Kind for EOF tokens.
      */
     public static final int EOF = 0;
-
     /**
      * Kind for implicit tokens. Negative because JavaCC only picks
      * positive numbers for token kinds.
      */
     public static final int IMPLICIT_TOKEN = -1;
+
+    private static final Comparator<JavaccToken> COMPARATOR =
+        Comparator.comparingInt(JavaccToken::getStartInDocument)
+                  .thenComparing(JavaccToken::getEndInDocument);
+
 
     /**
      * An integer that describes the kind of this token.  This numbering
@@ -98,7 +104,8 @@ public class JavaccToken implements GenericToken {
                        int startInclusive,
                        int endExclusive,
                        JavaccTokenDocument document) {
-        assert startInclusive <= endExclusive : "Offsets should be correctly ordered: " + startInclusive + " <= " + endExclusive;
+        assert startInclusive <= endExclusive
+            : "Offsets should be correctly ordered: " + startInclusive + " <= " + endExclusive;
 
         this.kind = kind;
         this.image = image;
@@ -208,6 +215,11 @@ public class JavaccToken implements GenericToken {
         tok.specialToken = this.specialToken;
         tok.next = this.next;
         return tok;
+    }
+
+    @Override
+    public int compareTo(JavaccToken o) {
+        return COMPARATOR.compare(this, o);
     }
 
 
