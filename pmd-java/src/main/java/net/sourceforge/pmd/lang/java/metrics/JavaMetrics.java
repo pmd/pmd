@@ -143,8 +143,8 @@ public final class JavaMetrics {
         List<MethodLikeNode> operations = new ArrayList<>();
 
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.getNumChildren() > 0 && decl.getDeclarationNode() instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((MethodLikeNode) decl.getChild(0));
+            if (decl.getDeclarationNode() instanceof ASTMethodOrConstructorDeclaration) {
+                operations.add((MethodLikeNode) decl.getDeclarationNode());
             }
         }
         return operations;
