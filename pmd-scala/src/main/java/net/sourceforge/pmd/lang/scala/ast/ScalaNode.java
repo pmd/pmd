@@ -63,5 +63,5 @@ public interface ScalaNode<T extends Tree> extends Node {
 
 
     @Override
-    NodeStream<ScalaNode<?>> children();
+    NodeStream<? extends ScalaNode<?>> children();
 }
