@@ -6,11 +6,9 @@ package net.sourceforge.pmd.lang.scala.ast
 
 import io.kotlintest.should
 import io.kotlintest.specs.FunSpec
-import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import java.io.StringReader
 
 class ScalaTreeTests : FunSpec({
 
@@ -80,12 +78,7 @@ class Foo {
     }
 })
 
-fun String.parseScala(): ASTSource {
-    val ver = LanguageRegistry.getLanguage("Scala").defaultVersion.languageVersionHandler
-    val parser = ver.getParser(ver.defaultParserOptions)
-
-    return parser.parse(":dummy:", StringReader(this)) as ASTSource
-}
+fun String.parseScala(): ASTSource = ScalaParsingHelper.DEFAULT.parse(this)
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
     this::getBeginLine shouldBe bline

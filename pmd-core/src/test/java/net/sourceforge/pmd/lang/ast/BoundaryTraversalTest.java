@@ -62,7 +62,7 @@ public class BoundaryTraversalTest {
     public void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).crossFindBoundaries().toList();
+        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class, true);
         assertEquals(2, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
         assertFalse(descendantsOfType.get(1).isFindBoundary());

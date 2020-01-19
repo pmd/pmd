@@ -33,6 +33,6 @@ public interface VmNode extends Node {
 
 
     @Override
-    NodeStream<VmNode> children();
+    NodeStream<? extends VmNode> children();
 
 }

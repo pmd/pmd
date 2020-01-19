@@ -35,7 +35,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
 
     @Override
     @SuppressWarnings("unchecked")
-    public NodeStream<ScalaNode<?>> children() {
+    public NodeStream<? extends ScalaNode<?>> children() {
         return (NodeStream<ScalaNode<?>>) super.children();
     }
 

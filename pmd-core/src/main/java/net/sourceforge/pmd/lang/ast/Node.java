@@ -332,27 +332,33 @@ public interface Node {
     }
 
     /**
-     * Traverses down the tree to find all the descendant instances of type targetType
-     *
-     * @param targetType class which you want to find.
-     * @param crossBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()} is
-     * <code>true</code>
-     * @return List of all children of type targetType. Returns an empty list if none found.
-     */
-    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
-        return descendants(targetType).crossFindBoundaries(crossBoundaries).toList();
-    }
-
-    /**
      * Traverses down the tree to find all the descendant instances of type descendantType.
      *
      * @param targetType class which you want to find.
      * @param results list to store the matching descendants
      * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
      * is <code>true</code>
+     * @deprecated Use {@link #findDescendantsOfType(Class, boolean)} instead, which
+     * returns a result list.
      */
+    @Deprecated
     default <T extends Node> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
         descendants(targetType).crossFindBoundaries(crossFindBoundaries).forEach(results::add);
+    }
+
+    /**
+     * Traverses down the tree to find all the descendant instances of type
+     * descendantType.
+     *
+     * @param targetType
+     *            class which you want to find.
+     * @param crossFindBoundaries
+     *            if <code>false</code>, recursion stops for nodes for which
+     *            {@link #isFindBoundary()} is <code>true</code>
+     * @return List of all matching descendants
+     */
+    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossFindBoundaries) {
+        return descendants(targetType).crossFindBoundaries(crossFindBoundaries).toList();
     }
 
     /**

@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
@@ -63,12 +59,9 @@ public class AbstractCommentRuleTest {
 
     @Test
     public void testCommentAssignments() {
-        LanguageVersionHandler handler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8")
-                .getLanguageVersionHandler();
-        Reader source = new StringReader("public class Foo {" + "     /** Comment 1 */\n"
-                + "        public void method1() {}\n" + "    \n" + "        /** Comment 2 */\n" + "    \n"
-                + "        /** Comment 3 */\n" + "        public void method2() {}" + "}");
-        Node node = handler.getParser(handler.getDefaultParserOptions()).parse("test", source);
+        Node node = JavaParsingHelper.WITH_PROCESSING.parse("public class Foo {" + "     /** Comment 1 */\n"
+                                                                + "        public void method1() {}\n" + "    \n" + "        /** Comment 2 */\n" + "    \n"
+                                                                + "        /** Comment 3 */\n" + "        public void method2() {}" + "}");
 
         testSubject.assignCommentsToDeclarations((ASTCompilationUnit) node);
         List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class);

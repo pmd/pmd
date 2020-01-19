@@ -79,7 +79,7 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
 
 
     @Override
-    NodeStream<JavaNode> children();
+    NodeStream<? extends JavaNode> children();
 
 
     @InternalApi
