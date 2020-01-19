@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -63,8 +62,7 @@ public class AbstractNodeTransversalTest {
     public void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = new ArrayList<>();
-        rootNode.findDescendantsOfType(DummyNode.class, descendantsOfType, true);
+        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class, true);
         assertEquals(2, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
         assertFalse(descendantsOfType.get(1).isFindBoundary());

@@ -387,8 +387,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                     break;
                 }
 
-                List<ASTStatementExpression> exprs = new ArrayList<>();
-                finallyBody.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
+                List<ASTStatementExpression> exprs = finallyBody.findDescendantsOfType(ASTStatementExpression.class, true);
                 for (ASTStatementExpression stmt : exprs) {
                     ASTPrimaryExpression expr = stmt.getFirstChildOfType(ASTPrimaryExpression.class);
                     if (expr != null) {
@@ -430,8 +429,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                             // in the other class since there is no way to
                             // really check it.
                             if (!closed) {
-                                List<ASTPrimarySuffix> suffixes = new ArrayList<>();
-                                expr.findDescendantsOfType(ASTPrimarySuffix.class, suffixes, true);
+                                List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class, true);
                                 for (ASTPrimarySuffix oSuffix : suffixes) {
                                     String suff = oSuffix.getImage();
                                     if (closeTargets.contains(suff)) {
@@ -465,8 +463,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             // See if the variable is returned by the method, which means the
             // method is a utility for creating the db resource, which means of
             // course it can't be closed by the method, so it isn't an error.
-            List<ASTReturnStatement> returns = new ArrayList<>();
-            top.findDescendantsOfType(ASTReturnStatement.class, returns, true);
+            List<ASTReturnStatement> returns = top.findDescendantsOfType(ASTReturnStatement.class, true);
             for (ASTReturnStatement returnStatement : returns) {
                 ASTName name = returnStatement.getFirstDescendantOfType(ASTName.class);
                 if (name != null && name.getImage().equals(variableToClose)) {
@@ -491,8 +488,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean variableIsPassedToMethod(ASTPrimaryExpression expr, String variable) {
-        List<ASTName> methodParams = new ArrayList<>();
-        expr.findDescendantsOfType(ASTName.class, methodParams, true);
+        List<ASTName> methodParams = expr.findDescendantsOfType(ASTName.class, true);
         for (ASTName pName : methodParams) {
             String paramName = pName.getImage();
             // also check if we've got the a parameter (i.e if it's an argument

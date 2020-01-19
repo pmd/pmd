@@ -357,13 +357,18 @@ public abstract class AbstractNode implements Node {
         return list;
     }
 
-    // TODO : Add to Node interface in 7.0.0
+    @Override
     public <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
         final List<T> list = new ArrayList<>();
         findDescendantsOfType(this, targetType, list, crossBoundaries);
         return list;
     }
 
+    /**
+    * @deprecated Use {@link #findDescendantsOfType(Class, boolean)} instead, which
+    * returns a result list.
+    */
+    @Deprecated
     @Override
     public <T> void findDescendantsOfType(final Class<T> targetType, final List<T> results,
                                           final boolean crossBoundaries) {
@@ -373,8 +378,7 @@ public abstract class AbstractNode implements Node {
     private static <T> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
                                                   final boolean crossFindBoundaries) {
 
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            final Node child = node.getChild(i);
+        for (Node child : node.children()) {
             if (targetType.isAssignableFrom(child.getClass())) {
                 results.add(targetType.cast(child));
             }
@@ -388,8 +392,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public <T> List<T> findChildrenOfType(final Class<T> targetType) {
         final List<T> list = new ArrayList<>();
-        for (int i = 0; i < getNumChildren(); i++) {
-            final Node child = getChild(i);
+        for (Node child : children()) {
             if (targetType.isInstance(child)) {
                 list.add(targetType.cast(child));
             }
@@ -443,9 +446,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public <T> T getFirstChildOfType(final Class<T> childType) {
-        int n = getNumChildren();
-        for (int i = 0; i < n; i++) {
-            final Node child = getChild(i);
+        for (Node child : children()) {
             if (childType.isInstance(child)) {
                 return childType.cast(child);
             }
@@ -454,9 +455,7 @@ public abstract class AbstractNode implements Node {
     }
 
     private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
-        final int n = node.getNumChildren();
-        for (int i = 0; i < n; i++) {
-            final Node n1 = node.getChild(i);
+        for (Node n1 : node.children()) {
             if (descendantType.isAssignableFrom(n1.getClass())) {
                 return descendantType.cast(n1);
             }
