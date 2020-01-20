@@ -326,20 +326,6 @@ public interface Node {
     }
 
     /**
-     * Traverses down the tree to find all the descendant instances of type targetType
-     *
-     * @param targetType class which you want to find.
-     * @param crossBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()} is
-     * <code>true</code>
-     * @return List of all children of type targetType. Returns an empty list if none found.
-     */
-    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
-        final List<T> list = new ArrayList<>();
-        TraversalUtils.findDescendantsOfType(this, targetType, list, crossBoundaries);
-        return list;
-    }
-
-    /**
      * Traverses down the tree to find all the descendant instances of type descendantType.
      *
      * @param targetType class which you want to find.
@@ -365,7 +351,7 @@ public interface Node {
      *            {@link #isFindBoundary()} is <code>true</code>
      * @return List of all matching descendants
      */
-    default <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossFindBoundaries) {
+    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossFindBoundaries) {
         List<T> results = new ArrayList<>();
         TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
         return results;
@@ -510,7 +496,7 @@ public interface Node {
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
      *
-     * <p>This method should be preferred to {@link #getParent()}.
+     * <p>This method should be preferred to {@link #jjtGetParent()}.
      *
      * @return The parent of this node
      */
@@ -533,7 +519,7 @@ public interface Node {
      * Returns the index of this node in its parent's children. If this
      * node is a {@linkplain RootNode root node}, returns -1.
      *
-     * <p>This method replaces {@link #getIndexInParent()}, whose name was
+     * <p>This method replaces {@link #jjtGetChildIndex()}, whose name was
      * JJTree-specific.
      *
      * @return The index of this node in its parent's children
