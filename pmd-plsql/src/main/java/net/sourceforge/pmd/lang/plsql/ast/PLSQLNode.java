@@ -37,5 +37,5 @@ public interface PLSQLNode extends Node, ScopedNode {
 
 
     @Override
-    NodeStream<PLSQLNode> children();
+    NodeStream<? extends PLSQLNode> children();
 }

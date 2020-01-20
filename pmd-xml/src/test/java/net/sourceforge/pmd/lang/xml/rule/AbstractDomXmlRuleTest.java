@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.xml.rule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +26,9 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 public class AbstractDomXmlRuleTest {
@@ -41,9 +38,8 @@ public class AbstractDomXmlRuleTest {
         String source = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY entity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&entity;&lt;</foo>";
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setExpandEntityReferences(false);
-        Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion()
-                .getLanguageVersionHandler().getParser(parserOptions);
-        XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
+
+        XmlNode xmlNode = XmlParsingHelper.XML.withParserOptions(parserOptions).parse(source);
         List<XmlNode> nodes = new ArrayList<>();
         nodes.add(xmlNode);
 
@@ -108,9 +104,7 @@ public class AbstractDomXmlRuleTest {
                 + " \"http://jakarta.inexistinghost.org/struts/dtds/struts-config_1_1.dtd\" >" + "<struts-config/>";
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setLookupDescriptorDoc(false);
-        Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion()
-                .getLanguageVersionHandler().getParser(parserOptions);
-        XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
+        XmlNode xmlNode = XmlParsingHelper.XML.withParserOptions(parserOptions).parse(source);
         // no exception should be thrown
 
         MyRule rule = new MyRule();
@@ -130,10 +124,7 @@ public class AbstractDomXmlRuleTest {
                 + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
                 + "xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.inexisting.com/xml/ns/javaee/web-app_2_5.xsd\" "
                 + "version=\"2.5\">" + "</web-app>";
-        XmlParserOptions parserOptions = new XmlParserOptions();
-        Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion()
-                .getLanguageVersionHandler().getParser(parserOptions);
-        XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
+        XmlNode xmlNode = XmlParsingHelper.XML.parse(source);
         // no exception should be thrown
         // first element is still parsed
         MyRule rule = new MyRule();

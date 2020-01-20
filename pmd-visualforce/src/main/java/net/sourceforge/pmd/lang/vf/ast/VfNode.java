@@ -35,5 +35,5 @@ public interface VfNode extends Node {
 
 
     @Override
-    NodeStream<VfNode> children();
+    NodeStream<? extends VfNode> children();
 }

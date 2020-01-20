@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.xml.XmlParsingHelper.XML;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Locale;
@@ -16,9 +15,6 @@ import java.util.Locale;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
@@ -329,12 +325,9 @@ public class XmlParserTest {
     @Test
     public void testWithProcessingInstructions() {
         String xml = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY myentity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&myentity;&lt;</foo>";
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
-                .getDefaultVersion().getLanguageVersionHandler();
-        XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
+        XmlParserOptions options = new XmlParserOptions();
         options.setExpandEntityReferences(false);
-        Parser parser = xmlVersionHandler.getParser(options);
-        Node document = parser.parse(null, new StringReader(xml));
+        Node document = XmlParsingHelper.XML.withParserOptions(options).parse(xml);
         Assert.assertNotNull(document);
         assertNode(document.getChild(0), "mypi", 0);
         assertLineNumbers(document.getChild(0), 1, 22, 1, 29);

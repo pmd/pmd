@@ -27,10 +27,9 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
@@ -123,7 +122,7 @@ public class XPathRuleTest extends RuleTst {
     /**
      * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
      * in some cases in xpath 2.0
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -134,9 +133,7 @@ public class XPathRuleTest extends RuleTst {
                 + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
                 + "    }\n" + "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
-        Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
-        ASTCompilationUnit cu = (ASTCompilationUnit) parser.parse("test", new StringReader(SUFFIX));
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SUFFIX);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
@@ -177,9 +174,7 @@ public class XPathRuleTest extends RuleTst {
     public void testFollowingSibling() throws Exception {
         final String SOURCE = "public interface dummy extends Foo, Bar, Baz {}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
-        Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
-        ASTCompilationUnit cu = (ASTCompilationUnit) parser.parse("test", new StringReader(SOURCE));
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SOURCE);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 

@@ -36,5 +36,5 @@ public interface ModelicaNode extends Node {
 
 
     @Override
-    NodeStream<ModelicaNode> children();
+    NodeStream<? extends ModelicaNode> children();
 }

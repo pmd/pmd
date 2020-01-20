@@ -33,5 +33,5 @@ public interface JspNode extends Node {
 
 
     @Override
-    NodeStream<JspNode> children();
+    NodeStream<? extends JspNode> children();
 }

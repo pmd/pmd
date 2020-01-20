@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Test;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.symboltable.ScopeAndDeclarationFinder;
  * @author Philip Graf
  */
 public class JavaRuleViolationTest {
+
     /**
      * Verifies that {@link JavaRuleViolation} sets the variable name for an
      * {@link ASTFormalParameter} node.
@@ -45,25 +46,7 @@ public class JavaRuleViolationTest {
     }
 
     private ASTCompilationUnit parse(final String code) {
-        LanguageVersion version = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        final LanguageVersionHandler languageVersionHandler = version.getLanguageVersionHandler();
-        final ParserOptions options = languageVersionHandler.getDefaultParserOptions();
-        final ASTCompilationUnit ast = (ASTCompilationUnit) languageVersionHandler.getParser(options).parse(null,
-                new StringReader(code));
-        // set scope of AST nodes
-        ast.jjtAccept(new ScopeAndDeclarationFinder(), null);
-        JavaProcessingStage.QNAME_RESOLUTION.processAST(ast, new AstAnalysisContext() {
-            @Override
-            public ClassLoader getTypeResolutionClassLoader() {
-                return JavaRuleViolation.class.getClassLoader();
-            }
-
-            @Override
-            public LanguageVersion getLanguageVersion() {
-                return version;
-            }
-        });
-        return ast;
+        return JavaParsingHelper.WITH_PROCESSING.parse(code);
     }
 
     /**

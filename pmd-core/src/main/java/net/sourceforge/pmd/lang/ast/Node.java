@@ -346,9 +346,29 @@ public interface Node {
      * @param results list to store the matching descendants
      * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
      * is <code>true</code>
+     * @deprecated Use {@link #findDescendantsOfType(Class, boolean)} instead, which
+     * returns a result list.
      */
+    @Deprecated
     default <T extends Node> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
         TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
+    }
+
+    /**
+     * Traverses down the tree to find all the descendant instances of type
+     * descendantType.
+     *
+     * @param targetType
+     *            class which you want to find.
+     * @param crossFindBoundaries
+     *            if <code>false</code>, recursion stops for nodes for which
+     *            {@link #isFindBoundary()} is <code>true</code>
+     * @return List of all matching descendants
+     */
+    default <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossFindBoundaries) {
+        List<T> results = new ArrayList<>();
+        TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
+        return results;
     }
 
     /**
