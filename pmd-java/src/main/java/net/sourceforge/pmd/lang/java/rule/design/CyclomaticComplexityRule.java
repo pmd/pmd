@@ -145,25 +145,26 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public final Object visit(MethodLikeNode node, Object data) {
 
-        int cyclo = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.CYCLO, node, cycloOptions);
-        if (cyclo >= methodReportLevel) {
+        if (JavaOperationMetricKey.CYCLO.supports(node)) {
+            int cyclo = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.CYCLO, node, cycloOptions);
+            if (cyclo >= methodReportLevel) {
 
 
-            String opname = node instanceof ASTMethodOrConstructorDeclaration
-                            ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
-                            : "lambda";
+                String opname = node instanceof ASTMethodOrConstructorDeclaration
+                                ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
+                                : "lambda";
 
-            String kindname = node instanceof ASTMethodOrConstructorDeclaration
-                              ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
-                              : "lambda";
+                String kindname = node instanceof ASTMethodOrConstructorDeclaration
+                                  ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
+                                  : "lambda";
 
 
-            addViolation(data, node, new String[] {kindname,
-                                                   opname,
-                                                   "",
-                                                   "" + cyclo, });
+                addViolation(data, node, new String[] {kindname,
+                                                       opname,
+                                                       "",
+                                                       "" + cyclo, });
+            }
         }
-
         return data;
     }
 

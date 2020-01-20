@@ -31,8 +31,8 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     @Deprecated
     private static final PropertyDescriptor<Double> MINIMUM_DESCRIPTOR
-            = PropertyFactory.doubleProperty("minimum").desc("Deprecated! Minimum reporting threshold")
-                             .require(positive()).defaultValue(200d).build();
+        = PropertyFactory.doubleProperty("minimum").desc("Deprecated! Minimum reporting threshold")
+                         .require(positive()).defaultValue(200d).build();
 
 
     private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
@@ -71,10 +71,14 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        if (!JavaOperationMetricKey.NPATH.supports(node)) {
+            return data;
+        }
+
         int npath = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NPATH, node);
         if (npath >= reportLevel) {
-            addViolation(data, node, new String[]{node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                  PrettyPrintingUtil.displaySignature(node), "" + npath, });
+            addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                                                   PrettyPrintingUtil.displaySignature(node), "" + npath, });
         }
 
         return data;

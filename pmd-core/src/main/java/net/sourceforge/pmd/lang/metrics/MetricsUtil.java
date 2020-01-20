@@ -23,6 +23,15 @@ public final class MetricsUtil {
         // util class
     }
 
+    public static <N extends Node> boolean supportsAll(N node, MetricKey<N>... metrics) {
+        for (MetricKey<N> metric : metrics) {
+            if (!metric.supports(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, ResultOption resultOption) {
         return computeAggregate(key, ops, MetricOptions.emptyOptions(), resultOption);
     }
@@ -50,9 +59,7 @@ public final class MetricsUtil {
         for (O op : ops) {
             if (key.supports(op)) {
                 double val = computeMetric(key, op, options);
-                if (!Double.isNaN(val)) {
-                    values.add(val);
-                }
+                values.add(val);
             }
         }
 
@@ -65,7 +72,7 @@ public final class MetricsUtil {
         case AVERAGE:
             return average(values);
         default:
-            return Double.NaN;
+            throw new IllegalArgumentException("Unknown result option " + resultOption);
         }
     }
 
@@ -90,6 +97,33 @@ public final class MetricsUtil {
      * @param options The options of the metric
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
+     *
+     * @deprecated This is provided for compatibility with pre 6.21.0
+     *     behavior. Users of a metric should always check beforehand if
+     *     the metric supports the argument.
+     */
+    @Deprecated
+    public static <N extends Node> double computeMetricOrNaN(MetricKey<? super N> key, N node, MetricOptions options) {
+        if (!key.supports(node)) {
+            return Double.NaN;
+        }
+        return computeMetric(key, node, options, false);
+    }
+
+    /**
+     * Computes a metric identified by its code on a node, possibly
+     * selecting a variant with the {@code options} parameter.
+     *
+     * <p>Note that contrary to the previous behaviour, this method
+     * throws an exception if the metric does not support the node.
+     *
+     * @param key     The key identifying the metric to be computed
+     * @param node    The node on which to compute the metric
+     * @param options The options of the metric
+     *
+     * @return The value of the metric
+     *
+     * @throws IllegalArgumentException If the metric does not support the given node
      */
     public static <N extends Node> double computeMetric(MetricKey<? super N> key, N node, MetricOptions options) {
         return computeMetric(key, node, options, false);
@@ -99,12 +133,17 @@ public final class MetricsUtil {
      * Computes a metric identified by its code on a node, possibly
      * selecting a variant with the {@code options} parameter.
      *
+     * <p>Note that contrary to the previous behaviour, this method
+     * throws an exception if the metric does not support the node.
+     *
      * @param key            The key identifying the metric to be computed
      * @param node           The node on which to compute the metric
      * @param options        The options of the metric
      * @param forceRecompute Force recomputation of the result
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
+     * @return The value of the metric
+     *
+     * @throws IllegalArgumentException If the metric does not support the given node
      */
     public static <N extends Node> double computeMetric(MetricKey<? super N> key, N node, MetricOptions options, boolean forceRecompute) {
         Objects.requireNonNull(key, NULL_KEY_MESSAGE);
@@ -113,7 +152,7 @@ public final class MetricsUtil {
 
 
         if (!key.supports(node)) {
-            return Double.NaN;
+            throw new IllegalArgumentException(key + " cannot be computed on " + node);
         }
 
         ParameterizedMetricKey<? super N> paramKey = ParameterizedMetricKey.getInstance(key, options);

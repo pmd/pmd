@@ -90,16 +90,18 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
     @Override
     public final Object visit(ASTMethod node, Object data) {
 
-        int cyclo = (int) MetricsUtil.computeMetric(ApexOperationMetricKey.CYCLO, node);
-        if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
-            String opType = inTrigger ? "trigger"
-                                      : node.getImage().equals(classNames.peek()) ? "constructor"
-                                                                                  : "method";
+        if (ApexOperationMetricKey.CYCLO.supports(node)) {
+            int cyclo = (int) MetricsUtil.computeMetric(ApexOperationMetricKey.CYCLO, node);
+            if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
+                String opType = inTrigger ? "trigger"
+                                          : node.getImage().equals(classNames.peek()) ? "constructor"
+                                                                                      : "method";
 
-            addViolation(data, node, new String[]{opType,
-                                                  node.getQualifiedName().getOperation(),
-                                                  "",
-                                                  "" + cyclo, });
+                addViolation(data, node, new String[] {opType,
+                                                       node.getQualifiedName().getOperation(),
+                                                       "",
+                                                       "" + cyclo, });
+            }
         }
 
         return data;

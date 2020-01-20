@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 
@@ -82,12 +83,16 @@ public class MetricFunction implements Function {
 
     public static double getMetric(Node n, String metricKeyName) {
         if (n instanceof ASTAnyTypeDeclaration) {
-            return MetricsUtil.computeMetric(getClassMetricKey(metricKeyName), (ASTAnyTypeDeclaration) n);
+            return computeMetric(getClassMetricKey(metricKeyName), (ASTAnyTypeDeclaration) n);
         } else if (n instanceof MethodLikeNode) {
-            return MetricsUtil.computeMetric(getOperationMetricKey(metricKeyName), (MethodLikeNode) n);
+            return computeMetric(getOperationMetricKey(metricKeyName), (MethodLikeNode) n);
         } else {
             throw new IllegalStateException(genericBadNodeMessage());
         }
+    }
+
+    private static <T extends Node> double computeMetric(MetricKey<T> metricKey, T n) {
+        return metricKey.supports(n) ? MetricsUtil.computeMetric(metricKey, n) : Double.NaN;
     }
 
 

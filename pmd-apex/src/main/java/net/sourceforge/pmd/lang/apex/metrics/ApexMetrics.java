@@ -55,7 +55,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node) {
-        return MetricsUtil.computeMetric(key, node, MetricOptions.emptyOptions());
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -70,7 +70,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricOptions options) {
-        return MetricsUtil.computeMetric(key, node, options);
+        return MetricsUtil.computeMetricOrNaN(key, node, options);
     }
 
 
@@ -83,7 +83,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethod> key, ASTMethod node) {
-        return MetricsUtil.computeMetric(key, node, MetricOptions.emptyOptions());
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -98,7 +98,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethod> key, ASTMethod node, MetricOptions options) {
-        return MetricsUtil.computeMetric(key, node, options);
+        return MetricsUtil.computeMetricOrNaN(key, node, options);
     }
 
 

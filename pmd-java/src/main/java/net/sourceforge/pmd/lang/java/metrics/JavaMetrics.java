@@ -42,7 +42,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node) {
-        return MetricsUtil.computeMetric(key, node);
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -57,7 +57,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricOptions options) {
-        return MetricsUtil.computeMetric(key, node, options);
+        return MetricsUtil.computeMetricOrNaN(key, node, options);
     }
 
 
@@ -70,7 +70,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<MethodLikeNode> key, MethodLikeNode node) {
-        return MetricsUtil.computeMetric(key, node);
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -104,7 +104,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<MethodLikeNode> key, MethodLikeNode node, MetricOptions options) {
-        return MetricsUtil.computeMetric(key, node, options);
+        return MetricsUtil.computeMetricOrNaN(key, node, options);
     }
 
 
