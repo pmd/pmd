@@ -11,12 +11,6 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -24,8 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
-import net.sourceforge.pmd.lang.java.symboltable.ScopeAndDeclarationFinder;
 
 /**
  * @author Philip Graf
