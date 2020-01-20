@@ -433,7 +433,7 @@ public interface Node {
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
      *
-     * <p>This method should be preferred to {@link #getParent()}.
+     * <p>This method should be preferred to {@link #jjtGetParent()}.
      *
      * @return The parent of this node
      */
@@ -456,7 +456,7 @@ public interface Node {
      * Returns the index of this node in its parent's children. If this
      * node is a {@linkplain RootNode root node}, returns -1.
      *
-     * <p>This method replaces {@link #getIndexInParent()}, whose name was
+     * <p>This method replaces {@link #jjtGetChildIndex()}, whose name was
      * JJTree-specific.
      *
      * @return The index of this node in its parent's children

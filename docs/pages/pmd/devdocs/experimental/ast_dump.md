@@ -34,7 +34,7 @@ Usage: ast-dump [options]
       Default: {}
 
 Available languages: apex ecmascript java jsp modelica plsql pom scala text vf vm wsdl xml xsl 
-Available formats: xml                           XML format will the same structure as the one used in XPath
+Available formats: xml                           XML format with the same structure as the one used in XPath
 + Properties                  
   + singleQuoteAttributes         Use single quotes to delimit attribute values (default true)
   + lineSeparator                 Line separator to use. The default is platform-specific. (default \n)
