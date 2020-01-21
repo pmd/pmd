@@ -44,7 +44,7 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode {
 
     @Override
     @SuppressWarnings("unchecked")
-    public NodeStream<N> children() {
+    public NodeStream<? extends N> children() {
         return (NodeStream<N>) super.children();
     }
 }
