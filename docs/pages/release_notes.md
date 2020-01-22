@@ -129,6 +129,12 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementations.
  Use {% jdoc apex::lang.apex.ast.ApexNode %} instead, now considers comments too.
 
+* {% jdoc core::lang.ast.CharStream %}, {% jdoc core::lang.ast.JavaCharStream %},
+{% jdoc core::lang.ast.SimpleCharStream %}: these are APIs used by our JavaCC
+implementations and that will be moved/refactored for PMD 7.0.0. They should not
+be used, extended or implemented directly.
+
+
 ##### For removal
 
 * pmd-core
