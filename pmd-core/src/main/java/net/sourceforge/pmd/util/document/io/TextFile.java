@@ -10,11 +10,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -30,9 +28,9 @@ import net.sourceforge.pmd.util.document.TextDocument;
  *
  * <p>This interface is meant to replace {@link DataSource}. "DataSource"
  * is not an appropriate name for a file which can be written to, also,
- * the "data" it should provide is text.
+ * the "data" it provides is text.
  */
-public interface VirtualFile extends Closeable {
+public interface TextFile extends Closeable {
 
     /**
      * Returns the full file name of the file. This name is used for
@@ -40,22 +38,6 @@ public interface VirtualFile extends Closeable {
      */
     @NonNull
     String getFileName();
-
-
-    /**
-     * Returns the name of this file, relative to one of the given file
-     * names. If none of the given file names is a prefix, returns the
-     * {@link #getFileName()}. This is only useful for reporting.
-     *
-     * @param baseFileNames A list of directory prefixes that should be truncated
-     *
-     * @throws NullPointerException If the parameter is null
-     */
-    @NonNull
-    default String getShortFileName(List<String> baseFileNames) {
-        AssertionUtil.requireParamNotNull("baseFileNames", baseFileNames);
-        return getFileName();
-    }
 
 
     /**
@@ -112,8 +94,9 @@ public interface VirtualFile extends Closeable {
      * @param charset Encoding to use
      *
      * @throws IOException If the file is not a regular file (see {@link Files#isRegularFile(Path, LinkOption...)})
+     * @throws NullPointerException if the path or the charset is null
      */
-    static VirtualFile forPath(final Path path, final Charset charset) throws IOException {
+    static TextFile forPath(final Path path, final Charset charset) throws IOException {
         return new NioVFile(path, charset);
     }
 
@@ -122,9 +105,11 @@ public interface VirtualFile extends Closeable {
      * Returns a read-only instance of this interface reading from a string.
      *
      * @param source Text of the file
+     *
+     * @throws NullPointerException If the source text is null
      */
-    static VirtualFile readOnlyString(String source) {
-        return new StringVFile(source, null);
+    static TextFile readOnlyString(String source) {
+        return readOnlyString(source, "n/a");
     }
 
 
@@ -133,8 +118,10 @@ public interface VirtualFile extends Closeable {
      *
      * @param source Text of the file
      * @param name   File name to use
+     *
+     * @throws NullPointerException If the source text or the name is null
      */
-    static VirtualFile readOnlyString(String source, String name) {
+    static TextFile readOnlyString(String source, String name) {
         return new StringVFile(source, name);
     }
 }

@@ -8,30 +8,33 @@ import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-import net.sourceforge.pmd.util.document.TextRegionImpl.WithLineInfo;
-import net.sourceforge.pmd.util.document.io.VirtualFile;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 
 final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
-    private static final String OFFSETS_OUT_OF_BOUNDS =
-        "Region [%d, +%d] is not in range of this document (length %d)";
-
-    private final VirtualFile backend;
+    private final TextFile backend;
 
     private long curStamp;
 
     private SourceCodePositioner positioner;
     private CharSequence text;
 
+    private final String fileName;
+
     private TextEditorImpl curEditor;
 
-    TextDocumentImpl(VirtualFile backend) throws IOException {
+    TextDocumentImpl(TextFile backend) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
         this.text = backend.readContents().toString();
         this.positioner = null;
+        this.fileName = backend.getFileName();
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
     }
 
     @Override
@@ -69,7 +72,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public RegionWithLines addLineInfo(TextRegion region) {
+    public FileLocation toPosition(TextRegion region) {
         checkInRange(region.getStartOffset(), region.getLength());
 
         if (positioner == null) {
@@ -77,15 +80,13 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
             positioner = new SourceCodePositioner(text);
         }
 
-
         int bline = positioner.lineNumberFromOffset(region.getStartOffset());
         int bcol = positioner.columnFromOffset(bline, region.getStartOffset());
         int eline = positioner.lineNumberFromOffset(region.getEndOffset());
         int ecol = positioner.columnFromOffset(eline, region.getEndOffset());
 
-        return new WithLineInfo(
-            region.getStartOffset(),
-            region.getLength(),
+        return new FileLocation(
+            fileName,
             bline, bcol,
             eline, ecol
         );

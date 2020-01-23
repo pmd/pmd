@@ -9,19 +9,17 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 
 /**
- * A {@link VirtualFile} backed by a file in some {@link FileSystem}.
+ * A {@link TextFile} backed by a file in some {@link FileSystem}.
  */
-class NioVFile extends BaseCloseable implements VirtualFile {
+class NioVFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
@@ -41,12 +39,6 @@ class NioVFile extends BaseCloseable implements VirtualFile {
     @Override
     public @NonNull String getFileName() {
         return path.toAbsolutePath().toString();
-    }
-
-    @Override
-    public @NonNull String getShortFileName(List<String> baseFileNames) {
-        AssertionUtil.requireParamNotNull("baseFileNames", baseFileNames);
-        return ShortFilenameUtil.determineFileName(baseFileNames, getFileName());
     }
 
     @Override

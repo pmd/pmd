@@ -22,10 +22,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
 import net.sourceforge.pmd.util.document.io.ExternalModificationException;
 import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
-import net.sourceforge.pmd.util.document.io.VirtualFile;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 public class TextEditorTest {
 
@@ -122,7 +121,7 @@ public class TextEditorTest {
     public void testExternalModification() throws IOException {
         String content = "static void main(String[] args) {}";
         // mock it, because file modification date is not precise enough
-        MockVirtualFile mockFile = new MockVirtualFile(content);
+        MockTextFile mockFile = new MockTextFile(content);
         TextDocument doc = TextDocument.create(mockFile);
 
         assertTextIs(content, doc);
@@ -158,7 +157,7 @@ public class TextEditorTest {
         TextDocument doc = tempFile("static void main(String[] args) {}");
 
 
-        RegionWithLines rwl = doc.addLineInfo(doc.createRegion(0, 15));
+        FileLocation rwl = doc.toPosition(doc.createRegion(0, 15));
 
         assertEquals(1, rwl.getBeginLine());
         assertEquals(1, rwl.getBeginColumn());
@@ -172,7 +171,7 @@ public class TextEditorTest {
         assertFinalFileIs(doc, "@Override\nvoid main(String[] args) {}");
 
 
-        rwl = doc.addLineInfo(doc.createRegion(0, 15));
+        rwl = doc.toPosition(doc.createRegion(0, 15));
 
         assertEquals(1, rwl.getBeginLine());
         assertEquals(1, rwl.getBeginColumn());
@@ -408,7 +407,7 @@ public class TextEditorTest {
 
     @Test
     public void textReadOnlyDocumentCannotBeEdited() throws IOException {
-        VirtualFile someFooBar = VirtualFile.readOnlyString("someFooBar");
+        TextFile someFooBar = TextFile.readOnlyString("someFooBar");
         assertTrue(someFooBar.isReadOnly());
         TextDocument doc = TextDocument.create(someFooBar);
 
@@ -433,7 +432,7 @@ public class TextEditorTest {
         try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             writer.write(content);
         }
-        return TextDocument.create(VirtualFile.forPath(temporaryFile, StandardCharsets.UTF_8));
+        return TextDocument.create(TextFile.forPath(temporaryFile, StandardCharsets.UTF_8));
     }
 
 }

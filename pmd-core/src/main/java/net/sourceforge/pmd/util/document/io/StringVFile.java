@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.document.io;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -13,13 +12,14 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Read-only view on a string.
  */
-class StringVFile implements VirtualFile {
+class StringVFile implements TextFile {
 
     private final String buffer;
     private final String name;
 
-    StringVFile(String source, @Nullable String name) {
+    StringVFile(String source, @NonNull String name) {
         AssertionUtil.requireParamNotNull("source text", source);
+        AssertionUtil.requireParamNotNull("file name", name);
 
         this.buffer = source;
         this.name = String.valueOf(name);

@@ -10,8 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.util.document.TextRegion.RegionWithLines;
-
 public class TextDocumentTest {
 
     @Rule
@@ -27,7 +25,7 @@ public class TextDocumentTest {
         assertEquals("bonjour".length(), region.getLength());
         assertEquals("bonjour".length(), region.getEndOffset());
 
-        RegionWithLines withLines = doc.addLineInfo(region);
+        FileLocation withLines = doc.toPosition(region);
 
         assertEquals(1, withLines.getBeginLine());
         assertEquals(1, withLines.getEndLine());
@@ -46,7 +44,7 @@ public class TextDocumentTest {
         assertEquals("r\noha\ntri".length(), region.getLength());
         assertEquals("bonjour\noha\ntri".length(), region.getEndOffset());
 
-        RegionWithLines withLines = doc.addLineInfo(region);
+        FileLocation withLines = doc.toPosition(region);
 
         assertEquals(1, withLines.getBeginLine());
         assertEquals(3, withLines.getEndLine());
@@ -64,7 +62,7 @@ public class TextDocumentTest {
         assertEquals(0, region.getLength());
         assertEquals(region.getStartOffset(), region.getEndOffset());
 
-        RegionWithLines withLines = doc.addLineInfo(region);
+        FileLocation withLines = doc.toPosition(region);
 
         assertEquals(1, withLines.getBeginLine());
         assertEquals(1, withLines.getEndLine());

@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * document, but if it were a caret, typing a character {@code c} would
  * make {@code c} the character at offset {@code n} in the document.
  *
- * <p>Line and column information may be added by {@link TextDocument#addLineInfo(TextRegion)}.
+ * <p>Line and column information may be added by {@link TextDocument#toPosition(TextRegion)}.
  *
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
@@ -143,8 +143,7 @@ public interface TextRegion extends Comparable<TextRegion> {
 
     /**
      * Returns true if the other object is a text region with the same
-     * start offset and end offset as this one. If the other is a {@link RegionWithLines},
-     * the line and column information is not taken into account.
+     * start offset and end offset as this one.
      *
      * @param o {@inheritDoc}
      *
@@ -153,29 +152,5 @@ public interface TextRegion extends Comparable<TextRegion> {
     @Override
     boolean equals(Object o);
 
-
-    /**
-     * Adds line information to a text region.
-     *
-     * <p>Lines and columns in PMD are 1-based.
-     */
-    interface RegionWithLines extends TextRegion {
-
-
-        /** Inclusive line number. */
-        int getBeginLine();
-
-
-        /** Inclusive line number. */
-        int getEndLine();
-
-
-        /** Inclusive column number. */
-        int getBeginColumn();
-
-
-        /** <b>Exclusive</b> column number. */
-        int getEndColumn();
-    }
 
 }
