@@ -40,24 +40,68 @@ import com.beust.jcommander.ParameterException;
 
 @Experimental
 public class TreeExportCli {
-
-    @Parameter(names = {"--format", "-f"}, description = "The output format.")
+    @Parameter(names = { "--format", "-f" }, description = "The output format.")
     private String format = "xml";
-    @Parameter(names = {"--language", "-l"}, description = "Specify the language to use.")
+    @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.")
     private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
-    @Parameter(names = {"--encoding", "-e"}, description = "Encoding of the source file.")
+    @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();
     @DynamicParameter(names = {"-P"}, description = "Properties for the renderer.")
     private Map<String, String> properties = new HashMap<>();
 
-    @Parameter(names = {"--help", "-h"}, description = "Display usage.", help = true)
+    @Parameter(names = { "--help", "-h" }, description = "Display usage.", help = true)
     private boolean help;
 
-    @Parameter(names = {"--file"}, description = "The file to dump")
+    @Parameter(names = { "--file" }, description = "The file to dump")
     private String file;
 
-    @Parameter(names = {"--read-stdin", "-i"}, description = "Read source from standard input")
+    @Parameter(names = { "--read-stdin", "-i" }, description = "Read source from standard input")
     private boolean readStdin;
+
+
+    public static void main(String[] args) throws IOException {
+        TreeExportCli cli = new TreeExportCli();
+        JCommander jcommander = JCommander.newBuilder()
+                                          .addObject(cli)
+                                          .build();
+        try {
+            jcommander.parse(args);
+        } catch (ParameterException e) {
+            System.err.println(e.getMessage());
+            cli.usage(jcommander);
+            System.exit(1);
+        }
+
+        if (cli.help) {
+            cli.usage(jcommander);
+            System.exit(0);
+        }
+
+
+        TreeRendererDescriptor descriptor = TreeRenderers.findById(cli.format);
+        if (descriptor == null) {
+            throw cli.bail("Unknown format '" + cli.format + "'");
+        }
+
+        PropertySource bundle = parseProperties(cli, descriptor);
+
+        cli.run(descriptor.produceRenderer(bundle));
+    }
+
+    public static PropertySource parseProperties(TreeExportCli cli, TreeRendererDescriptor descriptor) {
+        PropertySource bundle = descriptor.newPropertyBundle();
+
+        for (String key : cli.properties.keySet()) {
+            PropertyDescriptor<?> d = bundle.getPropertyDescriptor(key);
+            if (d == null) {
+                throw cli.bail("Unknown property '" + key + "'");
+            }
+
+            setProperty(d, bundle, cli.properties.get(key));
+        }
+        return bundle;
+    }
+
 
     private void usage(JCommander commander) {
         StringBuilder sb = new StringBuilder();
@@ -173,57 +217,15 @@ public class TreeExportCli {
         System.err.println("-------------------------------------------------------------------------------");
     }
 
+    private static <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
+        bundle.setProperty(descriptor, descriptor.valueFrom(value));
+    }
+
+
     private RuntimeException bail(String message) {
         System.err.println(message);
         System.err.println("Use --help for usage information");
         System.exit(1);
         return new RuntimeException();
-    }
-
-    public static void main(String[] args) throws IOException {
-        TreeExportCli cli = new TreeExportCli();
-        JCommander jcommander = JCommander.newBuilder()
-                                          .addObject(cli)
-                                          .build();
-        try {
-            jcommander.parse(args);
-        } catch (ParameterException e) {
-            System.err.println(e.getMessage());
-            cli.usage(jcommander);
-            System.exit(1);
-        }
-
-        if (cli.help) {
-            cli.usage(jcommander);
-            System.exit(0);
-        }
-
-
-        TreeRendererDescriptor descriptor = TreeRenderers.findById(cli.format);
-        if (descriptor == null) {
-            throw cli.bail("Unknown format '" + cli.format + "'");
-        }
-
-        PropertySource bundle = parseProperties(cli, descriptor);
-
-        cli.run(descriptor.produceRenderer(bundle));
-    }
-
-    public static PropertySource parseProperties(TreeExportCli cli, TreeRendererDescriptor descriptor) {
-        PropertySource bundle = descriptor.newPropertyBundle();
-
-        for (String key : cli.properties.keySet()) {
-            PropertyDescriptor<?> d = bundle.getPropertyDescriptor(key);
-            if (d == null) {
-                throw cli.bail("Unknown property '" + key + "'");
-            }
-
-            setProperty(d, bundle, cli.properties.get(key));
-        }
-        return bundle;
-    }
-
-    private static <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
-        bundle.setProperty(descriptor, descriptor.valueFrom(value));
     }
 }
