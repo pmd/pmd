@@ -75,10 +75,10 @@ public class TreeExportCli {
             describeRenderer(30, t, sb);
         }
         sb.append(System.lineSeparator())
-          .append(System.lineSeparator());
+            .append(System.lineSeparator());
 
         sb.append("Example: ast-dump --format xml --language java MyFile.java")
-          .append(System.lineSeparator());
+            .append(System.lineSeparator());
 
         System.err.print(sb);
     }
@@ -87,20 +87,20 @@ public class TreeExportCli {
 
 
         sb.append(String.format("%-" + marginWidth + "s%s", descriptor.id(), descriptor.description()))
-          .append(System.lineSeparator());
+            .append(System.lineSeparator());
 
         List<PropertyDescriptor<?>> props = descriptor.newPropertyBundle().getPropertyDescriptors();
 
         if (!props.isEmpty()) {
 
             sb.append(String.format("%-" + marginWidth + "s", "+ Properties"))
-              .append(System.lineSeparator());
+                .append(System.lineSeparator());
 
             for (PropertyDescriptor<?> prop : props) {
                 sb.append(String.format(
                     "  + %-" + marginWidth + "s%s %s",
                     prop.name(), prop.description(), "(default " + getDefault(prop) + ")"))
-                  .append(System.lineSeparator());
+                    .append(System.lineSeparator());
             }
         } else {
             sb.append(System.lineSeparator());

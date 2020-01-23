@@ -47,9 +47,6 @@ public class RuleBuilder {
     private List<String> examples = new ArrayList<>(1);
     private RulePriority priority;
     private boolean isDeprecated;
-    private boolean isUsesDfa;
-    private boolean isUsesMultifile;
-    private boolean isUsesTyperesolution;
 
     /**
      * @deprecated Use {@link #RuleBuilder(String, ResourceLoader, String, String)} with the
@@ -66,18 +63,6 @@ public class RuleBuilder {
         this.resourceLoader = resourceLoader;
         language(language);
         className(clazz);
-    }
-
-    public void usesDFA(boolean usesDFA) {
-        isUsesDfa = usesDFA;
-    }
-
-    public void usesMultifile(boolean usesMultifile) {
-        isUsesMultifile = usesMultifile;
-    }
-
-    public void usesTyperesolution(boolean usesTyperesolution) {
-        isUsesTyperesolution = usesTyperesolution;
     }
 
     private void language(String languageName) {
