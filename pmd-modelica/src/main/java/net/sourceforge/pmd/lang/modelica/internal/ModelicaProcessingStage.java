@@ -31,6 +31,12 @@ public enum ModelicaProcessingStage implements AstProcessingStage<ModelicaProces
     }
 
     @Override
+    public int compareTo(AstProcessingStage o) {
+        return o instanceof ModelicaProcessingStage ? compareTo((ModelicaProcessingStage) o)
+                                                    : 0;
+    }
+
+    @Override
     public Language getLanguage() {
         return LanguageRegistry.getLanguage(ModelicaLanguageModule.NAME);
     }

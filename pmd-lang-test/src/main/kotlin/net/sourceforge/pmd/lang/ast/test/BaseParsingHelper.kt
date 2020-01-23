@@ -135,7 +135,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             override fun getLanguageVersion(): LanguageVersion = lversion
         }
 
-        val stages = selectProcessingStages(handler).sortedWith(Comparator { o1, o2 -> o1.compare(o2) })
+        val stages = selectProcessingStages(handler).sortedWith(Comparator { o1, o2 -> o1.compareTo(o2) })
 
         stages.forEach {
             it.processAST(rootNode, astAnalysisContext)

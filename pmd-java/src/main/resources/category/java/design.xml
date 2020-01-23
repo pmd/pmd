@@ -13,7 +13,6 @@ Rules that help you discover design issues.
           language="java"
           since="4.2"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
@@ -254,7 +253,6 @@ public class Foo {
           since="1.8"
           message="Avoid throwing raw exception types."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingrawexceptiontypes">
         <description>
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
@@ -295,7 +293,6 @@ public class Foo {
           language="java"
           message="A method or constructor should not explicitly declare unchecked exceptions in its ''throws'' clause"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
 A method or constructor should not explicitly declare unchecked exceptions in its
@@ -522,7 +519,6 @@ public class DataClass {
 
     <rule name="DoNotExtendJavaLangError"
           language="java"
-          typeResolution="true"
           since="4.0"
           message="Exceptions should not extend java.lang.Error"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1056,7 +1052,6 @@ public class Foo {
           since="1.2"
           message="A method/constructor should not explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsExceptionRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#signaturedeclarethrowsexception">
         <description>
 A method/constructor shouldn't explicitly throw the generic java.lang.Exception, since it
@@ -1132,7 +1127,6 @@ public class Foo {
           since="3.6"
           message="assertTrue(!expr) can be replaced by assertFalse(expr)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
         <description>
 Avoid negation in an assertTrue or assertFalse test.
