@@ -158,12 +158,13 @@ public class AbstractLanguageVersionTest {
 
         int count = 0;
         for (LanguageVersion lv : lang.getVersions()) {
-            if (lv.equals(expected))
+            if (lv.equals(expected)) {
                 count++;
+            }
         }
 
         assertEquals("Expected exactly one occurrence of " + expected
-                         + " in the language versions of its language",1, count);
+                         + " in the language versions of its language", 1, count);
     }
 
     private void assertRulesetsAndCategoriesProperties(ResourceLoader rl, Properties props)
