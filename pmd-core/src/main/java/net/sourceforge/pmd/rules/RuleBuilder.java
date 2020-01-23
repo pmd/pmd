@@ -216,16 +216,6 @@ public class RuleBuilder {
             rule.addExample(example);
         }
 
-        if (isUsesDfa) {
-            rule.setDfa(isUsesDfa);
-        }
-        if (isUsesMultifile) {
-            rule.setMultifile(isUsesMultifile);
-        }
-        if (isUsesTyperesolution) {
-            rule.setTypeResolution(isUsesTyperesolution);
-        }
-
         for (PropertyDescriptor<?> descriptor : definedProperties) {
             if (!rule.getPropertyDescriptors().contains(descriptor)) {
                 rule.definePropertyDescriptor(descriptor);

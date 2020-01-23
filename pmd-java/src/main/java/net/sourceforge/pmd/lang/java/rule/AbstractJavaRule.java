@@ -32,8 +32,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     public AbstractJavaRule() {
         super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-        // Enable Type Resolution on Java Rules by default
-        super.setTypeResolution(true);
     }
 
     @Override
@@ -101,12 +99,12 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
 
     @Override
-    public final boolean dependsOn(AstProcessingStage<?> stage) {
+    public boolean dependsOn(AstProcessingStage<?> stage) {
         if (!(stage instanceof JavaProcessingStage)) {
             throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
         }
 
-        return stage != JavaProcessingStage.DFA || isDfa();
+        return stage != JavaProcessingStage.DFA;
     }
 
 }

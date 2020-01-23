@@ -234,78 +234,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public void setUsesDFA() {
-        setDfa(true);
-    }
-
-    @Override
-    public void setDfa(boolean isDfa) {
-        usesDFA = isDfa;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesDFA() {
-        return isDfa();
-    }
-
-    @Override
-    public boolean isDfa() {
-        return usesDFA;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public void setUsesTypeResolution() {
-        setTypeResolution(true);
-    }
-
-    @Override
-    public void setTypeResolution(boolean usingTypeResolution) {
-        usesTypeResolution = usingTypeResolution;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesTypeResolution() {
-        return isTypeResolution();
-    }
-
-    @Override
-    public boolean isTypeResolution() {
-        return usesTypeResolution;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public void setUsesMultifile() {
-        setMultifile(true);
-    }
-
-    @Override
-    public void setMultifile(boolean multifile) {
-        usesMultifile = multifile;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesMultifile() {
-        return isMultifile();
-    }
-
-    @Override
-    public boolean isMultifile() {
-        return usesMultifile;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesRuleChain() {
-        return isRuleChain();
-    }
-
-    @Override
     public boolean isRuleChain() {
         return !getRuleChainVisits().isEmpty();
     }
@@ -319,7 +247,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addRuleChainVisit(Class<? extends Node> nodeClass) {
         // FIXME : These assume the implementation of getXPathNodeName() for all nodes…
         final String simpleName = nodeClass.getSimpleName();
-        
+
         if (simpleName.startsWith("AST")) { // JavaCC node
             // Classes under the Comment hierarchy and stuff need to be refactored in the Java AST
             addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
@@ -443,7 +371,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return getClass().getName().hashCode() + (getName() != null ? getName().hashCode() : 0)
                 + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Rule deepCopy() {
@@ -462,9 +390,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         rule.setMessage(getMessage());
         rule.setRuleSetName(getRuleSetName());
         rule.setExternalInfoUrl(getExternalInfoUrl());
-        rule.setDfa(isDfa());
-        rule.setTypeResolution(isTypeResolution());
-        rule.setMultifile(isMultifile());
         rule.setDescription(getDescription());
         for (final String example : getExamples()) {
             rule.addExample(example);
