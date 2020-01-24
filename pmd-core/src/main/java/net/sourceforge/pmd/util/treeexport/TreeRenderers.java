@@ -62,7 +62,7 @@ public final class TreeRenderers {
 
 
     static final TreeRendererDescriptor XML =
-        new TreeRendererDescriptorImpl("xml", "XML format will the same structure as the one used in XPath") {
+        new TreeRendererDescriptorImpl("xml", "XML format with the same structure as the one used in XPath") {
 
             private final Set<PropertyDescriptor<?>> myDescriptors
                 = Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.<PropertyDescriptor<?>>asList(

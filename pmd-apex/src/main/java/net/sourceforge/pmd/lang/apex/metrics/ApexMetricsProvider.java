@@ -7,12 +7,14 @@ package net.sourceforge.pmd.lang.apex.metrics;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
 
+@InternalApi
 public class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
 
     @SuppressWarnings("unchecked")

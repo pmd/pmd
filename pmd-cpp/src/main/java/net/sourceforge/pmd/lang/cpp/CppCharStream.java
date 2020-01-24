@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.cpp.ast.CppParserConstants;
  *
  * @author Andreas Dangel
  */
-public class CppCharStream extends SimpleCharStream {
+class CppCharStream extends SimpleCharStream {
 
     private static final Pattern CONTINUATION = Pattern.compile("\\\\\\n|\\\\\\r\\n");
     private static final char BACKSLASH = '\\';

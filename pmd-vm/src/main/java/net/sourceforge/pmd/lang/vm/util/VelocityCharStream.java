@@ -36,8 +36,10 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 /**
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (without unicode processing).
+ *
+ * @deprecated Will be removed, replaced with SimpleCharStream
  */
-
+@Deprecated
 public final class VelocityCharStream implements CharStream {
     public static final boolean STATIC_FLAG = false;
     int bufsize;

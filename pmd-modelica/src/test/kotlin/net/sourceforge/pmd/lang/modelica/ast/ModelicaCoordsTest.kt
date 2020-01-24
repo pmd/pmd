@@ -7,13 +7,12 @@ package net.sourceforge.pmd.lang.modelica.ast
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
-import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.firstToken
 import net.sourceforge.pmd.lang.ast.test.lastToken
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import java.io.StringReader
+import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper
 
 class ModelicaCoordsTest : FunSpec({
 
@@ -152,12 +151,8 @@ end TestPackage"""
     }
 })
 
-fun String.parseModelica(): ASTStoredDefinition {
-    val ver = LanguageRegistry.getLanguage("Modelica").defaultVersion.languageVersionHandler
-    val parser = ver.getParser(ver.defaultParserOptions)
-
-    return parser.parse(":dummy:", StringReader(this)) as ASTStoredDefinition
-}
+fun String.parseModelica(): ASTStoredDefinition =
+        ModelicaParsingHelper.DEFAULT.parse(this)
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
     this::getBeginLine shouldBe bline

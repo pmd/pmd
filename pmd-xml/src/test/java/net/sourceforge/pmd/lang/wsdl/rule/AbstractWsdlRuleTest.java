@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.wsdl.rule;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
-import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 public class AbstractWsdlRuleTest {
@@ -25,10 +21,7 @@ public class AbstractWsdlRuleTest {
     @Test
     public void testVisit() throws Exception {
         String source = "<?xml version=\"1.0\"?><foo abc=\"abc\"><bar/></foo>";
-        XmlParserOptions parserOptions = new XmlParserOptions();
-        Parser parser = LanguageRegistry.getLanguage(WsdlLanguageModule.NAME).getDefaultVersion()
-                .getLanguageVersionHandler().getParser(parserOptions);
-        XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
+        XmlNode xmlNode = XmlParsingHelper.WSDL.parse(source);
         List<XmlNode> nodes = new ArrayList<>();
         nodes.add(xmlNode);
 

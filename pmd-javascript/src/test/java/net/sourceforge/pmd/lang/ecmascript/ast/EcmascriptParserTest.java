@@ -8,8 +8,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +18,6 @@ import org.mozilla.javascript.ast.AstRoot;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ecmascript.Ecmascript3Parser;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 
@@ -142,18 +139,13 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testSuppressionComment() {
-        Ecmascript3Parser parser = new Ecmascript3Parser(new EcmascriptParserOptions());
-        Reader sourceCode = new StringReader("function(x) {\n" + "x = x; //NOPMD I know what I'm doing\n" + "}\n");
-        ASTAstRoot root = parser.parse("foo", sourceCode);
+        ASTAstRoot root = js.parse("function(x) {\n" + "x = x; //NOPMD I know what I'm doing\n" + "}\n");
         assertEquals(" I know what I'm doing", root.getNoPmdComments().get(2));
         assertEquals(1, root.getNoPmdComments().size());
 
         EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
         parserOptions.setSuppressMarker("FOOOO");
-        parser = new Ecmascript3Parser(parserOptions);
-        sourceCode = new StringReader(
-                "function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
-        root = parser.parse("foo", sourceCode);
+        root = js.withParserOptions(parserOptions).parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
         assertEquals(" I know what I'm doing", root.getNoPmdComments().get(3));
         assertEquals(1, root.getNoPmdComments().size());
     }
