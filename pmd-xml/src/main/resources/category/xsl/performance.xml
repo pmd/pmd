@@ -35,7 +35,7 @@ cutting through 100% of the document.
   contains(@select,'following::')
   or
   contains(@select,'descendant::')
-  or 
+  or
   contains(@select,'descendant-self::')
   or (
     ($checkSelfDescendantAbreviation = 'true' )

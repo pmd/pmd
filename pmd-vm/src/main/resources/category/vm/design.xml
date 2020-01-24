@@ -59,7 +59,7 @@ Avoid inline JavaScript. Import .js files instead.
     <rule name="NoInlineStyles"
           since="5.1"
           message="Avoid inline styles"
-          language="vm" 
+          language="vm"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_design.html#noinlinestyles">
         <description>
