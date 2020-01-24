@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public class CodeInCommentsRule extends AbstractCommentRule {

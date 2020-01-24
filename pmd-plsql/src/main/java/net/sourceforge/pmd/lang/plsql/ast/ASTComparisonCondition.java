@@ -25,7 +25,7 @@ public class ASTComparisonCondition extends AbstractPLSQLNode {
     public String getOperator() {
         return this.operator;
     }
-    
+
     @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

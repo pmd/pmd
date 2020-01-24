@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 /**
  * A simple helper class to regroup a bunch of method generally used by rules
  * using regex.
- * 
+ *
  * @author Romain PELISSE, belaran@gmail.com
- * 
+ *
  */
 public final class RegexHelper {
 
@@ -26,7 +26,7 @@ public final class RegexHelper {
 
     /**
      * Compiles a list of regex into a list of patterns.
-     * 
+     *
      * @param list
      *            the regex list
      * @return the pattern list
@@ -50,7 +50,7 @@ public final class RegexHelper {
      * Simple commodity method (also designed to increase readability of source
      * code, and to decrease import in the calling class). Provide a pattern and
      * a subject, it'll do the proper matching.
-     * 
+     *
      * @param pattern
      *            a compiled regex pattern
      * @param subject

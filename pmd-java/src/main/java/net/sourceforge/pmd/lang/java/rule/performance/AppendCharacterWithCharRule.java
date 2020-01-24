@@ -14,11 +14,11 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * <pre>
  * StringBuffer.append(&quot;c&quot;); // appends a single character
  * </pre>
- * 
+ *
  * <p>It is preferable to use</p>
- * 
+ *
  * <pre>StringBuffer.append('c'); // appends a single character</pre>
- * 
+ *
  * @see <a href="https://sourceforge.net/p/pmd/feature-requests/381/">feature request #381 Single character StringBuffer.append </a>
  */
 public class AppendCharacterWithCharRule extends AbstractJavaRule {

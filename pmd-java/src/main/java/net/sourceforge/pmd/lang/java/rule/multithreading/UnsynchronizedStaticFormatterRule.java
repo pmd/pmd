@@ -27,7 +27,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * unexpected results when used in a multi-threaded environment. This rule will
  * find static Formatters which are used in an unsynchronized
  * manner.
- * 
+ *
  * @author Allan Caplan
  * @see <a href="https://sourceforge.net/p/pmd/feature-requests/226/">feature #226 Check for SimpleDateFormat as singleton?</a>
  */
@@ -88,7 +88,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                     }
                 }
             }
-            
+
             // method level synch enabled and used?
             if (getProperty(ALLOW_METHOD_LEVEL_SYNC)) {
                 ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
@@ -96,7 +96,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                     continue;
                 }
             }
-            
+
             addViolation(data, n);
         }
         return data;

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 public final class MonoThreadProcessor extends AbstractPMDProcessor {
 
     private final List<Report> reports = new ArrayList<>();
-    
+
     public MonoThreadProcessor(PMDConfiguration configuration) {
         super(configuration);
     }

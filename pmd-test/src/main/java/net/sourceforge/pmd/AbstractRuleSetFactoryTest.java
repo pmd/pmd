@@ -62,7 +62,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Setups the XML parser with validation.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -87,7 +87,7 @@ public abstract class AbstractRuleSetFactoryTest {
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
      * all required attributes for all rules are specified.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -180,7 +180,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Verifies that all rulesets are valid XML according to the xsd schema.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -197,7 +197,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Verifies that all rulesets are valid XML according to the DTD.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -215,7 +215,7 @@ public abstract class AbstractRuleSetFactoryTest {
     /**
      * Reads and writes the rulesets to make sure, that no data is lost if the
      * rulests are processed.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -470,7 +470,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Create a {@link RuleSetReferenceId} by the given XML string.
-     * 
+     *
      * @param ruleSetXml
      *            the ruleset file content as string
      * @return the {@link RuleSetReferenceId}

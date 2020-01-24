@@ -622,7 +622,7 @@ public class GoodTest {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
         <description>
-In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
+In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
 JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.
         </description>
@@ -666,7 +666,7 @@ public class MyTest2 {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
         <description>
-In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
+In JUnit 3, the setUp method was used to set up all data entities required in running tests.
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
 JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.
         </description>
@@ -710,7 +710,7 @@ public class MyTest2 {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
-In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
+In JUnit 3, the framework executed all methods which started with the word test as a unit test.
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
         </description>
@@ -758,7 +758,7 @@ public class MyTest {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">
         <description>
-JUnit assertions should include an informative message - i.e., use the three-argument version of 
+JUnit assertions should include an informative message - i.e., use the three-argument version of
 assertEquals(), not the two-argument version.
         </description>
         <priority>3</priority>
@@ -784,7 +784,7 @@ public class Foo extends TestCase {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">
         <description>
-Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which 
+Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.
 
@@ -837,7 +837,7 @@ public class MyTestCase extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">
         <description>
-JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
+JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.
         </description>
         <priority>3</priority>
@@ -927,7 +927,7 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#methodreturnsinternalarray">
         <description>
-Exposing internal arrays to the caller violates object encapsulation since elements can be 
+Exposing internal arrays to the caller violates object encapsulation since elements can be
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
         </description>
         <priority>3</priority>
@@ -1300,8 +1300,8 @@ class Foo{
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedformalparameter">
         <description>
-Avoid passing parameters to methods or constructors without actually referencing them in the method body. 
-Removing unused formal parameters from public methods could cause a ripple effect through the code base. 
+Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
 `checkAll` property to `true`.
         </description>
@@ -1455,7 +1455,7 @@ public class FooTest extends TestCase {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue">
         <description>
-This rule detects JUnit assertions in object references equality. These assertions should be made by 
+This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.
         </description>
         <priority>3</priority>
@@ -1504,7 +1504,7 @@ public class FooTest extends TestCase {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue">
         <description>
-This rule detects JUnit assertions in object references equality. These assertions should be made 
+This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.
         </description>
         <priority>3</priority>

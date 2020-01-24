@@ -35,7 +35,7 @@ public class TypeIsFunction implements Function {
         }
         final String fullTypeName = (String) args.get(0);
         final Node n = (Node) context.getNodeSet().get(0);
-        
+
         return typeIs(n, fullTypeName);
     }
 

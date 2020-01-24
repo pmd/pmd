@@ -16,15 +16,15 @@ Rules that help you discover design issues.
           class="net.sourceforge.pmd.lang.plsql.rule.design.CyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#cyclomaticcomplexity">
         <description>
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
--- Cyclomatic Complexity of 25 
+-- Cyclomatic Complexity of 25
 CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS
 1 PROCEDURE ty_logger  IS BEGIN
 2        IF true
@@ -150,7 +150,7 @@ END;
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivemethodlength">
         <description>
 When methods are excessively long this usually indicates that the method is doing more than its
-name/signature might suggest. They also become challenging for others to digest since excessive 
+name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
         </description>
@@ -174,7 +174,7 @@ END;
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveObjectLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessiveobjectlength">
         <description>
-Excessive object line lengths are usually indications that the object may be burdened with excessive 
+Excessive object line lengths are usually indications that the object may be burdened with excessive
 responsibilities that could be provided by other objects. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
         </description>
@@ -209,7 +209,7 @@ END;
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageBodyLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivepackagebodylength">
         <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
+Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
         </description>
@@ -244,7 +244,7 @@ END;
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageSpecificationLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivepackagespecificationlength">
         <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
+Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
         </description>
@@ -334,7 +334,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveTypeLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivetypelength">
         <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
+Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
         </description>
@@ -420,7 +420,7 @@ CREATE OR REPLACE PACKAGE pkg_
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#npathcomplexity">
         <description>
 The NPath complexity of a method is the number of acyclic execution paths through that method.
-A threshold of 200 is generally considered the point where measures should be taken to reduce 
+A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.
         </description>
         <priority>3</priority>
@@ -470,7 +470,7 @@ END;
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
+possibly through grouping related fields in new objects.  For example, a class with individual
 city/state/zip fields could park them within a single Address field.
         </description>
         <priority>3</priority>
@@ -508,7 +508,7 @@ have more fine grained objects.
         or
         local-name(.) = 'TypeSpecification'
        )
-       and 
+       and
       (
       count(/descendant::ProgramUnit[
                                          not (

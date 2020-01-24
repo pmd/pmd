@@ -71,8 +71,8 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
 <![CDATA[
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
-   
-   foreach ( Account a : Trigger.new ){   
+
+   foreach ( Account a : Trigger.new ){
         //Good: Iterate through the trigger.new array instead.
    }
 }
@@ -114,8 +114,8 @@ public without sharing class Foo {
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
         <description>
-Empty Catch Block finds instances where an exception is caught, but nothing is done.  
-In most circumstances, this swallows an exception which should either be acted on 
+Empty Catch Block finds instances where an exception is caught, but nothing is done.
+In most circumstances, this swallows an exception which should either be acted on
 or reported.
         </description>
         <priority>3</priority>
@@ -261,7 +261,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
         <description>
-Empty While Statement finds all instances where a while statement does nothing.  
+Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
         </description>

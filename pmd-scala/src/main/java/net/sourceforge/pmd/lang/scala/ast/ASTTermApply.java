@@ -13,7 +13,7 @@ public class ASTTermApply extends AbstractScalaNode<Term.Apply> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

@@ -395,7 +395,7 @@ public class Foo extends Bar{
         <example>
 <![CDATA[
 // This is Pascal case, the recommended naming convention in Java
-// Note that the default values of this rule don't allow underscores 
+// Note that the default values of this rule don't allow underscores
 // or accented characters in type names
 public class FooBar {}
 
@@ -789,8 +789,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopsmustusebraces">
         <description>
-Avoid using 'for' statements without using curly braces. If the code formatting or 
-indentation is lost then it becomes difficult to separate the code being controlled 
+Avoid using 'for' statements without using curly braces. If the code formatting or
+indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
 
 This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
@@ -864,7 +864,7 @@ Names for references to generic values should be limited to a single uppercase l
                 <value>
 <![CDATA[
 //TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
-  string-length(@Image) > 1 
+  string-length(@Image) > 1
   or
   string:upper-case(@Image) != @Image
 ]
@@ -934,8 +934,8 @@ try {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces">
         <description>
-Avoid using if..else statements without using surrounding braces. If the code formatting 
-or indentation is lost then it becomes difficult to separate the code being controlled 
+Avoid using if..else statements without using surrounding braces. If the code formatting
+or indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
 
 This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
@@ -976,7 +976,7 @@ if (foo)
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifstmtsmustusebraces">
         <description>
-Avoid using if statements without using braces to surround the code block. If the code 
+Avoid using if statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
 
@@ -1755,14 +1755,14 @@ public class Foo {
           message="Too many static imports may lead to messy code"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#toomanystaticimports">
         <description>
-If you overuse the static import feature, it can make your program unreadable and 
-unmaintainable, polluting its namespace with all the static members you import. 
-Readers of your code (including you, a few months after you wrote it) will not know 
+If you overuse the static import feature, it can make your program unreadable and
+unmaintainable, polluting its namespace with all the static members you import.
+Readers of your code (including you, a few months after you wrote it) will not know
 which class a static member comes from (Sun 1.5 Language Guide).
         </description>
         <priority>3</priority>
         <properties>
-            <property name="maximumStaticImports" type="Integer" 
+            <property name="maximumStaticImports" type="Integer"
                       description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
             <property name="xpath">
                 <value>
@@ -2200,7 +2200,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#whileloopsmustusebraces">
         <description>
-Avoid using 'while' statements without using braces to surround the code block. If the code 
+Avoid using 'while' statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
 
@@ -2217,7 +2217,7 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
 <![CDATA[
 while (true)    // not recommended
       x++;
-      
+
 while (true) {  // preferred approach
       x++;
 }

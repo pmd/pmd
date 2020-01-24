@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A rule to manage those who just can't shut up...
- * 
+ *
  * @author Brian Remedios
  */
 public class CommentSizeRule extends AbstractCommentRule {
@@ -28,7 +28,7 @@ public class CommentSizeRule extends AbstractCommentRule {
             = PropertyFactory.intProperty("maxLines")
                              .desc("Maximum lines")
                              .require(positive()).defaultValue(6).build();
-    
+
     public static final PropertyDescriptor<Integer> MAX_LINE_LENGTH
             = PropertyFactory.intProperty("maxLineLength")
                              .desc("Maximum line length")

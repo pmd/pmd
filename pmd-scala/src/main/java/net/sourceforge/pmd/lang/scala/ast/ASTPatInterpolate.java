@@ -13,7 +13,7 @@ public class ASTPatInterpolate extends AbstractScalaNode<Pat.Interpolate> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

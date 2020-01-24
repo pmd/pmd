@@ -13,7 +13,7 @@ public class ASTLitByte extends AbstractScalaNode<Lit.Byte> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

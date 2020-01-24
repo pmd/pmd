@@ -13,7 +13,7 @@ public class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */
