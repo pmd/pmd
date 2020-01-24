@@ -45,39 +45,39 @@
                 </executions>
             </plugin>
             <plugin>
-              <groupId>org.jetbrains.dokka</groupId>
-              <artifactId>dokka-maven-plugin</artifactId>
-              <version>${dokka.version}</version>
-              <executions>
-                  <execution>
-                      <phase>package</phase>
-                      <goals>
-                          <!--
-                            once https://github.com/Kotlin/dokka/issues/294 is fixed, use goal javadocJar instead
-                            and remove the additional jar plugin execution
-                           -->
-                          <goal>dokka</goal>
-                      </goals>
-                  </execution>
-              </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>kotlin-javadoc</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>jar</goal>
-                    </goals>
-                    <configuration>
-                        <classesDirectory>${project.build.directory}/dokka</classesDirectory>
-                        <classifier>javadoc</classifier>
-                    </configuration>
-                </execution>
-            </executions>
-          </plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>${dokka.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <!--
+                              once https://github.com/Kotlin/dokka/issues/294 is fixed, use goal javadocJar instead
+                              and remove the additional jar plugin execution
+                             -->
+                            <goal>dokka</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>kotlin-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/dokka</classesDirectory>
+                            <classifier>javadoc</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

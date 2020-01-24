@@ -13,7 +13,7 @@ public class ASTLitUnit extends AbstractScalaNode<Lit.Unit> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

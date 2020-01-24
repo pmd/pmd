@@ -13,7 +13,7 @@ public class ASTPatExtractInfix extends AbstractScalaNode<Pat.ExtractInfix> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

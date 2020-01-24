@@ -13,7 +13,7 @@ public class ASTTermForYield extends AbstractScalaNode<Term.ForYield> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

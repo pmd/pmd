@@ -14,7 +14,7 @@ public class XPathRuleTest {
      * defining XPath rules in xml. Therefore we by default enable
      * typeresolution. For Java rules, type resolution was enabled by
      * default long time ago.
-     * 
+     *
      * @see <a href="https://github.com/pmd/pmd/issues/2048">#2048 [core] Enable type resolution by default for XPath rules</a>
      */
     @Test

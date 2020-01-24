@@ -37,7 +37,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 public abstract class AbstractPMDProcessor {
 
     private static final Logger LOG = Logger.getLogger(AbstractPMDProcessor.class.getName());
-    
+
     protected final PMDConfiguration configuration;
 
     public AbstractPMDProcessor(PMDConfiguration configuration) {
@@ -56,7 +56,7 @@ public abstract class AbstractPMDProcessor {
     }
 
     /**
-     * 
+     *
      * @deprecated this method will be removed. It was once used to determine a short filename
      * for the file being analyzed, so that shortnames can be reported. But the logic has
      * been moved to the renderers.
@@ -78,15 +78,15 @@ public abstract class AbstractPMDProcessor {
      */
     protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
         final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
-        
+
         final Set<Rule> brokenRules = removeBrokenRules(rs);
         for (final Rule rule : brokenRules) {
             report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
         }
-        
+
         return rs;
     }
-    
+
     /**
      * Remove and return the misconfigured rules from the rulesets and log them
      * for good measure.
@@ -128,7 +128,7 @@ public abstract class AbstractPMDProcessor {
 
         // render base report first - general errors
         renderReports(renderers, ctx.getReport());
-        
+
         // then add analysis results per file
         collectReports(renderers);
 

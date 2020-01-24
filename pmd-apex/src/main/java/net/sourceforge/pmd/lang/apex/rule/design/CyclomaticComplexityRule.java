@@ -23,7 +23,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Cyclomatic complexity rule using metrics. Uses Wmc to report classes.
- * 
+ *
  * @author Clément Fournier
  */
 public class CyclomaticComplexityRule extends AbstractApexRule {

@@ -13,7 +13,7 @@ public class ASTImporteeRename extends AbstractScalaNode<Importee.Rename> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

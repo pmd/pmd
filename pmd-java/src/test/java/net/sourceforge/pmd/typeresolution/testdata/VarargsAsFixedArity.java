@@ -12,11 +12,11 @@ public class VarargsAsFixedArity {
         String var3 = aMethod("", "");
         String var4 = aMethod(new Object[] { null });
     }
-    
+
     public int aMethod(Object s) {
         return 0;
     }
-    
+
     public String aMethod(Object... s) {
         return null;
     }

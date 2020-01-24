@@ -20,7 +20,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 public interface ChecksumAware {
     /**
      * Retrieves the current instance checksum
-     * 
+     *
      * @return The current checksum
      */
     long getChecksum();

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * <pre class="grammar">
  *
- * LambdaParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* ( "var" | {@link ASTType Type}) [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * LambdaParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* ( "var" | {@link ASTType Type} ) {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *                   | {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
@@ -23,9 +23,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
     implements InternalInterfaces.VariableIdOwner {
 
-    private boolean isVarargs;
     private boolean isFinal;
-    private boolean isVarType;
 
     ASTLambdaParameter(int id) {
         super(id);
@@ -36,31 +34,12 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
     }
 
 
-    void setVarargs() {
-        isVarargs = true;
-    }
-
     void setFinal(boolean aFinal) {
         isFinal = aFinal;
     }
 
     public boolean isFinal() {
         return isFinal;
-    }
-
-    void setVarType() {
-        isVarType = true;
-    }
-
-    public boolean isVarType() {
-        return isVarType;
-    }
-
-    /**
-     * Returns true if this node is a varargs parameter.
-     */
-    public boolean isVarargs() {
-        return isVarargs;
     }
 
 
@@ -95,32 +74,11 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 
-    /**
-     * Returns the type node of this formal parameter.
-     * The type of that node is not necessarily the type
-     * of the parameter itself, see {@link ASTVariableDeclaratorId#getType()}.
-     *
-     * <p>In particular, the type of the returned node
-     * doesn't take into account whether this formal
-     * parameter is varargs or not.
-     */
+    /** Returns the type node of this formal parameter. */
     @Nullable
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
-
-
-    /**
-     * Returns the type of this formal parameter. That type
-     * is exactly that of the variable declarator id,
-     * which means that the declarator id's type takes into
-     * account whether this parameter is varargs or not.
-     */
-    @Override
-    public Class<?> getType() {
-        return getVarId().getType();
-    }
-
 
     @Override
     public JavaTypeDefinition getTypeDefinition() {

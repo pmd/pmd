@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * Node attribute getter methods might be annotated with {@code DeprecatedAttribute}
  * to mark the attribute as deprecated for XPath. Unlike {@link Deprecated}, this
  * annotation does not deprecate the method for java usage.
- * 
+ *
  * @since 6.21.0
  */
 @Documented

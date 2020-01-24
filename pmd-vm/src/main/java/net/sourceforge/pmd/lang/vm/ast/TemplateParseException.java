@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.vm.util.LogUtil;
  *          $
  * @since 1.5
  */
+@Deprecated
 public class TemplateParseException extends ParseException {
     private static final long serialVersionUID = -3146323135623083918L;
 

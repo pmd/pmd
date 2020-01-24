@@ -37,7 +37,7 @@ public class PLSQLTokenizerTest extends AbstractTokenizerTest {
         this.expectedTokenCount = 1422;
         super.tokenizeTest();
     }
-    
+
     @Test
     public void testIgnoreBetweenSpecialComments() throws IOException {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("-- CPD-OFF" + PMD.EOL

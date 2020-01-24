@@ -35,7 +35,7 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
     /**
      * Creates a new {@link SimpleTypedNameDeclaration} with the given type
-     * 
+     *
      * @param typeImage
      *            the type image
      * @param type

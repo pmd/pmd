@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 
 /**
@@ -16,6 +17,8 @@ import net.sourceforge.pmd.lang.ast.SimpleCharStream;
  *
  * @author Andreas Dangel
  */
+@Deprecated
+@InternalApi
 public class CppCharStream extends SimpleCharStream {
 
     private static final Pattern CONTINUATION = Pattern.compile("\\\\\\n|\\\\\\r\\n");
