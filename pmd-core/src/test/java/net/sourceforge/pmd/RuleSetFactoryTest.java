@@ -936,7 +936,7 @@ public class RuleSetFactoryTest {
                                                            + "  <properties>" + PMD.EOL
                                                            + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" + PMD.EOL // inexistent property
                                                            + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
-    
+
     private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
             + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
             + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL

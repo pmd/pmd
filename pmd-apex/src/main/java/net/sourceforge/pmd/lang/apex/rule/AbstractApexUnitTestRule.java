@@ -12,7 +12,7 @@ import apex.jorje.services.Version;
 
 /**
  * Do special checks for apex unit test classes and methods
- * 
+ *
  * @author a.subramanian
  */
 public abstract class AbstractApexUnitTestRule extends AbstractApexRule {

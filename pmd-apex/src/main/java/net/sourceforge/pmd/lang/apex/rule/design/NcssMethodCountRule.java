@@ -10,7 +10,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for methods.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public class NcssMethodCountRule extends AbstractNcssCountRule {

@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod;
  */
 /**
  * Sample class with public enum to be used by tests for "UnusedPrivateMethod".
- * 
+ *
  * @author <a href="mailto:svenz@expedia.com">Sven Zethelius</a>
  *
  */

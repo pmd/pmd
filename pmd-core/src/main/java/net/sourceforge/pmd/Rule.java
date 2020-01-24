@@ -426,7 +426,7 @@ public interface Rule extends PropertySource {
      *            the rule context
      */
     void end(RuleContext ctx);
-    
+
     /**
      * Creates a new copy of this rule.
      * @return A new exact copy of this rule

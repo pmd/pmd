@@ -2,7 +2,7 @@
  * @see <a href="http://openjdk.java.net/jeps/355">JEP 355: Text Blocks (Preview)</a>
  */
 public class TextBlocks {
-    
+
     public static void main(String[] args) {
         String html = """
                 <html>
@@ -21,7 +21,7 @@ public class TextBlocks {
                         winter
                         """;          // the seven characters w i n t e r LF
 
-        String greeting = 
+        String greeting =
             """
             Hi, "Bob"
             """;        // the ten characters H i , SP " B o b " LF
@@ -45,7 +45,7 @@ public class TextBlocks {
 
         String normalStringLiteral = "test";
 
-        String code = 
+        String code =
             """
             String text = \"""
                 A text block inside a text block

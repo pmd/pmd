@@ -144,7 +144,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 writer.write(buf.toString());
             }
         }
-        
+
         // config errors
         for (final Report.ConfigurationError ce : configErrors) {
             buf.setLength(0);

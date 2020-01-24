@@ -96,7 +96,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         }
         return writer.toString();
     }
-    
+
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
         Document doc = createDocument();

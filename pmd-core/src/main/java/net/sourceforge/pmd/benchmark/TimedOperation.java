@@ -14,7 +14,7 @@ public interface TimedOperation extends AutoCloseable {
      */
     @Override
     void close();
-    
+
     /**
      * Stops tracking if not already stopped.
      * @param extraDataCounter An optional additional data counter to track along the measurements.

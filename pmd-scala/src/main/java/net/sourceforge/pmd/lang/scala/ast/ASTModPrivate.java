@@ -13,7 +13,7 @@ public class ASTModPrivate extends AbstractScalaNode<Mod.Private> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

@@ -41,7 +41,7 @@ public class CPPTokenizerTest {
         assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(24, tokens.size());
     }
-    
+
     @Test
     public void testIgnoreBetweenSpecialComments() {
         String code = "#include <iostream>\n" + "#include <string>\n" + "\n" + "// CPD-OFF\n"

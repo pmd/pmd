@@ -101,7 +101,7 @@ public class PMDTaskImpl {
 
     private void doTask() {
         setupClassLoader();
-        
+
         // Setup RuleSetFactory and validate RuleSets
         final ResourceLoader rl = setupResourceLoader();
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for constructors.
- * 
+ *
  * @author ported from Java original by Jason Bennett
  */
 public class NcssConstructorCountRule extends AbstractNcssCountRule {

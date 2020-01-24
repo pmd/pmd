@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 /**
  * Detects potential XSS when controller extracts a variable from URL query and
  * uses it without escaping first
- * 
+ *
  * @author sergey.gorbaty
  *
  */

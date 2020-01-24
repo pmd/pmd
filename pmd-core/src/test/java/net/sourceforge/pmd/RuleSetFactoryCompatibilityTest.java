@@ -34,7 +34,7 @@ public class RuleSetFactoryCompatibilityTest {
         RuleSet createdRuleSet = createRulesetFromString(ruleset, factory);
         Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
     }
-    
+
     @Test
     public void testCorrectMovedAndRename() throws Exception {
         final String ruleset = "<?xml version=\"1.0\"?>\n" + "\n" + "<ruleset name=\"Test\"\n"
@@ -51,7 +51,7 @@ public class RuleSetFactoryCompatibilityTest {
         InputStream stream = new ByteArrayInputStream(ruleset.getBytes(ISO_8859_1));
         Reader filtered = rsfc.filterRuleSetFile(stream);
         String out = IOUtils.toString(filtered);
-        
+
         Assert.assertFalse(out.contains("notexisting.xml"));
         Assert.assertFalse(out.contains("OldDummyBasicMockRule"));
         Assert.assertTrue(out.contains("<rule ref=\"rulesets/dummy/basic.xml/NewNameForDummyBasicMockRule\" />"));

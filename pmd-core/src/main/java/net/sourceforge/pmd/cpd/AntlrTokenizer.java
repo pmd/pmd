@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
- * 
+ *
  * @deprecated This is an internal API.
  */
 @Deprecated

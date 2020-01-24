@@ -20,14 +20,14 @@ import net.sourceforge.pmd.lang.vm.directive.Directive;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
  * Convenient wrapper for LogChute functions. This implements the RuntimeLogger
  * methods (and then some). It is hoped that use of this will fully replace use
  * of the RuntimeLogger.
- * 
+ *
  * @author <a href="mailto:nbubna@apache.org">Nathan Bubna</a>
  * @version $Id: Log.java 724825 2008-12-09 18:56:06Z nbubna $
  * @since 1.5
@@ -57,7 +57,7 @@ public final class LogUtil {
      * Simply creates a string that formats the template filename with line
      * number and column. We use this routine to provide a cosistent format for
      * displaying file errors.
-     * 
+     *
      * @param template
      *            File name of template, can be null
      * @param linenum

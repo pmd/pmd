@@ -13,7 +13,7 @@ public class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

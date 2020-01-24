@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 /**
  * Insecure HTTP endpoints passed to (req.setEndpoint)
  * req.setHeader('Authorization') should use named credentials
- * 
+ *
  * @author sergey.gorbaty
  *
  */

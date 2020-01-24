@@ -377,7 +377,7 @@ public class RuleReference extends AbstractDelegateRule {
             propertyDescriptors.remove(desc);
         }
     }
-    
+
     @Override
     public Rule deepCopy() {
         return new RuleReference(this);

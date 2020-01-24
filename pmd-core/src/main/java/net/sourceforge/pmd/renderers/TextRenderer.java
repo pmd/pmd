@@ -44,7 +44,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
     @Override
     public void end() throws IOException {
         StringBuilder buf = new StringBuilder(500);
-        
+
         for (Report.ProcessingError error : errors) {
             buf.setLength(0);
             buf.append(determineFileName(error.getFile()));
@@ -60,7 +60,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             buf.append(" in ").append(determineFileName(excluded.getRuleViolation().getFilename())).append(PMD.EOL);
             writer.write(buf.toString());
         }
-        
+
         for (Report.ConfigurationError error : configErrors) {
             buf.setLength(0);
             buf.append(error.rule().getName());

@@ -13,7 +13,7 @@ import org.junit.rules.ExternalResource;
 
 /**
  * Junit Rule, to check for java util logging statements.
- * 
+ *
  * @author Andreas Dangel
  * @see <a href="http://blog.diabol.se/?p=474">Testing the presence of log messages with java.util.logging</a>
  */

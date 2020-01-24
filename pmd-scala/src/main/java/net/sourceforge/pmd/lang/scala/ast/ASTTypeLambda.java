@@ -13,7 +13,7 @@ public class ASTTypeLambda extends AbstractScalaNode<Type.Lambda> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.stat.Metric;
 @Deprecated
 @InternalApi
 public class NoopAnalysisCache implements AnalysisCache {
-    
+
     @Override
     public void ruleViolationAdded(final RuleViolation ruleViolation) {
         // noop

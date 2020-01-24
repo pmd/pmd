@@ -13,7 +13,7 @@ public class ASTTermEta extends AbstractScalaNode<Term.Eta> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

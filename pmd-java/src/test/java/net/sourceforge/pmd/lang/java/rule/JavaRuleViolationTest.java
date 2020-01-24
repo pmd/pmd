@@ -54,7 +54,7 @@ public class JavaRuleViolationTest {
 
     /**
      * Tests that the method name is taken correctly from the given node.
-     * 
+     *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1250/">#1250</a>
      */
     @Test
@@ -81,7 +81,7 @@ public class JavaRuleViolationTest {
     /**
      * Tests that the class name is taken correctly, even if the node is outside
      * of a class scope, e.g. a import declaration.
-     * 
+     *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1529/">#1529</a>
      */
     @Test
@@ -139,7 +139,7 @@ public class JavaRuleViolationTest {
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Bar", violation.getClassName());
     }
-    
+
     @Test
     public void testPackageAndPackagePrivateClassesName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { }");

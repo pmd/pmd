@@ -13,7 +13,7 @@ public class ASTPatTuple extends AbstractScalaNode<Pat.Tuple> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

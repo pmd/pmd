@@ -10,11 +10,11 @@ public class VarargsZeroArity {
         int var = aMethod();
         String var2 = aMethod("");
     }
-    
+
     public int aMethod() {
         return 0;
     }
-    
+
     public String aMethod(String... args) {
         return null;
     }

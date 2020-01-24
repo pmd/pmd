@@ -210,7 +210,7 @@ public class AbstractRuleTest {
         assertEquals("Rules with different messages are still equal", r1, r2);
         assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
     }
-    
+
     @Test
     public void testDeepCopyRule() {
         MyRule r1 = new MyRule();

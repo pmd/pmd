@@ -13,7 +13,7 @@ public class ASTModSealed extends AbstractScalaNode<Mod.Sealed> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

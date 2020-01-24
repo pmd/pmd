@@ -22,7 +22,7 @@ public class EdgeCasesTokenizerTest {
         final String filename = "issue1751.go";
         final GoTokenizer tokenizer = new GoTokenizer();
         final SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(filename), filename));
-        
+
         final Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens); // it should simply not fail
     }

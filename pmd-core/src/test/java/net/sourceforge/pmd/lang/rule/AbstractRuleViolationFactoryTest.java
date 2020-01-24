@@ -46,7 +46,7 @@ public class AbstractRuleViolationFactoryTest {
         ruleContext = new RuleContext();
         factory = new TestRuleViolationFactory();
     }
-    
+
     @Test
     public void testMessage() {
         factory.addViolation(ruleContext, new TestRule(), null, "message with \"'{'\"", null);

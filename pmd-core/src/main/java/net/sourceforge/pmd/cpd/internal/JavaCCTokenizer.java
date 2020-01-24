@@ -26,7 +26,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
     protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String filename) {
         return new TokenEntry(currentToken.getImage(), filename, currentToken.getBeginLine(), currentToken.getBeginColumn(), currentToken.getEndColumn());
     }
-    
+
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
         TokenManager tokenManager = getLexerForSource(sourceCode);

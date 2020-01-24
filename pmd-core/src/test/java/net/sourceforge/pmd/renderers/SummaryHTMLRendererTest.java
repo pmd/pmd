@@ -98,7 +98,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + "<td>file</td>" + PMD.EOL + "<td><pre>" + error.getDetail() + "</pre></td>" + PMD.EOL + "</tr>" + PMD.EOL
                 + "</table></tr></table></body></html>" + PMD.EOL;
     }
-    
+
     @Override
     public String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL

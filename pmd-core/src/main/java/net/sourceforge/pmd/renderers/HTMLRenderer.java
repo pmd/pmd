@@ -194,7 +194,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
         writer.write("</table>");
     }
-    
+
     private void glomConfigurationErrors(final Writer writer, final List<ConfigurationError> configErrors) throws IOException {
         if (configErrors.isEmpty()) {
             return;

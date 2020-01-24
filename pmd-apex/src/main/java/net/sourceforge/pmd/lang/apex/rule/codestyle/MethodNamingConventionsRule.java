@@ -32,7 +32,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
               .desc("deprecated! Skip underscores in test methods")
               .defaultValue(false)
               .build();
-    
+
     public MethodNamingConventionsRule() {
         definePropertyDescriptor(SKIP_TEST_METHOD_UNDERSCORES_DESCRIPTOR);
         definePropertyDescriptor(TEST_REGEX);

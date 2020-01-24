@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 /**
  * Language implementation for Fortran
- * 
+ *
  * @author Romain PELISSE belaran@gmail.com
  */
 public class FortranLanguage extends AbstractLanguage {

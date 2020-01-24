@@ -162,7 +162,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                 .append(this.red).append(error.getDetail()).append(colorReset).append(PMD.EOL).append(PMD.EOL);
             writer.write(buf.toString());
         }
-        
+
         for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
             buf.setLength(0);
             numberOfErrors++;

@@ -20,7 +20,7 @@ public class ScalaLanguageHandler extends AbstractLanguageVersionHandler {
 
     /**
      * Create the Language Handler using the given Scala Dialect.
-     * 
+     *
      * @param scalaDialect
      *            the language version to use while parsing etc
      */
@@ -30,7 +30,7 @@ public class ScalaLanguageHandler extends AbstractLanguageVersionHandler {
 
     /**
      * Get the Scala Dialect used in this language version choice.
-     * 
+     *
      * @return the Scala Dialect for this handler
      */
     public Dialect getDialect() {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Tokenizer implementation for Fortran
- * 
+ *
  * @author Romain PELISSE - romain.pelisse@atosorigin.com
  */
 public class FortranTokenizer extends AbstractTokenizer implements Tokenizer {
