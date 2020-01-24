@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>
  * Each language implementation should subclass this and provide a data method.
- * 
+ *
  * <pre>
  * &#64;Parameters
  *     public static Collection&lt;Object[]&gt; data() {
@@ -39,7 +39,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  *              null }
  *       });
  * </pre>
- * 
+ *
  * <p>For the parameters, see the constructor
  * {@link #AbstractLanguageVersionTest(String, String, String, LanguageVersion)}.</p>
  */
@@ -54,7 +54,7 @@ public class AbstractLanguageVersionTest {
 
     /**
      * Creates a new {@link AbstractLanguageVersionTest}
-     * 
+     *
      * @param name
      *            the name under which the language module is registered
      * @param terseName
@@ -105,7 +105,7 @@ public class AbstractLanguageVersionTest {
 
     /**
      * Makes sure, that for each language a "categories.properties" file exists.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -127,7 +127,7 @@ public class AbstractLanguageVersionTest {
 
     /**
      * If a rulesets.properties file still exists, test it as well.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -149,6 +149,25 @@ public class AbstractLanguageVersionTest {
             }
             assertRulesetsAndCategoriesProperties(rl, props);
         }
+    }
+
+    @Test
+    public void testVersionsAreDistinct() {
+        if (expected == null) {
+            return;
+        }
+
+        Language lang = expected.getLanguage();
+
+        int count = 0;
+        for (LanguageVersion lv : lang.getVersions()) {
+            if (lv.equals(expected)) {
+                count++;
+            }
+        }
+
+        assertEquals("Expected exactly one occurrence of " + expected
+                         + " in the language versions of its language", 1, count);
     }
 
     private void assertRulesetsAndCategoriesProperties(ResourceLoader rl, Properties props)
