@@ -90,6 +90,23 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
 
 ]]></replacevalue>
         </replace>
+
+
+
+        <replaceregexp>
+            <regexp pattern="class|interface" />
+            <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset dir="${target}/net/sourceforge/pmd/lang/objectivec/ast">
+                <exclude name="AST*.java" />
+            </fileset>
+        </replaceregexp>
+
+        <replaceregexp>
+            <regexp pattern="public class ParseException " />
+            <substitution expression=" /** @deprecated Use superclass {@link net.sourceforge.pmd.lang.ast.ParseException} */
+@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset file="${target}/net/sourceforge/pmd/lang/objectivec/ast/ParseException.java"/>
+        </replaceregexp>
     </target>
 
 </project>
