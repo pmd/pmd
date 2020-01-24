@@ -28,7 +28,7 @@ class CppCharStream extends SimpleCharStream {
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
 
-    public CppCharStream(JavaccTokenDocument document) {
+    CppCharStream(JavaccTokenDocument document) {
         super(document);
     }
 
