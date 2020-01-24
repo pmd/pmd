@@ -96,7 +96,9 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
         <replaceregexp>
             <regexp pattern="class|interface" />
             <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
-            <fileset dir="${target}/net/sourceforge/pmd/lang/objectivec/ast"/>
+            <fileset dir="${target}/net/sourceforge/pmd/lang/objectivec/ast">
+                <exclude name="AST*.java" />
+            </fileset>
         </replaceregexp>
 
         <replaceregexp>
