@@ -189,3 +189,4 @@ the sequence *contains* `@Image`. That is, the above rule will report all variab
 named `foo` or `bar`. All other XPath 2.0 [functions operating on sequences](https://www.w3.org/TR/xpath-functions/#sequence-functions)
 are supported.
 
+{%include tip.html content="You can also [define properties directly in the designer](pmd-userdocs_designer_reference.html#rule-properties)" %}

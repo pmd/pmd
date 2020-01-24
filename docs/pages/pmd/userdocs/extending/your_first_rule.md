@@ -140,24 +140,3 @@ TODO
 
 You can notice that your XPath expression ends up inside a [property](pmd_userdocs_configuring_rules.html#rule-properties)
 of a rule of type XPathRule, which is how XPath rules are implemented.
-
-### Defining rule properties
-
-Some time later, your boss' boss decides he doesn't want to be called short in Java
-too, and would like you to add him to the rule. There are several ways to do that,
-but you decide to use a rule property to make your rule extensible. Doing that
-directly in the XML is [explained on that page](pmd_userdocs_extending_defining_properties.html#for-xpath-rules),
- and we'll explain here how to do that in the designer.
-
-The table to the left of the zone (3) in the screenshot above is a list of
-properties defined for your rule.
-Right-clicking the table and selecting "Add property..", you may add a property of
-type `List[String]` to represent your boss names. You can then use it in your XPath
-query with a dollar prefix, i.e.
-
-```xpath
-//VariableDeclaratorId[@Image = $bossNames and ../../Type[@TypeImage = "short"]]
-```
-
-
-{% include note.html content="Using a property of type `List[String]` requires you to use XPath 2.0" %}

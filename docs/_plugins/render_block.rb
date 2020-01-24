@@ -1,6 +1,5 @@
-require 'pp'
 #
-# Tags to create a complex object inline in JSON.
+# Apply a second pass of rendering on a block
 #
 class RenderBlock < Liquid::Block
 

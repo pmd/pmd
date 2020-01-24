@@ -1,5 +1,5 @@
 ---
-title: Intro to writing PMD rules
+title: Introduction to writing PMD rules
 tags: [extending, userdocs, getting_started]
 summary: "Writing your own PMD rules TODO"
 last_updated: July 2018 (6.6.0)
@@ -7,15 +7,14 @@ permalink: pmd_userdocs_extending_writing_rules_intro.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
 
-
-## Why write custom rules?
-
-TODO
+PMD is a framework to perform code analysis. You can create your own rules to
+check for patterns specific to your codebase, or the coding practices of your
+team.
 
 ## How rules work: the AST
 
 Before running rules, PMD parses the source file into a data structure called an
-*abstract syntax tree* (AST). This tree represents the syntactic structure of the
+**abstract syntax tree (AST)**. This tree represents the syntactic structure of the
 code, and encodes syntactic relations between source code elements. For instance,
 in Java, method declarations belong to a class: in the AST, the nodes representing
 method declarations will be descendants of a node representing the declaration of
@@ -74,7 +73,9 @@ Each PMD language has its own set of such classes, and its own rules about how
 these classes relate to one another, based on the grammar of the language. For
 example, all Java AST nodes extend {% jdoc java::lang.java.ast.JavaNode %}.
 
-The structure of the AST can be discovered by using the [Rule Designer](pmd_userdocs_extending_designer_reference.html).
+The structure of the AST can be discovered through
+ * the [Rule Designer](pmd_userdocs_extending_designer_reference.html#ast-inspection)
+ * the [AST dump feature](pmd_devdocs_experimental_ast_dump.html)
 
 
 

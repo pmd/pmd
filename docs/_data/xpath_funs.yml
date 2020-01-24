@@ -1,3 +1,6 @@
+# This file describes custom XPath functions per language
+# This is rendered using _includes/custom/xpath_fun_doc.html
+
 aliases:
   - &qname_param
     name: javaQualifiedName
