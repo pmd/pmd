@@ -42,6 +42,9 @@
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
                  token="net.sourceforge.pmd.lang.ast.dummy"
                  value="net.sourceforge.pmd.lang.ast" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
+                 token="interface"
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi interface" />
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/CharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/CharStream.java" />
@@ -59,7 +62,7 @@
                  value="net.sourceforge.pmd.lang.ast" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
                  token="class JavaCharStream"
-                 value="class JavaCharStream implements CharStream" />
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi class JavaCharStream implements CharStream" />
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/JavaCharStream.java" />
@@ -77,7 +80,7 @@
                  value="net.sourceforge.pmd.lang.ast" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
                  token="public class SimpleCharStream"
-                 value="public class SimpleCharStream implements CharStream" />
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi public class SimpleCharStream implements CharStream" />
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/SimpleCharStream.java" />
