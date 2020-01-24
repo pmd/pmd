@@ -1,15 +1,15 @@
 ---
-title:  Using the Rule Designer
+title:  Your first rule XPath
 tags: [extending, userdocs]
-summary: "This page is a gentle introduction to the Rule Designer, a tool made
-to help developers write new rules."
+summary: "Introduction to rule writing through an example."
 last_updated: July 2018 (6.6.0)
-permalink: pmd_userdocs_extending_designer_intro.html
+permalink: pmd_userdocs_extending_your_first_rule.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 
-This page is a gentle introduction to the Rule Designer, a tool made to help
-developers write new rules. Using the designer is useful both to write Java
+This page is a gentle introduction to rule writing, and the Rule Designer.
+
+Using the designer is useful both to write Java
 rules and XPath rules, but it's more specifically geared towards XPath rules.
 This page uses a simple XPath rule to illustrate the common workflow. We assume
 here that you already know what XPath is and how to read basic XPath queries. W3C

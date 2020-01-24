@@ -21,12 +21,65 @@ in Java, method declarations belong to a class: in the AST, the nodes representi
 method declarations will be descendants of a node representing the declaration of
 their enclosing class. This representation is thus much richer than the original
 source code (which, for a program, is just a chain of characters), or the token
-chain produced by a lexer (which is e.g. what Checkstyle works on).
+chain produced by a lexer (which is e.g. what Checkstyle works on). For example:
+
+<table>
+<colgroup>
+<col width="40%" />
+<col width="70%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sample code (Java)</th>
+<th>AST</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td markdown="block">
+
+```java
+class Foo extends Object {
+    
+}
+```
+
+</td>
+<td markdown="block">
+
+```java
+└─ CompilationUnit
+   └─ TypeDeclaration
+      └─ ClassOrInterfaceDeclaration "Foo"
+         ├─ ExtendsList
+         │  └─ ClassOrInterfaceType "Object"
+         └─ ClassOrInterfaceBody
+```
+
+</td>
+</tr>
+</tbody>
+</table>
 
 Conceptually, PMD rules work by **matching a "pattern" against the AST** of a
 file.
 Rules explore the AST and find nodes that satisfy some conditions that are characteristic
 of the specific thing the rule is trying to flag. Rules then report a violation on these nodes.
+
+### Discovering the AST
+
+
+ASTs are represented by Java classes deriving from {% jdoc core::lang.ast.Node %}.
+Each PMD language has its own set of such classes, and its own rules about how
+these classes relate to one another, based on the grammar of the language. For
+example, all Java AST nodes extend {% jdoc java::lang.java.ast.JavaNode %}.
+
+The structure of the AST can be discovered by using the [Rule Designer](pmd_userdocs_extending_designer_reference.html).
+
+
+
+
+
 
 ## Writing new rules
 
@@ -40,6 +93,32 @@ complicated processing, to which an XPath rule couldn't scale.
 
 In the end, choosing one strategy or the other depends on the difficulty of what
 your rule does. I'd advise to keep to XPath unless you have no other choice.
+
+
+## XML rule definition
+
+New rules must be declared in a ruleset before they're referenced. This is the
+case for both XPath and Java rules. To do this, the `rule` element is used, but
+instead of mentioning the `ref` attribute, it mentions the `class` attribute,
+with the implementation class of your rule.
+
+* **For Java rules:** this is the class extending AbstractRule (transitively)
+* **For XPath rules:** this is `net.sourceforge.pmd.lang.rule.XPathRule`
+
+Example:
+
+```xml
+<rule name="MyJavaRule"
+      language="java"
+      message="Violation!"
+      class="com.me.MyJavaRule" >
+    <description>
+        Description
+    </description>
+    <priority>3</priority>
+</rule>
+```
+
 
 ## Resource index
 

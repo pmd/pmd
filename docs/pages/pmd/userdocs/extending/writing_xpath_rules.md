@@ -19,8 +19,6 @@ also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_desi
 
 <!-- Later we can document the specific subset of XPath features our wrappers support -->
 
-<!-- TODO describe value representation quirks -->
-
 ## XPath version
 
 PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
@@ -32,16 +30,62 @@ The version can be specified with the `version` property in the rule definition,
 
 The default has always been version 1.0.
 
-**As of PMD version 6.13.0, XPath versions 1.0 and the 1.0 compatibility mode are
+**As of PMD version 6.22.0, XPath versions 1.0 and the 1.0 compatibility mode are
 deprecated**. XPath 2.0 is superior in many ways, for example for its support for
 type checking, sequence values, or quantified expressions. For a detailed
 but approachable review of the features of XPath 2.0 and above, see [the Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions).
 
 It is recommended that you migrate to 2.0 before 7.0.0, but we expect
-to be able to provide an automatic migration tool when releasing 7.0.0. The
-following section describes incompatibilities between 1.0 and 2.0 for PMD rules.
+to be able to provide an automatic migration tool when releasing 7.0.0.
+See [the migration guide](l#migrating-from-10-to-20) below.
 
-### Migrating from 1.0 to 2.0
+
+## DOM representation of ASTs
+
+XPath rules view the AST as an XML-like DOM, which is what the XPath language is
+defined on. Concretely, this means:
+* Every AST node is viewed as an XML element
+  * The element has for local name the value of {% jdoc core::lang.ast.Node#getXPathNodeName() %}
+  for the given node
+* Some Java getters are exposed as XML attributes on those elements
+  * This means, that documentation for attributes can be found in our Javadocs. For
+  example, the attribute `@SimpleName` of the Java node `EnumDeclaration` is backed
+  by the Java getter {% jdoc java::lang.java.ast.ASTAnyTypeDeclaration#getSimpleName() %}.
+
+### Value conversion
+
+To represent attributes, we must map Java values to [XPath Data Model (XDM)](https://www.w3.org/TR/xpath-datamodel/) values. The conversion
+depends on the XPath version used.
+
+#### XPath 1.0
+
+On XPath 1.0 we map every Java value to an `xs:string` value by using the `toString`
+of the object. Since XPath 1.0 allows many implicit conversions this works, but it
+causes some incompatibilities with XPath 2.0 (see the section about migration further
+ down).
+
+#### XPath 2.0
+
+XPath 2.0 is a strongly typed language, and so we use more precise type annotations.
+In the following table we refer to the type conversion function as `conv`, a
+function from Java types to XDM types.
+
+| Java type `T` | XSD type `conv(T)`
+|-----------------|---------------------|
+|`int`            | `xs:integer`
+|`long`           | `xs:integer`
+|`double`         | `xs:decimal`
+|`float`          | `xs:decimal`
+|`boolean`        | `xs:boolean`
+|`String`         | `xs:string`
+|`Character`      | `xs:string`
+|`List<E>`        | `conv(E)*` (a sequence type)
+
+
+The same `conv` function is used to translate rule property values to XDM values.
+
+
+## Migrating from 1.0 to 2.0
 
 XPath 1.0 and 2.0 have some incompatibilities. The [XPath 2.0 specification](https://www.w3.org/TR/xpath20/#id-incompat-in-false-mode)
 describes them precisely. Those are however mostly corner cases and XPath
@@ -74,6 +118,9 @@ represented by our 1.0 implementation as strings, meaning that `@BeginLine > "1"
 worked ---that's not the case in 2.0 mode.
    * <code>@ArgumentCount > <b style="color:red">'</b>1<b style="color:red">'</b></code> &rarr; `@ArgumentCount > 1`
 
+## Rule properties
+
+**See [Defining rule properties](pmd_userdocs_extending_defining_properties.html#for-xpath-rules)**
 
 
 ## PMD extension functions

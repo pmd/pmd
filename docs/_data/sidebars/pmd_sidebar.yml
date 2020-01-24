@@ -67,13 +67,13 @@ entries:
         - title: Introduction to writing rules
           url: /pmd_userdocs_extending_writing_rules_intro.html
           output: web, pdf
-        - title: Using the Rule Designer
-          url: /pmd_userdocs_extending_designer_intro.html
+        - title: Your first rule
+          url: /pmd_userdocs_extending_your_first_rule.html
           output: web, pdf
-        - title: Writing XPath rules
+        - title: XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
           output: web, pdf
-        - title: Writing Java rules
+        - title: Java rules
           url: /pmd_userdocs_extending_writing_java_rules.html
           output: web, pdf
         - title: Rule designer reference

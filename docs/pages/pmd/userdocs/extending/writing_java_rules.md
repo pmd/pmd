@@ -13,7 +13,7 @@ author: Tom Copeland <tomcopeland@users.sourceforge.net>
 {% jdoc_nspace :jast java::lang.java.ast %}
 {% jdoc_nspace :jrule java::lang.java.rule %}
 
-{% include note.html content="TODO All that should be written in the Javadocs, 
+{% include note.html content="TODO All that should be written in the Javadocs,
 not sure we even need a doc page. Would be simpler to maintain too" %}
 {% include warning.html content="WIP lots of stuff missing" %}
 
@@ -24,20 +24,30 @@ process is very similar to the process for XPath rules, which is described in
 Basically, you open the designer, look at the structure of the AST, and refine
 your rule as you add test cases.
 
-All rules ultimately implement the interface {% jdoc core::Rule %}. Each
-language implementation provides a specific base rule class to ease your pain,
-e.g. {% jdoc jrule::AbstractJavaRule %}.
-
 In this page we'll talk about rules for the Java language, but the process is
 very similar for other languages.
 
+
+## Basics
+
+To write a rule in Java you'll have to:
+ 1. write a Java class that implements the interface {% jdoc core::Rule %}. Each
+language implementation provides a base rule class to ease your pain,
+e.g. {% jdoc jrule::AbstractJavaRule %}.
+ 2. compile this class, linking it to PMD APIs (eg using PMD as a maven dependency)
+ 3. bundle this into a JAR and add it to the execution classpath of PMD
+ 4. declare the rule in your ruleset XML
+
 ## Rule execution
+
+Most base rule classes use a [Visitor pattern](https://sourcemaking.com/design_patterns/visitor)
+to explore the AST.
 
 ### Tree traversal
 
 When a rule is applied to a file, it's handed the root of the AST and told
 to traverse all the tree to look for violations. Each rule defines a specific
-`visit` method for each type of node that can be found in the Java AST, which
+`visit` method for each type of node for of the language, which
 by default just visits the children.
 
 So the following rule would traverse the whole tree and do nothing:
@@ -64,8 +74,15 @@ public class MyRule extends AbstractJavaRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         // This method is called on each node of type ASTVariableDeclaratorId
         // in the AST
+        
+        if (node.getType() == short.class) {
+            // reports a violation at the position of the node
+            // the "data" parameter is a context object handed to by your rule
+            // the message for the violation is the message defined in the rule declaration XML element 
+            addViolation(data, node); 
+        }
 
-
+        // this calls back to the default implementation, which recurses further down the subtree
         return super.visit(node, data);
     }
 }
@@ -135,33 +152,13 @@ If an overridden property is unknown, an error is reported.
 
 ### Execution
 
-For each thread, a deep copy of the rule is created.
-Then, for each thread, for each analysed file:
+For each thread, a deep copy of the rule is created. Each thread is given
+a different set of files to analyse. Then, for each such file, for each
+rule copy:
 
 3. {% jdoc core::Rule#start(core::RuleContext) %} is called once, before parsing
-4. {% jdoc core::Rule#apply(java.util.List,core::RuleContext) %} is called with the root 
-of the AST. That method performs the AST traversal that ultimately calls visit methods. 
+4. {% jdoc core::Rule#apply(java.util.List,core::RuleContext) %} is called with the root
+of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It's not called for RuleChain rules.
-5. {% jdoc core::Rule#end(core::RuleContext) %} is called when the rule is done processing 
+5. {% jdoc core::Rule#end(core::RuleContext) %} is called when the rule is done processing
 the file
-
-### FIXME
-
-without specific order:
-* There's no hook for "after construction", or "after analysis" we only have "before file"
-and "after file"
-* What's the point of having `Rule#start` ? The globally accepted pattern is to override
-the visit method for the root node. We have `visit(<root type>)`, `apply`, and `start`
-that are called at the same lifecycle point...
-* Rule#apply is not called for RuleChain visits
-* Why is Rule#apply overridable? Anyone can break it
-* Sooo much code is duplicated everywhere in rulechain visitor implementations, which are 
-all the same modulo a cast...
-* Converting a rule to the rulechain shouldn't force removing `super.visit` calls... We 
-could just provide a base class for rulechain rules that overrides eg `visit(JavaNode)`
-to be a noop
-* RuleSets is unnecessary, we should just rely on a good RuleSet implementation
-* Initializer.initialize() is called for each file instead of once per language module loading
-* For each file all the rules in all rulesets are checked to use typeres or other 
-analysis passes
-

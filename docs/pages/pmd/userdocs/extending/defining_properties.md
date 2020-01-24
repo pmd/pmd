@@ -29,33 +29,12 @@ The basic thing you need to do as a developer is to define a **property descript
 
 Don't worry, all of these attributes can be specified in a single Java statement (or xml element for XPath rules).
 
-Without further ado, here is the list of available (single-value) property types:
-
-|Value type|Factory method|
-|----------|--------------|
-| int      |{% jdoc :PF#intProperty(java.lang.String) %}|
-| double   |{% jdoc :PF#doubleProperty(java.lang.String) %}|
-| long     |{% jdoc :PF#longProperty(java.lang.String) %}|
-| char     |{% jdoc :PF#charProperty(java.lang.String) %}|
-| boolean  |{% jdoc :PF#booleanProperty(java.lang.String) %}|
-| String   |{% jdoc :PF#stringProperty(java.lang.String) %}|
-| java.util.regex.Pattern |{% jdoc :PF#regexProperty(java.lang.String) %}|
-| *anything*              |{% jdoc :PF#enumProperty(java.lang.String,java.util.Map) %}|
-
-Each of these is complemented by a multivalued variant, whose value is a list, e.g.
-
-|Value type|Factory method|
-|----------|--------------|
-| List\<Integer\>      |{% jdoc :PF#intListProperty(java.lang.String) %}|
-| List\<*E*\>          |{% jdoc :PF#enumListProperty(java.lang.String,java.util.Map) %}|
-
-Note that no multivalue property is available for regex properties, since the
-delimiters could be part of a specific value.
 
 ## For Java rules
 
 The procedure to define a property is quite straightforward:
-* Create a property descriptor of the type you want, using its builder;
+* Create a property descriptor of the type you want, by using a
+builder from {% jdoc :PF %}
 * Call {% jdoc !a!props::PropertySource#definePropertyDescriptor(props::PropertyDescriptor) %}` in the rule's noarg constructor.
 
 You can then retrieve the value of the property at any time using {% jdoc !a!props::PropertySource#getProperty(props::PropertyDescriptor) %}.
