@@ -19,7 +19,7 @@ public final class TypeHelper {
      * Checks whether the resolved type of the given {@link TypeNode} n is of the type
      * given by the clazzName. If the clazzName is on the auxclasspath, then also subclasses
      * are considered.
-     * 
+     *
      * <p>If clazzName is not on the auxclasspath (so it can't be resolved), then a string
      * comparison of the class names are performed. This might result in comparing only
      * the simple name of the classes.
@@ -55,7 +55,7 @@ public final class TypeHelper {
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     private static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
         if (n.getType() != null) {
             return loadClass(n.getType().getClassLoader(), clazzName);
@@ -82,7 +82,7 @@ public final class TypeHelper {
             // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
             // if it was a NoClassDefFoundError. TODO : Report it?
         }
-        
+
         return null;
     }
 
@@ -103,14 +103,14 @@ public final class TypeHelper {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public static boolean isExactlyNone(TypedNameDeclaration vnd, Class<?>... clazzes) {
         return !isExactlyAny(vnd, clazzes);
     }
-    
+
     /**
      * @deprecated use {@link #isExactlyAny(TypedNameDeclaration, Class...)}
      */

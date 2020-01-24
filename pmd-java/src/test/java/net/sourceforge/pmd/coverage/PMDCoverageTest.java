@@ -42,7 +42,7 @@ public class PMDCoverageTest {
 
     /**
      * Run the PMD command line tool, i.e. call PMD.main().
-     * 
+     *
      * @param commandLine
      */
     private void runPmd(String commandLine) {

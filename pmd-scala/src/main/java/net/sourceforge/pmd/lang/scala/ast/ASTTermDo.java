@@ -13,7 +13,7 @@ public class ASTTermDo extends AbstractScalaNode<Term.Do> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

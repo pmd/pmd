@@ -13,7 +13,7 @@ public class ASTPatXml extends AbstractScalaNode<Pat.Xml> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

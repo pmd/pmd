@@ -7,7 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.util.Properties;
 
 /**
- * 
+ *
  * @author Stuart Turton sturton@users.sourceforge.net
  */
 public class PLSQLLanguage extends AbstractLanguage {

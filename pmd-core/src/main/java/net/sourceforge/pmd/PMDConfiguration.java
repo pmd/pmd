@@ -581,7 +581,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Retrieves the currently used analysis cache. Will never be null.
-     * 
+     *
      * @return The currently used analysis cache. Never null.
      */
     public AnalysisCache getAnalysisCache() {
@@ -593,7 +593,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
         return analysisCache;
     }
-    
+
     /**
      * Sets the analysis cache to be used. Setting a
      * value of {@code null} will cause a Noop AnalysisCache to be used.
@@ -611,7 +611,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Sets the location of the analysis cache to be used. This will automatically configure
      * and appropriate AnalysisCache implementation.
-     * 
+     *
      * @param cacheLocation The location of the analysis cache to be used.
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {

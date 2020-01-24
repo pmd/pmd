@@ -87,7 +87,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }
-    
+
     @Test
     public void testXPathRule() throws Exception {
         DummyNode node = createNode(1);
@@ -96,14 +96,14 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         Report report = new Report();
         XPathRule theRule = new XPathRule();
         theRule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//dummyNode");
-        
+
         // Setup as FooRule
         theRule.setDescription("desc");
         theRule.setName("Foo");
-        
+
         report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
         String rendered = ReportTest.render(getRenderer(), report);
-        
+
         // Output should be the exact same as for non xpath rules
         assertEquals(filter(getExpected()), filter(rendered));
     }

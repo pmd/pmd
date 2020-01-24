@@ -57,7 +57,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
                 + "<td>file</td>" + PMD.EOL + "<td><pre>" + error.getDetail() + "</pre></td>" + PMD.EOL + "</tr>" + PMD.EOL + "</table></body></html>"
                 + PMD.EOL;
     }
-    
+
     @Override
     public String getExpectedError(ConfigurationError error) {
         return getHeader()

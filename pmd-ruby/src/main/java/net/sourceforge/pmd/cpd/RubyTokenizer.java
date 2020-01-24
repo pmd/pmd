@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Tokenizer for Ruby.
- * 
+ *
  * @author Zev Blut zb@ubit.com
  */
 public class RubyTokenizer extends AbstractTokenizer {

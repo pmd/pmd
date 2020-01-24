@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.scala.ast;
 public interface ScalaParserVisitor<D, R> {
     /**
      * Visit an arbitrary Scala Node (any node in the tree).
-     * 
+     *
      * @param node
      *            the node of the tree
      * @param data
@@ -26,7 +26,7 @@ public interface ScalaParserVisitor<D, R> {
 
     /**
      * Visit the Source Node (the root node of the tree).
-     * 
+     *
      * @param node
      *            the root node of the tree
      * @param data

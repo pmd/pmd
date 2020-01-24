@@ -13,7 +13,7 @@ public class ASTLitShort extends AbstractScalaNode<Lit.Short> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

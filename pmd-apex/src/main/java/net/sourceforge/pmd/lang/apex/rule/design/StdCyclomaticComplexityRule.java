@@ -32,10 +32,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <p>
  * Standard rules: +1 for each decision point, but not including boolean
  * operators unlike CyclomaticComplexityRule.
- * 
+ *
  * @author ported on Java version of Alan Hohn, based on work by Donald A.
  *         Leckie
- * 
+ *
  * @since June 18, 2014
  */
 public class StdCyclomaticComplexityRule extends AbstractApexRule {

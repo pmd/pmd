@@ -57,7 +57,7 @@ public class PmdRunnable implements Callable<Report> {
     @Override
     public Report call() {
         TimeTracker.initThread();
-        
+
         ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
         if (tc == null) {
             tc = new ThreadContext(new RuleSets(ruleSets), new RuleContext(ruleContext));
@@ -85,7 +85,7 @@ public class PmdRunnable implements Callable<Report> {
         }
 
         TimeTracker.finishThread();
-        
+
         return report;
     }
 

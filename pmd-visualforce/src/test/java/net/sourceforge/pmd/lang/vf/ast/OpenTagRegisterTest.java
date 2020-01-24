@@ -83,7 +83,7 @@ public class OpenTagRegisterTest {
 
     /**
      * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
-     * 
+     *
      */
     @Test
     public void interleavedTags() {

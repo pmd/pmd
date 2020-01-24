@@ -23,14 +23,14 @@ It is much better to use one of the type-specific toString() methods instead.
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[ 
+<![CDATA[
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-<![CDATA[ 
+<![CDATA[
 String s = "" + 123;                // inefficient
 String t = Integer.toString(456);   // preferred approach
 ]]>
@@ -439,7 +439,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#insufficientstringbufferdeclaration">
         <description>
 Failing to pre-size a StringBuffer or StringBuilder properly could cause it to re-size many times
-during runtime. This rule attempts to determine the total number the characters that are actually 
+during runtime. This rule attempts to determine the total number the characters that are actually
 passed into StringBuffer.append(), but represents a best guess "worst case" scenario. An empty
 StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.
@@ -770,7 +770,7 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation">
         <description>
 Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
-just to create the primitive forms. Using these avoids the cost of creating objects that also need to be 
+just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
 garbage-collected later.
         </description>
         <priority>3</priority>
@@ -834,7 +834,7 @@ public class SimpleTest extends TestCase {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraysaslist">
         <description>
-<![CDATA[ 
+<![CDATA[
 The java.util.Arrays class has a "asList" method that should be used when you want to create a new List from
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
 
@@ -856,7 +856,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
     PrimaryExpression/PrimaryPrefix/Name[
      substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
       ./Type//ClassOrInterfaceType[
-       @Image = 'Collection' or 
+       @Image = 'Collection' or
        @Image = 'List' or @Image='ArrayList'
       ]
      ]
@@ -948,7 +948,7 @@ public String convert(int i) {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usestringbufferforstringappends">
         <description>
 The use of the '+=' operator for appending strings causes the JVM to create and use an internal StringBuffer.
-If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or 
+If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or
 threadsafe StringBuffer is recommended to avoid this.
         </description>
         <priority>3</priority>
@@ -995,7 +995,7 @@ if (sb.length() == 0) {}                // preferred
     "" + int
     or "" + (int) i
     and String.valueOf(int)
-    
+
     and using Integer.toString(int)
 
     IntegerToStringShouldBeUsed

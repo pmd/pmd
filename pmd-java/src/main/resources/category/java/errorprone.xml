@@ -190,7 +190,7 @@ for (int i = 0; i < 10; i++) {
         <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object. It should not be invoked by application logic.
-            
+
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
@@ -211,7 +211,7 @@ void foo() {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingnpe">
         <description>
-Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the 
+Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the
 original error, causing other, more subtle problems later on.
         </description>
         <priority>3</priority>
@@ -245,7 +245,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingthrowable">
         <description>
-Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
+Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
 OutOfMemoryError that should be exposed and managed separately.
         </description>
         <priority>3</priority>
@@ -372,8 +372,8 @@ public class A {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname">
         <description>
-It can be confusing to have a field name with the same name as a method. While this is permitted, 
-having information (field) and actions (method) is not clear naming. Developers versed in 
+It can be confusing to have a field name with the same name as a method. While this is permitted,
+having information (field) and actions (method) is not clear naming. Developers versed in
 Smalltalk often prefer this approach as the methods denote accessor methods.
         </description>
         <priority>3</priority>
@@ -663,9 +663,9 @@ boolean x = (y == Double.NaN);
           class="net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#beanmembersshouldserialize">
         <description>
-If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
+If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable.
+Member variables need to be marked as transient, static, or have accessor methods in the class. Marking
+variables as transient is the safest and easiest modification. Accessor methods should follow the Java
 naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
         </description>
         <priority>3</priority>
@@ -1373,7 +1373,7 @@ public class MyActivity extends Activity {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotthrowexceptioninfinally">
         <description>
-Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions 
+Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions
 or code defects.
 Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"
         </description>
@@ -1464,8 +1464,8 @@ public class Count {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptycatchblock">
         <description>
-Empty Catch Block finds instances where an exception is caught, but nothing is done.  
-In most circumstances, this swallows an exception which should either be acted on 
+Empty Catch Block finds instances where an exception is caught, but nothing is done.
+In most circumstances, this swallows an exception which should either be acted on
 or reported.
         </description>
         <priority>3</priority>
@@ -1660,7 +1660,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptystatementnotinloop">
         <description>
-An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' 
+An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for'
 or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.
         </description>
@@ -1791,7 +1791,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptywhilestmt">
         <description>
-Empty While Statement finds all instances where a while statement does nothing.  
+Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
         </description>
@@ -1949,7 +1949,7 @@ protected void finalize() {
         <description>
 Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
 overload Object.finalize(). It will not be called by the VM.
-            
+
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
@@ -1980,9 +1980,9 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#finalizeshouldbeprotected">
         <description>
-When overriding the finalize(), the new method should be set as protected.  If made public, 
+When overriding the finalize(), the new method should be set as protected.  If made public,
 other classes may invoke it at inappropriate times.
-            
+
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
@@ -2992,7 +2992,7 @@ new StringBuffer()      //  16
 new StringBuffer(6)     //  6
 new StringBuffer("hello world")  // 11 + 16 = 27
 new StringBuffer('A')   //  chr(A) = 65
-new StringBuffer("A")   //  1 + 16 = 17 
+new StringBuffer("A")   //  1 + 16 = 17
 
 new StringBuilder()     //  16
 new StringBuilder(6)    //  6
@@ -3047,7 +3047,7 @@ intention to override the equals(Object) method.
                 <value>
 <![CDATA[
 //MethodDeclaration[@Name = 'equals']
-[   
+[
     (@Arity = 1
     and not (MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
         [@Image = 'Object' or @Image = 'java.lang.Object'])
@@ -3140,7 +3140,7 @@ public void foo() {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#testclasswithouttestcases">
         <description>
-Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
+Test classes end with the suffix Test. Having a non-test class with that name is not a good practice,
 since most people will assume it is a test case. Test classes have test methods named testXXX.
         </description>
         <priority>3</priority>
@@ -3522,7 +3522,7 @@ String z2 = a.toLowerCase(Locale.getDefault());
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#useproperclassloader">
         <description>
-In J2EE, the getClassLoader() method might not work as expected. Use 
+In J2EE, the getClassLoader() method might not work as expected. Use
 Thread.currentThread().getContextClassLoader() instead.
         </description>
         <priority>3</priority>
