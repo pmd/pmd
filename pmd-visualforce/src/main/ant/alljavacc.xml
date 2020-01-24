@@ -33,7 +33,7 @@
                 javacchome="${javacc-home.path}" />
         <!-- Ensure generated using CharStream interface debugparser="true"
         		debugtokenmanager="true"-->
-        <javacc static="false"        	
+        <javacc static="false"
                 usercharstream="true"
                 unicodeinput="true"
                 javaunicodeescape="false"
@@ -116,6 +116,23 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
                 <include name="AST*.java" />
             </fileset>
         </delete>
+
+
+
+        <replaceregexp>
+            <regexp pattern="class|interface" />
+            <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset dir="${target}/net/sourceforge/pmd/lang/vf/ast">
+                <exclude name="AST*.java" />
+            </fileset>
+        </replaceregexp>
+
+        <replaceregexp>
+            <regexp pattern="public class ParseException " />
+            <substitution expression=" /** @deprecated Use superclass {@link net.sourceforge.pmd.lang.ast.ParseException} */
+@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset file="${target}/net/sourceforge/pmd/lang/vf/ast/ParseException.java"/>
+        </replaceregexp>
     </target>
 
 </project>
