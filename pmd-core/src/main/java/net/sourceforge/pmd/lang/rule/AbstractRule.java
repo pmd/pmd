@@ -38,9 +38,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private List<String> examples = new ArrayList<>();
     private String externalInfoUrl;
     private RulePriority priority = RulePriority.LOW;
-    private boolean usesDFA;
-    private boolean usesTypeResolution;
-    private boolean usesMultifile;
     private List<String> ruleChainVisits = new ArrayList<>();
 
     public AbstractRule() {
@@ -73,9 +70,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.priority = priority;
         otherRule.propertyDescriptors = new ArrayList<>(getPropertyDescriptors());
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
-        otherRule.usesDFA = usesDFA;
-        otherRule.usesTypeResolution = usesTypeResolution;
-        otherRule.usesMultifile = usesMultifile;
         otherRule.ruleChainVisits = copyRuleChainVisits();
     }
 
