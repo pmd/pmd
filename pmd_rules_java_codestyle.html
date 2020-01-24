@@ -1785,7 +1785,7 @@ and reports utility class names not ending with ‘Util’.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This is Pascal case, the recommended naming convention in Java</span>
-<span class="c1">// Note that the default values of this rule don't allow underscores </span>
+<span class="c1">// Note that the default values of this rule don't allow underscores</span>
 <span class="c1">// or accented characters in type names</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooBar</span> <span class="o">{}</span>
 
@@ -2487,8 +2487,8 @@ convention for constants and enum constants.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid using ‘for’ statements without using curly braces. If the code formatting or 
-indentation is lost then it becomes difficult to separate the code being controlled 
+<p>Avoid using ‘for’ statements without using curly braces. If the code formatting or
+indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.</p>
 
 <p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
@@ -2610,7 +2610,7 @@ configured through properties.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">TypeDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="o">/</span><span class="nt">TypeParameters</span><span class="o">/</span><span class="nt">TypeParameter</span><span class="p">[</span><span class="w">
-  </span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w"> 
+  </span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="w">
   </span><span class="ow">or</span><span class="w">
   </span><span class="nn">string:</span><span class="nf">upper-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="na">@Image</span><span class="w">
 </span><span class="p">]</span><span class="w">
@@ -2682,8 +2682,8 @@ branch.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid using if..else statements without using surrounding braces. If the code formatting 
-or indentation is lost then it becomes difficult to separate the code being controlled 
+<p>Avoid using if..else statements without using surrounding braces. If the code formatting
+or indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.</p>
 
 <p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
@@ -2720,7 +2720,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid using if statements without using braces to surround the code block. If the code 
+<p>Avoid using if statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.</p>
 
@@ -3742,9 +3742,9 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#fieldnamingconve
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>If you overuse the static import feature, it can make your program unreadable and 
-unmaintainable, polluting its namespace with all the static members you import. 
-Readers of your code (including you, a few months after you wrote it) will not know 
+<p>If you overuse the static import feature, it can make your program unreadable and
+unmaintainable, polluting its namespace with all the static members you import.
+Readers of your code (including you, a few months after you wrote it) will not know
 which class a static member comes from (Sun 1.5 Language Guide).</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -4452,7 +4452,7 @@ by the more general rules <a href="pmd_rules_java_codestyle.html#fieldnamingconv
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid using ‘while’ statements without using braces to surround the code block. If the code 
+<p>Avoid using ‘while’ statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.</p>
 
@@ -4467,7 +4467,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span>    <span class="c1">// not recommended</span>
       <span class="n">x</span><span class="o">++;</span>
-      
+
 <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>  <span class="c1">// preferred approach</span>
       <span class="n">x</span><span class="o">++;</span>
 <span class="o">}</span>

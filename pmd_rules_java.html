@@ -1369,14 +1369,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#guardlogstatement">GuardLogStatement</a>: Whenever using a log level, one should check if the loglevel is actually enabled, orotherwise ski…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation">JUnit4SuitesShouldUseSuiteAnnotation</a>: In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicatedthro…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">JUnit4TestShouldUseAfterAnnotation</a>: In JUnit 3, the tearDown method was used to clean up all data entities required in running tests….</li>
-  <li><a href="pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">JUnit4TestShouldUseBeforeAnnotation</a>: In JUnit 3, the setUp method was used to set up all data entities required in running tests. JUni…</li>
-  <li><a href="pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">JUnit4TestShouldUseTestAnnotation</a>: In JUnit 3, the framework executed all methods which started with the word test as a unit test. I…</li>
-  <li><a href="pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">JUnitAssertionsShouldIncludeMessage</a>: JUnit assertions should include an informative message - i.e., use the three-argument version of …</li>
+  <li><a href="pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">JUnit4TestShouldUseBeforeAnnotation</a>: In JUnit 3, the setUp method was used to set up all data entities required in running tests.JUnit…</li>
+  <li><a href="pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">JUnit4TestShouldUseTestAnnotation</a>: In JUnit 3, the framework executed all methods which started with the word test as a unit test.In…</li>
+  <li><a href="pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">JUnitAssertionsShouldIncludeMessage</a>: JUnit assertions should include an informative message - i.e., use the three-argument version ofa…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">JUnitTestContainsTooManyAsserts</a>: Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, fo…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">JUnitTestsShouldIncludeAssert</a>: JUnit tests should include at least one assertion.  This makes the tests more robust, and using a…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junituseexpected">JUnitUseExpected</a>: In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.</li>
   <li><a href="pmd_rules_java_bestpractices.html#loosecoupling">LooseCoupling</a>: The use of implementation types (i.e., HashSet) as object references limits your ability to use a…</li>
-  <li><a href="pmd_rules_java_bestpractices.html#methodreturnsinternalarray">MethodReturnsInternalArray</a>: Exposing internal arrays to the caller violates object encapsulation since elements can be remove…</li>
+  <li><a href="pmd_rules_java_bestpractices.html#methodreturnsinternalarray">MethodReturnsInternalArray</a>: Exposing internal arrays to the caller violates object encapsulation since elements can beremoved…</li>
   <li><a href="pmd_rules_java_bestpractices.html#missingoverride">MissingOverride</a>: Annotating overridden methods with @Override ensures at compile time that            the method r…</li>
   <li><a href="pmd_rules_java_bestpractices.html#onedeclarationperline">OneDeclarationPerLine</a>: Java allows the use of several variables declaration of the same type on one line. However, itcan…</li>
   <li><a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons">PositionLiteralsFirstInCaseInsensitiveComparisons</a>: Position literals first in comparisons, if the second argument is null then NullPointerExceptions…</li>
@@ -1429,12 +1429,12 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass">FieldDeclarationsShouldBeAtStartOfClass</a>: Fields should be declared at the top of the class, before any method declarations, constructors, …</li>
   <li><a href="pmd_rules_java_codestyle.html#fieldnamingconventions">FieldNamingConventions</a>: Configurable naming conventions for field declarations. This rule reports variable declarations  …</li>
   <li><a href="pmd_rules_java_codestyle.html#forloopshouldbewhileloop">ForLoopShouldBeWhileLoop</a>: Some for loops can be simplified to while loops, this makes them more concise.</li>
-  <li><a href="pmd_rules_java_codestyle.html#forloopsmustusebraces">ForLoopsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using ‘for’ statements without using curly braces. If the code formatting or indentation is…</li>
+  <li><a href="pmd_rules_java_codestyle.html#forloopsmustusebraces">ForLoopsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using ‘for’ statements without using curly braces. If the code formatting orindentation is …</li>
   <li><a href="pmd_rules_java_codestyle.html#formalparameternamingconventions">FormalParameterNamingConventions</a>: Configurable naming conventions for formal parameters of methods and lambdas.            This rul…</li>
   <li><a href="pmd_rules_java_codestyle.html#genericsnaming">GenericsNaming</a>: Names for references to generic values should be limited to a single uppercase letter.</li>
   <li><a href="pmd_rules_java_codestyle.html#identicalcatchbranches">IdenticalCatchBranches</a>: Identical ‘catch’ branches use up vertical space and increase the complexity of code without     …</li>
-  <li><a href="pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces">IfElseStmtsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using if..else statements without using surrounding braces. If the code formatting or inden…</li>
-  <li><a href="pmd_rules_java_codestyle.html#ifstmtsmustusebraces">IfStmtsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using if statements without using braces to surround the code block. If the code formatting…</li>
+  <li><a href="pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces">IfElseStmtsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using if..else statements without using surrounding braces. If the code formattingor indent…</li>
+  <li><a href="pmd_rules_java_codestyle.html#ifstmtsmustusebraces">IfStmtsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using if statements without using braces to surround the code block. If the codeformatting …</li>
   <li><a href="pmd_rules_java_codestyle.html#linguisticnaming">LinguisticNaming</a>: This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they …</li>
   <li><a href="pmd_rules_java_codestyle.html#localhomenamingconvention">LocalHomeNamingConvention</a>: The Local Home interface of a Session EJB should be suffixed by ‘LocalHome’.</li>
   <li><a href="pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention">LocalInterfaceSessionNamingConvention</a>: The Local Interface of a Session EJB should be suffixed by ‘Local’.</li>
@@ -1455,7 +1455,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#shortmethodname">ShortMethodName</a>: Method names that are very short are not helpful to the reader.</li>
   <li><a href="pmd_rules_java_codestyle.html#shortvariable">ShortVariable</a>: Fields, local variables, or parameter names that are very short are not helpful to the reader.</li>
   <li><a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname">SuspiciousConstantFieldName</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Field names using all uppercase characters - Sun’s Java naming conventions indicating constants -…</li>
-  <li><a href="pmd_rules_java_codestyle.html#toomanystaticimports">TooManyStaticImports</a>: If you overuse the static import feature, it can make your program unreadable and unmaintainable,…</li>
+  <li><a href="pmd_rules_java_codestyle.html#toomanystaticimports">TooManyStaticImports</a>: If you overuse the static import feature, it can make your program unreadable andunmaintainable, …</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">UnnecessaryAnnotationValueElement</a>: Avoid the use of value in annotations when it’s the only element.</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryconstructor">UnnecessaryConstructor</a>: This rule detects when a constructor is not necessary; i.e., when there is only one constructor a…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a>: Import statements allow the use of non-fully qualified names.  The use of a fully qualified namew…</li>
@@ -1468,7 +1468,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_codestyle.html#useshortarrayinitializer">UseShortArrayInitializer</a>: When declaring and initializing array fields or variables, it is not necessary to explicitly crea…</li>
   <li><a href="pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">UseUnderscoresInNumericLiterals</a>: Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that …</li>
   <li><a href="pmd_rules_java_codestyle.html#variablenamingconventions">VariableNamingConventions</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> A variable naming conventions rule - customize this to your liking.  Currently, itchecks for fina…</li>
-  <li><a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces">WhileLoopsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using ‘while’ statements without using braces to surround the code block. If the code forma…</li>
+  <li><a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces">WhileLoopsMustUseBraces</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid using ‘while’ statements without using braces to surround the code block. If the codeformat…</li>
 </ul>
 
 <h2 id="design">Design</h2>
@@ -1492,7 +1492,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_design.html#donotextendjavalangerror">DoNotExtendJavaLangError</a>: Errors are system exceptions. Do not extend them.</li>
   <li><a href="pmd_rules_java_design.html#exceptionasflowcontrol">ExceptionAsFlowControl</a>: Using Exceptions as form of flow control is not recommended as they obscure true exceptions when …</li>
   <li><a href="pmd_rules_java_design.html#excessiveclasslength">ExcessiveClassLength</a>: Excessive class file lengths are usually indications that the class may be burdened with excessiv…</li>
-  <li><a href="pmd_rules_java_design.html#excessiveimports">ExcessiveImports</a>: A high number of imports can indicate a high degree of coupling within an object. This rule count…</li>
+  <li><a href="pmd_rules_java_design.html#excessiveimports">ExcessiveImports</a>: A high number of imports can indicate a high degree of coupling within an object. This rulecounts…</li>
   <li><a href="pmd_rules_java_design.html#excessivemethodlength">ExcessiveMethodLength</a>: When methods are excessively long this usually indicates that the method is doing more than itsna…</li>
   <li><a href="pmd_rules_java_design.html#excessiveparameterlist">ExcessiveParameterList</a>: Methods with numerous parameters are a challenge to maintain, especially if most of them share th…</li>
   <li><a href="pmd_rules_java_design.html#excessivepubliccount">ExcessivePublicCount</a>: Classes with large numbers of public methods and attributes require disproportionate testing effo…</li>
@@ -1501,7 +1501,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_design.html#immutablefield">ImmutableField</a>: Identifies private fields whose values never change once object initialization ends either in the…</li>
   <li><a href="pmd_rules_java_design.html#lawofdemeter">LawOfDemeter</a>: The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce couplin…</li>
   <li><a href="pmd_rules_java_design.html#logicinversion">LogicInversion</a>: Use opposite operator instead of negating the whole expression with a logic complement operator.</li>
-  <li><a href="pmd_rules_java_design.html#loosepackagecoupling">LoosePackageCoupling</a>: Avoid using classes from the configured package hierarchy outside of the package hierarchy, excep…</li>
+  <li><a href="pmd_rules_java_design.html#loosepackagecoupling">LoosePackageCoupling</a>: Avoid using classes from the configured package hierarchy outside of the package hierarchy,except…</li>
   <li><a href="pmd_rules_java_design.html#modifiedcyclomaticcomplexity">ModifiedCyclomaticComplexity</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Complexity directly affects maintenance costs is determined by the number of decision points in a…</li>
   <li><a href="pmd_rules_java_design.html#ncssconstructorcount">NcssConstructorCount</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of l…</li>
   <li><a href="pmd_rules_java_design.html#ncsscount">NcssCount</a>: This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of line…</li>
@@ -1579,25 +1579,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#donotcallsystemexit">DoNotCallSystemExit</a>: Web applications should not call System.exit(), since only the web container or theapplication se…</li>
   <li><a href="pmd_rules_java_errorprone.html#donotextendjavalangthrowable">DoNotExtendJavaLangThrowable</a>: Extend Exception or RuntimeException instead of Throwable.</li>
   <li><a href="pmd_rules_java_errorprone.html#donothardcodesdcard">DoNotHardCodeSDCard</a>: Use Environment.getExternalStorageDirectory() instead of "/sdcard"</li>
-  <li><a href="pmd_rules_java_errorprone.html#donotthrowexceptioninfinally">DoNotThrowExceptionInFinally</a>: Throwing exceptions within a ‘finally’ block is confusing since they may mask other exceptions or…</li>
+  <li><a href="pmd_rules_java_errorprone.html#donotthrowexceptioninfinally">DoNotThrowExceptionInFinally</a>: Throwing exceptions within a ‘finally’ block is confusing since they may mask other exceptionsor …</li>
   <li><a href="pmd_rules_java_errorprone.html#dontimportsun">DontImportSun</a>: Avoid importing anything from the ‘sun.’ packages.  These packages are not portable and are likel…</li>
   <li><a href="pmd_rules_java_errorprone.html#dontusefloattypeforloopindices">DontUseFloatTypeForLoopIndices</a>: Don’t use floating point for loop indices. If you must use floating point, use doubleunless you’r…</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>: Empty Catch Block finds instances where an exception is caught, but nothing is done.  In most cir…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>: Empty Catch Block finds instances where an exception is caught, but nothing is done.In most circu…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyfinalizer">EmptyFinalizer</a>: Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Obje…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyfinallyblock">EmptyFinallyBlock</a>: Empty finally blocks serve no purpose and should be removed.</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyifstmt">EmptyIfStmt</a>: Empty If Statement finds instances where a condition is checked but nothing is done about it.</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyinitializer">EmptyInitializer</a>: Empty initializers serve no purpose and should be removed.</li>
   <li><a href="pmd_rules_java_errorprone.html#emptystatementblock">EmptyStatementBlock</a>: Empty block statements serve no purpose and should be removed.</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptystatementnotinloop">EmptyStatementNotInLoop</a>: An empty statement (or a semicolon by itself) that is not used as the sole body of a ‘for’ or ‘wh…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptystatementnotinloop">EmptyStatementNotInLoop</a>: An empty statement (or a semicolon by itself) that is not used as the sole body of a ‘for’or ‘whi…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyswitchstatements">EmptySwitchStatements</a>: Empty switch statements serve no purpose and should be removed.</li>
   <li><a href="pmd_rules_java_errorprone.html#emptysynchronizedblock">EmptySynchronizedBlock</a>: Empty synchronized blocks serve no purpose and should be removed.</li>
   <li><a href="pmd_rules_java_errorprone.html#emptytryblock">EmptyTryBlock</a>: Avoid empty try blocks - what’s the point?</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptywhilestmt">EmptyWhileStmt</a>: Empty While Statement finds all instances where a while statement does nothing.  If it is a timin…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptywhilestmt">EmptyWhileStmt</a>: Empty While Statement finds all instances where a while statement does nothing.If it is a timing …</li>
   <li><a href="pmd_rules_java_errorprone.html#equalsnull">EqualsNull</a>: Tests for null should not use the equals() method. The ‘==’ operator should be used instead.</li>
   <li><a href="pmd_rules_java_errorprone.html#finalizedoesnotcallsuperfinalize">FinalizeDoesNotCallSuperFinalize</a>: If the finalize() is implemented, its last action should be to call super.finalize. Note that Ora…</li>
   <li><a href="pmd_rules_java_errorprone.html#finalizeonlycallssuperfinalize">FinalizeOnlyCallsSuperFinalize</a>: If the finalize() is implemented, it should do something besides just calling super.finalize(). N…</li>
   <li><a href="pmd_rules_java_errorprone.html#finalizeoverloaded">FinalizeOverloaded</a>: Methods named finalize() should not have parameters.  It is confusing and most likely an attempt …</li>
-  <li><a href="pmd_rules_java_errorprone.html#finalizeshouldbeprotected">FinalizeShouldBeProtected</a>: When overriding the finalize(), the new method should be set as protected.  If made public, other…</li>
+  <li><a href="pmd_rules_java_errorprone.html#finalizeshouldbeprotected">FinalizeShouldBeProtected</a>: When overriding the finalize(), the new method should be set as protected.  If made public,other …</li>
   <li><a href="pmd_rules_java_errorprone.html#idempotentoperations">IdempotentOperations</a>: Avoid idempotent operations - they have no effect.</li>
   <li><a href="pmd_rules_java_errorprone.html#importfromsamepackage">ImportFromSamePackage</a>: There is no need to import a type that lives in the same package.</li>
   <li><a href="pmd_rules_java_errorprone.html#instantiationtogetclass">InstantiationToGetClass</a>: Avoid instantiating an object just to call getClass() on it; use the .class public member instead.</li>
@@ -1638,7 +1638,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#useequalstocomparestrings">UseEqualsToCompareStrings</a>: Using ‘==’ or ‘!=’ to compare strings only works if intern version is used on both sides.Use the …</li>
   <li><a href="pmd_rules_java_errorprone.html#uselessoperationonimmutable">UselessOperationOnImmutable</a>: An operation on an Immutable object (String, BigDecimal or BigInteger) won’t change the object it…</li>
   <li><a href="pmd_rules_java_errorprone.html#uselocalewithcaseconversions">UseLocaleWithCaseConversions</a>: When doing ‘String::toLowerCase()/toUpperCase()’ conversions, use an explicit locale argument to …</li>
-  <li><a href="pmd_rules_java_errorprone.html#useproperclassloader">UseProperClassLoader</a>: In J2EE, the getClassLoader() method might not work as expected. Use Thread.currentThread().getCo…</li>
+  <li><a href="pmd_rules_java_errorprone.html#useproperclassloader">UseProperClassLoader</a>: In J2EE, the getClassLoader() method might not work as expected. UseThread.currentThread().getCon…</li>
 </ul>
 
 <h2 id="multithreading">Multithreading</h2>

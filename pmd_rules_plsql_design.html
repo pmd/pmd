@@ -1351,8 +1351,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.<br />
+<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.</p>
 
@@ -1360,7 +1360,7 @@ high complexity, and 11+ is very high complexity.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Cyclomatic Complexity of 25 </span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Cyclomatic Complexity of 25</span>
 <span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="n">PACKAGE</span> <span class="n">BODY</span> <span class="n">pkg_pmd_working_sequence</span>  <span class="k">AS</span>
 <span class="mi">1</span> <span class="k">PROCEDURE</span> <span class="n">ty_logger</span>  <span class="k">IS</span> <span class="k">BEGIN</span>
 <span class="mi">2</span>        <span class="n">IF</span> <span class="k">true</span>
@@ -1530,7 +1530,7 @@ high complexity, and 11+ is very high complexity.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>When methods are excessively long this usually indicates that the method is doing more than its
-name/signature might suggest. They also become challenging for others to digest since excessive 
+name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.</p>
 
@@ -1597,7 +1597,7 @@ Try to reduce the method length by creating helper methods and removing any copy
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Excessive object line lengths are usually indications that the object may be burdened with excessive 
+<p>Excessive object line lengths are usually indications that the object may be burdened with excessive
 responsibilities that could be provided by other objects. In breaking these methods
 apart the code becomes more managable and ripe for reuse.</p>
 
@@ -1675,7 +1675,7 @@ apart the code becomes more managable and ripe for reuse.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Excessive class file lengths are usually indications that the class may be burdened with excessive 
+<p>Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.</p>
 
@@ -1753,7 +1753,7 @@ apart the code becomes more managable and ripe for reuse.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Excessive class file lengths are usually indications that the class may be burdened with excessive 
+<p>Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.</p>
 
@@ -1897,7 +1897,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Excessive class file lengths are usually indications that the class may be burdened with excessive 
+<p>Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.</p>
 
@@ -2112,7 +2112,7 @@ lines of code that are split are counted as one.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>The NPath complexity of a method is the number of acyclic execution paths through that method.
-A threshold of 200 is generally considered the point where measures should be taken to reduce 
+A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/NPathComplexityRule.java">net.sourceforge.pmd.lang.plsql.rule.design.NPathComplexityRule</a></p>
@@ -2205,7 +2205,7 @@ complexity and increase readability.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
+possibly through grouping related fields in new objects.  For example, a class with individual
 city/state/zip fields could park them within a single Address field.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-plsql/src/main/java/net/sourceforge/pmd/lang/plsql/rule/design/TooManyFieldsRule.java">net.sourceforge.pmd.lang.plsql.rule.design.TooManyFieldsRule</a></p>
@@ -2269,7 +2269,7 @@ have more fine grained objects.</p>
         </span><span class="ow">or</span><span class="w">
         </span><span class="nf">local-name</span><span class="p">(.)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'TypeSpecification'</span><span class="w">
        </span><span class="p">)</span><span class="w">
-       </span><span class="ow">and</span><span class="w"> 
+       </span><span class="ow">and</span><span class="w">
       </span><span class="p">(</span><span class="w">
       </span><span class="nf">count</span><span class="p">(</span><span class="o">/</span><span class="kn">descendant::</span><span class="nt">ProgramUnit</span><span class="p">[</span><span class="w">
                                          </span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="w">

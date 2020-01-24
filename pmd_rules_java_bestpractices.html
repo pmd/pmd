@@ -2092,7 +2092,7 @@ through the @RunWith(Suite.class) annotation.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
+<p>In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
 JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.</p>
 
@@ -2130,7 +2130,7 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
+<p>In JUnit 3, the setUp method was used to set up all data entities required in running tests.
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
 JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.</p>
 
@@ -2168,7 +2168,7 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
+<p>In JUnit 3, the framework executed all methods which started with the word test as a unit test.
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.</p>
 
@@ -2239,7 +2239,7 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>JUnit assertions should include an informative message - i.e., use the three-argument version of 
+<p>JUnit assertions should include an informative message - i.e., use the three-argument version of
 assertEquals(), not the two-argument version.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitAssertionsShouldIncludeMessageRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule</a></p>
@@ -2266,7 +2266,7 @@ assertEquals(), not the two-argument version.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which 
+<p>Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.</p>
 
@@ -2342,7 +2342,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
+<p>JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitTestsShouldIncludeAssertRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule</a></p>
@@ -2440,7 +2440,7 @@ by their interface types (i.e, Set) provides much more flexibility.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Exposing internal arrays to the caller violates object encapsulation since elements can be 
+<p>Exposing internal arrays to the caller violates object encapsulation since elements can be
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/MethodReturnsInternalArrayRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule</a></p>
@@ -2814,8 +2814,8 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid passing parameters to methods or constructors without actually referencing them in the method body. 
-Removing unused formal parameters from public methods could cause a ripple effect through the code base. 
+<p>Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
 <code class="highlighter-rouge">checkAll</code> property to <code class="highlighter-rouge">true</code>.</p>
 
@@ -3060,7 +3060,7 @@ This rule will also find unused on demand imports, i.e. import com.foo.*.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>This rule detects JUnit assertions in object references equality. These assertions should be made by 
+<p>This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -3104,7 +3104,7 @@ more specific methods, like assertNull, assertNotNull.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>This rule detects JUnit assertions in object references equality. These assertions should be made 
+<p>This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>

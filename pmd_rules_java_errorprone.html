@@ -1645,7 +1645,7 @@ that there are no more references to the object. It should not be invoked by app
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the 
+<p>Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the
 original error, causing other, more subtle problems later on.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -1675,7 +1675,7 @@ original error, causing other, more subtle problems later on.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
+<p>Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
 OutOfMemoryError that should be exposed and managed separately.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidCatchingThrowableRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule</a></p>
@@ -1865,8 +1865,8 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>It can be confusing to have a field name with the same name as a method. While this is permitted, 
-having information (field) and actions (method) is not clear naming. Developers versed in 
+<p>It can be confusing to have a field name with the same name as a method. While this is permitted,
+having information (field) and actions (method) is not clear naming. Developers versed in
 Smalltalk often prefer this approach as the methods denote accessor methods.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidFieldNameMatchingMethodNameRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule</a></p>
@@ -2206,9 +2206,9 @@ precision when comparing floating point numbers these are likely to cause logic 
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
+<p>If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable.
+Member variables need to be marked as transient, static, or have accessor methods in the class. Marking
+variables as transient is the safest and easiest modification. Accessor methods should follow the Java
 naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/BeanMembersShouldSerializeRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule</a></p>
@@ -3011,7 +3011,7 @@ application server should stop the JVM. This rule also checks for the equivalent
 
 <p><strong>Priority:</strong> Medium Low (4)</p>
 
-<p>Throwing exceptions within a ‘finally’ block is confusing since they may mask other exceptions 
+<p>Throwing exceptions within a ‘finally’ block is confusing since they may mask other exceptions
 or code defects.
 Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"</p>
 
@@ -3099,8 +3099,8 @@ performance need (space or time).</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Empty Catch Block finds instances where an exception is caught, but nothing is done.<br />
-In most circumstances, this swallows an exception which should either be acted on 
+<p>Empty Catch Block finds instances where an exception is caught, but nothing is done.
+In most circumstances, this swallows an exception which should either be acted on
 or reported.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -3307,7 +3307,7 @@ or reported.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>An empty statement (or a semicolon by itself) that is not used as the sole body of a ‘for’ 
+<p>An empty statement (or a semicolon by itself) that is not used as the sole body of a ‘for’
 or ‘while’ loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.</p>
 
@@ -3426,7 +3426,7 @@ and should be removed.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Empty While Statement finds all instances where a while statement does nothing.<br />
+<p>Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.</p>
 
@@ -3588,7 +3588,7 @@ overload Object.finalize(). It will not be called by the VM.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>When overriding the finalize(), the new method should be set as protected.  If made public, 
+<p>When overriding the finalize(), the new method should be set as protected.  If made public,
 other classes may invoke it at inappropriate times.</p>
 
 <p>Note that Oracle has declared Object.finalize() as deprecated since JDK 9.</p>
@@ -4600,7 +4600,7 @@ This can lead to internal buffer sizes that are larger than expected. Some examp
 new StringBuffer(6)     //  6
 new StringBuffer("hello world")  // 11 + 16 = 27
 new StringBuffer('A')   //  chr(A) = 65
-new StringBuffer("A")   //  1 + 16 = 17 
+new StringBuffer("A")   //  1 + 16 = 17
 
 new StringBuilder()     //  16
 new StringBuilder(6)    //  6
@@ -4646,7 +4646,7 @@ intention to override the equals(Object) method.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'equals'</span><span class="p">]</span><span class="w">
-</span><span class="p">[</span><span class="w">   
+</span><span class="p">[</span><span class="w">
     </span><span class="p">(</span><span class="na">@Arity</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="w">
     </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
         </span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Object'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'java.lang.Object'</span><span class="p">])</span><span class="w">
@@ -4746,7 +4746,7 @@ the literal character "8".</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
+<p>Test classes end with the suffix Test. Having a non-test class with that name is not a good practice,
 since most people will assume it is a test case. Test classes have test methods named testXXX.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/TestClassWithoutTestCasesRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule</a></p>
@@ -5109,7 +5109,7 @@ to future readers.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>In J2EE, the getClassLoader() method might not work as expected. Use 
+<p>In J2EE, the getClassLoader() method might not work as expected. Use
 Thread.currentThread().getContextClassLoader() instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>

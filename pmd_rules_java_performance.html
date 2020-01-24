@@ -1800,7 +1800,7 @@ need to be be created and destroyed by the JVM.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Failing to pre-size a StringBuffer or StringBuilder properly could cause it to re-size many times
-during runtime. This rule attempts to determine the total number the characters that are actually 
+during runtime. This rule attempts to determine the total number the characters that are actually
 passed into StringBuffer.append(), but represents a best guess "worst case" scenario. An empty
 StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.</p>
@@ -2138,7 +2138,7 @@ if-then statement to increase code readability.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Most wrapper classes provide static conversion methods that avoid the need to create intermediate objects
-just to create the primitive forms. Using these avoids the cost of creating objects that also need to be 
+just to create the primitive forms. Using these avoids the cost of creating objects that also need to be
 garbage-collected later.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UnnecessaryWrapperObjectCreationRule.java">net.sourceforge.pmd.lang.java.rule.performance.UnnecessaryWrapperObjectCreationRule</a></p>
@@ -2215,7 +2215,7 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient f
     </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
      </span><span class="nf">substring-before</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'.add'</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="w">
       </span><span class="p">.</span><span class="o">/</span><span class="nt">Type</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
-       </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Collection'</span><span class="w"> </span><span class="ow">or</span><span class="w"> 
+       </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Collection'</span><span class="w"> </span><span class="ow">or</span><span class="w">
        </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'List'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'ArrayList'</span><span class="w">
       </span><span class="p">]</span><span class="w">
      </span><span class="p">]</span><span class="w">
@@ -2313,7 +2313,7 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient f
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>The use of the ‘+=’ operator for appending strings causes the JVM to create and use an internal StringBuffer.
-If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or 
+If a non-trivial number of these concatenations are being used then the explicit use of a StringBuilder or
 threadsafe StringBuffer is recommended to avoid this.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/UseStringBufferForStringAppendsRule.java">net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule</a></p>

@@ -1437,8 +1437,8 @@ using DML in constructors is not a security problem, but crashes the application
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">trigger</span> <span class="n">AccountTrigger</span> <span class="n">on</span> <span class="nf">Account</span> <span class="o">(</span><span class="n">before</span> <span class="n">insert</span><span class="o">,</span> <span class="n">before</span> <span class="n">update</span><span class="o">)</span> <span class="o">{</span>
    <span class="n">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Trigger</span><span class="o">.</span><span class="na">new</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span> <span class="c1">//Bad: Accessing the trigger array directly is not recommended.</span>
-   
-   <span class="n">foreach</span> <span class="o">(</span> <span class="n">Account</span> <span class="n">a</span> <span class="o">:</span> <span class="n">Trigger</span><span class="o">.</span><span class="na">new</span> <span class="o">){</span>   
+
+   <span class="n">foreach</span> <span class="o">(</span> <span class="n">Account</span> <span class="n">a</span> <span class="o">:</span> <span class="n">Trigger</span><span class="o">.</span><span class="na">new</span> <span class="o">){</span>
         <span class="c1">//Good: Iterate through the trigger.new array instead.</span>
    <span class="o">}</span>
 <span class="o">}</span>
@@ -1609,8 +1609,8 @@ A full list of supported annotations can be found at https://developer.salesforc
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Empty Catch Block finds instances where an exception is caught, but nothing is done.<br />
-In most circumstances, this swallows an exception which should either be acted on 
+<p>Empty Catch Block finds instances where an exception is caught, but nothing is done.
+In most circumstances, this swallows an exception which should either be acted on
 or reported.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -1868,7 +1868,7 @@ or reported.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Empty While Statement finds all instances where a while statement does nothing.<br />
+<p>Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.</p>
 

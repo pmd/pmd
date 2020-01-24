@@ -1545,16 +1545,16 @@ code size and runtime complexity.</p>
 <p><strong>Priority:</strong> High (1)</p>
 
 <p>Avoid throwing NullPointerExceptions manually. These are confusing because most people will assume that the
-virtual machine threw it.  To avoid a method being called with a null parameter, you may consider 
-using an IllegalArgumentException instead, making it clearly seen as a programmer-initiated exception. 
+virtual machine threw it.  To avoid a method being called with a null parameter, you may consider
+using an IllegalArgumentException instead, making it clearly seen as a programmer-initiated exception.
 However, there are better ways to handle this:</p>
 
 <blockquote>
   <p><em>Effective Java, 3rd Edition, Item 72: Favor the use of standard exceptions</em></p>
 
-  <p>Arguably, every erroneous method invocation boils down to an illegal argument or state, 
-but other exceptions are standardly used for certain kinds of illegal arguments and states. 
-If a caller passes null in some parameter for which null values are prohibited, convention dictates that 
+  <p>Arguably, every erroneous method invocation boils down to an illegal argument or state,
+but other exceptions are standardly used for certain kinds of illegal arguments and states.
+If a caller passes null in some parameter for which null values are prohibited, convention dictates that
 NullPointerException be thrown rather than IllegalArgumentException.</p>
 </blockquote>
 
@@ -1565,7 +1565,7 @@ validation in methods and constructors with multiple parameters.</p>
 <p>Your parameter validation could thus look like the following:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class Foo {
     private String exampleValue;
-      
+
     void setExampleValue(String exampleValue) {
       // check, throw and assignment in a single standard call
       this.exampleValue = Objects.requireNonNull(exampleValue, "exampleValue must not be null!");
@@ -1724,7 +1724,7 @@ is invoked by a inner class.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>This rule counts the number of unique attributes, local variables, and return types within an object. 
+<p>This rule counts the number of unique attributes, local variables, and return types within an object.
 A number higher than the specified threshold can indicate a high degree of coupling.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CouplingBetweenObjectsRule.java">net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule</a></p>
@@ -1984,7 +1984,7 @@ Either add the necessary validation or use an alternate control structure.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Excessive class file lengths are usually indications that the class may be burdened with excessive 
+<p>Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more manageable and ripe for reuse.</p>
 
@@ -2060,8 +2060,8 @@ apart the code becomes more manageable and ripe for reuse.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>A high number of imports can indicate a high degree of coupling within an object. This rule 
-counts the number of unique imports and reports a violation if the count is above the 
+<p>A high number of imports can indicate a high degree of coupling within an object. This rule
+counts the number of unique imports and reports a violation if the count is above the
 user-specified threshold.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ExcessiveImportsRule.java">net.sourceforge.pmd.lang.java.rule.design.ExcessiveImportsRule</a></p>
@@ -2128,7 +2128,7 @@ user-specified threshold.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>When methods are excessively long this usually indicates that the method is doing more than its
-name/signature might suggest. They also become challenging for others to digest since excessive 
+name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.</p>
 
@@ -2206,7 +2206,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 
     <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
 <span class="o">}</span>
- 
+
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span>      <span class="c1">// preferred approach</span>
     <span class="n">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="n">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
 
@@ -2479,7 +2479,7 @@ or objects.</p>
         <span class="c1">// a constructor call, not a method call.</span>
         <span class="n">D</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="n">D</span><span class="o">();</span>
         <span class="c1">// this method call is ok, because we have create the new instance of D locally.</span>
-        <span class="n">d</span><span class="o">.</span><span class="na">doSomethingElse</span><span class="o">();</span> 
+        <span class="n">d</span><span class="o">.</span><span class="na">doSomethingElse</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2526,7 +2526,7 @@ or objects.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
+<p>Avoid using classes from the configured package hierarchy outside of the package hierarchy,
 except when using one of the configured allowed classes.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/LoosePackageCouplingRule.java">net.sourceforge.pmd.lang.java.rule.design.LoosePackageCouplingRule</a></p>
@@ -2590,8 +2590,8 @@ except when using one of the configured allowed classes.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.<br />
+<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
 decision point.</p>
@@ -3442,8 +3442,8 @@ within those methods.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.<br />
+<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.</p>
 
@@ -3620,7 +3620,7 @@ on the switch variable.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
+possibly through grouping related fields in new objects.  For example, a class with individual
 city/state/zip fields could park them within a single Address field.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/TooManyFieldsRule.java">net.sourceforge.pmd.lang.java.rule.design.TooManyFieldsRule</a></p>

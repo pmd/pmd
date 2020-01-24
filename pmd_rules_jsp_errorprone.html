@@ -1357,8 +1357,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CompilationUnit</span><span class="o">/</span><span class="nt">Content</span><span class="p">[</span><span class="w">
 </span><span class="ow">not</span><span class="p">(</span><span class="nt">Element</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s2">"meta"</span><span class="p">][</span><span class="w">
    </span><span class="nt">Attribute</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s2">"content"</span><span class="p">]</span><span class="o">/</span><span class="nt">AttributeValue</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">),</span><span class="s2">"charset=utf-8"</span><span class="p">)]</span><span class="w">
-</span><span class="p">])</span><span class="w"> 
-</span><span class="ow">and</span><span class="w"> 
+</span><span class="p">])</span><span class="w">
+</span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(</span><span class="nt">JspDirective</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'page'</span><span class="p">]</span><span class="o">/</span><span class="nt">JspDirectiveAttribute</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'contentType'</span><span class="p">][</span><span class="nf">contains</span><span class="p">(</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Value</span><span class="p">),</span><span class="s2">"charset=utf-8"</span><span class="p">)])</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>

@@ -1535,7 +1535,7 @@ into subcomponents.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Excessive class file lengths are usually indications that the class may be burdened with excessive 
+<p>Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.</p>
 
@@ -1639,7 +1639,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span><span class="kt">int</span> <span class="n">birthYear</span><span class="o">,</span> <span class="kt">int</span> <span class="n">birthMonth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">birthDate</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height</span><span class="o">,</span> <span class="kt">int</span> <span class="n">weight</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// ...</span>
 <span class="o">}</span>
-<span class="c1">// preferred approach </span>
+<span class="c1">// preferred approach</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span><span class="n">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="n">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// ...</span>
 <span class="o">}</span>
@@ -2075,8 +2075,8 @@ lines of code that are split are counted as one.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.<br />
+<p>Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include ‘if’, ‘while’, ‘for’, and ‘case labels’ calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.</p>
 
@@ -2194,7 +2194,7 @@ high complexity, and 11+ is very high complexity.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
+possibly through grouping related fields in new objects.  For example, a class with individual
 city/state/zip fields could park them within a single Address field.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/design/TooManyFieldsRule.java">net.sourceforge.pmd.lang.apex.rule.design.TooManyFieldsRule</a></p>
