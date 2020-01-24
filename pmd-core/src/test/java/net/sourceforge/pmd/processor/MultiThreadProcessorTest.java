@@ -38,7 +38,7 @@ public class MultiThreadProcessorTest {
     private RuleSetFactory ruleSetFactory;
     private List<DataSource> files;
     private SimpleReportListener reportListener;
-    
+
     public void setUpForTest(final String ruleset) {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setRuleSets(ruleset);
@@ -65,14 +65,14 @@ public class MultiThreadProcessorTest {
 
         final Iterator<ConfigurationError> configErrors = renderer.getReport().configErrors();
         final ConfigurationError error = configErrors.next();
-        
+
         Assert.assertEquals("Dysfunctional rule message not present",
                 DysfunctionalRule.DYSFUNCTIONAL_RULE_REASON, error.issue());
         Assert.assertEquals("Dysfunctional rule is wrong",
                 DysfunctionalRule.class, error.rule().getClass());
         Assert.assertFalse("More configuration errors found than expected", configErrors.hasNext());
     }
-    
+
     @Test
     public void testRulesThreadSafety() {
         setUpForTest("rulesets/MultiThreadProcessorTest/basic.xml");
@@ -137,7 +137,7 @@ public class MultiThreadProcessorTest {
             }
         }
     }
-    
+
     public static class DysfunctionalRule extends AbstractRule {
 
         public static final String DYSFUNCTIONAL_RULE_REASON = "dysfunctional rule is dysfunctional";
@@ -146,7 +146,7 @@ public class MultiThreadProcessorTest {
         public void apply(List<? extends Node> nodes, RuleContext ctx) {
             // noop
         }
-        
+
         @Override
         public String dysfunctionReason() {
             return DYSFUNCTIONAL_RULE_REASON;
@@ -162,7 +162,7 @@ public class MultiThreadProcessorTest {
         }
 
     }
-    
+
     private static class SimpleRenderer extends AbstractAccumulatingRenderer {
 
         /* default */ SimpleRenderer(String name, String description) {
@@ -177,7 +177,7 @@ public class MultiThreadProcessorTest {
         @Override
         public void end() throws IOException {
         }
-        
+
         public Report getReport() {
             return report;
         }

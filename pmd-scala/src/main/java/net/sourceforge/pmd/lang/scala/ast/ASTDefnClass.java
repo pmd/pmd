@@ -13,7 +13,7 @@ public class ASTDefnClass extends AbstractScalaNode<Defn.Class> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

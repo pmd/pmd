@@ -37,12 +37,12 @@ public class CSVRendererTest extends AbstractRendererTest {
     public String getExpectedError(ProcessingError error) {
         return getHeader();
     }
-    
+
     @Override
     public String getExpectedError(ConfigurationError error) {
         return getHeader();
     }
-    
+
     private String getHeader() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
     }

@@ -10,7 +10,7 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
 
 /**
  * Restrictions regarding the legal placement and content of the file header.
- * 
+ *
  * @author Brian Remedios
  */
 public class HeaderCommentsRule extends AbstractCommentRule {

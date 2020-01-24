@@ -17,7 +17,7 @@ import java.util.zip.ZipEntry;
 /*
  * This file is to test the JavaCC java grammer, whether we can parse specific java constructs without
  * throwing a syntax error.
- * 
+ *
  * Java 7, see: http://docs.oracle.com/javase/7/docs/technotes/guides/language/enhancements.html#javase7
  */
 public class ParserCornerCases17 {
@@ -112,12 +112,12 @@ public class ParserCornerCases17 {
 	     }
 	     return typeOfDay;
 	}
-	
+
 	class MyClass<X> {
 		<T> MyClass(T t) {
 		}
 	}
-	
+
 	public void typeInferenceForGenericInstanceCreation() {
 		Map<String, List<String>> myMap = new HashMap<>();
 
@@ -128,13 +128,13 @@ public class ParserCornerCases17 {
 
 		MyClass<Integer> myObject = new MyClass<>("");
 	}
-	
+
 	public void theTryWithResourcesStatement() throws IOException {
 		String path = "/foo";
 		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 		    String first = br.readLine();
 		}
-		
+
 		// Two resources declared
 		String outputFileName = "/foo-out";
 		String zipFileName = "/foo.zip";
@@ -159,13 +159,13 @@ public class ParserCornerCases17 {
 	      }
 	    }
 	}
-	
+
 	public void catchingMultipleExceptionTypes() throws IOException, SQLException {
 		try {
 			if (new File("foo").createNewFile()) {
 				throw new SQLException();
 			}
-			
+
 		} catch (IOException|SQLException ex) {
 			ex.printStackTrace();
 		    throw ex;

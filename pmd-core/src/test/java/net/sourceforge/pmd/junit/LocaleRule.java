@@ -11,7 +11,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 /**
- * 
+ *
  * Based on <a href="https://gist.github.com/digulla/5884162">digulla/DefaultLocaleRule.java</a>.
  *
  */

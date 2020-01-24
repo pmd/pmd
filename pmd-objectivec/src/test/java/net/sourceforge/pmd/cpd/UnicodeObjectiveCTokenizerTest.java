@@ -38,7 +38,7 @@ public class UnicodeObjectiveCTokenizerTest extends AbstractTokenizerTest {
         this.expectedTokenCount = 10;
         super.tokenizeTest();
     }
-    
+
     @Test
     public void testIgnoreBetweenSpecialComments() throws IOException {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(

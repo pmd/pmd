@@ -17,7 +17,7 @@ public class CppTokenManager implements TokenManager {
 
     /**
      * Creates a new C++ Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
