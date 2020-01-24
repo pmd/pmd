@@ -1409,15 +1409,106 @@ the breaking API changes will be performed in 7.0.0.</p>
 an API is tagged as <code class="highlighter-rouge">@Deprecated</code> or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we’ll try to avoid it.</div>
 
+<h4 id="6210">6.21.0</h4>
+
+<h5 id="deprecated-apis">Deprecated APIs</h5>
+
+<h6 id="internal-api">Internal API</h6>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/JavaLanguageHandler.html#"><code class="highlighter-rouge">JavaLanguageHandler</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/JavaLanguageParser.html#"><code class="highlighter-rouge">JavaLanguageParser</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/JavaDataFlowHandler.html#"><code class="highlighter-rouge">JavaDataFlowHandler</code></a></li>
+  <li>Implementations of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/rule/RuleViolationFactory.html#"><code class="highlighter-rouge">RuleViolationFactory</code></a> in each
+language module, eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolationFactory.html#"><code class="highlighter-rouge">JavaRuleViolationFactory</code></a>.
+See javadoc of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/rule/RuleViolationFactory.html#"><code class="highlighter-rouge">RuleViolationFactory</code></a>.</li>
+  <li>
+    <p>Implementations of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleViolation.html#"><code class="highlighter-rouge">RuleViolation</code></a> in each language module,
+eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolation.html#"><code class="highlighter-rouge">JavaRuleViolation</code></a>. See javadoc of
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleViolation.html#"><code class="highlighter-rouge">RuleViolation</code></a>.</p>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/rules/RuleFactory.html#"><code class="highlighter-rouge">RuleFactory</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/rules/RuleBuilder.html#"><code class="highlighter-rouge">RuleBuilder</code></a></li>
+  <li>Constructors of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RuleSetFactory.html#"><code class="highlighter-rouge">RuleSetFactory</code></a>, use factory methods from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#"><code class="highlighter-rouge">RulesetsFactoryUtils</code></a> instead</li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRulesetFactory(net.sourceforge.pmd.PMDConfiguration,net.sourceforge.pmd.util.ResourceLoader)"><code class="highlighter-rouge">getRulesetFactory</code></a></p>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code class="highlighter-rouge">AbstractApexNode</code></a></li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code class="highlighter-rouge">AbstractApexNodeBase</code></a>, and the related <code class="highlighter-rouge">visit</code>
+methods on <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitor.html#"><code class="highlighter-rouge">ApexParserVisitor</code></a> and its implementations.
+ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.21.0/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code class="highlighter-rouge">ApexNode</code></a> instead, now considers comments too.</p>
+  </li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/CharStream.html#"><code class="highlighter-rouge">CharStream</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/JavaCharStream.html#"><code class="highlighter-rouge">JavaCharStream</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/SimpleCharStream.html#"><code class="highlighter-rouge">SimpleCharStream</code></a>: these are APIs used by our JavaCC
+implementations and that will be moved/refactored for PMD 7.0.0. They should not
+be used, extended or implemented directly.</li>
+  <li>All classes generated by JavaCC, eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/ast/JJTJavaParserState.html#"><code class="highlighter-rouge">JJTJavaParserState</code></a>.
+This includes token classes, which will be replaced with a single implementation, and
+subclasses of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/ParseException.html#"><code class="highlighter-rouge">ParseException</code></a>, whose usages will be replaced
+by just that superclass.</li>
+</ul>
+
+<h6 id="for-removal">For removal</h6>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li>Many methods on the <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/Node.html#"><code class="highlighter-rouge">Node</code></a> interface
+and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/AbstractNode.html#"><code class="highlighter-rouge">AbstractNode</code></a> base class. See their javadoc for details.</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/lang/ast/Node.html#isFindBoundary()"><code class="highlighter-rouge">Node#isFindBoundary</code></a> is deprecated for XPath queries.</li>
+    </ul>
+  </li>
+  <li>pmd-java
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/AbstractJavaParser.html#"><code class="highlighter-rouge">AbstractJavaParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/AbstractJavaHandler.html#"><code class="highlighter-rouge">AbstractJavaHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html"><code class="highlighter-rouge">ASTAnyTypeDeclaration.TypeKind</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getKind()"><code class="highlighter-rouge">ASTAnyTypeDeclaration#getKind</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.html#"><code class="highlighter-rouge">JavaQualifiedName</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTCatchStatement.html#getBlock()"><code class="highlighter-rouge">ASTCatchStatement#getBlock</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#declarationsAreInDefaultPackage()"><code class="highlighter-rouge">ASTCompilationUnit#declarationsAreInDefaultPackage</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/JavaQualifiableNode.html#"><code class="highlighter-rouge">JavaQualifiableNode</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getQualifiedName()"><code class="highlighter-rouge">ASTAnyTypeDeclaration#getQualifiedName</code></a></li>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#getQualifiedName()"><code class="highlighter-rouge">ASTMethodOrConstructorDeclaration#getQualifiedName</code></a></li>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#getQualifiedName()"><code class="highlighter-rouge">ASTLambdaExpression#getQualifiedName</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/qname/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.qname</code></a> and its contents</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code class="highlighter-rouge">MethodLikeNode</code></a>
+        <ul>
+          <li>Its methods will also be removed from its implementations,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTMethodOrConstructorDeclaration.html#"><code class="highlighter-rouge">ASTMethodOrConstructorDeclaration</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code class="highlighter-rouge">ASTLambdaExpression</code></a>.</li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getImage()"><code class="highlighter-rouge">ASTAnyTypeDeclaration#getImage</code></a> will be removed. Please use <code class="highlighter-rouge">getSimpleName()</code>
+instead. This affects <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#getImage()"><code class="highlighter-rouge">ASTAnnotationTypeDeclaration#getImage</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getImage()"><code class="highlighter-rouge">ASTClassOrInterfaceDeclaration#getImage</code></a>, and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#getImage()"><code class="highlighter-rouge">ASTEnumDeclaration#getImage</code></a>.</li>
+      <li>Several methods of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTTryStatement.html#"><code class="highlighter-rouge">ASTTryStatement</code></a>, replacements with other names
+have been added. This includes the XPath attribute <code class="highlighter-rouge">@Finally</code>, replace it with a test for <code class="highlighter-rouge">child::FinallyStatement</code>.</li>
+      <li>Several methods named <code class="highlighter-rouge">getGuardExpressionNode</code> are replaced with <code class="highlighter-rouge">getCondition</code>. This affects the
+following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTYieldStatement.html#"><code class="highlighter-rouge">ASTYieldStatement</code></a> will not implement <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code class="highlighter-rouge">TypeNode</code></a>
+anymore come 7.0.0. Test the type of the expression nested within it.</li>
+    </ul>
+  </li>
+</ul>
+
 <h4 id="6200">6.20.0</h4>
 
 <p>No changes.</p>
 
 <h4 id="6190">6.19.0</h4>
 
-<h5 id="deprecated-apis">Deprecated APIs</h5>
+<h5 id="deprecated-apis-1">Deprecated APIs</h5>
 
-<h6 id="for-removal">For removal</h6>
+<h6 id="for-removal-1">For removal</h6>
 
 <ul>
   <li>pmd-core
@@ -1490,9 +1581,9 @@ CLI option “shortnames”.</p>
   </li>
 </ul>
 
-<h5 id="deprecated-apis-1">Deprecated APIs</h5>
+<h5 id="deprecated-apis-2">Deprecated APIs</h5>
 
-<h6 id="for-removal-1">For removal</h6>
+<h6 id="for-removal-2">For removal</h6>
 
 <ul>
   <li>The methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#getImportedNameNode()"><code class="highlighter-rouge">getImportedNameNode</code></a> and
@@ -1536,7 +1627,7 @@ subpackages, except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jav
 
 <h4 id="6160">6.16.0</h4>
 
-<h5 id="deprecated-apis-2">Deprecated APIs</h5>
+<h5 id="deprecated-apis-3">Deprecated APIs</h5>
 
 <blockquote>
   <p>Reminder: Please don’t use members marked with the annotation <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/annotation/InternalApi.html#"><code class="highlighter-rouge">InternalApi</code></a>, as they will likely be removed, hidden, or otherwise intentionally broken with 7.0.0.</p>
@@ -1564,9 +1655,9 @@ of deprecations.</p>
 
 <h4 id="6150">6.15.0</h4>
 
-<h5 id="deprecated-apis-3">Deprecated APIs</h5>
+<h5 id="deprecated-apis-4">Deprecated APIs</h5>
 
-<h6 id="for-removal-2">For removal</h6>
+<h6 id="for-removal-3">For removal</h6>
 
 <ul>
   <li>The <code class="highlighter-rouge">DumpFacades</code> in all languages, that could be used to transform a AST into a textual representation,
@@ -1754,7 +1845,7 @@ new way to document these properties exhaustively will be added with 7.0.0.</li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.21.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code class="highlighter-rouge">errorFor</code></a> is deprecated as its return type will be changed to <code class="highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
 </ul>
 
-<h5 id="deprecated-apis-4">Deprecated APIs</h5>
+<h5 id="deprecated-apis-5">Deprecated APIs</h5>
 
 <h6 id="for-internalization">For internalization</h6>
 
@@ -1784,7 +1875,7 @@ and will be moved into an internal package with 7.0.0. To implement your own met
   </li>
 </ul>
 
-<h6 id="for-removal-3">For removal</h6>
+<h6 id="for-removal-4">For removal</h6>
 
 <ul>
   <li>
