@@ -101,8 +101,8 @@
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.beust</groupId>
-          <artifactId>jcommander</artifactId>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -190,14 +190,14 @@
 
     <profiles>
         <profile>
-           <id>m2e</id>
-           <!-- This profile is only activated when building in Eclipse with m2e -->
-           <activation>
-             <property>
-               <name>m2e.version</name>
-             </property>
-           </activation>
-           <dependencies>
+            <id>m2e</id>
+            <!-- This profile is only activated when building in Eclipse with m2e -->
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <dependencies>
                 <!--
                     the maven-shade-plugin runs during package phase,
                     but inside eclipse, this phase is not executed during development.
@@ -208,24 +208,24 @@
                     <artifactId>jaxen</artifactId>
                     <optional>false</optional>
                 </dependency>
-           </dependencies>
+            </dependencies>
         </profile>
         <profile>
-           <id>idea</id>
-           <!-- This profile is only activated when building in IntelliJ -->
-           <!-- It serves the same purpose as the above for eclipse-->
-           <activation>
-             <property>
-               <name>idea.maven.embedder.version</name>
-             </property>
-           </activation>
-           <dependencies>
+            <id>idea</id>
+            <!-- This profile is only activated when building in IntelliJ -->
+            <!-- It serves the same purpose as the above for eclipse-->
+            <activation>
+                <property>
+                    <name>idea.maven.embedder.version</name>
+                </property>
+            </activation>
+            <dependencies>
                 <dependency>
                     <groupId>jaxen</groupId>
                     <artifactId>jaxen</artifactId>
                     <optional>false</optional>
                 </dependency>
-           </dependencies>
+            </dependencies>
         </profile>
     </profiles>
 </project>
