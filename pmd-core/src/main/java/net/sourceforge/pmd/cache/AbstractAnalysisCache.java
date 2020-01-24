@@ -128,6 +128,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             currentAuxClassPathChecksum = computeClassPathHash(urlClassLoader.getURLs());
 
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
+                // TODO some rules don't need that (in fact, some languages)
                 LOG.info("Analysis cache invalidated, auxclasspath changed.");
                 cacheIsValid = false;
             }

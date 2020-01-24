@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 
 /**
@@ -16,7 +15,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
  * </pre>
  */
-public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
+public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
 
 
     @InternalApi
@@ -54,7 +53,6 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
     }
 
     /** Returns the simple name of the method. */
-    @Override
     public String getName() {
         return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
     }

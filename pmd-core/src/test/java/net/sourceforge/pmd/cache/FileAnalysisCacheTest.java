@@ -188,7 +188,6 @@ public class FileAnalysisCacheTest {
         Files.write(Paths.get(classpathFile.getAbsolutePath()), "some text".getBytes());
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
-        when(r.isDfa()).thenReturn(true);
         when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         reloadedCache.checkValidity(rs, cl);
