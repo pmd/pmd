@@ -48,7 +48,8 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     @NonNull
     @Override
     public Object getConstValue() {
-        switch (getPrimitiveType()) {
+        PrimitiveType t = getPrimitiveType();
+        switch (t) {
         case INT:
             return getValueAsInt();
         case LONG:
@@ -57,9 +58,9 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
             return getValueAsDouble();
         case FLOAT:
             return getValueAsFloat();
+        default:
+            throw new IllegalStateException("Numeric literal cannot have type " + t);
         }
-
-        throw new IllegalStateException("Literal has no value?");
     }
 
     void setIntLiteral() {
