@@ -1285,13 +1285,13 @@ void ClassOrInterfaceType() #void:
   { forceTypeContext(); }
 }
 
-private void ClassTypeSegment() #ClassOrInterfaceType:
+private void ClassTypeSegment() #ClassOrInterfaceType(jjtree.nodeArity() + 1):
 {}
 {
      TypeAnnotListNoInject()
      <IDENTIFIER>
      // We'll enclose the previous segment
-     { setLastTokenImage(jjtThis);  jjtree.extendLeft();}
+     { setLastTokenImage(jjtThis); }
      [ TypeArguments() ]
 }
 
@@ -1345,7 +1345,7 @@ void PrimitiveType() :
     | "float"
     | "double"
     )
-    {jjtThis.setImage(getToken(0).getImage());}
+    {setLastTokenImage(jjtThis);}
 }
 
 
@@ -1628,7 +1628,8 @@ void PrimaryPrefix() #void :
     ("." MemberSelector() | MethodReference())
 | UnqualifiedAllocationExpr()
 | ("void" "." "class")                    #ClassLiteral
-| (PrimitiveType() [ Dims() ] )           #ArrayType(>1)
+| LOOKAHEAD(1) // suppress the warning here.
+  (PrimitiveType() [ Dims() ] )           #ArrayType(>1)
     (
        MethodReference()
      | "." "class"                        #ClassLiteral(1)
@@ -1636,7 +1637,7 @@ void PrimaryPrefix() #void :
 
 // If annotations start the expression, it's necessarily a method or ctor reference
 // This is because types in class literals or in qualified super/this may not be annotated
-| LOOKAHEAD({getToken(1).kind == AT}) AnnotatedRefType() MethodReference()
+| LOOKAHEAD("@") AnnotatedRefType() MethodReference()
 
 | LOOKAHEAD(LambdaLahead()) LambdaExpression()
 
@@ -1738,10 +1739,10 @@ void MemberSelector() #void :
 |              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                  #FieldAccess(1)
 }
 
-void MethodReference(): // LHS is injected
+void MethodReference() #MethodReference(jjtree.nodeArity() + 1): // LHS is injected
 {}
 {
-  "::" {jjtree.extendLeft();}
+  "::"
   [TypeArguments()]
   ( "new" | <IDENTIFIER> ) {setLastTokenImage(jjtThis);}
   {/* empty, to set the image before jjtClose */}
@@ -1847,11 +1848,10 @@ void ArgumentList() :
 
 
 // more straightforward because can't be an array creation expr
-void QualifiedAllocationExpr() #ConstructorCall:
+void QualifiedAllocationExpr() #ConstructorCall(jjtree.nodeArity() + 1):
 {}
 {
    "new"
-   {jjtree.extendLeft();}
    [ TypeArguments() ]
    AnnotatedClassOrInterfaceType()
    ArgumentList()

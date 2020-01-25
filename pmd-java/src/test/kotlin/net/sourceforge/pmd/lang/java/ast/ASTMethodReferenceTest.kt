@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.BOOLEAN
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 
 /**
@@ -151,6 +152,23 @@ class ASTMethodReferenceTest : ParserTestSpec({
                             primitiveType(INT)
                             it::getDimensions shouldBe child {
                                 arrayDim()
+                            }
+                        }
+                    }
+                }
+            }
+
+            "boolean @A []::new" should parseAs {
+                constructorRef {
+                    it::getTypeArguments shouldBe null
+
+                    typeExpr {
+                        arrayType {
+                            primitiveType(BOOLEAN)
+                            it::getDimensions shouldBe child {
+                                arrayDim {
+                                    annotation("A")
+                                }
                             }
                         }
                     }
