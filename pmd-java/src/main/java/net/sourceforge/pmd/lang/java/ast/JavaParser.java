@@ -6,14 +6,13 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.io.Reader;
 
-import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 
 /**
@@ -22,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  * @author Andreas Dangel
  */
-public class JavaParser extends AbstractParser {
+public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
 
@@ -38,17 +37,25 @@ public class JavaParser extends AbstractParser {
 
 
     @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
-        CharStream charStream = CharStreamFactory.javaCharStream(source, JavaTokenDocument::new);
-        JavaParserImpl parser = new JavaParserImpl(charStream);
-        String suppressMarker = getParserOptions().getSuppressMarker();
+    protected JavaccTokenDocument newDocument(String fullText) {
+        return new JavaTokenDocument(fullText);
+    }
+
+    @Override
+    protected CharStream newCharStream(JavaccTokenDocument tokenDocument) {
+        return new JavaCharStream(tokenDocument);
+    }
+
+    @Override
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+        JavaParserImpl parser = new JavaParserImpl(cs);
+        String suppressMarker = options.getSuppressMarker();
         if (suppressMarker != null) {
             parser.setSuppressMarker(suppressMarker);
         }
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
-        AbstractTokenManager.setFileName(fileName);
         ASTCompilationUnit acu = parser.CompilationUnit();
         acu.setNoPmdComments(parser.getSuppressMap());
         checker.check(acu);

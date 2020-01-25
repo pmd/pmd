@@ -251,10 +251,10 @@
             <file name="${tokenmgr-file}" />
         </replaceregexp>
 
-        <!-- Useless argument -->
+        <!-- Useless argument, also replace lex state ID with its name  -->
         <replaceregexp>
-            <regexp pattern='curChar, TokenMgrError.LEXICAL_ERROR\)' />
-            <substitution expression='curChar)' />
+            <regexp pattern='curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR\)' />
+            <substitution expression='lexStateNames[curLexState], error_line, error_column, error_after, curChar)' />
             <file name="${tokenmgr-file}" />
         </replaceregexp>
 

@@ -57,8 +57,8 @@ public final class TokenMgrError extends RuntimeException {
      */
     @InternalApi
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    public TokenMgrError(boolean eofSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar) {
-        super(makeMessage(eofSeen, errorLine, errorColumn, errorAfter, curChar));
+    public TokenMgrError(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
+        super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
         filename = AbstractTokenManager.getFileName();
@@ -72,7 +72,7 @@ public final class TokenMgrError extends RuntimeException {
     @Deprecated
     @SuppressWarnings("PMD.UnusedFormalParameter")
     public TokenMgrError(boolean eofSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int errorCode) {
-        super(makeMessage(eofSeen, errorLine, errorColumn, errorAfter, curChar));
+        super(makeReason(eofSeen, String.valueOf(lexState), errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
         filename = AbstractTokenManager.getFileName();
@@ -90,34 +90,31 @@ public final class TokenMgrError extends RuntimeException {
         return filename;
     }
 
+
+    @Override
+    public String getMessage() {
+        String leader = filename != null ? "Lexical error in file " + filename : "Lexical error";
+        return leader + " at line " + line + ", column " + column + ".  Encountered: " + super.getMessage();
+    }
+
     /**
-     * Returns a detailed message for the Error when it is thrown by the
-     * token manager to indicate a lexical error.
-     * Parameters :
-     * eofseen     : indicates if EOF caused the lexical error
-     * curLexState : lexical state in which this error occurred
-     * errorLine   : line number when the error occurred
-     * errorColumn : column number when the error occurred
-     * errorAfter  : prefix that was seen before this error occurred
-     * curchar     : the offending character
-     * Note: You can customize the lexical error message by modifying this method.
+     * Replace the file name of this error.
+     *
+     * @param filename New filename
      */
-    private static String makeMessage(boolean eofseen, int errorLine, int errorColumn, String errorAfter, char curChar) {
+    public TokenMgrError withFileName(String filename) {
+        return new TokenMgrError(this.line, this.column, filename, this.getMessage(), this.getCause());
+    }
+
+    private static String makeReason(boolean eofseen, String lexStateName, String errorAfter, char curChar) {
         String message;
         if (eofseen) {
             message = "<EOF> ";
         } else {
             message = "\"" + StringUtil.escapeJava(String.valueOf(curChar)) + "\"" + " (" + (int) curChar + "), ";
         }
-        message += "after : \"" + StringUtil.escapeJava(errorAfter) + "\"";
+        message += "after : \"" + StringUtil.escapeJava(errorAfter) + "\" (in lexical state " + lexStateName + ")";
 
-        return makeMessage(errorLine, errorColumn, message, AbstractTokenManager.getFileName());
+        return message;
     }
-
-    private static String makeMessage(int errorLine, int errorColumn, String message, String fileName) {
-        return "Lexical error in file " + fileName
-            + " at line " + errorLine + ", column " + errorColumn
-            + ".  Encountered: " + message;
-    }
-
 }

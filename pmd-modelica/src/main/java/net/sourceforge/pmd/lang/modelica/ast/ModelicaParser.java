@@ -6,17 +6,15 @@ package net.sourceforge.pmd.lang.modelica.ast;
 
 import java.io.Reader;
 
-import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 
 
-public class ModelicaParser extends AbstractParser {
+public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
 
     public ModelicaParser(final ParserOptions parserOptions) {
         super(parserOptions);
@@ -28,10 +26,13 @@ public class ModelicaParser extends AbstractParser {
     }
 
     @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
-        AbstractTokenManager.setFileName(fileName);
-        CharStream charStream = CharStreamFactory.simpleCharStream(source, ModelicaTokenDocument::new);
-        return new ModelicaParserImpl(charStream).StoredDefinition();
+    protected JavaccTokenDocument newDocument(String fullText) {
+        return new ModelicaTokenDocument(fullText);
+    }
+
+    @Override
+    protected ASTStoredDefinition parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+        return new ModelicaParserImpl(cs).StoredDefinition();
     }
 
 }
