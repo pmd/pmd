@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.math.BigInteger;
 import java.util.Locale;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
 
 
@@ -43,6 +45,22 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         visitor.visit(this, data);
     }
 
+    @NonNull
+    @Override
+    public Object getConstValue() {
+        switch (getPrimitiveType()) {
+        case INT:
+            return getValueAsInt();
+        case LONG:
+            return getValueAsLong();
+        case DOUBLE:
+            return getValueAsDouble();
+        case FLOAT:
+            return getValueAsFloat();
+        }
+
+        throw new IllegalStateException("Literal has no value?");
+    }
 
     void setIntLiteral() {
         this.isIntegral = true;
@@ -140,18 +158,22 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
 
     /**
      * Returns the base of the literal, eg 8 for an octal literal,
-     * 10 for a decimal literal, etc.
+     * 10 for a decimal literal, etc. By convention this returns 10
+     * for the literal {@code 0} (which can really be any base).
      */
     public int getBase() {
-        final String image = getImage().toLowerCase(Locale.ROOT);
-        if (image.startsWith("0x")) {
-            return 16;
-        }
-        if (image.startsWith("0b")) {
-            return 2;
-        }
-        if (image.startsWith("0") && image.length() > 1) {
-            return 8;
+        final String image = getImage();
+        if (image.length() > 1 && image.charAt(0) == '0') {
+            switch (image.charAt(1)) {
+            case 'x':
+            case 'X':
+                return 16;
+            case 'b':
+            case 'B':
+                return 2;
+            default:
+                return 8;
+            }
         }
         return 10;
     }

@@ -31,6 +31,11 @@ public final class ASTBooleanLiteral extends AbstractJavaExpr implements ASTLite
     }
 
     @Override
+    public Boolean getConstValue() {
+        return isTrue;
+    }
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

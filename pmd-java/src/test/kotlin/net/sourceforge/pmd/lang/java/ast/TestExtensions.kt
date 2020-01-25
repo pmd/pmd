@@ -6,7 +6,10 @@ import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.should
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.ast.test.NodeSpec
+import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
+import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldMatch
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
@@ -338,6 +341,31 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
             contents()
         }
 
+
+fun TreeNodeWrapper<Node, *>.charLit(image: String, contents: NodeSpec<ASTCharLiteral> = EmptyAssertions) =
+        child<ASTCharLiteral> {
+            it::getImage shouldBe image
+            contents()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =
+        child<ASTBooleanLiteral> {
+            it::getConstValue shouldBe value
+        }
+
+
+fun TreeNodeWrapper<Node, *>.nullLit() =
+        child<ASTNullLiteral> {
+            it::getConstValue shouldBe null
+        }
+
+fun TreeNodeWrapper<Node, *>.boolean(value: Boolean, contents: NodeSpec<ASTBooleanLiteral> = EmptyAssertions) =
+        child<ASTBooleanLiteral> {
+            it::getConstValue shouldBe value
+            contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
             it::isTextBlock shouldBe true
@@ -509,6 +537,11 @@ fun TreeNodeWrapper<Node, *>.arrayInitializer(assertions: NodeSpec<ASTArrayIniti
             assertions()
         }
 
+fun TreeNodeWrapper<Node, *>.arrayAlloc(assertions: NodeSpec<ASTArrayAllocation> = EmptyAssertions) =
+        child<ASTArrayAllocation> {
+            assertions()
+        }
+
 fun TreeNodeWrapper<Node, *>.memberValueArray(assertions: NodeSpec<ASTMemberValueArrayInitializer> = EmptyAssertions) =
         child<ASTMemberValueArrayInitializer> {
             assertions()
@@ -526,10 +559,6 @@ fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclar
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =
-        child<ASTBooleanLiteral> {
-            it::isTrue shouldBe value
-        }
 
 
 fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =

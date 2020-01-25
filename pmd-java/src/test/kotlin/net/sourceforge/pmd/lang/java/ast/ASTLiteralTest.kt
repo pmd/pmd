@@ -18,22 +18,27 @@ class ASTLiteralTest : ParserTestSpec({
 
     parserTest("String literal") {
 
-        "\"\"" should matchExpr<ASTStringLiteral> {
-            it::isStringLiteral shouldBe true
-            it::getConstValue shouldBe ""
-            it::getImage shouldBe "\"\""
-        }
+        inContext(ExpressionParsingCtx) {
 
-        "\"foo\"" should matchExpr<ASTStringLiteral> {
-            it::getConstValue shouldBe "foo"
-            it::getImage shouldBe "\"foo\""
-        }
+            "\"\"" should parseAs {
+                stringLit("\"\"") {
+                    it::isStringLiteral shouldBe true
+                    it::getConstValue shouldBe ""
+                }
+            }
 
-        "\"foo\\t\"" should matchExpr<ASTStringLiteral> {
-            it::getConstValue shouldBe "foo\t"
-            it::getImage shouldBe "\"foo\\t\""
-        }
+            "\"foo\"" should parseAs {
+                stringLit("\"foo\"") {
+                    it::getConstValue shouldBe "foo"
+                }
+            }
 
+            "\"foo\\t\"" should parseAs {
+                stringLit("\"foo\\t\"") {
+                    it::getConstValue shouldBe "foo\t"
+                }
+            }
+        }
     }
 
     parserTest("Text block literal", javaVersion = J13__PREVIEW) {
@@ -144,155 +149,198 @@ $delim
 
 
     parserTest("String literal escapes") {
-        "\"abc\u1234abc\"" should matchExpr<ASTStringLiteral> {
-            it::getConstValue shouldBe "abc\u1234abc"
-            it::getImage shouldBe "\"abc\u1234abc\""
-        }
+        inContext(ExpressionParsingCtx) {
 
-        "\"abc\\u1234abc\"" should matchExpr<ASTStringLiteral> {
-            it::getConstValue shouldBe "abc\u1234abc"
-            it::getImage shouldBe "\"abc\\u1234abc\""
-        }
-        "\"abcüabc\"" should matchExpr<ASTStringLiteral> {
-            it::getConstValue shouldBe "abcüabc"
-            it::getImage shouldBe "\"abcüabc\""
+            "\"abc\u1234abc\"" should parseAs {
+                stringLit("\"abc\u1234abc\"") {
+                    it::getConstValue shouldBe "abc\u1234abc"
+                }
+            }
+
+            "\"abc\\u1234abc\"" should parseAs {
+                stringLit("\"abc\\u1234abc\"") {
+                    it::getConstValue shouldBe "abc\u1234abc"
+                }
+            }
+
+            "\"abcüabc\"" should parseAs {
+                stringLit("\"abcüabc\"") {
+                    it::getConstValue shouldBe "abcüabc"
+                }
+            }
         }
     }
 
 
 
     parserTest("Char literal") {
+        inContext(ExpressionParsingCtx) {
 
-        "'c'" should matchExpr<ASTCharLiteral> {
-            it::isCharLiteral shouldBe true
-            it::getUnescapedValue shouldBe 'c'
-            it::getImage shouldBe "'c'"
-        }
+            "'c'" should parseAs {
+                charLit("'c'") {
+                    it::isCharLiteral shouldBe true
+                    it::getConstValue shouldBe 'c'
+                }
+            }
 
-        "'\t'" should matchExpr<ASTCharLiteral> {
-            it::getUnescapedValue shouldBe '\t'
-            it::getImage shouldBe "'\t'"
-        }
+            "'\t'" should parseAs {
+                charLit("'\t'") {
+                    it::getConstValue shouldBe '\t'
+                }
+            }
 
-        "'\\t'" should matchExpr<ASTCharLiteral> {
-            it::getUnescapedValue shouldBe '\t'
-            it::getImage shouldBe "'\\t'"
+            "'\\t'" should parseAs {
+                charLit("'\\t'") {
+                    it::getConstValue shouldBe '\t'
+                }
+            }
         }
     }
 
     parserTest("Boolean literals") {
+        inContext(ExpressionParsingCtx) {
 
-        "true" should matchExpr<ASTBooleanLiteral> {
-            it::isBooleanLiteral shouldBe true
-            it::isTrue shouldBe true
-        }
+            "true" should parseAs {
+                boolean(true)
+            }
 
-        "false" should matchExpr<ASTBooleanLiteral> {
-            it::isBooleanLiteral shouldBe true
-            it::isTrue shouldBe false
+            "false" should parseAs {
+                boolean(false)
+            }
         }
     }
 
     parserTest("Null literal") {
-
-        "null" should matchExpr<ASTNullLiteral> {
-            it::isBooleanLiteral shouldBe false
-            it::isStringLiteral shouldBe false
-            it::isNullLiteral shouldBe true
+        inContext(ExpressionParsingCtx) {
+            "null" should parseAs {
+                nullLit()
+            }
         }
     }
 
     parserTest("Numeric literals") {
+        inContext(ExpressionParsingCtx) {
 
-        "12" should matchExpr<ASTNumericLiteral> {
-            it::isStringLiteral shouldBe false
-            it::isCharLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isIntLiteral shouldBe true
-            it::getValueAsInt shouldBe 12
-            it::getValueAsLong shouldBe 12L
-            it::getValueAsFloat shouldBe 12.0f
-            it::getValueAsDouble shouldBe 12.0
-            it::getImage shouldBe "12"
-        }
+            "12" should parseAs {
+                number(INT) {
+                    it::getValueAsInt shouldBe 12
+                    it::getValueAsLong shouldBe 12L
+                    it::getValueAsFloat shouldBe 12.0f
+                    it::getValueAsDouble shouldBe 12.0
+                    it::getImage shouldBe "12"
+                }
+            }
 
-        "1___234" should matchExpr<ASTNumericLiteral> {
-            it::isCharLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isIntLiteral shouldBe true
-            it::getValueAsInt shouldBe 1234
-            it::getImage shouldBe "1___234"
-        }
+            "1___234" should parseAs {
+                number(INT) {
+                    it::getValueAsInt shouldBe 1234
+                    it::getImage shouldBe "1___234"
+                }
+            }
 
-        "0b0000_0010" should matchExpr<ASTNumericLiteral> {
-            it::isCharLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isIntLiteral shouldBe true
-            it::getValueAsInt shouldBe 2
-            it::getImage shouldBe "0b0000_0010"
-        }
+            "0b0000_0010" should parseAs {
+                number(INT) {
+                    it::getValueAsInt shouldBe 2
+                    it::getImage shouldBe "0b0000_0010"
 
-        "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
-            it::getOperator shouldBe UNARY_MINUS
-            it::getOperand shouldBe number(INT) {
-                it::getImage shouldBe "0X0000_000f"
-                it::getValueAsInt shouldBe 15
-                it::getValueAsFloat shouldBe 15f
-                it::getValueAsDouble shouldBe 15.0
+                }
+            }
+
+            "-0X0000_000f" should parseAs { // this is not a float, it's hex
+                unaryExpr(UNARY_MINUS) {
+                    number(INT) {
+                        it::getImage shouldBe "0X0000_000f"
+                        it::getValueAsInt shouldBe 15
+                        it::getValueAsFloat shouldBe 15f
+                        it::getValueAsDouble shouldBe 15.0
+                    }
+                }
+            }
+
+            "12l" should parseAs {
+                number(LONG) {
+                    it::getValueAsInt shouldBe 12
+                    it::getValueAsLong shouldBe 12L
+                    it::getValueAsFloat shouldBe 12.0f
+                    it::getValueAsDouble shouldBe 12.0
+                    it::getImage shouldBe "12l"
+                }
+            }
+
+            "12L" should parseAs {
+                number(LONG) {
+                    it::getValueAsInt shouldBe 12
+                    it::getValueAsLong shouldBe 12L
+                    it::getImage shouldBe "12L"
+
+                }
+            }
+
+            "12d" should parseAs {
+                number(DOUBLE) {
+                    it::getValueAsInt shouldBe 12
+                    it::getValueAsFloat shouldBe 12.0f
+                    it::getValueAsDouble shouldBe 12.0
+                    it::getImage shouldBe "12d"
+                }
+            }
+
+            "12f" should parseAs {
+                number(FLOAT) {
+                    it::getValueAsInt shouldBe 12
+                    it::getValueAsFloat shouldBe 12.0f
+                    it::getValueAsDouble shouldBe 12.0
+                    it::getImage shouldBe "12f"
+
+                }
+            }
+
+            "-3_456.123_456" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    number(DOUBLE) {
+                        it::getValueAsInt shouldBe 3456
+                        it::getValueAsFloat shouldBe 3456.123456f
+                        it::getValueAsDouble shouldBe 3456.123456
+                        it::getImage shouldBe "3_456.123_456"
+                    }
+                }
+            }
+
+
+            "0_" shouldNot parse()
+            "0_0" should parseAs {
+                number(INT) {
+                    it::getBase shouldBe 8
+                    it::getConstValue shouldBe 0
+                }
+            }
+
+            "0__0" should parseAs {
+                number(INT) {
+                    it::getBase shouldBe 8
+                    it::getConstValue shouldBe 0
+                }
+            }
+
+            "0fl" shouldNot parse()
+            "0dl" shouldNot parse()
+            "0Dl" shouldNot parse()
+            "0DL" shouldNot parse()
+            "0fL" shouldNot parse()
+            "0FL" shouldNot parse()
+
+            // this starts with zero so is octal,
+            // but 9 is too big for an octal digit
+            // "099" shouldNot parse()
+            // "099" shouldNot parse()
+            "0b" shouldNot parse()
+            "0x" shouldNot parse()
+            "0" should parseAs {
+                number(INT) {
+                    it::getBase shouldBe 10 // by convention
+                }
             }
         }
-
-        "12l" should matchExpr<ASTNumericLiteral> {
-            it::isCharLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isIntLiteral shouldBe false
-            it::isLongLiteral shouldBe true
-            it::getValueAsInt shouldBe 12
-            it::getValueAsLong shouldBe 12L
-            it::getValueAsFloat shouldBe 12.0f
-            it::getValueAsDouble shouldBe 12.0
-            it::getImage shouldBe "12l"
-        }
-
-        "12L" should matchExpr<ASTNumericLiteral> {
-            it::isLongLiteral shouldBe true
-            it::getValueAsInt shouldBe 12
-            it::getValueAsLong shouldBe 12L
-            it::getImage shouldBe "12L"
-        }
-
-        "12d" should matchExpr<ASTNumericLiteral> {
-            it::isIntLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isDoubleLiteral shouldBe true
-            it::getValueAsInt shouldBe 12
-            it::getValueAsFloat shouldBe 12.0f
-            it::getValueAsDouble shouldBe 12.0
-            it::getImage shouldBe "12d"
-        }
-
-        "12f" should matchExpr<ASTNumericLiteral> {
-            it::isIntLiteral shouldBe false
-            it::isDoubleLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isFloatLiteral shouldBe true
-            it::getValueAsInt shouldBe 12
-            it::getValueAsFloat shouldBe 12.0f
-            it::getValueAsDouble shouldBe 12.0
-            it::getImage shouldBe "12f"
-        }
-
-        "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
-            it::getOperator shouldBe UNARY_MINUS
-
-            it::getOperand shouldBe number(DOUBLE) {
-                it::getValueAsInt shouldBe 3456
-                it::getValueAsFloat shouldBe 3456.123456f
-                it::getValueAsDouble shouldBe 3456.123456
-                it::getImage shouldBe "3_456.123_456"
-            }
-        }
-
     }
 
     parserTest("Hex floating point literals") {

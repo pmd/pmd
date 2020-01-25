@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 /**
  * Represents a character literal. The image of this node can be the literal as it appeared
  * in the source, but JavaCC performs its own unescaping and some escapes may be lost. At the
- * very least it has delimiters. {@link #getUnescapedValue()} allows to recover the actual runtime value.
+ * very least it has delimiters. {@link #getConstValue()} allows to recover the actual runtime value.
  */
 public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral {
 
@@ -41,7 +41,8 @@ public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral 
     /**
      * Gets the char value of this literal.
      */
-    public char getUnescapedValue() {
+    @Override
+    public Character getConstValue() {
         String image = getImage();
         String woDelims = image.substring(1, image.length() - 1);
         return StringEscapeUtils.unescapeJava(woDelims).charAt(0);
