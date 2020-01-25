@@ -86,7 +86,7 @@ public class Test {
 ]]></code>
     </test-code>
     <test-code>
-        <description>#2242 False-positive MisplacedNullCheck reported</description>
+        <description>#2242 False-positive MisplacedNullCheck reported (1)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -102,4 +102,22 @@ public class Test {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#2242 False-positive MisplacedNullCheck reported (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    String field;
+
+    Test(String f) { field = f; }
+
+    public boolean method(final String value) {
+        boolean c = value != null
+             && (field == null || (field != null && !value.equals(field.toString())));
+        return c;
+    }
+}
+]]></code>
+    </test-code>
+
 </test-data>
