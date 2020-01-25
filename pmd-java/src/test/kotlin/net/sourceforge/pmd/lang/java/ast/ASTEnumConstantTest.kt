@@ -102,7 +102,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                             val c = it
 
                             it::getModifiers shouldBe modifiers {
-                                c::getDeclaredAnnotations shouldBe listOf(annotation("C"))
+                                c::declaredAnnotationsList shouldBe listOf(annotation("C"))
                             }
 
 
@@ -118,7 +118,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                             val c = it
 
                             it::getModifiers shouldBe modifiers {
-                                c::getDeclaredAnnotations shouldBe listOf(annotation("A"), annotation("a"))
+                                c::declaredAnnotationsList shouldBe listOf(annotation("A"), annotation("a"))
                             }
 
 

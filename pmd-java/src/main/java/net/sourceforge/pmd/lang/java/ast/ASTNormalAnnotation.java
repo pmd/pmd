@@ -18,8 +18,11 @@ import java.util.Iterator;
  *
  * @see ASTSingleMemberAnnotation
  * @see ASTMarkerAnnotation
+ * @deprecated Replaced with {@link ASTAnnotation}
  */
-public final class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation, Iterable<ASTMemberValuePair> {
+@Deprecated
+public final class ASTNormalAnnotation extends AbstractJavaTypeNode implements Iterable<ASTMemberValuePair> {
+
     ASTNormalAnnotation(int id) {
         super(id);
     }

@@ -15,8 +15,11 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @see ASTSingleMemberAnnotation
  * @see ASTNormalAnnotation
+ *
+ * @deprecated Replaced with {@link ASTAnnotation}
  */
-public final class ASTMarkerAnnotation extends AbstractJavaTypeNode implements ASTAnnotation {
+@Deprecated
+public final class ASTMarkerAnnotation extends AbstractJavaTypeNode {
 
     ASTMarkerAnnotation(int id) {
         super(id);

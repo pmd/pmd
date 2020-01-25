@@ -2282,47 +2282,32 @@ void RSIGNEDSHIFT() #void:
 
 /* Annotation syntax follows. */
 
-void Annotation() #void:
+void Annotation():
 {}
 {
- LOOKAHEAD( "@" VoidName() "(" ( <IDENTIFIER> "=" | ")" ))
- NormalAnnotation()
-|
- LOOKAHEAD( "@" VoidName() "(" )
- SingleMemberAnnotation()
-|
- MarkerAnnotation()
+    "@" jjtThis.name=VoidName() [ AnnotationMemberList() ]
 }
 
-void AnnotationBase(Node n) #void:
-{String name = null;}
-{
-   "@" name=VoidName() {n.setImage(name);}
-}
-
-void NormalAnnotation():
+void AnnotationMemberList():
 {}
 {
-   AnnotationBase(jjtThis) "(" [ MemberValuePairs() ] ")"
+   "("
+    ( LOOKAHEAD(<IDENTIFIER> "=")
+      MemberValuePair() ( "," MemberValuePair() )*
+    | [ ShorthandAnnotationValue() ]
+    )
+    ")"
 }
 
-void MarkerAnnotation():
-{}
+void ShorthandAnnotationValue() #MemberValuePair:
 {
-  AnnotationBase(jjtThis)
+    jjtThis.setImage("value");
+    jjtThis.setShorthand();
+}
+{
+    MemberValue()
 }
 
-void SingleMemberAnnotation():
-{}
-{
-  AnnotationBase(jjtThis) "(" MemberValue() ")"
-}
-
-void MemberValuePairs() #void:
-{}
-{
-   MemberValuePair() ( "," MemberValuePair() )*
-}
 
 void MemberValuePair():
 {}
@@ -2334,11 +2319,8 @@ void MemberValue() #void:
 {}
 {
    Annotation()
- |
-   MemberValueArrayInitializer()
- |
-   // Constant expression
-   ConditionalExpression()
+ | MemberValueArrayInitializer()
+ | ConditionalExpression() // Constant expression
 }
 
 void  MemberValueArrayInitializer():
@@ -2471,12 +2453,8 @@ String VoidName() #void:
   JavaccToken t;
 }
 {
-  t=<IDENTIFIER>
-  {
-    s.append(t.getImage());
-  }
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER>
-    {s.append('.').append(t.getImage());}
+  t=<IDENTIFIER>                    { s.append(t.getImage()); }
+  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.getImage());}
   )*
   {return s.toString();}
 }

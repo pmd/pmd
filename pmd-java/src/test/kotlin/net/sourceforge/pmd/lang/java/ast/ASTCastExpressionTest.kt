@@ -56,11 +56,11 @@ class ASTCastExpressionTest : ParserTestSpec({
                 castExpr {
                     it::getCastType shouldBe child<ASTIntersectionType> {
 
-                        it::getDeclaredAnnotations shouldBe emptyList()
+                        it::declaredAnnotationsList shouldBe emptyList()
 
                         classType("Foo") {
                             // annotations nest on the inner node
-                            it::getDeclaredAnnotations shouldBe listOf(annotation("F"))
+                            it::declaredAnnotationsList shouldBe listOf(annotation("F"))
                         }
 
                         classType("Bar")
@@ -76,15 +76,15 @@ class ASTCastExpressionTest : ParserTestSpec({
                 castExpr {
                     it::getCastType shouldBe child<ASTIntersectionType> {
 
-                        it::getDeclaredAnnotations shouldBe emptyList()
+                        it::declaredAnnotationsList shouldBe emptyList()
 
                         classType("Foo") {
                             // annotations nest on the inner node
-                            it::getDeclaredAnnotations shouldBe listOf(annotation("F"))
+                            it::declaredAnnotationsList shouldBe listOf(annotation("F"))
                         }
 
                         classType("Bar") {
-                            it::getDeclaredAnnotations shouldBe listOf(annotation("B"), annotation("C"))
+                            it::declaredAnnotationsList shouldBe listOf(annotation("B"), annotation("C"))
                         }
                     }
 
@@ -140,3 +140,6 @@ class ASTCastExpressionTest : ParserTestSpec({
 
 
 })
+
+val Annotatable.declaredAnnotationsList: List<ASTAnnotation>
+    get() = declaredAnnotations.toList()

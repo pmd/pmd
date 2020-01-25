@@ -125,6 +125,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     }
 
     private boolean hasOverrideAnnotation(ASTMethodDeclaration node) {
+
         int childIndex = node.getIndexInParent();
         for (int i = 0; i < childIndex; i++) {
             Node previousSibling = node.getParent().getChild(i);

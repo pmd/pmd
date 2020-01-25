@@ -4,38 +4,83 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 /**
- * Represents an annotation. This node has three specific syntactic variants,
- * represented by nodes that implement this interface.
+ * Represents an annotation.
  *
  * <pre class="grammar">
  *
- * Annotation ::= {@linkplain ASTNormalAnnotation NormalAnnotation}
- *              | {@linkplain ASTSingleMemberAnnotation SingleMemberAnnotation}
- *              | {@linkplain ASTMarkerAnnotation MarkerAnnotation}
+ * Annotation ::= "@" Name {@link ASTAnnotationMemberList AnnotationMemberList}?
  *
  * </pre>
  */
-public interface ASTAnnotation extends TypeNode, ASTMemberValue {
+public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNode, ASTMemberValue, Iterable<ASTMemberValuePair> {
+
+    String name;
+
+    ASTAnnotation(int id) {
+        super(id);
+    }
 
 
     /**
      * Returns the name of the annotation as it is used,
      * eg {@code java.lang.Override} or {@code Override}.
      */
-    default String getAnnotationName() {
-        return getImage();
+    public String getAnnotationName() {
+        return name;
     }
 
+
+    @Override
+    @Deprecated
+    public String getImage() {
+        return name;
+    }
 
     /**
      * Returns the simple name of the annotation.
      */
-    default String getSimpleName() {
-        String[] split = getImage().split("\\.");
+    public String getSimpleName() {
+        String[] split = getAnnotationName().split("\\.");
         return split[split.length - 1];
     }
 
 
-}
+    /**
+     * Returns the list of members, or null if there is none.
+     */
+    public @Nullable ASTAnnotationMemberList getMemberList() {
+        return children().first(ASTAnnotationMemberList.class);
+    }
 
+    /**
+     * Returns the stream of explicit members for this annotation.
+     */
+    public NodeStream<ASTMemberValuePair> getMembers() {
+        return children(ASTAnnotationMemberList.class).children(ASTMemberValuePair.class);
+    }
+
+
+    @Override
+    public Iterator<ASTMemberValuePair> iterator() {
+        return children(ASTMemberValuePair.class).iterator();
+    }
+
+    @Override
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
+
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+}
