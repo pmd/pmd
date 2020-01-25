@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
@@ -17,10 +17,10 @@ import java.util.Iterator;
  * ExtendsList ::= "extends" {@link ASTType Type} ( "," {@link ASTType Type} )*
  * </pre>
  */
-public final class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTExtendsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
     ASTExtendsList(int id) {
-        super(id);
+        super(id, ASTClassOrInterfaceType.class);
     }
 
     @Override
@@ -34,9 +34,4 @@ public final class ASTExtendsList extends AbstractJavaNode implements Iterable<A
         visitor.visit(this, data);
     }
 
-
-    @Override    // TODO this doesn't preserve the annotations.
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return children(ASTClassOrInterfaceType.class).iterator();
-    }
 }

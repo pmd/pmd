@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-
 /**
  * The argument list of a {@linkplain ASTMethodCall method}, {@linkplain ASTConstructorCall constructor call},
  * or {@linkplain ASTExplicitConstructorInvocation explicit constructor invocation}.
@@ -17,10 +14,10 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTArgumentList extends AbstractJavaNode implements Iterable<ASTExpression> {
+public final class ASTArgumentList extends ASTList<ASTExpression> {
 
     ASTArgumentList(int id) {
-        super(id);
+        super(id, ASTExpression.class);
     }
 
     @Override
@@ -34,15 +31,4 @@ public final class ASTArgumentList extends AbstractJavaNode implements Iterable<
         visitor.visit(this, data);
     }
 
-    /**
-     * Returns the number of arguments of this list.
-     */
-    public int getArgumentCount() {
-        return getNumChildren();
-    }
-
-    @Override
-    public Iterator<ASTExpression> iterator() {
-        return children(ASTExpression.class).iterator();
-    }
 }

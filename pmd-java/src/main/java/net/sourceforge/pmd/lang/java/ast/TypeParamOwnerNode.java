@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -21,16 +18,6 @@ public interface TypeParamOwnerNode extends JavaNode {
     @Nullable
     default ASTTypeParameters getTypeParameters() {
         return getFirstChildOfType(ASTTypeParameters.class);
-    }
-
-
-    default List<ASTTypeParameter> getTypeParameterList() {
-        ASTTypeParameters parameters = getTypeParameters();
-        if (parameters == null) {
-            return Collections.emptyList();
-        }
-
-        return parameters.asList();
     }
 
 

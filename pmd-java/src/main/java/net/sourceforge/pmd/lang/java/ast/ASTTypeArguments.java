@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
  *
@@ -16,10 +13,10 @@ import java.util.Iterator;
  *                  | "&lt;" "&gt;"
  * </pre>
  */
-public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType> {
+public final class ASTTypeArguments extends ASTList<ASTType> {
 
     ASTTypeArguments(int id) {
-        super(id);
+        super(id, ASTType.class);
     }
 
     @Override
@@ -39,12 +36,7 @@ public final class ASTTypeArguments extends AbstractJavaNode implements Iterable
      * actual type arguments are inferred.
      */
     public boolean isDiamond() {
-        return getNumChildren() == 0;
+        return size() == 0;
     }
 
-
-    @Override
-    public Iterator<ASTType> iterator() {
-        return children(ASTType.class).iterator();
-    }
 }

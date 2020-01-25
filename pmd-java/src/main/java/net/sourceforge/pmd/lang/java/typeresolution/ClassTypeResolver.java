@@ -610,7 +610,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         if (baseType != null && node.getExtraDimensions() != null) {
             // add the dimensions specific to the declarator id
-            setTypeDefinition(node, baseType.withDimensions(node.getExtraDimensions().getSize()));
+            setTypeDefinition(node, baseType.withDimensions(node.getExtraDimensions().size()));
         }
         return super.visit(node, data);
     }

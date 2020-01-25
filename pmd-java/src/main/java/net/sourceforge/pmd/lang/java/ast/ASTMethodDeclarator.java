@@ -37,7 +37,7 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
      */
     @Deprecated
     public int getParameterCount() {
-        return getFormalParameters().getParameterCount();
+        return getFormalParameters().size();
     }
 
     public ASTFormalParameters getFormalParameters() {

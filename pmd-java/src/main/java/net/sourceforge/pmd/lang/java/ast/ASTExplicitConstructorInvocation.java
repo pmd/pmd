@@ -53,7 +53,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractStatement im
      * Returns the number of arguments of the called constructor.
      */
     public int getArgumentCount() {
-        return getArgumentsList().getArgumentCount();
+        return getArgumentsList().size();
     }
 
     void setIsSuper() {

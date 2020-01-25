@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-import java.util.List;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 /**
  * A list of resources in a {@linkplain ASTTryStatement try-with-resources}.
@@ -16,14 +15,12 @@ import java.util.List;
  *
  * </pre>
  */
-public final class ASTResourceList extends AbstractJavaNode
-    implements Iterable<ASTResource>,
-               InternalInterfaces.AtLeastOneChildOfType<ASTResource> {
+public final class ASTResourceList extends ASTNonEmptyList<ASTResource> {
 
     private boolean trailingSemi;
 
     ASTResourceList(int id) {
-        super(id);
+        super(id, ASTResource.class);
     }
 
     @Override
@@ -37,11 +34,6 @@ public final class ASTResourceList extends AbstractJavaNode
         visitor.visit(this, data);
     }
 
-    @Override
-    public ASTResource getChild(int index) {
-        return (ASTResource) super.getChild(index);
-    }
-
     void setTrailingSemi() {
         this.trailingSemi = true;
     }
@@ -52,15 +44,6 @@ public final class ASTResourceList extends AbstractJavaNode
      */
     public boolean hasTrailingSemiColon() {
         return trailingSemi;
-    }
-
-    @Override
-    public Iterator<ASTResource> iterator() {
-        return children(ASTResource.class).iterator();
-    }
-
-    public List<ASTResource> asList() {
-        return findChildrenOfType(ASTResource.class);
     }
 
 }

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-
 /**
  * The parameter list of a {@linkplain ASTLambdaExpression lambda expression}.
  *
@@ -17,14 +14,10 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTLambdaParameterList extends AbstractJavaNode implements Iterable<ASTLambdaParameter> {
+public final class ASTLambdaParameterList extends ASTList<ASTLambdaParameter> {
 
     ASTLambdaParameterList(int id) {
-        super(id);
-    }
-
-    public int getParameterCount() {
-        return getNumChildren();
+        super(id, ASTLambdaParameter.class);
     }
 
 
@@ -37,17 +30,5 @@ public final class ASTLambdaParameterList extends AbstractJavaNode implements It
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    @Override
-    public ASTLambdaParameter getChild(int index) {
-        return (ASTLambdaParameter) super.getChild(index);
-    }
-
-
-    @Override
-    public Iterator<ASTLambdaParameter> iterator() {
-        return children(ASTLambdaParameter.class).iterator();
     }
 }
