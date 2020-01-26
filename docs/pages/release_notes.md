@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.21.0).
+
 ### Fixed Issues
 
 ### API Changes
