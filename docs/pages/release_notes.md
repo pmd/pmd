@@ -21,10 +21,14 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 ### Fixed Issues
 
+*   java-errorprone
+    *   [#2250](https://github.com/pmd/pmd/issues/2250): \[java] InvalidLogMessageFormat flags logging calls using a slf4j-Marker
+
 ### API Changes
 
 ### External Contributions
 
+*   [#2251](https://github.com/pmd/pmd/pull/2251): \[java] FP for InvalidLogMessageFormat when using slf4j-Markers - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#2253](https://github.com/pmd/pmd/pull/2253): \[modelica] Remove duplicated dependencies - [Piotrek Żygieło](https://github.com/pzygielo)
 
 {% endtocmaker %}
