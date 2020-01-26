@@ -25,5 +25,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 ### External Contributions
 
+*   [#2253](https://github.com/pmd/pmd/pull/2253): \[modelica] Remove duplicated dependencies - [Piotrek Żygieło](https://github.com/pzygielo)
+
 {% endtocmaker %}
 
