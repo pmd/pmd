@@ -23,6 +23,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 *   java-errorprone
     *   [#2250](https://github.com/pmd/pmd/issues/2250): \[java] InvalidLogMessageFormat flags logging calls using a slf4j-Marker
+    *   [#2255](https://github.com/pmd/pmd/issues/2255): \[java] InvalidLogMessageFormat false-positive for a lambda argument
 
 ### API Changes
 
