@@ -13,7 +13,7 @@ public class ASTTypeBounds extends AbstractScalaNode<Type.Bounds> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

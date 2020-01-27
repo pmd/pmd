@@ -13,7 +13,7 @@ public class ASTTermBlock extends AbstractScalaNode<Term.Block> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

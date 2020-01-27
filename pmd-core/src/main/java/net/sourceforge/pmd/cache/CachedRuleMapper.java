@@ -42,7 +42,7 @@ public class CachedRuleMapper {
             cachedRulesInstances.put(getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getTerseName()), r);
         }
     }
-    
+
     private String getRuleKey(final String className, final String ruleName, final String languageName) {
         return className + "$$" + ruleName + "$$" + languageName;
     }

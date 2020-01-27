@@ -460,11 +460,11 @@ public class PMD {
      */
     public static int run(final String[] args) {
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        
+
         if (params.isBenchmark()) {
             TimeTracker.startGlobalTracking();
         }
-        
+
         int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
         final PMDConfiguration configuration = params.toConfiguration();
 
@@ -490,7 +490,7 @@ public class PMD {
         } finally {
             logHandlerManager.close();
             LOG.setLevel(oldLogLevel);
-            
+
             if (params.isBenchmark()) {
                 final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 

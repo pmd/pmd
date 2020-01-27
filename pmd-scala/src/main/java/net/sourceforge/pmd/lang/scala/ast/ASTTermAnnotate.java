@@ -13,7 +13,7 @@ public class ASTTermAnnotate extends AbstractScalaNode<Term.Annotate> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

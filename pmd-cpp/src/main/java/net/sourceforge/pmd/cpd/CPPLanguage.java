@@ -26,7 +26,7 @@ public class CPPLanguage extends AbstractLanguage {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see net.sourceforge.pmd.cpd.AbstractLanguage#setProperties(java.util.
      * Properties)
      */

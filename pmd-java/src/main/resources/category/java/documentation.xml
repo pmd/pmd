@@ -37,7 +37,7 @@ Denotes whether javadoc (formal) comments are required (or unwanted) for specifi
         <example>
 <![CDATA[
 /**
-* 
+*
 *
 * @author Jon Doe
 */

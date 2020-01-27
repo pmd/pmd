@@ -12,10 +12,10 @@ public enum EnumWithAnonymousInnerClass {
         }
     },
     B;
-    
+
     public void foo() {
     }
-    
+
     interface Inner {
         int get();
     }

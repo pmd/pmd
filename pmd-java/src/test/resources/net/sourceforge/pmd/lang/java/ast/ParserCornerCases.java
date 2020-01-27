@@ -24,7 +24,7 @@ class Outer {
 	Outer() {
 		System.out.println("Outer constructor");
 	}
-	
+
 	class Inner {
 		Inner() {
 			System.out.println("Inner constructor");
@@ -211,11 +211,11 @@ class ClazzPropertyOfPrimitiveTypes {
         c = void.class;
 
         if (c == int.class || c == short.class || c == long.class || c == double.class || c == char.class || c == byte.class || c == void.class) {
-            
+
         }
 
         if ("a".equals((int.class).getName())) {
-            
+
         }
 
         if ((Integer.class.equals(clazz)) || (int.class.equals(clazz))) {

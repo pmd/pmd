@@ -13,7 +13,7 @@ public class ASTCtorSecondary extends AbstractScalaNode<Ctor.Secondary> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

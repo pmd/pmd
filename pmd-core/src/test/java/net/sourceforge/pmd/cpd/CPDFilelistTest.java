@@ -23,7 +23,7 @@ public class CPDFilelistTest {
         arguments.setFileListPath("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist.txt");
         CPD cpd = new CPD(arguments);
         CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
-        
+
         List<String> paths = cpd.getSourcePaths();
         assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
@@ -41,7 +41,7 @@ public class CPDFilelistTest {
         arguments.setFileListPath("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist2.txt");
         CPD cpd = new CPD(arguments);
         CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
-        
+
         List<String> paths = cpd.getSourcePaths();
         assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();

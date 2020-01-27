@@ -20,7 +20,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @Deprecated
 @InternalApi
 public class NoopAnalysisCache implements AnalysisCache {
-    
+
     @Override
     public void ruleViolationAdded(final RuleViolation ruleViolation) {
         // noop

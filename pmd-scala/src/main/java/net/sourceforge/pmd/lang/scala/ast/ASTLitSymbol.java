@@ -13,7 +13,7 @@ public class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

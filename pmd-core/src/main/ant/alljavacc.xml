@@ -51,6 +51,10 @@
                 outputdirectory="${tmp-package.dir}"
                 javacchome="${javacc-home.path}" />
 
+        <replace file="${tmp-package.dir}/CharStream.java"
+                 token="interface"
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi interface" />
+
         <!-- Generate ASCII w/ Unicode Escapes CharStream implementation -->
         <javacc usercharstream="false"
                 unicodeinput="false"
@@ -79,11 +83,15 @@
         <replace file="${tmp-package.dir}/JavaCharStream.java"
                  token="char c;"
                  value="char c; beforeReadChar();" />
-         <replace file="${tmp-package.dir}/JavaCharStream.java"
+        <replace file="${tmp-package.dir}/JavaCharStream.java"
                  token="/** Read a character. */"
                  value="protected void beforeReadChar() { }" />
 
-       <move overwrite="true"
+        <replace file="${tmp-package.dir}/JavaCharStream.java"
+                 token="abstract class JavaCharStreamBase"
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi abstract class JavaCharStreamBase" />
+
+        <move overwrite="true"
               file="${tmp-package.dir}/JavaCharStream.java"
               tofile="${target-package.dir}/JavaCharStreamBase.java" />
 
@@ -98,7 +106,7 @@
 
         <replace file="${tmp-package.dir}/SimpleCharStream.java"
                  token="public class SimpleCharStream"
-                 value="public class SimpleCharStream implements CharStream" />
+                 value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi public class SimpleCharStream implements CharStream" />
 
         <replace file="${tmp-package.dir}/TokenMgrError.java"
                  token="${target-package}"

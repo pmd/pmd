@@ -51,7 +51,7 @@ public interface AnalysisCache extends ThreadSafeReportListener {
      * @param sourceFile The file whose analysis failed
      */
     void analysisFailed(File sourceFile);
-    
+
     /**
      * Checks if the cache is valid for the configured rulesets and class loader.
      * If the provided rulesets and classpath don't match those of the cache, the

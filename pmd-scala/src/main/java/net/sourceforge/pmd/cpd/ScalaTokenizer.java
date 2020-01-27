@@ -42,7 +42,7 @@ public class ScalaTokenizer implements Tokenizer {
 
     /**
      * Create the Tokenizer given a set of properties.
-     * 
+     *
      * @param properties
      *            the {@linkplain Properties} object to use
      */

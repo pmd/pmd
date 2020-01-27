@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PMD;
 
 public class MockedFileWriter implements FileWriter {
-    
+
     public static class FileEntry {
         private String filename;
         private String content;
