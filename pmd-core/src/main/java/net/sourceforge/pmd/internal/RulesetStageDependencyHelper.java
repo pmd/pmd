@@ -72,7 +72,7 @@ public class RulesetStageDependencyHelper {
     /** Builds a sorted list of the dependencies of the given ruleset. */
     private List<AstProcessingStage<?>> buildDependencyList(RuleSets ruleSets, LanguageVersion languageVersion) {
         List<AstProcessingStage<?>> stages = new ArrayList<>(languageVersion.getLanguageVersionHandler().getProcessingStages());
-        SortedSet<AstProcessingStage<?>> result = new TreeSet<>();
+        SortedSet<AstProcessingStage<?>> result = new TreeSet<>(AstProcessingStage.COMPARATOR);
 
         // this loops runs until either all stages have already been
         // picked or there are no rules left, whichever comes first

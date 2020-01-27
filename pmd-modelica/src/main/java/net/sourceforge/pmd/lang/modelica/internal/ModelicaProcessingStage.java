@@ -30,11 +30,6 @@ public enum ModelicaProcessingStage implements AstProcessingStage<ModelicaProces
         this.displayName = displayName;
     }
 
-    @Override
-    public int compareTo(AstProcessingStage o) {
-        return o instanceof ModelicaProcessingStage ? compareTo((ModelicaProcessingStage) o)
-                                                    : 0;
-    }
 
     @Override
     public Language getLanguage() {

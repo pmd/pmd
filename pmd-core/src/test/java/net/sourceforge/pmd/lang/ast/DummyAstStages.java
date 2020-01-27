@@ -44,12 +44,6 @@ public enum DummyAstStages implements AstProcessingStage<DummyAstStages> {
     }
 
     @Override
-    public int compareTo(AstProcessingStage o) {
-        return o instanceof DummyAstStages ? compareTo((DummyAstStages) o)
-                                                : 0;
-    }
-
-    @Override
     public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
         ((DummyNode) rootNode).getUserData().put(name() + "_STAGE", "done");
     }

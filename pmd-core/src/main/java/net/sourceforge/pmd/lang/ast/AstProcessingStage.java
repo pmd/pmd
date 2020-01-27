@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import static java.util.Collections.emptyList;
 
+import java.util.Comparator;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
@@ -58,6 +59,11 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 @Experimental
 public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Comparable<T> {
 
+    /**
+     * Compares processing stages of possibly different kinds.
+     */
+    Comparator<AstProcessingStage<?>> COMPARATOR = AstProcessingStage::compare;
+
 
     /**
      * Returns the language this processing stage applies to.
@@ -96,6 +102,20 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
     void processAST(RootNode rootNode, AstAnalysisContext configuration);
 
 
-    @Override
-    int compareTo(AstProcessingStage o);
+    /**
+     * Same contract as {@link Comparable#compareTo(Object)}, but we can't extend
+     * Comparable with that type argument if we implement processing stages within
+     * an enum.
+     *
+     * @param t the object to compare
+     *
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
+     */
+    @SuppressWarnings("unchecked")
+    default int compare(AstProcessingStage<?> t) {
+        return this.compareTo((T) t);
+    }
+
+
 }
