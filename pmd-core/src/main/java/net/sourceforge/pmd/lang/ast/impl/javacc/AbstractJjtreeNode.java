@@ -58,13 +58,13 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
     @Override
     @SuppressWarnings("unchecked")
     public N getChild(int index) {
-        return (N) super.jjtGetChild(index);
+        return (N) super.getChild(index);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public N getParent() {
-        return (N) super.jjtGetParent();
+        return (N) super.getParent();
     }
 
     @Override
