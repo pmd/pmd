@@ -16,7 +16,7 @@ import java.util.List;
  *
  * </pre>
  */
-public final class ASTArrayType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
+public final class ASTArrayType extends AbstractJavaTypeNode implements ASTReferenceType {
     ASTArrayType(int id) {
         super(id);
     }

@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, LeftRecursiveNode, QualifierOwner {
+public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner {
     ASTArrayAccess(int id) {
         super(id);
     }

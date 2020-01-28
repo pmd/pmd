@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode {
+public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner {
 
     ASTMethodCall(int id) {
         super(id);

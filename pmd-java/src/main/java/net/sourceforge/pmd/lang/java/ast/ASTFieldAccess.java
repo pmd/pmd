@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner, LeftRecursiveNode {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner {
     ASTFieldAccess(int id) {
         super(id);
     }

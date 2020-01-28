@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
  *
  * </pre>
  */
-public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType, LeftRecursiveNode {
+public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
     /**
      * @deprecated Made public for one shady usage in {@link ClassScope}

@@ -37,4 +37,5 @@ final class AstImplUtil {
             throw new IllegalStateException(expression.getClass() + " doesn't have parenDepth attribute!");
         }
     }
+
 }

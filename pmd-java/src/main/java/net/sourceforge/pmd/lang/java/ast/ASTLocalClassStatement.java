@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTLocalClassStatement extends AbstractStatement implements LeftRecursiveNode {
+public final class ASTLocalClassStatement extends AbstractStatement {
 
     ASTLocalClassStatement(int id) {
         super(id);
