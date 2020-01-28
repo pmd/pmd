@@ -18,12 +18,6 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
         super(id);
     }
 
-
-    ASTMemberValuePair(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the name of the member set by this pair.
      */

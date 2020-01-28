@@ -227,17 +227,12 @@
  */
 
 options {
-  JAVA_UNICODE_ESCAPE = true;
+  UNICODE_INPUT=true;
   CACHE_TOKENS = true;
   STATIC = false;
-  USER_CHAR_STREAM = true;
-  JDK_VERSION = "1.5";
-  TOKEN_FACTORY = "JavaTokenFactory";
 
   MULTI = true;
   VISITOR = true;
-  NODE_USES_PARSER = true;
-  TRACK_TOKENS = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
   //DEBUG_PARSER = true;
@@ -245,7 +240,7 @@ options {
   //DEBUG_TOKEN_MANAGER = true;
 }
 
-PARSER_BEGIN(JavaParser)
+PARSER_BEGIN(JavaParserImpl)
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
 import java.util.List;
@@ -256,7 +251,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.Node;
 
-class JavaParser {
+class JavaParserImpl {
 
   private int jdkVersion = 0;
   private boolean preview = false;
@@ -344,22 +339,22 @@ class JavaParser {
   }
 
   private void forceExprContext() {
-       Node top = jjtree.peekNode();
+       AbstractJavaNode top = jjtree.peekNode();
 
        if (top instanceof ASTAmbiguousName) {
            // see doc on the method
-           Node replacement = ((ASTAmbiguousName) top).forceExprContext();
+           AbstractJavaNode replacement = (AbstractJavaNode) ((ASTAmbiguousName) top).forceExprContext();
            jjtree.popNode();
            jjtree.pushNode(replacement);
        }
   }
 
   private void forceTypeContext() {
-      Node top = jjtree.peekNode();
+      AbstractJavaNode top = jjtree.peekNode();
 
       if (top instanceof ASTAmbiguousName) {
           // see doc on the method
-          Node replacement = ((ASTAmbiguousName) top).forceTypeContext();
+          AbstractJavaNode replacement = ((ASTAmbiguousName) top).forceTypeContext();
           jjtree.popNode();
           jjtree.pushNode(replacement);
       }
@@ -383,7 +378,7 @@ class JavaParser {
     private boolean inExplicitConstructorInvoc = false;
 
 }
-PARSER_END(JavaParser)
+PARSER_END(JavaParserImpl)
 
 TOKEN_MGR_DECLS :
 {
@@ -810,7 +805,6 @@ ASTCompilationUnit CompilationUnit() :
   <EOF>
   {
      jjtThis.setComments(token_source.comments);
-     jjtThis.setTokenDocument(((net.sourceforge.pmd.lang.ast.JavaCharStream) token_source.input_stream).getTokenDocument());
      return jjtThis;
   }
 }
@@ -2275,14 +2269,14 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT() #void:
 {}
 {
-   LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+   LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
    ">" ">" ">"
 }
 
 void RSIGNEDSHIFT() #void:
 {}
 {
-  LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+  LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RSIGNEDSHIFT})
   ">" ">"
 }
 

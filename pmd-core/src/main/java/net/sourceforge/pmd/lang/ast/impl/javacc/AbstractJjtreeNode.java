@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -18,16 +20,40 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * unforeseeable ways. Don't use it directly, use the node interfaces.
  */
 @Experimental
-public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode {
+public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode implements TextAvailableNode {
+
 
     public AbstractJjtreeNode(int id) {
         super(id);
     }
 
-    public AbstractJjtreeNode(int id, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn) {
-        super(id, theBeginLine, theEndLine, theBeginColumn, theEndColumn);
+    @Override
+    public CharSequence getText() {
+        String fullText = jjtGetFirstToken().document.getFullText();
+        return fullText.substring(getStartOffset(), getEndOffset());
     }
 
+    @Override
+    public JavaccToken jjtGetFirstToken() {
+        return (JavaccToken) super.jjtGetFirstToken();
+    }
+
+    @Override
+    public JavaccToken jjtGetLastToken() {
+        return (JavaccToken) super.jjtGetLastToken();
+    }
+
+    // the super methods query line & column, which we want to avoid
+
+    @Override
+    public void jjtSetLastToken(GenericToken token) {
+        this.lastToken = token;
+    }
+
+    @Override
+    public void jjtSetFirstToken(GenericToken token) {
+        this.firstToken = token;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -41,10 +67,46 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode {
         return (N) super.getParent();
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public NodeStream<? extends N> children() {
         return (NodeStream<N>) super.children();
+    }
+
+    @Override
+    public int getBeginLine() {
+        return firstToken.getBeginLine();
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return firstToken.getBeginColumn();
+    }
+
+    @Override
+    public int getEndLine() {
+        return lastToken.getEndLine();
+    }
+
+    @Override
+    public int getEndColumn() {
+        return lastToken.getEndColumn();
+    }
+
+    /**
+     * This toString implementation is only meant for debugging purposes.
+     */
+    @Override
+    public String toString() {
+        return "[" + getXPathNodeName() + ":" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
+    }
+
+    private int getStartOffset() {
+        return this.jjtGetFirstToken().getStartInDocument();
+    }
+
+
+    private int getEndOffset() {
+        return this.jjtGetLastToken().getEndInDocument();
     }
 }

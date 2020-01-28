@@ -23,10 +23,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
         super(id);
     }
 
-    ASTAssignmentOperator(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     public boolean isCompound() {
         return this.isCompound;

@@ -29,10 +29,6 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
         super(id);
     }
 
-    ASTLambdaParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     void setFinal(boolean aFinal) {
         isFinal = aFinal;

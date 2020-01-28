@@ -22,10 +22,6 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
         super(i);
     }
 
-    AbstractJavaTypeNode(JavaParser p, int i) {
-        super(p, i);
-    }
-
     @Override
     @Nullable
     public JavaTypeDefinition getTypeDefinition() {

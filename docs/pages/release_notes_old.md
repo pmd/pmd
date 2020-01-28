@@ -66,9 +66,9 @@ If a CPD language doesn't provide these exact information, then these additional
 
 Each `<file>` element in the XML format now has 3 new attributes:
 
-*   attribute `endLine`
-*   attribute `beginColumn` (if there is column information available)
-*   attribute `endColumn` (if there is column information available)
+*   attribute `endline`
+*   attribute `column` (if there is column information available)
+*   attribute `endcolumn` (if there is column information available)
 
 #### Modified Rules
 

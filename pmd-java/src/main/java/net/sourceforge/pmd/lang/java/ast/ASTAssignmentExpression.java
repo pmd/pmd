@@ -23,11 +23,6 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
     }
 
 
-    ASTAssignmentExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     void setOp(AssignmentOp op) {
         this.operator = op;
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 
 public class JavaTokensTokenizerTest {
 
@@ -213,7 +213,7 @@ public class JavaTokensTokenizerTest {
         List<TokenEntry> tokenList = tokens.getTokens();
 
         // Member variable of type Foo
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(7).toString());
+        assertEquals(String.valueOf(JavaTokenKinds.IDENTIFIER), tokenList.get(7).toString());
         // Public constructor
         assertEquals("Foo", tokenList.get(10).toString());
         // Private constructor
@@ -241,8 +241,8 @@ public class JavaTokensTokenizerTest {
         List<TokenEntry> tokenList = tokens.getTokens();
 
         // Enum member
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(4).toString());
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(9).toString());
+        assertEquals(String.valueOf(JavaTokenKinds.IDENTIFIER), tokenList.get(4).toString());
+        assertEquals(String.valueOf(JavaTokenKinds.IDENTIFIER), tokenList.get(9).toString());
         // Enum constructor
         assertEquals("Foo", tokenList.get(13).toString());
     }
@@ -265,6 +265,6 @@ public class JavaTokensTokenizerTest {
 
         // Class constructor
         assertEquals("Foo", tokenList.get(4).toString());
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(11).toString());
+        assertEquals(String.valueOf(JavaTokenKinds.IDENTIFIER), tokenList.get(11).toString());
     }
 }

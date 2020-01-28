@@ -22,10 +22,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
     }
 
 
-    ASTArrayType(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
         // an array type's annotations are on its dimensions

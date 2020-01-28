@@ -10,15 +10,6 @@ public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDe
         super(id);
     }
 
-    ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isAnonymousInnerClass();
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

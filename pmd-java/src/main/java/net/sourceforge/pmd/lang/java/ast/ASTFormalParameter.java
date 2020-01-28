@@ -33,10 +33,6 @@ public final class ASTFormalParameter extends AbstractJavaAccessTypeNode
         super(id);
     }
 
-    ASTFormalParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Returns true if this node is a varargs parameter. Then, the type
      * node is an {@link ASTArrayType ArrayType}, and its last dimension

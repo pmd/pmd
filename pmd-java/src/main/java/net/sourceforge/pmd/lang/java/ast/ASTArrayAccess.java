@@ -23,11 +23,6 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
     }
 
 
-    ASTArrayAccess(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the expression to the left of the "[".
      * This can never be a {@linkplain ASTTypeExpression type},

@@ -24,10 +24,6 @@ public final class ASTSwitchExpression extends AbstractJavaExpr
         super(id);
     }
 
-    ASTSwitchExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

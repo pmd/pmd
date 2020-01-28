@@ -34,11 +34,6 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
     }
 
 
-    ASTIntersectionType(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public String getTypeImage() {
         return iterator().next().getTypeImage(); //TODO

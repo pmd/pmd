@@ -18,10 +18,6 @@ public final class ASTRenamingImportClause extends AbstractModelicaImportClause 
         super(id);
     }
 
-    ASTRenamingImportClause(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

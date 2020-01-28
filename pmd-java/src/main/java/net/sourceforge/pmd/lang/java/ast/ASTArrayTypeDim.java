@@ -25,10 +25,6 @@ public class ASTArrayTypeDim extends AbstractJavaNode implements Annotatable {
         super(id);
     }
 
-    ASTArrayTypeDim(JavaParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Returns true if this is a varargs dimension. Varargs parameters
      * are represented as an array type whose last dimension has this

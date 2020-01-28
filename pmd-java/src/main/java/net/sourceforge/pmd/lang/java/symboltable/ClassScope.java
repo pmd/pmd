@@ -35,7 +35,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
-import net.sourceforge.pmd.lang.java.ast.JavaParserTreeConstants;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -296,13 +295,13 @@ public class ClassScope extends AbstractJavaScope {
      */
     private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName,
             final String... parameterTypes) {
-        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(JavaParserTreeConstants.JJTMETHODDECLARATION);
+        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(0);
         InternalApiBridge.setModifier(methodDeclaration, AccessNode.PUBLIC);
         InternalApiBridge.setScope(methodDeclaration, this);
 
         methodDeclaration.setImage(methodName);
 
-        ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
+        ASTFormalParameters formalParameters = new ASTFormalParameters(0);
 
         methodDeclaration.jjtAddChild(formalParameters, 0);
         formalParameters.jjtSetParent(methodDeclaration);
@@ -312,12 +311,11 @@ public class ClassScope extends AbstractJavaScope {
          * Going backwards makes sure the first time it gets the right size avoiding copies.
          */
         for (int i = parameterTypes.length - 1; i >= 0; i--) {
-            ASTFormalParameter formalParameter = new ASTFormalParameter(JavaParserTreeConstants.JJTFORMALPARAMETER);
+            ASTFormalParameter formalParameter = new ASTFormalParameter(0);
             formalParameters.jjtAddChild(formalParameter, i);
             formalParameter.jjtSetParent(formalParameters);
 
-            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(
-                    JavaParserTreeConstants.JJTVARIABLEDECLARATORID);
+            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(0);
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);

@@ -29,11 +29,6 @@ public final class ASTTypeParameter extends AbstractJavaTypeNode implements Anno
     }
 
 
-    ASTTypeParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the name of the type variable introduced by this declaration.
      */

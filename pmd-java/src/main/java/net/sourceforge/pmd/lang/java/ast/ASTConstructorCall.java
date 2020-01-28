@@ -30,11 +30,6 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
     }
 
 
-    ASTConstructorCall(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

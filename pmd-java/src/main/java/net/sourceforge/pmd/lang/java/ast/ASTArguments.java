@@ -14,10 +14,6 @@ public class ASTArguments extends AbstractJavaNode {
         super(id);
     }
 
-    ASTArguments(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public int getArgumentCount() {
         if (this.getNumChildren() == 0) {
             return 0;

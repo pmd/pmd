@@ -1,23 +1,22 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java;
+package net.sourceforge.pmd.lang.java.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.java.ast.JavaParserTokenManager;
 
 /**
  * Java Token Manager implementation.
  */
 public class JavaTokenManager implements TokenManager {
-    private final JavaParserTokenManager tokenManager;
+    private final JavaParserImplTokenManager tokenManager;
 
     public JavaTokenManager(Reader source) {
-        tokenManager = new JavaParserTokenManager(CharStreamFactory.javaCharStream(source));
+        tokenManager = new JavaParserImplTokenManager(CharStreamFactory.javaCharStream(source));
     }
 
     @Override

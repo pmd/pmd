@@ -16,10 +16,6 @@ public final class ASTBlockStatement extends AbstractJavaNode {
         super(id);
     }
 
-    ASTBlockStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -23,10 +23,6 @@ public final class ASTTypeArgument extends AbstractJavaTypeNode {
         super(id);
     }
 
-    ASTTypeArgument(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Returns true if this node is a wildcard argument (bounded or not).

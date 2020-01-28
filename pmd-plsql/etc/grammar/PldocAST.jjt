@@ -121,14 +121,14 @@ options {
 	SANITY_CHECK = true;
 	FORCE_LA_CHECK = false;
 
-  CACHE_TOKENS = true;
+	TRACK_TOKENS = true;
+    CACHE_TOKENS = true;
 
-
-  MULTI = true;
-  VISITOR = true;
-  NODE_USES_PARSER = true;
-  NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
-  NODE_CLASS = "net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode";
+    MULTI = true;
+    VISITOR = true;
+    NODE_USES_PARSER = true;
+    NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
+    NODE_CLASS = "net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode";
 }
 
 PARSER_BEGIN(PLSQLParser)

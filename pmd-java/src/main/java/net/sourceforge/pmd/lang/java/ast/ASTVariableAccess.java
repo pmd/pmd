@@ -21,18 +21,13 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssi
      * Constructor promoting an ambiguous name to a variable reference.
      */
     ASTVariableAccess(ASTAmbiguousName name) {
-        super(JavaParserTreeConstants.JJTVARIABLEACCESS);
+        super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
         setImage(name.getImage());
     }
 
 
     ASTVariableAccess(int id) {
         super(id);
-    }
-
-
-    ASTVariableAccess(JavaParser p, int id) {
-        super(p, id);
     }
 
 

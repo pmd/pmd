@@ -27,19 +27,19 @@ public class SimpleNodeTest extends BaseParserTest {
     @Test
     public void testMethodDiffLines() {
         List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
-        verifyNode(methods.iterator().next(), 2, 9, 4, 2);
+        verifyNode(methods.iterator().next(), 2, 9, 4, 3);
     }
 
     @Test
     public void testMethodSameLine() {
         List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
-        verifyNode(methods.iterator().next(), 2, 9, 2, 21);
+        verifyNode(methods.iterator().next(), 2, 9, 2, 22);
     }
 
     @Test
     public void testNoLookahead() {
         List<ASTClassOrInterfaceDeclaration> uCD = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_LOOKAHEAD);
-        verifyNode(uCD.iterator().next(), 1, 8, 1, 20);
+        verifyNode(uCD.iterator().next(), 1, 8, 1, 21);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testColumnsOnQualifiedName() {
         for (Node node : java.getNodes(ASTName.class, QUALIFIED_NAME)) {
             if (node.getImage().equals("java.io.File")) {
-                verifyNode(node, 1, 8, 1, 19);
+                verifyNode(node, 1, 8, 1, 20);
             }
         }
     }
@@ -79,10 +79,10 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testLineNumbersForNameSplitOverTwoLines() {
         for (Node node : java.getNodes(ASTName.class, BROKEN_LINE_IN_NAME)) {
             if (node.getImage().equals("java.io.File")) {
-                verifyNode(node, 1, 8, 2, 4);
+                verifyNode(node, 1, 8, 2, 5);
             }
             if (node.getImage().equals("Foo")) {
-                verifyNode(node, 2, 15, 2, 18);
+                verifyNode(node, 2, 15, 2, 19);
             }
         }
     }

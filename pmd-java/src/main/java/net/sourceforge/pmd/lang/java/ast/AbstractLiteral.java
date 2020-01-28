@@ -13,7 +13,4 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
         super(i);
     }
 
-    AbstractLiteral(JavaParser p, int i) {
-        super(p, i);
-    }
 }

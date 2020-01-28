@@ -19,10 +19,6 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
         super(id);
     }
 
-    ASTAllocationExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

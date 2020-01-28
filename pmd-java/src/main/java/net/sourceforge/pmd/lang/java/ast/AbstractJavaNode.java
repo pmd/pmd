@@ -15,41 +15,15 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 
 abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
 
-    protected JavaParser parser;
     private Scope scope;
     private JSymbolTable symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
-    private CharSequence text;
 
     AbstractJavaNode(int id) {
         super(id);
     }
 
-    AbstractJavaNode(JavaParser parser, int id) {
-        super(id);
-        this.parser = parser;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return jjtGetFirstToken().getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return jjtGetFirstToken().getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        return jjtGetLastToken().getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        return jjtGetLastToken().getEndColumn();
-    }
 
     @Override
     public void jjtClose() {
@@ -93,14 +67,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
             return getParent().getScope();
         }
         return scope;
-    }
-
-    @Override
-    public CharSequence getText() {
-        if (text == null) {
-            text = getRoot().getText().subSequence(getStartOffset(), getEndOffset());
-        }
-        return text;
     }
 
     void setScope(Scope scope) {
@@ -285,25 +251,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
 
     @Override
     public final String getXPathNodeName() {
-        return JavaParserTreeConstants.jjtNodeName[id];
-    }
-
-
-    /**
-     * The toString of Java nodes is only meant for debugging purposes
-     * as it's pretty expensive.
-     */
-    @Override
-    public String toString() {
-        return "|" + getXPathNodeName() + "|" + getStartOffset() + "," + getEndOffset() + "|" + getText();
-    }
-
-    private int getStartOffset() {
-        return this.jjtGetFirstToken().getStartInDocument();
-    }
-
-
-    private int getEndOffset() {
-        return this.jjtGetLastToken().getEndInDocument();
+        return JavaParserImplTreeConstants.jjtNodeName[id];
     }
 }

@@ -1,22 +1,21 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.modelica;
+package net.sourceforge.pmd.lang.modelica.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserTokenManager;
 
 
 public class ModelicaTokenManager implements TokenManager {
-    private final ModelicaParserTokenManager modelicaParserTokenManager;
+    private final ModelicaParserImplTokenManager modelicaParserTokenManager;
 
     public ModelicaTokenManager(final Reader source) {
-        modelicaParserTokenManager = new ModelicaParserTokenManager(CharStreamFactory.simpleCharStream(source));
+        modelicaParserTokenManager = new ModelicaParserImplTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override

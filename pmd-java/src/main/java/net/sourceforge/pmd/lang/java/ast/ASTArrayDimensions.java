@@ -39,11 +39,6 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
     }
 
 
-    ASTArrayDimensions(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

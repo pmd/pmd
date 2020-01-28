@@ -87,6 +87,11 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
         return prefix + toString();
     }
 
+    @Override
+    public String toString() {
+        return getXPathNodeName();
+    }
+
     /*
      * Override this method if you want to customize how the node dumps out its
      * children.

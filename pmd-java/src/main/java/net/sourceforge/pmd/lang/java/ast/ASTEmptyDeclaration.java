@@ -20,10 +20,6 @@ public final class ASTEmptyDeclaration extends AbstractJavaNode {
         super(id);
     }
 
-    ASTEmptyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

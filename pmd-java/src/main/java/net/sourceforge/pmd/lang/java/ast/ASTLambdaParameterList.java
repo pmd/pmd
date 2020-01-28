@@ -23,10 +23,6 @@ public final class ASTLambdaParameterList extends AbstractJavaNode implements It
         super(id);
     }
 
-    ASTLambdaParameterList(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public int getParameterCount() {
         return getNumChildren();
     }

@@ -24,14 +24,6 @@ public final class ASTWildcardBounds extends AbstractJavaTypeNode {
     }
 
 
-    ASTWildcardBounds(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    void setUpperBound(boolean upperBound) {
-        isUpperBound = upperBound;
-    }
-
     /**
      * Returns true if this is an upper type bound, e.g.
      * in {@code <? extends Integer>}.

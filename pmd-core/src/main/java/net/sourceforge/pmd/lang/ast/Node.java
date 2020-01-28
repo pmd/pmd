@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
@@ -18,8 +17,8 @@ import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
-import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -233,13 +232,20 @@ public interface Node {
     }
 
 
+
     /**
-     * Returns true if this node is considered a boundary by traversal methods. Traversal methods such as {@link
-     * #getFirstDescendantOfType(Class)} don't look past such boundaries by default, which is usually the expected thing
-     * to do. For example, in Java, lambdas and nested classes are considered find boundaries.
+     * Returns true if this node is considered a boundary by traversal
+     * methods. Traversal methods such as {@link #descendants()}
+     * don't look past such boundaries by default, which is usually the
+     * expected thing to do. For example, in Java, lambdas and nested
+     * classes are considered find boundaries.
      *
      * <p>Note: This attribute is deprecated for XPath queries. It is not useful
      * for XPath queries and will be removed with PMD 7.0.0.
+     *
+     * @return True if this node is a find boundary
+     *
+     * @see DescendantNodeStream#crossFindBoundaries(boolean)
      */
     @DeprecatedAttribute
     default boolean isFindBoundary() {
@@ -337,7 +343,7 @@ public interface Node {
      */
     @Deprecated
     default <T extends Node> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
-        TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
+        descendants(targetType).crossFindBoundaries(crossFindBoundaries).forEach(results::add);
     }
 
     /**
@@ -352,9 +358,7 @@ public interface Node {
      * @return List of all matching descendants
      */
     default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossFindBoundaries) {
-        List<T> results = new ArrayList<>();
-        TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
-        return results;
+        return descendants(targetType).crossFindBoundaries(crossFindBoundaries).toList();
     }
 
     /**
@@ -365,7 +369,7 @@ public interface Node {
      * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
      */
     default <T extends Node> T getFirstChildOfType(Class<T> childType) {
-        return children().first(childType);
+        return children(childType).first();
     }
 
 
@@ -571,26 +575,26 @@ public interface Node {
 
     /**
      * Returns a node stream containing all the descendants
-     * of this node, in depth-first order.
+     * of this node. See {@link DescendantNodeStream} for details.
      *
      * @return A node stream of the descendants of this node
      *
      * @see NodeStream#descendants()
      */
-    default NodeStream<Node> descendants() {
+    default DescendantNodeStream<Node> descendants() {
         return StreamImpl.descendants(this);
     }
 
 
     /**
      * Returns a node stream containing this node, then all its
-     * descendants in depth-first order.
+     * descendants. See {@link DescendantNodeStream} for details.
      *
      * @return A node stream of the whole subtree topped by this node
      *
      * @see NodeStream#descendantsOrSelf()
      */
-    default NodeStream<Node> descendantsOrSelf() {
+    default DescendantNodeStream<Node> descendantsOrSelf() {
         return StreamImpl.descendantsOrSelf(this);
     }
 
@@ -641,7 +645,8 @@ public interface Node {
 
     /**
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendants() descendants}
-     * of this node that are of the given type.
+     * of this node that are of the given type. See {@link DescendantNodeStream}
+     * for details.
      *
      * @param rClass Type of node the returned stream should contain
      * @param <R>    Type of node the returned stream should contain
@@ -650,7 +655,7 @@ public interface Node {
      *
      * @see NodeStream#descendants(Class)
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+    default <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
         return StreamImpl.descendants(this, rClass);
     }
 

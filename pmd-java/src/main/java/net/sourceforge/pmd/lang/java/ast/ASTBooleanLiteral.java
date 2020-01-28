@@ -17,11 +17,6 @@ public final class ASTBooleanLiteral extends AbstractJavaExpr implements ASTLite
     }
 
 
-    ASTBooleanLiteral(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     void setTrue() {
         isTrue = true;
     }

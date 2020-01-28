@@ -30,32 +30,27 @@ import net.sourceforge.pmd.annotation.Experimental;
 public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
-        super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.jjtAddChild(lhs, 0);
         this.setImage(image);
     }
 
 
     ASTClassOrInterfaceType(ASTAmbiguousName simpleName) {
-        super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(simpleName.getImage());
     }
 
 
     // Just for one usage in Symbol table
     public ASTClassOrInterfaceType(String simpleName) {
-        super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(simpleName);
     }
 
 
     ASTClassOrInterfaceType(int id) {
         super(id);
-    }
-
-
-    ASTClassOrInterfaceType(JavaParser p, int id) {
-        super(p, id);
     }
 
 

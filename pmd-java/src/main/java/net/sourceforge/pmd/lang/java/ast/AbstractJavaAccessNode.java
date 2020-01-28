@@ -12,10 +12,6 @@ abstract class AbstractJavaAccessNode extends AbstractJavaNode implements Access
         super(i);
     }
 
-    AbstractJavaAccessNode(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
     @Override
     public int getModifiers() {
         return this.modifiers;

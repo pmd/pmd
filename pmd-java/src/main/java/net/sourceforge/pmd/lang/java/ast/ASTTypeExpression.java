@@ -28,15 +28,14 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  */
 public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, AtLeastOneChild {
 
-    ASTTypeExpression(ASTType wrapped) {
-        super(JavaParserTreeConstants.JJTTYPEEXPRESSION);
-        this.jjtAddChild(wrapped, 0);
-        copyTextCoordinates((AbstractJavaNode) wrapped);
+    ASTTypeExpression(int id) {
+        super(id);
     }
 
-
-    ASTTypeExpression(JavaParser p, int id) {
-        super(p, id);
+    ASTTypeExpression(ASTType wrapped) {
+        this(JavaParserImplTreeConstants.JJTTYPEEXPRESSION);
+        this.jjtAddChild(wrapped, 0);
+        copyTextCoordinates((AbstractJavaNode) wrapped);
     }
 
 

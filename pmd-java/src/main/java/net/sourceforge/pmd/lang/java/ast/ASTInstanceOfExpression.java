@@ -23,10 +23,6 @@ public class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpr
     }
 
 
-    ASTInstanceOfExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public BinaryOp getOperator() {
         return BinaryOp.INSTANCEOF;
     }

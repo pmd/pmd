@@ -14,10 +14,6 @@ public final class ASTRSIGNEDSHIFT extends AbstractJavaNode {
         super(id);
     }
 
-    ASTRSIGNEDSHIFT(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -20,10 +20,6 @@ public final class ASTContinueStatement extends AbstractStatement {
         super(id);
     }
 
-    ASTContinueStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

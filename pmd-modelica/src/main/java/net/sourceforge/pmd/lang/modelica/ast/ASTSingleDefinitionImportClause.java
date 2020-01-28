@@ -18,10 +18,6 @@ public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClaus
         super(id);
     }
 
-    ASTSingleDefinitionImportClause(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

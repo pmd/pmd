@@ -22,10 +22,6 @@ public class AccessNodeTest extends BaseParserTest {
             super(i);
         }
 
-        public MyAccessNode(JavaParser parser, int i) {
-            super(parser, i);
-        }
-
         @Override
         public Object jjtAccept(JavaParserVisitor visitor, Object data) {
             return visitor.visit(this, data);

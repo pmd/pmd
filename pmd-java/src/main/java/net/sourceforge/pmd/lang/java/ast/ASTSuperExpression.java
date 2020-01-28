@@ -23,10 +23,6 @@ public final class ASTSuperExpression extends AbstractJavaExpr implements ASTPri
     }
 
 
-    ASTSuperExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Nullable
     public ASTClassOrInterfaceType getQualifier() {
         return getNumChildren() > 0 ? (ASTClassOrInterfaceType) getChild(0) : null;

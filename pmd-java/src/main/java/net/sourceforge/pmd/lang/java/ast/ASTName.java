@@ -19,16 +19,12 @@ public class ASTName extends AbstractJavaTypeNode {
     @InternalApi
     @Deprecated
     public ASTName(String image) {
-        super(JavaParserTreeConstants.JJTNAME);
+        super(JavaParserImplTreeConstants.JJTNAME);
         setImage(image);
     }
 
     ASTName(int id) {
         super(id);
-    }
-
-    ASTName(JavaParser p, int id) {
-        super(p, id);
     }
 
     @InternalApi

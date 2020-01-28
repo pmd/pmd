@@ -21,10 +21,6 @@ public final class ASTThrowsList extends AbstractJavaNode implements Iterable<AS
         super(id);
     }
 
-    ASTThrowsList(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

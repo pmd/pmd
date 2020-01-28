@@ -11,10 +11,6 @@ public final class ASTExtendingLongClassSpecifier extends AbstractModelicaClassS
         super(id);
     }
 
-    ASTExtendingLongClassSpecifier(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
