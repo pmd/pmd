@@ -40,11 +40,6 @@ public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclarati
 
 
     @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.ANNOTATION;
-    }
-
-    @Override
     public boolean isInterface() {
         return true;
     }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
-
 /**
  * Marker interface for type body declarations, such as annotation members, field or method declarations.
  *
@@ -36,7 +34,7 @@ public interface ASTAnyTypeBodyDeclaration extends JavaNode {
     /**
      * Kind of declaration. This is not deprecated because the node will
      * go away entirely in 7.0.0 and one cannot avoid using it on master.
-     * See {@link TypeKind} for the reasons for deprecation.
+     * See TypeKind for the reasons for deprecation.
      */
     enum DeclarationKind {
         /** See {@link ASTInitializer}. */

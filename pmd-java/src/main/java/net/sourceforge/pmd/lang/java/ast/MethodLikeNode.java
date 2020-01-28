@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Locale;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
@@ -30,7 +29,7 @@ public interface MethodLikeNode extends JavaQualifiableNode, JavaNode {
      * implementing class.
      *
      * @return The kind of method-like
-     * @deprecated Same reason as for {@link TypeKind}
+     * @deprecated Same reason as for TypeKind
      */
     @Deprecated
     MethodLikeKind getKind();
@@ -48,7 +47,7 @@ public interface MethodLikeNode extends JavaQualifiableNode, JavaNode {
     /**
      * Kind of method-like.
      *
-     * @deprecated Same reason as for {@link TypeKind}
+     * @deprecated Same reason as for TypeKind
      */
     @Deprecated
     enum MethodLikeKind {

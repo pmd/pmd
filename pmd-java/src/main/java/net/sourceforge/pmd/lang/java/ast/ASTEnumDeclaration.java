@@ -44,11 +44,6 @@ public final class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
 
 
     @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.ENUM;
-    }
-
-    @Override
     public ASTEnumBody getBody() {
         return (ASTEnumBody) getLastChild();
     }

@@ -46,8 +46,4 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
         visitor.visit(this, data);
     }
 
-    @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.CLASS;
-    }
 }

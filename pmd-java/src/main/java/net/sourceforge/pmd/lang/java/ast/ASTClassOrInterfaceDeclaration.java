@@ -54,11 +54,6 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
         this.isInterface = true;
     }
 
-    @Override
-    public TypeKind getTypeKind() {
-        return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
-    }
-
 
     /**
      * Returns the superclass type node if this node is a class

@@ -12,7 +12,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
@@ -20,17 +19,11 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  * Groups enum, class, annotation and interface declarations under a common
  * supertype.
  */
-public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, FinalizableNode {
-
-
-    /**
-     * @deprecated Use {@link #getBinaryName()}
-     */
-    @Override
-    @Deprecated
-    JavaTypeQualifiedName getQualifiedName();
-
-
+public interface ASTAnyTypeDeclaration
+    extends TypeNode,
+            JavaQualifiableNode,
+            AccessNode,
+            FinalizableNode {
 
     /**
      * Returns the simple name of this type declaration. Returns null
@@ -68,17 +61,6 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
 
 
     /**
-     * Finds the type kind of this declaration.
-     *
-     * @return The type kind of this declaration.
-     *
-     * @deprecated See {@link TypeKind}
-     */
-    @Deprecated
-    TypeKind getTypeKind();
-
-
-    /**
      * Returns the enum constants declared by this enum. If this is not
      * an enum declaration, returns an empty stream.
      */
@@ -95,6 +77,14 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
     default List<ASTAnyTypeBodyDeclaration> getDeclarations() {
         return getBody().children(ASTAnyTypeBodyDeclaration.class).toList();
     }
+
+
+    /**
+     * @deprecated Use {@link #getBinaryName()}
+     */
+    @Override
+    @Deprecated
+    JavaTypeQualifiedName getQualifiedName();
 
 
     /**
@@ -171,33 +161,5 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
         return this instanceof ASTAnnotationTypeDeclaration;
     }
 
-
-
-    /**
-     * The kind of type this node declares.
-     *
-     * @deprecated This is not useful, not adapted to the problem, and
-     *     does not scale to changes in the Java language. The only use
-     *     of this is to get a name, this can be replaced with {@link PrettyPrintingUtil}.
-     *
-     *     <p>Besides, the real problem is that
-     *     <ul>
-     *         <li>enums are also classes
-     *         <li>annotations are also interfaces
-     *         <li>there are also anonymous classes in PMD 7.0, so this
-     *         cannot even be used to downcast safely
-     *     </ul>
-     *     We can also expect new kinds of type declarations (eg records)
-     *     in the future, which will force us to add new constants and aggravates
-     *     the problem.
-     *
-     *     Ultimately, dividing "kinds" with an enum is not adapted.
-     *
-     *     Same problem with {@link ASTAnyTypeBodyDeclaration.DeclarationKind}
-     */
-    @Deprecated
-    enum TypeKind {
-        CLASS, INTERFACE, ENUM, ANNOTATION
-    }
 
 }
