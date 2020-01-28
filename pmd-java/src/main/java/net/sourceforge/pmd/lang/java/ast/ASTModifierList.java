@@ -176,7 +176,8 @@ public final class ASTModifierList extends AbstractJavaNode {
         @Override
         public void visit(ASTAnyTypeDeclaration node, Set<JModifier> effective) {
 
-            if (node.getEnclosingType().isInterface()) {
+            ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+            if (enclosing != null && enclosing.isInterface()) {
                 effective.add(PUBLIC);
                 effective.add(STATIC);
             }
