@@ -24,13 +24,6 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
         super(i);
     }
 
-
-    @Override
-    public final boolean isNested() {
-        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || getParent() instanceof ASTAnnotationTypeMemberDeclaration;
-    }
-
     @Override
     @Deprecated
     public String getImage() {
@@ -45,6 +38,11 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     @Override
     public String getSimpleName() {
         return getImage();
+    }
+
+    @Override
+    public boolean isFindBoundary() {
+        return isNested() || isLocal();
     }
 
     /**

@@ -16,11 +16,6 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
     }
 
     @Override
-    public boolean isFindBoundary() {
-        return isAnonymousInnerClass();
-    }
-
-    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < getNumChildren(); i++) {
             if (getChild(i) instanceof ASTAnnotation) {
@@ -31,6 +26,13 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
             }
         }
         return false;
+    }
+
+
+    @Override
+    public boolean isFindBoundary() {
+        // TODO remove from java-grammar
+        return isAnonymousInnerClass();
     }
 
     @Override
