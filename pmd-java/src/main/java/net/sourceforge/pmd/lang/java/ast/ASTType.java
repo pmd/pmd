@@ -25,7 +25,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  *
  */
-public interface ASTType extends TypeNode, Annotatable {
+public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
 
 
     /**

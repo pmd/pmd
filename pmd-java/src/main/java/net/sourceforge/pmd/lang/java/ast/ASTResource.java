@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public final class ASTResource extends AbstractJavaNode {
 
-
     ASTResource(int id) {
         super(id);
     }

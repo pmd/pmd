@@ -51,7 +51,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
 
     }
 
-
     void setSymbolTable(JSymbolTable table) {
         this.symbolTable = table;
     }

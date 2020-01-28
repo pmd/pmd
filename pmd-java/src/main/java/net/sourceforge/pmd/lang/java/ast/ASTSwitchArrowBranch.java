@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTSwitchArrowBranch extends AbstractJavaNode implements LeftRecursiveNode, ASTSwitchBranch {
+public final class ASTSwitchArrowBranch extends AbstractJavaNode implements ASTSwitchBranch {
 
     ASTSwitchArrowBranch(int id) {
         super(id);

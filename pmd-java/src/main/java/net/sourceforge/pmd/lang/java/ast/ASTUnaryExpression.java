@@ -20,7 +20,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTUnaryExpression extends AbstractJavaExpr implements LeftRecursiveNode {
+public final class ASTUnaryExpression extends AbstractJavaExpr {
 
     private UnaryOp operator;
 

@@ -34,7 +34,7 @@ import java.util.List;
  * </pre>
  */
 public final class ASTSwitchFallthroughBranch extends AbstractJavaNode
-    implements LeftRecursiveNode, ASTSwitchBranch {
+    implements ASTSwitchBranch {
 
     ASTSwitchFallthroughBranch(int id) {
         super(id);

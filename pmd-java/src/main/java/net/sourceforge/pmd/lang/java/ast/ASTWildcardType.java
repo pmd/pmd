@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
+public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType {
 
     private boolean isUpperBound;
 
