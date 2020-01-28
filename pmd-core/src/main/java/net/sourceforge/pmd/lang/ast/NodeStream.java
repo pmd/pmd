@@ -24,35 +24,40 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 
 
 /**
- * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
- * a specialized API to navigate abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
+ * A sequence of AST nodes. Conceptually similar to a {@link Stream},
+ * and exposes a specialized API to navigate abstract syntax trees.
+ * This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
  * <h1>API usage</h1>
  *
- * <p>The {@link Node} interface exposes methods like {@link Node#children()} or {@link Node#asStream()}
- * to obtain new NodeStreams. Null-safe construction methods are available here, see {@link #of(Node)},
- * {@link #of(Node[])}, {@link #fromIterable(Iterable)}.
+ * <p>The {@link Node} interface exposes methods like {@link Node#children()}
+ * or {@link Node#asStream()} to obtain new NodeStreams. Null-safe construction
+ * methods are available here, see {@link #of(Node)}, {@link #of(Node[])},
+ * {@link #fromIterable(Iterable)}.
  *
- * <p>Most functions have an equivalent in the {@link Stream} interface and their behaviour is equivalent.
- * Some additional functions are provided to iterate the axes of the tree: {@link #children()}, {@link #descendants()},
- * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
- * {@link #precedingSiblings()}, {@link #followingSiblings()}. Filtering and mapping
- * nodes by type is possible through {@link #filterIs(Class)}, and the specialized {@link #children(Class)},
- * {@link #descendants(Class)}, and {@link #ancestors(Class)}.
+ * <p>Most functions have an equivalent in the {@link Stream} interface
+ * and their behaviour is similar. One important departure from the
+ * {@link Stream} contract is the absence of requirement on the laziness
+ * of pipeline operations. More on that in the details section below.
  *
- * <p>Many complex predicates about nodes can be expressed by testing the emptiness of a node stream. E.g. the
- * following tests if the node is a variable declarator id initialized to the value {@code 0}:
+ * <p>Some additional functions are provided to iterate the axes of the
+ * tree: {@link #children()}, {@link #descendants()}, {@link #descendantsOrSelf()},
+ * {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
+ * {@link #precedingSiblings()}, {@link #followingSiblings()}.
+ * Filtering and mapping nodes by type is possible through {@link #filterIs(Class)},
+ * and the specialized {@link #children(Class)}, {@link #descendants(Class)},
+ * and {@link #ancestors(Class)}.
+ *
+ * <p>Many complex predicates about nodes can be expressed by testing
+ * the emptiness of a node stream. E.g. the following tests if the node
+ * is a variable declarator id initialized to the value {@code 0}:
  * <pre>
  *     {@linkplain #of(Node) NodeStream.of}(someNode)                           <i>// the stream here is empty if the node is null</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)<i>// the stream here is empty if the node was not a variable declarator id</i>
  *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
- *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableInitializer.class)
- *               {@linkplain #children(Class) .children}(ASTExpression.class)
- *               .children(ASTPrimaryExpression.class)
- *               .children(ASTPrimaryPrefix.class)
- *               .children(ASTLiteral.class)
- *               {@linkplain #filterMatching(Function, Object) .filterMatching}(Node::getImage, "0")
- *               {@linkplain #filterNot(Predicate) .filterNot}(ASTLiteral::isStringLiteral)
+ *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
+ *               {@linkplain #filter(Predicate) .filter}(it -> !it.isFloatingPoint() && it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *
@@ -84,13 +89,19 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * <p>NodeStreams are not necessarily implemented with {@link Stream}, but
  * when a method has an equivalent in the {@link Stream} API, their
- * contract is identical. The same guidelines about statefulness and
- * side-effects apply.
+ * contract is similar. The only difference, is that node streams are not
+ * necessarily lazy, ie, a pipeline operation may be evaluated eagerly
+ * to improve performance. For this reason, relying on side-effects
+ * produced in the middle of the pipeline is a bad idea. {@link Stream}
+ * gives the same guideline about statefulness, but not for the same reason.
+ * Their justification is parallelism and operation reordering, once
+ * the pipeline is fully known.
  *
- * <p>Node streams are meant to be sequential streams, so there is no equivalent to {@link Stream#findAny()}.
- * The method {@link #first()} is an equivalent to {@link Stream#findFirst()}.
- * There is however a {@link #last()} method, which may be implemented
- * efficiently on some streams (eg {@link #children()}).
+ * <p>Node streams are meant to be sequential streams, so there is no
+ * equivalent to {@link Stream#findAny()}. The method {@link #first()}
+ * is an equivalent to {@link Stream#findFirst()}. There is however a
+ * {@link #last()} method, which may be implemented efficiently on some
+ * streams (eg {@link #children()}). TODO maybe implement reverse
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
@@ -114,21 +125,12 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  */
 public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
-
-    /**
-     * Returns a new stream of Ts having the pipeline of operations
-     * defined by this node stream. This can be called multiple times.
-     *
-     * @return A stream containing the same elements as this node stream
-     */
-    Stream<@NonNull T> toStream();
-
+    // TODO measure performance of eager child stream
 
     /**
      * Returns a node stream consisting of the results of replacing each
-     * node of this stream with the contents of a mapped stream
-     * produced by applying the given mapping function to each
-     * node. If a mapped stream is null an empty stream is used, instead.
+     * node of this stream with the contents of a stream produced by the
+     * given mapping function. If a mapped stream is null, it is discarded.
      *
      * <p>If you want to flatMap this node stream to a {@link Stream} with
      * arbitrary elements (ie not nodes), use {@link #toStream()} then
@@ -196,36 +198,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     NodeStream<T> peek(Consumer<? super @NonNull T> action);
 
 
-    /**
-     * Applies the given mapping functions to this node stream in order and merges the
-     * results into a new node stream. This allows exploring several paths at once on the
-     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
-     *
-     * @param fst  First mapper
-     * @param snd  Second mapper
-     * @param rest Rest of the mappers
-     * @param <R>  Common supertype for the element type of the streams returned by the mapping functions
-     *
-     * @return A merged node stream
-     */
-    default <R extends Node> NodeStream<R> forkJoin(Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
-                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
-                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
-        Objects.requireNonNull(fst);
-        Objects.requireNonNull(snd);
-
-        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
-        mappers.add(fst);
-        mappers.add(snd);
-        mappers.addAll(Arrays.asList(rest));
-
-        Function<? super T, NodeStream<R>> aggregate =
-            t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
-
-        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
-        return cached().flatMap(aggregate);
-    }
-
 
     /**
      * Returns a new node stream that contains all the elements of this stream, then
@@ -252,9 +224,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     /**
      * Returns a node stream containing all the elements of this node stream,
      * but which will evaluate the upstream pipeline only once. The returned
-     * stream is also lazy, which means the elements of this stream are not
-     * eagerly evaluated when calling this method, but only on the first
-     * terminal operation called on the downstream of the returned stream.
+     * stream is not necessarily lazy, which means it may evaluate the upstream
+     * pipeline as soon as the call to this method is made.
      *
      * <p>This is useful e.g. if you want to call several terminal operations
      * without executing the pipeline several times. For example,
@@ -276,6 +247,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @return A cached node stream
      */
     NodeStream<T> cached();
+
 
     /**
      * Returns a stream consisting of the elements of this stream,
@@ -315,13 +287,14 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param predicate The predicate used to test elements.
      *
      * @return the longest prefix of this stream whose elements all satisfy
-     *     the predicate `p`.
+     *     the predicate.
      */
     NodeStream<T> takeWhile(Predicate<? super T> predicate);
 
 
     /**
-     * Returns a stream consisting of the distinct elements (w.r.t {@link Object#equals(Object)}) of this stream.
+     * Returns a stream consisting of the distinct elements (w.r.t
+     * {@link Object#equals(Object)}) of this stream.
      *
      * @return a stream consisting of the distinct elements of this stream
      */
@@ -397,10 +370,10 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns a node stream containing all the strict descendants of the nodes
-     * contained in this stream. The nodes of the returned stream are yielded
-     * in a depth-first fashion.
+     * contained in this stream. See {@link DescendantNodeStream} for details.
      *
-     * <p>This is equivalent to {@code flatMap(Node::descendants)}.
+     * <p>This is equivalent to {@code flatMap(Node::descendants)}, except
+     * the returned stream is a {@link DescendantNodeStream}.
      *
      * @return A stream of descendants
      *
@@ -408,25 +381,22 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #descendants(Class)
      * @see #descendantsOrSelf()
      */
-    default NodeStream<Node> descendants() {
-        return flatMap(Node::descendants);
-    }
+    DescendantNodeStream<Node> descendants();
 
 
     /**
      * Returns a node stream containing the nodes contained in this stream and their descendants.
-     * The nodes of the returned stream are yielded in a depth-first fashion.
+     * See {@link DescendantNodeStream} for details.
      *
-     * <p>This is equivalent to {@code flatMap(Node::descendantsOrSelf)}.
+     * <p>This is equivalent to {@code flatMap(Node::descendantsOrSelf)}, except
+     * the returned stream is a {@link DescendantNodeStream}.
      *
      * @return A stream of descendants
      *
      * @see Node#descendantsOrSelf()
      * @see #descendants()
      */
-    default NodeStream<Node> descendantsOrSelf() {
-        return flatMap(Node::descendantsOrSelf);
-    }
+    DescendantNodeStream<Node> descendantsOrSelf();
 
 
     /**
@@ -469,12 +439,15 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return flatMap(it -> it.children(rClass));
     }
 
+    // todo maybe having a firstChild(rClass) -> flatMap(it -> it.children(rClass).take(1)) would be nice
 
     /**
      * Returns the {@linkplain #descendants() descendant stream} of each node
-     * in this stream, filtered by the given node type.
+     * in this stream, filtered by the given node type. See {@link DescendantNodeStream}
+     * for details.
      *
-     * <p>This is equivalent to {@code descendants().filterIs(rClass)}.
+     * <p>This is equivalent to {@code descendants().filterIs(rClass)}, except
+     * the returned stream is a {@link DescendantNodeStream}.
      *
      * @param rClass Type of node the returned stream should contain
      * @param <R>    Type of node the returned stream should contain
@@ -484,9 +457,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#descendants(Class)
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
-        return flatMap(it -> it.descendants(rClass));
-    }
+    <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass);
 
 
     /**
@@ -584,7 +555,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     }
 
 
-
     // "terminal" operations
 
 
@@ -599,7 +569,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      */
     // ASTs are not so big as to warrant using a 'long' here
     int count();
-
 
 
     /**
@@ -821,7 +790,19 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
 
     /**
-     * Collects the elements of this node stream into a list.
+     * Returns a new stream of Ts having the pipeline of operations
+     * defined by this node stream. This can be called multiple times.
+     *
+     * @return A stream containing the same elements as this node stream
+     */
+    Stream<@NonNull T> toStream();
+
+
+    /**
+     * Collects the elements of this node stream into a list. Just like
+     * for {@link Collectors#toList()}, there are no guarantees on the
+     * type, mutability, serializability, or thread-safety of the returned
+     * list.
      *
      * <p>This is equivalent to {@code collect(Collectors.toList())}.
      *
@@ -852,6 +833,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     default <R> List<R> toList(Function<? super T, ? extends R> mapper) {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
     }
+
 
     /**
      * Returns a node stream containing zero or one node,
@@ -966,4 +948,125 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     static <T extends Node> NodeStream<T> empty() {
         return StreamImpl.empty();
     }
+
+
+    /**
+     * Applies the given mapping functions to the given upstream in order and merges the
+     * results into a new node stream. This allows exploring several paths at once on the
+     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
+     *
+     * @param upstream Source of the stream
+     * @param fst      First mapper
+     * @param snd      Second mapper
+     * @param rest     Rest of the mappers
+     * @param <R>      Common supertype for the element type of the streams returned by the mapping functions
+     *
+     * @return A merged node stream
+     */
+    @SafeVarargs // this method is static because of the generic varargs
+    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<T> upstream,
+                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
+                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
+                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
+        Objects.requireNonNull(fst);
+        Objects.requireNonNull(snd);
+
+        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
+        mappers.add(fst);
+        mappers.add(snd);
+        mappers.addAll(Arrays.asList(rest));
+
+        Function<? super T, NodeStream<R>> aggregate =
+            t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
+
+        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
+        return upstream.cached().flatMap(aggregate);
+    }
+
+
+
+    /**
+     * A specialization of {@link NodeStream} that allows configuring
+     * tree traversal behaviour when traversing the descendants of a node.
+     * Such a stream is returned by methods such as {@link Node#descendants()}.
+     * When those methods are called on a stream containing more than one
+     * element (eg {@link NodeStream#descendants()}), the configuration
+     * applies to each individual traversal.
+     *
+     * <p>By default, traversal is performed depth-first (prefix order). Eg
+     * <pre>{@code
+     * A
+     * + B
+     *   + C
+     *   + D
+     * + E
+     *   + F
+     * }</pre>
+     * is traversed in the order {@code A, B, C, D, E, F}.
+     *
+     * <p>By default, traversal also does not cross {@linkplain #crossFindBoundaries(boolean) find boundaries}.
+     *
+     * @param <T> Type of node this stream contains
+     */
+    interface DescendantNodeStream<T extends Node> extends NodeStream<T> {
+
+        // TODO stop recursion on an arbitrary boundary
+        // TODO breadth-first traversal
+
+
+        /**
+         * Returns a node stream that will not stop the tree traversal
+         * when encountering a find boundary. Find boundaries are node
+         * that by default stop tree traversals, like class declarations.
+         * They are identified via {@link Node#isFindBoundary()}.
+         *
+         * <p>For example, supposing you have the AST node for the following
+         * method:
+         * <pre>{@code
+         *  void method() {
+         *    String outer = "before";
+         *
+         *    class Local {
+         *      void localMethod() {
+         *        String local = "local";
+         *      }
+         *    }
+         *
+         *    String after = "after";
+         *  }
+         * }</pre>
+         * Then the stream {@code method.descendants(ASTStringLiteral.class)}
+         * will only yield the literals {@code "before"} and {@code "after"},
+         * because the traversal doesn't go below the local class.
+         *
+         * <p>Note that traversal is stopped only for the subtree of the
+         * find boundary, but continues on the siblings. This is why
+         * {@code "after"} is yielded. This is also why {@link #takeWhile(Predicate)}
+         * is not a substitute for this method: {@code method.descendants(ASTStringLiteral.class).takeWhile(it -> !it.isFindBoundary)}
+         * would yield only {@code "before"}.
+         *
+         * <p>This behaviour can be opted out of with this method. In the
+         * example, the stream {@code method.descendants(ASTStringLiteral.class).crossFindBoundaries()}
+         * will yield {@code "before"}, {@code "local"} and {@code "after"}
+         * literals.
+         *
+         * @param cross If true, boundaries will be crossed.
+         *
+         * @return A new node stream
+         */
+        DescendantNodeStream<T> crossFindBoundaries(boolean cross);
+
+
+        /**
+         * An alias for {@link #crossFindBoundaries(boolean) crossFindBoundaries(true)}.
+         *
+         * @return A new node stream
+         */
+        default DescendantNodeStream<T> crossFindBoundaries() {
+            return crossFindBoundaries(true);
+        }
+
+    }
+
+
 }

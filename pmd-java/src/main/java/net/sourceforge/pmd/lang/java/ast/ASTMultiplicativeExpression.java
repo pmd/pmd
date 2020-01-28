@@ -39,10 +39,6 @@ public final class ASTMultiplicativeExpression extends AbstractJavaExpr {
         super(id);
     }
 
-    ASTMultiplicativeExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

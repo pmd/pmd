@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-
-
 /**
  * An ambiguous name occurring in any context. Without a disambiguation
  * pass that taking care of obscuring rules and the current declarations
@@ -54,8 +52,8 @@ import java.util.function.Function;
  *
  * <p>Another mechanism is {@link #forceExprContext()} and {@link #forceTypeContext()},
  * which are called by the parser to promote an ambiguous name to an
- * expression or a type when exiting from the {@link JavaParser#PrimaryExpression()}
- * production or {@link JavaParser#ClassOrInterfaceType()}.
+ * expression or a type when exiting from the {@link JavaParserImpl#PrimaryExpression()}
+ * production or {@link JavaParserImpl#ClassOrInterfaceType()}.
  *
  * <p>Those two mechanisms perform the first classification step, the
  * one that only depends on the syntactic context and not on semantic
@@ -70,13 +68,8 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
 
     ASTAmbiguousName(String id) {
-        super(JavaParserTreeConstants.JJTAMBIGUOUSNAME);
+        super(JavaParserImplTreeConstants.JJTAMBIGUOUSNAME);
         setImage(id);
-    }
-
-
-    ASTAmbiguousName(JavaParser p, int id) {
-        super(p, id);
     }
 
 

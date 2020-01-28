@@ -15,10 +15,6 @@ public class ASTClassDefinition extends AbstractModelicaNode {
         super(id);
     }
 
-    ASTClassDefinition(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     public boolean isPartial() {
         return prefixes.getFirstChildOfType(ASTPartialClause.class) != null;
     }

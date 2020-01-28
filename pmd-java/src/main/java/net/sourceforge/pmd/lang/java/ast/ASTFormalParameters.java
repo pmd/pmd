@@ -34,10 +34,6 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
         super(id);
     }
 
-    ASTFormalParameters(JavaParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Returns the number of formal parameters in this parameter list.
      * This excludes the receiver parameter, if any.

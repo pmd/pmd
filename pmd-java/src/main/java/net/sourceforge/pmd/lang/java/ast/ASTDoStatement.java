@@ -20,10 +20,6 @@ public final class ASTDoStatement extends AbstractStatement {
         super(id);
     }
 
-    ASTDoStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Returns the node that represents the guard of this loop.

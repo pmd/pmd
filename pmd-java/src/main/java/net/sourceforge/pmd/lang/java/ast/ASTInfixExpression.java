@@ -43,10 +43,6 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements LeftRe
         super(i);
     }
 
-    ASTInfixExpression(JavaParser p, int i) {
-        super(p, i);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

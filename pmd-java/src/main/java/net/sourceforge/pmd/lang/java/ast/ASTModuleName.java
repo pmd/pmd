@@ -10,10 +10,6 @@ public final class ASTModuleName extends AbstractJavaNode {
         super(id);
     }
 
-    ASTModuleName(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -92,6 +92,16 @@ public class NodeStreamTest {
 
 
     @Test
+    public void testChildrenEagerEvaluation() {
+        NodeStream<? extends Node> children = tree1.children();
+        assertEquals(AxisStream.ChildrenStream.class, children.getClass());
+        NodeStream<Node> children1 = children.children();
+        assertEquals(GreedyNStream.GreedyKnownNStream.class, children1.getClass());
+        assertEquals(SingletonNodeStream.class, children1.filter(it -> it.getImage().endsWith("1")).getClass());
+    }
+
+
+    @Test
     public void testDescendantStream() {
         assertThat(pathsOf(tree1.descendants()), contains("0", "00", "01", "010", "011", "012", "013", "1"));
         assertThat(pathsOf(tree1.asStream().descendants()), contains("0", "00", "01", "010", "011", "012", "013", "1"));
@@ -217,13 +227,14 @@ public class NodeStreamTest {
 
         MutableInt numEvals = new MutableInt();
         NodeStream<Node> stream =
-            hook(numEvals::increment, tree1.descendants())
+            NodeStream
                 .forkJoin(
+                    hook(numEvals::increment, tree1.descendants()),
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("0")),
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("1"))
                 );
 
-        assertThat(numEvals.getValue(), equalTo(0)); // not evaluated yet
+        // assertThat(numEvals.getValue(), equalTo(0)); // not evaluated yet
 
         assertThat(stream.count(), equalTo(2));
 
@@ -250,7 +261,7 @@ public class NodeStreamTest {
                  .filter(n -> true)
                  .peek(n -> downstreamEvals.increment());
 
-        assertThat(upstreamEvals.getValue(), equalTo(0));   // not evaluated yet
+        // assertThat(upstreamEvals.getValue(), equalTo(0));   // not evaluated yet
 
         assertThat(stream.count(), equalTo(4));
 
@@ -260,7 +271,7 @@ public class NodeStreamTest {
         assertThat(stream.count(), equalTo(4));
 
         assertThat(upstreamEvals.getValue(), equalTo(4));   // upstream was not reevaluated
-        assertThat(downstreamEvals.getValue(), equalTo(8)); // downstream has been reevaluated
+        assertThat(downstreamEvals.getValue(), equalTo(4)); // downstream was not reevaluated
     }
 
 
@@ -311,7 +322,7 @@ public class NodeStreamTest {
         unionStream.prepend(tree2.descendantsOrSelf());
         unionStream.flatMap(Node::descendantsOrSelf);
         unionStream.iterator();
-        unionStream.cached();
+        // unionStream.cached();
         unionStream.descendants();
         unionStream.ancestors();
         unionStream.followingSiblings();

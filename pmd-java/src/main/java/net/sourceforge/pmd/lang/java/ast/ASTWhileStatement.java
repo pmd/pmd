@@ -19,10 +19,6 @@ public final class ASTWhileStatement extends AbstractStatement {
         super(id);
     }
 
-    ASTWhileStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Returns the node that represents the guard of this loop.

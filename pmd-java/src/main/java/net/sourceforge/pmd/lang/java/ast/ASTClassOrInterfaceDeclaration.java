@@ -34,22 +34,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
-    private boolean isLocal;
-    private boolean isLocalComputed; // guard for lazy evaluation of isLocal()
-
     private boolean isInterface;
 
     ASTClassOrInterfaceDeclaration(int id) {
         super(id);
-    }
-
-    ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isNested() || isLocal();
     }
 
     @Override
@@ -65,33 +53,6 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns true if the class is declared inside a block other
-     * than the body of another class, or the top level.
-     */
-    public boolean isLocal() {
-        if (!isLocalComputed) {
-            Node current = getParent();
-            while (current != null) {
-                if (current instanceof ASTAnyTypeDeclaration) {
-                    isLocal = false;
-                    break;
-                } else if (current instanceof ASTMethodOrConstructorDeclaration
-                    || current instanceof ASTInitializer) {
-                    isLocal = true;
-                    break;
-                }
-                current = current.getParent();
-            }
-            if (current == null) {
-                isLocal = false;
-            }
-            isLocalComputed = true;
-        }
-        return isLocal;
     }
 
     public boolean isInterface() {

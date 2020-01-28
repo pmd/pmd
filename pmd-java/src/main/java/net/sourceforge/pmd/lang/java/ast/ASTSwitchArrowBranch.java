@@ -20,10 +20,6 @@ public final class ASTSwitchArrowBranch extends AbstractJavaNode implements Left
         super(id);
     }
 
-    ASTSwitchArrowBranch(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

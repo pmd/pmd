@@ -14,10 +14,6 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
         super(id);
     }
 
-    ASTPrimarySuffix(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public boolean isArrayDereference() {
         return isArrayDereference;
     }

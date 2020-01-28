@@ -25,11 +25,6 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
     }
 
 
-    ASTWildcardType(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public String getTypeImage() {
         return "?"; // TODO?

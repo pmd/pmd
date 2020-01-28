@@ -28,11 +28,6 @@ public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode imp
     }
 
 
-    ASTAnonymousClassDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public boolean isFindBoundary() {
         return true;

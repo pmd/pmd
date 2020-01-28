@@ -55,7 +55,7 @@ public final class IteratorUtil {
         return tmp.iterator();
     }
 
-    public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends Iterator<? extends R>> f) {
+    public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends @Nullable Iterator<? extends R>> f) {
         return new AbstractIterator<R>() {
             private Iterator<? extends R> current = null;
 
@@ -158,10 +158,21 @@ public final class IteratorUtil {
         return filter(iter, seen::add);
     }
 
-    public static <T> List<T> toList(Iterator<T> it) {
+    public static <T> List<T> toList(Iterator<? extends T> it) {
         List<T> list = new ArrayList<>();
         while (it.hasNext()) {
             list.add(it.next());
+        }
+        return list;
+    }
+
+    public static <T> List<@NonNull T> toNonNullList(Iterator<? extends @Nullable T> it) {
+        List<@NonNull T> list = new ArrayList<>();
+        while (it.hasNext()) {
+            T next = it.next();
+            if (next != null) {
+                list.add(next);
+            }
         }
         return list;
     }
@@ -180,7 +191,7 @@ public final class IteratorUtil {
         return count;
     }
 
-    public static <T> @Nullable T last(Iterator<T> iterator) {
+    public static <T> @Nullable T last(Iterator<? extends T> iterator) {
         T next = null;
         while (iterator.hasNext()) {
             next = iterator.next();
@@ -194,7 +205,7 @@ public final class IteratorUtil {
      *
      * @throws IllegalArgumentException If n is negative
      */
-    public static <T> @Nullable T getNth(Iterator<T> iterator, int n) {
+    public static <T> @Nullable T getNth(Iterator<? extends T> iterator, int n) {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;
     }
@@ -210,7 +221,7 @@ public final class IteratorUtil {
     }
 
     /** Limit the number of elements yielded by this iterator to the given number. */
-    public static <T> Iterator<T> take(Iterator<T> iterator, final int n) {
+    public static <T> Iterator<T> take(Iterator<? extends T> iterator, final int n) {
         AssertionUtil.requireNonNegative("n", n);
         if (n == 0) {
             return Collections.emptyIterator();
@@ -232,10 +243,10 @@ public final class IteratorUtil {
     }
 
     /** Produce an iterator whose first element is the nth element of the given source. */
-    public static <T> Iterator<T> drop(Iterator<T> source, final int n) {
+    public static <T> Iterator<T> drop(Iterator<? extends T> source, final int n) {
         AssertionUtil.requireNonNegative("n", n);
         if (n == 0) {
-            return source;
+            return (Iterator<T>) source;
         }
 
         return new AbstractIterator<T>() {

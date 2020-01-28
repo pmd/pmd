@@ -20,10 +20,6 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
         super(id);
     }
 
-    ASTConditionalExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Returns the node that represents the guard of this conditional.

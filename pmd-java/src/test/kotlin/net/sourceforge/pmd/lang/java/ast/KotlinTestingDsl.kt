@@ -7,6 +7,8 @@ import io.kotlintest.Result
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.ParseException
+import net.sourceforge.pmd.lang.ast.TokenMgrError
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import java.beans.PropertyDescriptor
@@ -215,22 +217,6 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
 
     /**
-     * Returns a String matcher that parses the node using [parseType] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     */
-    inline fun <reified N : ASTType> matchType(ignoreChildren: Boolean = false,
-                                               noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(TypeParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseTypeParameters]
-     * then matches it against the [nodeSpec] using [matchNode].
-     */
-    fun matchTypeParameters(ignoreChildren: Boolean = false,
-                            nodeSpec: NodeSpec<ASTTypeParameters>) =
-            makeMatcher(TypeParametersParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
      * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
@@ -263,6 +249,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 Pair(true, null)
             } catch (e: ParseException) {
                 Pair(false, e)
+            } catch (e: TokenMgrError) {
+                Pair(false, e)
             }
 
             return Result(pass,
@@ -291,12 +279,6 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
     // don't forget the semicolon
     inline fun <reified N : ASTStatement> parseStatement(stmt: String): N =
             StatementParsingCtx.parseAndFind(stmt, this)
-
-    inline fun <reified N : ASTType> parseType(type: String): N =
-            TypeParsingCtx.parseAndFind(type, this)
-
-    inline fun parseTypeParameters(typeParams: String): ASTTypeParameters =
-            TypeParametersParsingCtx.parseAndFind(typeParams, this)
 
     inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N =
             TopLevelTypeDeclarationParsingCtx.parseAndFind(decl, this)

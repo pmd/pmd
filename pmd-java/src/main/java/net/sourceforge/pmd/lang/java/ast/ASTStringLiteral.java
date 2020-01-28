@@ -20,11 +20,6 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
 
-    ASTStringLiteral(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public String getImage() {
         return getText().toString();

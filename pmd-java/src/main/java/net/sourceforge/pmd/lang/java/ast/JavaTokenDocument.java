@@ -4,30 +4,39 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.GT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.WHITESPACE;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 
 /**
- * Support methods for the token manager. The call to {@link #newToken(int, CharStream)}
- * is hacked in via search/replace on {@link JavaParserTokenManager}.
+ * {@link JavaccTokenDocument} for Java.
  */
-final class JavaTokenFactory {
+final class JavaTokenDocument extends JavaccTokenDocument {
 
-    private JavaTokenFactory() {
-
+    JavaTokenDocument(String fullText) {
+        super(fullText);
     }
 
-    static JavaccToken newToken(int kind, CharStream charStream) {
-        JavaCharStream jcs = (JavaCharStream) charStream;
+    @Override
+    protected @Nullable String describeKindImpl(int kind) {
+        return JavaTokenKinds.describe(kind);
+    }
 
+    @Override
+    public JavaccToken createToken(int kind, CharStream jcs, @Nullable String image) {
         switch (kind) {
-        case JavaParserConstants.RUNSIGNEDSHIFT:
-        case JavaParserConstants.RSIGNEDSHIFT:
-        case JavaParserConstants.GT:
+        case RUNSIGNEDSHIFT:
+        case RSIGNEDSHIFT:
+        case GT:
             return new GTToken(
-                JavaParserConstants.GT,
+                GT,
                 kind,
                 ">",
                 jcs.getStartOffset(),
@@ -35,7 +44,7 @@ final class JavaTokenFactory {
                 jcs.getTokenDocument()
             );
 
-        case JavaParserConstants.WHITESPACE:
+        case WHITESPACE:
             // We don't create a new string for the image of whitespace tokens eagerly
 
             // It's unlikely that anybody cares about that, and since
@@ -48,18 +57,7 @@ final class JavaTokenFactory {
             );
 
         default:
-            // Most tokens have an entry in there, it's used to share the
-            // image string for keywords & punctuation. Those represent ~40%
-            // of token instances
-            String image = JavaParserTokenManager.jjstrLiteralImages[kind];
-
-            return new JavaccToken(
-                kind,
-                image == null ? charStream.GetImage() : image,
-                jcs.getStartOffset(),
-                jcs.getEndOffset(),
-                jcs.getTokenDocument()
-            );
+            return super.createToken(kind, jcs, image);
         }
     }
 
@@ -69,7 +67,7 @@ final class JavaTokenFactory {
 
     private static final class LazyImageToken extends JavaccToken {
 
-        LazyImageToken(int kind, int startInclusive, int endExclusive, TokenDocument document) {
+        LazyImageToken(int kind, int startInclusive, int endExclusive, JavaccTokenDocument document) {
             super(kind, null, startInclusive, endExclusive, document);
         }
 
@@ -83,7 +81,7 @@ final class JavaTokenFactory {
 
         final int realKind;
 
-        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, TokenDocument doc) {
+        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, JavaccTokenDocument doc) {
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }

@@ -22,7 +22,7 @@ public class CppTokenManager implements TokenManager {
      *            the source code
      */
     public CppTokenManager(Reader source) {
-        tokenManager = new CppParserTokenManager(new CppCharStream(source));
+        tokenManager = new CppParserTokenManager(CppCharStream.newCppCharStream(source));
     }
 
     @Override

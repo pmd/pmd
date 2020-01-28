@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
@@ -46,7 +47,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
     /**
      * This acts as a merged stage, non-optional. Ideally this would be encapsulated
-     * in the {@link JavaLanguageParser}, like the {@link LanguageLevelChecker}.
+     * in the {@link JavaParser}, like the {@link LanguageLevelChecker}.
      */
     JAVA_PROCESSING("Java processing") {
         @Override

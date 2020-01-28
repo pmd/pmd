@@ -25,10 +25,6 @@ public final class ASTNormalAnnotation extends AbstractJavaTypeNode implements A
     }
 
 
-    ASTNormalAnnotation(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Iterator<ASTMemberValuePair> iterator() {
         return children(ASTMemberValuePair.class).iterator();

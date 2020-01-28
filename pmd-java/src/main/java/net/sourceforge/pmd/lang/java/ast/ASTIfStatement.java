@@ -24,11 +24,6 @@ public final class ASTIfStatement extends AbstractStatement {
     }
 
 
-    ASTIfStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     void setHasElse() {
         this.hasElse = true;
     }

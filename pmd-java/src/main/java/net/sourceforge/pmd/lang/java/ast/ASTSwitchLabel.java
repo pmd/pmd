@@ -30,10 +30,6 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
     }
 
 
-    ASTSwitchLabel(JavaParser p, int id) {
-        super(p, id);
-    }
-
     void setDefault() {
         isDefault = true;
     }

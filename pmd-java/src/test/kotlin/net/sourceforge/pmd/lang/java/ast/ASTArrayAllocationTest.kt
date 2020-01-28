@@ -13,134 +13,153 @@ class ASTArrayAllocationTest : ParserTestSpec({
 
     parserTest("Array creation") {
 
-        "new int[2][]" should matchExpr<ASTArrayAllocation> {
-            it::getTypeNode shouldBe arrayType({ primitiveType(INT) }) {
-                dimExpr {
-                    int(2)
-                }
-                arrayDim()
-            }
-        }
+        inContext(ExpressionParsingCtx) {
 
-        "new @Foo int[3][2]" should matchExpr<ASTArrayAllocation> {
+            "new int[2][]" should parseAs {
 
-            it::getTypeNode shouldBe arrayType({
-                primitiveType(INT) {
-                    annotation("Foo")
-                }
-            }) {
-                dimExpr {
-                    int(3)
-                }
-                dimExpr {
-                    int(2)
-                }
-            }
-        }
-        "new @Foo int @Bar [3][2]" should matchExpr<ASTArrayAllocation> {
-
-
-            it::getTypeNode shouldBe arrayType({
-                primitiveType(INT) {
-                    annotation("Foo")
-                }
-            }) {
-                dimExpr {
-                    annotation("Bar")
-                    int(3)
-                }
-                dimExpr {
-                    int(2)
-                }
-            }
-        }
-
-        "(new int[3])[2]" should matchExpr<ASTArrayAccess> {
-            parenthesized {
-
-                child<ASTArrayAllocation> {
+                arrayAlloc {
                     it::getTypeNode shouldBe arrayType({ primitiveType(INT) }) {
                         dimExpr {
+                            int(2)
+                        }
+                        arrayDim()
+                    }
+                }
+            }
+
+            "new @Foo int[3][2]" should parseAs {
+                arrayAlloc {
+
+                    it::getTypeNode shouldBe arrayType({
+                        primitiveType(INT) {
+                            annotation("Foo")
+                        }
+                    }) {
+                        dimExpr {
                             int(3)
+                        }
+                        dimExpr {
+                            int(2)
+                        }
+                    }
+                }
+            }
+            "new @Foo int @Bar [3][2]" should parseAs {
+                arrayAlloc {
+
+
+                    it::getTypeNode shouldBe arrayType({
+                        primitiveType(INT) {
+                            annotation("Foo")
+                        }
+                    }) {
+                        dimExpr {
+                            annotation("Bar")
+                            int(3)
+                        }
+                        dimExpr {
+                            int(2)
                         }
                     }
                 }
             }
 
-            it::getIndexExpression shouldBe int(2)
-        }
+            "(new int[3])[2]" should parseAs {
+                arrayAccess {
+                    parenthesized {
+                        arrayAlloc {
+                            it::getTypeNode shouldBe arrayType({ primitiveType(INT) }) {
+                                dimExpr {
+                                    int(3)
+                                }
+                            }
+                        }
+                    }
 
-        "new Foo[0]" should matchExpr<ASTArrayAllocation> {
-            it::getTypeNode shouldBe arrayType({
-                it::getArrayDepth shouldBe 1
-                classType("Foo")
-            }) {
-                dimExpr {
-                    int(0)
+                    it::getIndexExpression shouldBe int(2)
+                }
+            }
+
+            "new Foo[0]" should parseAs {
+                arrayAlloc {
+                    it::getTypeNode shouldBe arrayType({
+                        it::getArrayDepth shouldBe 1
+                        classType("Foo")
+                    }) {
+                        dimExpr {
+                            int(0)
+                        }
+                    }
                 }
             }
         }
-
     }
 
     parserTest("With array initializer") {
+        inContext(ExpressionParsingCtx) {
 
-        "new Foo[] { f, g }" should matchExpr<ASTArrayAllocation> {
+            "new Foo[] { f, g }" should parseAs {
+                arrayAlloc {
 
-            it::getArrayDepth shouldBe 1
+                    it::getArrayDepth shouldBe 1
 
-            it::getTypeNode shouldBe arrayType({
-                it::getArrayDepth shouldBe 1
-                classType("Foo")
-            }) {
-                arrayDim()
-            }
+                    it::getTypeNode shouldBe arrayType({
+                        it::getArrayDepth shouldBe 1
+                        classType("Foo")
+                    }) {
+                        arrayDim()
+                    }
 
-            it::getArrayInitializer shouldBe child {
-                variableAccess("f")
-                variableAccess("g")
-            }
-        }
-
-        "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayAllocation> {
-            it::getArrayDepth shouldBe 2
-
-            it::getTypeNode shouldBe arrayType({
-                it::getArrayDepth shouldBe 2
-                primitiveType(INT)
-            }) {
-                arrayDim()
-                arrayDim()
-            }
-
-            it::getArrayInitializer shouldBe child {
-                child<ASTArrayInitializer> {
-                    int(1)
-                }
-
-                child<ASTArrayInitializer> {
-                    int(2)
+                    it::getArrayInitializer shouldBe child {
+                        variableAccess("f")
+                        variableAccess("g")
+                    }
                 }
             }
-        }
 
-        "new int[][] { { 1 , 2 }, null }" should matchExpr<ASTArrayAllocation> {
-            it::getArrayDepth shouldBe 2
+            "new int[][] { { 1 }, { 2 } }" should parseAs {
+                arrayAlloc {
+                    it::getArrayDepth shouldBe 2
 
-            it::getTypeNode shouldBe arrayType({
-                it::getArrayDepth shouldBe 2
-                primitiveType(INT)
-            }) {
-                arrayDim()
-                arrayDim()
-            }
+                    it::getTypeNode shouldBe arrayType({
+                        it::getArrayDepth shouldBe 2
+                        primitiveType(INT)
+                    }) {
+                        arrayDim()
+                        arrayDim()
+                    }
 
-            it::getArrayInitializer shouldBe child {
-                child<ASTArrayInitializer> {
-                    int(1)
-                    int(2)
+                    it::getArrayInitializer shouldBe child {
+                        child<ASTArrayInitializer> {
+                            int(1)
+                        }
+
+                        child<ASTArrayInitializer> {
+                            int(2)
+                        }
+                    }
                 }
-                child<ASTNullLiteral> {}
+            }
+            "new int[][] { { 1 , 2 }, null }" should parseAs {
+                arrayAlloc {
+                    it::getArrayDepth shouldBe 2
+
+                    it::getTypeNode shouldBe arrayType({
+                        it::getArrayDepth shouldBe 2
+                        primitiveType(INT)
+                    }) {
+                        arrayDim()
+                        arrayDim()
+                    }
+
+                    it::getArrayInitializer shouldBe child {
+                        child<ASTArrayInitializer> {
+                            int(1)
+                            int(2)
+                        }
+                        child<ASTNullLiteral> {}
+                    }
+                }
             }
         }
     }

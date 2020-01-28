@@ -21,18 +21,6 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode imp
         super(i);
     }
 
-
-    AbstractAnyTypeDeclaration(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
-
-    @Override
-    public final boolean isNested() {
-        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || getParent() instanceof ASTAnnotationTypeMemberDeclaration;
-    }
-
     @Override
     @Deprecated
     public String getImage() {
@@ -42,6 +30,16 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode imp
     @Override
     public String getBinaryName() {
         return getQualifiedName().getBinaryName();
+    }
+
+    @Override
+    public String getSimpleName() {
+        return getImage();
+    }
+
+    @Override
+    public boolean isFindBoundary() {
+        return isNested() || isLocal();
     }
 
     /**

@@ -29,10 +29,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         super(id);
     }
 
-    ASTCompilationUnit(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public List<Comment> getComments() {
         return comments;
     }

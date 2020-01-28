@@ -10,44 +10,51 @@ class ASTTypeTest : ParserTestSpec({
 
     parserTest("Test ambiguous qualified names") {
 
-        "java.util.List" should matchType<ASTClassOrInterfaceType> {
-            it::getTypeImage shouldBe "java.util.List"
-            it::getImage shouldBe "List"
-            it::getTypeArguments shouldBe null
-            it::getLhsType shouldBe null
+        inContext(TypeParsingCtx) {
 
-            it::getAmbiguousLhs shouldBe child {
-                it::getName shouldBe "java.util"
-            }
-        }
 
-        "java.util.List<F>" should matchType<ASTClassOrInterfaceType> {
+            "java.util.List" should parseAs {
+                classType("List") {
 
-            it::getLhsType shouldBe null
-            it::getImage shouldBe "List"
+                    it::getTypeImage shouldBe "java.util.List"
+                    it::getImage shouldBe "List"
+                    it::getTypeArguments shouldBe null
+                    it::getLhsType shouldBe null
 
-            it::getAmbiguousLhs shouldBe child {
-                it::getName shouldBe "java.util"
+                    it::getAmbiguousLhs shouldBe child {
+                        it::getName shouldBe "java.util"
+                    }
+                }
             }
 
-            it::getTypeArguments shouldBe child {
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "F"
+            "java.util.List<F>" should parseAs {
+                classType("List") {
+
+                    it::getLhsType shouldBe null
+                    it::getImage shouldBe "List"
+
+                    it::getAmbiguousLhs shouldBe child {
+                        it::getName shouldBe "java.util"
+                    }
+
+                    it::getTypeArguments shouldBe child {
+                        child<ASTClassOrInterfaceType> {
+                            it::getTypeImage shouldBe "F"
+                        }
+                    }
+                }
+            }
+
+            "foo" should parseAs {
+                classType("foo") {
+                    it::getTypeImage shouldBe "foo"
+                    it::getImage shouldBe "foo"
+
+                    it::getAmbiguousLhs shouldBe null
+                    it::getLhsType shouldBe null
                 }
             }
         }
-    }
-
-    parserTest("Test simple names") {
-
-        "foo" should matchType<ASTClassOrInterfaceType> {
-            it::getTypeImage shouldBe "foo"
-            it::getImage shouldBe "foo"
-
-            it::getAmbiguousLhs shouldBe null
-            it::getLhsType shouldBe null
-        }
-
     }
 
     parserTest("Test non-ambiguous segments") {
@@ -81,81 +88,64 @@ class ASTTypeTest : ParserTestSpec({
             }
 
 
-            "java.util.Map.@Foo Entry<K, V>" should matchType<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "java.util.Map.Entry"
-                it::getImage shouldBe "Entry"
+            "java.util.Map.@Foo Entry<K, V>" should parseAs {
+                classType("Entry") {
+                    it::getTypeImage shouldBe "java.util.Map.Entry"
 
-                it::getLhsType shouldBe null
+                    it::getLhsType shouldBe null
 
-                it::getAmbiguousLhs shouldBe child {
-                    it::getTypeImage shouldBe "java.util.Map"
-                    it::getImage shouldBe "java.util.Map"
-                    it::getName shouldBe "java.util.Map"
-                }
-
-                annotation("Foo")
-
-                it::getTypeArguments shouldBe child {
-
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "K"
-                        it::getTypeArguments shouldBe null
-                        it::getLhsType shouldBe null
+                    it::getAmbiguousLhs shouldBe child {
+                        it::getTypeImage shouldBe "java.util.Map"
+                        it::getImage shouldBe "java.util.Map"
+                        it::getName shouldBe "java.util.Map"
                     }
 
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "V"
-                        it::getTypeArguments shouldBe null
-                        it::getLhsType shouldBe null
-                    }
-                }
-            }
+                    annotation("Foo")
 
-            "Foo<K>.@A Bar.Brew<V>" should matchType<ASTClassOrInterfaceType> {
+                    it::getTypeArguments shouldBe child {
 
-                it::getTypeImage shouldBe "Foo.Bar.Brew"
+                        classType("K") {
+                            it::getTypeArguments shouldBe null
+                            it::getLhsType shouldBe null
+                        }
 
-                it::getLhsType shouldBe classType("Bar") {
-                    it::getTypeImage shouldBe "Foo.Bar"
-                    it::getTypeArguments shouldBe null
-
-                    it::getLhsType shouldBe classType("Foo") {
-                        it::getTypeImage shouldBe "Foo"
-
-                        it::getTypeArguments shouldBe typeArgList {
-                            classType("K")
+                        classType("V") {
+                            it::getTypeArguments shouldBe null
+                            it::getLhsType shouldBe null
                         }
                     }
-
-
-                    annotation("A")
                 }
+            }
 
-                it::getTypeArguments shouldBe child {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "V"
+            "Foo<K>.@A Bar.Brew<V>" should parseAs {
+                classType("Brew") {
+
+                    it::getTypeImage shouldBe "Foo.Bar.Brew"
+
+                    it::getLhsType shouldBe classType("Bar") {
+                        it::getTypeImage shouldBe "Foo.Bar"
+                        it::getTypeArguments shouldBe null
+
+                        it::getLhsType shouldBe classType("Foo") {
+                            it::getTypeImage shouldBe "Foo"
+
+                            it::getTypeArguments shouldBe typeArgList {
+                                classType("K")
+                            }
+                        }
+
+
+                        annotation("A")
+                    }
+
+                    it::getTypeArguments shouldBe child {
+                        classType("V") {
+                            it::getTypeArguments shouldBe null
+                            it::getLhsType shouldBe null
+                        }
                     }
                 }
             }
-        }
-
-        parserTest("Test array types") {
-
-            "ArrayTypes[][][]" should matchType<ASTArrayType> {
-
-                it::getElementType shouldBe child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "ArrayTypes"
-                    it::getImage shouldBe "ArrayTypes"
-                }
-
-                it::getDimensions shouldBe child {
-
-                    child<ASTArrayTypeDim> {}
-                    child<ASTArrayTypeDim> {}
-                    child<ASTArrayTypeDim> {}
-                }
-            }
-
         }
     }
 })

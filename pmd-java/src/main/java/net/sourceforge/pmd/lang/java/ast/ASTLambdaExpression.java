@@ -30,11 +30,6 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
     }
 
 
-    ASTLambdaExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     public ASTLambdaParameterList getParameters() {
         return (ASTLambdaParameterList) getChild(0);
     }

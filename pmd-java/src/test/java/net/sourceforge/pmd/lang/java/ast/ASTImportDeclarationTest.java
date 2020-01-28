@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
+
 public class ASTImportDeclarationTest extends BaseParserTest {
 
     @Test

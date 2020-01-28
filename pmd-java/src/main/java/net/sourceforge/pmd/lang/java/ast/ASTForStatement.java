@@ -23,11 +23,6 @@ public final class ASTForStatement extends AbstractStatement {
     }
 
 
-    ASTForStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -17,17 +17,17 @@ public final class ASTBooleanLiteral extends AbstractJavaExpr implements ASTLite
     }
 
 
-    ASTBooleanLiteral(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     void setTrue() {
         isTrue = true;
     }
 
     public boolean isTrue() {
         return this.isTrue;
+    }
+
+    @Override
+    public Boolean getConstValue() {
+        return isTrue;
     }
 
     @Override

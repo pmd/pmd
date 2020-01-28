@@ -23,10 +23,6 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
         super(id);
     }
 
-    ASTPackageDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

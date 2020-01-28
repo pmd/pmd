@@ -10,7 +10,4 @@ abstract class AbstractStatement extends AbstractJavaNode implements ASTStatemen
         super(id);
     }
 
-    AbstractStatement(JavaParser parser, int id) {
-        super(parser, id);
-    }
 }

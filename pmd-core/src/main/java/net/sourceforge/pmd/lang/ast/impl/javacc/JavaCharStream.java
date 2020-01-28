@@ -2,16 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast;
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import java.io.EOFException;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
-
-import org.apache.commons.io.IOUtils;
-
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
  * This stream buffers the whole file in memory before parsing,
@@ -19,29 +14,23 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  * The buffer is assumed to be composed of only ASCII characters,
  * and the stream unescapes Unicode escapes. The {@link #getTokenDocument() token document}
  * stores the original file with escapes and all.
- *
- * TODO this is to be moved into the impl.javacc subpackage
  */
 public class JavaCharStream extends JavaCharStreamBase {
 
     // full text with nothing escaped and all
     private final String fullText;
-    private final TokenDocument document;
+    private final JavaccTokenDocument document;
 
     private int[] startOffsets;
 
-    public JavaCharStream(String fulltext) {
-        super(new StringReader(fulltext));
-        this.fullText = fulltext;
-        this.document = new TokenDocument(fullText);
+    public JavaCharStream(JavaccTokenDocument document) {
+        super(new StringReader(document.getFullText()));
+        this.fullText = document.getFullText();
+        this.document = document;
         this.startOffsets = new int[bufsize];
         maxNextCharInd = fullText.length();
 
         nextCharBuf = null;
-    }
-
-    public JavaCharStream(Reader toDump) {
-        this(toString(toDump));
     }
 
     @Override
@@ -61,25 +50,27 @@ public class JavaCharStream extends JavaCharStreamBase {
     }
 
     @Override
-    protected void beforeReadChar() {
-        if (bufpos + 1 < available) {
-            startOffsets[bufpos + 1] = nextCharInd + 1;
-        }
+    protected void UpdateLineColumn(char c) {
+        startOffsets[bufpos] = nextCharInd;
+        super.UpdateLineColumn(c);
     }
 
+    @Override
     public int getStartOffset() {
         return startOffsets[tokenBegin];
     }
 
+    @Override
     public int getEndOffset() {
-        if (bufpos >= startOffsets.length) {
+        if (isAtEof()) {
             return fullText.length();
         } else {
             return startOffsets[bufpos] + 1; // + 1 for exclusive
         }
     }
 
-    public TokenDocument getTokenDocument() {
+    @Override
+    public JavaccTokenDocument getTokenDocument() {
         return document;
     }
 
@@ -87,18 +78,25 @@ public class JavaCharStream extends JavaCharStreamBase {
     protected char ReadByte() throws IOException {
         ++nextCharInd;
 
-        if (nextCharInd >= fullText.length()) {
+        if (isAtEof()) {
             if (bufpos != 0) {
                 --bufpos;
-                backup(0);
+                if (bufpos < 0) {
+                    bufpos += bufsize;
+                }
             } else {
                 bufline[bufpos] = line;
                 bufcolumn[bufpos] = column;
+                startOffsets[bufpos] = fullText.length();
             }
-            throw new IOException();
+            throw new EOFException();
         }
 
         return fullText.charAt(nextCharInd);
+    }
+
+    private boolean isAtEof() {
+        return nextCharInd >= fullText.length();
     }
 
 
@@ -107,11 +105,4 @@ public class JavaCharStream extends JavaCharStreamBase {
         throw new IllegalStateException("Buffer shouldn't be refilled");
     }
 
-    private static String toString(Reader dstream) {
-        try (Reader r = dstream) {
-            return IOUtils.toString(r);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

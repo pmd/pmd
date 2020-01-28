@@ -14,10 +14,6 @@ public final class ASTSwitchStatement extends AbstractStatement implements ASTSw
         super(id);
     }
 
-    ASTSwitchStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

@@ -24,10 +24,6 @@ public final class ASTImportDeclaration extends AbstractJavaNode {
         super(id);
     }
 
-    ASTImportDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     void setImportOnDemand() {
         isImportOnDemand = true;

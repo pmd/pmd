@@ -17,11 +17,6 @@ abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLike
     }
 
 
-    AbstractMethodOrConstructorDeclaration(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
-
     @Override
     public JavaOperationSignature getSignature() {
         if (signature == null) {

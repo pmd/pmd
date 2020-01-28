@@ -26,10 +26,6 @@ public final class ASTStatementExpressionList extends AbstractStatement implemen
         super(id);
     }
 
-    ASTStatementExpressionList(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

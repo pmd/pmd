@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.AncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.ChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantOrSelfStream;
@@ -25,31 +27,12 @@ import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredAncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredDescendantStream;
+import net.sourceforge.pmd.lang.ast.internal.GreedyNStream.GreedyKnownNStream;
 
 public final class StreamImpl {
 
     @SuppressWarnings("rawtypes")
-    private static final NodeStream EMPTY = new IteratorBasedNStream() {
-        @Override
-        public Iterator iterator() {
-            return Collections.emptyIterator();
-        }
-
-        @Override
-        public List toList() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public List toList(Function mapper) {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public String toString() {
-            return "EmptyStream";
-        }
-    };
+    private static final DescendantNodeStream EMPTY = new EmptyNodeStream();
 
     private StreamImpl() {
         // utility class
@@ -59,22 +42,17 @@ public final class StreamImpl {
         return new SingletonNodeStream<>(node);
     }
 
-    public static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
-        return new IteratorBasedNStream<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return IteratorUtil.filterNotNull(iterable.iterator());
+    public static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+        if (iterable instanceof Collection) {
+            Collection<@Nullable T> coll = (Collection<T>) iterable;
+            if (coll.isEmpty()) {
+                return empty();
+            } else if (coll.size() == 1) {
+                return NodeStream.of(coll.iterator().next());
             }
+        }
 
-            @Override
-            public Spliterator<T> spliterator() {
-                Spliterator<T> spliter = iterable.spliterator();
-                return Spliterators.spliterator(iterator(), spliter.estimateSize(),
-                                                (spliter.characteristics() | Spliterator.NONNULL)
-                                                    & ~Spliterator.SIZED
-                                                    & ~Spliterator.SUBSIZED);
-            }
-        };
+        return fromNonNullList(IteratorUtil.toNonNullList(iterable.iterator()));
     }
 
     public static <T extends Node> NodeStream<T> union(Iterable<? extends @Nullable NodeStream<? extends T>> streams) {
@@ -88,28 +66,29 @@ public final class StreamImpl {
 
 
     @SuppressWarnings("unchecked")
-    public static <T extends Node> NodeStream<T> empty() {
+    public static <T extends Node> DescendantNodeStream<T> empty() {
         return EMPTY;
     }
 
     public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
-        return node.getNumChildren() == 0 ? empty() : new FilteredChildrenStream<>(node, Filtermap.isInstance(target));
+        return sliceChildren(node, Filtermap.isInstance(target), 0, node.getNumChildren());
     }
 
     public static NodeStream<Node> children(@NonNull Node node) {
-        return node.getNumChildren() == 0 ? empty() : new ChildrenStream(node);
+        return sliceChildren(node, Filtermap.NODE_IDENTITY, 0, node.getNumChildren());
     }
 
-    public static NodeStream<Node> descendants(@NonNull Node node) {
-        return node.getNumChildren() == 0 ? empty() : new DescendantStream(node);
+    public static DescendantNodeStream<Node> descendants(@NonNull Node node) {
+        return node.getNumChildren() == 0 ? empty() : new DescendantStream(node, TreeWalker.DEFAULT);
     }
 
-    public static <R extends Node> NodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
-        return node.getNumChildren() == 0 ? empty() : new FilteredDescendantStream<>(node, Filtermap.isInstance(rClass));
+    public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
+        return node.getNumChildren() == 0 ? empty()
+                                             : new FilteredDescendantStream<>(node, TreeWalker.DEFAULT, Filtermap.isInstance(rClass));
     }
 
-    public static NodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.getNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node);
+    public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
+        return node.getNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
@@ -146,7 +125,12 @@ public final class StreamImpl {
                                            : (NodeStream<T>) new ChildrenStream(parent, from, length);
             return res;
         } else {
-            return new FilteredChildrenStream<>(parent, filtermap, from, length);
+            if (length == 1) {
+                // eager evaluation, empty or singleton
+                return NodeStream.of(filtermap.apply(parent.getChild(from)));
+            } else {
+                return new FilteredChildrenStream<>(parent, filtermap, from, length);
+            }
         }
     }
 
@@ -178,5 +162,63 @@ public final class StreamImpl {
         return ancestorsOrSelf(node.getParent(), Filtermap.isInstance(target));
     }
 
+    static <T extends Node> NodeStream<T> fromNonNullList(List<@NonNull T> coll) {
+        if (coll.isEmpty()) {
+            return empty();
+        } else if (coll.size() == 1) {
+            return singleton(coll.get(0));
+        }
+
+        return new GreedyKnownNStream<>(coll);
+    }
+
+
+    private static class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
+
+        @Override
+        protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<N>, Iterator<R>> fun) {
+            return StreamImpl.empty();
+        }
+
+        @Override
+        protected @NonNull <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<N, DescendantNodeStream<R>> mapper) {
+            return StreamImpl.empty();
+        }
+
+        @Override
+        public DescendantNodeStream<N> crossFindBoundaries(boolean cross) {
+            return StreamImpl.empty();
+        }
+
+        @Override
+        public Iterator<N> iterator() {
+            return Collections.emptyIterator();
+        }
+
+        @Override
+        public List<N> toList() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public <R> List<R> toList(Function<? super N, ? extends R> mapper) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Spliterator<N> spliterator() {
+            return Spliterators.emptySpliterator();
+        }
+
+        @Override
+        public NodeStream<N> cached() {
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "EmptyStream";
+        }
+    }
 
 }

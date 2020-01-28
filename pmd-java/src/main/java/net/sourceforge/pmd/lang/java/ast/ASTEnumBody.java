@@ -25,10 +25,6 @@ public final class ASTEnumBody extends AbstractJavaNode implements ASTTypeBody {
         super(id);
     }
 
-    ASTEnumBody(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

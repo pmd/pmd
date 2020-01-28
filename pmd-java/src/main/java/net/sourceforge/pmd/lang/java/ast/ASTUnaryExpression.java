@@ -28,10 +28,6 @@ public final class ASTUnaryExpression extends AbstractJavaExpr implements LeftRe
         super(id);
     }
 
-    ASTUnaryExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

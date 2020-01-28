@@ -20,10 +20,6 @@ public final class ASTCastExpression extends AbstractJavaExpr implements ASTExpr
         super(id);
     }
 
-    ASTCastExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public ASTType getCastType() {
         return getFirstChildOfType(ASTType.class);
     }

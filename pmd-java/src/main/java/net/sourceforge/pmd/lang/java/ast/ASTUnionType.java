@@ -35,11 +35,6 @@ public final class ASTUnionType extends AbstractJavaTypeNode
     }
 
 
-    ASTUnionType(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public String getTypeImage() {
         return children(ASTClassOrInterfaceType.class).toStream().map(ASTClassOrInterfaceType::getTypeImage).collect(Collectors.joining(" | "));

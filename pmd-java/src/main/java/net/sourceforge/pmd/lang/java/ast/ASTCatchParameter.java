@@ -23,10 +23,6 @@ public final class ASTCatchParameter extends AbstractJavaAccessNode implements I
         super(id);
     }
 
-    ASTCatchParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

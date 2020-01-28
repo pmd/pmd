@@ -24,10 +24,6 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
     }
 
 
-    ASTThisExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Nullable
     public ASTClassOrInterfaceType getQualifier() {
         return getNumChildren() > 0 ? (ASTClassOrInterfaceType) getChild(0) : null;

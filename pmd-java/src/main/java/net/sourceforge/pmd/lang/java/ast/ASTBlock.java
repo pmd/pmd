@@ -24,10 +24,6 @@ public final class ASTBlock extends AbstractStatement implements Iterable<ASTSta
         super(id);
     }
 
-    ASTBlock(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

@@ -19,10 +19,6 @@ public final class ASTDefaultValue extends AbstractJavaNode {
         super(id);
     }
 
-    ASTDefaultValue(JavaParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Returns the constant value nested in this node.
      */

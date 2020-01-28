@@ -32,10 +32,6 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         super(id);
     }
 
-    ASTConstructorDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public String getName() {
         return getImage();

@@ -29,10 +29,6 @@ public final class ASTTryStatement extends AbstractStatement {
         super(id);
     }
 
-    ASTTryStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

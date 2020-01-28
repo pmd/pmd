@@ -20,12 +20,6 @@ public class DummyJavaNode extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public DummyJavaNode(JavaParser parser, int id) {
-        super(parser, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return data;

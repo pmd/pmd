@@ -14,10 +14,6 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
         super(id);
     }
 
-    ASTPrimaryPrefix(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     public boolean usesThisModifier() {
         return this.usesThisModifier;

@@ -23,10 +23,6 @@ public final class ASTExtendsList extends AbstractJavaNode implements Iterable<A
         super(id);
     }
 
-    ASTExtendsList(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

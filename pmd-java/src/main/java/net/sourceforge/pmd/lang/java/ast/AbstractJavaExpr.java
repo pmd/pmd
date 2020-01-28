@@ -12,10 +12,6 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
         super(i);
     }
 
-    AbstractJavaExpr(JavaParser p, int i) {
-        super(p, i);
-    }
-
 
     void bumpParenDepth() {
         parenDepth++;

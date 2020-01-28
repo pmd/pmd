@@ -35,18 +35,13 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     @Deprecated
     @InternalApi
     public ASTPrimitiveType(PrimitiveType type) {
-        super(JavaParserTreeConstants.JJTPRIMITIVETYPE);
+        super(JavaParserImplTreeConstants.JJTPRIMITIVETYPE);
         setImage(type.getToken());
     }
 
 
     ASTPrimitiveType(int id) {
         super(id);
-    }
-
-
-    ASTPrimitiveType(JavaParser p, int id) {
-        super(p, id);
     }
 
 

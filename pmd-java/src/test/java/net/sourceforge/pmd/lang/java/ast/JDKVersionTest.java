@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class JDKVersionTest {

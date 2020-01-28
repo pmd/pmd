@@ -27,10 +27,6 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
     }
 
 
-    ASTMethodCall(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public void jjtClose() {
         super.jjtClose();

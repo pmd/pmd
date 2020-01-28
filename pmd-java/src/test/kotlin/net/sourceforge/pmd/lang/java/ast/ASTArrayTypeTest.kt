@@ -10,58 +10,67 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 class ASTArrayTypeTest : ParserTestSpec({
 
     parserTest("Multi-Dim Array") {
-        "ArrayTypes[][][]" should matchType<ASTArrayType> {
+        inContext(TypeParsingCtx) {
 
-            it::getElementType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "ArrayTypes"
-                it::getImage shouldBe "ArrayTypes"
-            }
+            "ArrayTypes[][][]" should parseAs {
 
-            it::getDimensions shouldBe child<ASTArrayDimensions> {
+                arrayType {
 
-                child<ASTArrayTypeDim> {}
-                child<ASTArrayTypeDim> {}
-                child<ASTArrayTypeDim> {}
+                    it::getElementType shouldBe classType("ArrayTypes")
+
+                    it::getDimensions shouldBe child {
+                        arrayDim { }
+                        arrayDim { }
+                        arrayDim { }
+                    }
+                }
             }
         }
     }
 
     parserTest("Annotated array type") {
-        "ArrayTypes[][] @A []" should matchType<ASTArrayType> {
+        inContext(TypeParsingCtx) {
 
-            it::getElementType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "ArrayTypes"
-                it::getImage shouldBe "ArrayTypes"
-            }
+            "ArrayTypes[][] @A []" should parseAs {
 
-            it::getDeclaredAnnotations shouldBe fromChild<ASTArrayDimensions, List<ASTAnnotation>> {
+                arrayType {
+                    it::getElementType shouldBe classType("ArrayTypes")
 
-                child<ASTArrayTypeDim> {}
-                child<ASTArrayTypeDim> {}
-                fromChild<ASTArrayTypeDim, List<ASTAnnotation>> {
+                    it::getDeclaredAnnotations shouldBe fromChild<ASTArrayDimensions, List<ASTAnnotation>> {
 
-                    val lst = listOf(annotation("A"))
+                        arrayDim { }
+                        arrayDim { }
+                        fromChild<ASTArrayTypeDim, List<ASTAnnotation>> {
 
-                    it::getDeclaredAnnotations shouldBe lst
+                            val lst = listOf(annotation("A"))
 
-                    lst
+                            it::getDeclaredAnnotations shouldBe lst
+
+                            lst
+                        }
+                    }
                 }
             }
         }
     }
 
     parserTest("Multi-Dim Array allocation") {
-        "new ArrayTypes[][][] { }" should matchExpr<ASTArrayAllocation> {
+        inContext(ExpressionParsingCtx) {
+            "new ArrayTypes[][][] { }" should parseAs {
 
-            child<ASTArrayType> {
+                child<ASTArrayAllocation> {
 
-                classType("ArrayTypes")
-                it::getDimensions shouldBe child {
-                    unspecifiedChildren(3)
+                    arrayType({
+                        classType("ArrayTypes")
+                    }) {
+                        arrayDim {  }
+                        arrayDim {  }
+                        arrayDim {  }
+                    }
+
+                    arrayInitializer { }
                 }
             }
-            child<ASTArrayInitializer> { }
         }
     }
-
 })
