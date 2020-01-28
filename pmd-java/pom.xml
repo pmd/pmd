@@ -52,17 +52,18 @@
                     <execution>
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${javacc.jar}" />
-                                </ant>
-                            </target>
-                        </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc-visitor+">
+                                    <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="lang-name" value="Java" />
+                                    <property name="lang-terse-name" value="java" />
+                                </ant>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -41,7 +41,7 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
             for (int i = 0; i < ifBlock.getNumChildren(); i++) {
                 final Node blockChild = ifBlock.getChild(i);
                 if (blockChild instanceof ASTText) {
-                    if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().toString())) {
+                    if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().getImage())) {
                         violationFound = false;
                         break;
                     }

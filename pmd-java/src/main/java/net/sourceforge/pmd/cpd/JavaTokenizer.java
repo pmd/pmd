@@ -16,8 +16,8 @@ import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.java.JavaTokenManager;
-import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenManager;
 
 public class JavaTokenizer extends JavaCCTokenizer {
 
@@ -60,13 +60,13 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
 
-        if (ignoreLiterals && (javaToken.kind == JavaParserConstants.STRING_LITERAL
-                || javaToken.kind == JavaParserConstants.CHARACTER_LITERAL
-                || javaToken.kind == JavaParserConstants.DECIMAL_LITERAL
-                || javaToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
+        if (ignoreLiterals && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
+                || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
+                || javaToken.kind == JavaTokenKinds.DECIMAL_LITERAL
+                || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
             image = String.valueOf(javaToken.kind);
         }
-        if (ignoreIdentifiers && javaToken.kind == JavaParserConstants.IDENTIFIER) {
+        if (ignoreIdentifiers && javaToken.kind == JavaTokenKinds.IDENTIFIER) {
             image = String.valueOf(javaToken.kind);
         }
 
@@ -125,15 +125,15 @@ public class JavaTokenizer extends JavaCCTokenizer {
         }
 
         private void skipPackageAndImport(final JavaccToken currentToken) {
-            if (currentToken.kind == JavaParserConstants.PACKAGE || currentToken.kind == JavaParserConstants.IMPORT) {
+            if (currentToken.kind == JavaTokenKinds.PACKAGE || currentToken.kind == JavaTokenKinds.IMPORT) {
                 discardingKeywords = true;
-            } else if (discardingKeywords && currentToken.kind == JavaParserConstants.SEMICOLON) {
+            } else if (discardingKeywords && currentToken.kind == JavaTokenKinds.SEMICOLON) {
                 discardingKeywords = false;
             }
         }
 
         private void skipSemicolon(final JavaccToken currentToken) {
-            if (currentToken.kind == JavaParserConstants.SEMICOLON) {
+            if (currentToken.kind == JavaTokenKinds.SEMICOLON) {
                 discardingSemicolon = true;
             } else if (discardingSemicolon) {
                 discardingSemicolon = false;
@@ -143,10 +143,10 @@ public class JavaTokenizer extends JavaCCTokenizer {
         private void skipAnnotationSuppression(final JavaccToken currentToken) {
             // if processing an annotation, look for a CPD-START or CPD-END
             if (isAnnotation) {
-                if (!discardingSuppressing && currentToken.kind == JavaParserConstants.STRING_LITERAL
+                if (!discardingSuppressing && currentToken.kind == JavaTokenKinds.STRING_LITERAL
                         && CPD_START.equals(currentToken.getImage())) {
                     discardingSuppressing = true;
-                } else if (discardingSuppressing && currentToken.kind == JavaParserConstants.STRING_LITERAL
+                } else if (discardingSuppressing && currentToken.kind == JavaTokenKinds.STRING_LITERAL
                         && CPD_END.equals(currentToken.getImage())) {
                     discardingSuppressing = false;
                 }
@@ -173,19 +173,19 @@ public class JavaTokenizer extends JavaCCTokenizer {
                 nextTokenEndsAnnotation = false;
             }
             if (isAnnotation) {
-                if (currentToken.kind == JavaParserConstants.LPAREN) {
+                if (currentToken.kind == JavaTokenKinds.LPAREN) {
                     annotationStack++;
-                } else if (currentToken.kind == JavaParserConstants.RPAREN) {
+                } else if (currentToken.kind == JavaTokenKinds.RPAREN) {
                     annotationStack--;
                     if (annotationStack == 0) {
                         nextTokenEndsAnnotation = true;
                     }
-                } else if (annotationStack == 0 && currentToken.kind != JavaParserConstants.IDENTIFIER
-                        && currentToken.kind != JavaParserConstants.LPAREN) {
+                } else if (annotationStack == 0 && currentToken.kind != JavaTokenKinds.IDENTIFIER
+                        && currentToken.kind != JavaTokenKinds.LPAREN) {
                     isAnnotation = false;
                 }
             }
-            if (currentToken.kind == JavaParserConstants.AT) {
+            if (currentToken.kind == JavaTokenKinds.AT) {
                 isAnnotation = true;
             }
         }
@@ -218,7 +218,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
             }
 
             switch (currentToken.kind) {
-            case JavaParserConstants.IDENTIFIER:
+            case JavaTokenKinds.IDENTIFIER:
                 if ("enum".equals(currentToken.getImage())) {
                     // If declaring an enum, add a new block nesting level at
                     // which constructors may exist
@@ -232,17 +232,17 @@ public class JavaTokenizer extends JavaCCTokenizer {
                 prevIdentifier = currentToken.getImage();
                 break;
 
-            case JavaParserConstants.CLASS:
+            case JavaTokenKinds.CLASS:
                 // If declaring a class, add a new block nesting level at which
                 // constructors may exist
                 pushTypeDeclaration();
                 break;
 
-            case JavaParserConstants.LBRACE:
+            case JavaTokenKinds.LBRACE:
                 currentNestingLevel++;
                 break;
 
-            case JavaParserConstants.RBRACE:
+            case JavaTokenKinds.RBRACE:
                 // Discard completed blocks
                 if (!classMembersIndentations.isEmpty()
                         && classMembersIndentations.peek().indentationLevel == currentNestingLevel) {
@@ -277,7 +277,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
                 return;
             }
 
-            if (currentToken.kind == JavaParserConstants.LPAREN) {
+            if (currentToken.kind == JavaTokenKinds.LPAREN) {
                 // was the previous token a constructor? If so, restore the
                 // identifier
                 if (!classMembersIndentations.isEmpty()

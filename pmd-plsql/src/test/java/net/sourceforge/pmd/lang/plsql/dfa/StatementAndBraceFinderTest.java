@@ -12,17 +12,14 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
@@ -190,17 +187,6 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         assertTrue(dfn.isType(NodeType.LABEL_STATEMENT));
     }
 
-    @Test
-    public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder(plsql.getDefaultHandler().getDataFlowHandler());
-        PLSQLNode node = new ASTMethodDeclaration(1);
-        ((AbstractNode) node).testingOnlySetBeginColumn(1);
-        sbf.buildDataFlowFor(node);
-        // sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
-        node = new ASTProgramUnit(1);
-        ((AbstractNode) node).testingOnlySetBeginColumn(1);
-        sbf.buildDataFlowFor(node);
-    }
 
     private static final String TEST1 = "CREATE OR REPLACE PACKAGE BODY Foo AS" + PMD.EOL + " PROCEDURE bar IS BEGIN"
             + PMD.EOL + "  x := 2;" + PMD.EOL + " END bar;" + PMD.EOL + "END foo;";

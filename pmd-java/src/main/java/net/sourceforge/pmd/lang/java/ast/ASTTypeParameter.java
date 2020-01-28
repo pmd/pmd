@@ -28,13 +28,6 @@ public class ASTTypeParameter extends AbstractJavaTypeNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the name of the type variable introduced by this declaration.
      */

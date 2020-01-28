@@ -19,12 +19,6 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
 
     @InternalApi
     @Deprecated
-    public ASTPrimaryPrefix(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @InternalApi
-    @Deprecated
     public void setUsesThisModifier() {
         usesThisModifier = true;
     }

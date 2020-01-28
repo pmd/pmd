@@ -12,10 +12,6 @@ public final class ASTSimpleShortClassSpecifier extends AbstractModelicaClassSpe
         super(id);
     }
 
-    ASTSimpleShortClassSpecifier(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

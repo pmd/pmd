@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast.internal;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Strategy for reporting language-feature violations, for use by a

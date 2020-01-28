@@ -25,11 +25,6 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     }
 
 
-    AbstractAnyTypeDeclaration(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
-
     @Override
     public final boolean isNested() {
         return getParent() instanceof ASTClassOrInterfaceBodyDeclaration

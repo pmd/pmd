@@ -25,7 +25,6 @@ import java.io.Writer;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
@@ -48,12 +47,6 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
     /** */
     protected boolean invalid = false;
 
-    /** */
-    protected Token first;
-
-    /** */
-    protected Token last;
-
     protected String templateName;
 
     /**
@@ -75,7 +68,7 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
 
     @Override
     public void jjtOpen() {
-        first = parser.getToken(1); // added
+        firstToken = parser.getToken(1); // added
         if (beginLine == -1 && parser.token.next != null) {
             beginLine = parser.token.next.beginLine;
             beginColumn = parser.token.next.beginColumn;
@@ -84,7 +77,7 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
 
     @Override
     public void jjtClose() {
-        last = parser.getToken(0); // added
+        lastToken = parser.getToken(0); // added
         if (beginLine == -1 && (children == null || children.length == 0)) {
             beginColumn = parser.token.beginColumn;
         }
@@ -95,18 +88,12 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
         endColumn = parser.token.endColumn;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setFirstToken(final Token t) {
-        this.first = t;
-    }
-
     public Token getFirstToken() {
-        return first;
+        return (Token) firstToken;
     }
 
     public Token getLastToken() {
-        return last;
+        return (Token) lastToken;
     }
 
     @Override
@@ -175,13 +162,13 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
     public String literal() {
         // if we have only one string, just return it and avoid
         // buffer allocation. VELOCITY-606
-        if (first != null && first.equals(last)) {
-            return NodeUtils.tokenLiteral(first);
+        if (getFirstToken() != null && firstToken.equals(getLastToken())) {
+            return NodeUtils.tokenLiteral(getFirstToken());
         }
 
-        Token t = first;
+        Token t = getFirstToken();
         final StrBuilder sb = new StrBuilder(NodeUtils.tokenLiteral(t));
-        while (t != null && !t.equals(last)) {
+        while (t != null && !t.equals(getLastToken())) {
             t = t.next;
             sb.append(NodeUtils.tokenLiteral(t));
         }
@@ -227,14 +214,14 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
      * see org.apache.velocity.runtime.parser.node.Node#getLine()
      */
     public int getLine() {
-        return first.beginLine;
+        return getBeginLine();
     }
 
     /*
      * see org.apache.velocity.runtime.parser.node.Node#getColumn()
      */
     public int getColumn() {
-        return first.beginColumn;
+        return getBeginColumn();
     }
 
     public String getTemplateName() {

@@ -268,24 +268,6 @@ public final class VelocityCharStream implements CharStream {
         return c;
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public int getColumn() {
-        return bufcolumn[bufpos];
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public int getLine() {
-        return bufline[bufpos];
-    }
-
     @Override
     public int getEndColumn() {
         return bufcolumn[bufpos];
@@ -394,12 +376,6 @@ public final class VelocityCharStream implements CharStream {
         return ret;
     }
 
-    @Override
-    public void Done() {
-        buffer = null;
-        bufline = null;
-        bufcolumn = null;
-    }
 
     /**
      * Method to adjust line and column numbers for the start of a token.<BR>

@@ -38,7 +38,7 @@ public class EmptyIfStmtRule extends AbstractVmRule {
         if (block.getNumChildren() == 0) {
             addViolation(data, node);
         } else if (block.getNumChildren() == 1 && block.getChild(0) instanceof ASTText
-                && StringUtils.isBlank(((AbstractVmNode) block.getChild(0)).getFirstToken().toString())) {
+                && StringUtils.isBlank(((AbstractVmNode) block.getChild(0)).getFirstToken().getImage())) {
             addViolation(data, node);
         }
     }

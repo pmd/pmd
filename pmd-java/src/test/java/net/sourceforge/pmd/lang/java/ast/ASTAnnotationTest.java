@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
+
 public class ASTAnnotationTest extends BaseParserTest {
 
     @Test
