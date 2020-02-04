@@ -93,7 +93,7 @@
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
         <checkstyle.version>3.1.0</checkstyle.version>
-        <pmd.plugin.version>3.12.0</pmd.plugin.version>
+        <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
