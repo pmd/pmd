@@ -92,8 +92,8 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
-        <checkstyle.version>3.0.0</checkstyle.version>
-        <pmd.plugin.version>3.12.0</pmd.plugin.version>
+        <checkstyle.version>3.1.0</checkstyle.version>
+        <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
@@ -104,7 +104,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>5</pmd.build-tools.version>
+        <pmd.build-tools.version>6-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.21.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -311,7 +311,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>8.18</version>
+                            <version>8.29</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>

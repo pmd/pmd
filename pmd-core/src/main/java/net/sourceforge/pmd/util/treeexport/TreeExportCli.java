@@ -44,13 +44,13 @@ public class TreeExportCli {
     private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
     @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();
-    @DynamicParameter(names = {"-P"}, description = "Properties for the renderer.")
+    @DynamicParameter(names = "-P", description = "Properties for the renderer.")
     private Map<String, String> properties = new HashMap<>();
 
     @Parameter(names = { "--help", "-h" }, description = "Display usage.", help = true)
     private boolean help;
 
-    @Parameter(names = { "--file" }, description = "The file to dump")
+    @Parameter(names = "--file", description = "The file to dump")
     private String file;
 
     @Parameter(names = { "--read-stdin", "-i" }, description = "Read source from standard input")
