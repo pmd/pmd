@@ -19,12 +19,12 @@ import net.sourceforge.pmd.internal.util.BaseCloseable;
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
  */
-class NioVFile extends BaseCloseable implements TextFile {
+class NioTextFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
 
-    NioVFile(Path path, Charset charset) throws IOException {
+    NioTextFile(Path path, Charset charset) throws IOException {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
 

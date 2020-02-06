@@ -249,6 +249,7 @@ public class TextRegionTest {
 
         return inter;
     }
+
     private TextRegion doUnion(TextRegion r1, TextRegion r2) {
         TextRegion union = r1.union(r2);
 

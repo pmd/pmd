@@ -23,8 +23,8 @@ class TextEditorImpl extends BaseCloseable implements TextEditor {
 
     private final EditorBuffer out;
 
-    private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
-    private List<TextRegion> affectedRegions = new ArrayList<>();
+    private final SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
+    private final List<TextRegion> affectedRegions = new ArrayList<>();
 
 
     /** @throws ReadOnlyFileException If the backend is read-only */

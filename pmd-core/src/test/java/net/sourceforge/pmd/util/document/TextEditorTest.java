@@ -157,7 +157,7 @@ public class TextEditorTest {
         TextDocument doc = tempFile("static void main(String[] args) {}");
 
 
-        FileLocation rwl = doc.toPosition(doc.createRegion(0, 15));
+        FileLocation rwl = doc.toLocation(doc.createRegion(0, 15));
 
         assertEquals(1, rwl.getBeginLine());
         assertEquals(1, rwl.getBeginColumn());
@@ -171,7 +171,7 @@ public class TextEditorTest {
         assertFinalFileIs(doc, "@Override\nvoid main(String[] args) {}");
 
 
-        rwl = doc.toPosition(doc.createRegion(0, 15));
+        rwl = doc.toLocation(doc.createRegion(0, 15));
 
         assertEquals(1, rwl.getBeginLine());
         assertEquals(1, rwl.getBeginColumn());
@@ -425,7 +425,7 @@ public class TextEditorTest {
     }
 
     public void assertTextIs(String s, TextDocument text) {
-        assertEquals("Incorrect document text", s, text.getText().toString());// getText() is not necessarily a string
+        assertEquals("Incorrect document text", s, text.getText().toString()); // getText() is not necessarily a string
     }
 
     private TextDocument tempFile(final String content) throws IOException {

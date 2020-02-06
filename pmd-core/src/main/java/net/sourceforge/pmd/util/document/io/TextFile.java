@@ -97,7 +97,7 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException if the path or the charset is null
      */
     static TextFile forPath(final Path path, final Charset charset) throws IOException {
-        return new NioVFile(path, charset);
+        return new NioTextFile(path, charset);
     }
 
 
@@ -122,6 +122,6 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If the source text or the name is null
      */
     static TextFile readOnlyString(String source, String name) {
-        return new StringVFile(source, name);
+        return new StringTextFile(source, name);
     }
 }

@@ -7,7 +7,9 @@ package net.sourceforge.pmd.util.document;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
- * A version of a {@link TextRegion} used for reporting.
+ * A kind of {@link TextRegion} used for reporting. This provides access
+ * to the line and column positions, as well as the text file. Instances
+ * can be obtained from a {@link TextRegion} with {@link TextDocument#toLocation(TextRegion) TextDocument::toLocation}.
  */
 public final class FileLocation {
 
@@ -40,6 +42,9 @@ public final class FileLocation {
         }
     }
 
+    /**
+     * File name of this position.
+     */
     public String getFileName() {
         return fileName;
     }

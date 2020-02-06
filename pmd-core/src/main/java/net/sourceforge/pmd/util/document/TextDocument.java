@@ -76,7 +76,7 @@ public interface TextDocument extends Closeable {
      *
      * @throws InvalidRegionException If the argument is not a valid region in this document
      */
-    FileLocation toPosition(TextRegion region);
+    FileLocation toLocation(TextRegion region);
 
 
     /**
@@ -167,7 +167,7 @@ public interface TextDocument extends Closeable {
         try {
             return new TextDocumentImpl(TextFile.readOnlyString(source));
         } catch (IOException e) {
-            throw new AssertionError("ReadonlyStringBehavior should never throw IOException", e);
+            throw new AssertionError("String text file should never throw IOException", e);
         }
     }
 

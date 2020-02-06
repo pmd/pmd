@@ -25,7 +25,7 @@ public class TextDocumentTest {
         assertEquals("bonjour".length(), region.getLength());
         assertEquals("bonjour".length(), region.getEndOffset());
 
-        FileLocation withLines = doc.toPosition(region);
+        FileLocation withLines = doc.toLocation(region);
 
         assertEquals(1, withLines.getBeginLine());
         assertEquals(1, withLines.getEndLine());
@@ -44,7 +44,7 @@ public class TextDocumentTest {
         assertEquals("r\noha\ntri".length(), region.getLength());
         assertEquals("bonjour\noha\ntri".length(), region.getEndOffset());
 
-        FileLocation withLines = doc.toPosition(region);
+        FileLocation withLines = doc.toLocation(region);
 
         assertEquals(1, withLines.getBeginLine());
         assertEquals(3, withLines.getEndLine());
@@ -62,7 +62,7 @@ public class TextDocumentTest {
         assertEquals(0, region.getLength());
         assertEquals(region.getStartOffset(), region.getEndOffset());
 
-        FileLocation withLines = doc.toPosition(region);
+        FileLocation withLines = doc.toLocation(region);
 
         assertEquals(1, withLines.getBeginLine());
         assertEquals(1, withLines.getEndLine());

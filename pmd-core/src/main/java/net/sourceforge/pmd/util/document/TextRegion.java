@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * document, but if it were a caret, typing a character {@code c} would
  * make {@code c} the character at offset {@code n} in the document.
  *
- * <p>Line and column information may be added by {@link TextDocument#toPosition(TextRegion)}.
+ * <p>Line and column information may be added by {@link TextDocument#toLocation(TextRegion)}.
  *
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.

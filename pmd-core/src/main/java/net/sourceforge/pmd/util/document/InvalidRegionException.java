@@ -8,7 +8,7 @@ package net.sourceforge.pmd.util.document;
  * Thrown when an invalid offset or region is passed to methods like
  * {@link TextDocument#createRegion(int, int)} or {@link TextEditor#replace(TextRegion, String)}.
  */
-public class InvalidRegionException extends IllegalArgumentException {
+public final class InvalidRegionException extends IllegalArgumentException {
 
     private static final String NOT_IN_RANGE = "Region {start=%d, end=%d} is not in range of this document (length %d)";
     private static final String NEGATIVE = "%s is negative, got %d";

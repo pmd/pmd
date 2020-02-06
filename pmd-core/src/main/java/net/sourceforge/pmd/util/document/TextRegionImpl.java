@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Immutable implementation of the {@link TextRegion} interface.
  */
-class TextRegionImpl implements TextRegion {
+final class TextRegionImpl implements TextRegion {
 
     private final int startOffset;
     private final int length;

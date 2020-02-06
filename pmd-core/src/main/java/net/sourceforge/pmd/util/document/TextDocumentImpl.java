@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
@@ -27,7 +28,9 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     TextDocumentImpl(TextFile backend) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
-        this.text = backend.readContents().toString();
+
+        // charbuffer doesn't copy the char array for subsequence operations
+        this.text = CharBuffer.wrap(backend.readContents());
         this.positioner = null;
         this.fileName = backend.getFileName();
     }
@@ -48,7 +51,8 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         if (curEditor != null) {
             throw new ConcurrentModificationException("An editor is already open on this document");
         }
-        return curEditor = new TextEditorImpl(this, backend, handler);
+        curEditor = new TextEditorImpl(this, backend, handler);
+        return curEditor;
     }
 
     void closeEditor(CharSequence text, long stamp) {
@@ -72,7 +76,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public FileLocation toPosition(TextRegion region) {
+    public FileLocation toLocation(TextRegion region) {
         checkInRange(region.getStartOffset(), region.getLength());
 
         if (positioner == null) {

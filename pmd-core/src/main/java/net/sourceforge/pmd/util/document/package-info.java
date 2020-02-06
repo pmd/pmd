@@ -1,3 +1,6 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 /**
  * API to represent text documents and handle operations on text. This
