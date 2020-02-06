@@ -39,7 +39,7 @@ chain produced by a lexer (which is e.g. what Checkstyle works on). For example:
 
 ```java
 class Foo extends Object {
-    
+
 }
 ```
 
@@ -125,7 +125,7 @@ Example:
 
 To learn how to write a rule:
 
-* [Using the Rule Designer](pmd_userdocs_extending_designer_intro.html)
+* [Your First Rule](pmd_userdocs_extending_your_first_rule.html)
 introduces the basic development process of a rule with a running example
 * [Writing XPath Rules](pmd_userdocs_extending_writing_xpath_rules.html)
 explains a bit more about XPath rules and our XPath API

@@ -19,7 +19,7 @@ not sure we even need a doc page. Would be simpler to maintain too" %}
 
 This page covers the specifics of writing a rule in Java. The basic development
 process is very similar to the process for XPath rules, which is described in
-[Using the Designer](pmd_userdocs_extending_designer_intro.html#rule-development-process).
+[Your First Rule](pmd_userdocs_extending_your_first_rule.html#rule-development-process).
 
 Basically, you open the designer, look at the structure of the AST, and refine
 your rule as you add test cases.
@@ -59,7 +59,7 @@ public class MyRule extends AbstractJavaRule {
 ```
 
 Generally, a rule wants to check for only some node types. In our XPath example
-in [Using the Designer](pmd_userdocs_extending_designer_intro.html#a-simple-rule),
+in [Your First Rule](pmd_userdocs_extending_your_first_rule.html),
 we wanted to check for some `VariableDeclaratorId` nodes. That's the XPath name,
 but in Java, you'll get access to the {% jdoc jast::ASTVariableDeclaratorId %}
 full API.
@@ -74,12 +74,12 @@ public class MyRule extends AbstractJavaRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         // This method is called on each node of type ASTVariableDeclaratorId
         // in the AST
-        
+
         if (node.getType() == short.class) {
             // reports a violation at the position of the node
             // the "data" parameter is a context object handed to by your rule
-            // the message for the violation is the message defined in the rule declaration XML element 
-            addViolation(data, node); 
+            // the message for the violation is the message defined in the rule declaration XML element
+            addViolation(data, node);
         }
 
         // this calls back to the default implementation, which recurses further down the subtree
@@ -144,7 +144,7 @@ Exactly once:
 1. The rule's no-arg constructor is called when loading the ruleset.
 The rule's constructor must define:
   * [Rulechain visits](#economic-traversal-the-rulechain)
-  * [Property descriptors](pmd_userdocs_extending_defining_properties#for-java-rules)
+  * [Property descriptors](pmd_userdocs_extending_defining_properties.html#for-java-rules)
 2. If the rule was included in the ruleset as a rule reference,
 some properties [may be overridden](pmd_userdocs_configuring_rules.html#rule-properties).
 If an overridden property is unknown, an error is reported.

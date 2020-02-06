@@ -15,7 +15,7 @@ author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement
 
 
 This page describes some points of XPath rule support in more details. See
-also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_designer_intro.html).
+also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_your_first_rule.html).
 
 <!-- Later we can document the specific subset of XPath features our wrappers support -->
 
@@ -37,7 +37,7 @@ but approachable review of the features of XPath 2.0 and above, see [the Saxon d
 
 It is recommended that you migrate to 2.0 before 7.0.0, but we expect
 to be able to provide an automatic migration tool when releasing 7.0.0.
-See [the migration guide](l#migrating-from-10-to-20) below.
+See [the migration guide](#migrating-from-10-to-20) below.
 
 
 ## DOM representation of ASTs
