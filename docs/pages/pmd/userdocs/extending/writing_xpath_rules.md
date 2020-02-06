@@ -79,6 +79,7 @@ function from Java types to XDM types.
 |`boolean`        | `xs:boolean`
 |`String`         | `xs:string`
 |`Character`      | `xs:string`
+|`Enum<E>`        | `xs:string` (uses `Object::toString`)
 |`List<E>`        | `conv(E)*` (a sequence type)
 
 
