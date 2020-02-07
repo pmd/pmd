@@ -26,7 +26,11 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  * @see MethodLikeNode
  * @since 5.8.1
  */
-public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, AccessNode, SignedNode<ASTMethodOrConstructorDeclaration> {
+public interface ASTMethodOrConstructorDeclaration
+    extends MethodLikeNode,
+            AccessNode,
+            SignedNode<ASTMethodOrConstructorDeclaration>,
+            TypeParamOwnerNode {
 
 
     /**
@@ -84,17 +88,6 @@ public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, Acces
         return last instanceof ASTBlock ? (ASTBlock) last : null;
     }
 
-
-    /**
-     * Returns the type parameter declaration of this node, or null if
-     * there is none.
-     */
-    @Nullable
-    default ASTTypeParameters getTypeParameters() {
-        return getFirstChildOfType(ASTTypeParameters.class);
-    }
-
-
     /**
      * Returns the {@code throws} clause of this declaration, or null
      * if there is none.
@@ -103,7 +96,6 @@ public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, Acces
     default ASTThrowsList getThrowsList() {
         return getFirstChildOfType(ASTThrowsList.class);
     }
-
 
     /**
      * Returns true if this node's last formal parameter is varargs.

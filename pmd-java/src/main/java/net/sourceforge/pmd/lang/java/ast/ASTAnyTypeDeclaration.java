@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
@@ -23,6 +24,7 @@ public interface ASTAnyTypeDeclaration
     extends TypeNode,
             JavaQualifiableNode,
             AccessNode,
+            TypeParamOwnerNode,
             FinalizableNode {
 
     /**
@@ -94,15 +96,6 @@ public interface ASTAnyTypeDeclaration
         return (ASTTypeBody) getLastChild();
     }
 
-    default List<ASTTypeParameter> getTypeParameters() {
-        ASTTypeParameters parameters = getFirstChildOfType(ASTTypeParameters.class);
-        if (parameters == null) {
-            return Collections.emptyList();
-        }
-
-        return parameters.asList();
-    }
-
     /**
      * Returns true if this type declaration is nested inside an interface,
      * class or annotation.
@@ -162,4 +155,17 @@ public interface ASTAnyTypeDeclaration
     }
 
 
+    /**
+     * Returns the interfaces implemented by this class, or
+     * extended by this interface. Returns an empty list if
+     * none is specified.
+     */
+    default List<ASTClassOrInterfaceType> getSuperInterfaces() {
+
+        Iterable<ASTClassOrInterfaceType> it = isInterface()
+                                               ? getFirstChildOfType(ASTExtendsList.class)
+                                               : getFirstChildOfType(ASTImplementsList.class);
+
+        return it == null ? Collections.emptyList() : IteratorUtil.toList(it.iterator());
+    }
 }
