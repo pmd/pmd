@@ -19,7 +19,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
             "this::foo" should parseAs {
 
                 methodRef("foo") {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     it::getQualifier shouldBe thisExpr()
                 }
@@ -28,7 +28,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
             "foobar.b::foo" should parseAs {
 
                 methodRef("foo") {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     it::getQualifier shouldBe ambiguousName("foobar.b")
                 }
@@ -39,7 +39,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 methodRef("foo") {
                     it::getQualifier shouldBe ambiguousName("foobar.b")
 
-                    it::getTypeArguments shouldBe child {
+                    it::getExplicitTypeArguments shouldBe typeArgList {
                         classType("B")
                     }
                 }
@@ -49,7 +49,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
             "foobar.b<B>::foo" should parseAs {
 
                 methodRef("foo") {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     it::getQualifier shouldBe typeExpr {
                         classType("b") {
@@ -58,10 +58,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
                                 it::getName shouldBe "foobar"
                             }
 
-                            it::getTypeArguments shouldBe child {
-                                child<ASTClassOrInterfaceType> {
-                                    it::getTypeImage shouldBe "B"
-                                }
+                            it::getTypeArguments shouldBe typeArgList {
+                                classType("B")
                             }
                         }
                     }
@@ -94,9 +92,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                     }
                 }
             }
-
         }
-
     }
 
     parserTest("Neg tests") {
@@ -117,7 +113,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "foobar.b::new" should parseAs {
                 constructorRef {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     typeExpr {
                         classType("b") {
@@ -129,7 +125,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "foobar.b<B>::new" should parseAs {
                 constructorRef {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
 
                     typeExpr {
@@ -145,12 +141,12 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "int[]::new" should parseAs {
                 constructorRef {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     typeExpr {
                         arrayType {
                             primitiveType(INT)
-                            it::getDimensions shouldBe child {
+                            it::getDimensions shouldBe dimList {
                                 arrayDim()
                             }
                         }
@@ -160,7 +156,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "boolean @A []::new" should parseAs {
                 constructorRef {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     typeExpr {
                         arrayType {
@@ -177,7 +173,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "Class<?>[]::new" should parseAs {
                 constructorRef {
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
                     typeExpr {
                         arrayType {
@@ -186,7 +182,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                                     child<ASTWildcardType> { }
                                 }
                             }
-                            it::getDimensions shouldBe child {
+                            it::getDimensions shouldBe dimList {
                                 arrayDim()
                             }
                         }
@@ -199,7 +195,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                     val lhs = typeExpr {
                         classType("ArrayList")
                     }
-                    it::getTypeArguments shouldBe typeArgList {
+                    it::getExplicitTypeArguments shouldBe typeArgList {
                         classType("String")
                     }
 
@@ -221,7 +217,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                         }
                     }
 
-                    it::getTypeArguments shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
                 }
             }
 
@@ -237,7 +233,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                             }
                         }
 
-                        it::getTypeArguments shouldBe null
+                        it::getExplicitTypeArguments shouldBe null
                     }
                 }
             }

@@ -14,7 +14,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -23,7 +23,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::isQualified shouldBe false
                     it::getQualifier shouldBe null
 
-                    it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe argList {}
                 }
             }
         }
@@ -32,7 +32,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -42,11 +42,11 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::getQualifier shouldBe null
 
 
-                    it::getExplicitTypeArguments shouldBe child {
+                    it::getExplicitTypeArguments shouldBe typeArgList {
                         classType("String")
                     }
 
-                    it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe argList {}
                 }
             }
         }
@@ -58,7 +58,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -68,7 +68,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::getQualifier shouldBe null
                     it::getExplicitTypeArguments shouldBe null
 
-                    it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe argList {}
 
                 }
             }
@@ -78,7 +78,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -87,11 +87,11 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::isQualified shouldBe false
                     it::getQualifier shouldBe null
 
-                    it::getExplicitTypeArguments shouldBe child {
+                    it::getExplicitTypeArguments shouldBe typeArgList {
                         classType("String")
                     }
 
-                    it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe argList {}
                 }
             }
         }
@@ -104,7 +104,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -116,7 +116,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::getExplicitTypeArguments shouldBe null
                     it::getQualifier shouldBe variableAccess("o")
 
-                    it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe argList {}
                 }
             }
         }
@@ -125,7 +125,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -136,11 +136,11 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
                     it::getQualifier shouldBe variableAccess("o")
 
-                    it::getExplicitTypeArguments shouldBe child {
+                    it::getExplicitTypeArguments shouldBe typeArgList {
                         classType("String")
                     }
 
-                    it::getArgumentsList shouldBe child { }
+                    it::getArgumentsList shouldBe argList { }
                 }
             }
         }
@@ -149,7 +149,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -160,11 +160,11 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
                     it::getQualifier shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
 
-                    it::getExplicitTypeArguments shouldBe child {
+                    it::getExplicitTypeArguments shouldBe typeArgList {
                         classType("String")
                     }
 
-                    it::getArgumentsList shouldBe child { }
+                    it::getArgumentsList shouldBe argList { }
                 }
             }
         }
@@ -175,7 +175,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::getExplicitModifiers shouldBe setOf(JModifier.PUBLIC)
             }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
+
             it::getBody shouldBe block {
                 child<ASTExplicitConstructorInvocation> {
                     it::isThis shouldBe false
@@ -187,7 +188,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
 
 
-                    it::getArgumentsList shouldBe child { }
+                    it::getArgumentsList shouldBe argList { }
                 }
             }
         }
@@ -209,8 +210,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 child<ASTExplicitConstructorInvocation> {
@@ -222,12 +222,12 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                     it::getExplicitTypeArguments shouldBe null
                     it::getQualifier shouldBe null
 
-                    it::getArgumentsList shouldBe child {
+                    it::getArgumentsList shouldBe argList {
                         child<ASTMethodCall> {
                             child<ASTThisExpression> {
                                 classType("AbstractListenerWebSocketSession")
                             }
-                            it::getArguments shouldBe child {}
+                            it::getArguments shouldBe argList {}
                         }
                     }
                 }
@@ -244,7 +244,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 exprStatement()
@@ -254,7 +254,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         "Foo() { super.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
             block {
                 exprStatement()
             }
@@ -263,7 +263,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         "Foo() { super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 exprStatement()
@@ -274,7 +274,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         "Foo() { A.super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
             it::getModifiers shouldBe modifiers { }
 
-            child<ASTFormalParameters> { }
+            formalsList(0) { }
 
             block {
                 exprStatement()

@@ -150,7 +150,7 @@ object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parame
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
             EnclosedDeclarationParsingCtx.getTemplate("public $construct void f() {}", ctx)
 
-    override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeParameters =
+    override fun retrieveNode(acu: ASTCompilationUnit) =
             EnclosedDeclarationParsingCtx.retrieveNode(acu)
                     .descendantsOrSelf()
                     .last(ASTMethodDeclaration::class.java)!!

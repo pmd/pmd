@@ -4,9 +4,7 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.should
 import io.kotlintest.shouldNotBe
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
@@ -115,7 +113,7 @@ fun TreeNodeWrapper<Node, *>.catchFormal(name: String, spec: NodeSpec<ASTCatchPa
         }
 
 fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumConstant> = EmptyAssertions) =
-        child<ASTEnumConstant> {
+        child<ASTEnumConstant>(ignoreChildren = spec === EmptyAssertions) {
             it::getName shouldBe name
             spec()
         }
@@ -202,20 +200,27 @@ fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<No
             it::getOperand shouldBe baseExpr()
         }
 
+fun TreeNodeWrapper<Node, *>.typeParamList(size: Int? = null, contents: NodeSpec<ASTTypeParameters> = EmptyAssertions) =
+        child<ASTTypeParameters> { contents() }
 
-fun TreeNodeWrapper<Node, *>.typeParamList(contents: NodeSpec<ASTTypeParameters>) =
-        child(nodeSpec = contents)
+fun TreeNodeWrapper<Node, *>.argList(size: Int? = null, contents: NodeSpec<ASTArgumentList> = EmptyAssertions) =
+        child<ASTArgumentList> { contents() }
 
-fun TreeNodeWrapper<Node, *>.typeArgList(contents: NodeSpec<ASTTypeArguments> = EmptyAssertions) =
-        child(ignoreChildren = contents == EmptyAssertions, nodeSpec = contents)
+fun TreeNodeWrapper<Node, *>.dimList(size: Int? = null, contents: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
+        child<ASTArrayDimensions> { contents() }
 
-fun TreeNodeWrapper<Node, *>.throwsList(contents: NodeSpec<ASTThrowsList> = EmptyAssertions) =
-        child(ignoreChildren = contents == EmptyAssertions, nodeSpec = contents)
+fun TreeNodeWrapper<Node, *>.throwsList(size: Int? = null, contents: NodeSpec<ASTThrowsList> = EmptyAssertions) =
+        child<ASTThrowsList> { contents() }
+
+fun TreeNodeWrapper<Node, *>.typeArgList(size: Int? = null, contents: NodeSpec<ASTTypeArguments> = EmptyAssertions) =
+        child<ASTTypeArguments>(ignoreChildren = contents === EmptyAssertions) { contents() }
+
+fun TreeNodeWrapper<Node, *>.lambdaFormals(size: Int? = null, contents: NodeSpec<ASTLambdaParameterList> = EmptyAssertions) =
+        child<ASTLambdaParameterList> { contents() }
 
 fun TreeNodeWrapper<Node, *>.formalsList(arity: Int, contents: NodeSpec<ASTFormalParameters> = EmptyAssertions) =
-        child<ASTFormalParameters>(ignoreChildren = contents == EmptyAssertions) {
+        child<ASTFormalParameters> {
             it::getParameterCount shouldBe arity
-            it.toList() should haveSize(arity)
             contents()
         }
 
@@ -237,8 +242,8 @@ fun TreeNodeWrapper<Node, *>.defaultValue(contents: ValuedNodeSpec<ASTDefaultVal
         }
 
 fun TreeNodeWrapper<Node, *>.diamond() =
-        child<ASTTypeArguments> {
-            it::isDiamond shouldBe true
+        typeArgList(0) {
+            // no children
         }
 
 fun TreeNodeWrapper<Node, *>.block(contents: NodeSpec<ASTBlock> = EmptyAssertions) =

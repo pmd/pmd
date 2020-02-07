@@ -12,7 +12,7 @@ class Java11Test : ParserTestSpec({
         onVersions(J1_8..J10) {
 
             "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
-                it::getParameters shouldBe child {
+                it::getParameters shouldBe lambdaFormals {
                     lambdaParam {
                         modifiers { }
                         classType("var")
@@ -24,7 +24,7 @@ class Java11Test : ParserTestSpec({
             }
 
             "(var x, var y) -> x + y" should matchExpr<ASTLambdaExpression> {
-                it::getParameters shouldBe child {
+                it::getParameters shouldBe lambdaFormals {
                     lambdaParam {
                         modifiers { }
                         classType("var")
@@ -42,7 +42,7 @@ class Java11Test : ParserTestSpec({
             }
 
             "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
-                it::getParameters shouldBe child {
+                it::getParameters shouldBe lambdaFormals {
                     lambdaParam {
                         modifiers {
                             annotation("Nonnull")
@@ -58,7 +58,7 @@ class Java11Test : ParserTestSpec({
         // var keyword should generate no type after java 11
         onVersions(J11..Latest) {
             "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
-                it::getParameters shouldBe child {
+                it::getParameters shouldBe lambdaFormals {
                     lambdaParam {
                         modifiers { }
                         it::isTypeInferred shouldBe true

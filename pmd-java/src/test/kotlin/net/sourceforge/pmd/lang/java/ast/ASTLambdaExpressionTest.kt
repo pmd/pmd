@@ -18,7 +18,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             it::isExpressionBody shouldBe true
             it::isBlockBody shouldBe false
 
-            it::getParameters shouldBe child {
+            it::getParameters shouldBe lambdaFormals {
                 simpleLambdaParam("a") {
                     it::isTypeInferred shouldBe true
                     it::isLambdaParameter shouldBe true
@@ -34,7 +34,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             it::isExpressionBody shouldBe true
             it::isBlockBody shouldBe false
 
-            it::getParameters shouldBe child {
+            it::getParameters shouldBe lambdaFormals {
                 simpleLambdaParam("a") {
                     it::isTypeInferred shouldBe true
                     it::isLambdaParameter shouldBe true
@@ -55,7 +55,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             it::isExpressionBody shouldBe false
             it::isBlockBody shouldBe true
 
-            it::getParameters shouldBe child {
+            it::getParameters shouldBe lambdaFormals {
                 simpleLambdaParam("a")
                 simpleLambdaParam("b")
             }
@@ -68,7 +68,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             it::isExpressionBody shouldBe true
             it::isBlockBody shouldBe false
 
-            it::getParameters shouldBe child {
+            it::getParameters shouldBe lambdaFormals {
                 lambdaParam {
                     it::getModifiers shouldBe modifiers {
                         it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)

@@ -17,7 +17,7 @@ class ASTMethodCallTest : ParserTestSpec({
 
             it::getQualifier shouldBe thisExpr { classType("Type") }
 
-            it::getArguments shouldBe child {}
+            it::getArguments shouldBe argList {}
 
         }
 
@@ -31,10 +31,10 @@ class ASTMethodCallTest : ParserTestSpec({
 
                 it::getQualifier shouldBe null
 
-                it::getArguments shouldBe child {}
+                it::getArguments shouldBe argList {}
             }
 
-            it::getArguments shouldBe child {}
+            it::getArguments shouldBe argList {}
         }
 
         "foo.bar.baz()" should matchExpr<ASTMethodCall> {
@@ -45,7 +45,7 @@ class ASTMethodCallTest : ParserTestSpec({
                 it::getImage shouldBe "foo.bar"
             }
 
-            it::getArguments shouldBe child {}
+            it::getArguments shouldBe argList {}
         }
 
         "foo.<B>f()" should matchExpr<ASTMethodCall> {
@@ -58,7 +58,7 @@ class ASTMethodCallTest : ParserTestSpec({
                 classType("B")
             }
 
-            it::getArguments shouldBe child {}
+            it::getArguments shouldBe argList {  }
         }
 
         "foo.bar(e->it.f(e))" should matchExpr<ASTMethodCall> {
@@ -68,7 +68,7 @@ class ASTMethodCallTest : ParserTestSpec({
 
             it::getQualifier shouldBe ambiguousName("foo")
 
-            it::getArguments shouldBe child {
+            it::getArguments shouldBe argList {
                 child<ASTLambdaExpression>(ignoreChildren = true) {}
             }
         }
@@ -77,20 +77,21 @@ class ASTMethodCallTest : ParserTestSpec({
 
             it::getMethodName shouldBe "foreach"
 
-            it::getQualifier shouldBe child<ASTMethodCall> {
-
-                it::getMethodName shouldBe "bar"
-                it::getImage shouldBe "bar"
+            it::getQualifier shouldBe methodCall("bar") {
 
                 it::getQualifier shouldBe ambiguousName("foo")
 
-                it::getArguments shouldBe child {
-                    methodRef("bar")
+                it::getArguments shouldBe argList {
+                    methodRef("bar") {
+                        ambiguousName("foo")
+                    }
                 }
             }
 
-            it::getArguments shouldBe child {
-                methodRef("println")
+            it::getArguments shouldBe argList {
+                methodRef("println") {
+                    ambiguousName("System.out")
+                }
             }
         }
     }

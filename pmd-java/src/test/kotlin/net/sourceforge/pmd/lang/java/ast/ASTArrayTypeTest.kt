@@ -18,7 +18,7 @@ class ASTArrayTypeTest : ParserTestSpec({
 
                     it::getElementType shouldBe classType("ArrayTypes")
 
-                    it::getDimensions shouldBe child {
+                    it::getDimensions shouldBe dimList {
                         arrayDim { }
                         arrayDim { }
                         arrayDim { }
@@ -58,7 +58,7 @@ class ASTArrayTypeTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
             "new ArrayTypes[][][] { }" should parseAs {
 
-                child<ASTArrayAllocation> {
+                arrayAlloc {
 
                     arrayType({
                         classType("ArrayTypes")

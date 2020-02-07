@@ -192,11 +192,11 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                             }
                         }
                     }
-
                     variableId("java")
                 }
             }
 
+            it::getThrowsList shouldBe null
             it::getBody shouldBe block()
         }
     }
@@ -326,8 +326,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             it::getResultType shouldBe voidResult()
 
-            it::getFormalParameters shouldBe child {
-                it::getParameterCount shouldBe 0
+            it::getFormalParameters shouldBe formalsList(0) {
                 it::toList shouldBe emptyList()
 
                 it::getReceiverParameter shouldBe child {
@@ -353,8 +352,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             it::getResultType shouldBe voidResult()
 
-            it::getFormalParameters shouldBe child {
-                it::getParameterCount shouldBe 1
+            it::getFormalParameters shouldBe formalsList(1) {
 
                 it::getReceiverParameter shouldBe child {
                     classType("Foo") {

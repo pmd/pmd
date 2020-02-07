@@ -36,8 +36,7 @@ class ASTClassLiteralTest : ParserTestSpec({
                 classLiteral {
                     arrayType {
                         it::getElementType shouldBe primitiveType(INT)
-                        it::getDimensions shouldBe child {
-                            it::getSize shouldBe 1
+                        it::getDimensions shouldBe dimList(1) {
                             arrayDim()
                         }
                     }

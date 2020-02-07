@@ -74,7 +74,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * the {@linkplain #getQualifier() lhs type}.
      */
     @Nullable
-    public ASTTypeArguments getTypeArguments() {
+    public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
     }
 
