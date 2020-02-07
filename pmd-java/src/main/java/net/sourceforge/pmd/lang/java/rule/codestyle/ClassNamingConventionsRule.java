@@ -8,13 +8,14 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -65,23 +66,19 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         boolean hasAny = false;
 
         for (ASTAnyTypeBodyDeclaration decl : classNode.getDeclarations()) {
-            switch (decl.getKind()) {
-            case FIELD:
-            case METHOD:
+            JavaNode declNode = decl.getDeclarationNode();
+            if (declNode instanceof ASTFieldDeclaration
+                || declNode instanceof ASTMethodDeclaration) {
+
                 hasAny = isNonPrivate(decl) && !isMainMethod(decl);
-                if (!((AccessNode) decl.getDeclarationNode()).isStatic()) {
+                if (!((AccessNode) declNode).isStatic()) {
                     return false;
                 }
-                break;
 
-            case INITIALIZER:
-                if (!((ASTInitializer) decl.getDeclarationNode()).isStatic()) {
+            } else if (declNode instanceof ASTInitializer) {
+                if (!((ASTInitializer) declNode).isStatic()) {
                     return false;
                 }
-                break;
-
-            default:
-                break;
             }
         }
 
@@ -94,7 +91,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     private boolean isMainMethod(ASTAnyTypeBodyDeclaration bodyDeclaration) {
-        if (DeclarationKind.METHOD != bodyDeclaration.getKind()) {
+        if (!(bodyDeclaration.getDeclarationNode() instanceof ASTMethodDeclaration)) {
             return false;
         }
 

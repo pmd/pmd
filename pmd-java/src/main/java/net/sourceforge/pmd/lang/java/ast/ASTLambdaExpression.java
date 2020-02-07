@@ -31,19 +31,23 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
     }
 
 
+    /** Returns true if this lambda has a block for body. */
     public boolean isBlockBody() {
         return getChild(1) instanceof ASTBlock;
     }
 
+    /** Returns true if this lambda has an expression for body. */
     public boolean isExpressionBody() {
         return !isBlockBody();
     }
 
+    /** Returns the body of this expression, if it is a block. */
     @Nullable
     public ASTBlock getBlock() {
         return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
     }
 
+    /** Returns the body of this expression, if it is an expression. */
     @Nullable
     public ASTExpression getExpression() {
         return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
@@ -65,8 +69,6 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
     public ASTExpression getExpressionBody() {
         return NodeStream.of(getLastChild()).filterIs(ASTExpression.class).first();
     }
-
-
 
     @Override
     public boolean isFindBoundary() {
