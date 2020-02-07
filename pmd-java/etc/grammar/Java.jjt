@@ -299,17 +299,6 @@ class JavaParserImpl {
     return getToken(1).image.equals("assert");
   }
 
-  private boolean isPrecededByComment(JavaccToken tok) {
-      boolean res = false;
-      while (!res && tok.specialToken != null) {
-          tok = tok.specialToken;
-          res = tok.kind == SINGLE_LINE_COMMENT ||
-                tok.kind == FORMAL_COMMENT ||
-                tok.kind == MULTI_LINE_COMMENT;
-      }
-      return res;
-  }
-
   /**
    * Semantic lookahead to check if the next identifier is a
    * specific restricted keyword.
@@ -1064,14 +1053,22 @@ void VarargsDim() #ArrayTypeDim:
 
 
 void ConstructorDeclaration() :
-{JavaccToken t;}
+{}
 {
-    [ TypeParameters() ]
-   <IDENTIFIER>  {setLastTokenImage(jjtThis);} FormalParameters() [ ThrowsList() ]
-  ("{"
-    [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
-    ( BlockStatement() )*
-  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } } ) #Block
+   [ TypeParameters() ]
+   <IDENTIFIER>  {setLastTokenImage(jjtThis);}
+   FormalParameters()
+   [ ThrowsList() ]
+   ConstructorBlock()
+}
+
+private void ConstructorBlock() #Block:
+{}
+{
+    "{"
+        [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+        ( BlockStatement() )*
+    "}"
 }
 
 void ExplicitConstructorInvocation() :
@@ -1954,11 +1951,9 @@ void LabeledStatement() :
 }
 
 void Block() :
-{JavaccToken t;}
+{}
 {
-      "{"
-
-      ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
+    "{" ( BlockStatement() )* "}"
 }
 
 void BlockStatement() #void:
