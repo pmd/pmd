@@ -1,7 +1,12 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC
+import net.sourceforge.pmd.lang.java.ast.JModifier.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
@@ -14,36 +19,38 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         genClassHeader = "interface Bar"
 
         "int foo();" should matchDeclaration<ASTMethodDeclaration>(ignoreChildren = true) {
-            it::isPublic shouldBe true
-            it::isPrivate shouldBe false
-            it::isSyntacticallyPublic shouldBe false
+            it should haveVisibility(V_PUBLIC)
+            it shouldNot haveExplicitModifier(PUBLIC)
+            it should haveModifier(PUBLIC)
         }
 
         "public int kk();" should matchDeclaration<ASTMethodDeclaration>(ignoreChildren = true) {
-            it::isPublic shouldBe true
-            it::isPrivate shouldBe false
-            it::isSyntacticallyPublic shouldBe true
+            it should haveVisibility(V_PUBLIC)
+            it should haveExplicitModifier(PUBLIC)
+            it should haveModifier(PUBLIC)
         }
 
         "int FOO = 0;" should matchDeclaration<ASTFieldDeclaration>(ignoreChildren = true) {
-            it::isPublic shouldBe true
-            it::isPrivate shouldBe false
-            it::isSyntacticallyPublic shouldBe false
+            it should haveVisibility(V_PUBLIC)
+            it shouldNot haveExplicitModifier(PUBLIC)
+            it should haveModifier(PUBLIC)
         }
 
         "public int FOO = 0;" should matchDeclaration<ASTFieldDeclaration>(ignoreChildren = true) {
-            it::isPublic shouldBe true
-            it::isPrivate shouldBe false
-            it::isSyntacticallyPublic shouldBe true
+            it should haveVisibility(V_PUBLIC)
+            it should haveExplicitModifier(PUBLIC)
+            it should haveModifier(PUBLIC)
         }
     }
 
     parserTest("Private methods in interface should be private", J9..Latest) {
 
         "private int de() { return 1; }" should matchDeclaration<ASTMethodDeclaration>(ignoreChildren = true) {
-            it::isPublic shouldBe false
-            it::isPrivate shouldBe true
-            it::isSyntacticallyPublic shouldBe false
+            it should haveVisibility(V_PRIVATE)
+            it shouldNot haveExplicitModifier(PUBLIC)
+            it shouldNot haveModifier(PUBLIC)
+            it should haveExplicitModifier(PRIVATE)
+            it should haveModifier(PRIVATE)
         }
 
     }
@@ -53,13 +60,13 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         genClassHeader = "interface Bar"
 
         "int bar();" should matchDeclaration<ASTMethodDeclaration>(ignoreChildren = true) {
-            it::isDefault shouldBe false
-            it::isAbstract shouldBe true
+            it shouldNot haveModifier(DEFAULT)
+            it should haveModifier(ABSTRACT)
         }
 
         "abstract int bar();" should matchDeclaration<ASTMethodDeclaration>(ignoreChildren = true) {
-            it::isDefault shouldBe false
-            it::isAbstract shouldBe true
+            it shouldNot haveModifier(DEFAULT)
+            it should haveModifier(ABSTRACT)
         }
 
     }
@@ -69,8 +76,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         genClassHeader = "interface Bar"
 
         "default int kar() { return 1; } " should matchDeclaration<ASTMethodDeclaration>(ignoreChildren = true) {
-            it::isDefault shouldBe true
-            it::isAbstract shouldBe false
+            it should haveModifier(DEFAULT)
+            it shouldNot haveModifier(ABSTRACT)
         }
 
         // default abstract is an invalid combination of modifiers so we won't encounter it in real analysis
@@ -84,6 +91,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
             it::getArity shouldBe 0
+
+            it::getModifiers shouldBe modifiers {  }
 
             it::getResultType shouldBe voidResult()
 
@@ -104,6 +113,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
     parserTest("Throws list can be annotated") {
 
         "void bar() throws @Oha IOException, @Aha java.io.@Oha Bar { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getModifiers shouldBe modifiers {  }
 
             it::getResultType shouldBe voidResult()
 
@@ -132,11 +143,15 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "void bar(@Oha IOException @Aha ... java) { }" should matchDeclaration<ASTMethodDeclaration> {
 
+            it::getModifiers shouldBe modifiers {  }
+
             it::getResultType shouldBe voidResult()
 
             it::getFormalParameters shouldBe formalsList(1) {
                 child<ASTFormalParameter> {
-                    annotation("Oha")
+                    it::getModifiers shouldBe modifiers {
+                        annotation("Oha")
+                    }
                     arrayType {
                         classType("IOException")
                         it::getDimensions shouldBe child {
@@ -156,11 +171,15 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "void bar(@Oha IOException []@O[] @Aha ... java) { }" should matchDeclaration<ASTMethodDeclaration> {
 
+            it::getModifiers shouldBe modifiers {  }
+
             it::getResultType shouldBe voidResult()
 
             it::getFormalParameters shouldBe formalsList(1) {
                 child<ASTFormalParameter> {
-                    annotation("Oha")
+                    it::getModifiers shouldBe modifiers {
+                        annotation("Oha")
+                    }
                     arrayType {
                         classType("IOException")
                         it::getDimensions shouldBe child {
@@ -186,6 +205,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
     parserTest("Extra dimensions can be annotated") {
 
         "void bar() [] @O[] { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getModifiers shouldBe modifiers {  }
 
             it::getResultType shouldBe voidResult()
 
@@ -214,6 +235,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             "int bar(Foo f);" shouldNot parse()
             "public int bar();" should parseAs {
                 annotationMethod {
+                    modifiers {  }
+
                     resultType {
                         primitiveType(PrimitiveType.INT)
                     }
@@ -223,6 +246,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             "int bar() default 2;" should parseAs {
                 annotationMethod {
+                    it::getModifiers shouldBe modifiers {  }
+
                     it::getResultType shouldBe resultType {
                         primitiveType(PrimitiveType.INT)
                     }
@@ -234,6 +259,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             "int bar() @NonZero [];" should parseAs {
                 annotationMethod {
+                    it::getModifiers shouldBe modifiers {  }
                     it::getResultType shouldBe resultType {
                         primitiveType(PrimitiveType.INT)
                     }
@@ -250,6 +276,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             "Override bar() default @Override;" should parseAs {
                 annotationMethod {
+                    it::getModifiers shouldBe modifiers {  }
                     it::getResultType shouldBe resultType {
                         classType("Override")
                     }
@@ -261,6 +288,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             "Override bar()[] default { @Override };" should parseAs {
                 annotationMethod {
+                    it::getModifiers shouldBe modifiers {  }
                     it::getResultType shouldBe resultType {
                         classType("Override")
                     }
@@ -294,6 +322,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             // notice that arity is zero
             it::getArity shouldBe 0
 
+            it::getModifiers shouldBe modifiers {  }
+
             it::getResultType shouldBe voidResult()
 
             it::getFormalParameters shouldBe child {
@@ -319,6 +349,8 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::isVoid shouldBe true
             it::getArity shouldBe 1
 
+            it::getModifiers shouldBe modifiers {  }
+
             it::getResultType shouldBe voidResult()
 
             it::getFormalParameters shouldBe child {
@@ -332,6 +364,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                 it::toList shouldBe listOf(
                         child {
+                            localVarModifiers {  }
                             primitiveType(PrimitiveType.INT)
                             variableId("other")
                         }
@@ -351,7 +384,9 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             it::getName shouldBe "bar"
 
-            annotation("OnDecl")
+            it::getModifiers shouldBe modifiers {
+                annotation("OnDecl")
+            }
 
             it::getTypeParameters shouldBe typeParamList {
                 typeParam("T") {

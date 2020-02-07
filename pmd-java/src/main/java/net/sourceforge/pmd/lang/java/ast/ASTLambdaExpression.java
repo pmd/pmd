@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
 /**
@@ -20,10 +20,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
+public final class ASTLambdaExpression extends AbstractJavaExpr implements ASTExpression, MethodLikeNode {
 
-    private JavaTypeDefinition typeDefinition;
-    private int parenDepth;
+    private JavaOperationQualifiedName qualifiedName;
 
     ASTLambdaExpression(int id) {
         super(id);
@@ -43,9 +42,11 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
         return !isBlockBody();
     }
 
+
     /**
      * Returns the body of this lambda if it is a block.
      */
+    @Nullable
     public ASTBlock getBlockBody() {
         return NodeStream.of(getLastChild()).filterIs(ASTBlock.class).first();
     }
@@ -53,39 +54,11 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
     /**
      * Returns the body of this lambda if it is an expression.
      */
+    @Nullable
     public ASTExpression getExpressionBody() {
         return NodeStream.of(getLastChild()).filterIs(ASTExpression.class).first();
     }
 
-
-    // TODO MethodLikeNode should be removed, and this class extend AbstractJavaExpr
-
-    void bumpParenDepth() {
-        parenDepth++;
-    }
-
-    @Override
-    public int getParenthesisDepth() {
-        return parenDepth;
-    }
-
-    @Override
-    @Nullable
-    public Class<?> getType() {
-        return typeDefinition == null ? null : typeDefinition.getType();
-    }
-
-
-    @Override
-    @Nullable
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
-    }
-
-
-    void setTypeDefinition(JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
-    }
 
 
     @Override
@@ -105,6 +78,15 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
         visitor.visit(this, data);
     }
 
+
+    @Override
+    public JavaOperationQualifiedName getQualifiedName() {
+        return qualifiedName;
+    }
+
+    void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
 
     @Override
     public MethodLikeKind getKind() {

@@ -17,18 +17,13 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceDeclaration ::= ClassModifier*
+ * ClassOrInterfaceDeclaration ::= {@link ASTModifierList ModifierList}
  *                                 ( "class" | "interface" )
  *                                 &lt;IDENTIFIER&gt;
- *                                 {@linkplain ASTTypeParameters TypeParameters}?
- *                                 {@linkplain ASTExtendsList ExtendsList}?
- *                                 {@linkplain ASTImplementsList ImplementsList}?
- *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
- *
- *
- * ClassModifier ::=  "public" | "private"  | "protected"
- *                  | "final"  | "abstract" | "static" | "strictfp"
- *                  | {@linkplain ASTAnnotation Annotation}
+ *                                 {@link ASTTypeParameters TypeParameters}?
+ *                                 {@link ASTExtendsList ExtendsList}?
+ *                                 {@link ASTImplementsList ImplementsList}?
+ *                                 {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
  *
  * </pre>
  */
@@ -46,33 +41,17 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
     }
 
     @Override
-    public boolean isPackagePrivate() {
-        return super.isPackagePrivate() && !isLocal();
-    }
-
-    @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
 
+    @Override
     public boolean isInterface() {
         return this.isInterface;
     }
 
     void setInterface() {
         this.isInterface = true;
-    }
-
-    @Override
-    public TypeKind getTypeKind() {
-        return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
-    }
-
-
-    @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTClassOrInterfaceBody.class)
-            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 
 

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_3
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 
 /**
  * @author Clément Fournier
@@ -23,7 +25,7 @@ class ASTAnnotationTest : ParserTestSpec({
         }
     }
 
-    parserTest("Marker annotations") {
+    parserTest("Marker annotations", javaVersions = J1_5..Latest) {
 
         inContext(AnnotationParsingCtx) {
 
@@ -44,7 +46,7 @@ class ASTAnnotationTest : ParserTestSpec({
 
     }
 
-    parserTest("Single-value shorthand") {
+    parserTest("Single-value shorthand", javaVersions = J1_5..Latest) {
 
         inContext(AnnotationParsingCtx) {
 
@@ -94,7 +96,7 @@ class ASTAnnotationTest : ParserTestSpec({
 
     }
 
-    parserTest("Normal annotation") {
+    parserTest("Normal annotation", javaVersions = J1_5..Latest) {
 
         inContext(AnnotationParsingCtx) {
 

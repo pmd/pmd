@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  * @see MethodLikeNode
  * @since 5.8.1
  */
-public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, SignedNode<ASTMethodOrConstructorDeclaration> {
+public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, AccessNode, SignedNode<ASTMethodOrConstructorDeclaration> {
 
 
     /**
@@ -40,6 +40,21 @@ public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, Signe
     @Override
     JavaOperationSignature getSignature();
 
+
+
+    /**
+     * Returns true if this method is abstract, so doesn't
+     * declare a body. Interface members are
+     * implicitly abstract, whether they declare the
+     * {@code abstract} modifier or not. Default interface
+     * methods are not abstract though, consistently with the
+     * standard reflection API.
+     */
+    // TODO is this relevant?
+    @Override
+    default boolean isAbstract() {
+        return hasModifiers(JModifier.ABSTRACT);
+    }
 
     /**
      * Returns the formal parameters node of this method or constructor.

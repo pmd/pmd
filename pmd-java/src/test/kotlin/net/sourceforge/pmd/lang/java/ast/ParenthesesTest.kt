@@ -21,6 +21,7 @@ class ParenthesesTest : ParserTestSpec({
             // we use a statement context to avoid the findFirstNodeOnStraightLine skipping parentheses
 
             "int a = 3;" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe int(3) {
@@ -31,6 +32,7 @@ class ParenthesesTest : ParserTestSpec({
             }
 
             "int a = (3);" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe int(3) {
@@ -41,6 +43,7 @@ class ParenthesesTest : ParserTestSpec({
             }
 
             "int a = ((3));" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe int(3) {
@@ -53,6 +56,7 @@ class ParenthesesTest : ParserTestSpec({
             }
 
             "int a = ((a)).f;" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe fieldAccess("f") {
@@ -69,6 +73,7 @@ class ParenthesesTest : ParserTestSpec({
                 }
             }
             "int a = ((a).f);" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe fieldAccess("f") {
@@ -89,6 +94,7 @@ class ParenthesesTest : ParserTestSpec({
 
             // the left parens shouldn't be flattened by AbstractLrBinaryExpr
             "int a = ((1 + 2) + f);" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
@@ -119,6 +125,7 @@ class ParenthesesTest : ParserTestSpec({
             }
 
             "int a = (1 + (2 + f));" should matchStmt<ASTLocalVariableDeclaration> {
+                localVarModifiers {  }
                 primitiveType(INT)
                 variableDeclarator("a") {
                     it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {

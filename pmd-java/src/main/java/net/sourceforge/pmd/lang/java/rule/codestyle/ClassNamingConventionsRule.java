@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -50,7 +49,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     // This could probably be moved to ClassOrInterfaceDeclaration
     // to share the implementation and be used from XPath
     private boolean isUtilityClass(ASTAnyTypeDeclaration node) {
-        if (node.getTypeKind() != TypeKind.CLASS) {
+        if (node.isInterface() || node.isEnum()) {
             return false;
         }
 

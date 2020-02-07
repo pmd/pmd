@@ -17,7 +17,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -206,9 +205,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         int localIndex = NOTLOCAL_PLACEHOLDER;
-        if (node instanceof ASTClassOrInterfaceDeclaration
-                && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
-
+        if (node.isLocal()) {
             localIndex = getNextIndexFromHistogram(currentLocalIndices.peek(), node.getSimpleName(), 1);
         }
 
@@ -229,7 +226,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {
 
         updateContextForAnonymousClass();
-        node.setQualifiedName(contextClassQName());
+        InternalApiBridge.setQname(node, contextClassQName());
         super.visit(node, data);
         rollbackClassContext();
 
@@ -376,7 +373,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
             return "static";
         } else if (parent instanceof ASTFieldDeclaration) {
             ASTFieldDeclaration field = (ASTFieldDeclaration) parent;
-            if (field.isStatic() || field.isInterfaceMember()) {
+            if (field.isStatic() || field.getEnclosingType().isInterface()) {
                 return "static";
             }
             if (innermostEnclosingTypeName.peek().isAnonymousClass()) {

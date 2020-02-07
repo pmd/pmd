@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -28,6 +30,10 @@ public final class ASTTypeParameter extends AbstractJavaTypeNode implements Anno
         super(id);
     }
 
+    @Override
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        return children(ASTAnnotation.class).toList();
+    }
 
     /**
      * Returns the name of the type variable introduced by this declaration.

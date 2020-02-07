@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Locale;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
@@ -21,7 +20,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  *     Ultimately this supertype is not useful and can go away.
  */
 @Deprecated
-public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNode {
+public interface MethodLikeNode extends JavaQualifiableNode, JavaNode {
 
     /**
      * Returns a token indicating whether this node is a lambda
@@ -30,7 +29,7 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
      * implementing class.
      *
      * @return The kind of method-like
-     * @deprecated Same reason as for {@link TypeKind}
+     * @deprecated Same reason as for TypeKind
      */
     @Deprecated
     MethodLikeKind getKind();
@@ -48,7 +47,7 @@ public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNod
     /**
      * Kind of method-like.
      *
-     * @deprecated Same reason as for {@link TypeKind}
+     * @deprecated Same reason as for TypeKind
      */
     @Deprecated
     enum MethodLikeKind {

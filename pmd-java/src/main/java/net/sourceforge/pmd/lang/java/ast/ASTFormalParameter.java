@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
@@ -19,19 +20,26 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * <pre class="grammar">
  *
- * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * FormalParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
  */
-public final class ASTFormalParameter extends AbstractJavaAccessTypeNode
-    implements Annotatable,
-               InternalInterfaces.VariableIdOwner {
+public final class ASTFormalParameter extends AbstractJavaTypeNode
+    implements FinalizableNode,
+               Annotatable,
+               VariableIdOwner {
 
     @InternalApi
     @Deprecated
     public ASTFormalParameter(int id) {
         super(id);
     }
+
+    @Override
+    public Visibility getVisibility() {
+        return Visibility.V_LOCAL;
+    }
+
 
     /**
      * Returns true if this node is a varargs parameter. Then, the type

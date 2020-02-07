@@ -43,7 +43,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
+public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements AccessNode {
 
     private VariableNameDeclaration nameDeclaration;
 
@@ -90,6 +90,19 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
         return children(ASTArrayDimensions.class).first();
     }
 
+    @Override
+    public ASTModifierList getModifiers() {
+        // delegates modifiers
+        return getModifierOwnerParent().getModifiers();
+    }
+
+    private AccessNode getModifierOwnerParent() {
+        JavaNode parent = getParent();
+        if (parent instanceof ASTVariableDeclarator) {
+            return (AccessNode) parent.getParent();
+        }
+        return (AccessNode) parent;
+    }
 
     /**
      * Returns true if the declared variable has an array type.
@@ -163,6 +176,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
      * Doesn't account for the "effectively-final" nuance. Resource
      * declarations are implicitly final.
      */
+    @Override
     public boolean isFinal() {
         if (isResourceDeclaration()) {
             // this is implicit even if "final" is not explicitly declared.

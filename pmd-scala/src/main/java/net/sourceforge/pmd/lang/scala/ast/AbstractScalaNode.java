@@ -61,7 +61,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
 
     @Override
     public int getEndColumn() {
-        return pos.endColumn(); // no +1
+        return pos.endColumn() + 1;
     }
 
     @Override

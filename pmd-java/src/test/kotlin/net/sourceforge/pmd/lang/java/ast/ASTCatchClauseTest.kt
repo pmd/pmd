@@ -30,6 +30,8 @@ class ASTCatchClauseTest : ParserTestSpec({
             it::getBody shouldBe block { }
             catchClause("ioe") {
                 catchFormal("ioe") {
+                    it::getModifiers shouldBe localVarModifiers {  }
+
                     it::isMulticatch shouldBe false
                     it::getTypeNode shouldBe classType("IOException")
 
@@ -50,6 +52,8 @@ class ASTCatchClauseTest : ParserTestSpec({
             catchClause("e") {
                 catchFormal("e") {
                     it::isMulticatch shouldBe true
+
+                    it::getModifiers shouldBe localVarModifiers {  }
 
                     it::getTypeNode shouldBe unionType {
                         classType("IOException")
@@ -76,7 +80,9 @@ class ASTCatchClauseTest : ParserTestSpec({
                 catchFormal("e") {
                     it::isMulticatch shouldBe true
 
-                    annotation("B") // not a type annotation
+                    it::getModifiers shouldBe localVarModifiers {
+                        annotation("B") // not a type annotation
+                    }
 
                     unionType {
                         classType("IOException")

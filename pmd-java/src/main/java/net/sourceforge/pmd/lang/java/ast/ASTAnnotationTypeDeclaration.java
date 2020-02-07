@@ -4,26 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 /**
  * The declaration of an annotation type.
  *
- * <p>Note that in constrast to interface types, no {@linkplain ASTExtendsList extends clause}
+ * <p>Note that in contrast to interface types, no {@linkplain ASTExtendsList extends clause}
  * is permitted, and an annotation type cannot be generic.
  *
  * <pre class="grammar">
  *
- * AnnotationTypeDeclaration ::= AnnotationTypeModifier*
+ * AnnotationTypeDeclaration ::= {@link ASTModifierList ModifierList}
  *                               "@" "interface"
  *                               &lt;IDENTIFIER&gt;
  *                               {@link ASTAnnotationTypeBody AnnotationTypeBody}
- *
- *
- *
- * AnnotationTypeModifier ::= "public" | "private"  | "protected"
- *                          | "abstract" | "static"
- *                          | {@linkplain ASTAnnotation Annotation}
  *
  * </pre>
  *
@@ -48,14 +40,8 @@ public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclarati
 
 
     @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.ANNOTATION;
+    public boolean isInterface() {
+        return true;
     }
 
-
-    @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTAnnotationTypeBody.class)
-            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
-    }
 }

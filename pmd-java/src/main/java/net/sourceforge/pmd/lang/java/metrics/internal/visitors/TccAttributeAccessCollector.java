@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -61,8 +60,7 @@ public class TccAttributeAccessCollector extends JavaParserVisitorAdapter {
         if (Objects.equals(node, exploredClass)) {
             methodAttributeAccess = new HashMap<>();
             super.visit(node, data);
-        } else if (node instanceof ASTClassOrInterfaceDeclaration
-            && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
+        } else if (node.isLocal()) {
             super.visit(node, data);
         }
         return methodAttributeAccess;

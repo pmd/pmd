@@ -125,10 +125,9 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
     }
 
     private boolean shouldReport(final AccessNode decl) {
-        final ASTAnyTypeDeclaration parentClassOrInterface = decl
-                .getFirstParentOfType(ASTAnyTypeDeclaration.class);
+        final ASTAnyTypeDeclaration enclosing = decl.getEnclosingType();
 
-        boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
+        boolean isConcreteClass = !enclosing.isInterface() && !enclosing.isEnum();
 
         // ignore if it's inside an interface / Annotation
         return isConcreteClass && isMissingComment(decl);
@@ -154,7 +153,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {
         // don't report on interfaces
-        return decl.getTypeKind() != ASTAnyTypeDeclaration.TypeKind.INTERFACE
+        return !decl.isInterface()
                 && isMissingComment(decl)
                 // either nested or top level and we should check it
                 && (decl.isNested() || getProperty(TOP_LEVEL_TYPES));

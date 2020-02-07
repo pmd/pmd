@@ -18,6 +18,8 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
             // notice that arity is zero
             it::getArity shouldBe 0
 
+            it::getModifiers shouldBe modifiers {  }
+
             it::getFormalParameters shouldBe formalsList(0) {
                 it::getReceiverParameter shouldBe child {
                     classType("Foo") {
@@ -35,6 +37,8 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
             it::isVarargs shouldBe false
             it::getArity shouldBe 1
 
+            it::getModifiers shouldBe modifiers {  }
+
             it::getFormalParameters shouldBe formalsList(1) {
 
                 it::getReceiverParameter shouldBe child {
@@ -45,6 +49,7 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
 
                 it::toList shouldBe listOf(
                         child {
+                            localVarModifiers {  }
                             primitiveType(PrimitiveType.INT)
                             variableId("other")
                         }
@@ -64,7 +69,9 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
 
             it::getName shouldBe "Foo"
 
-            annotation("OnDecl")
+            it::getModifiers shouldBe modifiers {
+                annotation("OnDecl")
+            }
 
             typeParamList {
                 typeParam("T") {

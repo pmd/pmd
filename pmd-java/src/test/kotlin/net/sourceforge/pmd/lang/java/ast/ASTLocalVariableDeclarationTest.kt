@@ -20,6 +20,8 @@ class ASTLocalVariableDeclarationTest : ParserTestSpec({
             "int x@A[];" should parseAs {
                 localVarDecl {
 
+                    it::getModifiers shouldBe modifiers { }
+
                     primitiveType(INT)
 
                     varDeclarator {

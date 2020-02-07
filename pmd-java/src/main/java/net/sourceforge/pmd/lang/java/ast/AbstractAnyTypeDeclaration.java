@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -12,9 +11,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Abstract class for type declarations nodes.
  */
-abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
+abstract class AbstractAnyTypeDeclaration extends AbstractJavaNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
     private JavaTypeQualifiedName qualifiedName;
+    private JavaTypeDefinition typeDefinition;
 
 
     AbstractAnyTypeDeclaration(int i) {
@@ -33,53 +33,8 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode imp
     }
 
     @Override
-    public String getSimpleName() {
-        return getImage();
-    }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isNested() || isLocal();
-    }
-
-    /**
-     * Returns true if the enclosing type of this type declaration
-     * is any of the given kinds. If this declaration is a top-level
-     * declaration, returns false. This won't consider anonymous classes
-     * until #905 is tackled. TODO 7.0.0
-     *
-     * @param kinds Kinds to test
-     */
-    // TODO 7.0.0 move that up to ASTAnyTypeDeclaration
-    public final boolean enclosingTypeIsA(TypeKind... kinds) {
-
-        ASTAnyTypeDeclaration parent = getEnclosingTypeDeclaration();
-        if (parent == null) {
-            return false;
-        }
-
-        for (TypeKind k : kinds) {
-            if (parent.getTypeKind() == k) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Returns the enclosing type of this type, if it is nested.
-     * Otherwise returns null. This won't consider anonymous classes
-     * until #905 is tackled. TODO 7.0.0
-     */
-    public final ASTAnyTypeDeclaration getEnclosingTypeDeclaration() {
-        if (!isNested()) {
-            return null;
-        }
-        Node parent = getNthParent(3);
-
-        return parent instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) parent : null;
+    public Visibility getVisibility() {
+        return isLocal() ? Visibility.V_LOCAL : ASTAnyTypeDeclaration.super.getVisibility();
     }
 
     @Override
@@ -90,6 +45,15 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode imp
     void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
         this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());
+    }
+
+    void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+        this.typeDefinition = typeDefinition;
+    }
+
+    @Override
+    public JavaTypeDefinition getTypeDefinition() {
+        return typeDefinition;
     }
 }
 

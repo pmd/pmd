@@ -243,7 +243,10 @@ options {
 PARSER_BEGIN(JavaParserImpl)
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -347,6 +350,18 @@ class JavaParserImpl {
            jjtree.popNode();
            jjtree.pushNode(replacement);
        }
+  }
+
+  private void pushEmptyModifierList() {
+        ASTModifierList emptyMods = new ASTModifierList(JJTMODIFIERLIST);
+
+        emptyMods.setDeclaredModifiers(Collections.emptySet());
+
+        JavaccToken tok = getToken(1);
+        emptyMods.jjtSetFirstToken(tok);
+        emptyMods.jjtSetLastToken(tok);
+
+        jjtree.pushNode(emptyMods);
   }
 
   private void forceTypeContext() {
@@ -819,7 +834,7 @@ private void ModuleDeclLahead() #void:
 void PackageDeclaration() :
 {String image;}
 {
-  AnnotationList() "package" image=VoidName() { jjtThis.setImage(image); } ";"
+  ModAnnotationList() "package" image=VoidName() { jjtThis.setImage(image); } ";"
 }
 
 void ImportDeclaration() :
@@ -835,62 +850,54 @@ void ImportDeclaration() :
  * syntax errors for simple modifier mistakes. It will also enable us to give
  * better error messages.
  */
-int Modifiers() #void:
+void ModifierList():
 {
-   int modifiers = 0;
-   int numAnnots = 0;
+   EnumSet<JModifier> modifiers = EnumSet.noneOf(JModifier.class);
 }
 {
  (
   LOOKAHEAD(2)
   (
-   "public" { modifiers |= AccessNode.PUBLIC; }
-  | "static" { modifiers |= AccessNode.STATIC; }
-  | "protected" { modifiers |= AccessNode.PROTECTED; }
-  | "private" { modifiers |= AccessNode.PRIVATE; }
-  | "final" { modifiers |= AccessNode.FINAL; }
-  | "abstract" { modifiers |= AccessNode.ABSTRACT; }
-  | "synchronized" { modifiers |= AccessNode.SYNCHRONIZED; }
-  | "native" { modifiers |= AccessNode.NATIVE; }
-  | "transient" { modifiers |= AccessNode.TRANSIENT; }
-  | "volatile" { modifiers |= AccessNode.VOLATILE; }
-  | "strictfp" { modifiers |= AccessNode.STRICTFP; }
-  | "default" { modifiers |= AccessNode.DEFAULT; }
-  | Annotation() {numAnnots++;}
+    "public"        { modifiers.add(JModifier.PUBLIC); }
+  | "static"        { modifiers.add(JModifier.STATIC); }
+  | "protected"     { modifiers.add(JModifier.PROTECTED); }
+  | "private"       { modifiers.add(JModifier.PRIVATE); }
+  | "final"         { modifiers.add(JModifier.FINAL); }
+  | "abstract"      { modifiers.add(JModifier.ABSTRACT); }
+  | "synchronized"  { modifiers.add(JModifier.SYNCHRONIZED); }
+  | "native"        { modifiers.add(JModifier.NATIVE); }
+  | "transient"     { modifiers.add(JModifier.TRANSIENT); }
+  | "volatile"      { modifiers.add(JModifier.VOLATILE); }
+  | "strictfp"      { modifiers.add(JModifier.STRICTFP); }
+  | "default"       { modifiers.add(JModifier.DEFAULT); }
+  | Annotation()
   )
  )*
- {
-    jjtree.injectRight(numAnnots);
-    return modifiers;
- }
+ { jjtThis.setDeclaredModifiers(modifiers); }
+ { jjtree.injectRight(1); } // inject the modifier node in the follower
 }
 
 /*
  * Declaration syntax follows.
  */
 void TypeDeclaration():
+{}
 {
-   int modifiers;
-}
-{
-  modifiers = Modifiers()
+  ModifierList()
   (
-     ClassOrInterfaceDeclaration(modifiers)
+     ClassOrInterfaceDeclaration()
    |
-     LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
+     LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
    |
-     AnnotationTypeDeclaration(modifiers)
+     AnnotationTypeDeclaration()
   )
 }
 
-void ClassOrInterfaceDeclaration(int modifiers):
-{
-    JavaccToken t = null;
-    jjtThis.setModifiers(modifiers);
-}
+void ClassOrInterfaceDeclaration():
+{}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )
-  t=<IDENTIFIER> { jjtThis.setImage(t.image); }
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -898,12 +905,10 @@ void ClassOrInterfaceDeclaration(int modifiers):
 }
 
 void ExtendsList():
-{
-   boolean extendsMoreThanOne = false;
-}
+{}
 {
    "extends" AnnotatedClassOrInterfaceType()
-   ( "," AnnotatedClassOrInterfaceType() { extendsMoreThanOne = true; } )*
+   ( "," AnnotatedClassOrInterfaceType() )*
 }
 
 void ImplementsList():
@@ -913,11 +918,9 @@ void ImplementsList():
    ( "," AnnotatedClassOrInterfaceType() )*
 }
 
-void EnumDeclaration(int modifiers):
+void EnumDeclaration():
 {
-
-JavaccToken t;
-jjtThis.setModifiers(modifiers);
+  JavaccToken t;
 }
 {
   t = <IDENTIFIER> {
@@ -943,7 +946,7 @@ void EnumBody():
 void EnumConstant():
 {}
 {
-  AnnotationList() VariableDeclaratorId() [ ArgumentList() ] [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
+  ModAnnotationList() VariableDeclaratorId() [ ArgumentList() ] [ AnonymousClassDeclaration() ]
 }
 
 void TypeParameters():
@@ -966,25 +969,23 @@ void ClassOrInterfaceBody():
 }
 
 void ClassOrInterfaceBodyDeclaration():
-{
-   int modifiers;
-}
+{}
 { LOOKAHEAD(["static"] "{" ) Initializer()
-|  modifiers = Modifiers()
-  ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
-    | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
-    | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
-    | LOOKAHEAD( Type() <IDENTIFIER> (AnnotationList() "[" "]")* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
-    | LOOKAHEAD(2) MethodDeclaration(modifiers)
-    | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
+|  ModifierList()
+  ( LOOKAHEAD(3) ClassOrInterfaceDeclaration()
+    | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+    | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration()
+    | LOOKAHEAD( Type() <IDENTIFIER> (AnnotationList() "[" "]")* ( "," | "=" | ";" ) )  FieldDeclaration()
+    | LOOKAHEAD(2) MethodDeclaration()
+    | LOOKAHEAD(2) AnnotationTypeDeclaration()
   )
 |
   ";" #EmptyDeclaration
 }
 
 
-void FieldDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);}
+void FieldDeclaration() :
+{}
 {
   Type() VariableDeclarator() ( "," VariableDeclarator() )* ";"
 }
@@ -1027,10 +1028,8 @@ void ArrayInitializer() :
   "{" [ VariableInitializer() ( LOOKAHEAD(2) "," VariableInitializer() )* ] [ "," ] "}"
 }
 
-void MethodDeclaration(int modifiers) :
-{
-    jjtThis.setModifiers(modifiers);
-}
+void MethodDeclaration() :
+{}
 {
   [ TypeParameters() ]
   ResultType()
@@ -1049,9 +1048,9 @@ void FormalParameters() :
 }
 
 void FormalParameter() :
-{boolean isFinal = false;}
+{}
 {
-   isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+   LocalVarModifierList()
    FormalParamType() ("|" FormalParamType())* // remove this stuff when #2202 is merged
    VariableIdWithDims()
 }
@@ -1078,13 +1077,11 @@ void VarargsDim() #ArrayTypeDim:
 }
 
 
-
-void ConstructorDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);
-JavaccToken t;}
+void ConstructorDeclaration() :
+{JavaccToken t;}
 {
     [ TypeParameters() ]
-   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ ThrowsList() ]
+   <IDENTIFIER>  {setLastTokenImage(jjtThis);} FormalParameters() [ ThrowsList() ]
   ("{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
@@ -1155,6 +1152,12 @@ void IntersectionType() #IntersectionType(isIntersection):
 
 void AnnotationList() #void:
 {}
+{
+  (Annotation())*
+}
+
+void ModAnnotationList() #ModifierList:
+{jjtThis.setDeclaredModifiers(Collections.emptySet());}
 {
   (Annotation())*
 }
@@ -1785,21 +1788,24 @@ void LambdaExpression():
 void LambdaParameterList():
 {}
 {
-      VariableDeclaratorId() #LambdaParameter
+      SimpleLambdaParam()
     | LOOKAHEAD("(" <IDENTIFIER> ("," | ")"))
-        "(" [ VariableDeclaratorId() #LambdaParameter(true) ( "," VariableDeclaratorId() #LambdaParameter )* ] ")"
+        "(" [ SimpleLambdaParam() ( "," SimpleLambdaParam())* ] ")"
     | "(" [ LambdaParameter() ( "," LambdaParameter() )* ] ")"
 }
 
-void LambdaParameter():
+void SimpleLambdaParam() #LambdaParameter:
+{pushEmptyModifierList();}
 {
-  boolean isVarType = false;
-  boolean isFinal = false;
+    VariableDeclaratorId()
 }
+
+void LambdaParameter():
+{}
 {
+    LocalVarModifierList() // this weakens the grammar a bit
     [
-       isFinal=LocalVarModifierList()  {jjtThis.setFinal(isFinal);}
-       isVarType=LambdaParameterType()
+       LambdaParameterType()
     ]
     VariableIdWithDims()
 }
@@ -1864,8 +1870,17 @@ void QualifiedAllocationExpr() #ConstructorCall:
    [ TypeArguments() ]
    AnnotatedClassOrInterfaceType()
    ArgumentList()
-   [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
+   [ AnonymousClassDeclaration() ]
 
+}
+
+
+void AnonymousClassDeclaration():
+{
+  pushEmptyModifierList();
+}
+{
+    ClassOrInterfaceBody()
 }
 
 
@@ -1888,7 +1903,7 @@ void UnqualifiedAllocationExpr() #void :
            (
               ArrayDimsAndInits() {isArrayInit=true;}
            |
-             ArgumentList() [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
+             ArgumentList() [ AnonymousClassDeclaration() ]
            )
        )
        {/*Empty unit, important*/}
@@ -1977,13 +1992,13 @@ void BlockStatement() #void:
   // we need to lookahead until the "class" token,
   // because a method ref may be annotated
   // -> so Expression, and hence Statement, may start with "@"
-  LOOKAHEAD(Modifiers() "class") LocalClassDecl()
+  LOOKAHEAD(ModifierList() "class") LocalClassDecl()
 |
   Statement()
 }
 
 void LocalClassDecl() #LocalClassStatement:
-{int mods = 0;}
+{}
 {
     // this preserves the modifiers of the local class.
     // it allows for modifiers that are forbidden for local classes,
@@ -1995,26 +2010,26 @@ void LocalClassDecl() #LocalClassStatement:
     // In particular, it unfortunately allows local class declarations to start
     // with a "default" modifier, which introduces an ambiguity with default
     // switch labels. This is guarded by a custom lookahead around SwitchLabel
-    mods=Modifiers() ClassOrInterfaceDeclaration(mods)
+    ModifierList() ClassOrInterfaceDeclaration()
 }
 
 /*
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.4
  */
 void LocalVariableDeclaration() :
-{boolean isFinal = false;}
+{}
 {
-  isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+  LocalVarModifierList()
   LocalVariableType()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
 }
 
-private boolean LocalVarModifierList() #void:
-{boolean isFinal = false;}
+private void LocalVarModifierList() #ModifierList:
+{Set<JModifier> set = Collections.emptySet(); }
 {
-    ( "final" {isFinal = true;} | Annotation() )*
-    {return isFinal;}
+    ( "final" { set = ASTModifierList.JUST_FINAL; } | Annotation() )*
+    {jjtThis.setDeclaredModifiers(set);}
 }
 
 void LocalVariableType() #void:
@@ -2216,11 +2231,11 @@ void ResourceList():
 }
 
 void Resource() :
-{boolean isFinal = false;}
+{}
 {
    LOOKAHEAD(("final" | Annotation())* LocalVariableType() VariableDeclaratorId() "=" )
         (
-            isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+            LocalVarModifierList()
             LocalVariableType() VariableDeclarator()
         ) #LocalVariableDeclaration
    |
@@ -2243,9 +2258,9 @@ void CatchClause() :
 
 
 void CatchParameter():
-{boolean isFinal = false; boolean multi=false;}
+{boolean multi=false;}
 {
-   isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+   LocalVarModifierList()
    ( AnnotatedClassOrInterfaceType() ( "|" AnnotatedClassOrInterfaceType()  {multi=true;} )* ) #UnionType(multi)
    VariableDeclaratorId()
 }
@@ -2359,10 +2374,8 @@ void TypeAnnotation() #void:
 
 /* Annotation Types. */
 
-void AnnotationTypeDeclaration(int modifiers):
-{
-jjtThis.setModifiers(modifiers);
-}
+void AnnotationTypeDeclaration():
+{}
 {
   "@" "interface" <IDENTIFIER> { setLastTokenImage(jjtThis); }
   AnnotationTypeBody()
@@ -2375,40 +2388,32 @@ void AnnotationTypeBody():
 }
 
 void AnnotationTypeMemberDeclaration():
+{}
 {
-   int modifiers;
-}
-{
- modifiers = Modifiers()
+ ModifierList()
  (
-   LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration(modifiers)
+   LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration()
   |
-   ClassOrInterfaceDeclaration(modifiers)
+   ClassOrInterfaceDeclaration()
   |
-   LOOKAHEAD(3) EnumDeclaration(modifiers)
+   LOOKAHEAD(3) EnumDeclaration()
   |
-   AnnotationTypeDeclaration(modifiers)
+   AnnotationTypeDeclaration()
   |
-   FieldDeclaration(modifiers)
+   FieldDeclaration()
  )
  |
    ";" #EmptyDeclaration
 }
 
-void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
-{
-  JavaccToken t;
-  jjtThis.setModifiers(modifiers);
-}
+void AnnotationMethodDeclaration() #MethodDeclaration:
+{}
 {
   Type() #ResultType
-  t=<IDENTIFIER>
+  <IDENTIFIER> {setLastTokenImage(jjtThis);}
   ("(" ")") #FormalParameters(true)
   [ Dims() ]
   [ DefaultValue() ] ";"
-  {
-    jjtThis.setImage(t.image);
-  }
 }
 
 void DefaultValue():

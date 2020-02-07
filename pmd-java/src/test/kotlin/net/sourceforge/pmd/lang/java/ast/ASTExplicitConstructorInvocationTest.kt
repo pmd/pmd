@@ -12,6 +12,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
         "Foo() { this(); }" should matchDeclaration<ASTConstructorDeclaration> {
 
+            it::getModifiers shouldBe modifiers { }
+
             child<ASTFormalParameters> { }
 
             block {
@@ -27,6 +29,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
 
         "Foo() { <String>this(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            it::getModifiers shouldBe modifiers { }
 
             child<ASTFormalParameters> { }
 
@@ -52,6 +56,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
         "Foo() { super(); }" should matchDeclaration<ASTConstructorDeclaration> {
 
+            it::getModifiers shouldBe modifiers { }
+
             child<ASTFormalParameters> { }
 
             block {
@@ -69,6 +75,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
 
         "Foo() { <String>super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            it::getModifiers shouldBe modifiers { }
 
             child<ASTFormalParameters> { }
 
@@ -94,6 +102,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
         "Foo() { o.super(); }" should matchDeclaration<ASTConstructorDeclaration> {
 
+            it::getModifiers shouldBe modifiers { }
+
             child<ASTFormalParameters> { }
 
             block {
@@ -112,6 +122,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
 
         "Foo() { o.<String>super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            it::getModifiers shouldBe modifiers { }
 
             child<ASTFormalParameters> { }
 
@@ -135,6 +147,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
         "Foo() { o.<S>foo().<String>super(); }" should matchDeclaration<ASTConstructorDeclaration> {
 
+            it::getModifiers shouldBe modifiers { }
+
             child<ASTFormalParameters> { }
 
             block {
@@ -156,6 +170,10 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
 
         "public TabbedPaneLayout() { MetalTabbedPaneUI.this.super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            it::getModifiers shouldBe modifiers {
+                it::getExplicitModifiers shouldBe setOf(JModifier.PUBLIC)
+            }
 
             child<ASTFormalParameters> { }
             it::getBody shouldBe block {
@@ -189,6 +207,9 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 		}
         """ should matchDeclaration<ASTConstructorDeclaration> {
 
+            it::getModifiers shouldBe modifiers { }
+
+
             child<ASTFormalParameters> { }
 
             block {
@@ -221,6 +242,8 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
         "Foo() { this.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
 
+            it::getModifiers shouldBe modifiers { }
+
             child<ASTFormalParameters> { }
 
             block {
@@ -229,6 +252,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
 
         "Foo() { super.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
+            it::getModifiers shouldBe modifiers { }
 
             child<ASTFormalParameters> { }
             block {
@@ -237,6 +261,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         }
 
         "Foo() { super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
+            it::getModifiers shouldBe modifiers { }
 
             child<ASTFormalParameters> { }
 
@@ -247,6 +272,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
 
         "Foo() { A.super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
+            it::getModifiers shouldBe modifiers { }
 
             child<ASTFormalParameters> { }
 
