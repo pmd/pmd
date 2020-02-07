@@ -40,14 +40,6 @@ public class ASTModNode extends ASTMathNode {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTModNode(final VmParser p, final int id) {
-        super(p, id);
-    }
-
     /** Accept the visitor. **/
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {

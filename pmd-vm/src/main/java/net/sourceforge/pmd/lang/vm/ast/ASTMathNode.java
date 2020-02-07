@@ -41,10 +41,6 @@ public abstract class ASTMathNode extends AbstractVmNode {
         super(id);
     }
 
-    public ASTMathNode(final VmParser p, final int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);

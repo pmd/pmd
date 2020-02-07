@@ -3,6 +3,8 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -42,17 +44,17 @@ public final class NodeUtils {
      *            the Token
      * @return StrBuilder with the special tokens.
      */
-    private static StrBuilder getSpecialText(final Token t) {
+    private static StrBuilder getSpecialText(final JavaccToken t) {
         final StrBuilder sb = new StrBuilder();
 
-        Token tmpToken = t.specialToken;
+        JavaccToken tmpToken = t.getPreviousComment();
 
-        while (tmpToken.specialToken != null) {
-            tmpToken = tmpToken.specialToken;
+        while (tmpToken.getPreviousComment() != null) {
+            tmpToken = tmpToken.getPreviousComment();
         }
 
         while (tmpToken != null) {
-            final String st = tmpToken.image;
+            final String st = tmpToken.getImage();
 
             for (int i = 0; i < st.length(); i++) {
                 final char c = st.charAt(i);
@@ -113,18 +115,18 @@ public final class NodeUtils {
      * @param t
      * @return A node literal.
      */
-    public static String tokenLiteral(final Token t) {
+    public static String tokenLiteral(final JavaccToken t) {
         // Look at kind of token and return "" when it's a multiline comment
-        if (t.kind == VmParserConstants.MULTI_LINE_COMMENT) {
+        if (t.kind == VmTokenKinds.MULTI_LINE_COMMENT) {
             return "";
-        } else if (t.specialToken == null || t.specialToken.image.startsWith("##")) {
-            return t.image;
+        } else if (t.getPreviousComment() == null || t.getPreviousComment().getImage().startsWith("##")) {
+            return t.getImage();
         } else {
             final StrBuilder special = getSpecialText(t);
             if (special.length() > 0) {
-                return special.append(t.image).toString();
+                return special.append(t.getImage()).toString();
             }
-            return t.image;
+            return t.getImage();
         }
     }
 

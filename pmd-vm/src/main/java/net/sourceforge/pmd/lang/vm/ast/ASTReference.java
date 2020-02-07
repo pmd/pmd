@@ -58,14 +58,6 @@ public class ASTReference extends AbstractVmNode {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTReference(final VmParser p, final int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);

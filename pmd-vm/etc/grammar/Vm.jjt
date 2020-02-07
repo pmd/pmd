@@ -23,67 +23,17 @@
  */
 options
 {
-    /** The default package for this parser kit
-    NODE_PACKAGE="org.apache.velocity.runtime.parser";
-    */
-  NODE_PACKAGE="net.sourceforge.pmd.lang.vm.ast";
-  NODE_CLASS = "net.sourceforge.pmd.lang.vm.ast.AbstractVmNode";
+    MULTI = true;
+    VISITOR = true;
+    IGNORE_CASE = true;
 
-    /** A source file will  be generated for each non-terminal */
-    MULTI=true;
-
-    /**
-     * Each node will have access to the parser, I did this so
-     * some global information can be shared via the parser. I
-     * think this will come in handly keeping track of
-     * context, and being able to push changes back into
-     * the context when nodes make modifications to the
-     * context by setting properties, variables and
-     * what not.
-     */
-    NODE_USES_PARSER=true;
-
-    /**
-     * The parser must be non-static in order for the
-     * above option to work, otherwise the parser value
-     * is passed in as null, which isn't all the useful ;)
-     */
-    STATIC=false;
-
-    /**
-     * Enables the use of a visitor that each of nodes
-     * will accept. This way we can separate the logic
-     * of node processing in a visitor and out of the
-     * nodes themselves. If processing changes then
-     * the nothing has to change in the node code.
-     */
-    VISITOR=true;
-
-    /**
-     * Declare that we are accepting unicode input and
-     * that we are using a custom character stream class
-     * Note that the char stream class is really a slightly
-     * modified ASCII_CharStream, as it appears we are safe
-     * because we only deal with pre-encoding-converted
-     * Readers rather than raw input streams.
-     */
-    UNICODE_INPUT=true;
-    USER_CHAR_STREAM=true;
-
-    /**
-     *  for debugging purposes.  Keep false
-     */
+    /** for debugging purposes.  Keep false */
     DEBUG_PARSER=false;
     DEBUG_TOKEN_MANAGER=false;
 
-    /**
-    	Copied from JSP parser
-    */
-    FORCE_LA_CHECK = false;
-    IGNORE_CASE = true;
 }
 
-PARSER_BEGIN(VmParser)
+PARSER_BEGIN(VmParserImpl)
 package net.sourceforge.pmd.lang.vm.ast;
 
 import java.io.IOException;
@@ -94,8 +44,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
-import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
 import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 
 /**
@@ -112,17 +63,12 @@ import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id$
 */
-public class VmParser
+public class VmParserImpl
 {
     /**
      * Keep track of defined macros, used for escape processing
      */
     private Map macroNames = new HashMap();
-
-    /**
-     * Name of current template we are parsing.  Passed to us in parse()
-     */
-    public String currentTemplateName = "";
 
     /**
      * Set to true if the property
@@ -288,7 +234,7 @@ public class VmParser
     }
 }
 
-PARSER_END(VmParser)
+PARSER_END(VmParserImpl)
 
 TOKEN_MGR_DECLS:
 {
@@ -1000,7 +946,7 @@ TOKEN:
          */
         if (matchedToken.getImage().endsWith("..")) {
             input_stream.backup(2);
-            matchedToken.image = matchedToken.getImage().substring(0,matchedToken.getImage().length()-2);
+            matchedToken = matchedToken.replaceImage(input_stream);
         }
 
         /*
@@ -1092,7 +1038,7 @@ TOKEN :
          * looks like a ref.ident
          */
 
-        matchedToken.image = ".";
+        matchedToken = matchedToken.replaceImage(input_stream);
 
         if ( debugPrint )
             System.out.print("DOT : switching to " + REFMODIFIER);
@@ -1155,7 +1101,7 @@ SPECIAL_TOKEN :
  * which implements the ParserVisitor interface
  * which is generated automatically by JavaCC
  */
-ASTprocess process() : {}
+ASTTemplate Template() : {}
 {
    ( Statement() )* <EOF>
    { return jjtThis; }
@@ -1189,7 +1135,7 @@ void Statement() #void : {}
 void EscapedDirective() : {}
 {
     {
-        Token t = null;
+        JavaccToken t = null;
     }
 
     t = <ESCAPE_DIRECTIVE>
@@ -1197,7 +1143,8 @@ void EscapedDirective() : {}
         /*
          *  churn and burn..
          */
-        t.image = escapedDirective( t.getImage() );
+        // fixme? whatever
+        // t.image = escapedDirective( t.getImage() );
     }
 }
 
@@ -1211,7 +1158,7 @@ void EscapedDirective() : {}
 void Escape() : {}
 {
     {
-        Token t = null;
+        JavaccToken t = null;
         int count = 0;
         boolean control = false;
     }
@@ -1306,52 +1253,21 @@ void Word() : {}
 /**
  *   Supports the arguments for the Pluggable Directives
  */
-int DirectiveArg() #void : {}
+void DirectiveArg() #void : {}
 {
     Reference()
-    {
-        return VmParserTreeConstants.JJTREFERENCE;
-    }
 |   Word()
-    {
-        return VmParserTreeConstants.JJTWORD;
-    }
 |   StringLiteral()
-    {
-        return VmParserTreeConstants.JJTSTRINGLITERAL;
-    }
-
 |   IntegerLiteral()
-    {
-        return VmParserTreeConstants.JJTINTEGERLITERAL;
-    }
     /*
      * Need to put this before the floating point expansion
      */
 |   LOOKAHEAD(  <LBRACKET> [<WHITESPACE>] ( Reference() | IntegerLiteral())     [<WHITESPACE>] <DOUBLEDOT> ) IntegerRange()
-    {
-        return VmParserTreeConstants.JJTINTEGERRANGE;
-    }
 |   FloatingPointLiteral()
-    {
-        return VmParserTreeConstants.JJTFLOATINGPOINTLITERAL;
-    }
 |   Map()
-    {
-        return VmParserTreeConstants.JJTMAP;
-    }
 |   ObjectArray()
-    {
-        return VmParserTreeConstants.JJTOBJECTARRAY;
-    }
 |   True()
-    {
-        return VmParserTreeConstants.JJTTRUE;
-    }
 |   False()
-    {
-        return VmParserTreeConstants.JJTFALSE;
-    }
 }
 
 
@@ -1361,8 +1277,7 @@ int DirectiveArg() #void : {}
  */
 VmNode Directive() :
 {
-    Token t = null;
-    int argType;
+    JavaccToken t = null;
     int argPos = 0;
     Directive d;
     int directiveType;
@@ -1378,7 +1293,7 @@ VmNode Directive() :
     ((t = <WORD>) | (t = <BRACKETED_WORD>))
     {
         String directiveName;
-        if (t.kind == VmParserConstants.BRACKETED_WORD)
+        if (t.kind == VmTokenKinds.BRACKETED_WORD)
         {
             directiveName = t.getImage().substring(2, t.getImage().length() - 1);
         }
@@ -1446,11 +1361,11 @@ VmNode Directive() :
     /*
      *  if this is indeed a token, match the #foo ( arg ) pattern
      */
-    (([<WHITESPACE>] <LPAREN>) ( LOOKAHEAD(2) [<WHITESPACE>] [<COMMA> [<WHITESPACE>]]
+    [<WHITESPACE>] <LPAREN> ( LOOKAHEAD(2) [<WHITESPACE>] [<COMMA> [<WHITESPACE>]]
 
-            argType = DirectiveArg()
+            DirectiveArg()
             {
-                if (argType == VmParserTreeConstants.JJTWORD)
+                if (jjtree.peekNode() instanceof ASTWord)
                 {
                     if (doItNow && argPos == 0)
                     {
@@ -1458,14 +1373,14 @@ VmNode Directive() :
                     }
                     else if (isVM)
                     {
-                        throw new MacroParseException("Invalid arg #"
-                        + argPos + " in VM " + t.getImage(), currentTemplateName, t);
+                        throw new ParseException("Invalid arg #"
+                        + argPos + " in VM " + t.getImage(), t);
                     }
                                           /* if #foreach and it's the 2nd arg, ok */
                     else if (d != null && (!directiveName.equals("foreach") || argPos != 1))
                     {
-                        throw new MacroParseException("Invalid arg #"
-                        + argPos + " in directive " + t.getImage(), currentTemplateName, t);
+                        throw new ParseException("Invalid arg #"
+                        + argPos + " in directive " + t.getImage(), t);
                     }
                     else
                     {
@@ -1479,16 +1394,16 @@ VmNode Directive() :
                     {
                         /* if a VM and it's the 0th arg, not ok */
 
-                        throw new MacroParseException("Invalid first arg"
+                        throw new ParseException("Invalid first arg"
                         + " in #macro() directive - must be a"
-                        + " word token (no \' or \" surrounding)", currentTemplateName, t);
+                        + " word token (no ' or double quote surrounding)", t);
                     }
                 }
 
                 argPos++;
             }
 
-    )* [<WHITESPACE>] <RPAREN>)
+    )* [<WHITESPACE>] <RPAREN>
     {
 
         if (directiveType  == Directive.LINE)
@@ -1502,8 +1417,8 @@ VmNode Directive() :
 	{
             // VELOCITY-667 We get here if we have a "#macro" construct
 	    // without parenthesis which is a parse error
-            throw new MacroParseException("A macro declaration requires at least a name argument"
-              , currentTemplateName, t);
+            throw new ParseException("A macro declaration requires at least a name argument"
+              , t);
 	}
 
         /**
@@ -1533,15 +1448,9 @@ VmNode Directive() :
         {
             // Add the macro name so that we can peform escape processing
             // on defined macros
-            String macroName = ((AbstractVmNode)jjtThis.jjtGetChild(0)).getFirstToken().getImage();
+            String macroName = ((AbstractVmNode)jjtThis.getChild(0)).getFirstToken().getImage();
             macroNames.put(macroName, macroName);
         }
-/*
-        if (d != null)
-        {
-            d.checkArgs(argtypes, t, currentTemplateName);
-        }
-*/
         /*
          *  VM : end
          */

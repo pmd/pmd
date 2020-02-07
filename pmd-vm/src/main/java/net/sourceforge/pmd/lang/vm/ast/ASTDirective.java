@@ -45,14 +45,6 @@ public class ASTDirective extends AbstractVmNode {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTDirective(final VmParser p, final int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);

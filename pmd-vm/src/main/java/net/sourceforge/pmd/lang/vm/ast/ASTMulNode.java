@@ -41,14 +41,6 @@ public class ASTMulNode extends ASTMathNode {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTMulNode(final VmParser p, final int id) {
-        super(p, id);
-    }
-
     /** Accept the visitor. **/
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {

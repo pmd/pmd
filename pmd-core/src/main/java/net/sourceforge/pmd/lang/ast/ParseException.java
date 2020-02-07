@@ -44,7 +44,7 @@ public class ParseException extends RuntimeException {
         this.currentToken = null;
     }
 
-    public ParseException(JavaccToken token, String message) {
+    public ParseException(String message, JavaccToken token) {
         super(message);
         this.currentToken = token;
     }
