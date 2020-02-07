@@ -34,6 +34,22 @@ public class SideEffectingVisitorAdapter<T> implements SideEffectingVisitor<T> {
         visit((ASTAnnotation) node, data);
     }
 
+
+    public void visit(ASTMethodOrConstructorDeclaration node, T data) {
+        visit((JavaNode) node, data);
+    }
+
+    @Override
+    public void visit(ASTMethodDeclaration node, T data) {
+        visit((ASTMethodOrConstructorDeclaration) node, data);
+    }
+
+    @Override
+    public void visit(ASTConstructorDeclaration node, T data) {
+        visit((ASTMethodOrConstructorDeclaration) node, data);
+    }
+
+
     // TODO delegation
 
 

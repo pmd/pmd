@@ -107,7 +107,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
         if (superInterfaces == null) {
-            superInterfaces = myClass.isArray() ? SymbolFactory.ARRAY_SUPER_INTERFACES
+            superInterfaces = myClass.isArray() ? ReflectSymInternals.ARRAY_SUPER_INTERFACES
                                                 : Arrays.stream(myClass.getInterfaces()).map(symFactory::getClassSymbol).collect(toList());
         }
         return superInterfaces;

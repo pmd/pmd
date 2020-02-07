@@ -8,8 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory.INT_SYM
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory.STRING_SYM
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.*
 
 /**
  * @author Clément Fournier

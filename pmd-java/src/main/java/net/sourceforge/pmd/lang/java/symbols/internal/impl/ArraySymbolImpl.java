@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 /**
  * Generic implementation for array symbols, which does not rely on
@@ -93,12 +94,12 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public @Nullable JClassSymbol getSuperclass() {
-        return SymbolFactory.OBJECT_SYM;
+        return ReflectSymInternals.OBJECT_SYM;
     }
 
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        return SymbolFactory.ARRAY_SUPER_INTERFACES;
+        return ReflectSymInternals.ARRAY_SUPER_INTERFACES;
     }
 
     @Override

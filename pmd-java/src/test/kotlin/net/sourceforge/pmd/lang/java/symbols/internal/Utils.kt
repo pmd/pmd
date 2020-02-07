@@ -8,8 +8,8 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory.*
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.*
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.internal.HeaderScopesTest
 import java.io.File

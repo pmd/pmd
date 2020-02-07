@@ -43,6 +43,8 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 /**
  * Populates {@link JavaQualifiableNode} instances with their qualified names.
  *
+ * <p>In fact, populates symbols on declaration nodes.
+ *
  * @author Clément Fournier
  * @since 6.1.0
  * @deprecated Is internal API

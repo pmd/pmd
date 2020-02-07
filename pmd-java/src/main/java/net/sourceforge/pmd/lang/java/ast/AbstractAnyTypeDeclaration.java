@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -22,16 +25,6 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implement
         super(i);
     }
 
-
-    @Override
-    public JClassSymbol getSymbol() {
-        return symbol;
-    }
-
-    void setSymbol(JClassSymbol symbol) {
-        this.symbol = symbol;
-    }
-
     @Override
     @Deprecated
     public String getImage() {
@@ -48,6 +41,22 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implement
         return isLocal() ? Visibility.V_LOCAL : ASTAnyTypeDeclaration.super.getVisibility();
     }
 
+    @NonNull
+    @Override
+    public JClassSymbol getSymbol() {
+        assert symbol != null : "Symbol was null, maybe not set by qualified name resolver";
+        return symbol;
+    }
+
+    @Nullable
+    JClassSymbol getSymbolInternal() {
+        return symbol;
+    }
+
+    void setSymbol(JClassSymbol symbol) {
+        this.symbol = symbol;
+    }
+
     @Override
     public final JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
@@ -57,6 +66,5 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implement
         this.qualifiedName = qualifiedName;
         setTypeDefinition(JavaTypeDefinition.forClass(qualifiedName.getType()));
     }
-
 }
 

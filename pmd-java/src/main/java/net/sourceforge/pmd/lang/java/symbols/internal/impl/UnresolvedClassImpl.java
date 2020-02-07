@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 /**
  * Unresolved <i>external reference</i> to a class.
@@ -95,7 +96,7 @@ class UnresolvedClassImpl implements JClassSymbol {
     @Nullable
     @Override
     public JClassSymbol getSuperclass() {
-        return SymbolFactory.OBJECT_SYM;
+        return ReflectSymInternals.OBJECT_SYM;
     }
 
 

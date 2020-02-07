@@ -4,19 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.Substitution;
-import net.sourceforge.pmd.lang.java.types.internal.typeops.TypeOps;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -42,19 +37,6 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
         }
 
         return formals;
-    }
-
-    @Override
-    public List<JTypeMirror> getFormalParameterTypes(Substitution substitution) {
-        return CollectionUtil.map(getFormalParameters(), i -> i.getTypeMirror(substitution));
-    }
-
-    @Override
-    public List<JTypeMirror> getThrownExceptionTypes(Substitution substitution) {
-        ASTThrowsList throwsList = node.getThrowsList();
-
-        return throwsList == null ? Collections.emptyList()
-                                  : CollectionUtil.map(throwsList.iterator(), t ->  TypeOps.subst(t.getTypeMirror(), substitution));
     }
 
     @Override
