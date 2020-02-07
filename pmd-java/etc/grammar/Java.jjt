@@ -296,7 +296,7 @@ class JavaParserImpl {
       return false;
     }
 
-    return getToken(1).image.equals("assert");
+    return getToken(1).getImage().equals("assert");
   }
 
   /**
@@ -304,7 +304,7 @@ class JavaParserImpl {
    * specific restricted keyword.
    */
   private boolean isKeyword(String keyword) {
-    return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
+    return getToken(1).kind == IDENTIFIER && getToken(1).getImage().equals(keyword);
   }
 
   private boolean shouldStartStatementInSwitch() {
@@ -931,10 +931,10 @@ void TypeParameters():
 }
 
 void TypeParameter():
-{JavaccToken t;}
+{}
 {
    AnnotationList()
-   t=<IDENTIFIER> {jjtThis.setImage(t.image);} [  "extends" IntersectionType() ]
+   <IDENTIFIER> {setLastTokenImage(jjtThis);} [ "extends" IntersectionType() ]
 }
 
 void ClassOrInterfaceBody():
@@ -1815,26 +1815,27 @@ void Literal() #void :
 
 
 void NumericLiteral():
-{ JavaccToken t; }
+{}
 {
-  ( t=<INTEGER_LITERAL>             { jjtThis.setIntLiteral(); }
-  | t=<FLOATING_POINT_LITERAL>      { jjtThis.setFloatLiteral(); }
+  ( <INTEGER_LITERAL>             { jjtThis.setIntLiteral(); }
+  | <FLOATING_POINT_LITERAL>      { jjtThis.setFloatLiteral(); }
   )
-  { jjtThis.setImage(t.image); }
+  { setLastTokenImage(jjtThis); }
 }
 
 void CharLiteral():
 {}
 {
-  <CHARACTER_LITERAL> {jjtThis.setImage(getToken(0).getImage());}
+  <CHARACTER_LITERAL> { setLastTokenImage(jjtThis); }
 }
 
 void StringLiteral():
 {}
 {
    ( <STRING_LITERAL>
-   | <TEXT_BLOCK_LITERAL> { jjtThis.setTextBlock(); })
-   { jjtThis.setImage(getToken(0).getImage()); }
+   | <TEXT_BLOCK_LITERAL> { jjtThis.setTextBlock(); }
+   )
+   { setLastTokenImage(jjtThis); }
 }
 
 void ArgumentList() :
@@ -1945,9 +1946,9 @@ void Statement() #void:
 }
 
 void LabeledStatement() :
-{JavaccToken t;}
+{}
 {
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);} ":" Statement()
+  <IDENTIFIER> { setLastTokenImage(jjtThis); } ":" Statement()
 }
 
 void Block() :
@@ -2159,15 +2160,19 @@ void ForUpdate() :
 }
 
 void BreakStatement() :
-{JavaccToken t;}
+{}
 {
-  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() ] ";"
+  "break"
+  [ LOOKAHEAD(<IDENTIFIER> ";") <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  | Expression()
+  ]
+  ";"
 }
 
 void ContinueStatement() :
-{JavaccToken t;}
+{}
 {
-  "continue" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
+  "continue" [ <IDENTIFIER>   { setLastTokenImage(jjtThis); } ] ";"
 }
 
 void ReturnStatement() :
@@ -2320,9 +2325,9 @@ void MemberValuePairs() #void:
 }
 
 void MemberValuePair():
-{JavaccToken t;}
+{}
 {
-    t=<IDENTIFIER> { jjtThis.setImage(t.image); } "=" MemberValue()
+    <IDENTIFIER> { setLastTokenImage(jjtThis); } "=" MemberValue()
 }
 
 void MemberValue() #void:
@@ -2409,8 +2414,8 @@ void ModuleDeclaration():
 }
 {
   ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
-  t=<IDENTIFIER> { s.append(t.image); }
-  ( "." t=<IDENTIFIER> { s.append('.').append(t.image); } )* { jjtThis.setImage(s.toString()); }
+  t=<IDENTIFIER> { s.append(t.getImage()); }
+  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )* { jjtThis.setImage(s.toString()); }
   "{" (ModuleDirective())* "}"
 }
 
@@ -2434,8 +2439,8 @@ void ModuleName():
   JavaccToken t;
 }
 {
-  t=<IDENTIFIER> { s.append(t.image); }
-  ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
+  t=<IDENTIFIER> { s.append(t.getImage()); }
+  ( "." t=<IDENTIFIER> {s.append('.').append(t.getImage());} )*
   {jjtThis.setImage(s.toString());}
 }
 
@@ -2468,10 +2473,10 @@ String VoidName() #void:
 {
   t=<IDENTIFIER>
   {
-    s.append(t.image);
+    s.append(t.getImage());
   }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>
-    {s.append('.').append(t.image);}
+    {s.append('.').append(t.getImage());}
   )*
   {return s.toString();}
 }
