@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * <pre class="grammar">
  *
  * EnumBody ::= "{"
- *              [( {@link ASTAnnotation Annotation} )* {@link ASTEnumConstant EnumConstant} ( "," ( {@link ASTAnnotation Annotation} )* {@link ASTEnumConstant EnumConstant} )* ]
+ *              [ {@link ASTEnumConstant EnumConstant} ( "," ( {@link ASTEnumConstant EnumConstant} )* ]
  *              [ "," ]
  *              [ ";" ( {@link ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* ]
  *              "}"
@@ -20,6 +20,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  */
 public final class ASTEnumBody extends AbstractJavaNode implements ASTTypeBody {
+
+    private boolean trailingComma;
+    private boolean separatorSemi;
 
     ASTEnumBody(int id) {
         super(id);
@@ -34,5 +37,44 @@ public final class ASTEnumBody extends AbstractJavaNode implements ASTTypeBody {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+    void setTrailingComma() {
+        this.trailingComma = true;
+    }
+
+    void setSeparatorSemi() {
+        this.separatorSemi = true;
+    }
+
+    /**
+     * Returns true if the last enum constant has a trailing comma.
+     * For example:
+     * <pre>{@code
+     * enum Foo { A, B, C, }
+     * enum Bar { , }
+     * }</pre>
+     */
+    public boolean hasTrailingComma() {
+        return trailingComma;
+    }
+
+    /**
+     * Returns true if the last enum constant has a trailing semi-colon.
+     * This semi is not optional when the enum has other members.
+     * For example:
+     * <pre>{@code
+     * enum Foo {
+     *   A(2);
+     *
+     *   Foo(int i) {...}
+     * }
+     *
+     * enum Bar { A; }
+     * enum Baz { ; }
+     * }</pre>
+     */
+    public boolean hasSeparatorSemi() {
+        return separatorSemi;
     }
 }

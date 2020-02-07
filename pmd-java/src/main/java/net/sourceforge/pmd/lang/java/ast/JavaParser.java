@@ -57,6 +57,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         parser.setPreview(checker.isPreviewEnabled());
 
         ASTCompilationUnit acu = parser.CompilationUnit();
+        acu.setTokenDocument(cs.getTokenDocument());
         acu.setNoPmdComments(parser.getSuppressMap());
         checker.check(acu);
         return acu;

@@ -124,7 +124,6 @@ fun TreeNodeWrapper<Node, *>.enumDecl(name: String, spec: NodeSpec<ASTEnumDeclar
             spec()
         }
 
-
 fun TreeNodeWrapper<Node, *>.enumBody(contents: NodeSpec<ASTEnumBody> = EmptyAssertions) =
         child<ASTEnumBody> {
             contents()

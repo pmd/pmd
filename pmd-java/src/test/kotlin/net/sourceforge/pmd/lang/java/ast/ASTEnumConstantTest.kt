@@ -55,6 +55,75 @@ class ASTEnumConstantTest : ParserTestSpec({
     }
 
 
+    parserTest("Corner cases with separators") {
+
+        inContext(TopLevelTypeDeclarationParsingCtx) {
+
+
+            "enum Foo { A, }" should parseAs {
+
+                enumDecl("Foo") {
+                    modifiers {  }
+                    enumBody {
+                        it::hasTrailingComma shouldBe true
+                        enumConstant("A")
+                    }
+                }
+            }
+
+            "enum Foo { , }" should parseAs {
+
+                enumDecl("Foo") {
+                    modifiers {  }
+
+                    enumBody {
+                        it::hasTrailingComma shouldBe true
+                    }
+                }
+            }
+
+            "enum Foo { ,; }" should parseAs {
+
+                enumDecl("Foo") {
+                    modifiers {  }
+                    enumBody {
+                        it::hasTrailingComma shouldBe true
+                        it::hasSeparatorSemi shouldBe true
+                    }
+                }
+            }
+
+            "enum Foo { ,, }" shouldNot parse()
+
+            "enum Foo { ; }" should parseAs {
+
+                enumDecl("Foo") {
+                    modifiers {  }
+                    enumBody {
+                        it::hasTrailingComma shouldBe false
+                        it::hasSeparatorSemi shouldBe true
+                    }
+                }
+            }
+
+            "enum Foo { ;; }" should parseAs {
+
+                enumDecl("Foo") {
+                    modifiers {  }
+
+                    enumBody {
+                        it::hasTrailingComma shouldBe false
+                        it::hasSeparatorSemi shouldBe true
+                        child<ASTClassOrInterfaceBodyDeclaration> {
+                            child<ASTEmptyDeclaration> {}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     parserTest("Enum constants should have an anonymous class node") {
 
         inContext(TopLevelTypeDeclarationParsingCtx) {
@@ -97,7 +166,8 @@ class ASTEnumConstantTest : ParserTestSpec({
 
                     enumBody {
 
-                        enumConstant("B") {
+
+                enumConstant("B") {
 
                             val c = it
 
@@ -159,11 +229,11 @@ class ASTEnumConstantTest : ParserTestSpec({
                                 stringLit("\"str\"")
                             }
 
-                            it::getAnonymousClass shouldBe null
-                        }
-                    }
+                    it::getAnonymousClass shouldBe null
+
                 }
             }
+        }
 
             "enum Foo { B(\"str\") { } }" should parseAs {
                 enumDecl("Foo") {
