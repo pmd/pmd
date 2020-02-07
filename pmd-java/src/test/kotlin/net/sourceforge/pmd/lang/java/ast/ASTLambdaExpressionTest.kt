@@ -14,93 +14,98 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
     parserTest("Simple lambda expressions", javaVersions = J1_8..Latest) {
 
-        "a -> foo()" should matchExpr<ASTLambdaExpression> {
-            it::isExpressionBody shouldBe true
-            it::isBlockBody shouldBe false
-
-            it::getParameters shouldBe lambdaFormals {
-                simpleLambdaParam("a") {
-                    it::isTypeInferred shouldBe true
-                    it::isLambdaParameter shouldBe true
-                }
-
-            }
+        inContext(ExpressionParsingCtx) {
 
 
-            child<ASTMethodCall>(ignoreChildren = true) {}
-        }
+            "a -> foo()" should parseAs {
+                exprLambda {
 
-        "(a,b) -> foo()" should matchExpr<ASTLambdaExpression> {
-            it::isExpressionBody shouldBe true
-            it::isBlockBody shouldBe false
 
-            it::getParameters shouldBe lambdaFormals {
-                simpleLambdaParam("a") {
-                    it::isTypeInferred shouldBe true
-                    it::isLambdaParameter shouldBe true
-                }
+                    it::getParameters shouldBe lambdaFormals {
+                        simpleLambdaParam("a") {
+                            it::isTypeInferred shouldBe true
+                            it::isLambdaParameter shouldBe true
+                        }
 
-                simpleLambdaParam("b") {
-                    it::isTypeInferred shouldBe true
-                    it::isLambdaParameter shouldBe true
+                    }
+
+
+                    methodCall("foo")
                 }
             }
 
+            "(a,b) -> foo()" should parseAs {
+                exprLambda {
 
 
-            child<ASTMethodCall>(ignoreChildren = true) {}
-        }
+                    it::getParameters shouldBe lambdaFormals {
+                        simpleLambdaParam("a") {
+                            it::isTypeInferred shouldBe true
+                            it::isLambdaParameter shouldBe true
+                        }
 
-        "(a,b) -> { foo(); } " should matchExpr<ASTLambdaExpression> {
-            it::isExpressionBody shouldBe false
-            it::isBlockBody shouldBe true
-
-            it::getParameters shouldBe lambdaFormals {
-                simpleLambdaParam("a")
-                simpleLambdaParam("b")
-            }
-
-
-            child<ASTBlock>(ignoreChildren = true) {}
-        }
-
-        "(final int a, @F List<String> b) -> foo()" should matchExpr<ASTLambdaExpression> {
-            it::isExpressionBody shouldBe true
-            it::isBlockBody shouldBe false
-
-            it::getParameters shouldBe lambdaFormals {
-                lambdaParam {
-                    it::getModifiers shouldBe modifiers {
-                        it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
+                        simpleLambdaParam("b") {
+                            it::isTypeInferred shouldBe true
+                            it::isLambdaParameter shouldBe true
+                        }
                     }
 
-                    it::getTypeNode shouldBe primitiveType(INT)
 
-                    variableId("a") {
-                        it::isFinal shouldBe true
-                        it::isLambdaParameter shouldBe true
-                        it::isTypeInferred shouldBe false
-                    }
-                }
-                lambdaParam {
-                    it::getModifiers shouldBe modifiers {
-                        it::getExplicitModifiers shouldBe setOf()
-                        annotation("F")
-                    }
 
-                    it::getTypeNode shouldBe classType("List")
-                    variableId("b") {
-                        it::isFinal shouldBe false
-                        it::isLambdaParameter shouldBe true
-                        it::isTypeInferred shouldBe false
-                    }
+                    methodCall("foo")
                 }
             }
 
+            "(a,b) -> { foo(); } " should parseAs {
+                blockLambda {
 
-            methodCall("foo")
+                    it::getParameters shouldBe lambdaFormals {
+                        simpleLambdaParam("a")
+                        simpleLambdaParam("b")
+                    }
+
+
+                    block()
+                }
+            }
+
+            "(final int a, @F List<String> b) -> foo()" should parseAs {
+                exprLambda {
+
+                    it::getParameters shouldBe lambdaFormals {
+                        lambdaParam {
+                            it::getModifiers shouldBe modifiers {
+                                it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
+                            }
+
+                            it::getTypeNode shouldBe primitiveType(INT)
+
+                            variableId("a") {
+                                it::isFinal shouldBe true
+                                it::isLambdaParameter shouldBe true
+                                it::isTypeInferred shouldBe false
+                            }
+                        }
+                        lambdaParam {
+                            it::getModifiers shouldBe modifiers {
+                                it::getExplicitModifiers shouldBe setOf()
+                                annotation("F")
+                            }
+
+                            it::getTypeNode shouldBe classType("List")
+                            variableId("b") {
+                                it::isFinal shouldBe false
+                                it::isLambdaParameter shouldBe true
+                                it::isTypeInferred shouldBe false
+                            }
+                        }
+                    }
+
+
+                    methodCall("foo")
+                }
+            }
         }
-
     }
 
     parserTest("Mixed array notation/varargs", javaVersions = J1_8..Latest) {

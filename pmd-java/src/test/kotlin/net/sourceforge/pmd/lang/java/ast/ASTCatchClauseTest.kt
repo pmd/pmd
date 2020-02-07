@@ -26,78 +26,89 @@ class ASTCatchClauseTest : ParserTestSpec({
 
         importedTypes += IOException::class.java
 
-        "try { } catch (IOException ioe) { }" should matchStmt<ASTTryStatement> {
-            it::getBody shouldBe block { }
-            catchClause("ioe") {
-                catchFormal("ioe") {
-                    it::getModifiers shouldBe localVarModifiers {  }
+        inContext(StatementParsingCtx) {
 
-                    it::isMulticatch shouldBe false
-                    it::getTypeNode shouldBe classType("IOException")
+            "try { } catch (IOException ioe) { }" should parseAs {
+                tryStmt {
+                    it::getBody shouldBe block { }
+                    catchClause("ioe") {
+                        catchFormal("ioe") {
+                            it::getModifiers shouldBe localVarModifiers { }
 
-                    variableId("ioe")
+                            it::isMulticatch shouldBe false
+                            it::getTypeNode shouldBe classType("IOException")
+
+                            variableId("ioe")
+                        }
+                        it::getBody shouldBe block { }
+                    }
                 }
-                it::getBody shouldBe block { }
             }
         }
-
     }
 
     parserTest("Test multicatch", javaVersions = J1_7..Latest) {
 
         importedTypes += IOException::class.java
+        inContext(StatementParsingCtx) {
 
-        "try { } catch (IOException | AssertionError e) { }" should matchStmt<ASTTryStatement> {
-            it::getBody shouldBe block { }
-            catchClause("e") {
-                catchFormal("e") {
-                    it::isMulticatch shouldBe true
+            "try { } catch (IOException | AssertionError e) { }" should parseAs {
+                tryStmt {
+                    it::getBody shouldBe block { }
+                    catchClause("e") {
+                        catchFormal("e") {
+                            it::isMulticatch shouldBe true
 
-                    it::getModifiers shouldBe localVarModifiers {  }
+                            it::getModifiers shouldBe localVarModifiers { }
 
-                    it::getTypeNode shouldBe unionType {
-                        classType("IOException")
-                        classType("AssertionError")
+                            it::getTypeNode shouldBe unionType {
+                                classType("IOException")
+                                classType("AssertionError")
+                            }
+
+                            variableId("e")
+                        }
+
+
+                        it::getBody shouldBe block { }
                     }
-
-                    variableId("e")
                 }
-
-
-                it::getBody shouldBe block { }
             }
-        }
 
+        }
     }
 
     parserTest("Test annotated multicatch", javaVersions = J1_8..Latest) {
 
         importedTypes += IOException::class.java
 
-        "try { } catch (@B IOException | @A AssertionError e) { }" should matchStmt<ASTTryStatement> {
-            it::getBody shouldBe block { }
-            catchClause("e") {
-                catchFormal("e") {
-                    it::isMulticatch shouldBe true
+        inContext(StatementParsingCtx) {
+            "try { } catch (@B IOException | @A AssertionError e) { }" should parseAs {
+                tryStmt {
+                    it::getBody shouldBe block { }
+                    catchClause("e") {
+                        catchFormal("e") {
+                            it::isMulticatch shouldBe true
 
-                    it::getModifiers shouldBe localVarModifiers {
-                        annotation("B") // not a type annotation
-                    }
+                            it::getModifiers shouldBe localVarModifiers {
+                                annotation("B") // not a type annotation
+                            }
 
-                    unionType {
-                        classType("IOException")
-                        classType("AssertionError") {
-                            annotation("A")
+                            unionType {
+                                classType("IOException")
+                                classType("AssertionError") {
+                                    annotation("A")
+                                }
+                            }
+
+                            variableId("e")
                         }
+
+                        block {}
                     }
-
-                    variableId("e")
                 }
-
-                block {}
             }
         }
-
     }
 
 

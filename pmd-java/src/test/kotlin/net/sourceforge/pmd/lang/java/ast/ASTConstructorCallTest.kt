@@ -7,53 +7,61 @@ class ASTConstructorCallTest : ParserTestSpec({
 
     parserTest("Class instance creation") {
 
-        "new Foo(a)" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe false
+        inContext(ExpressionParsingCtx) {
+            "new Foo(a)" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe false
 
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
-            }
+                    it::getTypeNode shouldBe child {
+                        it::getTypeImage shouldBe "Foo"
+                    }
 
-            it::getArguments shouldBe child {
+                    it::getArguments shouldBe child {
 
-                variableAccess("a")
-            }
-        }
-
-        "new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe false
-
-            it::getExplicitTypeArguments shouldBe child {
-                unspecifiedChild()
-            }
-
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
-
-                it::getTypeArguments shouldBe child {
-                    unspecifiedChild()
+                        variableAccess("a")
+                    }
                 }
             }
 
-            it::getArguments shouldBe child {}
-        }
+            "new <Bar> Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe false
 
-        "new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe false
+                    it::getExplicitTypeArguments shouldBe child {
+                        unspecifiedChild()
+                    }
 
-            it::getExplicitTypeArguments shouldBe null
+                    it::getTypeNode shouldBe child {
+                        it::getTypeImage shouldBe "Foo"
 
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
+                        it::getTypeArguments shouldBe child {
+                            unspecifiedChild()
+                        }
+                    }
 
-                annotation("Lol")
-
-                it::getTypeArguments shouldBe child {
-                    unspecifiedChild()
+                    it::getArguments shouldBe child {}
                 }
             }
 
-            it::getArguments shouldBe child {}
+            "new @Lol Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe false
+
+                    it::getExplicitTypeArguments shouldBe null
+
+                    it::getTypeNode shouldBe child {
+                        it::getTypeImage shouldBe "Foo"
+
+                        annotation("Lol")
+
+                        it::getTypeArguments shouldBe child {
+                            unspecifiedChild()
+                        }
+                    }
+
+                    it::getArguments shouldBe argList(0) {}
+                }
+            }
         }
     }
 
@@ -65,86 +73,97 @@ class ASTConstructorCallTest : ParserTestSpec({
          */
         // hence here it must be a field access
 
-        "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe true
+        inContext(ExpressionParsingCtx) {
+            "a.g.c.new Foo(a)" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
 
-            it::getQualifier shouldBe fieldAccess("c", READ) {
-                it::getFieldName shouldBe "c"
+                    it::getQualifier shouldBe fieldAccess("c", READ) {
+                        it::getFieldName shouldBe "c"
 
-                it::getQualifier shouldBe ambiguousName("a.g")
+                        it::getQualifier shouldBe ambiguousName("a.g")
+                    }
+
+                    it::getTypeNode shouldBe child {
+                        it::getTypeImage shouldBe "Foo"
+                    }
+
+                    it::getArguments shouldBe argList {
+
+                        variableAccess("a")
+                    }
+                }
             }
 
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
-            }
+            // and here a variable reference
+            "a.new Foo(a)" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
 
-            it::getArguments shouldBe child {
+                    it::getQualifier shouldBe variableAccess("a")
 
-                variableAccess("a")
-            }
-        }
+                    it::getTypeNode shouldBe child {
+                        it::getTypeImage shouldBe "Foo"
+                    }
 
-        // and here a variable reference
-        "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe true
+                    it::getArguments shouldBe child {
 
-            it::getQualifier shouldBe variableAccess("a")
-
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
-            }
-
-            it::getArguments shouldBe child {
-
-                variableAccess("a")
+                        variableAccess("a")
+                    }
+                }
             }
         }
     }
 
-
     parserTest("Qualified class instance creation") {
 
-        "new O().new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe true
+        inContext(ExpressionParsingCtx) {
+            "new O().new <Bar> Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
 
-            it::getQualifier shouldBe child<ASTConstructorCall> {
+                    it::getQualifier shouldBe child<ASTConstructorCall> {
 
-                it::getTypeNode shouldBe classType("O")
+                        it::getTypeNode shouldBe classType("O")
 
-                it::getArguments shouldBe child {}
+                        it::getArguments shouldBe child {}
+                    }
+
+                    it::getExplicitTypeArguments shouldBe child {
+                        unspecifiedChild()
+                    }
+
+                    it::getTypeNode shouldBe classType("Foo") {
+
+                        it::getTypeArguments shouldBe typeArgList()
+                    }
+
+                    it::getArguments shouldBe argList {}
+                }
             }
 
-            it::getExplicitTypeArguments shouldBe child {
-                unspecifiedChild()
+            "method().new @Lol Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
+
+                    it::getQualifier shouldBe child<ASTMethodCall> {
+                        it::getMethodName shouldBe "method"
+                        it::getArguments shouldBe child {}
+                    }
+
+                    it::getExplicitTypeArguments shouldBe null
+
+                    it::getTypeNode shouldBe child {
+                        it::getTypeImage shouldBe "Foo"
+
+                        annotation("Lol")
+
+                        it::getTypeArguments shouldBe typeArgList()
+                    }
+
+                    it::getArguments shouldBe argList {}
+                }
             }
-
-            it::getTypeNode shouldBe classType("Foo") {
-
-                it::getTypeArguments shouldBe typeArgList()
-            }
-
-            it::getArguments shouldBe child {}
-        }
-
-        "method().new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
-            it::isQualifiedInstanceCreation shouldBe true
-
-            it::getQualifier shouldBe child<ASTMethodCall> {
-                it::getMethodName shouldBe "method"
-                it::getArguments shouldBe child {}
-            }
-
-            it::getExplicitTypeArguments shouldBe null
-
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
-
-                annotation("Lol")
-
-                it::getTypeArguments shouldBe typeArgList()
-            }
-
-            it::getArguments shouldBe child {}
         }
     }
 

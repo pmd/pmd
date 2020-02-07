@@ -15,113 +15,126 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
  */
 class ASTTryStatementTest : ParserTestSpec({
     parserTest("Test try with resources", javaVersions = J1_7..Latest) {
+        inContext(StatementParsingCtx) {
 
-        "try (Foo a = 2){}" should matchStmt<ASTTryStatement> {
+            "try (Foo a = 2){}" should parseAs {
+                tryStmt {
 
-            child<ASTResourceList> {
-                child<ASTResource> {
-                    it::isConciseResource shouldBe false
-                    it::getStableName shouldBe "a"
+                    child<ASTResourceList> {
+                        child<ASTResource> {
+                            it::isConciseResource shouldBe false
+                            it::getStableName shouldBe "a"
 
-                    it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
-                        it::getModifiers shouldBe localVarModifiers {
-                            it::getExplicitModifiers shouldBe emptySet()
-                            it::getEffectiveModifiers shouldBe setOf(JModifier.FINAL)
-                        }
+                            it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
+                                it::getModifiers shouldBe localVarModifiers {
+                                    it::getExplicitModifiers shouldBe emptySet()
+                                    it::getEffectiveModifiers shouldBe setOf(JModifier.FINAL)
+                                }
 
-                        classType("Foo")
-                        fromChild<ASTVariableDeclarator, ASTExpression> {
-                            variableId("a")
-                            int(2)
+                                classType("Foo")
+                                fromChild<ASTVariableDeclarator, ASTExpression> {
+                                    variableId("a")
+                                    int(2)
+                                }
+                            }
                         }
                     }
+
+                    block()
                 }
             }
 
-            block()
-        }
+            "try (final Foo a = 2){}" should parseAs {
+                tryStmt {
 
-        "try (final Foo a = 2){}" should matchStmt<ASTTryStatement> {
+                    child<ASTResourceList> {
+                        child<ASTResource> {
+                            it::isConciseResource shouldBe false
+                            it::getStableName shouldBe "a"
 
-            child<ASTResourceList> {
-                child<ASTResource> {
-                    it::isConciseResource shouldBe false
-                    it::getStableName shouldBe "a"
-
-                    it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
-                        it::getModifiers shouldBe localVarModifiers {
-                            it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
-                            it::getEffectiveModifiers shouldBe setOf(JModifier.FINAL)
-                        }
-                        classType("Foo")
-                        fromChild<ASTVariableDeclarator, ASTExpression> {
-                            variableId("a")
-                            int(2)
+                            it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
+                                it::getModifiers shouldBe localVarModifiers {
+                                    it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
+                                    it::getEffectiveModifiers shouldBe setOf(JModifier.FINAL)
+                                }
+                                classType("Foo")
+                                fromChild<ASTVariableDeclarator, ASTExpression> {
+                                    variableId("a")
+                                    int(2)
+                                }
+                            }
                         }
                     }
+
+                    block()
                 }
+
             }
-
-            block()
         }
-
     }
+
     parserTest("Test concise try with resources", javaVersions = J9..Latest) {
 
+        inContext(StatementParsingCtx) {
 
-        "try (a){}" should matchStmt<ASTTryStatement> {
+            "try (a){}" should parseAs {
+                tryStmt {
 
-            child<ASTResourceList> {
-                child<ASTResource> {
-                    it::isConciseResource shouldBe true
-                    it::getStableName shouldBe "a"
+                    child<ASTResourceList> {
+                        child<ASTResource> {
+                            it::isConciseResource shouldBe true
+                            it::getStableName shouldBe "a"
 
-                    it::getInitializer shouldBe variableAccess("a")
-                }
-                it::hasTrailingSemiColon shouldBe false
-            }
-
-            block()
-        }
-
-
-        "try (a;){}" should matchStmt<ASTTryStatement> {
-
-            child<ASTResourceList> {
-                child<ASTResource> {
-                    it::isConciseResource shouldBe true
-                    it::getStableName shouldBe "a"
-
-                    it::getInitializer shouldBe variableAccess("a")
-                }
-                it::hasTrailingSemiColon shouldBe true
-            }
-
-            block()
-        }
-
-
-        "try (a.b){}" should matchStmt<ASTTryStatement> {
-
-            child<ASTResourceList> {
-                child<ASTResource> {
-                    it::isConciseResource shouldBe true
-                    it::getStableName shouldBe "a.b"
-
-                    it::getInitializer shouldBe fieldAccess("b") {
-                        ambiguousName("a")
+                            it::getInitializer shouldBe variableAccess("a")
+                        }
+                        it::hasTrailingSemiColon shouldBe false
                     }
-                }
 
+                    block()
+                }
             }
 
-            block()
+
+            "try (a;){}" should parseAs {
+                tryStmt {
+
+                    child<ASTResourceList> {
+                        child<ASTResource> {
+                            it::isConciseResource shouldBe true
+                            it::getStableName shouldBe "a"
+
+                            it::getInitializer shouldBe variableAccess("a")
+                        }
+                        it::hasTrailingSemiColon shouldBe true
+                    }
+
+                    block()
+                }
+            }
+
+
+            "try (a.b){}" should parseAs {
+                tryStmt {
+
+                    child<ASTResourceList> {
+                        child<ASTResource> {
+                            it::isConciseResource shouldBe true
+                            it::getStableName shouldBe "a.b"
+
+                            it::getInitializer shouldBe fieldAccess("b") {
+                                ambiguousName("a")
+                            }
+                        }
+
+                    }
+
+                    block()
+                }
+            }
+
+            "try ( a.foo() ){}" shouldNot parse()
+            "try (new Foo()){}" shouldNot parse()
         }
-
-
-        "try ( a.foo() ){}" should notParseIn(StatementParsingCtx)
-        "try (new Foo()){}" should notParseIn(StatementParsingCtx)
-
     }
 
 })

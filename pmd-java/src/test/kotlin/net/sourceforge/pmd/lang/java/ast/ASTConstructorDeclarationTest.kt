@@ -11,77 +11,89 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
 
     parserTest("Receiver parameters") {
 
-        "Foo(@A Foo this){}" should matchDeclaration<ASTConstructorDeclaration> {
-            it::getName shouldBe "Foo"
-            it::getTypeParameters shouldBe null
-            it::isVarargs shouldBe false
-            // notice that arity is zero
-            it::getArity shouldBe 0
+        inContext(TypeBodyParsingCtx) {
 
-            it::getModifiers shouldBe modifiers {  }
+            "Foo(@A Foo this){}" should parseAs {
+                constructorDecl {
+                    it::getName shouldBe "Foo"
+                    it::getTypeParameters shouldBe null
+                    it::isVarargs shouldBe false
+                    // notice that arity is zero
+                    it::getArity shouldBe 0
 
-            it::getFormalParameters shouldBe formalsList(0) {
-                it::getReceiverParameter shouldBe child {
-                    classType("Foo") {
-                        annotation("A")
-                    }
-                }
-            }
+                    it::getModifiers shouldBe modifiers { }
 
-            it::getBody shouldBe block()
-        }
-
-        "Foo(@A Bar Bar.this, int other){}" should matchDeclaration<ASTConstructorDeclaration> {
-            it::getName shouldBe "Foo"
-            it::getTypeParameters shouldBe null
-            it::isVarargs shouldBe false
-            it::getArity shouldBe 1
-
-            it::getModifiers shouldBe modifiers {  }
-
-            it::getFormalParameters shouldBe formalsList(1) {
-
-                it::getReceiverParameter shouldBe child {
-                    classType("Bar") {
-                        annotation("A")
-                    }
-                }
-
-                it::toList shouldBe listOf(
-                        child {
-                            localVarModifiers {  }
-                            primitiveType(PrimitiveType.INT)
-                            variableId("other")
+                    it::getFormalParameters shouldBe formalsList(0) {
+                        it::getReceiverParameter shouldBe child {
+                            classType("Foo") {
+                                annotation("A")
+                            }
                         }
-                )
+                    }
 
-
+                    it::getBody shouldBe block()
+                }
             }
 
-            it::getThrowsList shouldBe null
-            it::getBody shouldBe block()
+            "Foo(@A Bar Bar.this, int other){}" should parseAs {
+                constructorDecl {
+                    it::getName shouldBe "Foo"
+                    it::getTypeParameters shouldBe null
+                    it::isVarargs shouldBe false
+                    it::getArity shouldBe 1
+
+                    it::getModifiers shouldBe modifiers { }
+
+                    it::getFormalParameters shouldBe formalsList(1) {
+
+                        it::getReceiverParameter shouldBe child {
+                            classType("Bar") {
+                                annotation("A")
+                            }
+                        }
+
+                        it::toList shouldBe listOf(
+                                child {
+                                    localVarModifiers { }
+                                    primitiveType(PrimitiveType.INT)
+                                    variableId("other")
+                                }
+                        )
+
+
+                    }
+
+                    it::getThrowsList shouldBe null
+                    it::getBody shouldBe block()
+                }
+            }
         }
     }
 
     parserTest("Annotation placement") {
 
-        "@OnDecl <T extends K> Foo() { return; }" should matchDeclaration<ASTConstructorDeclaration> {
+        inContext(TypeBodyParsingCtx) {
 
-            it::getName shouldBe "Foo"
+            "@OnDecl <T extends K> Foo() { return; }" should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers {
-                annotation("OnDecl")
-            }
+                    it::getName shouldBe "Foo"
 
-            typeParamList {
-                typeParam("T") {
-                    classType("K")
+                    it::getModifiers shouldBe modifiers {
+                        annotation("OnDecl")
+                    }
+
+                    typeParamList {
+                        typeParam("T") {
+                            classType("K")
+                        }
+                    }
+
+                    formalsList(0)
+
+                    block()
                 }
             }
-
-            formalsList(0)
-
-            block()
         }
     }
 })

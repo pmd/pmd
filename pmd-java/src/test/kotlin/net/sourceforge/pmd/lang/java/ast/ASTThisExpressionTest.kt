@@ -10,27 +10,33 @@ class ASTThisExpressionTest : ParserTestSpec({
 
     parserTest("Unqualified this") {
 
-        "this" should matchExpr<ASTThisExpression> { }
+        inContext(ExpressionParsingCtx) {
+            "this" should parseAs { thisExpr { null } }
+        }
 
     }
 
     parserTest("Qualified this") {
-        "Type.this" should matchExpr<ASTThisExpression> {
-
-            it::getQualifier shouldBe child {
-                it::getImage shouldBe "Type"
+        inContext(ExpressionParsingCtx) {
+            "Type.this" should parseAs {
+                thisExpr {
+                    child {
+                        it::getImage shouldBe "Type"
+                    }
+                }
             }
-        }
 
-        "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.this" should matchExpr<ASTThisExpression> {
+            "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.this" should parseAs {
+                thisExpr {
+                    child {
+                        it::getImage shouldBe "ASTThisExpression"
+                        it::getTypeArguments shouldBe null
+                        it::getLhsType shouldBe null
 
-            it::getQualifier shouldBe child {
-                it::getImage shouldBe "ASTThisExpression"
-                it::getTypeArguments shouldBe null
-                it::getLhsType shouldBe null
-
-                it::getAmbiguousLhs shouldBe child {
-                    it::getName shouldBe "net.sourceforge.pmd.lang.java.ast"
+                        it::getAmbiguousLhs shouldBe child {
+                            it::getName shouldBe "net.sourceforge.pmd.lang.java.ast"
+                        }
+                    }
                 }
             }
         }

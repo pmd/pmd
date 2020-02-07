@@ -10,43 +10,50 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
     parserTest("Explicit this invocation") {
 
-        "Foo() { this(); }" should matchDeclaration<ASTConstructorDeclaration> {
+        inContext(TypeBodyParsingCtx) {
 
-            it::getModifiers shouldBe modifiers { }
+            "Foo() { this(); }" should parseAs {
+                constructorDecl {
 
-            formalsList(0) { }
+                    it::getModifiers shouldBe modifiers { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe true
-                    it::isSuper shouldBe false
-                    it::isQualified shouldBe false
-                    it::getQualifier shouldBe null
+                    formalsList(0) { }
 
-                    it::getArgumentsList shouldBe argList {}
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe true
+                            it::isSuper shouldBe false
+                            it::isQualified shouldBe false
+                            it::getQualifier shouldBe null
+
+                            it::getArgumentsList shouldBe argList {}
+                        }
+                    }
                 }
             }
-        }
 
-        "Foo() { <String>this(); }" should matchDeclaration<ASTConstructorDeclaration> {
+            "Foo() { <String>this(); }" should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers { }
 
-            formalsList(0) { }
+                    formalsList(0) { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe true
-                    it::isSuper shouldBe false
-                    it::isQualified shouldBe false
-                    it::getQualifier shouldBe null
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe true
+                            it::isSuper shouldBe false
+                            it::isQualified shouldBe false
+                            it::getQualifier shouldBe null
 
 
-                    it::getExplicitTypeArguments shouldBe typeArgList {
-                        classType("String")
+                            it::getExplicitTypeArguments shouldBe typeArgList {
+                                classType("String")
+                            }
+
+                            it::getArgumentsList shouldBe argList {}
+                        }
                     }
-
-                    it::getArgumentsList shouldBe argList {}
                 }
             }
         }
@@ -54,44 +61,49 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
     parserTest("Explicit super invocation") {
 
-        "Foo() { super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+        inContext(TypeBodyParsingCtx) {
+            "Foo() { super(); }" should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers { }
 
-            formalsList(0) { }
+                    formalsList(0) { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe false
-                    it::getQualifier shouldBe null
-                    it::getExplicitTypeArguments shouldBe null
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe false
+                            it::getQualifier shouldBe null
+                            it::getExplicitTypeArguments shouldBe null
 
-                    it::getArgumentsList shouldBe argList {}
+                            it::getArgumentsList shouldBe argList {}
 
+                        }
+                    }
                 }
             }
-        }
+            "Foo() { <String>super(); }" should parseAs {
+                constructorDecl {
 
-        "Foo() { <String>super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+                    it::getModifiers shouldBe modifiers { }
 
-            it::getModifiers shouldBe modifiers { }
+                    formalsList(0) { }
 
-            formalsList(0) { }
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe false
+                            it::getQualifier shouldBe null
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe false
-                    it::getQualifier shouldBe null
+                            it::getExplicitTypeArguments shouldBe typeArgList {
+                                classType("String")
+                            }
 
-                    it::getExplicitTypeArguments shouldBe typeArgList {
-                        classType("String")
+                            it::getArgumentsList shouldBe argList {}
+                        }
                     }
-
-                    it::getArgumentsList shouldBe argList {}
                 }
             }
         }
@@ -100,95 +112,104 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
     parserTest("Explicit super invocation with LHS") {
 
-        "Foo() { o.super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+        inContext(TypeBodyParsingCtx) {
+            "Foo() { o.super(); }" should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers { }
 
-            formalsList(0) { }
+                    formalsList(0) { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe true
-                    it::getArgumentCount shouldBe 0
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe true
+                            it::getArgumentCount shouldBe 0
 
-                    it::getExplicitTypeArguments shouldBe null
-                    it::getQualifier shouldBe variableAccess("o")
+                            it::getExplicitTypeArguments shouldBe null
+                            it::getQualifier shouldBe variableAccess("o")
 
-                    it::getArgumentsList shouldBe argList {}
+                            it::getArgumentsList shouldBe argList {}
+                        }
+                    }
                 }
             }
-        }
 
-        "Foo() { o.<String>super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+            "Foo() { o.<String>super(); }" should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers { }
 
-            formalsList(0) { }
+                    formalsList(0) { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe true
-                    it::getArgumentCount shouldBe 0
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe true
+                            it::getArgumentCount shouldBe 0
 
-                    it::getQualifier shouldBe variableAccess("o")
+                            it::getQualifier shouldBe variableAccess("o")
 
-                    it::getExplicitTypeArguments shouldBe typeArgList {
-                        classType("String")
+                            it::getExplicitTypeArguments shouldBe typeArgList {
+                                classType("String")
+                            }
+
+                            it::getArgumentsList shouldBe argList { }
+                        }
+                    }
+                }
+            }
+
+            "Foo() { o.<S>foo().<String>super(); }" should parseAs {
+                constructorDecl {
+
+                    it::getModifiers shouldBe modifiers { }
+
+                    formalsList(0) { }
+
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe true
+                            it::getArgumentCount shouldBe 0
+
+                            it::getQualifier shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
+
+                            it::getExplicitTypeArguments shouldBe typeArgList {
+                                classType("String")
+                            }
+
+                            it::getArgumentsList shouldBe argList { }
+                        }
+                    }
+                }
+            }
+            "public TabbedPaneLayout() { MetalTabbedPaneUI.this.super(); }" should parseAs {
+                constructorDecl {
+
+                    it::getModifiers shouldBe modifiers {
+                        it::getExplicitModifiers shouldBe setOf(JModifier.PUBLIC)
                     }
 
-                    it::getArgumentsList shouldBe argList { }
-                }
-            }
-        }
+                    formalsList(0) { }
 
-        "Foo() { o.<S>foo().<String>super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+                    it::getBody shouldBe block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe true
+                            it::getExplicitTypeArguments shouldBe null
+                            it::getArgumentCount shouldBe 0
 
-            it::getModifiers shouldBe modifiers { }
+                            it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
 
-            formalsList(0) { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe true
-                    it::getArgumentCount shouldBe 0
-
-                    it::getQualifier shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
-
-                    it::getExplicitTypeArguments shouldBe typeArgList {
-                        classType("String")
+                            it::getArgumentsList shouldBe argList { }
+                        }
                     }
-
-                    it::getArgumentsList shouldBe argList { }
-                }
-            }
-        }
-
-        "public TabbedPaneLayout() { MetalTabbedPaneUI.this.super(); }" should matchDeclaration<ASTConstructorDeclaration> {
-
-            it::getModifiers shouldBe modifiers {
-                it::getExplicitModifiers shouldBe setOf(JModifier.PUBLIC)
-            }
-
-            formalsList(0) { }
-
-            it::getBody shouldBe block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe true
-                    it::getExplicitTypeArguments shouldBe null
-                    it::getArgumentCount shouldBe 0
-
-                    it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
-
-
-                    it::getArgumentsList shouldBe argList { }
                 }
             }
         }
@@ -202,85 +223,96 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
     parserTest("Arguments of invocations") {
 
-        """
+        inContext(TypeBodyParsingCtx) {
+
+            """
 		WebSocketReceivePublisher() {
 			super(AbstractListenerWebSocketSession.this.getLogPrefix());
 		}
-        """ should matchDeclaration<ASTConstructorDeclaration> {
+        """ should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers { }
 
-            formalsList(0) { }
+                    formalsList(0) { }
 
-            block {
-                child<ASTExplicitConstructorInvocation> {
-                    it::isThis shouldBe false
-                    it::isSuper shouldBe true
-                    it::isQualified shouldBe false
-                    it::getArgumentCount shouldBe 1
+                    block {
+                        child<ASTExplicitConstructorInvocation> {
+                            it::isThis shouldBe false
+                            it::isSuper shouldBe true
+                            it::isQualified shouldBe false
+                            it::getArgumentCount shouldBe 1
 
-                    it::getExplicitTypeArguments shouldBe null
-                    it::getQualifier shouldBe null
+                            it::getExplicitTypeArguments shouldBe null
+                            it::getQualifier shouldBe null
 
-                    it::getArgumentsList shouldBe argList {
-                        child<ASTMethodCall> {
-                            child<ASTThisExpression> {
-                                classType("AbstractListenerWebSocketSession")
+                            it::getArgumentsList shouldBe argList {
+                                child<ASTMethodCall> {
+                                    child<ASTThisExpression> {
+                                        classType("AbstractListenerWebSocketSession")
+                                    }
+                                    it::getArguments shouldBe argList {}
+                                }
                             }
-                            it::getArguments shouldBe argList {}
                         }
                     }
                 }
             }
         }
-
-
     }
 
     parserTest("Neg tests, not explicit invocations") {
 
+        inContext(TypeBodyParsingCtx) {
 
-        "Foo() { this.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
+            "Foo() { this.name = null; }" should parseAs {
+                constructorDecl {
 
-            it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers { }
 
-            formalsList(0) { }
+                    formalsList(0) { }
 
-            block {
-                exprStatement()
+                    block {
+                        exprStatement()
+                    }
+                }
+            }
+
+            "Foo() { super.name = null; }" should parseAs {
+                constructorDecl {
+                    it::getModifiers shouldBe modifiers { }
+
+                    formalsList(0) { }
+                    block {
+                        exprStatement()
+                    }
+                }
+            }
+
+            "Foo() { super.foo(); }" should parseAs {
+                constructorDecl {
+                    it::getModifiers shouldBe modifiers { }
+
+                    formalsList(0) { }
+
+                    block {
+                        exprStatement()
+                    }
+                }
+            }
+
+            "Foo() { A.super.foo(); }" should parseAs {
+                constructorDecl {
+                    it::getModifiers shouldBe modifiers { }
+
+                    formalsList(0) { }
+
+                    block {
+                        exprStatement()
+                    }
+                }
             }
         }
-
-        "Foo() { super.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
-            it::getModifiers shouldBe modifiers { }
-
-            formalsList(0) { }
-            block {
-                exprStatement()
-            }
-        }
-
-        "Foo() { super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
-            it::getModifiers shouldBe modifiers { }
-
-            formalsList(0) { }
-
-            block {
-                exprStatement()
-            }
-        }
-
-
-        "Foo() { A.super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
-            it::getModifiers shouldBe modifiers { }
-
-            formalsList(0) { }
-
-            block {
-                exprStatement()
-            }
-        }
-
     }
 
 })

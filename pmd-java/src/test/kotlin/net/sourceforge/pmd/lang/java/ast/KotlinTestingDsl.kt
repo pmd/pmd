@@ -5,7 +5,6 @@ import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.matchers.collections.shouldContainAll
-import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
@@ -128,22 +127,6 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * Extensible environment to describe parse/match testing workflows in a concise way.
  * Can be used inside of a [ParserTestSpec] with [ParserTestSpec.parserTest].
  *
- * Parsing contexts allow to parse a string containing only the node you're interested
- * in instead of writing up a full class that the parser can handle. See [parseExpression],
- * [parseStatement].
- *
- * These are implicitly used by [matchExpr] and [matchStmt], which specify a matcher directly
- * on the strings, using their type parameter and the info in this test context to parse, find
- * the node, and execute the matcher in a single call. These may be used by [io.kotlintest.should],
- * e.g.
- *
- *      parserTest("Test ShiftExpression operator") {
- *          "1 >> 2" should matchExpr<ASTShiftExpression>(ignoreChildren = true) {
- *              it.operator shouldBe ">>"
- *          }
- *      }
- *
- *
  * Import statements in the parsing contexts can be configured by adding types to [importedTypes],
  * or strings to [otherImports].
  *
@@ -203,44 +186,6 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         fullSource = javaVersion.parser.readClassSource(klass)
     }
 
-    inline fun <reified N : JavaNode> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NodeSpec<N>)
-            : Assertions<String> = { nodeParsingCtx.parseAndFind<N>(it, this).shouldMatchNode(ignoreChildren, nodeSpec) }
-
-    /**
-     * Returns a String matcher that parses the node using [parseExpression] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     *
-     */
-    inline fun <reified N : ASTExpression> matchExpr(ignoreChildren: Boolean = false,
-                                                     noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(ExpressionParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseStatement] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     */
-    inline fun <reified N : JavaNode> matchStmt(ignoreChildren: Boolean = false,
-                                                noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(StatementParsingCtx, ignoreChildren, nodeSpec)
-
-
-    /**
-     * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     */
-    inline fun <reified N : ASTAnyTypeDeclaration> matchToplevelType(ignoreChildren: Boolean = false,
-                                                                     noinline nodeSpec: NodeSpec<N>) =
-            makeMatcher(TopLevelTypeDeclarationParsingCtx, ignoreChildren, nodeSpec)
-
-    /**
-     * Returns a String matcher that parses the node using [parseDeclaration] with
-     * type param [N], then matches it against the [nodeSpec] using [matchNode].
-     *
-     * Note that the enclosing type declaration can be customized by changing [genClassHeader].
-     */
-    inline fun <reified N : JavaNode> matchDeclaration(
-            ignoreChildren: Boolean = false,
-            noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx, ignoreChildren, nodeSpec)
 
     fun notParseIn(nodeParsingCtx: NodeParsingCtx<*>, expected: (ParseException) -> Unit = {}): Assertions<String> = {
         val e = shouldThrow<ParseException> {
@@ -268,31 +213,6 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
         }
     }
-
-    /**
-     * Expect a parse exception to be thrown by [block].
-     * The message is asserted to contain [messageContains].
-     */
-    fun expectParseException(messageContains: String, block: () -> Unit) {
-
-        val thrown = shouldThrow<ParseException>(block)
-
-        thrown.message.shouldContain(messageContains)
-
-    }
-
-    inline fun <reified N : ASTExpression> parseExpression(expr: String): N =
-            ExpressionParsingCtx.parseAndFind(expr, this)
-
-    // don't forget the semicolon
-    inline fun <reified N : ASTStatement> parseStatement(stmt: String): N =
-            StatementParsingCtx.parseAndFind(stmt, this)
-
-    inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N =
-            TopLevelTypeDeclarationParsingCtx.parseAndFind(decl, this)
-
-    inline fun <reified N : Node> parseDeclaration(decl: String): N =
-            EnclosedDeclarationParsingCtx.parseNode(decl, this) as N
 
 }
 

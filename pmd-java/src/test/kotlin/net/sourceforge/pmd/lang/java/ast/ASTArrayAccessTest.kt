@@ -12,22 +12,31 @@ class ASTArrayAccessTest : ParserTestSpec({
 
     parserTest("Array access auto disambiguation") {
 
-        "a.b[0]" should matchExpr<ASTArrayAccess> {
+        inContext(ExpressionParsingCtx) {
 
-            it::getQualifier shouldBe fieldAccess("b") {
-                it::getQualifier shouldBe ambiguousName("a")
+            "a.b[0]" should parseAs {
+
+                arrayAccess {
+                    it::getQualifier shouldBe fieldAccess("b") {
+                        it::getQualifier shouldBe ambiguousName("a")
+                    }
+
+                    it::getIndexExpression shouldBe int(0)
+                }
+
             }
 
-            it::getIndexExpression shouldBe int(0)
-        }
+
+            "b[0]" should parseAs {
+
+                arrayAccess {
+
+                    it::getQualifier shouldBe variableAccess("b")
 
 
-        "b[0]" should matchExpr<ASTArrayAccess> {
-
-            it::getQualifier shouldBe variableAccess("b")
-
-
-            it::getIndexExpression shouldBe int(0)
+                    it::getIndexExpression shouldBe int(0)
+                }
+            }
         }
     }
 })

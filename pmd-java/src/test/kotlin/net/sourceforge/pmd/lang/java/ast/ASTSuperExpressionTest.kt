@@ -10,13 +10,15 @@ class ASTSuperExpressionTest : ParserTestSpec({
 
     parserTest("Unqualified super") {
 
-        "super.foo()" should matchExpr<ASTMethodCall> {
-            it::getQualifier shouldBe child<ASTSuperExpression> {}
+        inContext(ExpressionParsingCtx) {
+            "super.foo()" should parseAs {
+                methodCall("foo") {
+                    it::getQualifier shouldBe child<ASTSuperExpression> {}
 
-            it::getArguments shouldBe child {  }
-
+                    it::getArguments shouldBe argList { }
+                }
+            }
         }
-
     }
 
     parserTest("Neg cases") {
@@ -34,32 +36,39 @@ class ASTSuperExpressionTest : ParserTestSpec({
     }
 
     parserTest("Qualified super") {
-        "Type.super.foo()" should matchExpr<ASTMethodCall> {
+        inContext(ExpressionParsingCtx) {
 
-            it::getQualifier shouldBe child<ASTSuperExpression> {
-                it::getQualifier shouldBe child {
-                    it::getImage shouldBe "Type"
-                }
-            }
+            "Type.super.foo()" should parseAs {
+                methodCall("foo") {
 
-            unspecifiedChild()
-        }
-
-        "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.super.foo()" should matchExpr<ASTMethodCall> {
-
-            it::getQualifier shouldBe child<ASTSuperExpression> {
-                it::getQualifier shouldBe child {
-                    it::getImage shouldBe "ASTThisExpression"
-                    it::getTypeArguments shouldBe null
-                    it::getLhsType shouldBe null
-
-                    it::getAmbiguousLhs shouldBe child {
-                        it::getName shouldBe "net.sourceforge.pmd.lang.java.ast"
+                    it::getQualifier shouldBe child<ASTSuperExpression> {
+                        it::getQualifier shouldBe child {
+                            it::getImage shouldBe "Type"
+                        }
                     }
+
+                    unspecifiedChild()
                 }
             }
 
-            unspecifiedChild()
+            "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.super.foo()" should parseAs {
+                methodCall("foo") {
+
+                    it::getQualifier shouldBe child<ASTSuperExpression> {
+                        it::getQualifier shouldBe child {
+                            it::getImage shouldBe "ASTThisExpression"
+                            it::getTypeArguments shouldBe null
+                            it::getLhsType shouldBe null
+
+                            it::getAmbiguousLhs shouldBe child {
+                                it::getName shouldBe "net.sourceforge.pmd.lang.java.ast"
+                            }
+                        }
+                    }
+
+                    unspecifiedChild()
+                }
+            }
         }
     }
 })

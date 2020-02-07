@@ -118,6 +118,18 @@ fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumCo
             spec()
         }
 
+fun TreeNodeWrapper<Node, *>.enumDecl(name: String, spec: NodeSpec<ASTEnumDeclaration> = EmptyAssertions) =
+        child<ASTEnumDeclaration> {
+            it::getSimpleName shouldBe name
+            spec()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.enumBody(contents: NodeSpec<ASTEnumBody> = EmptyAssertions) =
+        child<ASTEnumBody> {
+            contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassOrInterfaceType?> = { null }) =
         child<ASTThisExpression> {
             it::getQualifier shouldBe qualifier()
@@ -342,8 +354,23 @@ fun TreeNodeWrapper<Node, *>.exprStatement(contents: ValuedNodeSpec<ASTExpressio
             else unspecifiedChild()
         }
 
+fun TreeNodeWrapper<Node, *>.tryStmt(contents: NodeSpec<ASTTryStatement>) =
+        child<ASTTryStatement> {
+            contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.fieldDecl(contents: NodeSpec<ASTFieldDeclaration>) =
         child<ASTFieldDeclaration> {
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.constructorDecl(contents: NodeSpec<ASTConstructorDeclaration>) =
+        child<ASTConstructorDeclaration> {
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.methodDecl(contents: NodeSpec<ASTMethodDeclaration>) =
+        child<ASTMethodDeclaration> {
             contents()
         }
 
@@ -457,8 +484,8 @@ fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSp
         }
 
 
-fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression>) =
-        child<ASTInfixExpression> {
+fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInfixExpression> = EmptyAssertions) =
+        child<ASTInfixExpression>(ignoreChildren = assertions === EmptyAssertions) {
             it::getOperator shouldBe op
             assertions()
         }

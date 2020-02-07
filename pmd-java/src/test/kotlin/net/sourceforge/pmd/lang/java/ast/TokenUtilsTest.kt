@@ -16,24 +16,25 @@ import net.sourceforge.pmd.lang.ast.test.Assertions
 class TokenUtilsTest : FunSpec({
 
     fun setup1(assertions: Assertions<List<GenericToken>>) {
-        with(ParserTestCtx(JavaVersion.J11)) {
 
 
-            val decl = parseToplevelDeclaration<ASTClassOrInterfaceDeclaration>("""
-                class Foo { /* wassup */ abstract void bar(); }
-            """.trimIndent())
+        val decl =
+                TopLevelTypeDeclarationParsingCtx.parseAndFind<ASTClassOrInterfaceDeclaration>(
+                        "class Foo { /* wassup */ abstract void bar(); }",
+                        ParserTestCtx(JavaVersion.J11)
+                )
 
-            val fileTokens = generateSequence(decl.root.jjtGetFirstToken()) { it.next }.toList()
+        val fileTokens = generateSequence(decl.root.jjtGetFirstToken()) { it.next }.toList()
 
-            fileTokens.map { it.image } shouldBe listOf(
-                    // for some reason there's 2 EOF tokens but that's not the point of this test
-                    "class", "Foo", "{", "abstract", "void", "bar", "(", ")", ";", "}", "", ""
-            )
+        fileTokens.map { it.image } shouldBe listOf(
+                // for some reason there's 2 EOF tokens but that's not the point of this test
+                "class", "Foo", "{", "abstract", "void", "bar", "(", ")", ";", "}", "", ""
+        )
 
-            assertions(fileTokens)
+        assertions(fileTokens)
 
-        }
     }
+
 
 
     test("Test nth previous token, simple cases") {

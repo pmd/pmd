@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
@@ -10,50 +9,52 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 class ASTFieldAccessTest : ParserTestSpec({
 
     parserTest("Field access exprs") {
-        "Type.this.foo" should matchExpr<ASTFieldAccess> {
-            it::getFieldName shouldBe "foo"
-            it::getImage shouldBe "foo"
 
-            it::getQualifier shouldBe child<ASTThisExpression> {
-                it::getQualifier shouldBe child {
-                    it.typeArguments shouldBe null
-                    it.typeImage shouldBe "Type"
+        inContext(ExpressionParsingCtx) {
+
+            "Type.this.foo" should parseAs {
+                fieldAccess("foo") {
+
+                    it::getQualifier shouldBe child<ASTThisExpression> {
+                        it::getQualifier shouldBe child {
+                            it.typeArguments shouldBe null
+                            it.typeImage shouldBe "Type"
+                        }
+                    }
                 }
             }
-        }
 
-        "foo().foo" should matchExpr<ASTFieldAccess> {
+            "foo().foo" should parseAs {
+                fieldAccess("foo") {
 
-            it::getFieldName shouldBe "foo"
-            it::getImage shouldBe "foo"
+                    it::getQualifier shouldBe child<ASTMethodCall> {
+                        it::getQualifier shouldBe null
+                        it::getMethodName shouldBe "foo"
+                        it::getImage shouldBe "foo"
 
-            it::getQualifier shouldBe child<ASTMethodCall> {
-                it::getQualifier shouldBe null
-                it::getMethodName shouldBe "foo"
-                it::getImage shouldBe "foo"
-
-                it::getArguments shouldBe child {}
+                        it::getArguments shouldBe child {}
+                    }
+                }
             }
-        }
 
 
-        "a.b.c" should matchExpr<ASTFieldAccess> {
-            it::getImage shouldBe "c"
-            it::getFieldName shouldBe "c"
+            "a.b.c" should parseAs {
+                fieldAccess("c") {
 
-            val fieldAccess = it
+                    val fieldAccess = it
 
-            it::getQualifier shouldBe child<ASTAmbiguousName> {
-                it::getName shouldBe "a.b"
-                // test the parent is set correctly
-                it::getParent shouldBe fieldAccess
+                    it::getQualifier shouldBe child<ASTAmbiguousName> {
+                        it::getName shouldBe "a.b"
+                        // test the parent is set correctly
+                        it::getParent shouldBe fieldAccess
+                    }
+                }
             }
-        }
 
 
-        "a" should matchExpr<ASTVariableAccess> {
-            it::getVariableName shouldBe "a"
-            it::getParent shouldNotBe null
+            "a" should parseAs {
+                variableAccess("a")
+            }
         }
     }
 })

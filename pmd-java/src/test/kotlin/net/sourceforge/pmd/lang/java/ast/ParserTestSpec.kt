@@ -16,7 +16,7 @@ import io.kotlintest.should as kotlintestShould
  * Base class for grammar tests that use the DSL. Tests are layered into
  * containers that make it easier to browse in the IDE. Layout is group name,
  * then java version, then test case. Test cases are "should" assertions matching
- * a string against a matcher defined in [ParserTestCtx], e.g. [ParserTestCtx.matchExpr].
+ * a string against a matcher defined in [ParserTestCtx].
  *
  * @author Clément Fournier
  */

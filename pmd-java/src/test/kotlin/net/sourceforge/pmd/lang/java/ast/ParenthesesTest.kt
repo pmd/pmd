@@ -18,128 +18,142 @@ class ParenthesesTest : ParserTestSpec({
     parserTest("Test parens") {
 
         inContext(StatementParsingCtx) {
-            // we use a statement context to avoid the findFirstNodeOnStraightLine skipping parentheses
 
-            "int a = 3;" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe int(3) {
-                        it::getParenthesisDepth shouldBe 0
-                        it::isParenthesized shouldBe false
-                    }
-                }
-            }
-
-            "int a = (3);" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe int(3) {
-                        it::getParenthesisDepth shouldBe 1
-                        it::isParenthesized shouldBe true
-                    }
-                }
-            }
-
-            "int a = ((3));" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe int(3) {
-                        it::getParenthesisDepth shouldBe 2
-                        it::isParenthesized shouldBe true
-
-                        it.tokenList().map { it.image } shouldBe listOf("(", "(", "3", ")", ")")
-                    }
-                }
-            }
-
-            "int a = ((a)).f;" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe fieldAccess("f") {
-                        it::getParenthesisDepth shouldBe 0
-                        it::isParenthesized shouldBe false
-
-                        it::getQualifier shouldBe variableAccess("a") {
-                            it::getParenthesisDepth shouldBe 2
-                            it::isParenthesized shouldBe true
-
-                            it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ")")
+            "int a = 3;" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe int(3) {
+                            it::getParenthesisDepth shouldBe 0
+                            it::isParenthesized shouldBe false
                         }
                     }
                 }
             }
-            "int a = ((a).f);" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe fieldAccess("f") {
-                        it::getParenthesisDepth shouldBe 1
-                        it::isParenthesized shouldBe true
 
-                        it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ".", "f", ")")
+            "int a = (3);" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe int(3) {
+                            it::getParenthesisDepth shouldBe 1
+                            it::isParenthesized shouldBe true
+                        }
+                    }
+                }
+            }
 
-                        it::getQualifier shouldBe variableAccess("a") {
+            "int a = ((3));" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe int(3) {
+                            it::getParenthesisDepth shouldBe 2
+                            it::isParenthesized shouldBe true
+
+                            it.tokenList().map { it.image } shouldBe listOf("(", "(", "3", ")", ")")
+                        }
+                    }
+                }
+            }
+
+            "int a = ((a)).f;" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe fieldAccess("f") {
+                            it::getParenthesisDepth shouldBe 0
+                            it::isParenthesized shouldBe false
+
+                            it::getQualifier shouldBe variableAccess("a") {
+                                it::getParenthesisDepth shouldBe 2
+                                it::isParenthesized shouldBe true
+
+                                it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ")")
+                            }
+                        }
+                    }
+                }
+            }
+
+            "int a = ((a).f);" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe fieldAccess("f") {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
 
-                            it.tokenList().map { it.image } shouldBe listOf("(", "a", ")")
+                            it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ".", "f", ")")
+
+                            it::getQualifier shouldBe variableAccess("a") {
+                                it::getParenthesisDepth shouldBe 1
+                                it::isParenthesized shouldBe true
+
+                                it.tokenList().map { it.image } shouldBe listOf("(", "a", ")")
+                            }
                         }
                     }
                 }
             }
 
             // the left parens shouldn't be flattened by AbstractLrBinaryExpr
-            "int a = ((1 + 2) + f);" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
-                        it::getParenthesisDepth shouldBe 1
-                        it::isParenthesized shouldBe true
-
-                        it.tokenList().map { it.image } shouldBe
-                                listOf("(", "(", "1", "+", "2", ")", "+", "f", ")")
-
-                        infixExpr(BinaryOp.ADD) {
+            "int a = ((1 + 2) + f);" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
 
-
                             it.tokenList().map { it.image } shouldBe
-                                    listOf("(", "1", "+", "2", ")")
+                                    listOf("(", "(", "1", "+", "2", ")", "+", "f", ")")
 
-                            int(1)
-                            int(2)
-                        }
+                            infixExpr(BinaryOp.ADD) {
+                                it::getParenthesisDepth shouldBe 1
+                                it::isParenthesized shouldBe true
 
-                        variableAccess("f") {
-                            it::isParenthesized shouldBe false
-                            it::getParenthesisDepth shouldBe 0
+
+                                it.tokenList().map { it.image } shouldBe
+                                        listOf("(", "1", "+", "2", ")")
+
+                                int(1)
+                                int(2)
+                            }
+
+                            variableAccess("f") {
+                                it::isParenthesized shouldBe false
+                                it::getParenthesisDepth shouldBe 0
+                            }
                         }
                     }
                 }
             }
 
-            "int a = (1 + (2 + f));" should matchStmt<ASTLocalVariableDeclaration> {
-                localVarModifiers {  }
-                primitiveType(INT)
-                variableDeclarator("a") {
-                    it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
-                        it::getParenthesisDepth shouldBe 1
-                        it::isParenthesized shouldBe true
-
-                        int(1)
-
-                        infixExpr(BinaryOp.ADD) {
+            "int a = (1 + (2 + f));" should parseAs {
+                localVarDecl {
+                    localVarModifiers { }
+                    primitiveType(INT)
+                    variableDeclarator("a") {
+                        it::getInitializer shouldBe infixExpr(BinaryOp.ADD) {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
 
-                            int(2)
-                            variableAccess("f")
+                            int(1)
+
+                            infixExpr(BinaryOp.ADD) {
+                                it::getParenthesisDepth shouldBe 1
+                                it::isParenthesized shouldBe true
+
+                                int(2)
+                                variableAccess("f")
+                            }
                         }
                     }
                 }
@@ -199,25 +213,6 @@ class ParenthesesTest : ParserTestSpec({
                 }
             }
         }
-
-//        TODO enable when #2034 is merged, grammar is different
-//        inContext(EnclosedDeclarationParsingCtx) {
-//
-//            """ // a constructor
-//                Foo() {
-//                    (a + 1).super();
-//                }
-//            """ should parseAs {
-//                child<ASTConstructorDeclaration> {
-//
-//
-//
-//                }
-//            }
-//
-//
-//        }
-
     }
 
 

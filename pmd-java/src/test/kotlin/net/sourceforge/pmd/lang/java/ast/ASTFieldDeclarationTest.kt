@@ -12,7 +12,7 @@ class ASTFieldDeclarationTest : ParserTestSpec({
 
     parserTest("Extra dimensions") {
 
-        inContext(EnclosedDeclarationParsingCtx) {
+        inContext(TypeBodyParsingCtx) {
 
             // int x[][] = null;
             // int[] x[][] = null;
@@ -50,7 +50,7 @@ class ASTFieldDeclarationTest : ParserTestSpec({
 
         genClassHeader = "@interface A"
 
-        inContext(EnclosedDeclarationParsingCtx) {
+        inContext(TypeBodyParsingCtx) {
 
             // int x[][] = null;
             // int[] x[][] = null;
