@@ -331,8 +331,11 @@ $delim
 
             // this starts with zero so is octal,
             // but 9 is too big for an octal digit
-            // "099" shouldNot parse()
-            // "099" shouldNot parse()
+            "099" shouldNot parse()
+            "00_8" shouldNot parse()
+            "08_" shouldNot parse()
+            "0x8_" shouldNot parse()
+            "8_" shouldNot parse()
             "0b" shouldNot parse()
             "0x" shouldNot parse()
             "0" should parseAs {

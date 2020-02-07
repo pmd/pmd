@@ -536,66 +536,52 @@ TOKEN :
 TOKEN :
 {
   < INTEGER_LITERAL:
-        <DECIMAL_LITERAL> (["l","L"])?
-      | <HEX_LITERAL> (["l","L"])?
-      | <BINARY_LITERAL> (["l","L"])?
-      | <OCTAL_LITERAL> (["l","L"])?
+        <DECIMAL_NUMERAL> (["l","L"])?
+      | <HEX_NUMERAL>     (["l","L"])?
+      | <BINARY_NUMERAL>  (["l","L"])?
+      | <OCTAL_NUMERAL>   (["l","L"])?
   >
-|
-  < #DECIMAL_LITERAL: (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) >
-|
-  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?) >
-|
-  < #BINARY_LITERAL: "0" ["b","B"] (["0","1"]((["0","1","_"])*["0","1"])?) >
-|
-  < #OCTAL_LITERAL: "0" (["0"-"7"]((["0"-"7","_"])*["0"-"7"])?) >
+| < #DECIMAL_NUMERAL:               ["1"-"9"]  (("_")* ["0"-"9"])* >
+| < #HEX_NUMERAL:     "0" ["x","X"] <HEX_DIGIT_SEQ>                >
+| < #BINARY_NUMERAL:  "0" ["b","B"] ["0","1"]  (("_")* ["0","1"])* >
+| < #OCTAL_NUMERAL:   "0"                      (("_")* ["0"-"7"])* >
 |
   < FLOATING_POINT_LITERAL:
-        (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) "." (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?)? (<EXPONENT>)? (["f","F","d","D"])?
-      | "." (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (<EXPONENT>)? (["f","F","d","D"])?
-      | (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) <EXPONENT> (["f","F","d","D"])?
-      | (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (<EXPONENT>)? ["f","F","d","D"]
+      <DECIMAL_FLOATING_POINT_LITERAL>
+    | <HEX_FLOATING_POINT_LITERAL>
   >
-|
-  < HEX_FLOATING_POINT_LITERAL:
-      (<HEX_LITERAL> (".")? | "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?)? "." (["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])?)) ["p","P"] (["+","-"])? (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) (["f","F","d","D"])?
+| < #DECIMAL_FLOATING_POINT_LITERAL:
+      <DIGIT_SEQ> "." (<DIGIT_SEQ>)? (<EXPONENT>)? (["f","F", "d","D"])?
+    |             "."  <DIGIT_SEQ>   (<EXPONENT>)? (["f","F", "d","D"])?
+    | <DIGIT_SEQ>                     <EXPONENT>   (["f","F", "d","D"])?
+    | <DIGIT_SEQ>                    (<EXPONENT>)?  ["f","F", "d","D"]
   >
-|
-  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"]((["0"-"9","_"])*["0"-"9"])?) >
-|
-  < CHARACTER_LITERAL:
-      "'"
-      (   (~["'","\\","\n","\r"])
-        | ("\\"
-            ( ["n","t","b","r","f","\\","'","\""]
-            | ["0"-"7"] ( ["0"-"7"] )?
-            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-            )
-          )
-      )
-      "'"
+| < #HEX_FLOATING_POINT_LITERAL:
+      "0" ["x","X"]  <HEX_DIGIT_SEQ>   (".")?               <HEX_EXPONENT> (["f","F", "d","D"])?
+    | "0" ["x","X"] (<HEX_DIGIT_SEQ>)?  "." <HEX_DIGIT_SEQ> <HEX_EXPONENT> (["f","F", "d","D"])?
   >
-| < #STRING_ESCAPE:
-      "\\"
-      ( ["n","t","b","r","f","\\","'","\""]
-      // octal escapes
-      | ["0"-"7"] ( ["0"-"7"] )?
-      | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-      )
-  >
-|
-  < STRING_LITERAL:
-      "\""
-      (   (~["\"","\\","\n","\r"])
-        | <STRING_ESCAPE>
-      )*
-      "\""
-  >
+| < #DIGIT_SEQ:     ["0"-"9"]                 (("_")* ["0"-"9"])*                 >
+| < #HEX_DIGIT_SEQ: ["0"-"9","a"-"f","A"-"F"] (("_")* ["0"-"9","a"-"f","A"-"F"])* >
+
+| < #EXPONENT:      ["e","E"] <EXPONENT_TAIL> >
+| < #HEX_EXPONENT:  ["p","P"] <EXPONENT_TAIL> >
+| < #EXPONENT_TAIL: (["+","-"])? <DIGIT_SEQ>  >
+
+| < CHARACTER_LITERAL: "'"  ( ~["'", "\\","\n","\r"] | <STRING_ESCAPE> )  "'"  >
+| < STRING_LITERAL:    "\"" ( ~["\"","\\","\n","\r"] | <STRING_ESCAPE> )* "\"" >
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
         ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
      "\"\"\""
+  >
+| < #STRING_ESCAPE:
+        "\\"
+        ( ["n","t","b","r","f","\\","'","\""]
+        // octal escapes
+        | ["0"-"7"] ( ["0"-"7"] )?
+        | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+        )
   >
 }
 
@@ -1835,7 +1821,6 @@ void NumericLiteral():
 {
   ( t=<INTEGER_LITERAL>             { jjtThis.setIntLiteral(); }
   | t=<FLOATING_POINT_LITERAL>      { jjtThis.setFloatLiteral(); }
-  | t=<HEX_FLOATING_POINT_LITERAL>  { jjtThis.setFloatLiteral(); }
   )
   { jjtThis.setImage(t.image); }
 }
