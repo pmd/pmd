@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
@@ -23,7 +22,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
-    private TokenDocument tokenDocument;
 
     ASTCompilationUnit(int id) {
         super(id);
@@ -37,15 +35,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         this.comments = comments;
     }
 
-    @Override
-    public CharSequence getText() {
-        return tokenDocument.getFullText();
-    }
-
-
-    void setTokenDocument(TokenDocument document) {
-        this.tokenDocument = document;
-    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -58,14 +47,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         visitor.visit(this, data);
     }
 
-
-    /**
-     * @deprecated Use {@code getPackageName().isEmpty()}
-     */
-    @Deprecated
-    public boolean declarationsAreInDefaultPackage() {
-        return getPackageDeclaration() == null;
-    }
 
     @Nullable
     public ASTPackageDeclaration getPackageDeclaration() {
