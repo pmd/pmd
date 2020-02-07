@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
 /**
@@ -20,14 +19,12 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  *
  * </pre>
  */
-public final class ASTLambdaExpression extends AbstractJavaExpr implements ASTExpression, MethodLikeNode {
+public final class ASTLambdaExpression extends AbstractJavaExpr {
 
-    private JavaOperationQualifiedName qualifiedName;
 
     ASTLambdaExpression(int id) {
         super(id);
     }
-
 
     public ASTLambdaParameterList getParameters() {
         return (ASTLambdaParameterList) getChild(0);
@@ -40,6 +37,16 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements ASTEx
 
     public boolean isExpressionBody() {
         return !isBlockBody();
+    }
+
+    @Nullable
+    public ASTBlock getBlock() {
+        return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
+    }
+
+    @Nullable
+    public ASTExpression getExpression() {
+        return AstImplUtil.getChildAs(this, 1, ASTExpression.class);
     }
 
 
@@ -79,17 +86,4 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements ASTEx
     }
 
 
-    @Override
-    public JavaOperationQualifiedName getQualifiedName() {
-        return qualifiedName;
-    }
-
-    void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    @Override
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.LAMBDA;
-    }
 }

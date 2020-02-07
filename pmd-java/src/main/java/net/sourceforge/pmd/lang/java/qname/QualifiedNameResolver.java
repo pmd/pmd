@@ -14,22 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
@@ -249,67 +243,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    // @formatter:off
-    /**
-     * Populates the qualified name of a lambda expression. The
-     * qualified name of a lambda is made up:
-     * <ul>
-     *     <li>Of the qualified name of the innermost enclosing
-     *     type (considering anonymous classes too);</li>
-     *     <li>The operation string is composed of the following
-     *     segments, separated with a dollar ({@literal $}) symbol:
-     *     <ul>
-     *         <li>The {@code lambda} keyword;</li>
-     *         <li>A keyword identifying the scope the lambda
-     *         was declared in. It can be:
-     *         <ul>
-     *             <li>{@code new}, if the lambda is declared in an
-     *             instance initializer, or a constructor, or in the
-     *             initializer of an instance field of an outer or
-     *             nested class</li>
-     *             <li>{@code static}, if the lambda is declared in a
-     *             static initializer, or in the initializer of a
-     *             static field (including interface constants),</li>
-     *             <li>{@code null}, if the lambda is declared inside
-     *             another lambda,</li>
-     *             <li>The innermost enclosing type's simple name, if the
-     *             lambda is declared in the field initializer of a local
-     *             class,</li>
-     *             <li>The innermost enclosing method's name, if the
-     *             lambda is declared inside a method,</li>
-     *             <li>Nothing (empty string), if the lambda is declared
-     *             in the initializer of the field of an anonymous class;</li>
-     *         </ul>
-     *         </li>
-     *         <li>A numeric index, unique for each lambda declared
-     *         within the same type declaration.</li>
-     *     </ul>
-     *     </li>
-     * </ul>
-     *
-     * <p>The operation string of a lambda does not contain any formal parameters.
-     *
-     * <p>This specification was worked out from stack traces. The precise order in
-     * which the numeric index is assigned does not conform to the way javac assigns
-     * them. Doing that could allow us to retrieve the Method instance associated
-     * with the lambda. TODO
-     *
-     * <p>See <a href="https://stackoverflow.com/a/34655312/6245827">
-     * this stackoverflow answer</a> for more info about how lambdas are compiled.
-     *
-     * @param node Lambda expression node
-     */
-    // @formatter:on
-    @Override
-    public Object visit(ASTLambdaExpression node, Object data) {
-
-        String opname = "lambda$" + findLambdaScopeNameSegment(node)
-                + "$" + lambdaCounters.peek().getAndIncrement();
-
-        InternalApiBridge.setQname(node, contextOperationQName(opname, true));
-        return super.visit(node, data);
-    }
-
 
     private void updateContextForAnonymousClass() {
         updateClassContext("" + anonymousCounters.peek().incrementAndGet(), NOTLOCAL_PLACEHOLDER);
@@ -346,46 +279,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     /** Creates a new operation qname, using the current context for the class part. */
     private JavaOperationQualifiedName contextOperationQName(String op, boolean isLambda) {
         return new JavaOperationQualifiedName(innermostEnclosingTypeName.peek(), op, isLambda);
-    }
-
-
-    private String findLambdaScopeNameSegment(ASTLambdaExpression node) {
-        Node parent = node.getParent();
-        while (parent != null
-                && !(parent instanceof ASTFieldDeclaration)
-                && !(parent instanceof ASTEnumConstant)
-                && !(parent instanceof ASTInitializer)
-                && !(parent instanceof MethodLikeNode)) {
-            parent = parent.getParent();
-        }
-
-        if (parent == null) {
-            throw new IllegalStateException("The enclosing scope must exist.");
-        }
-
-        if (parent instanceof ASTInitializer) {
-            return ((ASTInitializer) parent).isStatic() ? "static" : "new";
-        } else if (parent instanceof ASTConstructorDeclaration) {
-            return "new";
-        } else if (parent instanceof ASTLambdaExpression) {
-            return "null";
-        } else if (parent instanceof ASTEnumConstant) {
-            return "static";
-        } else if (parent instanceof ASTFieldDeclaration) {
-            ASTFieldDeclaration field = (ASTFieldDeclaration) parent;
-            if (field.isStatic() || field.getEnclosingType().isInterface()) {
-                return "static";
-            }
-            if (innermostEnclosingTypeName.peek().isAnonymousClass()) {
-                return "";
-            } else if (innermostEnclosingTypeName.peek().isLocalClass()) {
-                return classNames.head();
-            } else { // other type
-                return "new";
-            }
-        } else { // ASTMethodDeclaration
-            return ((ASTMethodDeclaration) parent).getName();
-        }
     }
 
 

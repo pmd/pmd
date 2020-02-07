@@ -44,12 +44,8 @@ public final class InternalApiBridge {
         ((AbstractAnyTypeDeclaration) declaration).setQualifiedName(qualifiedName);
     }
 
-    public static void setQname(MethodLikeNode node, JavaOperationQualifiedName qualifiedName) {
-        if (node instanceof ASTLambdaExpression) {
-            ((ASTLambdaExpression) node).setQualifiedName(qualifiedName);
-        } else if (node instanceof AbstractMethodOrConstructorDeclaration) {
-            ((AbstractMethodOrConstructorDeclaration) node).setQualifiedName(qualifiedName);
-        }
+    public static void setQname(ASTMethodOrConstructorDeclaration node, JavaOperationQualifiedName qualifiedName) {
+        ((AbstractMethodOrConstructorDeclaration) node).setQualifiedName(qualifiedName);
     }
 
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {
