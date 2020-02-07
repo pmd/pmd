@@ -4,7 +4,6 @@ import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
-import net.sourceforge.pmd.lang.java.symbols.PrimitiveSymGen
 
 /**
  * @author Clément Fournier

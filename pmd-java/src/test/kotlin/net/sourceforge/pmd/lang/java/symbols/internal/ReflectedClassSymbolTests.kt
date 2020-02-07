@@ -3,7 +3,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory.INT_SYM
 
 /**
  * @author Clément Fournier
@@ -58,7 +58,7 @@ class ReflectedClassSymbolTests : WordSpec({
             val iarr = classSym(IntArray::class.java)!!
             iarr::isArray shouldBe true
             iarr::isInterface shouldBe false
-            iarr::getArrayComponent shouldBe SymbolFactory.INT_SYM
+            iarr::getArrayComponent shouldBe INT_SYM
         }
 
         "reflect its component type when it is a reference array" {

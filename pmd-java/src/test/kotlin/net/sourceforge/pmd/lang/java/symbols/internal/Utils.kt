@@ -8,7 +8,7 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory.*
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.internal.HeaderScopesTest
@@ -105,15 +105,15 @@ object TestClassesGen : Gen<Class<*>> {
 /** Generator of test instances. */
 object PrimitiveSymGen : Gen<JClassSymbol> {
     override fun constants() = listOf(
-            SymbolFactory.INT_SYM,
-            SymbolFactory.DOUBLE_SYM,
-            SymbolFactory.FLOAT_SYM,
-            SymbolFactory.VOID_SYM,
-            SymbolFactory.CHAR_SYM,
-            SymbolFactory.BYTE_SYM,
-            SymbolFactory.SHORT_SYM,
-            SymbolFactory.LONG_SYM,
-            SymbolFactory.BOOLEAN_SYM
+            INT_SYM,
+            DOUBLE_SYM,
+            FLOAT_SYM,
+            VOID_SYM,
+            CHAR_SYM,
+            BYTE_SYM,
+            SHORT_SYM,
+            LONG_SYM,
+            BOOLEAN_SYM
     )
 
     override fun random() = emptySequence<JClassSymbol>()
