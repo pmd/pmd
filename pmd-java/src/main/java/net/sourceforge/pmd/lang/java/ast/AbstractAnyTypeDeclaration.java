@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
@@ -14,9 +15,21 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
     private JavaTypeQualifiedName qualifiedName;
+    private JClassSymbol symbol;
+
 
     AbstractAnyTypeDeclaration(int i) {
         super(i);
+    }
+
+
+    @Override
+    public JClassSymbol getSymbol() {
+        return symbol;
+    }
+
+    void setSymbol(JClassSymbol symbol) {
+        this.symbol = symbol;
     }
 
     @Override

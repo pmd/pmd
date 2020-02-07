@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -65,4 +66,14 @@ public enum JModifier {
     public String toString() {
         return getToken();
     }
+
+
+    public static int toReflect(Collection<JModifier> mods) {
+        int res = 0;
+        for (JModifier mod : mods) {
+            res |= mod.getReflectMod();
+        }
+        return res;
+    }
+
 }

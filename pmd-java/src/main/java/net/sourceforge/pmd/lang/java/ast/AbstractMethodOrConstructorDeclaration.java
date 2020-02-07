@@ -6,10 +6,14 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 
 
-abstract class AbstractMethodOrConstructorDeclaration extends AbstractJavaNode implements ASTMethodOrConstructorDeclaration, LeftRecursiveNode, AccessNode {
+abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbol> extends AbstractJavaNode
+    implements ASTMethodOrConstructorDeclaration,
+               LeftRecursiveNode {
 
+    private T symbol;
     private JavaOperationSignature signature;
     private JavaOperationQualifiedName qualifiedName;
 
@@ -39,4 +43,15 @@ abstract class AbstractMethodOrConstructorDeclaration extends AbstractJavaNode i
     }
 
 
+    void setSymbol(T symbol) {
+        this.symbol = symbol;
+    }
+
+    @Override
+    public T getSymbol() {
+        // force evaluation
+        getEnclosingType().getSymbol().getDeclaredMethods();
+        getEnclosingType().getSymbol().getConstructors();
+        return symbol;
+    }
 }

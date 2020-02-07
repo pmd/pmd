@@ -21,18 +21,23 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 
 
 /**
@@ -72,6 +77,8 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     private final Stack<MutableInt> lambdaCounters = new Stack<>();
 
     private final Stack<JavaTypeQualifiedName> innermostEnclosingTypeName = new Stack<>();
+    private final AstSymFactory symFactory;
+    private final ASTCompilationUnit root;
 
     /**
      * Package list of the current file.
@@ -103,23 +110,16 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      */
     private ImmutableList<String> classNames;
 
-    /**
-     * The classloader that must be used to load classes for resolving types,
-     * e.g. for qualified names.
-     * This is the auxclasspath.
-     */
-    private ClassLoader classLoader;
+    public QualifiedNameResolver(AstSymFactory symFactory, ASTCompilationUnit root) {
+        this.symFactory = symFactory;
+        this.root = root;
+    }
 
     /**
-     * Initialises the visitor and starts it.
-     *
-     * @param classLoader The classloader that will be used by type qualified names
-     *                    to load their type.
-     * @param rootNode    The root hierarchy
+     * Traverse the compilation unit.
      */
-    public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
-        this.classLoader = PMDASMClassLoader.getInstance(classLoader);
-        rootNode.jjtAccept(this, null);
+    public void traverse() {
+        root.jjtAccept(this, null);
     }
 
 
@@ -212,6 +212,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         updateClassContext(node.getSimpleName(), localIndex);
 
         InternalApiBridge.setQname(node, contextClassQName());
+        InternalApiBridge.setSymbol(node, symFactory.getClassSymbol(node));
 
         super.visit(node, data);
 
@@ -221,12 +222,36 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+    @Override
+    public Object visit(ASTVariableDeclaratorId node, Object data) {
+
+        if (node.isLocalVariable() || node.isLambdaParameter() || node.isExceptionBlockParameter() || node.isResourceDeclaration()) {
+            InternalApiBridge.setSymbol(node, symFactory.getLocalVarSymbol(node));
+        } else if (node.isField() || node.isEnumConstant()) {
+            JClassSymbol klass = node.getEnclosingType().getSymbol();
+            InternalApiBridge.setSymbol(node, klass.getDeclaredField(node.getVariableName()));
+        } else if (node.isFormalParameter()) {
+            ASTMethodOrConstructorDeclaration owner = node.ancestors(ASTMethodOrConstructorDeclaration.class).first();
+            ASTFormalParameter param = node.getFirstParentOfType(ASTFormalParameter.class);
+            int index = param.getIndexInParent();
+            if (param.getOwnerList().getReceiverParameter() != null) {
+                index--;
+            }
+            JFormalParamSymbol sym = owner.getSymbol().getFormalParameters().get(index);
+            InternalApiBridge.setSymbol(node, sym);
+        }
+
+        return super.visit(node, data);
+    }
+
 
     @Override
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {
 
         updateContextForAnonymousClass();
         InternalApiBridge.setQname(node, contextClassQName());
+        InternalApiBridge.setSymbol(node, symFactory.getClassSymbol(node));
+
         super.visit(node, data);
         rollbackClassContext();
 
@@ -304,7 +329,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTLambdaExpression node, Object data) {
 
         String opname = "lambda$" + findLambdaScopeNameSegment(node)
-                + "$" + lambdaCounters.peek().getAndIncrement();
+            + "$" + lambdaCounters.peek().getAndIncrement();
 
         InternalApiBridge.setQname(node, contextOperationQName(opname, true));
         return super.visit(node, data);
@@ -339,7 +364,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     /** Creates a new class qname from the current context (fields). */
     private JavaTypeQualifiedName contextClassQName() {
-        return new JavaTypeQualifiedName(packages, classNames, localIndices, classLoader);
+        return new JavaTypeQualifiedName(packages, classNames, localIndices, QualifiedNameResolver.class.getClassLoader());
     }
 
 

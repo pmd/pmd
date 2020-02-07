@@ -9,11 +9,13 @@ import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
 /**
@@ -26,6 +28,11 @@ public interface ASTAnyTypeDeclaration
             AccessNode,
             TypeParamOwnerNode,
             FinalizableNode {
+
+
+    @Override
+    @NonNull
+    JClassSymbol getSymbol();
 
     /**
      * Returns the simple name of this type declaration. Returns null

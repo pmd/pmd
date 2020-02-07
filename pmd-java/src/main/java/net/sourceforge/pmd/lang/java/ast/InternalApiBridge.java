@@ -7,6 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -27,6 +33,29 @@ public final class InternalApiBridge {
     private InternalApiBridge() {
 
     }
+
+    public static JClassSymbol getSymbolInternal(ASTAnyTypeDeclaration node) {
+        return ((AbstractAnyTypeDeclaration) node).getSymbolInternal();
+    }
+
+    public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
+        if (node instanceof ASTMethodDeclaration) {
+            ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
+        } else if (node instanceof ASTConstructorDeclaration) {
+            ((ASTConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
+        } else if (node instanceof ASTAnyTypeDeclaration) {
+            ((AbstractAnyTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
+        } else if (node instanceof ASTVariableDeclaratorId) {
+            ((ASTVariableDeclaratorId) node).setSymbol((JVariableSymbol) symbol);
+        } else if (node instanceof ASTTypeParameter) {
+            ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
+        }
+    }
+
+    public static void setSymbolInternal(ASTAnyTypeDeclaration node, JClassSymbol symbol) {
+        ((AbstractAnyTypeDeclaration) node).setSymbol(symbol);
+    }
+
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);
