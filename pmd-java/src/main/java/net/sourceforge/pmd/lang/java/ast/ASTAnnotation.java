@@ -9,6 +9,7 @@ import java.util.Iterator;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Represents an annotation.
@@ -36,7 +37,6 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
         return name;
     }
 
-
     @Override
     @Deprecated
     public String getImage() {
@@ -47,8 +47,7 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
      * Returns the simple name of the annotation.
      */
     public String getSimpleName() {
-        String[] split = getAnnotationName().split("\\.");
-        return split[split.length - 1];
+        return StringUtil.substringAfterLast(getImage(), '.');
     }
 
 

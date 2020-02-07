@@ -18,10 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -125,18 +123,6 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     }
 
     private boolean hasOverrideAnnotation(ASTMethodDeclaration node) {
-
-        int childIndex = node.getIndexInParent();
-        for (int i = 0; i < childIndex; i++) {
-            Node previousSibling = node.getParent().getChild(i);
-            List<ASTMarkerAnnotation> annotations = previousSibling.findDescendantsOfType(ASTMarkerAnnotation.class);
-            for (ASTMarkerAnnotation annotation : annotations) {
-                ASTName name = annotation.getFirstChildOfType(ASTName.class);
-                if (name != null && (name.hasImageEqualTo("Override") || name.hasImageEqualTo("java.lang.Override"))) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return node.isAnnotationPresent(Override.class);
     }
 }

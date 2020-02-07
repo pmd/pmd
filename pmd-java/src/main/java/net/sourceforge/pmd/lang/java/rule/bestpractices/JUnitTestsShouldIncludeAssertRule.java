@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -41,7 +39,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (isJUnitMethod(method, data)) {
-            if (!isExpectAnnotated(method.getParent())) {
+            if (!isExpectAnnotated(method)) {
                 Map<String, VariableNameDeclaration> variables = getVariables(method);
 
                 Scope classScope = method.getScope().getParent();
@@ -98,10 +96,9 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
             Node parent = entry.getKey().getNode().getParent().getParent().getParent();
-            if (parent.hasDescendantOfType(ASTMarkerAnnotation.class)
-                    && parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
-                String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).getChild(0).getImage();
-                if (!"Rule".equals(annot) && !"org.junit.Rule".equals(annot)) {
+            if (parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
+                ASTAnnotation annot = parent.getFirstDescendantOfType(ASTAnnotation.class);
+                if (annot == null || !TypeHelper.isA(annot, "org.junit.Rule")) {
                     continue;
                 }
 
@@ -118,20 +115,12 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     /**
      * Tells if the node contains a Test annotation with an expected exception.
      */
-    private boolean isExpectAnnotated(Node methodParent) {
-        List<ASTNormalAnnotation> annotations = methodParent.findDescendantsOfType(ASTNormalAnnotation.class);
-        for (ASTNormalAnnotation annotation : annotations) {
-            ASTName name = annotation.getFirstChildOfType(ASTName.class);
-            if (name != null && TypeHelper.isA(name, JUNIT4_CLASS_NAME)) {
-                List<ASTMemberValuePair> memberValues = annotation.findDescendantsOfType(ASTMemberValuePair.class);
-                for (ASTMemberValuePair pair : memberValues) {
-                    if ("expected".equals(pair.getImage())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+    private boolean isExpectAnnotated(ASTMethodDeclaration method) {
+        return method.getDeclaredAnnotations()
+                     .filter(it -> TypeHelper.isA(it, JUNIT4_CLASS_NAME))
+                     .flatMap(ASTAnnotation::getMembers)
+                     .any(it -> "expected".equals(it.getName()));
+
     }
 
     /**
