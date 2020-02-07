@@ -30,6 +30,65 @@ public final class StringUtil {
     private StringUtil() {
     }
 
+
+    /**
+     * Returns the (1-based) line number of the character at the given index.
+     * Line terminators (\r, \n) are assumed to be on the line they *end*
+     * and not on the following line. The method also accepts that the given
+     * offset be the length of the string (in which case there's no targeted character),
+     * to get the line number of a character that would be inserted at
+     * the end of the string.
+     *
+     * <pre>
+     *
+     *     lineNumberAt("a\nb", 0)  = 1
+     *     lineNumberAt("a\nb", 1)  = 1
+     *     lineNumberAt("a\nb", 2)  = 2
+     *     lineNumberAt("a\nb", 3)  = 2  // charAt(3) doesn't exist though
+     *     lineNumberAt("a\nb", 4)  = -1
+     *
+     *     lineNumberAt("", 0) = 1
+     *     lineNumberAt("", _) = -1
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence of the targeted character.
+     *                        May be the length of the sequence.
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the line number
+     */
+    public static int lineNumberAt(CharSequence charSeq, int offsetInclusive) {
+        int len = charSeq.length();
+
+        if (offsetInclusive > len || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int l = 1;
+        for (int curOffset = 0; curOffset < offsetInclusive; curOffset++) {
+            // if we end up outside the string, then the line is undefined
+            if (curOffset >= len) {
+                return -1;
+            }
+
+            char c = charSeq.charAt(curOffset);
+            if (c == '\n') {
+                l++;
+            } else if (c == '\r') {
+                if (curOffset + 1 < len && charSeq.charAt(curOffset + 1) == '\n') {
+                    if (curOffset == offsetInclusive - 1) {
+                        // the CR is assumed to be on the same line as the LF
+                        return l;
+                    }
+                    curOffset++; // SUPPRESS CHECKSTYLE jump to after the \n
+                }
+                l++;
+            }
+        }
+        return l;
+    }
+
     /**
      * Returns the (1-based) column number of the character at the given index.
      * Line terminators are by convention taken to be part of the line they end,
@@ -699,4 +758,51 @@ public final class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * Replaces unprintable characters by their escaped (or unicode escaped)
+     * equivalents in the given string
+     */
+    public static String escapeJava(String str) {
+        StringBuilder retval = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            final char ch = str.charAt(i);
+            switch (ch) {
+            case 0:
+                break;
+            case '\b':
+                retval.append("\\b");
+                break;
+            case '\t':
+                retval.append("\\t");
+                break;
+            case '\n':
+                retval.append("\\n");
+                break;
+            case '\f':
+                retval.append("\\f");
+                break;
+            case '\r':
+                retval.append("\\r");
+                break;
+            case '\"':
+                retval.append("\\\"");
+                break;
+            case '\'':
+                retval.append("\\'");
+                break;
+            case '\\':
+                retval.append("\\\\");
+                break;
+            default:
+                if (ch < 0x20 || ch > 0x7e) {
+                    String s = "0000" + Integer.toString(ch, 16);
+                    retval.append("\\u").append(s.substring(s.length() - 4));
+                } else {
+                    retval.append(ch);
+                }
+                break;
+            }
+        }
+        return retval.toString();
+    }
 }

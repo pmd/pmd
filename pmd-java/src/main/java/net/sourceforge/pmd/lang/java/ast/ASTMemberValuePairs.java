@@ -27,13 +27,6 @@ public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<AS
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTMemberValuePairs(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

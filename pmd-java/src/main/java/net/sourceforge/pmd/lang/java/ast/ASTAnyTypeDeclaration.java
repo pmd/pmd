@@ -74,7 +74,18 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
     /**
      * Returns true if this type declaration is nested inside an interface, class or annotation.
      */
-    boolean isNested();
+    default boolean isNested() {
+        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
+            || getParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
+
+
+    /**
+     * Returns true if this is a local class declaration.
+     */
+    default boolean isLocal() {
+        return getParent() instanceof ASTBlockStatement;
+    }
 
 
     /**

@@ -34,7 +34,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaParserTreeConstants;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -295,15 +294,15 @@ public class ClassScope extends AbstractJavaScope {
      */
     private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName,
             final String... parameterTypes) {
-        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(JavaParserTreeConstants.JJTMETHODDECLARATION);
+        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(0);
         methodDeclaration.setPublic(true);
         methodDeclaration.setScope(this);
 
-        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(JavaParserTreeConstants.JJTMETHODDECLARATOR);
+        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(0);
         methodDeclarator.setImage(methodName);
         methodDeclarator.setScope(this);
 
-        ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
+        ASTFormalParameters formalParameters = new ASTFormalParameters(0);
         formalParameters.setScope(this);
 
         methodDeclaration.jjtAddChild(methodDeclarator, 0);
@@ -316,33 +315,31 @@ public class ClassScope extends AbstractJavaScope {
          * Going backwards makes sure the first time it gets the right size avoiding copies.
          */
         for (int i = parameterTypes.length - 1; i >= 0; i--) {
-            ASTFormalParameter formalParameter = new ASTFormalParameter(JavaParserTreeConstants.JJTFORMALPARAMETER);
+            ASTFormalParameter formalParameter = new ASTFormalParameter(0);
             formalParameters.jjtAddChild(formalParameter, i);
             formalParameter.jjtSetParent(formalParameters);
 
-            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(
-                    JavaParserTreeConstants.JJTVARIABLEDECLARATORID);
+            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(0);
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);
 
-            ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
+            ASTType type = new ASTType(0);
             formalParameter.jjtAddChild(type, 0);
             type.jjtSetParent(formalParameter);
 
             if (PRIMITIVE_TYPES.contains(parameterTypes[i])) {
-                ASTPrimitiveType primitiveType = new ASTPrimitiveType(JavaParserTreeConstants.JJTPRIMITIVETYPE);
+                ASTPrimitiveType primitiveType = new ASTPrimitiveType(0);
                 primitiveType.setImage(parameterTypes[i]);
                 type.jjtAddChild(primitiveType, 0);
                 primitiveType.jjtSetParent(type);
             } else {
-                ASTReferenceType referenceType = new ASTReferenceType(JavaParserTreeConstants.JJTREFERENCETYPE);
+                ASTReferenceType referenceType = new ASTReferenceType(0);
                 type.jjtAddChild(referenceType, 0);
                 referenceType.jjtSetParent(type);
 
                 // TODO : this could actually be a primitive array...
-                ASTClassOrInterfaceType classOrInterfaceType = new ASTClassOrInterfaceType(
-                        JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+                ASTClassOrInterfaceType classOrInterfaceType = new ASTClassOrInterfaceType(0);
                 classOrInterfaceType.setImage(parameterTypes[i]);
                 referenceType.jjtAddChild(classOrInterfaceType, 0);
                 classOrInterfaceType.jjtSetParent(referenceType);

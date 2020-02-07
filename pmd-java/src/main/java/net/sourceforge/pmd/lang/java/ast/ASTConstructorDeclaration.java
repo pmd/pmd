@@ -17,12 +17,6 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTConstructorDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public MethodLikeKind getKind() {

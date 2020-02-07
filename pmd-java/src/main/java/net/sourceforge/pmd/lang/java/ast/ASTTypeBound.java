@@ -31,13 +31,6 @@ public class ASTTypeBound extends AbstractJavaTypeNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeBound(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns a list with the type bounds of this node.
      * The returned list has at least one element.

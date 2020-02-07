@@ -14,9 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for {@link AbstractNode} tree transversal methods
+ * Unit test for {@link AbstractNode} tree traversal methods
  */
-public class AbstractNodeTransversalTest {
+public class BoundaryTraversalTest {
     private int id;
     private Node rootNode;
 
@@ -44,7 +44,7 @@ public class AbstractNodeTransversalTest {
     public void testBoundaryIsHonored() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class);
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
     }
@@ -53,7 +53,7 @@ public class AbstractNodeTransversalTest {
     public void testSearchFromBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class).get(0).findDescendantsOfType(DummyNode.class);
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).first().descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
         assertFalse(descendantsOfType.get(0).isFindBoundary());
     }

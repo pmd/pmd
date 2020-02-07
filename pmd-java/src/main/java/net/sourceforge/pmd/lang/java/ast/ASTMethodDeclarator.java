@@ -20,12 +20,6 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTMethodDeclarator(JavaParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @deprecated Use {@link ASTMethodDeclaration#getArity()}
      */

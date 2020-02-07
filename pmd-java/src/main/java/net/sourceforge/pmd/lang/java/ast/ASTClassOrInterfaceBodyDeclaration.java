@@ -15,17 +15,6 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isAnonymousInnerClass();
-    }
-
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < getNumChildren(); i++) {
@@ -37,6 +26,13 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
             }
         }
         return false;
+    }
+
+
+    @Override
+    public boolean isFindBoundary() {
+        // TODO remove from java-grammar
+        return isAnonymousInnerClass();
     }
 
     @Override

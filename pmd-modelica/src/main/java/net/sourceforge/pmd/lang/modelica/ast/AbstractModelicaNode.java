@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
 
@@ -19,22 +18,10 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  */
 abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> implements ModelicaNode {
 
-    /**
-     * Kind for implicit tokens. Negative because JavaCC only picks
-     * positive numbers for token kinds.
-     */
-    private static final int IMPLICIT_TOKEN = -1;
-
-    private ModelicaParser parser;
     private ModelicaScope ownScope;
 
     AbstractModelicaNode(int id) {
         super(id);
-    }
-
-    AbstractModelicaNode(ModelicaParser parser, int id) {
-        super(id);
-        this.parser = parser;
     }
 
     @Override
@@ -43,70 +30,6 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> imp
     @Override
     public String getXPathNodeName() {
         return getClass().getSimpleName().substring(3);
-    }
-
-    @Override
-    public int getBeginLine() {
-        return jjtGetFirstToken().getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return jjtGetFirstToken().getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        return jjtGetLastToken().getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        return jjtGetLastToken().getEndColumn();
-    }
-
-    @Override
-    public void jjtClose() {
-
-        // in jjtClose, jjtSetLastToken has not been called yet, so we use parser.token.next
-        if (parser.token.next == jjtGetFirstToken()) {
-            // Reversed, this node consumed no token.
-            // Forge a token with the correct coordinates, and zero length
-
-            Token next = parser.token.next;
-
-            Token implicit = new Token(IMPLICIT_TOKEN, "");
-            implicit.beginColumn = next.beginColumn;
-            implicit.endColumn = next.beginColumn - 1; // because of inclusive columns..
-            implicit.beginLine = next.beginLine;
-            implicit.endLine = next.beginLine;
-
-            // insert it right before the next token
-            // as a special token
-            implicit.next = next;
-
-            if (next.specialToken != null) {
-                next.specialToken.next = implicit;
-                implicit.specialToken = next.specialToken;
-            }
-
-            next.specialToken = implicit;
-
-
-            // set it as both first and last
-            // beware, JJTree calls jjtSetLastToken after this routine..
-            // hence the override below
-            jjtSetFirstToken(implicit);
-            jjtSetLastToken(implicit);
-        }
-    }
-
-    @Override
-    public void jjtSetLastToken(GenericToken token) {
-        // don't let jjtree override tokens we've chosen
-        if (lastToken == null) {
-            super.jjtSetLastToken(token);
-        }
     }
 
     @Override

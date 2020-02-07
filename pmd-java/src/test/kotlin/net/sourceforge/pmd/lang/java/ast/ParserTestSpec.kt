@@ -6,7 +6,10 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestType
 import io.kotlintest.specs.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.ast.ParseException
+import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
+import net.sourceforge.pmd.lang.ast.test.matchNode
 import io.kotlintest.should as kotlintestShould
 
 /**

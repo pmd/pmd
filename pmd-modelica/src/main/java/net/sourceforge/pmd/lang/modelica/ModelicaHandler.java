@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaParser;
 import net.sourceforge.pmd.lang.modelica.internal.ModelicaProcessingStage;
 
 public class ModelicaHandler extends AbstractPmdLanguageVersionHandler {

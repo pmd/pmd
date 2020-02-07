@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
@@ -45,7 +46,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new JavaLanguageParser(levelChecker, parserOptions);
+        return new JavaParser(levelChecker, parserOptions);
     }
 
 

@@ -16,10 +16,6 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
         super(i);
     }
 
-    AbstractJavaAnnotatableNode(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
     @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
         return this.getParent().findChildrenOfType(ASTAnnotation.class);

@@ -18,12 +18,6 @@ public class ASTCastExpression extends AbstractJavaTypeNode {
 
     @InternalApi
     @Deprecated
-    public ASTCastExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @InternalApi
-    @Deprecated
     public void setIntersectionTypes(boolean intersectionTypes) {
         this.intersectionTypes = intersectionTypes;
     }

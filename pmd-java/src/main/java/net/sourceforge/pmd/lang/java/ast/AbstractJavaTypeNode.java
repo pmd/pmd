@@ -25,12 +25,6 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
         super(i);
     }
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(JavaParser p, int i) {
-        super(p, i);
-    }
-
     @Override
     public Class<?> getType() {
         return typeDefinition == null ? null : typeDefinition.getType();

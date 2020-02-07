@@ -32,13 +32,6 @@ public class ASTSwitchLabel extends AbstractJavaNode {
 
     @InternalApi
     @Deprecated
-    public ASTSwitchLabel(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @InternalApi
-    @Deprecated
     public void setDefault() {
         isDefault = true;
     }

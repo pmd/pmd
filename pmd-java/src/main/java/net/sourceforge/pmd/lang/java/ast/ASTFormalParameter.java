@@ -29,12 +29,6 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * @deprecated Will be made private in 7.0.0
