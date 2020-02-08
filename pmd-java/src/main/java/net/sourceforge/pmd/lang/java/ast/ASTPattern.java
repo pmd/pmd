@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * A pattern (for pattern matching constructs like {@link ASTInstanceOfExpression InstanceOfExpression}).
  * This is a JDK 14 preview feature and is subject to change.
@@ -20,6 +22,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
+@Experimental
 public interface ASTPattern extends JavaNode {
 
 

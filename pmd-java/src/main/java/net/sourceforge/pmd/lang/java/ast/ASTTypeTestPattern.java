@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * A type test pattern (JDK 14 preview feature). This can be found on
  * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
@@ -14,6 +16,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
+@Experimental
 public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPattern {
 
 

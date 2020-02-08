@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -243,6 +244,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * Returns true if this is a binding variable in a
      * {@linkplain ASTPattern pattern}.
      */
+    @Experimental
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
     }
