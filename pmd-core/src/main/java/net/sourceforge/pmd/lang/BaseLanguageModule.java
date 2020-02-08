@@ -111,6 +111,7 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public LanguageVersion getDefaultVersion() {
+        assert defaultVersion != null : "Null default version for language " + this;
         return defaultVersion;
     }
 

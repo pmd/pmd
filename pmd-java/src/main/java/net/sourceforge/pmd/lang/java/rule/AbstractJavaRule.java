@@ -123,6 +123,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeBound;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -832,6 +833,11 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Override
     public Object visit(ASTYieldStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTTypeTestPattern node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

@@ -625,4 +625,9 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTYieldStatement node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTTypeTestPattern node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 }
