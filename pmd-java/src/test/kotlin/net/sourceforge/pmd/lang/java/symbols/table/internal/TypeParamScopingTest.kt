@@ -99,28 +99,6 @@ class TypeParamScopingTest : ParserTestSpec({
 
     parserTest("Scoping inside a type param section") {
 
-        val acu = parser.withProcessing().parse("""
-
-            package myTest;
-
-            class Foo<T extends X, X> {}
-
-            class Bar<X,
-                      T extends X,
-                      L extends List<Foo<T, X>>> {}
-
-            class Bar2<X, T> {
-
-                <T extends /*Bar2#*/ X> void foo() {}
-
-                <T extends /*foo2#*/ X,
-                 X extends /*foo2#*/ T> void foo2() {}
-
-            }
-
-        """)
-
-
         doTest("Bounded by a param to the right") {
 
             val acu = parser.withProcessing().parse("""

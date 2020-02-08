@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
@@ -124,6 +125,10 @@ public final class SymbolTableResolver {
         // The parameter on the visit methods is unnecessary
         // TODO introduce another visitor with `void visit(Node);` signature
 
+        @Override
+        public void visit(ASTModifierList node, Void data) {
+            // do nothing
+        }
 
         @Override
         public void visit(ASTCompilationUnit node, Void data) {
@@ -146,6 +151,7 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTAnyTypeDeclaration node, Void data) {
+            setTopSymbolTable(node.getModifiers());
 
             int pushed = 0;
             pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
@@ -157,9 +163,10 @@ public final class SymbolTableResolver {
             popStack(pushed);
         }
 
-
         @Override
         public void visit(ASTMethodOrConstructorDeclaration node, Void data) {
+            setTopSymbolTable(node.getModifiers());
+
             int pushed = 0;
             pushed += pushOnStack(TypeParamOwnerSymTable::new, node);
             pushed += pushOnStack(FormalParamsSymTable::new, node);
@@ -184,8 +191,12 @@ public final class SymbolTableResolver {
             popStack(pushed);
         }
 
-        private void setTopSymbolTableAndRecurse(JavaNode node) {
+        private void setTopSymbolTable(JavaNode node) {
             InternalApiBridge.setSymbolTable(node, peekStack());
+        }
+
+        private void setTopSymbolTableAndRecurse(JavaNode node) {
+            setTopSymbolTable(node);
 
             for (JavaNode child : node.children()) {
                 child.jjtAccept(this, null);
