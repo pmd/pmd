@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * </pre>
  */
-public final class ASTArrayDimensions extends ASTNonEmptyList<ASTArrayTypeDim>  {
+public final class ASTArrayDimensions extends ASTNonEmptyList<ASTArrayTypeDim> {
 
 
     ASTArrayDimensions(int id) {

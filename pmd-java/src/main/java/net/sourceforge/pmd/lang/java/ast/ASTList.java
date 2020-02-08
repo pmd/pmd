@@ -98,7 +98,7 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
      * Super type for *nonempty* lists that *only* have nodes of type {@code <T>}
      * as a child.
      */
-    static abstract class ASTNonEmptyList<T extends JavaNode> extends ASTList<T> implements AtLeastOneChildOfType<T> {
+    abstract static class ASTNonEmptyList<T extends JavaNode> extends ASTList<T> implements AtLeastOneChildOfType<T> {
 
         ASTNonEmptyList(int id, Class<T> kind) {
             super(id, kind);
