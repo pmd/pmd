@@ -51,6 +51,8 @@ public abstract class BaseLanguageModule implements Language {
         }
 
         if (isDefault) {
+            assert defaultVersion == null
+                : "Default version already set to " + defaultVersion + ", cannot set it to " + languageVersion;
             defaultVersion = languageVersion;
         }
     }
