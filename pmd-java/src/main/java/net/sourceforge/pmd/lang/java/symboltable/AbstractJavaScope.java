@@ -24,9 +24,13 @@ public abstract class AbstractJavaScope extends AbstractScope {
     }
 
     protected void checkForDuplicatedNameDeclaration(NameDeclaration declaration) {
-        if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
-            throw new RuntimeException(declaration + " is already in the symbol table");
-        }
+        // Don't throw an exception, type tests patterns are tricky to implement
+        // and given it's a preview feature, and the sym table will be replaced
+        // for 7.0, it's not useful to support them.
+
+        // if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
+        //     throw new RuntimeException(declaration + " is already in the symbol table");
+        // }
     }
 
     @Override
