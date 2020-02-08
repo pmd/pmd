@@ -56,7 +56,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
     }
 
     @Override
+    @NonNull
     public JSymbolTable getSymbolTable() {
+        if (symbolTable == null) {
+            return getParent().getSymbolTable();
+        }
         return symbolTable;
     }
 

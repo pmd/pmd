@@ -54,11 +54,15 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         return if (version == null) language.defaultVersion else language.getVersion(version)
     }
 
-     val defaultVersion: LanguageVersion
+    val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
 
 
     protected abstract fun clone(params: Params): Self
+
+    @JvmOverloads
+    fun withProcessing(boolean: Boolean = true): Self =
+            clone(params.copy(doProcess = boolean))
 
     /**
      * Returns an instance of [Self] for which all parsing methods

@@ -129,8 +129,7 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     /**
      * Returns the symbol table for the program point represented by
      * this node.
-     *
-     * TODO
      */
+    @NonNull
     JSymbolTable getSymbolTable();
 }

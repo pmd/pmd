@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.TypeParamOwnerNode;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -32,7 +33,7 @@ final class TypeParamOwnerSymTable extends AbstractSymbolTable {
                                   TypeParamOwnerNode node) {
         super(parent, helper);
         this.scope = new HashMap<>();
-        for (ASTTypeParameter tparam : node.getTypeParameterList()) {
+        for (ASTTypeParameter tparam : ASTList.orEmpty(node.getTypeParameters())) {
             scope.put(tparam.getParameterName(), new ClassResolveResult(tparam.getSymbol(), this, tparam));
         }
 
