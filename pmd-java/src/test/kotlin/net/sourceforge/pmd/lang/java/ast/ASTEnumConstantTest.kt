@@ -63,7 +63,7 @@ class ASTEnumConstantTest : ParserTestSpec({
             "enum Foo { A, }" should parseAs {
 
                 enumDecl("Foo") {
-                    modifiers {  }
+                    modifiers { }
                     enumBody {
                         it::hasTrailingComma shouldBe true
                         enumConstant("A")
@@ -74,7 +74,7 @@ class ASTEnumConstantTest : ParserTestSpec({
             "enum Foo { , }" should parseAs {
 
                 enumDecl("Foo") {
-                    modifiers {  }
+                    modifiers { }
 
                     enumBody {
                         it::hasTrailingComma shouldBe true
@@ -85,7 +85,7 @@ class ASTEnumConstantTest : ParserTestSpec({
             "enum Foo { ,; }" should parseAs {
 
                 enumDecl("Foo") {
-                    modifiers {  }
+                    modifiers { }
                     enumBody {
                         it::hasTrailingComma shouldBe true
                         it::hasSeparatorSemi shouldBe true
@@ -98,7 +98,7 @@ class ASTEnumConstantTest : ParserTestSpec({
             "enum Foo { ; }" should parseAs {
 
                 enumDecl("Foo") {
-                    modifiers {  }
+                    modifiers { }
                     enumBody {
                         it::hasTrailingComma shouldBe false
                         it::hasSeparatorSemi shouldBe true
@@ -109,7 +109,7 @@ class ASTEnumConstantTest : ParserTestSpec({
             "enum Foo { ;; }" should parseAs {
 
                 enumDecl("Foo") {
-                    modifiers {  }
+                    modifiers { }
 
                     enumBody {
                         it::hasTrailingComma shouldBe false
@@ -165,9 +165,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                     it::getModifiers shouldBe modifiers {}
 
                     enumBody {
-
-
-                enumConstant("B") {
+                        enumConstant("B") {
 
                             val c = it
 
@@ -229,11 +227,12 @@ class ASTEnumConstantTest : ParserTestSpec({
                                 stringLit("\"str\"")
                             }
 
-                    it::getAnonymousClass shouldBe null
+                            it::getAnonymousClass shouldBe null
 
+                        }
+                    }
                 }
             }
-        }
 
             "enum Foo { B(\"str\") { } }" should parseAs {
                 enumDecl("Foo") {
