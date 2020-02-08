@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -185,6 +187,22 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTBlock node, Void data) {
+            int pushed = pushOnStack(LocalSymTable::new, node);
+
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTForeachStatement node, Void data) {
+            int pushed = pushOnStack(LocalSymTable::new, node);
+
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTForStatement node, Void data) {
             int pushed = pushOnStack(LocalSymTable::new, node);
 
             setTopSymbolTableAndRecurse(node);

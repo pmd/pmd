@@ -12,9 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
 
 class LocalScopesTest : ParserTestSpec({
 
@@ -132,10 +129,3 @@ class LocalScopesTest : ParserTestSpec({
         }
     }
 })
-
-private inline fun <reified T : JTypeDeclSymbol> JSymbolTable.shouldResolveTypeTo(simpleName: String,
-                                                                                  assertions: ResolveResult<T>.() -> Unit): T {
-    val result = this.resolveTypeName(simpleName)
-    assert(result != null) { "Could not resolve $simpleName inside $this" }
-    return result!!.shouldBeA(assertions).result
-}

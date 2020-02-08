@@ -34,14 +34,16 @@ final class TypeMemberSymTable extends AbstractSymbolTable {
 
         super(parent, helper);
         this.node = node;
-        assert node != null : "Null block?";
+        assert node != null : "Null type decl?";
         typeSym = node.getSymbol();
+        assert typeSym != null : "Null symbol?";
     }
 
 
     @Override
     protected @Nullable ResolveResult<JVariableSymbol> resolveValueNameImpl(String simpleName) {
         JVariableSymbol fieldSig = typeSym.getDeclaredField(simpleName);
+        // type members are contributed by the class decl, to simplify impl (ie contributor is not the FieldDeclaration)
         return fieldSig == null ? null : new VarResolveResult(fieldSig, this, node);
     }
 

@@ -9,10 +9,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
 
 class TypeParamScopingTest : ParserTestSpec({
 
@@ -251,10 +248,3 @@ class TypeParamScopingTest : ParserTestSpec({
 
 
 })
-
-private inline fun <reified T : JTypeDeclSymbol> JSymbolTable.shouldResolveTypeTo(simpleName: String,
-                                                                                  assertions: ResolveResult<T>.() -> Unit): T {
-    val result = this.resolveTypeName(simpleName)
-    assert(result != null) { "Could not resolve $simpleName inside $this" }
-    return result!!.shouldBeA(assertions).result
-}

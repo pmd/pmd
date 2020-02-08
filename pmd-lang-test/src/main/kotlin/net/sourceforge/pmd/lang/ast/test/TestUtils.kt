@@ -65,7 +65,7 @@ infix fun <N, V : N> KCallable<N>.shouldBe(expected: V?) = this.shouldEqual(expe
 infix fun <T> KCallable<T>.shouldMatch(expected: T.() -> Unit) = assertWrapper(this, expected) { n, v -> n should v }
 
 
-inline  fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
+inline fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
     if (this is T) {
         f(this)
         return this
