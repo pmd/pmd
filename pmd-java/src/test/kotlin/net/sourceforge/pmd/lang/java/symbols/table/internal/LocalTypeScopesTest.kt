@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration
+import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
 
@@ -128,91 +130,7 @@ class LocalScopesTest : ParserTestSpec({
                 contributor.shouldBeA<ASTImportDeclaration>()
             }
         }
-
     }
-
-    parserTest("Scoping of type parameters") {
-
-        val acu = parser.withProcessing().parse("""
-
-            package myTest;
-
-            import somewhere.T;
-
-            class Foo<T> {
-                Foo foo;
-
-                class Inner {
-                    T f; // Foo#T
-                }
-
-                class Inner2<T> {
-                    T f2; // Inner2#T
-
-                }
-            }
-
-            class Other {
-                T i; // the import
-            }
-        """)
-
-
-        val (fooClass, innerClass, inner2Class, otherClass) =
-                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
-
-        val (insideFoo, insideInner, insideInner2, insideOther) =
-                acu.descendants(ASTFieldDeclaration::class.java).toList()
-
-        doTest("Inside Foo: T is Foo#T") {
-
-            insideFoo.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
-                result::getSimpleName shouldBe "T"
-                result::getDeclaringSymbol shouldBe fooClass.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
-            }
-        }
-
-        doTest("Inside Inner: T is Foo#T") {
-
-            insideInner.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
-                result::getSimpleName shouldBe "T"
-                result::getDeclaringSymbol shouldBe fooClass.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
-            }
-        }
-
-        doTest("Inside Inner2: T is Inner2#T, shadowed") {
-
-            insideInner2.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
-                result::getSimpleName shouldBe "T"
-                result::getDeclaringSymbol shouldBe inner2Class.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
-            }
-        }
-
-        doTest("Inside Other: T is imported, type params are not in scope") {
-
-            insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("T") {
-                result::getCanonicalName shouldBe "somewhere.T"
-                result::isUnresolved shouldBe true
-
-                contributor.shouldBeA<ASTImportDeclaration>()
-            }
-        }
-
-    }
-
-
 })
 
 private inline fun <reified T : JTypeDeclSymbol> JSymbolTable.shouldResolveTypeTo(simpleName: String,
