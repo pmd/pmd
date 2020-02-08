@@ -188,6 +188,8 @@ class TypeParamScopingTest : ParserTestSpec({
             package myTest;
 
             class Foo<X, T> {
+            
+                @ /*Foo#*/ T // type params are not in scope in modifier list 
                 <T extends /*Foo#*/ X> void foo(T pt, X px) {
                     T vt;
                     X vx;
@@ -247,6 +249,15 @@ class TypeParamScopingTest : ParserTestSpec({
 
             vx.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("X") {
                 result shouldBe x.symbol
+            }
+        }
+
+        doTest("TParams of method are *not* in scope in modifier list") {
+
+            val annot = acu.descendants(ASTAnnotation::class.java).first()!!
+
+            annot.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
+                result shouldBe t.symbol // not t2
             }
         }
 

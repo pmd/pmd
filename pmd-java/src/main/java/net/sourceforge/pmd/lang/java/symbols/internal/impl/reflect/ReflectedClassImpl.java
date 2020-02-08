@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implements JClassSymbol {
 
@@ -206,7 +206,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
 
     @Override
     public String toString() {
-        return getBinaryName();
+        return SymbolToStrings.REFLECT.classToString(this);
     }
 
     @Override

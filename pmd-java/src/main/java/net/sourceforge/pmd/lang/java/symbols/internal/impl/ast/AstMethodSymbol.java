@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 /**
  * @author Clément Fournier
@@ -35,5 +36,10 @@ final class AstMethodSymbol
     @Override
     public int hashCode() {
         return SymbolEquality.METHOD.hash(this);
+    }
+
+    @Override
+    public String toString() {
+        return SymbolToStrings.AST.methodToString(this);
     }
 }

@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 
@@ -231,7 +232,7 @@ final class AstClassSymbol
 
     @Override
     public String toString() {
-        return getBinaryName();
+        return SymbolToStrings.AST.classToString(this);
     }
 
     @Override
