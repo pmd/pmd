@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -59,37 +59,34 @@ final class AstClassSymbol
         // evaluate everything strictly
         // this populates symbols on the relevant AST nodes
 
-        declaredClasses = node.getDeclarations()
-                              .stream()
-                              .filter(it -> it.getLastChild() instanceof ASTAnyTypeDeclaration)
-                              .map(it -> new AstClassSymbol((ASTAnyTypeDeclaration) it.getLastChild(), factory, this))
-                              .collect(Collectors.toList());
+        List<JClassSymbol> myClasses = new ArrayList<>();
+        List<JMethodSymbol> myMethods = new ArrayList<>();
+        List<JConstructorSymbol> myCtors = new ArrayList<>();
+        List<JFieldSymbol> myFields = new ArrayList<>();
 
-        declaredMethods = node.getDeclarations()
-                              .stream()
-                              .filter(it -> it.getLastChild() instanceof ASTMethodDeclaration)
-                              .map(it -> new AstMethodSymbol((ASTMethodDeclaration) it.getLastChild(), factory, this))
-                              .collect(Collectors.toList());
+        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
 
-        declaredCtors = node.getDeclarations()
-                            .stream()
-                            .filter(it -> it.getLastChild() instanceof ASTConstructorDeclaration)
-                            .map(it -> new AstCtorSymbol((ASTConstructorDeclaration) it.getLastChild(), factory, this))
-                            .collect(Collectors.toList());
+            JavaNode dnode = decl.getDeclarationNode();
 
-        declaredFields = node.getDeclarations()
-                             .stream()
-                             .flatMap(it -> {
-                                 JavaNode decl = it.getLastChild();
-                                 if (decl instanceof ASTFieldDeclaration) {
-                                     return StreamSupport.stream(((ASTFieldDeclaration) decl).spliterator(), false);
-                                 } else if (decl instanceof ASTEnumConstant) {
-                                     return Stream.of(((ASTEnumConstant) decl).getVarId());
-                                 }
-                                 return Stream.empty();
-                             })
-                             .map(it -> new AstFieldSym(it, factory, this))
-                             .collect(Collectors.toList());
+            if (dnode instanceof ASTAnyTypeDeclaration) {
+                myClasses.add(new AstClassSymbol((ASTAnyTypeDeclaration) dnode, factory, this));
+            } else if (dnode instanceof ASTMethodDeclaration) {
+                myMethods.add(new AstMethodSymbol((ASTMethodDeclaration) dnode, factory, this));
+            } else if (dnode instanceof ASTConstructorDeclaration) {
+                myCtors.add(new AstCtorSymbol((ASTConstructorDeclaration) dnode, factory, this));
+            } else if (dnode instanceof ASTFieldDeclaration) {
+                for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
+                    myFields.add(new AstFieldSym(varId, factory, this));
+                }
+            } else if (dnode instanceof ASTEnumConstant) {
+                myFields.add(new AstFieldSym(((ASTEnumConstant) dnode).getVarId(), factory, this));
+            }
+        }
+
+        this.declaredClasses = Collections.unmodifiableList(myClasses);
+        this.declaredMethods = Collections.unmodifiableList(myMethods);
+        this.declaredCtors = Collections.unmodifiableList(myCtors);
+        this.declaredFields = Collections.unmodifiableList(myFields);
     }
 
     @Override
@@ -129,9 +126,12 @@ final class AstClassSymbol
     public @Nullable JExecutableSymbol getEnclosingMethod() {
         if (node.isLocal()) {
             JavaNode enclosing =
-                node.getFirstParentOfAnyType(ASTMethodOrConstructorDeclaration.class, ASTAnyTypeDeclaration.class, ASTInitializer.class);
+                (JavaNode)
+                    node.ancestors()
+                        .filter(it -> it instanceof ASTMethodOrConstructorDeclaration || it instanceof ASTAnyTypeDeclaration || it instanceof ASTInitializer)
+                        .first();
 
-            if (enclosing instanceof ASTInitializer || enclosing instanceof ASTAnyTypeDeclaration) {
+            if (!(enclosing instanceof ASTMethodOrConstructorDeclaration)) {
                 return null;
             }
             ASTAnyTypeDeclaration methodOwner = enclosing.getEnclosingType();

@@ -67,7 +67,7 @@ public interface JElementSymbol {
      *
      * @param o Comparand
      *
-     * @return True if the other is a symbol of the same type and
+     * @return True if the other is a symbol for the same program element
      */
     @Override
     boolean equals(Object o);

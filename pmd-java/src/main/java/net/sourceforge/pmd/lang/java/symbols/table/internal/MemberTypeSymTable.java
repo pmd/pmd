@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -30,10 +29,10 @@ final class MemberTypeSymTable extends AbstractSymbolTable {
                               ASTAnyTypeDeclaration node) {
         super(parent, helper);
         assert node != null : "Null type decl?";
-        map = NodeStream.fromIterable(node.getDeclarations())
-                        .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
-                        .filterIs(ASTAnyTypeDeclaration.class)
-                        .collect(typeDeclCollector());
+        map = node.getDeclarations()
+                  .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
+                  .filterIs(ASTAnyTypeDeclaration.class)
+                  .collect(typeDeclCollector());
     }
 
     public MemberTypeSymTable(JSymbolTable parent,
