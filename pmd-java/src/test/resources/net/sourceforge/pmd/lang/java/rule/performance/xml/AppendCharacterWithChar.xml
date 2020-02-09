@@ -195,4 +195,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+append a single character as part of an expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(StringBuffer sb, int length) {
+  sb.append("a".repeat(length));
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>
