@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
@@ -22,13 +23,11 @@ final class SymbolTableHelper {
     private final SemanticChecksLogger logger;
 
 
-    SymbolTableHelper(String thisPackage,
-                      SymbolResolver symbolResolver,
-                      SemanticChecksLogger logger) {
+    SymbolTableHelper(String thisPackage, JavaAstProcessor processor) {
 
         this.thisPackage = thisPackage;
-        this.symbolResolver = symbolResolver;
-        this.logger = logger;
+        this.symbolResolver = processor.getSymResolver();
+        this.logger = processor.getLogger();
 
         assert symbolResolver != null;
         assert thisPackage != null;

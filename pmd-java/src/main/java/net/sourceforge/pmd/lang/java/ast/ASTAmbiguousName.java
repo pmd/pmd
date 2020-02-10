@@ -187,6 +187,18 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         return res;
     }
 
+    /**
+     * Delete this name from the children of the parent. The image of
+     * this name is prepended to the image of the parent.
+     */
+    void deleteInParentPrependImage(char delim) {
+        AbstractJavaNode parent = (AbstractJavaNode) getParent();
+        String image = parent.getImage();
+        parent.setImage(getName() + delim + image);
+
+        parent.jjtSetFirstToken(this.jjtGetFirstToken());
+        parent.removeChildAtIndex(this.getIndexInParent());
+    }
 
     /**
      * A specialized version of {@link #shrinkOneSegment(Function, BiFunction)}

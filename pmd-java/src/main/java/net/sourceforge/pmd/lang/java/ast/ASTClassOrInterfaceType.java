@@ -65,7 +65,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         return getFirstChildOfType(ASTClassOrInterfaceType.class);
     }
 
-
     /**
      * Returns the left-hand side is an ambiguous name that has not been reclassified.
      * The ambiguous name can be a package or type name.
@@ -99,7 +98,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      * Returns the simple name of this type.
      */
     public String getSimpleName() {
-        return getImage();
+        return AstImplUtil.getLastSegment(getImage(), '.');
     }
 
     /**

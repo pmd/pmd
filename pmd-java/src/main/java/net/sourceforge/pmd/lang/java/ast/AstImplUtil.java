@@ -10,12 +10,19 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * KEEP PRIVATE
+ *
  * @author Clément Fournier
  */
 final class AstImplUtil {
 
     private AstImplUtil() {
 
+    }
+
+    public static String getLastSegment(String nameWithDots, char sep) {
+        assert nameWithDots != null;
+        int lastIdx = nameWithDots.lastIndexOf(sep);
+        return lastIdx < 0 ? nameWithDots : nameWithDots.substring(lastIdx + 1);
     }
 
     @Nullable
