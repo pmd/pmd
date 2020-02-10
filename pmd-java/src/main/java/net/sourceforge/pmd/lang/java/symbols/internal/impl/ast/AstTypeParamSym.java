@@ -20,7 +20,7 @@ final class AstTypeParamSym
     private final AbstractAstTParamOwner<?> owner;
     //    private final FreshTypeVar typeVar;
 
-    public AstTypeParamSym(ASTTypeParameter node, AstSymFactory factory, AbstractAstTParamOwner<?> owner) {
+    AstTypeParamSym(ASTTypeParameter node, AstSymFactory factory, AbstractAstTParamOwner<?> owner) {
         super(node, factory);
         this.owner = owner;
         //        this.typeVar = factory.types().newTypeVar(this);

@@ -16,7 +16,7 @@ abstract class AbstractAstBackedSymbol<T extends SymbolDeclaratorNode> implement
     protected final T node;
     protected final AstSymFactory factory;
 
-    public AbstractAstBackedSymbol(T node, AstSymFactory factory) {
+    protected AbstractAstBackedSymbol(T node, AstSymFactory factory) {
         this.node = node;
         this.factory = factory;
         InternalApiBridge.setSymbol(node, this);

@@ -13,12 +13,12 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 /**
  * @author Clément Fournier
  */
-final class AstMethodSymbol
+final class AstMethodSym
     extends AbstractAstExecSymbol<ASTMethodDeclaration>
     implements JMethodSymbol {
 
 
-    public AstMethodSymbol(ASTMethodDeclaration node, AstSymFactory factory, JClassSymbol owner) {
+    AstMethodSym(ASTMethodDeclaration node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory, owner);
     }
 

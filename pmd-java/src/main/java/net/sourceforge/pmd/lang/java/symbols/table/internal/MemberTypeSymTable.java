@@ -24,9 +24,9 @@ final class MemberTypeSymTable extends AbstractSymbolTable {
     private final Map<String, ResolveResult<JTypeDeclSymbol>> map;
 
 
-    public MemberTypeSymTable(JSymbolTable parent,
-                              SymbolTableHelper helper,
-                              ASTAnyTypeDeclaration node) {
+    MemberTypeSymTable(JSymbolTable parent,
+                       SymbolTableHelper helper,
+                       ASTAnyTypeDeclaration node) {
         super(parent, helper);
         assert node != null : "Null type decl?";
         map = node.getDeclarations()
@@ -35,9 +35,9 @@ final class MemberTypeSymTable extends AbstractSymbolTable {
                   .collect(typeDeclCollector());
     }
 
-    public MemberTypeSymTable(JSymbolTable parent,
-                              SymbolTableHelper helper,
-                              ASTCompilationUnit node) {
+    MemberTypeSymTable(JSymbolTable parent,
+                       SymbolTableHelper helper,
+                       ASTCompilationUnit node) {
         super(parent, helper);
         assert node != null : "Null type decl?";
         map = node.getTypeDeclarations()

@@ -16,7 +16,7 @@ final class AstFormalParamSym extends AbstractAstVariableSym implements JFormalP
 
     private final AbstractAstExecSymbol<?> owner;
 
-    public AstFormalParamSym(ASTVariableDeclaratorId node, AstSymFactory factory, AbstractAstExecSymbol<?> owner) {
+    AstFormalParamSym(ASTVariableDeclaratorId node, AstSymFactory factory, AbstractAstExecSymbol<?> owner) {
         super(node, factory);
         this.owner = owner;
     }

@@ -49,11 +49,12 @@ public final class ImplicitMemberSymbols {
     public static JConstructorSymbol defaultCtor(JClassSymbol sym) {
         assert sym != null;
 
-        // Enum constructors have 2 additional synthetic parameters, for the name and ordinal
+        // Enum constructors have 2 additional implicit parameters, for the name and ordinal
+        // Inner classes have 1 additional implicit param, for the outer instance
         // They are not reflected by the symbol
 
         int modifiers = sym.isEnum() ? Modifier.PRIVATE
-                                     : (sym.getModifiers() & VISIBILITY_MASK);
+                                     : sym.getModifiers() & VISIBILITY_MASK;
 
         return new FakeCtorSym(sym, modifiers, emptyList());
     }
@@ -100,7 +101,7 @@ public final class ImplicitMemberSymbols {
         );
     }
 
-    private static abstract class FakeExecutableSymBase<T extends JExecutableSymbol> implements JExecutableSymbol {
+    private abstract static class FakeExecutableSymBase<T extends JExecutableSymbol> implements JExecutableSymbol {
 
         private final JClassSymbol owner;
         private final String name;
@@ -154,7 +155,7 @@ public final class ImplicitMemberSymbols {
 
     }
 
-    private final static class FakeMethodSym extends FakeExecutableSymBase<JMethodSymbol> implements JMethodSymbol {
+    private static final class FakeMethodSym extends FakeExecutableSymBase<JMethodSymbol> implements JMethodSymbol {
 
         FakeMethodSym(JClassSymbol owner,
                       String name,
@@ -174,7 +175,7 @@ public final class ImplicitMemberSymbols {
         }
     }
 
-    private final static class FakeCtorSym extends FakeExecutableSymBase<JConstructorSymbol> implements JConstructorSymbol {
+    private static final class FakeCtorSym extends FakeExecutableSymBase<JConstructorSymbol> implements JConstructorSymbol {
 
         FakeCtorSym(JClassSymbol owner,
                     int modifiers,
@@ -193,7 +194,7 @@ public final class ImplicitMemberSymbols {
         }
     }
 
-    private final static class FakeFormalParamSym implements JFormalParamSymbol {
+    private static final class FakeFormalParamSym implements JFormalParamSymbol {
 
         private final JExecutableSymbol owner;
         private final String name;

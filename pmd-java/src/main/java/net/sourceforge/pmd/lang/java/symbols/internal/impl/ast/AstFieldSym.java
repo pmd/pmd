@@ -18,7 +18,7 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
     private final JClassSymbol owner;
 
-    public AstFieldSym(ASTVariableDeclaratorId node,
+    AstFieldSym(ASTVariableDeclaratorId node,
                        AstSymFactory factory,
                        JClassSymbol owner) {
         super(node, factory);

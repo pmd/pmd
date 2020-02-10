@@ -16,9 +16,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 
 public final class AstSymFactory implements SymbolFactory<ASTAnyTypeDeclaration> {
 
-    public AstSymFactory() {
-    }
-
     /**
      * Returns the symbol for the given local variable.
      */
@@ -44,7 +41,7 @@ public final class AstSymFactory implements SymbolFactory<ASTAnyTypeDeclaration>
 
         @Nullable
         JClassSymbol encl = getClassSymbol(klass.getEnclosingType());
-        return new AstClassSymbol(klass, this, encl);
+        return new AstClassSym(klass, this, encl);
     }
 
 }

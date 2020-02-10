@@ -137,8 +137,10 @@ abstract class AbstractSymbolTable implements JSymbolTable {
 
     @NonNull
     protected Collector<ASTAnyTypeDeclaration, ?, Map<String, ResolveResult<JTypeDeclSymbol>>> typeDeclCollector() {
-        return Collectors.toMap(ASTAnyTypeDeclaration::getSimpleName,
-                                it -> new ClassResolveResult(it.getSymbol(), this, it));
+        return Collectors.toMap(
+            ASTAnyTypeDeclaration::getSimpleName,
+            it -> new ClassResolveResult(it.getSymbol(), this, it)
+        );
     }
 
     /**

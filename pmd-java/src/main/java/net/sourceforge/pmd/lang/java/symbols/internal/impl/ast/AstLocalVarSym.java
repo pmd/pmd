@@ -12,9 +12,8 @@ import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
  */
 final class AstLocalVarSym extends AbstractAstVariableSym implements JLocalVariableSymbol {
 
-    public AstLocalVarSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
+    AstLocalVarSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
         super(node, factory);
     }
-
 
 }

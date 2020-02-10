@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 /**
  * @author Clément Fournier
  */
-final class AstCtorSymbol extends AbstractAstExecSymbol<ASTConstructorDeclaration> implements JConstructorSymbol {
+final class AstCtorSym extends AbstractAstExecSymbol<ASTConstructorDeclaration> implements JConstructorSymbol {
 
-    public AstCtorSymbol(ASTConstructorDeclaration node, AstSymFactory factory, JClassSymbol owner) {
+    AstCtorSym(ASTConstructorDeclaration node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory, owner);
     }
 

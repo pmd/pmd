@@ -14,7 +14,6 @@ abstract class AbstractAstVariableSym
     extends AbstractAstBackedSymbol<ASTVariableDeclaratorId>
     implements JVariableSymbol {
 
-
     AbstractAstVariableSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
         super(node, factory);
     }

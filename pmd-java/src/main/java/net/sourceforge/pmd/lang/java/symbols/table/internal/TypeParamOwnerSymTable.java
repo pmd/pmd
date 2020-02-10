@@ -28,9 +28,9 @@ final class TypeParamOwnerSymTable extends AbstractSymbolTable {
     private final Map<String, ResolveResult<JTypeDeclSymbol>> scope;
 
 
-    public TypeParamOwnerSymTable(JSymbolTable parent,
-                                  SymbolTableHelper helper,
-                                  TypeParamOwnerNode node) {
+    TypeParamOwnerSymTable(JSymbolTable parent,
+                           SymbolTableHelper helper,
+                           TypeParamOwnerNode node) {
         super(parent, helper);
         this.scope = new HashMap<>();
         for (ASTTypeParameter tparam : ASTList.orEmpty(node.getTypeParameters())) {

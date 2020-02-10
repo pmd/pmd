@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 
-final class AstClassSymbol
+final class AstClassSym
     extends AbstractAstTParamOwner<ASTAnyTypeDeclaration>
     implements JClassSymbol {
 
@@ -45,14 +45,14 @@ final class AstClassSymbol
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
 
-    AstClassSymbol(ASTAnyTypeDeclaration node,
-                   AstSymFactory factory) {
+    AstClassSym(ASTAnyTypeDeclaration node,
+                AstSymFactory factory) {
         this(node, factory, null);
     }
 
-    AstClassSymbol(ASTAnyTypeDeclaration node,
-                   AstSymFactory factory,
-                   @Nullable JClassSymbol enclosing) {
+    AstClassSym(ASTAnyTypeDeclaration node,
+                AstSymFactory factory,
+                @Nullable JClassSymbol enclosing) {
         super(node, factory);
         this.enclosing = enclosing;
 
@@ -69,11 +69,11 @@ final class AstClassSymbol
             JavaNode dnode = decl.getDeclarationNode();
 
             if (dnode instanceof ASTAnyTypeDeclaration) {
-                myClasses.add(new AstClassSymbol((ASTAnyTypeDeclaration) dnode, factory, this));
+                myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTMethodDeclaration) {
-                myMethods.add(new AstMethodSymbol((ASTMethodDeclaration) dnode, factory, this));
+                myMethods.add(new AstMethodSym((ASTMethodDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTConstructorDeclaration) {
-                myCtors.add(new AstCtorSymbol((ASTConstructorDeclaration) dnode, factory, this));
+                myCtors.add(new AstCtorSym((ASTConstructorDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTFieldDeclaration) {
                 for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
@@ -145,9 +145,9 @@ final class AstClassSymbol
             }
             ASTAnyTypeDeclaration methodOwner = enclosing.getEnclosingType();
             if (enclosing instanceof ASTMethodDeclaration) {
-                return new AstMethodSymbol((ASTMethodDeclaration) enclosing, factory, methodOwner.getSymbol());
+                return new AstMethodSym((ASTMethodDeclaration) enclosing, factory, methodOwner.getSymbol());
             } else if (enclosing instanceof ASTConstructorDeclaration) {
-                return new AstCtorSymbol((ASTConstructorDeclaration) enclosing, factory, methodOwner.getSymbol());
+                return new AstCtorSym((ASTConstructorDeclaration) enclosing, factory, methodOwner.getSymbol());
             }
         }
         return null;

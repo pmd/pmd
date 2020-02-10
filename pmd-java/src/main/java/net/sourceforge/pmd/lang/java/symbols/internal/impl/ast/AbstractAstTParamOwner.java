@@ -30,8 +30,10 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
 
     AbstractAstTParamOwner(T node, AstSymFactory factory) {
         super(node, factory);
-        List<JTypeParameterSymbol> result = map(ASTList.orEmpty(node.getTypeParameters()),
-                                                it -> new AstTypeParamSym(it, factory, this));
+        List<JTypeParameterSymbol> result = map(
+            ASTList.orEmpty(node.getTypeParameters()),
+            it -> new AstTypeParamSym(it, factory, this)
+        );
 
         // this needs to be set before calling computeBounds
         this.tparams = Collections.unmodifiableList(result);
