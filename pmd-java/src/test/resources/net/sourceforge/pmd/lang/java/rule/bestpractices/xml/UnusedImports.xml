@@ -552,4 +552,30 @@ public class Issue2016 {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+resolve ambiguous static on-demand imports (#2277)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.lang.Integer.*;
+import static java.lang.Long.valueOf;
+import static java.lang.Long.*;
+
+public class Foo {
+    public void foo() {
+        // the "valueOf" method is both in Integer.* and Long.*
+        // we need an explicit static import to specify one of them, e.g. Long.valueOf
+        valueOf("123", 10);
+
+        // covered by Integer.*
+        int i = parseInt("123");
+
+        // covered by Long.*
+        long l = parseLong("123");
+    }
+}
+     ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
 </test-data>
