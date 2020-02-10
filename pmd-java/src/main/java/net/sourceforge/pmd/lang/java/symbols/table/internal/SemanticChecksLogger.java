@@ -34,6 +34,8 @@ public interface SemanticChecksLogger {
      */
     String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as a {1}";
 
+    String CANNOT_RESOLVE_MEMBER = "Cannot resolve a member named {0} in {1} , treating it as a {1}";
+
 
     /**
      * Log a warning at the given location.

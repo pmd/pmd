@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 // @formatter:off
 /**
@@ -46,6 +47,18 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     public ASTClassOrInterfaceType(String simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(simpleName);
+    }
+
+    ASTClassOrInterfaceType(ASTClassOrInterfaceType lhs, String image, JavaccToken identifier) {
+        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
+        this.setImage(image);
+        if (lhs == null) {
+            this.jjtSetFirstToken(identifier);
+        } else {
+            this.jjtAddChild(lhs, 0);
+            this.jjtSetFirstToken(lhs.jjtGetFirstToken());
+        }
+        this.jjtSetLastToken(identifier);
     }
 
 
