@@ -21,6 +21,8 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 ### Fixed Issues
 
+*   java
+    *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
 *   java-errorprone
     *   [#2250](https://github.com/pmd/pmd/issues/2250): \[java] InvalidLogMessageFormat flags logging calls using a slf4j-Marker
 
