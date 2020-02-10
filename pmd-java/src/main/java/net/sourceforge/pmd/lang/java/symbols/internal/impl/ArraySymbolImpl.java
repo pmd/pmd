@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -84,12 +83,12 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public List<JMethodSymbol> getDeclaredMethods() {
-        return Collections.singletonList(new ArrayCloneMethod(this));
+        return Collections.singletonList(ImplicitMemberSymbols.arrayClone(this));
     }
 
     @Override
     public List<JFieldSymbol> getDeclaredFields() {
-        return Collections.singletonList(new ArrayLengthField(this));
+        return Collections.singletonList(ImplicitMemberSymbols.arrayLengthField(this));
     }
 
     @Override
@@ -132,7 +131,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public List<JConstructorSymbol> getConstructors() {
-        return Collections.singletonList(new ArrayConstructor(this));
+        return Collections.singletonList(ImplicitMemberSymbols.arrayConstructor(this));
     }
 
     @Override
@@ -204,184 +203,4 @@ class ArraySymbolImpl implements JClassSymbol {
         return "array(" + component.toString() + ")";
     }
 
-    private static class ArrayLengthField implements JFieldSymbol {
-
-        private final JClassSymbol arraySymbol;
-
-        ArrayLengthField(JClassSymbol arraySymbol) {
-            this.arraySymbol = arraySymbol;
-        }
-
-        @Override
-        public String getSimpleName() {
-            return "length";
-        }
-
-        @Override
-        public int getModifiers() {
-            return Modifier.PUBLIC | Modifier.FINAL;
-        }
-
-        @Override
-        public boolean isEnumConstant() {
-            return false;
-        }
-
-        @Override
-        public @NonNull JClassSymbol getEnclosingClass() {
-            return arraySymbol;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            ArrayLengthField that = (ArrayLengthField) o;
-            return arraySymbol.equals(that.arraySymbol);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(arraySymbol);
-        }
-    }
-
-    private static class ArrayCloneMethod implements JMethodSymbol {
-
-        private final ArraySymbolImpl arraySymbol;
-
-        ArrayCloneMethod(ArraySymbolImpl arraySymbol) {
-            this.arraySymbol = arraySymbol;
-        }
-
-        @Override
-        public String getSimpleName() {
-            return "clone";
-        }
-
-        @Override
-        public List<JFormalParamSymbol> getFormalParameters() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public boolean isVarargs() {
-            return false;
-        }
-
-        @Override
-        public int getArity() {
-            return 0;
-        }
-
-        @Override
-        public int getModifiers() {
-            return Modifier.PUBLIC;
-        }
-
-        @Override
-        public @NonNull JClassSymbol getEnclosingClass() {
-            return arraySymbol;
-        }
-
-        @Override
-        public List<JTypeParameterSymbol> getTypeParameters() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            ArrayCloneMethod that = (ArrayCloneMethod) o;
-            return Objects.equals(arraySymbol, that.arraySymbol);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(arraySymbol);
-        }
-    }
-
-    private static class ArrayConstructor implements JConstructorSymbol {
-
-        private final ArraySymbolImpl arraySymbol;
-
-        ArrayConstructor(ArraySymbolImpl arraySymbol) {
-            this.arraySymbol = arraySymbol;
-        }
-
-        @Override
-        public List<JFormalParamSymbol> getFormalParameters() {
-            return Collections.singletonList(new JFormalParamSymbol() {
-
-                @Override
-                public JExecutableSymbol getDeclaringSymbol() {
-                    return ArrayConstructor.this;
-                }
-
-                @Override
-                public String getSimpleName() {
-                    return "arg0";
-                }
-
-                @Override
-                public boolean isFinal() {
-                    return false;
-                }
-
-                // TODO equals/hashcode?
-            });
-        }
-
-        @Override
-        public boolean isVarargs() {
-            return false;
-        }
-
-        @Override
-        public int getArity() {
-            return 1;
-        }
-
-        @Override
-        public int getModifiers() {
-            return Modifier.PUBLIC | Modifier.FINAL;
-        }
-
-        @Override
-        public @NonNull JClassSymbol getEnclosingClass() {
-            return arraySymbol;
-        }
-
-        @Override
-        public List<JTypeParameterSymbol> getTypeParameters() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            ArrayConstructor that = (ArrayConstructor) o;
-            return Objects.equals(arraySymbol, that.arraySymbol);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(arraySymbol);
-        }
-    }
 }

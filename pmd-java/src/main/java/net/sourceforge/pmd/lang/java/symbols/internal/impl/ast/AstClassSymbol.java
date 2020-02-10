@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -30,6 +29,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
@@ -81,6 +81,15 @@ final class AstClassSymbol
             } else if (dnode instanceof ASTEnumConstant) {
                 myFields.add(new AstFieldSym(((ASTEnumConstant) dnode).getVarId(), factory, this));
             }
+        }
+
+        if (myCtors.isEmpty()) {
+            myCtors.add(ImplicitMemberSymbols.defaultCtor(this));
+        }
+
+        if (this.isEnum()) {
+            myMethods.add(ImplicitMemberSymbols.enumOrdinal(this));
+            myMethods.add(ImplicitMemberSymbols.enumValueOf(this));
         }
 
         this.declaredClasses = Collections.unmodifiableList(myClasses);
@@ -167,7 +176,7 @@ final class AstClassSymbol
 
     @Override
     public @Nullable JClassSymbol getSuperclass() {
-        if (node instanceof ASTEnumDeclaration) {
+        if (isEnum()) {
             return ReflectSymInternals.ENUM_SYM;
         } else if (node instanceof ASTClassOrInterfaceDeclaration) {
             // This is TODO, needs symbol table
