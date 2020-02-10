@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_AMBIGUOUS_NAME;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_MEMBER;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_SELECT_TYPE_MEMBER;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_SELECT_MEMBER_FROM_TVAR;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
  *
  * TODO ambiguous names in expressions - needs type res
  * TODO inherited member types (see bottom of file) - needs type res
+ * TODO when symbol tables are updated to use type res, we can set the references directly on the names
  */
 public final class AstDisambiguationPass {
 
@@ -50,17 +51,45 @@ public final class AstDisambiguationPass {
         @Override
         public void visit(ASTAmbiguousName name, JavaAstProcessor processor) {
             JSymbolTable symbolTable = name.getSymbolTable();
-            assert symbolTable != null : "Symbol tables haven't been set??";
+            assert symbolTable != null : "Symbol tables haven't been set yet??";
 
+            boolean isPackageOrTypeOnly;
             if (name.getParent() instanceof ASTClassOrInterfaceType) {
-                resolvePackageOrTypeName(name, (ASTClassOrInterfaceType) name.getParent(), processor);
+                isPackageOrTypeOnly = true;
             } else if (name.getParent() instanceof ASTExpression) {
-                ASTExpression resolved = startResolve(name, processor);
-                if (resolved != name) {
-                    ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
-                }
+                isPackageOrTypeOnly = false;
             } else {
                 throw new AssertionError("Unrecognised context for ambiguous name: " + name.getParent());
+            }
+
+            JavaNode resolved = startResolve(name, processor, isPackageOrTypeOnly);
+
+            assert !isPackageOrTypeOnly
+                || resolved instanceof ASTTypeExpression
+                || resolved instanceof ASTAmbiguousName
+                : "Unexpected result " + resolved + " for PackageOrTypeName resolution";
+
+            if (isPackageOrTypeOnly && resolved instanceof ASTTypeExpression) {
+                ASTClassOrInterfaceType resolvedType = (ASTClassOrInterfaceType) ((ASTTypeExpression) resolved).getTypeNode();
+                resolved = resolvedType;
+                // unambiguous, we just have to check that the parent is a member of the enclosing type
+                ASTClassOrInterfaceType parent = (ASTClassOrInterfaceType) name.getParent();
+
+                JTypeDeclSymbol sym = resolvedType.getReferencedSym();
+                if (!(sym instanceof JClassSymbol)) {
+                    processor.getLogger().error(name, CANNOT_SELECT_MEMBER_FROM_TVAR, parent.getSimpleName(), sym.getSimpleName());
+                    return;
+                } else {
+                    JClassSymbol parentClass = ((JClassSymbol) sym).getDeclaredClass(parent.getSimpleName());
+                    if (parentClass == null) {
+                        processor.getLogger().warning(parent, CANNOT_RESOLVE_MEMBER, parent.getSimpleName(), ((JClassSymbol) sym).getCanonicalName(), "an unresolved type");
+                    }
+                }
+
+            }
+
+            if (resolved != name) {
+                ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
             }
         }
 
@@ -71,18 +100,20 @@ public final class AstDisambiguationPass {
          * it could be a {@link ASTFieldAccess} or {@link ASTVariableAccess},
          * and in the worst case, the original {@link ASTAmbiguousName}.
          */
-        private ASTExpression startResolve(ASTAmbiguousName name, JavaAstProcessor processor) {
+        private ASTExpression startResolve(ASTAmbiguousName name, JavaAstProcessor processor, boolean isPackageOrTypeOnly) {
             Iterator<JavaccToken> tokens = TokenUtils.tokenRange(name);
             JavaccToken firstIdent = tokens.next();
             TokenUtils.expectKind(firstIdent, JavaTokenKinds.IDENTIFIER);
 
             JSymbolTable symTable = name.getSymbolTable();
 
-            // first test if the leftmost segment is an expression
-            ResolveResult<JVariableSymbol> varResult = symTable.resolveValueName(firstIdent.getImage());
+            if (!isPackageOrTypeOnly) {
+                // first test if the leftmost segment is an expression
+                ResolveResult<JVariableSymbol> varResult = symTable.resolveValueName(firstIdent.getImage());
 
-            if (varResult != null) {
-                return resolveExpr(null, firstIdent, tokens, processor);
+                if (varResult != null) {
+                    return resolveExpr(null, firstIdent, tokens, processor);
+                }
             }
 
             // otherwise, test if it is a type name
@@ -91,16 +122,11 @@ public final class AstDisambiguationPass {
 
             if (typeResult != null) {
                 JTypeDeclSymbol result = typeResult.getResult();
-                if (result instanceof JClassSymbol) {
-                    return resolveType(null, (JClassSymbol) result, firstIdent.getImage(), firstIdent, tokens, name, processor);
-                } else {
-                    // TODO report reportUnselectable(processor.getLogger(), name, );
-                    return name;
-                }
+                return resolveType(null, result, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, processor);
             }
 
             // otherwise, first is reclassified as package name.
-            return resolvePackage(firstIdent, "", tokens, name, processor);
+            return resolvePackage(firstIdent, firstIdent.getImage(), tokens, name, isPackageOrTypeOnly, processor);
         }
 
 
@@ -149,18 +175,22 @@ public final class AstDisambiguationPass {
          * <li>Otherwise, normally a compile-time error occurs. We instead
          * log a warning and treat it as a field access.
          * </ul>
+         *
+         * @param isPackageOrTypeOnly If true, expressions are disallowed by the context, so we don't check fields
          */
         private static ASTExpression resolveType(@Nullable ASTClassOrInterfaceType qualifier,
-                                                 JClassSymbol classSym,
+                                                 JTypeDeclSymbol sym,
                                                  String image,
                                                  JavaccToken identifier,
                                                  Iterator<JavaccToken> remaining,
                                                  ASTAmbiguousName ambig,
+                                                 boolean isPackageOrTypeOnly,
                                                  JavaAstProcessor processor) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-            ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, image, identifier);
+            ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, image, ambig.jjtGetFirstToken(), identifier);
+            type.setSymbol(sym);
 
             if (!remaining.hasNext()) { // done
                 return new ASTTypeExpression(type);
@@ -168,25 +198,42 @@ public final class AstDisambiguationPass {
 
             JavaccToken nextIdent = skipToNextIdent(remaining);
 
-            // TODO check in supertypes, needs type res
-            JFieldSymbol field = classSym.getDeclaredField(nextIdent.getImage());
-            if (field != null) {
-                // todo check field is static
-                ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-                return resolveExpr(typeExpr, identifier, remaining, processor);
+            if (!(sym instanceof JClassSymbol)) {
+                // this is broken code, reported above
+                return new ASTTypeExpression(type);
             }
+
+            JClassSymbol classSym = (JClassSymbol) sym;
+
+            if (!isPackageOrTypeOnly) {
+                // TODO check in supertypes, needs type res
+                JFieldSymbol field = classSym.getDeclaredField(nextIdent.getImage());
+                if (field != null) {
+                    // todo check field is static
+                    ASTTypeExpression typeExpr = new ASTTypeExpression(type);
+                    return resolveExpr(typeExpr, identifier, remaining, processor);
+                }
+            }
+
             JClassSymbol inner = classSym.getDeclaredClass(nextIdent.getImage());
             if (inner != null) {
-                return resolveType(type, inner, nextIdent.getImage(), nextIdent, remaining, ambig, processor);
+                return resolveType(type, inner, nextIdent.getImage(), nextIdent, remaining, ambig, isPackageOrTypeOnly, processor);
             }
 
             // this is normally a compile-time error
 
-            processor.getLogger().warning(ambig, CANNOT_RESOLVE_MEMBER, nextIdent.getImage(), classSym, "field access");
+            // fallback
+            if (!isPackageOrTypeOnly) {
+                // treat as field accesses
+                processor.getLogger().warning(ambig, CANNOT_RESOLVE_MEMBER, nextIdent.getImage(), classSym.getCanonicalName(), "a field access");
 
-            // fallback, treat as field accesses
-            ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-            return resolveExpr(typeExpr, identifier, remaining, processor);
+                ASTTypeExpression typeExpr = new ASTTypeExpression(type);
+                return resolveExpr(typeExpr, identifier, remaining, processor);
+            } else {
+                // treat as ambiguous name, it's a better deal for type resolution later (at least in current prototype)
+                processor.getLogger().warning(ambig, CANNOT_RESOLVE_MEMBER, nextIdent.getImage(), classSym.getCanonicalName(), "ambiguous");
+                return ambig;
+            }
         }
 
         /**
@@ -205,28 +252,47 @@ public final class AstDisambiguationPass {
                                                     String packageImage,
                                                     Iterator<JavaccToken> remaining,
                                                     ASTAmbiguousName ambig,
+                                                    boolean isPackageOrTypeOnly,
                                                     JavaAstProcessor processor) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-            String canonical = packageImage.isEmpty() ? identifier.getImage()
-                                                      : packageImage + '.' + identifier.getImage();
-
             if (!remaining.hasNext()) {
+                if (isPackageOrTypeOnly) {
+                    // There's one last segment to try, the parent of the ambiguous name
+                    // This may only be because this ambiguous name is the package qualification of the parent type
+                    forceResolveAsFullPackageNameOfParent(packageImage, ambig, processor);
+                    return ambig; // returning ambig makes the outer routine not replace
+                }
+
                 // then this name is unresolved, leave the ambiguous name in the tree
-                processor.getLogger().warning(ambig, CANNOT_RESOLVE_AMBIGUOUS_NAME, canonical, "ambiguous");
+                processor.getLogger().warning(ambig, CANNOT_RESOLVE_AMBIGUOUS_NAME, packageImage, "ambiguous");
                 return ambig;
             }
 
             JavaccToken nextIdent = skipToNextIdent(remaining);
 
+
+            String canonical = packageImage + '.' + nextIdent.getImage();
+
             JClassSymbol nextClass = processor.getSymResolver().resolveClassFromCanonicalName(canonical);
 
             if (nextClass != null) {
-                return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, processor);
+                return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, isPackageOrTypeOnly, processor);
             } else {
-                return resolvePackage(nextIdent, canonical, remaining, ambig, processor);
+                return resolvePackage(nextIdent, canonical, remaining, ambig, isPackageOrTypeOnly, processor);
             }
+        }
+
+        private static void forceResolveAsFullPackageNameOfParent(String packageImage, ASTAmbiguousName ambig, JavaAstProcessor processor) {
+            ASTClassOrInterfaceType parent = (ASTClassOrInterfaceType) ambig.getParent();
+
+            String full = packageImage + '.' + parent.getSimpleName();
+            JClassSymbol parentClass = processor.getSymResolver().resolveClassFromCanonicalName(full);
+            if (parentClass == null) {
+                processor.getLogger().warning(parent, CANNOT_RESOLVE_AMBIGUOUS_NAME, full, "package name");
+            }
+            ambig.deleteInParentPrependImage('.');
         }
 
         private static JavaccToken skipToNextIdent(Iterator<JavaccToken> remaining) {
@@ -379,7 +445,7 @@ public final class AstDisambiguationPass {
         private static void reportUnselectable(SemanticChecksLogger logger, JavaNode loc, String memberName, JTypeDeclSymbol parentSym) {
             logger.error(
                 loc,
-                CANNOT_SELECT_TYPE_MEMBER,
+                CANNOT_SELECT_MEMBER_FROM_TVAR,
                 memberName,
                 parentSym instanceof JClassSymbol ? "class" : "type variable",
                 parentSym.getSimpleName()

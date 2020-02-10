@@ -19,14 +19,10 @@ public interface SemanticChecksLogger {
     String CANNOT_FIND_CLASSPATH_SYMBOL = "Symbol is not on the classpath: {0}";
 
     /**
-     * Examples:
-     * <ul>
-     *     <li>we find T.Inner, where T is a type variable: Inner doesn't exist
-     *     <li>we find A.B, where A is a resolved symbol, and B is not an inner class of B.
-     *     This means that either the code doesn't compile, or classpath is outdated.
-     * </ul>
+     * We found T.Inner, where T is a type variable: Inner cannot exist,
+     * this is broken code and not just misconfiguration.
      */
-    String CANNOT_SELECT_TYPE_MEMBER = "{0} is not a type member of {1} {2}";
+    String CANNOT_SELECT_MEMBER_FROM_TVAR = "{0} cannot be a member of the type variable {2}";
 
     /**
      * Warning, meaning we cannot disambiguate some ambiguous name and are
@@ -34,7 +30,7 @@ public interface SemanticChecksLogger {
      */
     String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as a {1}";
 
-    String CANNOT_RESOLVE_MEMBER = "Cannot resolve a member named {0} in {1} , treating it as a {1}";
+    String CANNOT_RESOLVE_MEMBER = "Cannot resolve ''{0}'' in {1}, treating it as {1}";
 
 
     /**

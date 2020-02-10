@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 // @formatter:off
 /**
@@ -29,6 +30,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  */
 // @formatter:on
 public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
+
+    private JTypeDeclSymbol symbol;
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
@@ -49,15 +52,13 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         this.setImage(simpleName);
     }
 
-    ASTClassOrInterfaceType(ASTClassOrInterfaceType lhs, String image, JavaccToken identifier) {
+    ASTClassOrInterfaceType(ASTClassOrInterfaceType lhs, String image, JavaccToken firstToken, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(image);
-        if (lhs == null) {
-            this.jjtSetFirstToken(identifier);
-        } else {
+        if (lhs != null) {
             this.jjtAddChild(lhs, 0);
-            this.jjtSetFirstToken(lhs.jjtGetFirstToken());
         }
+        this.jjtSetFirstToken(firstToken);
         this.jjtSetLastToken(identifier);
     }
 
@@ -66,6 +67,15 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         super(id);
     }
 
+
+    void setSymbol(JTypeDeclSymbol symbol) {
+        this.symbol = symbol;
+    }
+
+    public JTypeDeclSymbol getReferencedSym() {
+        // this is a crutch for now, can be replaced with getTypeDefinition later
+        return symbol;
+    }
 
     /**
      * Gets the owner type of this type if it's not ambiguous. This is a

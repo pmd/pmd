@@ -1,7 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.collections.shouldNotBeEmpty
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 
 /**
@@ -36,19 +37,21 @@ class TypeDisambiguationTest : ParserTestSpec({
         val logger = enableProcessing()
 
         val acu = parser.parse("""
+            package com;
             class Foo {
                Foo.Bar f1;
                class Inner { }
             }
         """)
 
-        logger.errors[SemanticChecksLogger.CANNOT_SELECT_TYPE_MEMBER].orEmpty().shouldNotBeEmpty()
-        
+        val (node, args) = logger.warnings[SemanticChecksLogger.CANNOT_RESOLVE_MEMBER]!![0]
+        args.toList() shouldBe listOf("Bar", "com.Foo", "an unresolved type")
+        node.shouldBeA<ASTClassOrInterfaceType> {  }
     }
 
 
     parserTest("Fully qualified names") {
-        enableProcessing()
+        enableProcessing(true)
 
         inContext(TypeParsingCtx) {
             "javasymbols.testdata.Statics" should parseAs {

@@ -22,6 +22,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbol {
 
 
+
+
     /**
      * Returns the reflected class this node represents, if it's on the auxclasspath.
      * There's no guarantee that this is even exists (this symbol may be notional).
