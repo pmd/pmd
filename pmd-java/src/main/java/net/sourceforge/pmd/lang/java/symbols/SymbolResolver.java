@@ -21,7 +21,11 @@ public interface SymbolResolver {
     /**
      * Resolves a class symbol from its canonical name. Periods ('.') will
      * not be interpreted as nested-class separators, so this performs at
-     * most one classloader lookup.
+     * most one classloader lookup. Note that external symbol resolvers
+     * do not need to implement lookup for primitive types, for local
+     * and anonymous classes, or for array classes. This is handled by
+     * the AST implementation or by the type system. Looking up such symbols
+     * is undefined behaviour.
      */
     @Nullable
     JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName);

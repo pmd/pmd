@@ -4,7 +4,6 @@ import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC
 import net.sourceforge.pmd.lang.java.ast.JModifier.*
@@ -12,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 
@@ -310,18 +310,17 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     modifiers { }
 
                     resultType {
-                        primitiveType(PrimitiveType.INT)
+                        primitiveType(INT)
                     }
                     formalsList(0)
                 }
             }
-
             "int bar() default 2;" should parseAs {
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
 
                     it::getResultType shouldBe resultType {
-                        primitiveType(PrimitiveType.INT)
+                        primitiveType(INT)
                     }
                     it::getFormalParameters shouldBe formalsList(0)
 
@@ -333,7 +332,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 annotationMethod {
                     it::getModifiers shouldBe modifiers { }
                     it::getResultType shouldBe resultType {
-                        primitiveType(PrimitiveType.INT)
+                        primitiveType(INT)
                     }
                     it::getFormalParameters shouldBe formalsList(0)
 
@@ -435,14 +434,16 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                             }
                         }
 
-                        it.toList() shouldBe listOf(
-                                child {
-                                    localVarModifiers { }
-                                    primitiveType(PrimitiveType.INT)
-                                    variableId("other")
-                                }
-                        )
-                    }
+                    it.toList() shouldBe listOf(
+                            child {
+                                localVarModifiers {  }
+                            primitiveType(INT)
+                                variableId("other")
+                            }
+                    )
+
+
+            }
 
                     it::getThrowsList shouldBe null
                     it::getBody shouldBe null

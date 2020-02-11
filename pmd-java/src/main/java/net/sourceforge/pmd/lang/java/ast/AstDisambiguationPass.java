@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -72,6 +73,7 @@ final class AstDisambiguationPass {
     private static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
         JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx)));
     }
+
 
     private enum Fallback {
         AMBIGUOUS("ambiguous"),
@@ -142,14 +144,14 @@ final class AstDisambiguationPass {
         @Nullable
         JFieldSymbol findStaticField(JTypeDeclSymbol classSym, String name) {
             return classSym instanceof JClassSymbol
-                   ? JavaResolvers.getMemberFieldResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveFirst(name)
+                   ? JavaResolvers.getMemberFieldResolver((JClassType) classSym.getTypeSystem().typeOf(classSym, false), packageName, enclosingClass, name).resolveFirst(name)
                    : null;
         }
 
         @Nullable
         JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
             if (classSym instanceof JClassSymbol) {
-                @NonNull List<JClassSymbol> found = JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveHere(name);
+                @NonNull List<JClassSymbol> found = JavaResolvers.getMemberClassResolver((JClassType) classSym.getTypeSystem().typeOf(classSym, false), packageName, enclosingClass, name).resolveHere(name);
                 return maybeAmbiguityError(name, errorLocation, found);
             }
             return null;

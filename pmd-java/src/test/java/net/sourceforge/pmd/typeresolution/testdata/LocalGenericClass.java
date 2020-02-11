@@ -8,6 +8,7 @@ public class LocalGenericClass {
 
     public static <T> void localClassInGeneric() {
         class MyLocalClass implements MyCombiner<T, Optional<T>, MyLocalClass> {
+
             private T state;
 
             @Override
@@ -28,18 +29,22 @@ public class LocalGenericClass {
     }
 
     private interface MyCombiner<R, S, T> extends MyConsumer<R>, MySupplier<S> {
+
         void combine(T t);
     }
 
     private interface MyConsumer<R> {
+
         void accept(R r);
     }
 
     private interface MySupplier<S> {
+
         S get();
     }
 
     private static class Optional<T> {
+
         public static <T> Optional<T> empty() {
             return new Optional<T>();
         }

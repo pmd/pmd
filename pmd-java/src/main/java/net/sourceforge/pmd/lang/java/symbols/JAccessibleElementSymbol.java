@@ -56,4 +56,6 @@ public interface JAccessibleElementSymbol extends JElementSymbol {
      */
     @NonNull
     String getPackageName();
+
+
 }

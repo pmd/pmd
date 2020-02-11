@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.symbols.table;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
  * A symbol table for a particular region of a Java program. Keeps track of the types,
@@ -39,7 +39,7 @@ public interface JSymbolTable {
     /**
      * The chain of tables tracking method names that are in scope here.
      */
-    ShadowChain<JMethodSymbol, ScopeInfo> methods();
+    ShadowChain<JMethodSig, ScopeInfo> methods();
 
 
 }

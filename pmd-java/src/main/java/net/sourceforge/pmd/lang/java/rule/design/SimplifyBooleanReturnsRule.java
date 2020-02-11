@@ -26,7 +26,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
             Node t = r.getChild(0);
             if (t.getNumChildren() == 1) {
                 t = t.getChild(0);
-                if (t instanceof ASTPrimitiveType && ((ASTPrimitiveType) t).isBoolean()) {
+                if (t instanceof ASTPrimitiveType && ((ASTPrimitiveType) t).getTypeMirror() == ((ASTPrimitiveType) t).getTypeSystem().BOOLEAN) {
                     return super.visit(node, data);
                 }
             }

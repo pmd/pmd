@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 
 /**
@@ -63,6 +64,12 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         assert binaryName != null : "Null binary name";
         this.binaryName = binaryName;
         this.canonicalName = canon;
+    }
+
+    @NonNull
+    @Override
+    public JClassType getTypeMirror() {
+        return (JClassType) super.getTypeMirror();
     }
 }
 

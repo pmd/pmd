@@ -24,7 +24,7 @@ object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
 }
 
 /** A [NodeSpec] that returns a value. */
-typealias ValuedNodeSpec<I, O> = TreeNodeWrapper<Node, I>.() -> O
+typealias ValuedNodeSpec<I, O> = TreeNodeWrapper<Node, out I>.() -> O
 
 /** A subtree matcher written in the DSL documented on [TreeNodeWrapper]. */
 typealias NodeSpec<N> = ValuedNodeSpec<N, Unit>
@@ -74,7 +74,7 @@ inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinlin
  * is the first node to be queried. This allows using sweeter
  * DSL constructs like in the Java module.
  */
-fun Node.shouldMatchN(matcher: ValuedNodeSpec<Node, Any>) {
+fun Node.shouldMatchN(matcher: ValuedNodeSpec<Node, out Any>) {
     val idx = indexInParent
     parent ktShould matchNode<Node> {
         if (idx > 0) {

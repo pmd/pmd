@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
@@ -20,7 +22,13 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  *
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner {
+public final class ASTMethodCall extends AbstractJavaExpr
+    implements ASTPrimaryExpression,
+               QualifierOwner,
+               InvocationNode {
+
+    private JMethodSig methodType;
+    private boolean varargsPhase;
 
     ASTMethodCall(int id) {
         super(id);
@@ -56,14 +64,36 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
         return getImage();
     }
 
+    @Override
+    @NonNull
     public ASTArgumentList getArguments() {
         return (ASTArgumentList) getChild(getNumChildren() - 1);
     }
 
 
+    @Override
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
+    }
+
+
+    @Override
+    public JMethodSig getMethodType() {
+        // force evaluation
+        getTypeMirror();
+        return methodType;
+    }
+
+    @Override
+    public boolean isVarargsCall() {
+        getTypeMirror();
+        return varargsPhase;
+    }
+
+    void setMethodType(JMethodSig methodType, boolean varargs) {
+        this.methodType = methodType;
+        this.varargsPhase = varargs;
     }
 
     @Override

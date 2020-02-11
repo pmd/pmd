@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
@@ -47,6 +49,11 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssigna
         return getImage();
     }
 
+
+    @Override
+    public @NonNull ASTExpression getQualifier() {
+        return (ASTExpression) getChild(0);
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTPatternExpression extends AbstractJavaNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
+public final class ASTPatternExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
 
     ASTPatternExpression(int id) {
         super(id);

@@ -14,6 +14,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 
 abstract class AbstractReflectedExecutableSymbol<T extends Executable> extends AbstractTypeParamOwnerSymbol<T> implements JExecutableSymbol {
 
@@ -22,7 +25,7 @@ abstract class AbstractReflectedExecutableSymbol<T extends Executable> extends A
 
 
     AbstractReflectedExecutableSymbol(@NonNull ReflectedClassImpl owner, T executable) {
-        super(owner.symFactory, executable);
+        super(owner.factory, executable);
         this.owner = owner;
     }
 
@@ -41,6 +44,16 @@ abstract class AbstractReflectedExecutableSymbol<T extends Executable> extends A
     @Override
     public int getArity() {
         return reflected.getParameterCount();
+    }
+
+    @Override
+    public List<JTypeMirror> getFormalParameterTypes(Substitution subst) {
+        return TypesFromReflection.fromReflect(getTypeSystem(), getLexicalScope(), subst, reflected.getGenericParameterTypes());
+    }
+
+    @Override
+    public List<JTypeMirror> getThrownExceptionTypes(Substitution subst) {
+        return TypesFromReflection.fromReflect(getTypeSystem(), getLexicalScope(), subst, reflected.getGenericExceptionTypes());
     }
 
     @Override

@@ -174,6 +174,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         pmdClassLoader = PMDASMClassLoader.getInstance(classLoader);
     }
 
+    public PMDASMClassLoader getPmdClassLoader() {
+        return pmdClassLoader;
+    }
+
     // FUTURE ASTCompilationUnit should not be a TypeNode. Clean this up
     // accordingly.
     @Override
@@ -239,7 +243,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
 
     @Override
     public Object visit(ASTArrayType node, Object data) {
-
         ASTType element = node.getElementType();
 
         element.jjtAccept(this, data);

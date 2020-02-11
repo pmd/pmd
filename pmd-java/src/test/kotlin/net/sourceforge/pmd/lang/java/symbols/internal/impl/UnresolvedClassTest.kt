@@ -8,6 +8,7 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.should
 import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.symbols.table.internal.testProcessor
 
 /**
  * @author Clément Fournier
@@ -16,7 +17,7 @@ class UnresolvedClassTest : AbstractFunSpec({
 
     test("Test simple unresolved class") {
 
-        val sym = UnresolvedSymFactory().makeUnresolvedReference("some.pack.Class", 0)
+        val sym = testProcessor().makeUnresolvedReference("some.pack.Class", 0)
 
         sym::isUnresolved shouldBe true
         sym::getSimpleName shouldBe "Class"
@@ -36,7 +37,7 @@ class UnresolvedClassTest : AbstractFunSpec({
 
     test("Test arity change") {
 
-        val sym = UnresolvedSymFactory().makeUnresolvedReference("some.pack.Class", 0) as UnresolvedClassImpl
+        val sym = testProcessor().makeUnresolvedReference("some.pack.Class", 0) as UnresolvedClassImpl
 
         sym::getTypeParameterCount shouldBe 0
         sym::getTypeParameters shouldBe emptyList()
@@ -46,8 +47,8 @@ class UnresolvedClassTest : AbstractFunSpec({
         sym::getTypeParameterCount shouldBe 2
         val tparams = sym.typeParameters
         tparams should haveSize(2)
-        tparams.forEach { it::getDeclaringSymbol shouldBe sym }
-        tparams.distinctBy { it.simpleName } should haveSize(2)
+        tparams.forEach { it.symbol!!::getDeclaringSymbol shouldBe sym }
+        tparams.distinctBy { it.name } should haveSize(2)
 
         sym.typeParameterCount = 3
 

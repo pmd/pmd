@@ -4,56 +4,40 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 
-import static java.util.stream.Collectors.toList;
-
 import java.lang.reflect.GenericDeclaration;
-import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.LexicalScope;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 abstract class AbstractTypeParamOwnerSymbol<T extends GenericDeclaration> extends AbstractReflectedSymbol implements JTypeParameterOwnerSymbol {
 
     protected final T reflected;
+    private final List<JTypeVar> typeParams;
+    private LexicalScope scope;
 
-    private List<JTypeParameterSymbol> typeParams;
-
-
-    AbstractTypeParamOwnerSymbol(ReflectionSymFactory factory, T tparamOwner) {
+    AbstractTypeParamOwnerSymbol(SymbolFactory factory, T tparamOwner) {
         super(factory);
         this.reflected = tparamOwner;
+        this.typeParams = CollectionUtil.map(
+            reflected.getTypeParameters(),
+            tvar -> new ReflectedTypeParamImpl(this, tvar).getTypeMirror()
+        );
     }
 
+    @Override
+    public LexicalScope getLexicalScope() {
+        if (scope == null) {
+            scope = JTypeParameterOwnerSymbol.super.getLexicalScope();
+        }
+        return scope;
+    }
 
     @Override
-    public final List<JTypeParameterSymbol> getTypeParameters() {
-        if (typeParams == null) {
-            buildTypeParams(reflected.getTypeParameters());
-        }
-
+    public final List<JTypeVar> getTypeParameters() {
         return typeParams;
     }
-
-    private void buildTypeParams(TypeVariable<?>[] tparams) {
-
-        List<ReflectedTypeParamImpl> result =
-            tparams.length == 0
-            ? Collections.emptyList()
-            : Arrays.stream(tparams)
-                    .map(tvar -> new ReflectedTypeParamImpl(symFactory, this, tvar))
-                    .collect(toList());
-
-        // this needs to be set before calling computeBounds
-        this.typeParams = Collections.unmodifiableList(result);
-
-    }
-
-    @Override
-    public int getTypeParameterCount() {
-        return typeParams != null ? typeParams.size() : reflected.getTypeParameters().length;
-    }
-
 }

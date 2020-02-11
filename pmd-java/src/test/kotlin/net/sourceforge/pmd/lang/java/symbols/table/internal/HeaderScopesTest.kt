@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.*
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -45,7 +45,7 @@ class HeaderScopesTest : ProcessorTestSpec({
     // The test data is placed in a short package to allow typing out FQCNs here for readability
 
     fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s).shouldBeA()
-    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s)
+    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s).map { it.symbol as JMethodSymbol }
 
     fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
         resolveFirst(simpleName).shouldBeA<JClassSymbol> {
@@ -238,7 +238,7 @@ class HeaderScopesTest : ProcessorTestSpec({
                     scopeTag shouldBe SINGLE_IMPORT
                     results should haveSize(2)
                     results.forEach {
-                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
+                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
                     }
                 }
 
@@ -247,7 +247,7 @@ class HeaderScopesTest : ProcessorTestSpec({
                     scopeTag shouldBe IMPORT_ON_DEMAND
                     results should haveSize(2)
                     results.forEach {
-                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }
@@ -262,7 +262,7 @@ class HeaderScopesTest : ProcessorTestSpec({
                     scopeTag shouldBe IMPORT_ON_DEMAND
                     results should haveSize(1)
                     results.forEach {
-                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                        it.symbol.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
                 }
             }

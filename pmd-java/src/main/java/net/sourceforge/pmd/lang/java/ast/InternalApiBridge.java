@@ -9,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -19,6 +18,10 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
@@ -77,7 +80,7 @@ public final class InternalApiBridge {
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.addChild(variableDeclaratorId, 1);
 
-            PrimitiveType primitive = PrimitiveType.fromToken(parameterTypes[i]);
+            PrimitiveTypeKind primitive = PrimitiveTypeKind.fromName(parameterTypes[i]);
             // TODO : this could actually be a primitive array...
             AbstractJavaNode type = primitive != null
                            ? new ASTPrimitiveType(primitive)
@@ -117,6 +120,45 @@ public final class InternalApiBridge {
 
     public static void disambig(JavaAstProcessor processor, ASTCompilationUnit root) {
         AstDisambiguationPass.disambig(processor, root);
+    }
+
+    @Nullable
+    public static JTypeMirror getTypeMirrorInternal(TypeNode node) {
+        return ((AbstractJavaTypeNode) node).getTypeMirrorInternal();
+    }
+
+    public static void setTypeMirrorInternal(TypeNode node, JTypeMirror inferred) {
+        ((AbstractJavaTypeNode) node).setTypeMirror(inferred);
+    }
+
+    public static void setFunctionalMethod(ASTMethodReference methodReference, JMethodSig methodType) {
+        methodReference.setFunctionalMethod(methodType);
+    }
+
+    public static void setFunctionalMethod(ASTLambdaExpression lambda, JMethodSig methodType) {
+        lambda.setFunctionalMethod(methodType);
+    }
+
+    public static void setCompileTimeDecl(ASTMethodReference methodReference, JMethodSig methodType) {
+        methodReference.setCompileTimeDecl(methodType);
+    }
+
+    public static void setTypeResolver(ASTCompilationUnit acu, LazyTypeResolver typeResolver) {
+        acu.setTypeResolver(typeResolver);
+    }
+
+    public static void setMethodType(InvocationNode expression, JMethodSig inferred, boolean varargsPhase) {
+        if (expression instanceof ASTMethodCall) {
+            ((ASTMethodCall) expression).setMethodType(inferred, varargsPhase);
+        } else if (expression instanceof ASTConstructorCall) {
+            ((ASTConstructorCall) expression).setMethodType(inferred, varargsPhase);
+        } else if (expression instanceof ASTExplicitConstructorInvocation) {
+            ((ASTExplicitConstructorInvocation) expression).setMethodType(inferred, varargsPhase);
+        } else if (expression instanceof ASTEnumConstant) {
+            ((ASTEnumConstant) expression).setCalledConstructor(inferred, varargsPhase);
+        } else {
+            throw new IllegalArgumentException("Wrong type: " + expression);
+        }
     }
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {

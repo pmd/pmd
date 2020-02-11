@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -19,9 +21,11 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * Generic implementation for array symbols, which does not rely on
@@ -29,13 +33,20 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInt
  */
 class ArraySymbolImpl implements JClassSymbol {
 
+    private final SymbolFactory factory;
     private final JTypeDeclSymbol component;
 
-    ArraySymbolImpl(@SuppressWarnings("PMD.UnusedFormalParameter") SymbolFactory<?> factory, JTypeDeclSymbol component) {
+    ArraySymbolImpl(SymbolFactory factory, JTypeDeclSymbol component) {
         this.component = Objects.requireNonNull(component, "Array symbol requires component");
+        this.factory = Objects.requireNonNull(factory, "Array symbol requires symbol factory");
         if (component instanceof JClassSymbol && ((JClassSymbol) component).isAnonymousClass()) {
             throw new IllegalArgumentException("Anonymous classes cannot be array components: " + component);
         }
+    }
+
+    @Override
+    public TypeSystem getTypeSystem() {
+        return factory.getTypeSystem();
     }
 
     @Override
@@ -94,12 +105,22 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public @Nullable JClassSymbol getSuperclass() {
-        return ReflectSymInternals.OBJECT_SYM;
+        return getTypeSystem().OBJECT.getSymbol();
     }
 
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        return ReflectSymInternals.ARRAY_SUPER_INTERFACES;
+        return listOf(getTypeSystem().CLONEABLE.getSymbol(), getTypeSystem().SERIALIZABLE.getSymbol());
+    }
+
+    @Override
+    public List<JClassType> getSuperInterfaceTypes(Substitution substitution) {
+        return listOf(getTypeSystem().CLONEABLE, getTypeSystem().SERIALIZABLE);
+    }
+
+    @Override
+    public @Nullable JClassType getSuperclassType(Substitution substitution) {
+        return getTypeSystem().OBJECT;
     }
 
     @Override
@@ -120,6 +141,11 @@ class ArraySymbolImpl implements JClassSymbol {
     @Override
     public int hashCode() {
         return SymbolEquality.hash(this);
+    }
+
+    @Override
+    public boolean isAnnotation() {
+        return false;
     }
 
     @Override
@@ -151,7 +177,7 @@ class ArraySymbolImpl implements JClassSymbol {
     }
 
     @Override
-    public List<JTypeParameterSymbol> getTypeParameters() {
+    public List<JTypeVar> getTypeParameters() {
         return Collections.emptyList();
     }
 
@@ -164,11 +190,6 @@ class ArraySymbolImpl implements JClassSymbol {
     @Override
     public boolean isArray() {
         return true;
-    }
-
-    @Override
-    public boolean isAnnotation() {
-        return false;
     }
 
     @Override

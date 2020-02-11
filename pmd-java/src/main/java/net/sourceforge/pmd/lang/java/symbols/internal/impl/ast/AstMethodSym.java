@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 
 /**
  * @author Clément Fournier
@@ -18,6 +22,17 @@ final class AstMethodSym
 
     AstMethodSym(ASTMethodDeclaration node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory, owner);
+    }
+
+    @Override
+    public boolean isBridge() {
+        return false;
+    }
+
+    @Override
+    public JTypeMirror getReturnType(Substitution subst) {
+        ASTType rt = node.getResultType().getTypeNode();
+        return rt == null ? getTypeSystem().NO_TYPE : TypeOps.subst(rt.getTypeMirror(), subst);
     }
 
     @Override

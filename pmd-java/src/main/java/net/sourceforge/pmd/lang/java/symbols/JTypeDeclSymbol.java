@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.symbols;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+
 /**
  * A symbol that declares a type. These include
  * <ul>
@@ -16,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </ul>
  *
  * <p>Note: type symbols are not <i>types</i>, they <i>declare</i> types.
+ * See {@link JTypeMirror#getSymbol()} for more details.
  *
  * @since 7.0.0
  */
@@ -80,5 +83,4 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
     default boolean isInterface() {
         return false;
     }
-
 }

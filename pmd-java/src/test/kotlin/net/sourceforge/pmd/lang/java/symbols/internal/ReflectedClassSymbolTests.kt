@@ -3,7 +3,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AbstractWordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.INT_SYM
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 /**
  * @author Clément Fournier
@@ -22,9 +22,9 @@ class ReflectedClassSymbolTests : AbstractWordSpec({
         "reflect its type parameters correctly" {
             TestClassesGen.random().forEach { clazz ->
                 val classSym = classSym(clazz)!!
-                classSym.typeParameters.map { it.simpleName } shouldBe clazz.typeParameters.toList().map { it.name }
+                classSym.typeParameters.map { it!!.name } shouldBe clazz.typeParameters.toList().map { it.name }
                 classSym.typeParameters.forEach {
-                    it.declaringSymbol shouldBe classSym
+                    it!!.symbol!!.declaringSymbol shouldBe classSym
                 }
             }
         }
@@ -58,7 +58,7 @@ class ReflectedClassSymbolTests : AbstractWordSpec({
             val iarr = classSym(IntArray::class.java)!!
             iarr::isArray shouldBe true
             iarr::isInterface shouldBe false
-            iarr::getArrayComponent shouldBe INT_SYM
+            iarr::getArrayComponent shouldBe testTypeSystem.getClassSymbol(Integer.TYPE)
         }
 
         "reflect its component type when it is a reference array" {

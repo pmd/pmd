@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 
 abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbol>
@@ -15,6 +16,7 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
 
     private T symbol;
     private JavaOperationSignature signature;
+    private JMethodSig sig;
 
     AbstractMethodOrConstructorDeclaration(int i) {
         super(i);
@@ -40,5 +42,13 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
     public T getSymbol() {
         AbstractTypedSymbolDeclarator.assertSymbolNotNull(symbol, this);
         return symbol;
+    }
+
+    @Override
+    public JMethodSig getSig() {
+        if (sig == null) {
+            sig = getTypeSystem().sigOf(getSymbol());
+        }
+        return sig;
     }
 }

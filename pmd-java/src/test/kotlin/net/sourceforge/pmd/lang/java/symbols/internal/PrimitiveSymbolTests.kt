@@ -4,6 +4,8 @@ import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.specs.AbstractWordSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 /**
  * @author Clément Fournier
@@ -11,43 +13,43 @@ import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_
  */
 class PrimitiveSymbolTests : AbstractWordSpec({
 
-
+    fun primitives(): List<JClassSymbol> = testTypeSystem.allPrimitives.map { it.symbol!! }
 
     "A primitive symbol" should {
 
         "have no fields" {
-            PrimitiveSymGen.constants().forEach {
+            primitives().forEach {
                 it.declaredFields.shouldBeEmpty()
             }
         }
 
         "have no methods" {
-            PrimitiveSymGen.constants().forEach {
+            primitives().forEach {
                 it.declaredMethods.shouldBeEmpty()
             }
         }
 
         "have no constructors" {
-            PrimitiveSymGen.constants().forEach {
+            primitives().forEach {
                 it.constructors.shouldBeEmpty()
             }
         }
 
         "have no superclass" {
-            PrimitiveSymGen.constants().forEach {
+            primitives().forEach {
                 it::getSuperclass shouldBe null
             }
         }
 
         "have no superInterfaces" {
-            PrimitiveSymGen.constants().forEach {
+            primitives().forEach {
                 it::getSuperInterfaces shouldBe emptyList()
             }
         }
 
 
         "reflect its package name properly" {
-            PrimitiveSymGen.constants().forEach {
+            primitives().forEach {
                 it::getPackageName shouldBe PRIMITIVE_PACKAGE
             }
         }

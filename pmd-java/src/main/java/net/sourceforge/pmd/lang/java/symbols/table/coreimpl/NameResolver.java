@@ -54,7 +54,6 @@ public interface NameResolver<S> {
         return OptionalBool.UNKNOWN;
     }
 
-
     /** Returns true if this resolver knows it cannot resolve anything. */
     default boolean isDefinitelyEmpty() {
         return false;

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -12,6 +11,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainNode;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 final class SymbolTableImpl implements JSymbolTable {
 
@@ -19,11 +19,11 @@ final class SymbolTableImpl implements JSymbolTable {
 
     private final ShadowChainNode<JVariableSymbol, ScopeInfo> vars;
     private final ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types;
-    private final ShadowChainNode<JMethodSymbol, ScopeInfo> methods;
+    private final ShadowChainNode<JMethodSig, ScopeInfo> methods;
 
     SymbolTableImpl(ShadowChainNode<JVariableSymbol, ScopeInfo> vars,
                     ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types,
-                    ShadowChainNode<JMethodSymbol, ScopeInfo> methods) {
+                    ShadowChainNode<JMethodSig, ScopeInfo> methods) {
         this.vars = vars;
         this.types = types;
         this.methods = methods;
@@ -40,7 +40,7 @@ final class SymbolTableImpl implements JSymbolTable {
     }
 
     @Override
-    public ShadowChain<JMethodSymbol, ScopeInfo> methods() {
+    public ShadowChain<JMethodSig, ScopeInfo> methods() {
         return methods.asChain();
     }
 

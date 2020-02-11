@@ -4,19 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
-import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.component7
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals
-import org.checkerframework.checker.nullness.qual.NonNull
 
 class MemberInheritanceTest : ParserTestSpec({
 
@@ -57,31 +52,22 @@ class MemberInheritanceTest : ParserTestSpec({
 
             supF.symbolTable.methods().resolve("f").let {
                 it.shouldHaveSize(1)
-                it[0] shouldBe supF.symbol
+                it[0] shouldBe supF.sig
             }
         }
 
         doTest("Inside Outer: both Sup#f(int) and Outer#f() are in scope") {
-            outerF.symbolTable.methods().resolve("f").let {
-                it.shouldHaveSize(2)
-                it.shouldContainExactlyInAnyOrder(supF.symbol, outerF.symbol)
-            }
+            outerF.symbolTable.methods().resolve("f").shouldContainExactlyInAnyOrder(supF.sig, outerF.sig)
         }
 
         doTest("Inside Inner: neither Sup#f(int) nor Outer#f() are in scope") {
             // only Inner#f() and Sup2#f(String)
-            innerF.symbolTable.methods().resolve("f").let {
-                it.shouldHaveSize(2)
-                it.shouldContainExactlyInAnyOrder(sup2F.symbol, innerF.symbol)
-            }
+            innerF.symbolTable.methods().resolve("f").shouldContainExactlyInAnyOrder(sup2F.sig, innerF.sig)
         }
 
         doTest("If there is no shadowing then declarations of outer classes are in scope (g methods)") {
             // only Inner#f() and Sup2#f(String)
-            innerF.symbolTable.methods().resolve("g").let {
-                it.shouldHaveSize(2)
-                it.shouldContainExactlyInAnyOrder(supG.symbol, outerG.symbol)
-            }
+            innerF.symbolTable.methods().resolve("g").shouldContainExactlyInAnyOrder(supG.sig, outerG.sig)
         }
     }
 
@@ -104,7 +90,7 @@ class MemberInheritanceTest : ParserTestSpec({
             it.shouldHaveSize(1)
             it[0].apply {
                 formalParameters shouldBe emptyList()
-                enclosingClass shouldBe ReflectSymInternals.OBJECT_SYM
+                declaringType shouldBe acu.typeSystem.OBJECT
             }
         }
 

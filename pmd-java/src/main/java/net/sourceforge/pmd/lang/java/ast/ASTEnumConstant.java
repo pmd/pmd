@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
  *
@@ -15,11 +17,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTEnumConstant extends AbstractJavaNode
+public final class ASTEnumConstant extends AbstractJavaTypeNode
     implements Annotatable,
+               InvocationNode,
                AccessNode,
                ASTBodyDeclaration,
                InternalInterfaces.VariableIdOwner {
+
+    private JMethodSig calledConstructor;
+    private boolean varargsPhase;
 
     ASTEnumConstant(int id) {
         super(id);
@@ -42,9 +48,7 @@ public final class ASTEnumConstant extends AbstractJavaNode
         return getVarId().getImage();
     }
 
-    /**
-     * Returns the arguments list passed to the constructor call, if any.
-     */
+    @Override
     @Nullable
     public ASTArgumentList getArguments() {
         return getFirstChildOfType(ASTArgumentList.class);
@@ -73,4 +77,26 @@ public final class ASTEnumConstant extends AbstractJavaNode
         return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTAnonymousClassDeclaration.class);
     }
 
+    @Override
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
+        // no syntax for that
+        return null;
+    }
+
+    @Override
+    public JMethodSig getMethodType() {
+        getTypeMirror();
+        return calledConstructor;
+    }
+
+    @Override
+    public boolean isVarargsCall() {
+        getTypeMirror();
+        return varargsPhase;
+    }
+
+    void setCalledConstructor(JMethodSig calledConstructor, boolean varargsPhase) {
+        this.calledConstructor = calledConstructor;
+        this.varargsPhase = varargsPhase;
+    }
 }

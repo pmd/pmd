@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * This interface allows a Java Class to be associated with a node.
  */
-public interface TypeNode extends JavaNode {
+public interface TypeNode extends TypedNode {
 
     /**
      * Get the Java Class associated with this node.

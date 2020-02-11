@@ -15,13 +15,14 @@ import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.*
+import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.typeDsl
 
 class SuperTypesEnumeratorTest : ParserTestSpec({
 
 
-    fun SuperTypesEnumerator.list(t: JClassSymbol) = iterable(t).toList()
+    fun SuperTypesEnumerator.list(t: JClassType) = iterable(t).toList()
 
     parserTest("All supertypes test") {
 
@@ -41,26 +42,30 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         """)
 
         val (i1, i2, sup, sub) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         doTest("ALL_SUPERTYPES_INCLUDING_SELF") {
-            ALL_SUPERTYPES_INCLUDING_SELF.list(i1) should containExactly(i1, ReflectSymInternals.OBJECT_SYM)
-            ALL_SUPERTYPES_INCLUDING_SELF.list(i2) should containExactly(i2, i1, ReflectSymInternals.OBJECT_SYM)
-            ALL_SUPERTYPES_INCLUDING_SELF.list(sup) should containExactly(sup, i2, i1, ReflectSymInternals.OBJECT_SYM)
-            ALL_SUPERTYPES_INCLUDING_SELF.list(sub) should containExactly(sub, i1, sup, i2, ReflectSymInternals.OBJECT_SYM)
+            with(acu.typeDsl) {
+                ALL_SUPERTYPES_INCLUDING_SELF.list(i1) should containExactly(i1, ts.OBJECT)
+                ALL_SUPERTYPES_INCLUDING_SELF.list(i2) should containExactly(i2, i1, ts.OBJECT)
+                ALL_SUPERTYPES_INCLUDING_SELF.list(sup) should containExactly(sup, i2, i1, ts.OBJECT)
+                ALL_SUPERTYPES_INCLUDING_SELF.list(sub) should containExactly(sub, i1, sup, i2, ts.OBJECT)
+            }
         }
 
         doTest("ALL_STRICT_SUPERTYPES") {
-            ALL_STRICT_SUPERTYPES.list(i1) should containExactly(ReflectSymInternals.OBJECT_SYM)
-            ALL_STRICT_SUPERTYPES.list(i2) should containExactly(i1, ReflectSymInternals.OBJECT_SYM)
-            ALL_STRICT_SUPERTYPES.list(sup) should containExactly(i2, i1, ReflectSymInternals.OBJECT_SYM)
-            ALL_STRICT_SUPERTYPES.list(sub) should containExactly(i1, sup, i2, ReflectSymInternals.OBJECT_SYM)
+            with(acu.typeDsl) {
+                ALL_STRICT_SUPERTYPES.list(i1) should containExactly(ts.OBJECT)
+                ALL_STRICT_SUPERTYPES.list(i2) should containExactly(i1, ts.OBJECT)
+                ALL_STRICT_SUPERTYPES.list(sup) should containExactly(i2, i1, ts.OBJECT)
+                ALL_STRICT_SUPERTYPES.list(sub) should containExactly(i1, sup, i2, ts.OBJECT)
+            }
         }
 
         doTest("DIRECT_STRICT_SUPERTYPES") {
             DIRECT_STRICT_SUPERTYPES.list(i1) should beEmpty()
             DIRECT_STRICT_SUPERTYPES.list(i2) should containExactly(i1)
-            DIRECT_STRICT_SUPERTYPES.list(sup) should containExactly(ReflectSymInternals.OBJECT_SYM, i2)
+            DIRECT_STRICT_SUPERTYPES.list(sup) should containExactly(sup.typeSystem.OBJECT, i2)
             DIRECT_STRICT_SUPERTYPES.list(sub) should containExactly(sup, i1)
         }
 
@@ -74,8 +79,8 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         doTest("SUPERCLASSES_AND_SELF") {
             SUPERCLASSES_AND_SELF.list(i1) should containExactly(i1)
             SUPERCLASSES_AND_SELF.list(i2) should containExactly(i2)
-            SUPERCLASSES_AND_SELF.list(sup) should containExactly(sup, ReflectSymInternals.OBJECT_SYM)
-            SUPERCLASSES_AND_SELF.list(sub) should containExactly(sub, sup, ReflectSymInternals.OBJECT_SYM)
+            SUPERCLASSES_AND_SELF.list(sup) should containExactly(sup, sup.typeSystem.OBJECT)
+            SUPERCLASSES_AND_SELF.list(sub) should containExactly(sub, sup, sup.typeSystem.OBJECT)
         }
 
     }

@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 
 /**
@@ -21,4 +23,8 @@ public interface JVariableSymbol extends BoundToNode<ASTVariableDeclaratorId> {
      * This takes implicit modifiers into account.
      */
     boolean isFinal();
+
+
+    /** Returns the type of this value, under the given substitution. */
+    JTypeMirror getTypeMirror(Substitution subst);
 }

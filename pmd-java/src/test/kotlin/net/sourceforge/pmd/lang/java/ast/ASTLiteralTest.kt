@@ -3,12 +3,12 @@ package net.sourceforge.pmd.lang.java.ast
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
 /**
  * @author Clément Fournier
@@ -387,7 +387,7 @@ $delim
 
         inContext(ExpressionParsingCtx) {
 
-            fun hex15(type: PrimitiveType): ValuedNodeSpec<*, ASTNumericLiteral> = {
+            fun hex15(type: PrimitiveTypeKind): ValuedNodeSpec<*, ASTNumericLiteral> = {
                 number(type) {
                     it::getValueAsDouble shouldBe 15.0
                     it::getValueAsFloat shouldBe 15f
@@ -437,7 +437,7 @@ $delim
         }
 
         onVersions(J1_7..Latest) {
-            fun binaryThree(type: PrimitiveType): NodeSpec<*> = {
+            fun binaryThree(type: PrimitiveTypeKind): NodeSpec<*> = {
                 number(type) {
                     it::getValueAsDouble shouldBe 3.0
                     it::getValueAsFloat shouldBe 3f

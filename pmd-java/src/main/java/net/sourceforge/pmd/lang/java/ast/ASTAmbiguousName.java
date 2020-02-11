@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -87,12 +85,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     public String getTypeImage() {
         return getImage();
     }
-
-
-    public List<String> getSegments() {
-        return Arrays.asList(getImage().split("\\."));
-    }
-
 
     // Package-private construction methods:
 

@@ -12,7 +12,6 @@ package net.sourceforge.pmd.lang.java.ast;
  * BreakStatement ::= "break" &lt;IDENTIFIER&gt;? ";"
  *
  * </pre>
- *
  */
 public final class ASTBreakStatement extends AbstractStatement {
 

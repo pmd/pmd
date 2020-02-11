@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -36,6 +41,16 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
         return true;
     }
 
+    @Override
+    public @NonNull List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+        if (getParent() instanceof ASTConstructorCall) {
+            ASTClassOrInterfaceType type = ((ASTConstructorCall) getParent()).getTypeNode();
+            if (type.getReferencedSym() != null && type.getReferencedSym().isInterface()) {
+                return listOf(type);
+            }
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     public Visibility getVisibility() {

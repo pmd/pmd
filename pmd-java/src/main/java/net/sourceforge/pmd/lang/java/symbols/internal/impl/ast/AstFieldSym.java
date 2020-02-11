@@ -10,9 +10,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 
 final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
-
 
     private final JClassSymbol owner;
 
@@ -38,4 +40,9 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
         return owner;
     }
 
+    @Override
+    public JTypeMirror getTypeMirror(Substitution subst) {
+        // enum constants ha
+        return TypeOps.subst(node.getTypeMirror(), subst);
+    }
 }

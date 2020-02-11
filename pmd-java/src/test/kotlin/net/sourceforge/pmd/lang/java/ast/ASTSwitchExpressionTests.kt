@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
@@ -230,6 +231,88 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         }
     }
 
+
+    parserTest("Test yield expressions", javaVersions = listOf(J13__PREVIEW)) {
+
+        inContext(ExpressionParsingCtx) {
+
+            """
+            switch (day) {
+                case FRIDAY -> 6;
+                case WEDNESDAY      -> switch (foo) {
+                  case 2 -> 5;
+                  default -> {
+                    yield 7;
+                  }
+                };
+                default             ->  {
+                    yield 4;
+                }
+            }
+        """.trimIndent() should parseAs {
+
+                switchExpr {
+
+                    val outerYields = mutableListOf<ASTExpression>()
+
+                    it::getTestedExpression shouldBe variableAccess("day")
+
+                    switchArrow {
+                        switchLabel {
+                            variableAccess("FRIDAY")
+                        }
+                        int(6).also { outerYields += it }
+                    }
+
+                    switchArrow {
+                        switchLabel {
+                            variableAccess("WEDNESDAY")
+                        }
+
+                        switchExpr {
+                            it::getTestedExpression shouldBe variableAccess("foo")
+
+                            switchArrow {
+                                switchLabel {
+                                    int(2)
+                                }
+                                int(5)
+                            }
+                            switchArrow {
+                                switchDefaultLabel()
+                                block {
+                                    yieldStatement {
+                                        int(7)
+                                    }
+                                }
+                            }
+                        }.also { outerYields += it }
+                    }
+
+                    switchArrow {
+                        switchDefaultLabel()
+                        block {
+                            yieldStatement {
+                                int(4).also { outerYields += it }
+                            }
+                        }
+                    }
+
+                    outerYields[0].shouldMatchN {
+                        int(6)
+                    }
+
+                    outerYields[1].shouldMatchN {
+                        switchExpr(EmptyAssertions)
+                    }
+
+                    outerYields[2].shouldMatchN {
+                        int(4)
+                    }
+                }
+            }
+        }
+    }
 
     parserTest("Non-fallthrough nested in fallthrough", javaVersions = switchVersions) {
 

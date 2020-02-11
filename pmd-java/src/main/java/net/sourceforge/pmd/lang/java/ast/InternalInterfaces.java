@@ -39,18 +39,21 @@ final class InternalInterfaces {
     interface BinaryExpressionLike extends ASTExpression {
 
         /** Returns the left-hand-side operand. */
+        @NonNull
         default ASTExpression getLeftOperand() {
             return (ASTExpression) getChild(0);
         }
 
 
         /** Returns the right-hand side operand. */
+        @NonNull
         default ASTExpression getRightOperand() {
             return (ASTExpression) getChild(1);
         }
 
 
         /** Returns the operator. */
+        @NonNull
         OperatorLike getOperator();
     }
 
@@ -77,6 +80,7 @@ final class InternalInterfaces {
      * return null.
      */
     interface AtLeastOneChild extends JavaNode {
+
 
         /** Returns the first child of this node, never null. */
         @Override

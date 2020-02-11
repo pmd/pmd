@@ -7,6 +7,11 @@ package net.sourceforge.pmd.lang.java.symbols;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.LexicalScope;
+
 
 /**
  * Represents a declaration that can declare type parameters,
@@ -16,7 +21,18 @@ import java.util.List;
  */
 public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
 
-    List<JTypeParameterSymbol> getTypeParameters();
+    /**
+     * Returns an unmodifiable list of the type variables declared by
+     * this symbol.
+     */
+    List<JTypeVar> getTypeParameters();
+
+
+    default LexicalScope getLexicalScope() {
+        JTypeParameterOwnerSymbol encl = getEnclosingTypeParameterOwner();
+        LexicalScope base = encl != null ? encl.getLexicalScope() : LexicalScope.EMPTY;
+        return base.andThen(getTypeParameters());
+    }
 
 
     default int getTypeParameterCount() {
@@ -29,6 +45,7 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
      * the {@link #getEnclosingClass() enclosing class}, in that order
      * of priority.
      */
+    @Nullable
     default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
         return getEnclosingClass();
     }

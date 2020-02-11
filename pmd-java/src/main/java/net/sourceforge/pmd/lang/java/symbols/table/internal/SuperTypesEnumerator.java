@@ -17,8 +17,7 @@ import java.util.stream.StreamSupport;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 /**
  * Strategies to enumerate a type hierarchy.
@@ -26,7 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInt
 enum SuperTypesEnumerator {
     JUST_SELF {
         @Override
-        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
+        public Iterator<JClassType> iterator(JClassType t) {
             return IteratorUtil.singletonIterator(t);
         }
     },
@@ -37,8 +36,8 @@ enum SuperTypesEnumerator {
      */
     SUPERCLASSES_AND_SELF {
         @Override
-        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
-            return IteratorUtil.generate(t, JClassSymbol::getSuperclass);
+        public Iterator<JClassType> iterator(JClassType t) {
+            return IteratorUtil.generate(t, JClassType::getSuperClass);
         }
     },
 
@@ -49,16 +48,16 @@ enum SuperTypesEnumerator {
      */
     DIRECT_STRICT_SUPERTYPES {
         @Override
-        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
+        public Iterator<JClassType> iterator(JClassType t) {
             return iterable(t).iterator();
         }
 
         @Override
-        public Iterable<JClassSymbol> iterable(JClassSymbol t) {
-            @Nullable JClassSymbol sup = t.getSuperclass();
-            List<JClassSymbol> superItfs = t.getSuperInterfaces();
+        public Iterable<JClassType> iterable(JClassType t) {
+            @Nullable JClassType sup = t.getSuperClass();
+            List<JClassType> superItfs = t.getSuperInterfaces();
 
-            LinkedHashSet<JClassSymbol> set;
+            LinkedHashSet<JClassType> set;
             if (sup != null) {
                 set = new LinkedHashSet<>(superItfs.size() + 1);
                 set.add(sup);
@@ -75,7 +74,6 @@ enum SuperTypesEnumerator {
         }
     },
 
-
     /**
      * Restriction of {@link #ALL_SUPERTYPES_INCLUDING_SELF} to just the
      * strict supertypes. This includes Object if the search starts
@@ -83,8 +81,8 @@ enum SuperTypesEnumerator {
      */
     ALL_STRICT_SUPERTYPES {
         @Override
-        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
-            Iterator<JClassSymbol> iter = ALL_SUPERTYPES_INCLUDING_SELF.iterator(t);
+        public Iterator<JClassType> iterator(JClassType t) {
+            Iterator<JClassType> iter = ALL_SUPERTYPES_INCLUDING_SELF.iterator(t);
             IteratorUtil.advance(iter, 1);
             return iter;
         }
@@ -109,23 +107,23 @@ enum SuperTypesEnumerator {
      */
     ALL_SUPERTYPES_INCLUDING_SELF {
         @Override
-        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
-            final Set<JClassSymbol> seenInterfaces = new HashSet<>();
-            Iterator<JClassSymbol> baseIter = IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
-                final Set<JClassSymbol> currentInterfaces = new LinkedHashSet<>();
+        public Iterator<JClassType> iterator(JClassType t) {
+            final Set<JClassType> seenInterfaces = new HashSet<>();
+            Iterator<JClassType> baseIter = IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
+                final Set<JClassType> currentInterfaces = new LinkedHashSet<>();
                 walkInterfaces(seenInterfaces, currentInterfaces, type);
                 return currentInterfaces.iterator();
             });
 
             if (t.isInterface()) {
                 // then we need to add Object, otherwise it's already somewhere
-                return IteratorUtil.concat(baseIter, IteratorUtil.singletonIterator(ReflectSymInternals.OBJECT_SYM));
+                return IteratorUtil.concat(baseIter, IteratorUtil.singletonIterator(t.getTypeSystem().OBJECT));
             }
             return baseIter;
         }
 
-        private void walkInterfaces(final Set<JClassSymbol> seen, final Set<JClassSymbol> addTo, final JClassSymbol c) {
-            for (final JClassSymbol iface : c.getSuperInterfaces()) {
+        private void walkInterfaces(final Set<JClassType> seen, final Set<JClassType> addTo, final JClassType c) {
+            for (final JClassType iface : c.getSuperInterfaces()) {
                 if (seen.add(iface)) {
                     addTo.add(iface);
                     walkInterfaces(seen, addTo, iface); // Recurses into all super itfs
@@ -135,14 +133,14 @@ enum SuperTypesEnumerator {
     };
 
 
-    public abstract Iterator<JClassSymbol> iterator(JClassSymbol t);
+    public abstract Iterator<JClassType> iterator(JClassType t);
 
-    public Stream<JClassSymbol> stream(JClassSymbol t) {
+    public Stream<JClassType> stream(JClassType t) {
         return StreamSupport.stream(iterable(t).spliterator(), false);
 
     }
 
-    public Iterable<JClassSymbol> iterable(JClassSymbol t) {
+    public Iterable<JClassType> iterable(JClassType t) {
         return () -> iterator(t);
     }
 }

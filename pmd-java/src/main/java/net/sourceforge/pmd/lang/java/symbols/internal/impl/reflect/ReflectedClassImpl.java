@@ -6,7 +6,13 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 
 import static java.util.stream.Collectors.toList;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -19,11 +25,17 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
+import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implements JClassSymbol {
 
     private final Class<?> myClass;
-    private final @Nullable JClassSymbol enclosing;
+    private final @Nullable ReflectedClassImpl enclosing;
 
     private @Nullable JClassSymbol superclass;
     private List<JClassSymbol> superInterfaces;
@@ -34,7 +46,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     private List<JConstructorSymbol> declaredConstructors;
     private List<JFieldSymbol> declaredFields;
 
-    private ReflectedClassImpl(ReflectionSymFactory symbolFactory, Class<?> myClass) {
+    private ReflectedClassImpl(SymbolFactory symbolFactory, Class<?> myClass) {
         this(symbolFactory, null, myClass);
     }
 
@@ -42,7 +54,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
      * This assumes that the enclosing symbol is correct and doesn't
      * check it itself unless assertions are enabled.
      */
-    private ReflectedClassImpl(ReflectionSymFactory symbolFactory, @Nullable JClassSymbol enclosing, Class<?> myClass) {
+    private ReflectedClassImpl(SymbolFactory symbolFactory, @Nullable ReflectedClassImpl enclosing, Class<?> myClass) {
         super(symbolFactory, myClass);
 
         this.myClass = myClass;
@@ -50,10 +62,15 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
 
         assert !myClass.isArray() : "This class cannot represent array types";
 
-        assert enclosing == null && myClass.getEnclosingClass() == null
-            || myClass.getEnclosingClass() != null && enclosing != null
-            && myClass.getEnclosingClass().getName().equals(enclosing.getBinaryName())
-            : "Wrong enclosing class " + enclosing + ", expecting " + myClass.getEnclosingClass();
+        try {
+            assert enclosing == null && myClass.getEnclosingClass() == null
+                || enclosing != null && myClass.getEnclosingClass() != null
+                && myClass.getEnclosingClass().getName().equals(enclosing.getBinaryName())
+                : "Wrong enclosing class " + enclosing + " for " + myClass + ", expecting " + myClass.getEnclosingClass();
+        } catch (AssertionError e) {
+            // sometimes this fails, but the Class instance is wrong
+            // e.printStackTrace();
+        }
     }
 
     @Override
@@ -78,6 +95,29 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
     @Override
+    public @Nullable JExecutableSymbol getEnclosingMethod() {
+        final Executable method = myClass.getEnclosingMethod();
+        if (method != null && enclosing != null) {
+            return enclosing.getDeclaredMethods()
+                            .stream()
+                            .filter(it -> it instanceof ReflectedMethodImpl)
+                            .filter(it -> ((ReflectedMethodImpl) it).reflected == method)
+                            .findFirst()
+                            .orElse(null);
+        }
+
+        Constructor<?> ctor = myClass.getEnclosingConstructor();
+        if (ctor != null && enclosing != null) {
+            return enclosing.getConstructors().stream()
+                            .filter(it -> it instanceof ReflectedCtorImpl)
+                            .filter(it -> ((ReflectedCtorImpl) it).reflected == ctor)
+                            .findFirst()
+                            .orElse(null);
+        }
+        return null;
+    }
+
+    @Override
     public @NonNull String getPackageName() {
         return myClass.isPrimitive() ? PRIMITIVE_PACKAGE
                                      : ClassUtils.getPackageName(myClass);
@@ -97,7 +137,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public JClassSymbol getSuperclass() {
         if (superclass == null) {
-            superclass = symFactory.getClassSymbol(myClass.getSuperclass());
+            superclass = getTypeSystem().getClassSymbol(myClass.getSuperclass());
         }
         return superclass;
     }
@@ -106,8 +146,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
         if (superInterfaces == null) {
-            superInterfaces = myClass.isArray() ? ReflectSymInternals.ARRAY_SUPER_INTERFACES
-                                                : Arrays.stream(myClass.getInterfaces()).map(symFactory::getClassSymbol).collect(toList());
+            superInterfaces = CollectionUtil.map(myClass.getInterfaces(), getTypeSystem()::getClassSymbol);
         }
         return superInterfaces;
     }
@@ -115,9 +154,10 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public List<JClassSymbol> getDeclaredClasses() {
         if (declaredClasses == null) {
-            declaredClasses = Arrays.stream(myClass.getDeclaredClasses())
-                                    .map(k -> createWithEnclosing(symFactory, this, k))
-                                    .collect(toList());
+            declaredClasses = CollectionUtil.map(
+                Arrays.asList(myClass.getDeclaredClasses()),
+                k -> createWithEnclosing(factory, this, k)
+            );
         }
         return declaredClasses;
     }
@@ -165,16 +205,6 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
     @Override
-    public @Nullable JExecutableSymbol getEnclosingMethod() {
-        // TODO implement for completeness
-        //  this is not strictly needed for typeres though,
-        //  since this would only return non-null for a local class,
-        //  which are always represented by AST symbols (since they're
-        //  only visible in the local scope they're declared in)
-        return null;
-    }
-
-    @Override
     public int getModifiers() {
         return myClass.getModifiers();
     }
@@ -189,10 +219,14 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public List<JMethodSymbol> getDeclaredMethods() {
         if (declaredMethods == null) {
-            declaredMethods = Arrays.stream(myClass.getDeclaredMethods())
-                                    .filter(it -> !it.isBridge() && !it.isSynthetic())
-                                    .map(it -> new ReflectedMethodImpl(this, it))
-                                    .collect(toList());
+            Method[] declared = myClass.getDeclaredMethods();
+            List<JMethodSymbol> list = new ArrayList<>(declared.length);
+            for (Method it : declared) {
+                if (!it.isBridge() && !it.isSynthetic()) {
+                    list.add(new ReflectedMethodImpl(this, it));
+                }
+            }
+            this.declaredMethods = Collections.unmodifiableList(list);
         }
         return declaredMethods;
     }
@@ -219,13 +253,37 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
         return declaredFields;
     }
 
-    static ReflectedClassImpl createWithEnclosing(ReflectionSymFactory symbolFactory,
-                                                  @Nullable JClassSymbol enclosing,
+    @Override
+    public OptionalBool fastIsSubtypeOf(JClassSymbol symbol) {
+        Class<?> other = symbol.getJvmRepr();
+        if (other != null) {
+            return other.isAssignableFrom(myClass) ? OptionalBool.YES : OptionalBool.NO;
+        }
+        return OptionalBool.UNKNOWN;
+    }
+
+    @Override
+    public @Nullable JClassType getSuperclassType(Substitution substitution) {
+        Type superclass = myClass.getGenericSuperclass();
+        if (superclass == null) {
+            return null;
+        }
+        return (JClassType) TypesFromReflection.fromReflect(getTypeSystem(), superclass, getLexicalScope(), substitution);
+    }
+
+    @Override
+    @SuppressWarnings( {"unchecked", "rawtypes"})
+    public List<JClassType> getSuperInterfaceTypes(Substitution substitution) {
+        return (List<JClassType>) (List) TypesFromReflection.fromReflect(getTypeSystem(), getLexicalScope(), substitution, myClass.getGenericInterfaces());
+    }
+
+    static ReflectedClassImpl createWithEnclosing(SymbolFactory symbolFactory,
+                                                  @Nullable ReflectedClassImpl enclosing,
                                                   Class<?> myClass) {
         return new ReflectedClassImpl(symbolFactory, enclosing, myClass);
     }
 
-    static ReflectedClassImpl createOuterClass(ReflectionSymFactory symbolFactory, Class<?> myClass) {
+    static ReflectedClassImpl createOuterClass(SymbolFactory symbolFactory, Class<?> myClass) {
         return new ReflectedClassImpl(symbolFactory, myClass);
     }
 

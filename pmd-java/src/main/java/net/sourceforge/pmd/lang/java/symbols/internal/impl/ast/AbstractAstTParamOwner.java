@@ -12,12 +12,11 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.TypeParamOwnerNode;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 /**
  * @author Clément Fournier
@@ -25,22 +24,16 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
     extends AbstractAstBackedSymbol<T> implements JTypeParameterOwnerSymbol {
 
-    private final List<JTypeParameterSymbol> tparams;
+    private final List<JTypeVar> tparams;
     private final int modifiers;
-
 
     AbstractAstTParamOwner(T node, AstSymFactory factory) {
         super(node, factory);
         this.modifiers = JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
-
-        List<JTypeParameterSymbol> result = map(
+        this.tparams = Collections.unmodifiableList(map(
             ASTList.orEmpty(node.getTypeParameters()),
-            it -> new AstTypeParamSym(it, factory, this)
-        );
-
-        // this needs to be set before calling computeBounds
-        this.tparams = Collections.unmodifiableList(result);
-
+            it -> new AstTypeParamSym(it, factory, this).getTypeMirror()
+        ));
     }
 
     @Override
@@ -49,22 +42,13 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
     }
 
     @Override
-    public List<JTypeParameterSymbol> getTypeParameters() {
+    public List<JTypeVar> getTypeParameters() {
         return tparams;
     }
-
 
     @Override
     public @NonNull String getPackageName() {
         return node.getRoot().getPackageName();
     }
 
-    @Override
-    public int getTypeParameterCount() {
-        if (tparams != null) {
-            return tparams.size();
-        }
-        ASTTypeParameters ps = node.getTypeParameters();
-        return ps == null ? 0 : ps.getNumChildren();
-    }
 }

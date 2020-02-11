@@ -250,6 +250,7 @@ public final class IteratorUtil {
         return iterator.hasNext() ? iterator.next() : null;
     }
 
+
     /** Advance {@code n} times. */
     public static void advance(Iterator<?> iterator, int n) {
         AssertionUtil.requireNonNegative("n", n);

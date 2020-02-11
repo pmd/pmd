@@ -14,6 +14,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 
 /**
@@ -41,6 +43,11 @@ public interface ASTAnyTypeDeclaration
     @Override
     @NonNull
     JClassSymbol getSymbol();
+
+
+    @Override
+    @NonNull JClassType getTypeMirror();
+
 
     /**
      * Returns the simple name of this type declaration. Returns the

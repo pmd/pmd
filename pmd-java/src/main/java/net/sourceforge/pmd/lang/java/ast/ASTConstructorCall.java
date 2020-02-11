@@ -6,7 +6,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 /**
  * A class instance creation expression. Represents both {@linkplain #isQualifiedInstanceCreation() qualified}
@@ -23,7 +26,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode {
+public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode, InvocationNode {
+
+    private JMethodSig methodType;
+    private boolean varargs;
 
     ASTConstructorCall(int id) {
         super(id);
@@ -58,12 +64,24 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
         return QualifierOwner.super.getQualifier();
     }
 
+    /**
+     * Returns true if this constructor call uses the diamond operator,
+     * eg {@code new ArrayList<>()}.
+     */
+    public boolean isDiamond() {
+        ASTTypeArguments targs = getTypeNode().getTypeArguments();
+        return targs != null && targs.isDiamond();
+    }
+
+    @Override
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
+    @Override
+    @NonNull
     public ASTArgumentList getArguments() {
         int idx = getNumChildren() - (isAnonymousClass() ? 2 : 1);
         return (ASTArgumentList) getChild(idx);
@@ -73,6 +91,26 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
     public boolean usesDiamondTypeArgs() {
         ASTTypeArguments targs = getTypeNode().getTypeArguments();
         return targs != null && targs.isDiamond();
+    }
+
+
+    @Override
+    public JMethodSig getMethodType() {
+        // force evaluation
+        getTypeMirror();
+        return methodType;
+    }
+
+    @Override
+    public boolean isVarargsCall() {
+        // force evaluation
+        getTypeMirror();
+        return varargs;
+    }
+
+    void setMethodType(JMethodSig methodType, boolean varargs) {
+        this.methodType = methodType;
+        this.varargs = varargs;
     }
 
 

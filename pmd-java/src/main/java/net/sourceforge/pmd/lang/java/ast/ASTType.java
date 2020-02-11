@@ -27,7 +27,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  */
 public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
 
-
     /**
      * For now this returns the name of the type with all the segments,
      * without annotations, array dimensions, or type parameters. Experimental

@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 
 
 /**
@@ -37,19 +37,23 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     @NonNull
     @Override
     public Object getConstValue() {
-        PrimitiveType t = getPrimitiveType();
-        switch (t) {
-        case INT:
-            return getValueAsInt();
-        case LONG:
+        // don't use ternaries, the compiler messes up autoboxing.
+        if (isIntegral()) {
+            if (isIntLiteral()) {
+                return getValueAsInt();
+            }
             return getValueAsLong();
-        case DOUBLE:
+        } else {
+            if (isFloatLiteral()) {
+                return getValueAsFloat();
+            }
             return getValueAsDouble();
-        case FLOAT:
-            return getValueAsFloat();
-        default:
-            throw new IllegalStateException("Numeric literal cannot have type " + t);
         }
+    }
+
+    @Override
+    public @NonNull JPrimitiveType getTypeMirror() {
+        return (JPrimitiveType) super.getTypeMirror();
     }
 
     void setIntLiteral() {
@@ -61,21 +65,12 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         this.isIntegral = false;
     }
 
-
     @Override
     public boolean isIntLiteral() {
         return isIntegral && !isLongLiteral();
     }
 
     // TODO all of this can be done once in jjtCloseNodeScope
-
-    public PrimitiveType getPrimitiveType() {
-        if (isIntegral) {
-            return isLongLiteral() ? PrimitiveType.LONG : PrimitiveType.INT;
-        } else {
-            return isFloatLiteral() ? PrimitiveType.FLOAT : PrimitiveType.DOUBLE;
-        }
-    }
 
     @Override
     public boolean isLongLiteral() {

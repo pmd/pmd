@@ -33,6 +33,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.MapPSet;
+import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -417,6 +418,11 @@ public final class CollectionUtil {
         return Collections.unmodifiableSet(union);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> Set<T> unmodifiableByContract(Set<? extends T> set) {
+        return (Set<T>) set;
+    }
+
 
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
@@ -449,6 +455,9 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        if (m instanceof PMap) {
+            return ((PMap<K, V>) m).plus(k, v);
+        }
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
@@ -551,6 +560,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(T[] from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(Arrays.asList(from), f);
     }
 

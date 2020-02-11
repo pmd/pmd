@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 
@@ -44,7 +44,6 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 @InternalApi
 public interface JElementSymbol {
 
-
     /**
      * Gets the name with which this declaration may be referred to,
      * eg the name of the method, or the simple name of the class.
@@ -62,8 +61,7 @@ public interface JElementSymbol {
      * with this contract.
      *
      * <p>Symbols should only be compared using this method, never with {@code ==},
-     * because their unicity is not guaranteed (even for the static ones
-     * declared in {@link SymbolFactory}).
+     * because their unicity is not guaranteed.
      *
      * @param o Comparand
      *
@@ -71,6 +69,8 @@ public interface JElementSymbol {
      */
     @Override
     boolean equals(Object o);
+
+    TypeSystem getTypeSystem();
 
     // TODO access to annotations could be added to the API if we publish it
 

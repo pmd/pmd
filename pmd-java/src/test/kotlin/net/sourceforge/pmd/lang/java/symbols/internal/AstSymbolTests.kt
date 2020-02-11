@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals
 import java.lang.reflect.Modifier
 
 /**
@@ -87,10 +86,12 @@ class AstSymbolTests : ParserTestSpec({
         }
 
         doTest("should reflect their super class") {
-            fooClass::getSuperclass shouldBe testSymFactory.getClassSymbol(java.util.ArrayList::class.java)
-            innerItf::getSuperclass shouldBe null
-            innerClass::getSuperclass shouldBe ReflectSymInternals.OBJECT_SYM
-            innerEnum::getSuperclass shouldBe ReflectSymInternals.ENUM_SYM
+            with(acu.typeSystem) {
+                fooClass::getSuperclass shouldBe getClassSymbol(java.util.ArrayList::class.java)
+                innerItf::getSuperclass shouldBe null
+                innerClass::getSuperclass shouldBe OBJECT.getSymbol()
+                innerEnum::getSuperclass shouldBe getClassSymbol(java.lang.Enum::class.java)
+            }
         }
 
         doTest("should reflect their member types") {
@@ -439,7 +440,7 @@ class AstSymbolTests : ParserTestSpec({
 
             package com.foo;
 
-            public final class Foo { // fooClass
+            public class Foo { // fooClass
 
                 final Foo v = new Foo() {}; // fieldAnon
 
@@ -510,6 +511,21 @@ class AstSymbolTests : ParserTestSpec({
                 it::getEnclosingClass shouldBe fooClass
             }
             anonAnon::getEnclosingClass shouldBe staticInitAnon
+        }
+
+        doTest("should reflect their superclass") {
+            val anonsWithSuperClass = listOf(fieldAnon, staticFieldAnon)
+
+            anonsWithSuperClass.forEach {
+                it::getSuperclass shouldBe fooClass
+                it::getSuperInterfaces shouldBe emptyList()
+            }
+
+            // all others are Runnable
+            (allAnons - anonsWithSuperClass).forEach {
+                it::getSuperclass shouldBe it.typeSystem.OBJECT.symbol
+                it::getSuperInterfaces shouldBe listOf(it.typeSystem.getClassSymbol(Runnable::class.java))
+            }
         }
 
         doTest("should reflect their enclosing method") {

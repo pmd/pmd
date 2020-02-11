@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
+import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
+
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 /**
  * @author Clément Fournier
@@ -29,5 +33,10 @@ final class AstLocalVarSym extends AbstractAstVariableSym implements JLocalVaria
     @Override
     public int hashCode() {
         return node.hashCode();
+    }
+
+    @Override
+    public JTypeMirror getTypeMirror(Substitution subst) {
+        return subst(node.getTypeMirror(), subst);
     }
 }

@@ -8,10 +8,17 @@ package net.sourceforge.pmd.lang.java.symbols;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import org.apache.commons.lang3.ClassUtils.Interfaces;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.util.OptionalBool;
 
 
 /**
@@ -25,11 +32,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
  * intersection types, parameterized types, wildcard types, etc., which are only
  * compile-time constructs.
  *
+ * <p>Class symbols are used to back {@link JClassType}, {@link JArrayType},
+ * and {@link JPrimitiveType}. See {@link JTypeMirror#getSymbol()}.
+ *
  * @since 7.0.0
  */
 public interface JClassSymbol extends JTypeDeclSymbol,
                                       JTypeParameterOwnerSymbol,
                                       BoundToNode<ASTAnyTypeDeclaration> {
+
 
     /**
      * Returns the binary name of this type, as specified by the JLS:
@@ -55,9 +66,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * <p>Notice, that this returns null also if this class is local to
      * a class or instance initializer.
      */
-    @Nullable
-    JExecutableSymbol getEnclosingMethod();
-
+    @Nullable JExecutableSymbol getEnclosingMethod();
 
     @Override
     default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
@@ -79,6 +88,37 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     default JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
             if (klass.getSimpleName().equals(name)) {
+                return klass;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Returns a class symbol declared in this class, or one of its
+     * supertypes.
+     *
+     * TODO there may be ambiguity, eg a type declared in several interfaces.
+     *
+     * @param name Simple name of the class to look for
+     */
+    @Nullable
+    default JClassSymbol getMemberClass(String name) {
+        JClassSymbol klass = getDeclaredClass(name);
+        if (klass != null) {
+            return klass;
+        }
+        JClassSymbol superclass = getSuperclass();
+        if (superclass != null) {
+            klass = superclass.getMemberClass(name);
+        }
+        if (klass != null) {
+            return klass;
+        }
+        for (JClassSymbol itf : getSuperInterfaces()) {
+            klass = itf.getMemberClass(name);
+            if (klass != null) {
                 return klass;
             }
         }
@@ -136,6 +176,53 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
         return null;
     }
+
+
+    /**
+     * Checks if this symbol is a subtype of the other class.
+     * Meant to be a shortcut for subtyping checks if there is an efficient
+     * implementation available, eg {@link Class#isAssignableFrom(Class)}.
+     */
+    default OptionalBool fastIsSubtypeOf(JClassSymbol symbol) {
+        return OptionalBool.UNKNOWN;
+    }
+
+
+    default boolean isSubtypeOf(JClassSymbol symbol, Interfaces interfaceBehaviour) {
+        OptionalBool fast = fastIsSubtypeOf(symbol);
+        if (fast.isKnown()) {
+            return fast.isTrue();
+        } else if (symbol.equals(this)) {
+            return true;
+        }
+
+        JClassSymbol superclass = getSuperclass();
+        if (superclass != null) {
+            if (superclass.isSubtypeOf(symbol, interfaceBehaviour)) {
+                return true;
+            }
+        }
+
+        if (interfaceBehaviour == Interfaces.EXCLUDE) {
+            return false;
+        }
+
+        for (JClassSymbol itf : getSuperInterfaces()) {
+            if (itf.isSubtypeOf(symbol, Interfaces.INCLUDE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /** Returns the list of super interface types, under the given substitution. */
+    List<JClassType> getSuperInterfaceTypes(Substitution substitution);
+
+
+    /** Returns the superclass type, under the given substitution. */
+    @Nullable JClassType getSuperclassType(Substitution substitution);
+
 
     /**
      * Returns the superclass symbol if it exists. Returns null if this

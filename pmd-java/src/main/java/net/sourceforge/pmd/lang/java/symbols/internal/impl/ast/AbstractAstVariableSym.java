@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
+import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
+
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 
 /**
  * @author Clément Fournier
@@ -28,4 +33,19 @@ abstract class AbstractAstVariableSym
         return node.getVariableName();
     }
 
+    @Override
+    public JTypeMirror getTypeMirror(Substitution subst) {
+        ASTType typeNode = node.getTypeNode();
+        /*
+            Overridden on LocalVarSym.
+
+            This gives up on inferred types until a LazyTypeResolver has
+            been set for the compilation unit.
+
+            Thankfully, the type of local vars is never requested by
+            anything before that moment.
+         */
+        assert typeNode != null : "This implementation expects explicit types (" + this + ")";
+        return subst(node.getTypeMirror(), subst);
+    }
 }

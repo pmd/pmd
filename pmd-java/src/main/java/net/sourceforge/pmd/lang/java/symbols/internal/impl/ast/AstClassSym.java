@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +36,11 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 
@@ -191,44 +197,45 @@ final class AstClassSym
     }
 
     @Override
-    public @Nullable JClassSymbol getSuperclass() {
-        // notice this relies on the fact that the extends clause
-        // (or the type node of the constructor call, for an anonymous class),
-        // was disambiguated early
+    public @Nullable JClassType getSuperclassType(Substitution substitution) {
+        TypeSystem ts = getTypeSystem();
+        if (node instanceof ASTEnumDeclaration) {
+            JClassSymbol enumClass = ts.getClassSymbol(Enum.class);
+            return (JClassType) ts.parameterise(enumClass, listOf(ts.declaration(this)));
+        } else if (node instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
+            return superClass == null
+                   ? ts.OBJECT
+                   // this cast relies on the fact that the superclass is not a type variable
+                   : (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
 
-        if (isEnum()) {
-            return ReflectSymInternals.ENUM_SYM;
         } else if (isAnonymousClass()) {
 
             if (node.getParent() instanceof ASTEnumConstant) {
 
-                return node.getEnclosingType().getSymbol();
+                return node.getEnclosingType().getTypeMirror().subst(substitution);
 
             } else if (node.getParent() instanceof ASTConstructorCall) {
 
-                JTypeDeclSymbol sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getReferencedSym();
+                @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
 
-                return sym instanceof JClassSymbol && !sym.isInterface()
-                       ? (JClassSymbol) sym
-                       : ReflectSymInternals.OBJECT_SYM;
-
-            }
-
-        } else if (isRecord()) {
-            // TODO, maybe not on the classpath.
-            return ReflectSymInternals.OBJECT_SYM;
-        } else if (isClass()) {
-            ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
-            if (sup == null) {
-                return ReflectSymInternals.OBJECT_SYM;
-            } else if (sup.getReferencedSym() instanceof JClassSymbol) {
-                return (JClassSymbol) sup.getReferencedSym();
-            } else {
-                return null;
+                return sym instanceof JClassType && !sym.isInterface()
+                       ? (JClassType) sym
+                       : factory.types().OBJECT;
             }
         }
+
         // TODO records
         return null;
+    }
+
+    @Override
+    public @Nullable JClassSymbol getSuperclass() {
+        // notice this relies on the fact that the extends clause
+        // (or the type node of the constructor call, for an anonymous class),
+        // was disambiguated early
+        JClassType sup = getSuperclassType(Substitution.EMPTY);
+        return sup == null ? null : sup.getSymbol();
     }
 
     @Override
@@ -243,6 +250,11 @@ final class AstClassSym
                 return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
             }
         );
+    }
+
+    @Override
+    public List<JClassType> getSuperInterfaceTypes(Substitution subst) {
+        return CollectionUtil.map(node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
     }
 
     @Override

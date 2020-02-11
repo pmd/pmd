@@ -9,6 +9,7 @@ import static java.util.Collections.singletonList;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,7 +20,10 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -43,7 +47,8 @@ public final class ImplicitMemberSymbols {
             enumSym,
             "valueOf",
             Modifier.PUBLIC | Modifier.STATIC,
-            singletonList(t -> new FakeFormalParamSym(t, "name"))
+            TypeSystem::declaration,
+            singletonList(t -> new FakeFormalParamSym(t, "name", (ts, s) -> ts.declaration(ts.getClassSymbol(String.class))))
         );
     }
 
@@ -54,6 +59,7 @@ public final class ImplicitMemberSymbols {
             enumSym,
             "values",
             Modifier.PUBLIC | Modifier.STATIC,
+            TypeSystem::declaration,
             emptyList()
         );
     }
@@ -80,6 +86,7 @@ public final class ImplicitMemberSymbols {
             arraySym,
             "clone",
             Modifier.PUBLIC | Modifier.FINAL,
+            TypeSystem::declaration,
             emptyList()
         );
     }
@@ -90,7 +97,7 @@ public final class ImplicitMemberSymbols {
         return new FakeCtorSym(
             arraySym,
             Modifier.PUBLIC | Modifier.FINAL,
-            singletonList(c -> new FakeFormalParamSym(c, "arg0"))
+            singletonList(c -> new FakeFormalParamSym(c, "arg0", (ts, sym) -> ts.INT))
         );
     }
 
@@ -108,7 +115,7 @@ public final class ImplicitMemberSymbols {
             modifiers,
             CollectionUtil.map(
                 recordComponents,
-                f -> c -> new FakeFormalParamSym(c, f.getSimpleName())
+                f -> c -> new FakeFormalParamSym(c, f.getSimpleName(), (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))
             )
         );
     }
@@ -126,6 +133,7 @@ public final class ImplicitMemberSymbols {
             recordSym,
             recordComponent.getSimpleName(),
             Modifier.PUBLIC,
+            (ts, encl) -> recordComponent.getTypeMirror(Substitution.EMPTY),
             emptyList()
         );
     }
@@ -136,7 +144,8 @@ public final class ImplicitMemberSymbols {
         return new FakeFieldSym(
             arraySym,
             "length",
-            Modifier.PUBLIC | Modifier.FINAL
+            Modifier.PUBLIC | Modifier.FINAL,
+            (ts, s) -> ts.INT
         );
     }
 
@@ -155,6 +164,26 @@ public final class ImplicitMemberSymbols {
             this.name = name;
             this.modifiers = modifiers;
             this.formals = CollectionUtil.map(formals, f -> f.apply((T) this));
+        }
+
+        @Override
+        public TypeSystem getTypeSystem() {
+            return owner.getTypeSystem();
+        }
+
+        @Override
+        public List<JTypeMirror> getFormalParameterTypes(Substitution subst) {
+            return CollectionUtil.map(formals, p -> p.getTypeMirror(subst));
+        }
+
+        @Override
+        public List<JTypeMirror> getThrownExceptionTypes(Substitution subst) {
+            return emptyList();
+        }
+
+        @Override
+        public List<JTypeVar> getTypeParameters() {
+            return emptyList();
         }
 
         @Override
@@ -188,12 +217,6 @@ public final class ImplicitMemberSymbols {
         }
 
         @Override
-        public List<JTypeParameterSymbol> getTypeParameters() {
-            return emptyList();
-        }
-
-
-        @Override
         public String toString() {
             return SymbolToStrings.FAKE.toString(this);
         }
@@ -201,11 +224,25 @@ public final class ImplicitMemberSymbols {
 
     private static final class FakeMethodSym extends FakeExecutableSymBase<JMethodSymbol> implements JMethodSymbol {
 
+        private final BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> returnType;
+
         FakeMethodSym(JClassSymbol owner,
                       String name,
                       int modifiers,
+                      BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> returnType,
                       List<Function<JMethodSymbol, JFormalParamSymbol>> formals) {
             super(owner, name, modifiers, formals);
+            this.returnType = returnType;
+        }
+
+        @Override
+        public boolean isBridge() {
+            return false;
+        }
+
+        @Override
+        public JTypeMirror getReturnType(Substitution subst) {
+            return returnType.apply(getTypeSystem(), getEnclosingClass());
         }
 
         @Override
@@ -242,10 +279,22 @@ public final class ImplicitMemberSymbols {
 
         private final JExecutableSymbol owner;
         private final String name;
+        private final BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type;
 
-        private FakeFormalParamSym(JExecutableSymbol owner, String name) {
+        private FakeFormalParamSym(JExecutableSymbol owner, String name, BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type) {
             this.owner = owner;
             this.name = name;
+            this.type = type;
+        }
+
+        @Override
+        public TypeSystem getTypeSystem() {
+            return owner.getTypeSystem();
+        }
+
+        @Override
+        public JTypeMirror getTypeMirror(Substitution subst) {
+            return type.apply(getTypeSystem(), this).subst(subst);
         }
 
         @Override
@@ -285,11 +334,23 @@ public final class ImplicitMemberSymbols {
         private final JClassSymbol owner;
         private final String name;
         private final int modifiers;
+        private final BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> type;
 
-        FakeFieldSym(JClassSymbol owner, String name, int modifiers) {
+        FakeFieldSym(JClassSymbol owner, String name, int modifiers, BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> type) {
             this.owner = owner;
             this.name = name;
             this.modifiers = modifiers;
+            this.type = type;
+        }
+
+        @Override
+        public TypeSystem getTypeSystem() {
+            return owner.getTypeSystem();
+        }
+
+        @Override
+        public JTypeMirror getTypeMirror(Substitution subst) {
+            return type.apply(getTypeSystem(), owner).subst(subst);
         }
 
         @Override

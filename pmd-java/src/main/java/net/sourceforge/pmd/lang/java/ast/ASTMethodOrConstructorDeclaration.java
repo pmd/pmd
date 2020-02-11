@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 
 /**
@@ -38,6 +39,9 @@ public interface ASTMethodOrConstructorDeclaration
 
     @Override
     JExecutableSymbol getSymbol();
+
+
+    JMethodSig getSig();
 
 
     /**

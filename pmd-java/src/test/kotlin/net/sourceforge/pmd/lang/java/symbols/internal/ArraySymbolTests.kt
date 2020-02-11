@@ -8,13 +8,16 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol.PRIMITIVE_PACKAGE
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.*
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
 class ArraySymbolTests : AbstractWordSpec({
+
+    val INT_SYM = testTypeSystem.getClassSymbol(java.lang.Integer.TYPE)
+    val STRING_SYM = testTypeSystem.getClassSymbol(java.lang.String::class.java)
 
     "An array symbol" should {
 
@@ -29,7 +32,7 @@ class ArraySymbolTests : AbstractWordSpec({
             }
 
 
-            val javanodeArr = testSymFactory.makeArraySymbol(testSymFactory.getClassSymbol(JavaNode::class.java))
+            val javanodeArr = testSymFactory.makeArraySymbol(testTypeSystem.getClassSymbol(JavaNode::class.java))
 
 
             javanodeArr.getDeclaredField("length").shouldBeA<JFieldSymbol> {
@@ -50,7 +53,7 @@ class ArraySymbolTests : AbstractWordSpec({
             }
 
 
-            val javanodeArr = testSymFactory.makeArraySymbol(testSymFactory.getClassSymbol(JavaNode::class.java))
+            val javanodeArr = testSymFactory.makeArraySymbol(testTypeSystem.getClassSymbol(JavaNode::class.java))
 
             javanodeArr.getDeclaredMethods("clone").single().also {
                 it::getSimpleName shouldBe "clone"
@@ -70,7 +73,7 @@ class ArraySymbolTests : AbstractWordSpec({
             }
 
 
-            val javanodeArr = testSymFactory.makeArraySymbol(testSymFactory.getClassSymbol(JavaNode::class.java))
+            val javanodeArr = testSymFactory.makeArraySymbol(testTypeSystem.getClassSymbol(JavaNode::class.java))
 
             javanodeArr.constructors.single().also {
                 it::getSimpleName shouldBe JConstructorSymbol.CTOR_NAME

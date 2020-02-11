@@ -8,26 +8,21 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.*
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.internal.HeaderScopesTest
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 import java.io.File
 import java.io.IOException
 import java.util.*
-import java.util.stream.Stream
 
 /** Testing utilities */
 
 
-fun <T> Stream<T>.firstOrNull(): T? = findFirst().orElse(null)
-
-val testSymFactory = ReflectionSymFactory()
-val testAstSymFactory = AstSymFactory()
+val testSymFactory: SymbolFactory = testTypeSystem.symbols()
 val testSymResolver = ClasspathSymbolResolver(HeaderScopesTest::class.java.classLoader, testSymFactory)
 
-fun classSym(klass: Class<*>?) = testSymFactory.getClassSymbol(klass)
+fun classSym(klass: Class<*>?) = testTypeSystem.getClassSymbol(klass)
 
 fun <T, K> List<T>.groupByUnique(keySelector: (T) -> K): Map<K, T> =
         groupBy(keySelector).mapValues { (_, vs) ->
@@ -104,22 +99,6 @@ object TestClassesGen : Gen<Class<*>> {
     }
 }
 
-/** Generator of test instances. */
-object PrimitiveSymGen : Gen<JClassSymbol> {
-    override fun constants() = listOf(
-            INT_SYM,
-            DOUBLE_SYM,
-            FLOAT_SYM,
-            VOID_SYM,
-            CHAR_SYM,
-            BYTE_SYM,
-            SHORT_SYM,
-            LONG_SYM,
-            BOOLEAN_SYM
-    )
-
-    override fun random() = emptySequence<JClassSymbol>()
-}
 
 
 fun JClassSymbol.getDeclaredMethods(name: String) =

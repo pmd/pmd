@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 
 /**
@@ -21,9 +24,40 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 public final class ASTLambdaExpression extends AbstractJavaExpr {
 
+    private JMethodSig functionalMethod;
 
     ASTLambdaExpression(int id) {
         super(id);
+    }
+
+    /**
+     * Returns the type of the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}.
+     *
+     * @see #getFunctionalMethod()
+     */
+    @Override
+    public @NonNull JTypeMirror getTypeMirror() {
+        return super.getTypeMirror();
+    }
+
+    /**
+     * Returns the method that is overridden in the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * {@code java.util.function.Function#apply(java.lang.String) ->
+     * java.lang.Boolean}
+     *
+     * @see #getTypeMirror()
+     */
+    public JMethodSig getFunctionalMethod() {
+        // force evaluation
+        getTypeMirror();
+        return functionalMethod;
+    }
+
+    void setFunctionalMethod(JMethodSig functionalMethod) {
+        this.functionalMethod = functionalMethod;
     }
 
     public ASTLambdaParameterList getParameters() {

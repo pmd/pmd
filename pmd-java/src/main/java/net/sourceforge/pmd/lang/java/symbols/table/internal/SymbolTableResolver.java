@@ -164,7 +164,7 @@ public final class SymbolTableResolver {
             // the following is just for the body
             // helper.pushCtxType(node.getSymbol());
 
-            pushed += pushOnStack(f.typeBody(top(), node.getSymbol()));
+            pushed += pushOnStack(f.typeBody(top(), node.getTypeMirror()));
 
             setTopSymbolTable(node.getBody());
 
@@ -178,9 +178,8 @@ public final class SymbolTableResolver {
             f.disambig(node.getDeclarations()
                            .filterIs(ASTFieldDeclaration.class)
                            .map(ASTFieldDeclaration::getTypeNode),
-                       node,
+node,
                        false);
-
             visitChildren(node.getBody(), null);
 
             // helper.popCtxType();
@@ -201,7 +200,7 @@ public final class SymbolTableResolver {
                        false);
 
             // helper.pushCtxType(node.getSymbol());
-            int pushed = pushOnStack(f.typeBody(top(), node.getSymbol())); // methods & fields & inherited classes
+            int pushed = pushOnStack(f.typeBody(top(), node.getTypeMirror())); // methods & fields & inherited classes
 
             setTopSymbolTableAndRecurse(node.getBody());
 

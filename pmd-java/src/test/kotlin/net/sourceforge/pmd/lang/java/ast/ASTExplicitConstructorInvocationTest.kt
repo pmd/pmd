@@ -26,7 +26,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                             it::isQualified shouldBe false
                             it::getQualifier shouldBe null
 
-                            it::getArgumentsList shouldBe argList {}
+                            it::getArguments shouldBe argList {}
                         }
                     }
                 }
@@ -51,7 +51,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                                 classType("String")
                             }
 
-                            it::getArgumentsList shouldBe argList {}
+                            it::getArguments shouldBe argList {}
                         }
                     }
                 }
@@ -77,7 +77,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                             it::getQualifier shouldBe null
                             it::getExplicitTypeArguments shouldBe null
 
-                            it::getArgumentsList shouldBe argList {}
+                            it::getArguments shouldBe argList {}
 
                         }
                     }
@@ -101,7 +101,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                                 classType("String")
                             }
 
-                            it::getArgumentsList shouldBe argList {}
+                            it::getArguments shouldBe argList {}
                         }
                     }
                 }
@@ -130,7 +130,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                             it::getExplicitTypeArguments shouldBe null
                             it::getQualifier shouldBe variableAccess("o")
 
-                            it::getArgumentsList shouldBe argList {}
+                            it::getArguments shouldBe argList {}
                         }
                     }
                 }
@@ -156,7 +156,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                                 classType("String")
                             }
 
-                            it::getArgumentsList shouldBe argList { }
+                            it::getArguments shouldBe argList { }
                         }
                     }
                 }
@@ -182,7 +182,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                                 classType("String")
                             }
 
-                            it::getArgumentsList shouldBe argList { }
+                            it::getArguments shouldBe argList { }
                         }
                     }
                 }
@@ -207,7 +207,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                             it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
 
 
-                            it::getArgumentsList shouldBe argList { }
+                            it::getArguments shouldBe argList { }
                         }
                     }
                 }
@@ -246,7 +246,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                             it::getExplicitTypeArguments shouldBe null
                             it::getQualifier shouldBe null
 
-                            it::getArgumentsList shouldBe argList {
+                            it::getArguments shouldBe argList {
                                 child<ASTMethodCall> {
                                     child<ASTThisExpression> {
                                         classType("AbstractListenerWebSocketSession")

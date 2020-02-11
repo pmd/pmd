@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
 
 /**
  * Describes a kind of node that can be found commonly in the same contexts.
@@ -28,8 +29,8 @@ abstract class NodeParsingCtx<T : Node>(val constructName: String) {
      *
      * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
      */
-    fun parseNode(construct: String, ctx: ParserTestCtx): T {
-        val root = ctx.parser.parse(getTemplate(construct, ctx))
+    fun parseNode(construct: String, ctx: ParserTestCtx, parser: JavaParsingHelper = ctx.parser): T {
+        val root = parser.parse(getTemplate(construct, ctx))
 
         return retrieveNode(root)
     }

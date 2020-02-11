@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * @author Clément Fournier
@@ -23,6 +24,12 @@ abstract class AbstractAstBackedSymbol<T extends SymbolDeclaratorNode> implement
         this.factory = factory;
         InternalApiBridge.setSymbol(node, this);
     }
+
+    @Override
+    public TypeSystem getTypeSystem() {
+        return node.getTypeSystem();
+    }
+
 
     @Override
     public String toString() {

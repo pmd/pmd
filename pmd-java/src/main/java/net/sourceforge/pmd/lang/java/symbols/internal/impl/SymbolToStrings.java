@@ -19,6 +19,7 @@ public class SymbolToStrings {
 
     public static final SymbolToStrings SHARED = new SymbolToStrings("");
     public static final SymbolToStrings FAKE = new SymbolToStrings("fake");
+    public static final SymbolToStrings ASM = new SymbolToStrings("asm");
     public static final SymbolToStrings REFLECT = new SymbolToStrings("reflect");
     public static final SymbolToStrings AST = new SymbolToStrings("ast");
 
@@ -65,6 +66,8 @@ public class SymbolToStrings {
                 kind = "enum";
             } else if (sym.isAnnotation()) {
                 kind = "annot";
+            } else if (sym.isRecord()) {
+                kind = "record";
             } else {
                 kind = "class";
             }

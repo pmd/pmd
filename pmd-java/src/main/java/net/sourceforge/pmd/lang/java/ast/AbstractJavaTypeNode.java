@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.internal.ast.LazyTypeResolver;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -17,6 +20,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
     private JavaTypeDefinition typeDefinition;
+    protected JTypeMirror typeMirror;
 
     AbstractJavaTypeNode(int i) {
         super(i);
@@ -28,7 +32,32 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
         return typeDefinition;
     }
 
+    @Override
+    @NonNull
+    public JTypeMirror getTypeMirror() {
+        if (typeMirror == null) {
+
+            LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
+            assert resolver != null : "Null type resolver!";
+
+            JTypeMirror result = (JTypeMirror) this.jjtAccept(resolver, null);
+
+            this.typeMirror = result != null ? result : resolver.getTypeSystem().UNRESOLVED_TYPE;
+        }
+        return typeMirror;
+    }
+
+    JTypeMirror getTypeMirrorInternal() {
+        return typeMirror;
+    }
+
+    void setTypeMirror(JTypeMirror mirror) {
+        typeMirror = mirror;
+    }
+
     void setTypeDefinition(@Nullable JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;
     }
+
+
 }

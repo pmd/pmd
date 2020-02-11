@@ -10,10 +10,21 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
-public final class AstSymFactory {
+final class AstSymFactory {
 
+
+    private final TypeSystem ts;
+
+    public AstSymFactory(TypeSystem ts) {
+        this.ts = ts;
+    }
+
+    public TypeSystem types() {
+        return ts;
+    }
 
     // keep in mind, creating a symbol sets it on the node (see constructor of AbstractAstBackedSymbol)
 
@@ -40,5 +51,8 @@ public final class AstSymFactory {
         }
         return new AstClassSym(klass, this, enclosing);
     }
+
+
+
 
 }

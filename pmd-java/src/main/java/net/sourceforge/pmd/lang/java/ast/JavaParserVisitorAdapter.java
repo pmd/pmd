@@ -44,6 +44,10 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
         return visit((ASTReferenceType) node, data);
     }
 
+    @Override
+    public Object visit(ASTUnionType node, Object data) {
+        return visit((ASTReferenceType) node, data);
+    }
 
     @Override
     public Object visit(ASTIntersectionType node, Object data) {
@@ -464,5 +468,11 @@ public class JavaParserVisitorAdapter extends JavaVisitorBase<Object, Object> im
     public Object visit(ASTStatementExpression node, Object data) {
         return null;
     }
+
+    @Deprecated
+    public Object visit(ASTResources node, Object data) {
+        return null;
+    }
+
 
 }

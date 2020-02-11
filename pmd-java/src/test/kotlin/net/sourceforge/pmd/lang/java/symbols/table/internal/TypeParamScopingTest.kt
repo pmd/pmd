@@ -106,7 +106,7 @@ class TypeParamScopingTest : ParserTestSpec({
             }
         }
 
-        doTest("Bounded by itself") {
+        doTest("f:Bounded by itself") {
 
             val acu = parser.withProcessing().parse("""
 
@@ -222,7 +222,7 @@ class TypeParamScopingTest : ParserTestSpec({
                 acu.descendants(ASTFormalParameter::class.java).toList()
 
         doTest("Inside Foo: T is Foo#T") {
-            insideFoo.symbolTable.shouldResolveTypeTo("T", tparam)
+            insideFoo.symbolTable.shouldResolveTypeTo("T", tparam.symbol!!)
         }
 
         doTest("Inside Foo.T: T is Foo.T") {

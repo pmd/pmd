@@ -9,6 +9,9 @@ import java.lang.reflect.Parameter;
 
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 
 final class ReflectedMethodParamImpl extends AbstractReflectedSymbol implements JFormalParamSymbol {
 
@@ -17,9 +20,14 @@ final class ReflectedMethodParamImpl extends AbstractReflectedSymbol implements 
 
     /** Constructor for a reflected method or constructor parameter. */
     ReflectedMethodParamImpl(AbstractReflectedExecutableSymbol<?> owner, Parameter reflected) {
-        super(owner.symFactory);
+        super(owner.factory);
         this.owner = owner;
         this.reflected = reflected;
+    }
+
+    @Override
+    public JTypeMirror getTypeMirror(Substitution subst) {
+        return TypesFromReflection.fromReflect(getTypeSystem(), reflected.getParameterizedType(), owner.getLexicalScope(), subst);
     }
 
     @Override

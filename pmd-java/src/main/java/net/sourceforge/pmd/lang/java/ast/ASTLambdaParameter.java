@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
-
 
 /**
  * Formal parameter of a lambda expression. Child of {@link ASTLambdaParameterList}.
@@ -58,11 +56,5 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }
-
-    @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return getVarId().getTypeDefinition();
-    }
-
 
 }

@@ -128,7 +128,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         if (methodName.startsWith("is")) {
             ASTResultType ret = ((ASTMethodDeclaration) meth.getParent()).getResultType();
             List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
-            if (!primitives.isEmpty() && primitives.get(0).isBoolean()) {
+            if (!primitives.isEmpty() && primitives.get(0).getTypeMirror() == meth.getTypeSystem().BOOLEAN) {
                 return true;
             }
         }

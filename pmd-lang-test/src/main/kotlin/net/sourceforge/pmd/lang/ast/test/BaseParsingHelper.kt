@@ -195,7 +195,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         if (clazz.name.contains("$")) {
             sourceFile = sourceFile.substring(0, clazz.name.indexOf('$')) + ".java"
         }
-        val input = javaClass.classLoader.getResourceAsStream(sourceFile)
+        val input = (params.resourceLoader ?: javaClass).classLoader.getResourceAsStream(sourceFile)
                 ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
         return consume(input)

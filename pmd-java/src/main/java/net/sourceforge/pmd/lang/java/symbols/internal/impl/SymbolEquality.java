@@ -48,7 +48,6 @@ public final class SymbolEquality {
             }
             JTypeParameterSymbol m2 = (JTypeParameterSymbol) o;
 
-            // FIXME arity check is not enough for overloads
             return m1.getSimpleName().equals(m2.getSimpleName())
                 && m1.getDeclaringSymbol().equals(m2.getDeclaringSymbol());
         }
