@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
@@ -83,6 +84,12 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     @Override
     public ASTCompilationUnit getRoot() {
         return this;
+    }
+
+    @Override
+    public @NonNull JSymbolTable getSymbolTable() {
+        assert symbolTable != null : "Symbol table wasn't set";
+        return symbolTable;
     }
 
     @InternalApi

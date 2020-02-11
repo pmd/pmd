@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
+import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.qname.SymbolResolutionPass
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymbolResolver
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.testProcessor
 /**
  * @author Clément Fournier
  */
-class AstSymbolResolverTest : ParserTestSpec({
+class AstSymbolResolverTest : ProcessorTestSpec({
 
     parserTest("Simple test") {
         enableProcessing(false)

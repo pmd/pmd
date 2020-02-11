@@ -16,6 +16,7 @@ import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
+import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
  * @author Clément Fournier
  * @since 7.0.0
  */
-class HeaderScopesTest : ParserTestSpec({
+class HeaderScopesTest : ProcessorTestSpec({
 
     val typesInTheSamePackage = "types in the same package"
     val javalangTypes = "types from java.lang"

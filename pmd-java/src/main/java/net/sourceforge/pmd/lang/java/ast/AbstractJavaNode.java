@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
 
     private Scope scope;
-    private JSymbolTable symbolTable;
+    protected JSymbolTable symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
 

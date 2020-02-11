@@ -164,7 +164,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          var packageName: String = "",
                          var genClassHeader: String = "class Foo") {
 
-    var parser: JavaParsingHelper = javaVersion.parser
+    var parser: JavaParsingHelper = javaVersion.parser.withProcessing(false)
         private set
 
     fun enableProcessing(logToConsole: Boolean = false): TestCheckLogger {
