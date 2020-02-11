@@ -28,14 +28,14 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
  * <p>Currently disambiguation of package vs type name is fully implemented,
  * with the following limitations:
  * - field accesses are not checked to be legal (and their symbol is not
- *   resolved). 
- * - inherited memebers are not considered. Same thing happens in the current
- *   symbol table. See bottom of file for test cases
+ * resolved).
+ * - inherited members are not considered. Same thing happens in the current
+ * symbol table. See bottom of file for test cases
  *
  * This is because we don't have full access to types yet. This is the next
  * step.
  *
- * TODO we can set the types directly on the disambiguated nodes when the above is fixed 
+ * TODO we can set the types directly on the disambiguated nodes when the above is fixed
  */
 public final class AstDisambiguationPass {
 
@@ -48,7 +48,7 @@ public final class AstDisambiguationPass {
     }
 
 
-    private static final class MyVisitor implements SideEffectingVisitor<JavaAstProcessor> {
+    private static final class MyVisitor extends SideEffectingVisitorAdapter<JavaAstProcessor> {
 
         public static final MyVisitor INSTANCE = new MyVisitor();
 
@@ -87,6 +87,8 @@ public final class AstDisambiguationPass {
                     JClassSymbol parentClass = ((JClassSymbol) sym).getDeclaredClass(parent.getSimpleName());
                     if (parentClass == null) {
                         processor.getLogger().warning(parent, CANNOT_RESOLVE_MEMBER, parent.getSimpleName(), ((JClassSymbol) sym).getCanonicalName(), "an unresolved type");
+                    } else {
+                        parent.setSymbol(parentClass);
                     }
                 }
 
@@ -96,6 +98,45 @@ public final class AstDisambiguationPass {
                 ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
             }
         }
+// TODO
+//        @Override
+//        public void visit(ASTClassOrInterfaceType node, JavaAstProcessor data) {
+//            super.visit(node, data); // visit leaves
+//            if (node.getReferencedSym() != null) { // already done
+//                return;
+//            }
+//
+//            ASTAmbiguousName ambigLhs = node.getAmbiguousLhs();
+//            ASTClassOrInterfaceType typeLhs = node.getLhsType();
+//            if (typeLhs == null && ambigLhs == null) {
+//                // the ambig lhs may have been absorbed by this node
+//
+//                if (node.getImage().contains(".")) {
+//                    // FQCN, unresolved (would have been resolved by the disambiguation)
+//                    node.setSymbol(data.getReflectSymFactory().makeUnresolvedReference(node.getImage()));
+//                    return;
+//                }
+//
+//                // unqualified
+//                ResolveResult<JTypeDeclSymbol> tdecl = node.getSymbolTable().resolveTypeName(node.getSimpleName());
+//                if (tdecl != null) {
+//                    node.setSymbol(tdecl.getResult());
+//                } else {
+//                    node.setSymbol(data.getReflectSymFactory().makeUnresolvedReference(node.getImage()));
+//                }
+//            } else if (typeLhs != null) {
+//                // TODO
+//                JTypeDeclSymbol lhsSym = typeLhs.getReferencedSym();
+//                assert lhsSym != null;
+//                if (lhsSym instanceof JClassSymbol) {
+//
+//                } else {
+//
+//                }
+//
+//            }
+//
+//        }
 
         /**
          * Resolve an ambiguous name occurring in an expression context.
@@ -322,6 +363,8 @@ public final class AstDisambiguationPass {
             JClassSymbol parentClass = processor.getSymResolver().resolveClassFromCanonicalName(full);
             if (parentClass == null) {
                 processor.getLogger().warning(parent, CANNOT_RESOLVE_AMBIGUOUS_NAME, full, "package name");
+            } else {
+                parent.setSymbol(parentClass);
             }
             ambig.deleteInParentPrependImage('.');
         }
