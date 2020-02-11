@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -173,7 +174,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        if (!ignoreAnnotations && node.isAnnotationPresent(Override.class)) {
+        if (!ignoreAnnotations && node.getDeclaredAnnotations().any(it -> !TypeHelper.isExactlyA(it, Override.class.getName()))) {
             return super.visit(node, data);
         }
 
