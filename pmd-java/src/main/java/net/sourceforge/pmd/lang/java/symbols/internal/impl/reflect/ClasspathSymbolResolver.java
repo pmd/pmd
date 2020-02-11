@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -25,21 +26,30 @@ public class ClasspathSymbolResolver implements SymbolResolver {
 
 
     @Override
-    public JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
+    public @Nullable JClassSymbol resolveClassFromBinaryName(@NonNull String canonicalName) {
         try {
             return factory.getClassSymbol(classLoader.loadClass(canonicalName));
         } catch (ClassNotFoundException e) {
-            int lastDotIdx = canonicalName.lastIndexOf('.');
-            if (lastDotIdx < 0) {
-                return null;
-            } else {
-                JClassSymbol outer = resolveClassFromCanonicalName(canonicalName.substring(0, lastDotIdx));
-                if (outer != null) {
-                    String innerName = canonicalName.substring(lastDotIdx + 1);
-                    for (JClassSymbol inner : outer.getDeclaredClasses()) {
-                        if (inner.getSimpleName().equals(innerName)) {
-                            return inner;
-                        }
+            return null;
+        }
+    }
+
+    @Override
+    public JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
+        JClassSymbol symbol = resolveClassFromBinaryName(canonicalName);
+        if (symbol != null) {
+            return symbol;
+        }
+        int lastDotIdx = canonicalName.lastIndexOf('.');
+        if (lastDotIdx < 0) {
+            return null;
+        } else {
+            JClassSymbol outer = resolveClassFromCanonicalName(canonicalName.substring(0, lastDotIdx));
+            if (outer != null) {
+                String innerName = canonicalName.substring(lastDotIdx + 1);
+                for (JClassSymbol inner : outer.getDeclaredClasses()) {
+                    if (inner.getSimpleName().equals(innerName)) {
+                        return inner;
                     }
                 }
             }

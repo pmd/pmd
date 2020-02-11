@@ -14,8 +14,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface SymbolResolver {
 
     /**
+     * Resolves a class symbol from its canonical name. Periods ('.') will
+     * not be interpreted as nested-class separators, so this performs at
+     * most one classloader lookup.
+     */
+    @Nullable
+    JClassSymbol resolveClassFromBinaryName(@NonNull String canonicalName);
+
+    /**
      * Resolves a class symbol from its canonical name. Periods ('.') may
-     * be interpreted as nested-class separators.
+     * be interpreted as nested-class separators, so for n segments, this
+     * performs at most n classloader lookups.
      */
     @Nullable
     JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName);

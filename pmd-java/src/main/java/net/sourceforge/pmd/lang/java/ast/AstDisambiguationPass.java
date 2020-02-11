@@ -273,7 +273,34 @@ public final class AstDisambiguationPass {
 
             String canonical = packageImage + '.' + nextIdent.getImage();
 
-            JClassSymbol nextClass = processor.getSymResolver().resolveClassFromCanonicalName(canonical);
+            JClassSymbol nextClass = processor.getSymResolver().resolveClassFromBinaryName(canonical);
+
+            // Don't interpret periods as nested class separators (this will be handled by resolveType).
+            // This makes the lookup of a qualified name linear instead of quadratic. Eg. for
+            // 'net.sourceforge.pmd.lang.java.ast.Outer' (7 segments), interpreting the separators
+            // would perform 56 classloader hits instead of 7. It would go like
+            //    net
+            //    net.sourceforge
+            //    net$sourceforge
+            //    net.sourceforge.pmd
+            //    net.sourceforge$pmd
+            //    net$sourceforge$pmd
+            //    ...
+            //    net$sourceforge$pmd$lang$java$ast
+            //    net.sourceforge.pmd.lang.java.ast.Outer
+            //
+            //  but there are duplicates here (eg 'net$sourceforge' can never succeed if 'net' is not a class)
+
+            // These disambiguation routines perform the following:
+            // net
+            // net.sourceforge
+            // net.sourceforge.pmd
+            // ...
+            // net.sourceforge.pmd.lang.java.ast.Outer
+
+            // Then if there are any more segments, they don't use the
+            // classloader directly, because resolveType uses getMemberClass
+
 
             if (nextClass != null) {
                 return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, isPackageOrTypeOnly, processor);
