@@ -25,11 +25,17 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 /**
  * This implements name disambiguation following the JLS: https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2
  *
- * <p>Currently disambiguation of package vs type name is implemented.
+ * <p>Currently disambiguation of package vs type name is fully implemented,
+ * with the following limitations:
+ * - field accesses are not checked to be legal (and their symbol is not
+ *   resolved). 
+ * - inherited memebers are not considered. Same thing happens in the current
+ *   symbol table. See bottom of file for test cases
  *
- * TODO ambiguous names in expressions - needs type res
- * TODO inherited member types (see bottom of file) - needs type res
- * TODO when symbol tables are updated to use type res, we can set the references directly on the names
+ * This is because we don't have full access to types yet. This is the next
+ * step.
+ *
+ * TODO we can set the types directly on the disambiguated nodes when the above is fixed 
  */
 public final class AstDisambiguationPass {
 

@@ -26,38 +26,12 @@ public class ClasspathSymbolResolver implements SymbolResolver {
 
 
     @Override
-    public @Nullable JClassSymbol resolveClassFromBinaryName(@NonNull String canonicalName) {
+    public @Nullable JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName) {
         try {
-            return factory.getClassSymbol(classLoader.loadClass(canonicalName));
+            return factory.getClassSymbol(classLoader.loadClass(binaryName));
         } catch (ClassNotFoundException e) {
             return null;
         }
     }
 
-    @Override
-    public JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
-        JClassSymbol symbol = resolveClassFromBinaryName(canonicalName);
-        if (symbol != null) {
-            return symbol;
-        }
-        int lastDotIdx = canonicalName.lastIndexOf('.');
-        if (lastDotIdx < 0) {
-            return null;
-        } else {
-            JClassSymbol outer = resolveClassFromCanonicalName(canonicalName.substring(0, lastDotIdx));
-            if (outer != null) {
-                String innerName = canonicalName.substring(lastDotIdx + 1);
-                return outer.getDeclaredClass(innerName);
-            }
-        }
-
-        return null;
-    }
-
-    @NonNull
-    @Override
-    public JClassSymbol resolveClassOrDefault(@NonNull String canonicalName) {
-        JClassSymbol symbol = resolveClassFromCanonicalName(canonicalName);
-        return symbol != null ? symbol : factory.makeUnresolvedReference(canonicalName);
-    }
 }

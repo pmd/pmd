@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 
 
 /**
@@ -21,6 +22,7 @@ final class SymbolTableHelper {
     private final String thisPackage;
     private final SymbolResolver symbolResolver;
     private final SemanticChecksLogger logger;
+    private final SymbolFactory<?> unresolvedFactory;
 
 
     SymbolTableHelper(String thisPackage, JavaAstProcessor processor) {
@@ -28,6 +30,7 @@ final class SymbolTableHelper {
         this.thisPackage = thisPackage;
         this.symbolResolver = processor.getSymResolver();
         this.logger = processor.getLogger();
+        unresolvedFactory = processor.getAstSymFactory();
 
         assert symbolResolver != null;
         assert thisPackage != null;
@@ -40,9 +43,10 @@ final class SymbolTableHelper {
     }
 
 
-    /** @see SymbolResolver#resolveClassOrDefault(String) */
     public JClassSymbol findSymbolCannotFail(String name) {
-        return symbolResolver.resolveClassOrDefault(name);
+        JClassSymbol found = symbolResolver.resolveClassFromCanonicalName(name);
+        return found == null ? unresolvedFactory.makeUnresolvedReference(name)
+                             : found;
     }
 
     /** @see SymbolResolver#resolveClassFromCanonicalName(String) */

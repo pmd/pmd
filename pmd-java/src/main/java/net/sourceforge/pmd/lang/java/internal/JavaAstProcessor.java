@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
@@ -31,12 +32,11 @@ public final class JavaAstProcessor {
 
     private static final Logger DEFAULT_LOG = Logger.getLogger(JavaAstProcessor.class.getName());
 
-    final SymbolResolver symResolver;
-    final SemanticChecksLogger logger;
-    final LanguageVersion languageVersion;
-
-    final AstSymFactory astSymFactory;
-    final ReflectionSymFactory reflectSymFactory;
+    private final SemanticChecksLogger logger;
+    private final LanguageVersion languageVersion;
+    private final AstSymFactory astSymFactory;
+    private final ReflectionSymFactory reflectSymFactory;
+    private SymbolResolver symResolver;
 
 
     private JavaAstProcessor(ReflectionSymFactory reflectionSymFactory,
@@ -81,13 +81,15 @@ public final class JavaAstProcessor {
               - now AST symbols are only partially initialized, their type-related methods will fail
             - symbol table resolution
               - AST symbols are now functional
-            - TODO AST disambiguation here
-            - type resolution initialization
+            - AST disambiguation here
+            - TODO type resolution initialization
          */
 
-
-        // Qualified name resolver now resolves also symbols for type declarations
         bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
+
+        // Now symbols are on the relevant nodes
+        this.symResolver = SymbolResolver.layer(new AstSymbolResolver(acu), this.symResolver);
+
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("AST disambiguation", () -> AstDisambiguationPass.traverse(this, acu));
 
