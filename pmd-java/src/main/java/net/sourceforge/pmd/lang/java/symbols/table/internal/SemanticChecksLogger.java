@@ -13,6 +13,13 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  */
 public interface SemanticChecksLogger {
 
+    // TODO how strict do we need to be here?
+    //   many rules don't absolutely need correctness to work
+    //   maybe we need to identify separate "levels" of the tree
+    //   eg level 0: lexable (CPD)
+    //      level 2: parsable (many syntax-only rules, eg UnnecessaryParentheses)
+    //      level 3: type-resolved (more complicated rules)
+
     /**
      * Warning, classpath is misconfigured (or not configured).
      */
