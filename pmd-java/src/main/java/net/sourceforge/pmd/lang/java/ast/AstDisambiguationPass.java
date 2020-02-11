@@ -209,7 +209,7 @@ public final class AstDisambiguationPass {
                 if (field != null) {
                     // todo check field is static
                     ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-                    return resolveExpr(typeExpr, identifier, remaining, processor);
+                    return resolveExpr(typeExpr, nextIdent, remaining, processor);
                 }
             }
 

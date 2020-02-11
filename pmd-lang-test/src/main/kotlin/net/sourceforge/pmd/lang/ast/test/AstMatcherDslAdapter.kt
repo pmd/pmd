@@ -10,6 +10,7 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import net.sourceforge.pmd.lang.ast.Node
+import io.kotlintest.should as ktShould
 
 /** An adapter for [baseShouldMatchSubtree]. */
 object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
@@ -65,3 +66,22 @@ inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = fa
  */
 inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: ValuedNodeSpec<N, *>)
         : Assertions<Node?> = { it.shouldMatchNode(ignoreChildren, nodeSpec) }
+
+/**
+ * The spec applies to the parent, shifted so that [this] node
+ * is the first node to be queried. This allows using sweeter
+ * DSL constructs like in the Java module.
+ */
+fun Node.shouldMatchN(matcher: ValuedNodeSpec<Node, Any>) {
+    val idx = indexInParent
+    parent ktShould matchNode<Node> {
+        if (idx > 0) {
+            unspecifiedChildren(idx)
+        }
+        matcher()
+        val left = it.numChildren - 1 - idx
+        if (left > 0) {
+            unspecifiedChildren(left)
+        }
+    }
+}

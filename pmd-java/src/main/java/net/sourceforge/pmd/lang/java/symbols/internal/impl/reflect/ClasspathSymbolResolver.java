@@ -47,11 +47,7 @@ public class ClasspathSymbolResolver implements SymbolResolver {
             JClassSymbol outer = resolveClassFromCanonicalName(canonicalName.substring(0, lastDotIdx));
             if (outer != null) {
                 String innerName = canonicalName.substring(lastDotIdx + 1);
-                for (JClassSymbol inner : outer.getDeclaredClasses()) {
-                    if (inner.getSimpleName().equals(innerName)) {
-                        return inner;
-                    }
-                }
+                return outer.getDeclaredClass(innerName);
             }
         }
 
