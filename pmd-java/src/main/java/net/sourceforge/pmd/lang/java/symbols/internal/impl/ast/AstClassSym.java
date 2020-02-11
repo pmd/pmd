@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -78,17 +78,19 @@ final class AstClassSym
                 for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
-            } else if (dnode instanceof ASTEnumConstant) {
-                myFields.add(new AstFieldSym(((ASTEnumConstant) dnode).getVarId(), factory, this));
             }
         }
 
-        if (myCtors.isEmpty()) {
+        if (node instanceof ASTEnumDeclaration) {
+            node.getEnumConstants().forEach(constant-> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+        }
+
+        if (myCtors.isEmpty() && isClass()) {
             myCtors.add(ImplicitMemberSymbols.defaultCtor(this));
         }
 
         if (this.isEnum()) {
-            myMethods.add(ImplicitMemberSymbols.enumOrdinal(this));
+            myMethods.add(ImplicitMemberSymbols.enumValues(this));
             myMethods.add(ImplicitMemberSymbols.enumValueOf(this));
         }
 

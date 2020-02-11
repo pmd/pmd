@@ -75,3 +75,6 @@ inline fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
 fun Stream<*>.shouldHaveSize(i: Int) {
     toList() should haveSize(i)
 }
+
+operator fun <T> List<T>.component6() = get(5)
+operator fun <T> List<T>.component7() = get(6)

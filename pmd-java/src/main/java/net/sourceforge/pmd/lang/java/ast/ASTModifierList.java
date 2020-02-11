@@ -229,6 +229,13 @@ public final class ASTModifierList extends AbstractJavaNode {
         }
 
         @Override
+        public void visit(ASTConstructorDeclaration node, Set<JModifier> effective) {
+            if (node.getEnclosingType().isEnum()) {
+                effective.add(PRIVATE);
+            }
+        }
+
+        @Override
         public void visit(ASTMethodDeclaration node, Set<JModifier> effective) {
 
             if (node.getEnclosingType().isInterface()) {

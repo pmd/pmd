@@ -45,6 +45,17 @@ public final class ImplicitMemberSymbols {
         );
     }
 
+    public static JMethodSymbol enumValues(JClassSymbol enumSym) {
+        assert enumSym.isEnum() : "Not an enum symbol " + enumSym;
+
+        return new FakeMethodSym(
+            enumSym,
+            "values",
+            Modifier.PUBLIC | Modifier.STATIC,
+            emptyList()
+        );
+    }
+
 
     public static JConstructorSymbol defaultCtor(JClassSymbol sym) {
         assert sym != null;
@@ -59,16 +70,6 @@ public final class ImplicitMemberSymbols {
         return new FakeCtorSym(sym, modifiers, emptyList());
     }
 
-    public static JMethodSymbol enumOrdinal(JClassSymbol enumSym) {
-        assert enumSym.isEnum() : "Not an enum symbol " + enumSym;
-
-        return new FakeMethodSym(
-            enumSym,
-            "ordinal",
-            Modifier.PUBLIC | Modifier.FINAL,
-            emptyList()
-        );
-    }
 
     public static JMethodSymbol arrayClone(JClassSymbol arraySym) {
         assert arraySym.isArray() : "Not an array symbol " + arraySym;

@@ -8,6 +8,7 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.properties.Gen
 import io.kotlintest.should
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.*
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory
@@ -23,6 +24,7 @@ import java.util.stream.Stream
 fun <T> Stream<T>.firstOrNull(): T? = findFirst().orElse(null)
 
 val testSymFactory = ReflectionSymFactory()
+val testAstSymFactory = AstSymFactory()
 val testSymResolver = ClasspathSymbolResolver(HeaderScopesTest::class.java.classLoader, testSymFactory)
 
 fun classSym(klass: Class<*>?) = testSymFactory.getClassSymbol(klass)
