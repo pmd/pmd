@@ -1,6 +1,13 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 
 /**
  * @author Clément Fournier
@@ -9,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 class VarDisambiguationTest : ParserTestSpec({
 
 
-    parserTest("Inner class names") {
+    parserTest("AmbiguousName reclassification") {
         val code = ("""
             package com.foo.bar;
             class Foo {
@@ -17,7 +24,7 @@ class VarDisambiguationTest : ParserTestSpec({
                static class Inner {
                   static final Foo inField;
                }
-               
+
                {
                     // All LHS here are ambiguous
                     Foo.Inner.inField      .call(); // m1
@@ -72,6 +79,117 @@ class VarDisambiguationTest : ParserTestSpec({
             m5.qualifier!!.shouldMatchN {
                 typeExpr {
                     classType("Foo") {}
+                }
+            }
+        }
+    }
+
+    parserTest("Failure cases") {
+        val code = ("""
+package com.foo.bar;
+class Foo<T> {
+   static Foo f1;
+   static class Inner {
+      static final Foo inField;
+   }
+
+   {
+        Foo.Inner.noField      .call();
+               // ^^^^^^^
+        Foo.Inner.noField.next .call();
+               // ^^^^^^^^^^^^
+
+        // T is a type var
+
+        T.fofo                 .call();
+       // ^^^^
+        T.Fofo v;
+       // ^^^^
+
+   }
+}
+        """)
+
+        fun JavaParsingHelper.TestCheckLogger.getWarning(key: String, idx: Int, testCode: (JavaNode, List<String>) -> Unit) {
+            val (node, args) = warnings[key]!![idx]
+            testCode(node, args.map { it.toString() })
+        }
+
+        // Hmm, since shouldMatchN looks into the children of the parent, what it sees here
+        // are the new nodes, but the reported node is the original AmbiguousName (pruned from the tree)
+
+        // This won't matter when we replace nodes with a position for reporting
+
+        val logger = enableProcessing(true)
+        parser.parse(code)
+
+        doTest("Unresolved field") {
+
+            logger.getWarning(SemanticChecksLogger.CANNOT_RESOLVE_MEMBER, 0) { node, args ->
+
+                args shouldBe listOf("noField", "com.foo.bar.Foo.Inner", "a field access")
+                node.shouldMatchN {
+                    fieldAccess("noField") {
+                        typeExpr {
+                            classType("Inner") {
+                                classType("Foo") {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        doTest("Unresolved field chain") {
+
+            logger.getWarning(SemanticChecksLogger.CANNOT_RESOLVE_MEMBER, 1) { node, args ->
+
+                args shouldBe listOf("noField", "com.foo.bar.Foo.Inner", "a field access")
+                node.shouldMatchN {
+                    fieldAccess("next") { // todo should actually be reported on noField
+                        fieldAccess("noField") {
+                            typeExpr {
+                                classType("Inner") {
+                                    classType("Foo") {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        doTest("Unresolved type var member") {
+
+            logger.getWarning(SemanticChecksLogger.CANNOT_RESOLVE_MEMBER, 2) { node, args ->
+
+                args shouldBe listOf("fofo", "type variable T", "a field access")
+                node.shouldMatchN {
+                    fieldAccess("fofo") {
+                        typeExpr {
+                            classType("T") {
+                                it.referencedSym.shouldBeA<JTypeParameterSymbol> { }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        doTest("Unresolved type var member (in type ctx)") {
+
+            logger.getWarning(SemanticChecksLogger.CANNOT_RESOLVE_MEMBER, 3) { node, args ->
+
+                args shouldBe listOf("Fofo", "type variable T", "an unresolved type")
+                node.shouldMatchN {
+                    classType("Fofo") {
+                        it.referencedSym.shouldBeA<JClassSymbol> {
+                            it::isUnresolved shouldBe true
+                        }
+                        classType("T") {
+                            it.referencedSym.shouldBeA<JTypeParameterSymbol> { }
+                        }
+                    }
                 }
             }
         }

@@ -26,14 +26,6 @@ public interface SemanticChecksLogger {
     String CANNOT_FIND_CLASSPATH_SYMBOL = "Cannot resolve symbol {0}";
 
     /**
-     * We found T.Inner, where T is a type variable: Inner cannot exist,
-     * this is broken code and not just misconfiguration.
-     *
-     * TODO what to do then? Make a fake symbol anyway?
-     */
-    String CANNOT_SELECT_MEMBER_FROM_TVAR = "{0} cannot be a member of the type variable {2}";
-
-    /**
      * An ambiguous name is completely ambiguous. We don't have info
      * about it at all, classpath is incomplete or code is incorrect.
      * Eg {@code package.that.doesnt.exist.Type}
@@ -46,7 +38,7 @@ public interface SemanticChecksLogger {
      * Eg {@code System.oute}: {@code System} is resolved, {@code oute}
      * is not a member of that type.
      */
-    String CANNOT_RESOLVE_MEMBER = "Cannot resolve ''{0}'' in {1}, treating it as {1}";
+    String CANNOT_RESOLVE_MEMBER = "Cannot resolve ''{0}'' in {1}, treating it as {2}"; // javac gives a simple "cannot resolve symbol {0}"
 
 
     /**

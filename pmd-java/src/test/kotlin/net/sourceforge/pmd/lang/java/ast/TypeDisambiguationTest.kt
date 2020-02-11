@@ -36,7 +36,7 @@ class TypeDisambiguationTest : ParserTestSpec({
     parserTest("Failures") {
         val logger = enableProcessing()
 
-        val acu = parser.parse("""
+        parser.parse("""
             package com;
             class Foo {
                Foo.Bar f1;
