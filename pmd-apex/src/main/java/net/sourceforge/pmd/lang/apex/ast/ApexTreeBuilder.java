@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import net.sourceforge.pmd.PMD;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
@@ -366,8 +367,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 // check if it starts with NOPMD
                 String trimmedCommentText = token.getText().substring(2).trim();
 
-                if (trimmedCommentText.startsWith("NOPMD")) {
-                    suppressMap.put(token.getLine(), trimmedCommentText.substring(5));
+                if (trimmedCommentText.startsWith(PMD.SUPPRESS_MARKER)) {
+                    suppressMap.put(token.getLine(), trimmedCommentText.substring(PMD.SUPPRESS_MARKER.length()));
                 }
             }
 
