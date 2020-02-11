@@ -15,7 +15,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.UnresolvedSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
@@ -36,6 +38,7 @@ public final class JavaAstProcessor {
     private final LanguageVersion languageVersion;
     private final AstSymFactory astSymFactory;
     private final ReflectionSymFactory reflectSymFactory;
+    private final UnresolvedSymFactory unresolvedSymFactory;
     private SymbolResolver symResolver;
 
 
@@ -51,6 +54,7 @@ public final class JavaAstProcessor {
 
         this.astSymFactory = astSymFactory;
         this.reflectSymFactory = reflectionSymFactory;
+        this.unresolvedSymFactory = new UnresolvedSymFactory();
     }
 
     public AstSymFactory getAstSymFactory() {
@@ -59,6 +63,11 @@ public final class JavaAstProcessor {
 
     public ReflectionSymFactory getReflectSymFactory() {
         return reflectSymFactory;
+    }
+
+    public JClassSymbol makeUnresolvedReference(String canonicalName) {
+        // we have to prefer one factory over another
+        return unresolvedSymFactory.makeUnresolvedReference(canonicalName);
     }
 
     public SymbolResolver getSymResolver() {
@@ -98,14 +107,18 @@ public final class JavaAstProcessor {
 
     public static SemanticChecksLogger defaultLogger() {
         return new SemanticChecksLogger() {
+            private String locPrefix(JavaNode loc) {
+                return "[" + loc.getBeginLine() + "," + loc.getBeginColumn() + "] ";
+            }
+
             @Override
             public void warning(JavaNode location, String message, Object... args) {
-                DEFAULT_LOG.fine(() -> MessageFormat.format(message, args));
+                DEFAULT_LOG.fine(() -> locPrefix(location) + MessageFormat.format(message, args));
             }
 
             @Override
             public void error(JavaNode location, String message, Object... args) {
-                DEFAULT_LOG.severe(() -> MessageFormat.format(message, args));
+                DEFAULT_LOG.severe(() -> locPrefix(location) + MessageFormat.format(message, args));
             }
         };
     }

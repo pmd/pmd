@@ -23,24 +23,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
  */
 public interface SymbolFactory<T> {
 
-    // unresolved symbol
-    JClassSymbol UNRESOLVED_CLASS_SYM = new UnresolvedClassImpl("/*unresolved*/");
-
-    /**
-     * Produces an unresolved class symbol from the given canonical name.
-     *
-     * @param canonicalName Canonical name of the returned symbol
-     *
-     * @throws NullPointerException     If the name is null
-     * @throws IllegalArgumentException If the name is empty
-     */
-    @NonNull
-    default JClassSymbol makeUnresolvedReference(String canonicalName) {
-        return new UnresolvedClassImpl(canonicalName);
-    }
-
-
-
     /**
      * Produces an array symbol from the given component symbol (one dimension).
      * The component can naturally be another array symbol, but cannot be an

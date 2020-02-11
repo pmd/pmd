@@ -9,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 
 
 /**
@@ -20,20 +19,14 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 final class SymbolTableHelper {
 
     private final String thisPackage;
-    private final SymbolResolver symbolResolver;
-    private final SemanticChecksLogger logger;
-    private final SymbolFactory<?> unresolvedFactory;
+    private final JavaAstProcessor processor;
 
 
     SymbolTableHelper(String thisPackage, JavaAstProcessor processor) {
-
-        this.thisPackage = thisPackage;
-        this.symbolResolver = processor.getSymResolver();
-        this.logger = processor.getLogger();
-        unresolvedFactory = processor.getAstSymFactory();
-
-        assert symbolResolver != null;
         assert thisPackage != null;
+        assert processor != null;
+        this.thisPackage = thisPackage;
+        this.processor = processor;
     }
 
 
@@ -44,19 +37,19 @@ final class SymbolTableHelper {
 
 
     public JClassSymbol findSymbolCannotFail(String name) {
-        JClassSymbol found = symbolResolver.resolveClassFromCanonicalName(name);
-        return found == null ? unresolvedFactory.makeUnresolvedReference(name)
+        JClassSymbol found = processor.getSymResolver().resolveClassFromCanonicalName(name);
+        return found == null ? processor.makeUnresolvedReference(name)
                              : found;
     }
 
     /** @see SymbolResolver#resolveClassFromCanonicalName(String) */
     @Nullable
     JClassSymbol loadClassOrFail(String fqcn) {
-        return symbolResolver.resolveClassFromCanonicalName(fqcn);
+        return processor.getSymResolver().resolveClassFromCanonicalName(fqcn);
     }
 
     SemanticChecksLogger getLogger() {
-        return logger;
+        return processor.getLogger();
     }
 
     public String getThisPackage() {

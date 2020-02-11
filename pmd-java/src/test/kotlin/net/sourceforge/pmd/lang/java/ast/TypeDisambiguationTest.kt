@@ -45,7 +45,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         """)
 
         val (node, args) = logger.warnings[SemanticChecksLogger.CANNOT_RESOLVE_MEMBER]!![0]
-        args.toList() shouldBe listOf("Bar", "com.Foo", "an unresolved type")
+        args.map { it.toString() } shouldBe listOf("Bar", "com.Foo", "an unresolved type")
         node.shouldBeA<ASTClassOrInterfaceType> {  }
     }
 

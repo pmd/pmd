@@ -400,6 +400,13 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
             contents()
         }
 
+fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
+        child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
+            it::getImage shouldBe canoName
+            it::getSimpleName shouldBe canoName.substringAfterLast('.')
+            contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyAssertions) =
         child<ASTUnionType>(ignoreChildren = contents == EmptyAssertions) {
             contents()
