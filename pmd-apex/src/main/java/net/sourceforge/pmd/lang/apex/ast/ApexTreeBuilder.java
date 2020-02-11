@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
@@ -231,11 +231,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private List<ApexDocTokenLocation> apexDocTokenLocations;
     private Map<Integer, String> suppressMap;
 
-    public ApexTreeBuilder(String sourceCode) {
+    public ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 
-        CommentInformation commentInformation = extractInformationFromComments(sourceCode);
+        CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -346,7 +346,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private static CommentInformation extractInformationFromComments(String source) {
+    private static CommentInformation extractInformationFromComments(String source, String suppressMarker) {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
@@ -364,11 +364,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                     tokenLocations.add(new ApexDocTokenLocation(startIndex, token));
                 }
             } else if (token.getType() == ApexLexer.EOL_COMMENT) {
-                // check if it starts with NOPMD
+                // check if it starts with the suppress marker
                 String trimmedCommentText = token.getText().substring(2).trim();
 
-                if (trimmedCommentText.startsWith(PMD.SUPPRESS_MARKER)) {
-                    suppressMap.put(token.getLine(), trimmedCommentText.substring(PMD.SUPPRESS_MARKER.length()));
+                if (trimmedCommentText.startsWith(suppressMarker)) {
+                    suppressMap.put(token.getLine(), trimmedCommentText.substring(suppressMarker.length()));
                 }
             }
 
