@@ -139,6 +139,14 @@ public class SuppressWarningsTest extends RuleTst {
         assertEquals(0, rpt.size());
     }
 
+    @Test
+    public void testCommentSuppression() {
+        Report rpt = new Report();
+        runTestFromString(TEST14, new FooRule(), rpt,
+                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        assertEquals(0, rpt.size());
+    }
+
     private static final String TEST1 = "@SuppressWarnings('PMD')" + PMD.EOL + "public class Foo {}";
 
     private static final String TEST2 = "@SuppressWarnings('PMD')" + PMD.EOL + "public class Foo {" + PMD.EOL
@@ -181,4 +189,6 @@ public class SuppressWarningsTest extends RuleTst {
 
     private static final String TEST13 = "@SuppressWarnings('PMD.NoBar')" + PMD.EOL + "public class Bar {" + PMD.EOL
             + "}";
+
+    private static final String TEST14 = "public class Bar {" + PMD.EOL + "Integer foo; // NOPMD" + PMD.EOL + "}";
 }

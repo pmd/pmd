@@ -48,7 +48,7 @@ public class ApexParser {
             final String sourceCode = IOUtils.toString(reader);
             final Compilation astRoot = parseApex(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode);
-            suppressMap = new HashMap<>();
+            suppressMap = treeBuilder.getSuppressMap();
 
             if (astRoot == null) {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");

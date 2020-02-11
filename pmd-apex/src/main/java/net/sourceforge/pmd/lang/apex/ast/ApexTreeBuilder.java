@@ -228,11 +228,13 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
     private List<ApexDocTokenLocation> apexDocTokenLocations;
+    private Map<Integer, String> suppressMap;
 
     public ApexTreeBuilder(String sourceCode) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
         apexDocTokenLocations = buildApexDocTokenLocations(sourceCode);
+        suppressMap = buildSuppressMap(sourceCode);
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
@@ -366,6 +368,29 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return tokenLocations;
     }
 
+    private static Map<Integer, String> buildSuppressMap(String source) {
+        ANTLRStringStream stream = new ANTLRStringStream(source);
+        ApexLexer lexer = new ApexLexer(stream);
+
+        Map<Integer, String> suppressMap = new HashMap<>();
+        Token token = lexer.nextToken();
+
+        while (token.getType() != Token.EOF) {
+            if (token.getType() == ApexLexer.EOL_COMMENT) {
+                // check if it starts with NOPMD
+                String trimmedCommentText = token.getText().substring(2).trim();
+
+                if (trimmedCommentText.startsWith("NOPMD")) {
+                    suppressMap.put(token.getLine(), trimmedCommentText.substring(5));
+                }
+            }
+
+            token = lexer.nextToken();
+        }
+
+        return suppressMap;
+    }
+
     private static class ApexDocTokenLocation {
         int index;
         Token token;
@@ -385,6 +410,10 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             build(node);
             return false;
         }
+    }
+
+    public Map<Integer, String> getSuppressMap() {
+        return suppressMap;
     }
 
     @Override
