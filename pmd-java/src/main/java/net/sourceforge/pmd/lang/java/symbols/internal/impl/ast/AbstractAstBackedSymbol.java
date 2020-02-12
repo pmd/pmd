@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 /**
  * @author Clément Fournier
@@ -22,5 +23,8 @@ abstract class AbstractAstBackedSymbol<T extends SymbolDeclaratorNode> implement
         InternalApiBridge.setSymbol(node, this);
     }
 
-
+    @Override
+    public String toString() {
+        return SymbolToStrings.AST.toString(this);
+    }
 }

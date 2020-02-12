@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 final class AstTypeParamSym
     extends AbstractAstBackedSymbol<ASTTypeParameter>
@@ -52,8 +51,4 @@ final class AstTypeParamSym
         return SymbolEquality.TYPE_PARAM.hash(this);
     }
 
-    @Override
-    public String toString() {
-        return SymbolToStrings.AST.typeParamToString(this);
-    }
 }

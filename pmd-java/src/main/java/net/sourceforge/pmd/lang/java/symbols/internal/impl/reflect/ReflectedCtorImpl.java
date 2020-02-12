@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 
 class ReflectedCtorImpl extends AbstractReflectedExecutableSymbol<Constructor<?>> implements JConstructorSymbol {
@@ -27,12 +26,6 @@ class ReflectedCtorImpl extends AbstractReflectedExecutableSymbol<Constructor<?>
     @Override
     public int hashCode() {
         return SymbolEquality.CONSTRUCTOR.hash(this);
-    }
-
-
-    @Override
-    public String toString() {
-        return SymbolToStrings.REFLECT.ctorToString(this);
     }
 
 }

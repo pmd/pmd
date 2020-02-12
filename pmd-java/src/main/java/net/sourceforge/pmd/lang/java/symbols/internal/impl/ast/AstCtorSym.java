@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 /**
  * @author Clément Fournier
@@ -28,12 +27,6 @@ final class AstCtorSym extends AbstractAstExecSymbol<ASTConstructorDeclaration> 
     @Override
     public int hashCode() {
         return SymbolEquality.CONSTRUCTOR.hash(this);
-    }
-
-
-    @Override
-    public String toString() {
-        return SymbolToStrings.AST.ctorToString(this);
     }
 
 }

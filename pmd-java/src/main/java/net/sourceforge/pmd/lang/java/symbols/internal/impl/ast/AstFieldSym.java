@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
@@ -48,12 +47,6 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
     @Override
     public int hashCode() {
         return SymbolEquality.FIELD.hash(this);
-    }
-
-
-    @Override
-    public String toString() {
-        return SymbolToStrings.AST.fieldToString(this);
     }
 
 }

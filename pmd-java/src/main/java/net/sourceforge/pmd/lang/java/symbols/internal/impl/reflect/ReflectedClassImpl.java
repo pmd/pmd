@@ -205,11 +205,6 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
     @Override
-    public String toString() {
-        return SymbolToStrings.REFLECT.classToString(this);
-    }
-
-    @Override
     public boolean equals(Object o) {
         return SymbolEquality.CLASS.equals(this, o);
     }

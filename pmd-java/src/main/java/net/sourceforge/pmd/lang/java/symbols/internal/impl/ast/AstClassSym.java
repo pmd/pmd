@@ -31,7 +31,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 
@@ -239,11 +238,6 @@ final class AstClassSym
     @Override
     public @Nullable Class<?> getJvmRepr() {
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return SymbolToStrings.AST.classToString(this);
     }
 
     @Override
