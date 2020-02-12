@@ -69,7 +69,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             // Qualified name resolver now resolves also symbols for type declarations
             bench("Qualified name resolution",
-                () -> new QualifiedNameResolver(astSymFactory).traverse(acu));
+                () -> new QualifiedNameResolver(astSymFactory, configuration.getTypeResolutionClassLoader()).traverse(acu));
 
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 

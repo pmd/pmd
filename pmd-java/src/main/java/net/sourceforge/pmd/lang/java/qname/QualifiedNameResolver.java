@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -47,7 +48,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
  *
  * <p>In fact, populates symbols on declaration nodes.
  * TODO in the near future we'll get rid of qualified names, and can
- *  reuse this class just to build symbols (moving it to symbols.impl.ast).
+ * reuse this class just to build symbols (moving it to symbols.impl.ast).
  *
  * @author Clément Fournier
  * @since 6.1.0
@@ -117,8 +118,16 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      */
     private ImmutableList<String> classNames;
 
-    public QualifiedNameResolver(AstSymFactory symFactory) {
+    /**
+     * The classloader that must be used to load classes for resolving types,
+     * e.g. for qualified names.
+     * This is the auxclasspath.
+     */
+    private ClassLoader classLoader;
+
+    public QualifiedNameResolver(AstSymFactory symFactory, ClassLoader classLoader) {
         this.symFactory = symFactory;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -210,7 +219,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
-        if (!node.isField() && !node.isFormalParameter() && !node.isEnumConstant()) {
+        if (isTrueLocalVar(node)) {
             symFactory.setLocalVarSymbol(node);
         } else {
             // in the other cases, building the method/ctor/class symbols already set the symbols
@@ -218,6 +227,10 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         }
 
         return super.visit(node, data);
+    }
+
+    private boolean isTrueLocalVar(ASTVariableDeclaratorId node) {
+        return !(node.isField() || node.isEnumConstant() || node.getParent() instanceof ASTFormalParameter);
     }
 
 
@@ -237,11 +250,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {
         updateContextForAnonymousClass();
         return recurseOnClass(node);
-    }
-
-    public void enqueueClassSym(ASTAnyTypeDeclaration node) {
-        JClassSymbol sym = symFactory.setClassSymbol(enclosingSymbols.peekLast(), node);
-        enclosingSymbols.push(sym);
     }
 
 
@@ -374,7 +382,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     /** Creates a new class qname from the current context (fields). */
     private JavaTypeQualifiedName contextClassQName() {
-        return new JavaTypeQualifiedName(packages, classNames, localIndices, QualifiedNameResolver.class.getClassLoader());
+        return new JavaTypeQualifiedName(packages, classNames, localIndices, classLoader);
     }
 
 

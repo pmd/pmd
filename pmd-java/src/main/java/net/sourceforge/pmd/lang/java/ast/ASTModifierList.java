@@ -236,11 +236,14 @@ public final class ASTModifierList extends AbstractJavaNode {
             assert enclosing != null && !(enclosing instanceof ASTAnyTypeDeclaration)
                 : "Weird position for an anonymous class " + enclosing;
 
-            JavaNode decl = ((ASTAnyTypeBodyDeclaration) enclosing).getDeclarationNode();
-            if (decl instanceof AccessNode && ((AccessNode) decl).hasModifiers(STATIC)
-                || decl instanceof ASTInitializer && ((ASTInitializer) decl).isStatic()
-                || decl instanceof ASTEnumConstant) {
+            if (enclosing instanceof ASTEnumConstant) {
                 effective.add(STATIC);
+            } else {
+                JavaNode decl = ((ASTAnyTypeBodyDeclaration) enclosing).getDeclarationNode();
+                if (decl instanceof AccessNode && ((AccessNode) decl).hasModifiers(STATIC)
+                    || decl instanceof ASTInitializer && ((ASTInitializer) decl).isStatic()) {
+                    effective.add(STATIC);
+                }
             }
         }
 
