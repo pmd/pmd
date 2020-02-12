@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.Objects;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.PUBLIC;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
@@ -46,12 +48,12 @@ public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTAn
 
     @Override
     protected boolean isViolation(ASTAnyTypeDeclaration node, int reportLevel) {
-        long publicCount = node.getDeclarations().stream()
+        long publicCount = node.getDeclarations()
                                .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
-                               .filter(Objects::nonNull)
-                               .filter(it -> it instanceof AccessNode && ((AccessNode) it).isPublic())
+                               .filterIs(AccessNode.class)
+                               .filter(it -> it.hasModifiers(PUBLIC))
                                // filter out constants
-                               .filter(it -> !(it instanceof ASTFieldDeclaration && ((ASTFieldDeclaration) it).isFinal() && ((ASTFieldDeclaration) it).isStatic()))
+                               .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
                                .count();
 
         return publicCount >= reportLevel;
