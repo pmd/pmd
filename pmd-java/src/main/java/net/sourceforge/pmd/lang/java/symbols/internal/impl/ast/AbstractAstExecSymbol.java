@@ -51,7 +51,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
 
     @Override
     public int getArity() {
-        return node.getArity();
+        return formals.size();
     }
 
 

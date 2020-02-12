@@ -59,7 +59,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
                 - symbol table resolution
                   - AST symbols are now functional
                 - TODO AST disambiguation here
-                - type resolution initialization
+                - TODO type resolution initialization
              */
 
             ASTCompilationUnit acu = (ASTCompilationUnit) rootNode;
@@ -69,7 +69,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             // Qualified name resolver now resolves also symbols for type declarations
             bench("Qualified name resolution",
-                () -> new QualifiedNameResolver(astSymFactory, acu).traverse());
+                () -> new QualifiedNameResolver(astSymFactory).traverse(acu));
 
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 
@@ -115,7 +115,8 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     DFA("Data flow analysis") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            //            new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
+            // removed because of incompatibilities with current AST
+            // new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
         }
     },
 

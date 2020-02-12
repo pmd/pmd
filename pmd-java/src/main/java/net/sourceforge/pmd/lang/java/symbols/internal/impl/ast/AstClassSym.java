@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -56,6 +55,10 @@ final class AstClassSym
         List<JConstructorSymbol> myCtors = new ArrayList<>();
         List<JFieldSymbol> myFields = new ArrayList<>();
 
+        if (node instanceof ASTEnumDeclaration) {
+            node.getEnumConstants().forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+        }
+
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
 
             JavaNode dnode = decl.getDeclarationNode();
@@ -71,10 +74,6 @@ final class AstClassSym
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
             }
-        }
-
-        if (node instanceof ASTEnumDeclaration) {
-            node.getEnumConstants().forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
         }
 
         if (myCtors.isEmpty() && isClass()) {
@@ -94,12 +93,7 @@ final class AstClassSym
 
     @Override
     public @NonNull String getSimpleName() {
-        if (isAnonymousClass()) {
-            // cannot return null
-            return "<anonymous>";
-        } else {
-            return Objects.requireNonNull(node.getSimpleName(), "Simple name is null");
-        }
+        return node.getSimpleName();
     }
 
 
@@ -110,9 +104,7 @@ final class AstClassSym
 
     @Override
     public @Nullable String getCanonicalName() {
-        return node.isLocal() || node.isAnonymous()
-               ? null
-               : getBinaryName().replace('$', '.');
+        return node.getCanonicalName();
     }
 
     @Override

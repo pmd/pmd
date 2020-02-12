@@ -25,10 +25,13 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
     extends AbstractAstBackedSymbol<T> implements JTypeParameterOwnerSymbol {
 
     private final List<JTypeParameterSymbol> tparams;
+    private final int modifiers;
 
 
     AbstractAstTParamOwner(T node, AstSymFactory factory) {
         super(node, factory);
+        this.modifiers = JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
+
         List<JTypeParameterSymbol> result = map(
             node.getTypeParameterList(),
             it -> new AstTypeParamSym(it, factory, this)
@@ -41,7 +44,7 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
 
     @Override
     public int getModifiers() {
-        return JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
+        return modifiers;
     }
 
     @Override

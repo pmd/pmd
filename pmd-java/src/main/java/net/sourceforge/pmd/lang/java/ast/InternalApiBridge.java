@@ -34,10 +34,6 @@ public final class InternalApiBridge {
 
     }
 
-    public static JClassSymbol getSymbolInternal(ASTAnyTypeDeclaration node) {
-        return ((AbstractAnyTypeDeclaration) node).getSymbolUnchecked();
-    }
-
     public static <T> void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);

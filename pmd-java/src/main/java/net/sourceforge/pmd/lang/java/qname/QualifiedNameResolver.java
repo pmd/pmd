@@ -46,6 +46,8 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
  * Populates {@link JavaQualifiableNode} instances with their qualified names.
  *
  * <p>In fact, populates symbols on declaration nodes.
+ * TODO in the near future we'll get rid of qualified names, and can
+ *  reuse this class just to build symbols (moving it to symbols.impl.ast).
  *
  * @author Clément Fournier
  * @since 6.1.0
@@ -54,10 +56,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 @Deprecated
 @InternalApi
 public class QualifiedNameResolver extends JavaParserVisitorAdapter {
-
-    // TODO in the near future we'll get rid of qualified names, and can
-    //  reuse this class just to build symbols (moving it to symbols.impl.ast).
-
 
     // Package names to package representation.
     // Allows reusing the same list instance for the same packages.
@@ -88,7 +86,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
     private final AstSymFactory symFactory;
-    private final ASTCompilationUnit root;
 
     /**
      * Package list of the current file.
@@ -120,15 +117,14 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      */
     private ImmutableList<String> classNames;
 
-    public QualifiedNameResolver(AstSymFactory symFactory, ASTCompilationUnit root) {
+    public QualifiedNameResolver(AstSymFactory symFactory) {
         this.symFactory = symFactory;
-        this.root = root;
     }
 
     /**
      * Traverse the compilation unit.
      */
-    public void traverse() {
+    public void traverse(ASTCompilationUnit root) {
         root.jjtAccept(this, null);
     }
 
@@ -211,19 +207,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         return getLongestPackagePrefix(acc.substring(0, acc.lastIndexOf('.')), i - 1);
     }
 
-
-    @Override
-    public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        int localIndex = NOTLOCAL_PLACEHOLDER;
-        if (node.isLocal()) {
-            localIndex = getNextIndexFromHistogram(currentLocalIndices.peek(), node.getSimpleName(), 1);
-        }
-
-        updateClassContext(node.getSimpleName(), localIndex);
-
-        return recurseOnClass(node);
-    }
-
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
@@ -237,6 +220,18 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+
+    @Override
+    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+        int localIndex = NOTLOCAL_PLACEHOLDER;
+        if (node.isLocal()) {
+            localIndex = getNextIndexFromHistogram(currentLocalIndices.peek(), node.getSimpleName(), 1);
+        }
+
+        updateClassContext(node.getSimpleName(), localIndex);
+
+        return recurseOnClass(node);
+    }
 
     @Override
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {

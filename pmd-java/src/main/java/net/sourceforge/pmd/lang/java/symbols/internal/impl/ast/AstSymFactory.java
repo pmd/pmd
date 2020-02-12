@@ -15,6 +15,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 
 public final class AstSymFactory {
 
+    // keep in mind, creating a symbol sets it on the node (see constructor of AbstractAstBackedSymbol)
+
     /**
      * Builds, sets and returns the symbol for the given local variable.
      */

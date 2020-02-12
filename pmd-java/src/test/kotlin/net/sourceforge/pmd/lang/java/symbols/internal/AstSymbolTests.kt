@@ -3,14 +3,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
-import net.sourceforge.pmd.lang.ast.test.component7
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration
-import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
@@ -196,11 +191,14 @@ class AstSymbolTests : ParserTestSpec({
         }
     }
 
-    parserTest("Enum implicit methods") {
+    parserTest("Enum details") {
 
-        val acu = parser.withProcessing().parse("enum EE { A, B }")
+        val acu = parser.withProcessing().parse("""
+            enum EE { A, B }
+            enum E2 { A { } /* anon */ }
+        """.trimIndent())
 
-        val (enum) =
+        val (enum, enum2, enumAnon) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
 
         doTest("Enums should have a values() method") {
@@ -222,6 +220,190 @@ class AstSymbolTests : ParserTestSpec({
                 it::getSimpleName shouldBe "valueOf"
             }
         }
+
+        doTest("Enum constants with bodies should be static") {
+            enumAnon::getModifiers shouldBe Modifier.STATIC
+        }
     }
 
+
+    parserTest("Local class symbols") {
+
+        val acu = parser.withProcessing().parse("""
+
+            package com.foo;
+
+            public final class Foo { // fooClass
+
+                Foo() {
+                    abstract class Loc1 {} // ctorLoc
+                }
+
+                void bar() {
+                    final class Locc {} // barLoc
+                }
+
+                private void ohio() {
+                    class Locc {} // ohioLoc
+                    new Runnable() { // anon
+                        {
+                            class Locc {} // anonLoc
+                        }
+                    };
+                }
+
+                {
+                    class Locc {} // initLoc
+                }
+
+                static {
+                    class Loc4 { // staticInitLoc
+                        class LocMember {}
+                    }
+                }
+
+            }
+        """)
+
+        val allTypes = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList { it.symbol }
+        val locals = allTypes.filter { it.isLocalClass }
+        val (fooClass, ctorLoc, barLoc, ohioLoc, anon, anonLoc, initLoc, staticInitLoc, locMember) = allTypes
+        val (ctor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
+        val (barM, ohioM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+
+
+        locals shouldBe listOf(ctorLoc, barLoc, ohioLoc, anonLoc, initLoc, staticInitLoc)
+
+        doTest("should reflect their modifiers") {
+            ctorLoc::getModifiers shouldBe (Modifier.ABSTRACT)
+            barLoc::getModifiers shouldBe (Modifier.FINAL)
+            (locals - barLoc - ctorLoc).forEach {
+                it::getModifiers shouldBe 0
+            }
+        }
+
+        doTest("should reflect their simple names properly") {
+            ctorLoc::getSimpleName shouldBe "Loc1"
+            barLoc::getSimpleName shouldBe "Locc"
+            ohioLoc::getSimpleName shouldBe "Locc"
+            anonLoc::getSimpleName shouldBe "Locc"
+            initLoc::getSimpleName shouldBe "Locc"
+            staticInitLoc::getSimpleName shouldBe "Loc4"
+        }
+
+        doTest("should have no canonical name") {
+            locals.forEach {
+                it::getCanonicalName shouldBe null
+            }
+            locMember::getCanonicalName shouldBe null
+        }
+
+        doTest("should reflect their enclosing type") {
+            ctorLoc::getEnclosingClass shouldBe fooClass
+            barLoc::getEnclosingClass shouldBe fooClass
+            ohioLoc::getEnclosingClass shouldBe fooClass
+            anonLoc::getEnclosingClass shouldBe anon
+            initLoc::getEnclosingClass shouldBe fooClass
+            staticInitLoc::getEnclosingClass shouldBe fooClass
+        }
+
+        doTest("should reflect their enclosing method") {
+            ctorLoc::getEnclosingMethod shouldBe ctor
+            barLoc::getEnclosingMethod shouldBe barM
+            ohioLoc::getEnclosingMethod shouldBe ohioM
+            anonLoc::getEnclosingMethod shouldBe null
+            initLoc::getEnclosingMethod shouldBe null
+            staticInitLoc::getEnclosingMethod shouldBe null
+        }
+
+    }
+
+    parserTest("Anonymous class symbols") {
+
+        val acu = parser.withProcessing().parse("""
+
+            package com.foo;
+
+            public final class Foo { // fooClass
+
+                final Foo v = new Foo() {}; // fieldAnon
+
+                static final Void v2 = new Foo() {}; // staticFieldAnon
+
+                Foo() {
+                    new Runnable() {}; // ctorAnon
+                }
+
+                void bar() {
+                    new Runnable() {}; // barAnon
+                }
+
+                static void bar2() {
+                    new Runnable() {}; // staticBarAnon
+                }
+
+                {
+                    new Runnable() {}; // initAnon
+                }
+
+                static {
+                   new Runnable() { // staticInitAnon
+                      {
+                        new Runnable() {}; // anonAnon
+                      }
+
+                      class AnonMember {} // anonMember
+                   };
+                }
+
+            }
+        """)
+
+        val allTypes = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList { it.symbol }
+        val allAnons = allTypes.filter { it.isAnonymousClass }
+        val (fooClass, fieldAnon, staticFieldAnon, ctorAnon, barAnon, staticBarAnon, initAnon, staticInitAnon, anonAnon, anonMember) = allTypes
+        val (ctor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
+        val (barM, bar2M) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+
+        allAnons shouldBe (allTypes - fooClass - anonMember)
+
+        doTest("should be static in static contexts") {
+            listOf(staticBarAnon, staticInitAnon, staticFieldAnon).forEach {
+                it::getModifiers shouldBe Modifier.STATIC
+            }
+
+            listOf(ctorAnon, barAnon, initAnon, anonAnon, fieldAnon).forEach {
+                it::getModifiers shouldBe 0 // nonstatic
+            }
+        }
+
+        doTest("should use the empty string as their simple name") {
+            allAnons.forEach {
+                it::getSimpleName shouldBe ""
+            }
+        }
+
+        doTest("should have no canonical name") {
+            allAnons.forEach {
+                it::getCanonicalName shouldBe null
+            }
+            anonMember::getCanonicalName shouldBe null
+        }
+
+        doTest("should reflect their enclosing type") {
+            (allAnons - anonAnon).forEach {
+                it::getEnclosingClass shouldBe fooClass
+            }
+            anonAnon::getEnclosingClass shouldBe staticInitAnon
+        }
+
+        doTest("should reflect their enclosing method") {
+            ctorAnon::getEnclosingMethod shouldBe ctor
+            barAnon::getEnclosingMethod shouldBe barM
+            staticBarAnon::getEnclosingMethod shouldBe bar2M
+            anonAnon::getEnclosingMethod shouldBe null
+            initAnon::getEnclosingMethod shouldBe null
+            staticInitAnon::getEnclosingMethod shouldBe null
+        }
+    }
 })
