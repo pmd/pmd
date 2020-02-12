@@ -155,24 +155,6 @@ public class RuleSets {
     }
 
     /**
-     * Check if the rules that apply to a source of the given language use DFA.
-     *
-     * @param language
-     *            the language of a source
-     * @return true if any rule in the RuleSet needs the DFA layer
-     * @deprecated See {@link Rule#isDfa()}
-     */
-    @Deprecated
-    public boolean usesDFA(Language language) {
-        for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.usesDFA(language)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns the first Rule found with the given name.
      *
      * Note: Since we support multiple languages, rule names are not expected to
@@ -202,45 +184,6 @@ public class RuleSets {
             count += r.getRules().size();
         }
         return count;
-    }
-
-    /**
-     * Does any Rule for the given Language use Type Resolution?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses Type
-     *         Resolution, <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isTypeResolution()}
-     */
-    @Deprecated
-    public boolean usesTypeResolution(Language language) {
-        for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.usesTypeResolution(language)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Does any Rule for the given Language use multi-file analysis?
-     *
-     * @param language
-     *            The Language.
-     *
-     * @return {@code true} if a Rule for the Language uses multi file analysis,
-     *         {@code false} otherwise.
-     * @deprecated See {@link Rule#isMultifile()}
-     */
-    @Deprecated
-    public boolean usesMultifile(Language language) {
-        for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.usesMultifile(language)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 

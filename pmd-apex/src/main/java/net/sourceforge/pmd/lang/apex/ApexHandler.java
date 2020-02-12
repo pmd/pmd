@@ -7,12 +7,9 @@ package net.sourceforge.pmd.lang.apex;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsProvider;
-import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
@@ -21,11 +18,6 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
 
-
-    @Override
-    public VisitorStarter getMultifileFacade() {
-        return rootNode -> new ApexMultifileVisitorFacade().initializeWith((ApexNode<?>) rootNode);
-    }
 
     @Override
     public RuleViolationFactory getRuleViolationFactory() {

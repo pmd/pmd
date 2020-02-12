@@ -135,7 +135,6 @@ public class Foo {
           language="java"
           since="6.18.0"
           message="You shouldn't declare field of MessageDigest type, because unsynchronized access could cause problems"
-          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidmessagedigestfield">
         <description>
@@ -499,7 +498,6 @@ return a;
           language="java"
           since="6.0.0"
           message="This 'for' loop can be replaced by a 'foreach' loop"
-          typeResolution="true"
           minimumLanguageVersion="1.5"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.ForLoopCanBeForeachRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#forloopcanbeforeach">
@@ -579,7 +577,6 @@ otherwise skip the associate String creation and manipulation.
           since="4.0"
           message="JUnit 4 indicates test suites via annotations, not the suite method."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation">
         <description>
 In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
@@ -619,7 +616,6 @@ public class GoodTest {
           since="4.0"
           message="JUnit 4 tests that clean up tests should use the @After annotation, JUnit5 tests should use @AfterEach or @AfterAll"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
         <description>
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
@@ -663,7 +659,6 @@ public class MyTest2 {
           since="4.0"
           message="JUnit 4 tests that set up tests should use the @Before annotation, JUnit5 tests should use @BeforeEach or @BeforeAll"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
         <description>
 In JUnit 3, the setUp method was used to set up all data entities required in running tests.
@@ -707,7 +702,6 @@ public class MyTest2 {
           since="4.0"
           message="JUnit 4 tests that execute tests should use the @Test annotation, JUnit 5 tests should use @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test.
@@ -781,7 +775,6 @@ public class Foo extends TestCase {
           since="5.0"
           message="Unit tests should not contain more than ${maximumAsserts} assert(s)."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">
         <description>
 Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
@@ -889,7 +882,6 @@ public class MyTest {
           since="0.7"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#loosecoupling">
         <description>
 The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate
@@ -949,7 +941,6 @@ public class SecureSystem {
           since="6.2.0"
           minimumLanguageVersion="1.5"
           message="The method ''{0}'' is missing an @Override annotation."
-          typeResolution="true"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.MissingOverrideRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#missingoverride">
         <description>
@@ -1225,7 +1216,6 @@ public class Foo {
           language="java"
           since="1.0"
           message="Switch statements should have a default label"
-          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#switchstmtsshouldhavedefault">
         <description>
@@ -1321,7 +1311,6 @@ public class Foo {
           since="1.0"
           message="Avoid unused imports such as ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedimports">
         <description>
 Avoid unused import statements to prevent unwanted dependencies.
@@ -1407,7 +1396,6 @@ public class Something {
           since="3.1"
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
@@ -1452,7 +1440,6 @@ public class FooTest extends TestCase {
           since="3.5"
           message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made by
@@ -1501,7 +1488,6 @@ public class FooTest extends TestCase {
           since="3.1"
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue">
         <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made
@@ -1624,7 +1610,6 @@ public class Foo {
           language="java"
           minimumLanguageVersion="1.7"
           since="6.12.0"
-          typeResolution="true"
           message="Consider using a try-with-resources statement instead of explicitly closing the resource"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usetrywithresources">
@@ -1687,7 +1672,6 @@ public class TryWithResources {
           since="5.0"
           message="Consider using varargs for methods or constructors which take an array the last parameter."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
         <description>
 Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic

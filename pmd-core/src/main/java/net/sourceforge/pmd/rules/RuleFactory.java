@@ -171,10 +171,6 @@ public class RuleFactory {
         builder.message(ruleElement.getAttribute(MESSAGE));
         builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
         builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
-        builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
-        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
-        // Disabled until it's safe
-        // builder.usesMultifile(hasAttributeSetTrue(ruleElement, "multifile"));
 
         Element propertiesElement = null;
 

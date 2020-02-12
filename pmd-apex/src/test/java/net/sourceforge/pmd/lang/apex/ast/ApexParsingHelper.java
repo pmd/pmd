@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 
@@ -27,6 +28,6 @@ public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, Root
     @Override
     protected void postProcessing(LanguageVersionHandler handler, LanguageVersion lversion, RootNode rootNode) {
         super.postProcessing(handler, lversion, rootNode);
-        handler.getMultifileFacade().start(rootNode);
+        new ApexMultifileVisitorFacade().initializeWith((ApexNode<?>) rootNode);
     }
 }
