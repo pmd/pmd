@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
+import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 

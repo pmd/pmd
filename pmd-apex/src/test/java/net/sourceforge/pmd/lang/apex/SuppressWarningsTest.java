@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -15,8 +17,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.testframework.RuleTst;
-
-import java.util.List;
 
 public class SuppressWarningsTest extends RuleTst {
 

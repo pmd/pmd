@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
