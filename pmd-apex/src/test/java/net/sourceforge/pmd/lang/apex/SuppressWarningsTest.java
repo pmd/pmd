@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -14,6 +15,8 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.testframework.RuleTst;
+
+import java.util.List;
 
 public class SuppressWarningsTest extends RuleTst {
 
@@ -145,6 +148,24 @@ public class SuppressWarningsTest extends RuleTst {
         runTestFromString(TEST14, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
         assertEquals(0, rpt.size());
+
+        List<Report.SuppressedViolation> suppressions = rpt.getSuppressedRuleViolations();
+        assertEquals(1, suppressions.size());
+    }
+
+    @Test
+    public void testMessageWithCommentSuppression() {
+        Report rpt = new Report();
+        runTestFromString(TEST15, new FooRule(), rpt,
+                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
+        assertEquals(0, rpt.size());
+
+        List<Report.SuppressedViolation> suppressions = rpt.getSuppressedRuleViolations();
+        assertEquals(1, suppressions.size());
+        Report.SuppressedViolation suppression = suppressions.get(0);
+
+        assertTrue(suppression.suppressedByNOPMD());
+        assertEquals("We allow foo here", suppression.getUserMessage());
     }
 
     private static final String TEST1 = "@SuppressWarnings('PMD')" + PMD.EOL + "public class Foo {}";
@@ -191,4 +212,6 @@ public class SuppressWarningsTest extends RuleTst {
             + "}";
 
     private static final String TEST14 = "public class Bar {" + PMD.EOL + "Integer foo; // NOPMD" + PMD.EOL + "}";
+
+    private static final String TEST15 = "public class Bar {" + PMD.EOL + "Integer foo; //NOPMD We allow foo here" + PMD.EOL + "}";
 }

@@ -368,7 +368,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 String trimmedCommentText = token.getText().substring(2).trim();
 
                 if (trimmedCommentText.startsWith(suppressMarker)) {
-                    suppressMap.put(token.getLine(), trimmedCommentText.substring(suppressMarker.length()));
+                    String userMessage = trimmedCommentText.substring(suppressMarker.length()).trim();
+                    suppressMap.put(token.getLine(), userMessage);
                 }
             }
 
