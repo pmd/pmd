@@ -44,10 +44,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements AccessNode, SymbolDeclaratorNode {
+public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode {
 
     private VariableNameDeclaration nameDeclaration;
-    private JVariableSymbol symbol;
 
     @InternalApi
     @Deprecated
@@ -58,16 +57,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public JVariableSymbol getSymbol() {
-        return symbol;
-    }
-
-    void setSymbol(JVariableSymbol symbol) {
-        this.symbol = symbol;
     }
 
     @Override

@@ -331,7 +331,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTLambdaExpression node, Object data) {
 
         String opname = "lambda$" + findLambdaScopeNameSegment(node)
-            + "$" + lambdaCounters.peek().getAndIncrement();
+                + "$" + lambdaCounters.peek().getAndIncrement();
 
         InternalApiBridge.setQname(node, contextOperationQName(opname, true));
         return super.visit(node, data);

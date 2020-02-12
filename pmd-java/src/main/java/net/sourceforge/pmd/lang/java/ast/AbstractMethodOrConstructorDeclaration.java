@@ -9,7 +9,8 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 
 
-abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbol> extends AbstractJavaNode
+abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbol>
+    extends AbstractJavaNode
     implements ASTMethodOrConstructorDeclaration,
                LeftRecursiveNode {
 
@@ -49,9 +50,7 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
 
     @Override
     public T getSymbol() {
-        // force evaluation
-        getEnclosingType().getSymbol().getDeclaredMethods();
-        getEnclosingType().getSymbol().getConstructors();
+        AbstractTypedSymbolDeclarator.assertSymbolNotNull(symbol);
         return symbol;
     }
 }

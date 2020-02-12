@@ -26,9 +26,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.4">JLS</a>
  */
-public final class ASTTypeParameter extends AbstractJavaTypeNode implements Annotatable, SymbolDeclaratorNode {
-
-    private JTypeParameterSymbol symbol;
+public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeParameterSymbol> implements Annotatable {
 
     ASTTypeParameter(int id) {
         super(id);
@@ -38,16 +36,6 @@ public final class ASTTypeParameter extends AbstractJavaTypeNode implements Anno
     public List<ASTAnnotation> getDeclaredAnnotations() {
         return children(ASTAnnotation.class).toList();
     }
-
-    void setSymbol(JTypeParameterSymbol symbol) {
-        this.symbol = symbol;
-    }
-
-    @Override
-    public JTypeParameterSymbol getSymbol() {
-        return symbol;
-    }
-
 
     /**
      * Returns the name of the type variable introduced by this declaration.
@@ -76,6 +64,9 @@ public final class ASTTypeParameter extends AbstractJavaTypeNode implements Anno
         return getFirstChildOfType(ASTType.class);
     }
 
+    /**
+     * Returns the node to which this type parameter belongs.
+     */
     public TypeParamOwnerNode getOwner() {
         return (TypeParamOwnerNode) jjtGetParent().jjtGetParent();
     }

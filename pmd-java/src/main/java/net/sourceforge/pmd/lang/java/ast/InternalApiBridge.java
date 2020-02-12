@@ -35,10 +35,10 @@ public final class InternalApiBridge {
     }
 
     public static JClassSymbol getSymbolInternal(ASTAnyTypeDeclaration node) {
-        return ((AbstractAnyTypeDeclaration) node).getSymbolInternal();
+        return ((AbstractAnyTypeDeclaration) node).getSymbolUnchecked();
     }
 
-    public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
+    public static <T> void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
         } else if (node instanceof ASTConstructorDeclaration) {
@@ -51,11 +51,6 @@ public final class InternalApiBridge {
             ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
         }
     }
-
-    public static void setSymbolInternal(ASTAnyTypeDeclaration node, JClassSymbol symbol) {
-        ((AbstractAnyTypeDeclaration) node).setSymbol(symbol);
-    }
-
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);

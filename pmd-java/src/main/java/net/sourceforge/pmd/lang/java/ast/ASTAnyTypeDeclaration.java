@@ -29,7 +29,6 @@ public interface ASTAnyTypeDeclaration
             TypeParamOwnerNode,
             FinalizableNode {
 
-
     @Override
     @NonNull
     JClassSymbol getSymbol();
