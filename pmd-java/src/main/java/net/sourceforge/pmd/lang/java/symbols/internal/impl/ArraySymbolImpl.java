@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 /**
@@ -106,22 +107,19 @@ class ArraySymbolImpl implements JClassSymbol {
         return component;
     }
 
+    @Override
+    public <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitArray(this, component, param);
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ArraySymbolImpl that = (ArraySymbolImpl) o;
-        return Objects.equals(component, that.component);
+        return SymbolEquality.equals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(component);
+        return SymbolEquality.hash(this);
     }
 
     @Override
@@ -200,7 +198,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public String toString() {
-        return "array(" + component.toString() + ")";
+        return SymbolToStrings.SHARED.toString(this);
     }
 
 }

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 /**
  * @author Clément Fournier
@@ -24,17 +23,6 @@ final class AstMethodSym
     @Override
     public String getSimpleName() {
         return node.getName();
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.METHOD.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.METHOD.hash(this);
     }
 
 }

@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
@@ -37,16 +36,6 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
     @Override
     public @NonNull JClassSymbol getEnclosingClass() {
         return owner;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.FIELD.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.FIELD.hash(this);
     }
 
 }

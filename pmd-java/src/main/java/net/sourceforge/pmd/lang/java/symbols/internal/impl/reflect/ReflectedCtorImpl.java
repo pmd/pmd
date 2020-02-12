@@ -9,23 +9,12 @@ import java.lang.reflect.Constructor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 
 class ReflectedCtorImpl extends AbstractReflectedExecutableSymbol<Constructor<?>> implements JConstructorSymbol {
 
     ReflectedCtorImpl(@NonNull ReflectedClassImpl owner, Constructor<?> myConstructor) {
         super(owner, myConstructor);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return SymbolEquality.CONSTRUCTOR.equals(this, obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.CONSTRUCTOR.hash(this);
     }
 
 }

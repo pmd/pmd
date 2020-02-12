@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 
@@ -240,13 +239,4 @@ final class AstClassSym
         return null;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.CLASS.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.CLASS.hash(this);
-    }
 }

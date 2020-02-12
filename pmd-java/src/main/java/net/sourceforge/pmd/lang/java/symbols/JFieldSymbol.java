@@ -37,4 +37,9 @@ public interface JFieldSymbol extends JAccessibleElementSymbol, JVariableSymbol 
         return getEnclosingClass().getPackageName();
     }
 
+
+    @Override
+    default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitField(this, param);
+    }
 }

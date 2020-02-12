@@ -16,4 +16,13 @@ final class AstLocalVarSym extends AbstractAstVariableSym implements JLocalVaria
         super(node, factory);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return node.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return node.hashCode();
+    }
 }

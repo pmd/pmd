@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 /**
@@ -18,9 +19,18 @@ abstract class AbstractReflectedSymbol implements JElementSymbol {
         this.symFactory = symFactory;
     }
 
-
     @Override
     public String toString() {
         return SymbolToStrings.REFLECT.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return SymbolEquality.equals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return SymbolEquality.hash(this);
     }
 }

@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 final class AstTypeParamSym
     extends AbstractAstBackedSymbol<ASTTypeParameter>
@@ -39,16 +38,6 @@ final class AstTypeParamSym
     @Override
     public String getSimpleName() {
         return node.getParameterName();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.TYPE_PARAM.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.TYPE_PARAM.hash(this);
     }
 
 }

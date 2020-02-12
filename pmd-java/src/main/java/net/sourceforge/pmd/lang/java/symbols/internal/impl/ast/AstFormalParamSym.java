@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 /**
  * @author Clément Fournier
@@ -26,13 +25,4 @@ final class AstFormalParamSym extends AbstractAstVariableSym implements JFormalP
         return owner;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.FORMAL_PARAM.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.FORMAL_PARAM.hash(this);
-    }
 }

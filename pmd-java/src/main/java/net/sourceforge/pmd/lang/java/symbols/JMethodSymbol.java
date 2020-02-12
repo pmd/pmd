@@ -25,4 +25,10 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
             && getEnclosingClass().isInterface();
     }
 
+
+    @Override
+    default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitMethod(this, param);
+    }
+
 }

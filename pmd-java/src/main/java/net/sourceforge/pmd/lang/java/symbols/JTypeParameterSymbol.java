@@ -41,11 +41,16 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
         return getDeclaringSymbol().getModifiers() | Modifier.ABSTRACT | Modifier.FINAL;
     }
 
-
     @Override
     @NonNull
     default JClassSymbol getEnclosingClass() {
         JTypeParameterOwnerSymbol ownerSymbol = getDeclaringSymbol();
         return ownerSymbol instanceof JClassSymbol ? (JClassSymbol) ownerSymbol : ownerSymbol.getEnclosingClass();
+    }
+
+
+    @Override
+    default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitTypeParam(this, param);
     }
 }

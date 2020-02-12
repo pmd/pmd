@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 /**
@@ -26,5 +27,15 @@ abstract class AbstractAstBackedSymbol<T extends SymbolDeclaratorNode> implement
     @Override
     public String toString() {
         return SymbolToStrings.AST.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return SymbolEquality.equals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return SymbolEquality.hash(this);
     }
 }

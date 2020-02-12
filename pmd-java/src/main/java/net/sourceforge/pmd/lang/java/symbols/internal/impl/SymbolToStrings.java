@@ -4,70 +4,118 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.impl;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 
 public class SymbolToStrings {
-    public static final SymbolToStrings REFLECT = new SymbolToStrings("reflected");
+
+    public static final SymbolToStrings SHARED = new SymbolToStrings("");
+    public static final SymbolToStrings REFLECT = new SymbolToStrings("reflect");
     public static final SymbolToStrings AST = new SymbolToStrings("ast");
 
-    private final String impl;
+    private final ToStringVisitor visitor;
 
     public SymbolToStrings(String impl) {
-        // util class
-        this.impl = impl;
+        this.visitor = new ToStringVisitor(impl);
     }
 
     public String toString(JElementSymbol symbol) {
-        if (symbol instanceof JClassSymbol) {
-            return classToString((JClassSymbol) symbol);
-        } else if (symbol instanceof JConstructorSymbol) {
-            return ctorToString((JConstructorSymbol) symbol);
-        } else if (symbol instanceof JMethodSymbol) {
-            return methodToString((JMethodSymbol) symbol);
-        } else if (symbol instanceof JFieldSymbol) {
-            return fieldToString((JFieldSymbol) symbol);
-        } else if (symbol instanceof JLocalVariableSymbol) {
-            return localToString((JLocalVariableSymbol) symbol);
-        } else if (symbol instanceof JTypeParameterSymbol) {
-            return typeParamToString((JTypeParameterSymbol) symbol);
+        return symbol.acceptVisitor(visitor, new StringBuilder()).toString();
+    }
+
+    private static class ToStringVisitor implements SymbolVisitor<StringBuilder, StringBuilder> {
+
+        private final String impl;
+
+        private ToStringVisitor(String impl) {
+            this.impl = impl;
         }
-        throw new IllegalArgumentException("Unknown symbol type " + symbol);
-    }
 
-    public String classToString(JClassSymbol sym) {
-        return withImpl("class", sym.getBinaryName());
-    }
+        private StringBuilder withImpl(StringBuilder builder, String kind, Object first, Object... rest) {
+            if (!impl.isEmpty()) {
+                builder.append(impl).append(':');
+            }
+            builder.append(kind).append('(');
+            appendArg(builder, first);
+            for (Object s : rest) {
+                builder.append(", ");
+                appendArg(builder, s);
+            }
+            return builder.append(')');
+        }
 
-    public String methodToString(JMethodSymbol sym) {
-        return withImpl("method", sym.getSimpleName(), classToString(sym.getEnclosingClass()));
-    }
+        private void appendArg(StringBuilder builder, Object s) {
+            if (s instanceof JElementSymbol) {
+                ((JElementSymbol) s).acceptVisitor(this, builder);
+            } else {
+                builder.append(s);
+            }
+        }
 
-    public String ctorToString(JConstructorSymbol sym) {
-        return withImpl("ctor", classToString(sym.getEnclosingClass()));
-    }
+        @Override
+        public StringBuilder visitSymbol(JElementSymbol sym, StringBuilder builder) {
+            throw new IllegalStateException("Unknown symbol " + sym.getClass());
+        }
 
-    public String fieldToString(JFieldSymbol sym) {
-        return withImpl("field", sym.getSimpleName(), classToString(sym.getEnclosingClass()));
-    }
+        @Override
+        public StringBuilder visitClass(JClassSymbol sym, StringBuilder param) {
+            String kind;
+            if (sym.isUnresolved()) {
+                kind = "unresolved";
+            } else if (sym.isEnum()) {
+                kind = "enum";
+            } else if (sym.isAnnotation()) {
+                kind = "annot";
+            } else {
+                kind = "class";
+            }
 
-    public String localToString(JLocalVariableSymbol sym) {
-        return withImpl("local", sym.getSimpleName());
-    }
+            return withImpl(param, kind, sym.getBinaryName());
+        }
 
-    public String typeParamToString(JTypeParameterSymbol sym) {
-        return withImpl("tparam", sym.getSimpleName(), toString(sym.getDeclaringSymbol()));
-    }
+        @Override
+        public StringBuilder visitArray(JClassSymbol sym, JTypeDeclSymbol component, StringBuilder param) {
+            param.append("array(");
+            return component.acceptVisitor(this, param).append(")");
+        }
 
-    private String withImpl(String kind, String... rest) {
-        return impl + ":" + kind + "(" + StringUtils.joinWith(", ", (Object[]) rest) + ")";
+        @Override
+        public StringBuilder visitTypeParam(JTypeParameterSymbol sym, StringBuilder param) {
+            return withImpl(param, "tparam", sym.getSimpleName(), sym.getDeclaringSymbol());
+        }
+
+        @Override
+        public StringBuilder visitCtor(JConstructorSymbol sym, StringBuilder param) {
+            return withImpl(param, "ctor", sym.getEnclosingClass());
+        }
+
+        @Override
+        public StringBuilder visitMethod(JMethodSymbol sym, StringBuilder param) {
+            return withImpl(param, "method", sym.getSimpleName(), sym.getEnclosingClass());
+        }
+
+        @Override
+        public StringBuilder visitField(JFieldSymbol sym, StringBuilder param) {
+            return withImpl(param, "field", sym.getSimpleName(), sym.getEnclosingClass());
+        }
+
+        @Override
+        public StringBuilder visitLocal(JLocalVariableSymbol sym, StringBuilder param) {
+            return withImpl(param, "local", sym.getSimpleName());
+        }
+
+        @Override
+        public StringBuilder visitFormal(JFormalParamSymbol sym, StringBuilder param) {
+            return withImpl(param, "formal", sym.getSimpleName());
+        }
     }
 
 }

@@ -218,4 +218,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return !isInterface() && !isArray() && !isPrimitive();
     }
 
+
+    @Override
+    default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitClass(this, param);
+    }
 }

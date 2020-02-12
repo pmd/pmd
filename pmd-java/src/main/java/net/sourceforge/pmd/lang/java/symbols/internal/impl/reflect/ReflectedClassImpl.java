@@ -18,8 +18,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolToStrings;
 
 final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implements JClassSymbol {
 
@@ -203,17 +201,6 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
         }
         return declaredFields;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.CLASS.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.CLASS.hash(this);
-    }
-
 
     static ReflectedClassImpl createWithEnclosing(ReflectionSymFactory symbolFactory,
                                                   @Nullable JClassSymbol enclosing,

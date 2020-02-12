@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -173,31 +172,24 @@ class UnresolvedClassImpl implements JClassSymbol {
     }
 
     @Override
-    public String toString() {
-        return "unresolved(" + canonicalName + ")";
-    }
-
-    @Override
     public List<JTypeParameterSymbol> getTypeParameters() {
         return Collections.emptyList();
     }
 
 
     @Override
+    public String toString() {
+        return SymbolToStrings.SHARED.toString(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof JClassSymbol)) {
-            return false;
-        }
-        JClassSymbol that = (JClassSymbol) o;
-        return Objects.equals(getBinaryName(), that.getBinaryName());
+        return SymbolEquality.equals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getSimpleName());
+        return SymbolEquality.hash(this);
     }
 
 }

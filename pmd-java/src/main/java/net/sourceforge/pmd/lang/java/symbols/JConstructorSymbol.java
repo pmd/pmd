@@ -24,4 +24,11 @@ public interface JConstructorSymbol extends JExecutableSymbol, BoundToNode<ASTCo
     default String getSimpleName() {
         return CTOR_NAME;
     }
+
+
+    @Override
+    default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitCtor(this, param);
+    }
+
 }
