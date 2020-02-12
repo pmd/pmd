@@ -60,6 +60,7 @@ public interface SymbolVisitor<R, P> {
     default R visitLocal(JLocalVariableSymbol sym, P param) {
         return visitVariable(sym, param);
     }
+
     /** Delegates to {@link #visitLocal(JLocalVariableSymbol, Object) visitLocal}. */
     default R visitFormal(JFormalParamSymbol sym, P param) {
         return visitLocal(sym, param);

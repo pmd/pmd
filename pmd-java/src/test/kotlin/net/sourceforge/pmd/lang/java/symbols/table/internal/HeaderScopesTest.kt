@@ -47,7 +47,7 @@ class HeaderScopesTest : ParserTestSpec({
     fun JSymbolTable.resolveField(s: String): JFieldSymbol = resolveValueName(s)!!.result.shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = resolveMethodName(s).toList()
 
-    fun ASTCompilationUnit.firstImportTable() = symbolTable.parent
+    fun ASTCompilationUnit.firstImportTable() = symbolTable
 
     fun ResolveResult<*>?.shouldFail() {
         this shouldBe null
