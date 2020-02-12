@@ -57,23 +57,6 @@ public class RuleSetTest {
     }
 
     @Test
-    public void testNoDFA() {
-        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
-        assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
-    }
-
-    @Test
-    public void testIncludesRuleWithDFA() {
-        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        mock.setDfa(true);
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
-        assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
-    }
-
-    @Test
     public void testAccessors() {
         RuleSet rs = new RuleSetBuilder(new Random().nextLong())
                 .withFileName("baz")

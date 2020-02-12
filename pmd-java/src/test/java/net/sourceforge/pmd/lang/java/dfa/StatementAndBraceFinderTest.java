@@ -11,11 +11,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -69,19 +66,6 @@ public class StatementAndBraceFinderTest extends BaseNonParserTest {
         assertTrue(dfn.isType(NodeType.FOR_UPDATE));
         assertTrue(dfn.isType(NodeType.FOR_BEFORE_FIRST_STATEMENT));
         assertTrue(dfn.isType(NodeType.FOR_END));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                .getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
-
-        ASTCompilationUnit astCompilationUnit = java.parse(TEST1);
-
-        sbf.buildDataFlowFor(astCompilationUnit.getFirstChildOfType(ASTMethodDeclaration.class));
-        // FIXME look at history of this test
-        // sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
-        sbf.buildDataFlowFor(astCompilationUnit);
     }
 
     private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  x = 2;" + PMD.EOL

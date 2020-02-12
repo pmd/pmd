@@ -30,6 +30,7 @@ public enum ModelicaProcessingStage implements AstProcessingStage<ModelicaProces
         this.displayName = displayName;
     }
 
+
     @Override
     public Language getLanguage() {
         return LanguageRegistry.getLanguage(ModelicaLanguageModule.NAME);

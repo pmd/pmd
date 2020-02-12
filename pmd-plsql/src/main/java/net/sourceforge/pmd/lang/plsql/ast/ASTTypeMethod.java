@@ -7,9 +7,7 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-
-public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, DFAGraphMethod {
+public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode {
     public ASTTypeMethod(int id) {
         super(id);
     }
@@ -38,7 +36,6 @@ public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, 
         return null;
     }
 
-    @Override
     public String getName() {
         return getMethodName();
     }

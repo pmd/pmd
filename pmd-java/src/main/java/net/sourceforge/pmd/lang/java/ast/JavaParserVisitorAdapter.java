@@ -26,7 +26,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     public Object visit(ASTAnnotation node, Object data) {
-        return JavaParserVisitor.super.visit(node, data);
+        return visit((JavaNode) node, data);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     public Object visit(ASTType node, Object data) {
-        return JavaParserVisitor.super.visit(node, data);
+        return visit((JavaNode) node, data);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     public Object visit(ASTExpression node, Object data) {
-        return JavaParserVisitor.super.visit(node, data);
+        return visit((JavaNode) node, data);
     }
 
     @Override

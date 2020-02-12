@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.FORMAL_COMMENT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.GT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.MULTI_LINE_COMMENT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.SINGLE_LINE_COMMENT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.WHITESPACE;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,6 +26,21 @@ final class JavaTokenDocument extends JavaccTokenDocument {
     JavaTokenDocument(String fullText) {
         super(fullText);
     }
+
+    /**
+     * Returns true if the given token is a Java comment.
+     */
+    public static boolean isComment(JavaccToken t) {
+        switch (t.kind) {
+        case FORMAL_COMMENT:
+        case MULTI_LINE_COMMENT:
+        case SINGLE_LINE_COMMENT:
+            return true;
+        default:
+            return false;
+        }
+    }
+
 
     @Override
     protected @Nullable String describeKindImpl(int kind) {

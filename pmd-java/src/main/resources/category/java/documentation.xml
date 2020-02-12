@@ -81,7 +81,6 @@ Determines whether the dimensions of non-header comments found are within the sp
           since="3.4"
           message="Document empty constructor"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#uncommentedemptyconstructor">
         <description>
 Uncommented Empty Constructor finds instances where a constructor does not
