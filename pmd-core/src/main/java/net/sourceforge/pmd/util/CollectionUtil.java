@@ -8,13 +8,16 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -29,6 +32,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @Deprecated
 @InternalApi
 public final class CollectionUtil {
+    private static final int UNKNOWN_SIZE = -1;
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
     public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(List.class, Collection.class, Map.class, Set.class);
@@ -287,6 +291,109 @@ public final class CollectionUtil {
      */
     public static boolean isNotEmpty(Object[] items) {
         return !isEmpty(items);
+    }
+
+    /**
+     * Returns the set union of the given collections.
+     *
+     * @param c1 First collection
+     * @param c2 Second collection
+     *
+     * @return Union of both arguments
+     */
+    @SafeVarargs
+    public static <T> Set<T> union(Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
+        Set<T> union = new LinkedHashSet<>(c1);
+        union.addAll(c2);
+        for (Collection<? extends T> ts : rest) {
+            union.addAll(ts);
+        }
+        return union;
+    }
+
+    /**
+     * Returns the set intersection of the given collections.
+     *
+     * @param c1 First collection
+     * @param c2 Second collection
+     *
+     * @return Intersection of both arguments
+     */
+    @SafeVarargs
+    public static <T> Set<T> intersect(Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
+        Set<T> union = new LinkedHashSet<>(c1);
+        union.retainAll(c2);
+        for (Collection<? extends T> ts : rest) {
+            union.retainAll(ts);
+        }
+        return union;
+    }
+
+
+    /**
+     * Returns the set difference of the first collection with the other
+     * collections.
+     *
+     * @param c1 First collection
+     * @param c2 Second collection
+     *
+     * @return Difference of arguments
+     */
+    @SafeVarargs
+    public static <T> Set<T> diff(Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
+        Set<T> union = new LinkedHashSet<>(c1);
+        union.removeAll(c2);
+        for (Collection<? extends T> ts : rest) {
+            union.removeAll(ts);
+        }
+        return union;
+    }
+
+
+    @SafeVarargs
+    public static <T> Set<T> setOf(T first, T... rest) {
+        if (rest.length == 0) {
+            return Collections.singleton(first);
+        }
+        Set<T> union = new LinkedHashSet<>();
+        union.add(first);
+        union.addAll(Arrays.asList(rest));
+        return union;
+    }
+
+
+    @SafeVarargs
+    public static <T> List<T> listOf(T first, T... rest) {
+        if (rest.length == 0) {
+            return Collections.singletonList(first);
+        }
+        List<T> union = new ArrayList<>();
+        union.add(first);
+        union.addAll(Arrays.asList(rest));
+        return union;
+    }
+
+    public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {
+        return map(from.iterator(), from.size(), f);
+    }
+
+    public static <T, R> List<R> map(Iterable<? extends T> from, Function<? super T, ? extends R> f) {
+        return map(from.iterator(), UNKNOWN_SIZE, f);
+    }
+
+    public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
+        return map(from, UNKNOWN_SIZE, f);
+    }
+
+    private static <T, R> List<R> map(Iterator<? extends T> from, int sizeHint, Function<? super T, ? extends R> f) {
+        if (!from.hasNext()) {
+            return Collections.emptyList();
+        }
+        List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
+        while (from.hasNext()) {
+            res.add(f.apply(from.next()));
+        }
+        return res;
     }
 
     /**
