@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -31,7 +30,7 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
     AbstractAstTParamOwner(T node, AstSymFactory factory) {
         super(node, factory);
         List<JTypeParameterSymbol> result = map(
-            ASTList.orEmpty(node.getTypeParameters()),
+            node.getTypeParameterList(),
             it -> new AstTypeParamSym(it, factory, this)
         );
 
