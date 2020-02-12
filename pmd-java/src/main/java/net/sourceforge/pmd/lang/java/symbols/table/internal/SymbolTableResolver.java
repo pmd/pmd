@@ -9,14 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -143,71 +137,13 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(SamePackageSymbolTable::new, node);
             pushed += pushOnStack(SingleImportSymbolTable::new, isImportOnDemand.get(false));
             // types declared inside the compilation unit
-            pushed += pushOnStack(MemberTypeSymTable::new, node);
+            // pushed += pushOnStack(MemberTypeSymTable::new, node);
 
             // All of the header symbol tables belong to the CompilationUnit
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
 
-
-        @Override
-        public void visit(ASTAnyTypeDeclaration node, Void data) {
-            setTopSymbolTable(node.getModifiers());
-
-            int pushed = 0;
-            pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
-            pushed += pushOnStack(MemberTypeSymTable::new, node); // declared classes
-            pushed += pushOnStack(TypeParamOwnerSymTable::new, node); // shadow inherited stuff
-
-            setTopSymbolTableAndRecurse(node);
-
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTMethodOrConstructorDeclaration node, Void data) {
-            setTopSymbolTable(node.getModifiers());
-
-            int pushed = 0;
-            pushed += pushOnStack(TypeParamOwnerSymTable::new, node);
-            pushed += pushOnStack(FormalParamsSymTable::new, node);
-
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTLambdaExpression node, Void data) {
-            int pushed = 0;
-            pushed += pushOnStack(FormalParamsSymTable::new, node);
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTBlock node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
-
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTForeachStatement node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
-
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTForStatement node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
-
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
 
         private void setTopSymbolTable(JavaNode node) {
             InternalApiBridge.setSymbolTable(node, peekStack());

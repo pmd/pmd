@@ -4,26 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ClassResolveResult;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.VarResolveResult;
 
 
 /**
@@ -38,9 +31,6 @@ abstract class AbstractSymbolTable implements JSymbolTable {
     private final JSymbolTable parent;
 
     AbstractSymbolTable(JSymbolTable parent, SymbolTableHelper helper) {
-        assert parent != null : "Null parent!";
-        assert helper != null : "Null helper!";
-
         this.parent = parent;
         this.helper = helper;
     }
@@ -135,14 +125,6 @@ abstract class AbstractSymbolTable implements JSymbolTable {
         return helper.loadClassOrFail(canonicalName);
     }
 
-    @NonNull
-    protected Collector<ASTAnyTypeDeclaration, ?, Map<String, ResolveResult<JTypeDeclSymbol>>> typeDeclCollector() {
-        return Collectors.toMap(
-            ASTAnyTypeDeclaration::getSimpleName,
-            it -> new ClassResolveResult(it.getSymbol(), this, it)
-        );
-    }
-
     /**
      * Returns true if this table doesn't contain any information, and
      * can be eliminated from the stack entirely.
@@ -153,13 +135,4 @@ abstract class AbstractSymbolTable implements JSymbolTable {
         return false;
     }
 
-    @NonNull
-    protected Collector<@NonNull ASTVariableDeclaratorId, ?, Map<String, ResolveResult<JVariableSymbol>>> varIdCollector() {
-        return Collectors.toMap(ASTVariableDeclaratorId::getVariableName, this::makeResult);
-    }
-
-    @NonNull
-    protected ResolveResultImpl<JVariableSymbol> makeResult(@NonNull ASTVariableDeclaratorId it) {
-        return new VarResolveResult(it.getSymbol(), this, it);
-    }
 }
