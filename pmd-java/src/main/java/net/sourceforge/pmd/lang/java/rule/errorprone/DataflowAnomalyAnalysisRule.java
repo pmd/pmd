@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
@@ -21,6 +22,7 @@ import net.sourceforge.pmd.lang.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -119,6 +121,11 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
                 }
             }
         }
+    }
+
+    @Override
+    public boolean dependsOn(AstProcessingStage<?> stage) {
+        return super.dependsOn(stage) || stage == JavaProcessingStage.DFA;
     }
 
     private void checkVariableAccess(DataFlowNode inode, VariableAccess va, final Usage u) {

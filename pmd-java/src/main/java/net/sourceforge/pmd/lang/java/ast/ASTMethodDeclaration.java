@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  *
  * </pre>
  */
-public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
+public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
 
 
     @InternalApi

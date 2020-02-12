@@ -396,17 +396,6 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testFacadesOffByDefault() throws RuleSetNotFoundException {
-        Rule r = loadFirstRule(XPATH);
-        assertFalse(r.isDfa());
-    }
-
-    @Test
-    public void testDFAFlag() throws RuleSetNotFoundException {
-        assertTrue(loadFirstRule(DFA).isDfa());
-    }
-
-    @Test
     public void testExternalReferenceOverride() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(REF_OVERRIDE);
         assertEquals("TestNameOverride", r.getName());
@@ -1076,12 +1065,6 @@ public class RuleSetFactoryTest {
     private static final String REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
             + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL
             + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "\">" + PMD.EOL + "</rule></ruleset>";
-
-    private static final String DFA = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-            + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
-            + "message=\"avoid the mock rule\" " + PMD.EOL + "dfa=\"true\" " + PMD.EOL
-            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + "<priority>3</priority>" + PMD.EOL
-            + "</rule></ruleset>";
 
     private static final String INCLUDE_EXCLUDE_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL
             + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL

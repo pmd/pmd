@@ -926,7 +926,6 @@ public class Foo implements Cloneable {
           since="1.9"
           message="clone() method should be implemented only if implementing Cloneable interface"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.CloneMethodMustImplementCloneableRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable">
         <description>
 The method clone() should only be implemented if the class implements the Cloneable interface with the exception of
@@ -1144,7 +1143,6 @@ public class JuniorClass extends SeniorClass {
           since="3.9"
           message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule"
-          dfa="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dataflowanomalyanalysis">
         <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
 From those informations there can be found various problems.
@@ -1170,7 +1168,6 @@ public void foo() {
           since="6.13.0"
           message="Probable detached JUnit test case."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#detachedtestcase">
         <description>
 The method appears to be a test case since it has public or default visibility,
@@ -2188,7 +2185,6 @@ public class Foo extends TestCase {
           since="1.0"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitstaticsuite">
         <description>
 The suite() method in a JUnit test needs to be both public and static.
@@ -2396,7 +2392,6 @@ public void bar(int status) {
           since="3.0"
           message="Classes implementing Serializable should set a serialVersionUID"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingserialversionuid">
         <description>
 Serializable classes should provide a serialVersionUID field.
@@ -2701,8 +2696,7 @@ class Foo{
           since="3.3"
           message="Logger should be defined private static final and have the correct class"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#properlogger"
-          typeResolution="true">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#properlogger">
         <description>
 A logger should normally be defined private static final and be associated with the correct class.
 `private final Log log;` is also allowed for rare cases where loggers need to be passed around,
@@ -3196,7 +3190,6 @@ public class Foo {
           since="3.0"
           message="assertTrue(true) or similar statements are unnecessary"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unnecessarybooleanassertion">
         <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.

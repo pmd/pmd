@@ -11,8 +11,6 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParser;
 import net.sourceforge.pmd.lang.modelica.internal.ModelicaProcessingStage;
-import net.sourceforge.pmd.lang.modelica.rule.ModelicaRuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 public class ModelicaHandler extends AbstractPmdLanguageVersionHandler {
 
@@ -25,10 +23,6 @@ public class ModelicaHandler extends AbstractPmdLanguageVersionHandler {
         return new DefaultASTXPathHandler();
     }
 
-    @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return ModelicaRuleViolationFactory.INSTANCE;
-    }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {

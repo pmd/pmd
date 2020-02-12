@@ -7,9 +7,7 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-
-public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode, DFAGraphMethod {
+public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode {
     public ASTTriggerTimingPointSection(int id) {
         super(id);
     }
@@ -34,7 +32,6 @@ public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements E
         return getImage();
     }
 
-    @Override
     public String getName() {
         return getMethodName();
     }
