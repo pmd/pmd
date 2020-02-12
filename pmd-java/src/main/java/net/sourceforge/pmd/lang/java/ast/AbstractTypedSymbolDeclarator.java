@@ -26,12 +26,12 @@ abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol>
     @NonNull
     @Override
     public T getSymbol() {
-        assertSymbolNotNull(symbol);
+        assertSymbolNotNull(symbol, this);
         return symbol;
     }
 
-    static void assertSymbolNotNull(JElementSymbol symbol) {
-        assert symbol != null : "Symbol was null, not set by qualified name resolver";
+    static void assertSymbolNotNull(JElementSymbol symbol, SymbolDeclaratorNode node) {
+        assert symbol != null : "Symbol was null, not set by qualified name resolver, on " + node;
     }
 
     @Nullable

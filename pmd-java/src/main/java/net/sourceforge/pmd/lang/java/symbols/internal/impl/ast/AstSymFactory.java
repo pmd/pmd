@@ -8,18 +8,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 
 
-public final class AstSymFactory implements SymbolFactory<ASTAnyTypeDeclaration> {
+public final class AstSymFactory {
 
     /**
-     * Returns the symbol for the given local variable.
+     * Builds, sets and returns the symbol for the given local variable.
      */
-    public JLocalVariableSymbol getLocalVarSymbol(ASTVariableDeclaratorId id) {
+    public JLocalVariableSymbol setLocalVarSymbol(ASTVariableDeclaratorId id) {
         assert !id.isField() && !id.isEnumConstant() : "Local var symbol is not appropriate for fields";
         assert !id.isFormalParameter()
             || id.isLambdaParameter()
@@ -28,20 +27,11 @@ public final class AstSymFactory implements SymbolFactory<ASTAnyTypeDeclaration>
         return new AstLocalVarSym(id, this);
     }
 
-    @Override
-    public JClassSymbol getClassSymbol(@Nullable ASTAnyTypeDeclaration klass) {
-        if (klass == null) {
-            return null;
-        }
-
-        JClassSymbol sym = InternalApiBridge.getSymbolInternal(klass);
-        if (sym != null) {
-            return sym;
-        }
-
-        @Nullable
-        JClassSymbol encl = getClassSymbol(klass.getEnclosingType());
-        return new AstClassSym(klass, this, encl);
+    /**
+     * Builds, sets and returns the symbol for the given class.
+     */
+    public JClassSymbol setClassSymbol(@Nullable JTypeParameterOwnerSymbol enclosing, ASTAnyTypeDeclaration klass) {
+        return new AstClassSym(klass, this, enclosing);
     }
 
 }

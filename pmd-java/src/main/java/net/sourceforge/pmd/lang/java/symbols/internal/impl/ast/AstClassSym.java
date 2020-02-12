@@ -18,9 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -29,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
@@ -37,20 +36,15 @@ final class AstClassSym
     extends AbstractAstTParamOwner<ASTAnyTypeDeclaration>
     implements JClassSymbol {
 
-    private final @Nullable JClassSymbol enclosing;
+    private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
     private final List<JMethodSymbol> declaredMethods;
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
 
     AstClassSym(ASTAnyTypeDeclaration node,
-                AstSymFactory factory) {
-        this(node, factory, null);
-    }
-
-    AstClassSym(ASTAnyTypeDeclaration node,
                 AstSymFactory factory,
-                @Nullable JClassSymbol enclosing) {
+                @Nullable JTypeParameterOwnerSymbol enclosing) {
         super(node, factory);
         this.enclosing = enclosing;
 
@@ -122,35 +116,24 @@ final class AstClassSym
     }
 
     @Override
-    public @Nullable JClassSymbol getEnclosingClass() {
-        return enclosing;
-    }
-
-    @Override
     public boolean isUnresolved() {
         return false;
     }
 
     @Override
-    public @Nullable JExecutableSymbol getEnclosingMethod() {
-        if (node.isLocal()) {
-            JavaNode enclosing =
-                (JavaNode)
-                    node.ancestors()
-                        .filter(it -> it instanceof ASTMethodOrConstructorDeclaration || it instanceof ASTAnyTypeDeclaration || it instanceof ASTInitializer)
-                        .first();
-
-            if (!(enclosing instanceof ASTMethodOrConstructorDeclaration)) {
-                return null;
-            }
-            ASTAnyTypeDeclaration methodOwner = enclosing.getEnclosingType();
-            if (enclosing instanceof ASTMethodDeclaration) {
-                return new AstMethodSym((ASTMethodDeclaration) enclosing, factory, methodOwner.getSymbol());
-            } else if (enclosing instanceof ASTConstructorDeclaration) {
-                return new AstCtorSym((ASTConstructorDeclaration) enclosing, factory, methodOwner.getSymbol());
-            }
+    public @Nullable JClassSymbol getEnclosingClass() {
+        if (enclosing instanceof JClassSymbol) {
+            return (JClassSymbol) enclosing;
+        } else if (enclosing instanceof JExecutableSymbol) {
+            return enclosing.getEnclosingClass();
         }
+        assert enclosing == null;
         return null;
+    }
+
+    @Override
+    public @Nullable JExecutableSymbol getEnclosingMethod() {
+        return enclosing instanceof JExecutableSymbol ? (JExecutableSymbol) enclosing : null;
     }
 
     @Override

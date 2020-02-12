@@ -27,17 +27,14 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
     protected AbstractAstExecSymbol(T node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory);
         this.owner = owner;
+        formals = CollectionUtil.map(
+            node.getFormalParameters(),
+            p -> new AstFormalParamSym(p.getVarId(), factory, this)
+        );
     }
 
     @Override
     public List<JFormalParamSymbol> getFormalParameters() {
-        if (formals == null) {
-            formals = CollectionUtil.map(
-                node.getFormalParameters().iterator(),
-                p -> new AstFormalParamSym(p.getVarId(), factory, this)
-            );
-        }
-
         return formals;
     }
 

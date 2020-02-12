@@ -50,7 +50,7 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
 
     @Override
     public T getSymbol() {
-        AbstractTypedSymbolDeclarator.assertSymbolNotNull(symbol);
+        AbstractTypedSymbolDeclarator.assertSymbolNotNull(symbol, this);
         return symbol;
     }
 }
