@@ -63,8 +63,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      */
     private final Stack<MutableInt> anonymousCounters = new Stack<>();
 
-    private final Stack<MutableInt> lambdaCounters = new Stack<>();
-
     private final Stack<JavaTypeQualifiedName> innermostEnclosingTypeName = new Stack<>();
 
     /**
@@ -254,7 +252,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         localIndices = localIndices.prepend(localIndex);
         classNames = classNames.prepend(className);
         anonymousCounters.push(new MutableInt(0));
-        lambdaCounters.push(new MutableInt(0));
         currentLocalIndices.push(new HashMap<String, Integer>());
         innermostEnclosingTypeName.push(contextClassQName());
     }
@@ -265,7 +262,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         localIndices = localIndices.tail();
         classNames = classNames.tail();
         anonymousCounters.pop();
-        lambdaCounters.pop();
         currentLocalIndices.pop();
         innermostEnclosingTypeName.pop();
     }
