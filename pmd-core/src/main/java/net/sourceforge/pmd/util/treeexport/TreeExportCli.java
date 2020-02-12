@@ -24,9 +24,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -156,8 +158,8 @@ public class TreeExportCli {
     private void run(TreeRenderer renderer) throws IOException {
         printWarning();
 
-        LanguageVersionHandler languageHandler = LanguageRegistry.findLanguageByTerseName(language)
-                .getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersion langVersion = LanguageRegistry.findLanguageByTerseName(language).getDefaultVersion();
+        LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
         Parser parser = languageHandler.getParser(languageHandler.getDefaultParserOptions());
 
         @SuppressWarnings("PMD.CloseResource")
@@ -175,8 +177,21 @@ public class TreeExportCli {
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
         try (Reader reader = source) {
-            Node root = parser.parse(file, reader);
-            languageHandler.getQualifiedNameResolutionFacade(this.getClass().getClassLoader()).start(root);
+            RootNode root = (RootNode) parser.parse(file, reader);
+
+            AstAnalysisContext ctx = new AstAnalysisContext() {
+                @Override
+                public ClassLoader getTypeResolutionClassLoader() {
+                    return getClass().getClassLoader();
+                }
+
+                @Override
+                public LanguageVersion getLanguageVersion() {
+                    return langVersion;
+                }
+            };
+
+            languageHandler.getProcessingStages().forEach(it -> it.processAST(root, ctx));
 
             renderer.renderSubtree(root, System.out);
         }

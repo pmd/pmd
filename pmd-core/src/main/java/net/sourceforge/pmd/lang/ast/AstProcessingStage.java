@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import static java.util.Collections.emptyList;
 
+import java.util.Comparator;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
@@ -57,6 +58,11 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 // @formatter:on
 @Experimental
 public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Comparable<T> {
+
+    /**
+     * Compares processing stages of possibly different kinds.
+     */
+    Comparator<AstProcessingStage<?>> COMPARATOR = AstProcessingStage::compare;
 
 
     /**
@@ -110,5 +116,6 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
     default int compare(AstProcessingStage<?> t) {
         return this.compareTo((T) t);
     }
+
 
 }

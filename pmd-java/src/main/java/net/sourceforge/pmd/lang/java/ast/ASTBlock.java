@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 /**
  * A block of code. This is a {@linkplain ASTStatement statement} that
  * contains other statements.
@@ -17,8 +19,6 @@ import java.util.Iterator;
  * </pre>
  */
 public final class ASTBlock extends AbstractStatement implements Iterable<ASTStatement>, ASTSwitchArrowRHS {
-
-    private boolean containsComment;
 
     ASTBlock(int id) {
         super(id);
@@ -37,11 +37,15 @@ public final class ASTBlock extends AbstractStatement implements Iterable<ASTSta
 
 
     public boolean containsComment() {
-        return this.containsComment;
-    }
+        JavaccToken t = jjtGetLastToken().getPreviousComment();
+        while (t != null) {
+            if (JavaTokenDocument.isComment(t)) {
+                return true;
+            }
+            t = t.getPreviousComment();
+        }
 
-    void setContainsComment() {
-        this.containsComment = true;
+        return false;
     }
 
     @Override

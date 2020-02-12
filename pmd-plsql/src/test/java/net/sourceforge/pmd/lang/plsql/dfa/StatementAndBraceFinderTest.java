@@ -187,7 +187,6 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         assertTrue(dfn.isType(NodeType.LABEL_STATEMENT));
     }
 
-
     private static final String TEST1 = "CREATE OR REPLACE PACKAGE BODY Foo AS" + PMD.EOL + " PROCEDURE bar IS BEGIN"
             + PMD.EOL + "  x := 2;" + PMD.EOL + " END bar;" + PMD.EOL + "END foo;";
 
@@ -206,11 +205,6 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     private static final String TEST6 = "CREATE OR REPLACE PACKAGE BODY Foo AS" + PMD.EOL + " PROCEDURE bar IS "
             + PMD.EOL + " BEGIN" + PMD.EOL + " CASE 1 " + PMD.EOL + " WHEN 0 THEN NULL; " + PMD.EOL
             + " WHEN 1 THEN NULL; " + PMD.EOL + " ELSE NULL;" + PMD.EOL + " END CASE; " + PMD.EOL + " END bar; "
-            + PMD.EOL + "END foo;";
-
-    private static final String TEST7 = "CREATE OR REPLACE PACKAGE BODY Foo AS" + PMD.EOL + " PROCEDURE bar IS "
-            + PMD.EOL + " BEGIN" + PMD.EOL + " CASE " + PMD.EOL + " WHEN 0=1 THEN NULL; " + PMD.EOL
-            + " WHEN 1=1 THEN NULL; " + PMD.EOL + " ELSE NULL;" + PMD.EOL + " END CASE;" + PMD.EOL + " END bar;"
             + PMD.EOL + "END foo;";
 
     private static final String TEST8 = "CREATE OR REPLACE PACKAGE BODY Foo AS" + PMD.EOL + " PROCEDURE bar IS BEGIN"

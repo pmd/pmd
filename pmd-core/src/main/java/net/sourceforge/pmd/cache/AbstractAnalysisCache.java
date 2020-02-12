@@ -30,7 +30,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -129,14 +128,9 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             currentAuxClassPathChecksum = computeClassPathHash(urlClassLoader.getURLs());
 
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
-                // Do we even care?
-                for (final Rule r : ruleSets.getAllRules()) {
-                    if (r.isDfa() || r.isTypeResolution()) {
-                        LOG.info("Analysis cache invalidated, auxclasspath changed.");
-                        cacheIsValid = false;
-                        break;
-                    }
-                }
+                // TODO some rules don't need that (in fact, some languages)
+                LOG.info("Analysis cache invalidated, auxclasspath changed.");
+                cacheIsValid = false;
             }
         } else {
             currentAuxClassPathChecksum = 0;
