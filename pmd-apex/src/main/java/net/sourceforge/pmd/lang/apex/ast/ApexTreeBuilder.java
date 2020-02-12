@@ -357,13 +357,15 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         Token token = lexer.nextToken();
         int endIndex = lexer.getCharIndex();
 
+        boolean checkForCommentSuppression = suppressMarker != null;
+
         while (token.getType() != Token.EOF) {
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
                 // Filter only block comments starting with "/**"
                 if (token.getText().startsWith("/**")) {
                     tokenLocations.add(new ApexDocTokenLocation(startIndex, token));
                 }
-            } else if (token.getType() == ApexLexer.EOL_COMMENT) {
+            } else if (checkForCommentSuppression && token.getType() == ApexLexer.EOL_COMMENT) {
                 // check if it starts with the suppress marker
                 String trimmedCommentText = token.getText().substring(2).trim();
 
