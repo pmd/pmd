@@ -30,6 +30,11 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 ### API Changes
 
+#### Deprecated API
+
+* {% jdoc core::lang.dfa.DFAGraphRule %} and its implementations
+* {% jdoc core::lang.dfa.DFAGraphMethod %}
+
 ### External Contributions
 
 *   [#2251](https://github.com/pmd/pmd/pull/2251): \[java] FP for InvalidLogMessageFormat when using slf4j-Markers - [Kris Scheibe](https://github.com/kris-scheibe)
