@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
+import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymb
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
+import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
@@ -91,7 +93,8 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     SYMBOL_RESOLUTION("Symbol table") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            //            new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
+            // kept for compatibility with existing tests
+            new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
 
@@ -101,6 +104,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     TYPE_RESOLUTION("Type resolution", JAVA_PROCESSING) {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
+            // removed because of incompatibilities with current AST
             //            new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
@@ -121,7 +125,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     MULTIFILE("Multifile analysis") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            //            new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
+             new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
         }
     };
 
