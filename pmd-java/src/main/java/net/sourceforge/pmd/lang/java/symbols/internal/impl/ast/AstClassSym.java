@@ -82,7 +82,7 @@ final class AstClassSym
         }
 
         if (node instanceof ASTEnumDeclaration) {
-            node.getEnumConstants().forEach(constant-> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+            node.getEnumConstants().forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
         }
 
         if (myCtors.isEmpty() && isClass()) {

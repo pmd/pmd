@@ -125,7 +125,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     MULTIFILE("Multifile analysis") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-             new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
+            new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
         }
     };
 
