@@ -81,7 +81,7 @@
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>26.0-jre</version>
+        <version>26.0-android</version>
     </dependency>
     <dependency>
         <groupId>com.google.j2objc</groupId>
