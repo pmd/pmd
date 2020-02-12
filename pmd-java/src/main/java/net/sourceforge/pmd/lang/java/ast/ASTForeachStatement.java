@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTForeachStatement extends AbstractStatement {
+public final class ASTForeachStatement extends AbstractStatement implements InternalInterfaces.VariableIdOwner {
 
     ASTForeachStatement(int id) {
         super(id);
@@ -34,9 +34,9 @@ public final class ASTForeachStatement extends AbstractStatement {
     }
 
 
-    /** Returns the id of the declared variable. */
+    @Override
     @NonNull
-    public ASTVariableDeclaratorId getVariableId() {
+    public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTLocalVariableDeclaration.class).iterator().next();
     }
 
