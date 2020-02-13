@@ -1355,12 +1355,27 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.21.0">PMD Designer Changelog</a>.</p>
 
+<h3 id="apex-suppressions">Apex Suppressions</h3>
+
+<p>In addition to suppressing violation with the <code class="highlighter-rouge">@SuppressWarnings</code> annotation, Apex now also supports
+the suppressions with a <code class="highlighter-rouge">NOPMD</code> comment. See <a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a>.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1087">#1087</a>: [apex] Support suppression via //NOPMD</li>
+    </ul>
+  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2268">#2268</a>: [java] Improve TypeHelper resilience</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2277">#2277</a>: [java] FP in UnusedImports for ambiguous static on-demand imports</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1391,6 +1406,8 @@ For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6
   <li><a href="https://github.com/pmd/pmd/pull/2253">#2253</a>: [modelica] Remove duplicated dependencies - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2256">#2256</a>: [doc] Corrected XML attributes in release notes - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2276">#2276</a>: [java] AppendCharacterWithCharRule ignore literals in expressions - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2278">#2278</a>: [java] fix UnusedImports rule for ambiguous static on-demand imports - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2279">#2279</a>: [apex] Add support for suppressing violations using the // NOPMD comment - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
 </ul>
 
 
@@ -1409,7 +1426,7 @@ For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 12, 2020 <br />
+ Site last generated: Feb 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
