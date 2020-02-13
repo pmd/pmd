@@ -100,6 +100,9 @@ entries:
         - title: Ant
           output: web, pdf
           url: /pmd_userdocs_tools_ant.html
+        - title: PMD Java API
+          output: web, pdf
+          url: /pmd_userdocs_tools_java_api.html
         - title: CI integrations
           output: web, pdf
           url: /pmd_userdocs_tools_ci.html
