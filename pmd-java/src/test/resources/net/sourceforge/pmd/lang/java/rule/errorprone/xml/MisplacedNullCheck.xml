@@ -152,4 +152,25 @@ public class Test {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>False-positive/negative with multiple conditions</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The null check here is misplaced; if the variable 'attributes' is null there will be a NullPointerException</message>
+            <message>The null check here is misplaced; if the variable 'attributes' is null there will be a NullPointerException</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void method(String annotationType, Map<String, Object> attributes) {
+        boolean isStereotype = annotationType.equals("javax.inject.Named");
+        if (isStereotype && attributes != null && attributes.containsKey("value")) {}
+        if (isStereotype || attributes == null || attributes.containsKey("value")) {}
+
+        if (isStereotype && attributes.containsKey("value") && attributes != null) {}
+        if (isStereotype || attributes.containsKey("value") || attributes == null) {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

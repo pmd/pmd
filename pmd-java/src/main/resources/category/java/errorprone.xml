@@ -2302,34 +2302,28 @@ Either the check is useless (the variable will never be "null") or it is incorre
                 <value>
 <![CDATA[
 //ConditionalAndExpression
-  (: first child is PrimaryExpression :)
-  [*[1][self::PrimaryExpression]]
-  (: second child is EqualityExpression != null :)
-  [*[2][self::EqualityExpression][@Image = '!=']
+  /EqualityExpression
+    [@Image = '!=']
     (: one side is null :)
     [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
     (: other side checks for the variable used somewhere in the first child of conditional and expression :)
-    [some $var in ../PrimaryExpression//Name
+    [some $var in preceding-sibling::PrimaryExpression//Name
       [not(ancestor::ConditionalOrExpression/EqualityExpression[@Image = '=='])]
       /@Image
       satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-  ]
-  /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name
+  /PrimaryExpression/PrimaryPrefix/Name
 |
 //ConditionalOrExpression
-  (: first child is PrimaryExpression :)
-  [*[1][self::PrimaryExpression]]
-  (: second child is EqualityExpression == null :)
-  [*[2][self::EqualityExpression][@Image = '==']
+  /EqualityExpression
+    [@Image = '==']
     (: one side is null :)
     [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
     (: other side checks for the variable used somewhere in the first child of conditional or expression :)
-    [some $var in ../PrimaryExpression//Name
+    [some $var in preceding-sibling::PrimaryExpression//Name
       [not(ancestor::ConditionalAndExpression/EqualityExpression[@Image = '!='])]
       /@Image
       satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-  ]
-  /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name
+  /PrimaryExpression/PrimaryPrefix/Name
 ]]>
                 </value>
             </property>
