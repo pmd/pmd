@@ -23,6 +23,8 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 *   java
     *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
+*   java-bestpractices
+    *   [#2277](https://github.com/pmd/pmd/issues/2277): \[java] FP in UnusedImports for ambiguous static on-demand imports
 *   java-errorprone
     *   [#2250](https://github.com/pmd/pmd/issues/2250): \[java] InvalidLogMessageFormat flags logging calls using a slf4j-Marker
 *   java-performance
@@ -41,6 +43,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 *   [#2253](https://github.com/pmd/pmd/pull/2253): \[modelica] Remove duplicated dependencies - [Piotrek Żygieło](https://github.com/pzygielo)
 *   [#2256](https://github.com/pmd/pmd/pull/2256): \[doc] Corrected XML attributes in release notes - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2276](https://github.com/pmd/pmd/pull/2276): \[java] AppendCharacterWithCharRule ignore literals in expressions - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#2278](https://github.com/pmd/pmd/pull/2278): \[java] fix UnusedImports rule for ambiguous static on-demand imports - [Kris Scheibe](https://github.com/kris-scheibe)
 
 {% endtocmaker %}
 
