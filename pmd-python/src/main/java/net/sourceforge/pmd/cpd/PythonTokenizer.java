@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.python.ast.PythonTokenKinds;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * The Python tokenizer.
@@ -36,7 +37,7 @@ public class PythonTokenizer extends JavaCCTokenizer {
 
     private static class PythonTokenDocument extends JavaccTokenDocument {
 
-        PythonTokenDocument(String fullText) {
+        PythonTokenDocument(TextDocument fullText) {
             super(fullText);
         }
 

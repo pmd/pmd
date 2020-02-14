@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 
@@ -20,16 +21,24 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private SourceCodePositioner positioner;
     private CharSequence text;
 
+    private final LanguageVersion langVersion;
+
     private final String fileName;
 
-    TextDocumentImpl(TextFile backend) throws IOException {
+    TextDocumentImpl(TextFile backend, LanguageVersion langVersion) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
 
         // charbuffer doesn't copy the char array for subsequence operations
         this.text = CharBuffer.wrap(backend.readContents());
+        this.langVersion = langVersion;
         this.positioner = null;
         this.fileName = backend.getFileName();
+    }
+
+    @Override
+    public LanguageVersion getLanguageVersion() {
+        return langVersion;
     }
 
     @Override

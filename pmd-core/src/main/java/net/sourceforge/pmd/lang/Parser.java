@@ -12,6 +12,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Produces an AST from a source file. Instances of this interface must
@@ -48,21 +49,19 @@ public interface Parser {
     final class ParserTask {
 
         private final LanguageVersion lv;
-        private final String filepath;
-        private final String sourceText;
+        private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
 
         private final String commentMarker;
 
 
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
-            this(lv, filepath, sourceText, reporter, PMD.SUPPRESS_MARKER);
+        public ParserTask(LanguageVersion lv, TextDocument textDoc, SemanticErrorReporter reporter) {
+            this(lv, textDoc, reporter, PMD.SUPPRESS_MARKER);
         }
 
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter, String commentMarker) {
+        public ParserTask(LanguageVersion lv, TextDocument textDoc, SemanticErrorReporter reporter, String commentMarker) {
             this.lv = Objects.requireNonNull(lv, "lv was null");
-            this.filepath = Objects.requireNonNull(filepath, "filepath was null");
-            this.sourceText = Objects.requireNonNull(sourceText, "sourceText was null");
+            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
             this.commentMarker = Objects.requireNonNull(commentMarker, "commentMarker was null");
         }
@@ -77,14 +76,21 @@ public interface Parser {
          * not be interpreted, it may not be a file-system path.
          */
         public String getFileDisplayName() {
-            return filepath;
+            return textDoc.getFileName();
+        }
+
+        /**
+         * The text document to parse.
+         */
+        public TextDocument getTextDocument() {
+            return textDoc;
         }
 
         /**
          * The full text of the file to parse.
          */
         public String getSourceText() {
-            return sourceText;
+            return getTextDocument().getText().toString();
         }
 
         /**

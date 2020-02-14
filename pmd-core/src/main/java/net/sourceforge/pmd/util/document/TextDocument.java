@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.Closeable;
 import java.io.IOException;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
@@ -19,6 +20,11 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  * (by failing in {@link TextEditor#close()}).
  */
 public interface TextDocument extends Closeable {
+
+    /**
+     * Returns the language version that should be used to parse this file.
+     */
+    LanguageVersion getLanguageVersion();
 
     /**
      * Returns the name of the {@link TextFile} backing this instance.
@@ -109,10 +115,12 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a read-only document for the given text.
+     * FIXME for the moment, the language version may be null (for CPD languages).
+     *  this may be fixed when CPD and PMD languages are merged
      */
-    static TextDocument readOnlyString(final String source) {
+    static TextDocument readOnlyString(final String source, LanguageVersion lv) {
         try {
-            return new TextDocumentImpl(TextFile.readOnlyString(source));
+            return new TextDocumentImpl(TextFile.readOnlyString(source), lv);
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }

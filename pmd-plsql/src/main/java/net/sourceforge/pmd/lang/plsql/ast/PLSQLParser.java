@@ -10,11 +10,12 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
 
     @Override
-    protected JavaccTokenDocument newDocument(String fullText) {
+    protected JavaccTokenDocument newDocumentImpl(TextDocument fullText) {
         return new JavaccTokenDocument(fullText) {
             @Override
             protected @Nullable String describeKindImpl(int kind) {

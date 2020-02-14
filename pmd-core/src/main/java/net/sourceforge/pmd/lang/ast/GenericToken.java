@@ -48,18 +48,6 @@ public interface GenericToken<T extends GenericToken<T>> {
     //  pmd-java to JavaccToken
 
 
-    /** Inclusive start offset in the source file text. */
-    default int getStartInDocument() {
-        return -1;
-    }
-
-
-    /** Exclusive end offset in the source file text. */
-    default int getEndInDocument() {
-        return -1;
-    }
-
-
     /**
      * Gets the line where the token's region begins
      *

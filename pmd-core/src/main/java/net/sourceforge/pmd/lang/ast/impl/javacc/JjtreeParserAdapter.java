@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Base implementation of the {@link Parser} interface for JavaCC language
@@ -23,7 +24,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         // inheritance only
     }
 
-    protected abstract JavaccTokenDocument newDocument(String fullText);
+    protected abstract JavaccTokenDocument newDocumentImpl(TextDocument textDocument);
 
     protected CharStream newCharStream(JavaccTokenDocument tokenDocument) {
         return new SimpleCharStream(tokenDocument);
@@ -31,7 +32,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
 
     @Override
     public R parse(ParserTask task) throws ParseException {
-        JavaccTokenDocument doc = newDocument(task.getSourceText());
+        JavaccTokenDocument doc = newDocumentImpl(task.getTextDocument());
         CharStream charStream = newCharStream(doc);
 
         try {

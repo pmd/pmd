@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public final class CharStreamFactory {
 
@@ -28,9 +29,9 @@ public final class CharStreamFactory {
     /**
      * A char stream that doesn't perform any escape translation.
      */
-    public static CharStream simpleCharStream(Reader input, Function<? super String, ? extends JavaccTokenDocument> documentMaker) {
+    public static CharStream simpleCharStream(Reader input, Function<? super TextDocument, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
-        JavaccTokenDocument document = documentMaker.apply(source);
+        JavaccTokenDocument document = documentMaker.apply(TextDocument.readOnlyString(source, null));
         return new SimpleCharStream(document);
     }
 
@@ -44,9 +45,9 @@ public final class CharStreamFactory {
     /**
      * A char stream that translates java unicode sequences.
      */
-    public static CharStream javaCharStream(Reader input, Function<? super String, ? extends JavaccTokenDocument> documentMaker) {
+    public static CharStream javaCharStream(Reader input, Function<? super TextDocument, ? extends JavaccTokenDocument> documentMaker) {
         String source = toString(input);
-        JavaccTokenDocument tokens = documentMaker.apply(source);
+        JavaccTokenDocument tokens = documentMaker.apply(TextDocument.readOnlyString(source, null));
         return new JavaCharStream(tokens);
     }
 

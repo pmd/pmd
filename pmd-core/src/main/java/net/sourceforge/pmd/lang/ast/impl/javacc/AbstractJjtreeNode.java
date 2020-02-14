@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -46,8 +48,16 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public CharSequence getText() {
-        String fullText = getFirstToken().document.getFullText();
-        return fullText.substring(getStartOffset(), getEndOffset());
+        return getTextDocument().subSequence(getTextRegion());
+    }
+
+    private TextDocument getTextDocument() {
+        return getFirstToken().document.getTextDocument();
+    }
+
+    // TODO move up to Node, drop all getBegin/End/Line/Column methods
+    public TextRegion getTextRegion() {
+        return getFirstToken().getRegion().union(getLastToken().getRegion());
     }
 
     /**
@@ -154,13 +164,5 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     @Override
     public String toString() {
         return "[" + getXPathNodeName() + ":" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
-    }
-
-    private int getStartOffset() {
-        return this.getFirstToken().getStartInDocument();
-    }
-
-    private int getEndOffset() {
-        return this.getLastToken().getEndInDocument();
     }
 }

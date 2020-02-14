@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.ast.impl;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Token layer of a parsed file.
@@ -16,25 +14,19 @@ import net.sourceforge.pmd.util.document.SourceCodePositioner;
 @Experimental
 public abstract class TokenDocument<T extends GenericToken> {
 
-    private final String fullText;
-    private final SourceCodePositioner positioner;
+    private final TextDocument textDocument;
 
-    public TokenDocument(String fullText) {
-        this.fullText = fullText;
-        positioner = new SourceCodePositioner(fullText);
+    public TokenDocument(TextDocument textDocument) {
+        this.textDocument = textDocument;
     }
 
     /** Returns the original text of the file (without escaping). */
     public String getFullText() {
-        return fullText;
+        return textDocument.getText().toString();
     }
 
-    public int lineNumberFromOffset(int offset) {
-        return positioner.lineNumberFromOffset(offset);
-    }
-
-    public int columnFromOffset(int offsetInclusive) {
-        return StringUtil.columnNumberAt(fullText, offsetInclusive);
+    public TextDocument getTextDocument() {
+        return textDocument;
     }
 
     /**

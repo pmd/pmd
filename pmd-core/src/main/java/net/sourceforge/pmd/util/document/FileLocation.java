@@ -13,6 +13,8 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
  */
 public final class FileLocation {
 
+    public static final FileLocation UNDEFINED = new FileLocation("n/a", 1, 1, 1, 1);
+
     private final int beginLine;
     private final int endLine;
     private final int beginColumn;

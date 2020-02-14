@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Token document for Javacc implementations. This is a helper object
@@ -18,8 +19,8 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 
     private JavaccToken first;
 
-    public JavaccTokenDocument(String fullText) {
-        super(fullText);
+    public JavaccTokenDocument(TextDocument textDocument) {
+        super(textDocument);
     }
 
     /**

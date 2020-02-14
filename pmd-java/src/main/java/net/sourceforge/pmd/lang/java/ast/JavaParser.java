@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -27,8 +28,8 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
 
     @Override
-    protected JavaccTokenDocument newDocument(String fullText) {
-        return new JavaTokenDocument(fullText);
+    protected JavaccTokenDocument newDocumentImpl(TextDocument textDocument) {
+        return new JavaTokenDocument(textDocument);
     }
 
     @Override

@@ -26,6 +26,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 // in which case we could assert that they're up to date
 public interface TextRegion extends Comparable<TextRegion> {
 
+    TextRegion UNDEFINED = TextRegionImpl.fromOffsetLength(0, 0);
+
     /** Compares the start offset, then the length of a region. */
     Comparator<TextRegion> COMPARATOR = Comparator.comparingInt(TextRegion::getStartOffset)
                                                   .thenComparingInt(TextRegion::getLength);

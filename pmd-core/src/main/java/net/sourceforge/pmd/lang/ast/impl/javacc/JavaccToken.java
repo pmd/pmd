@@ -8,6 +8,8 @@ import java.util.Comparator;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * A generic token implementation for JavaCC parsers.
@@ -39,8 +41,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
     public static final int IMPLICIT_TOKEN = -1;
 
     private static final Comparator<JavaccToken> COMPARATOR =
-        Comparator.comparingInt(JavaccToken::getStartInDocument)
-                  .thenComparing(JavaccToken::getEndInDocument);
+        Comparator.comparing(JavaccToken::getRegion);
 
 
     /**
@@ -52,8 +53,8 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
 
     protected final JavaccTokenDocument document;
     private final CharSequence image;
-    private final int startInclusive;
-    private final int endExclusive;
+    private final TextRegion region;
+    private FileLocation location;
 
     /**
      * A reference to the next regular (non-special) token from the input
@@ -86,7 +87,11 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      */
     @Deprecated
     public JavaccToken(String image) {
-        this(-1, image, -1, -1, null);
+        this.kind = IMPLICIT_TOKEN;
+        this.image = image;
+        this.region = TextRegion.UNDEFINED;
+        this.location = FileLocation.UNDEFINED;
+        this.document = null;
     }
 
     /**
@@ -103,13 +108,24 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
                        int startInclusive,
                        int endExclusive,
                        JavaccTokenDocument document) {
-        assert startInclusive <= endExclusive
-            : "Offsets should be correctly ordered: " + startInclusive + " <= " + endExclusive;
+        assert document != null : "Null document";
+        this.kind = kind;
+        this.image = image;
+        this.region = document.getTextDocument().createRegion(startInclusive, endExclusive);
+        this.document = document;
+    }
+
+    public JavaccToken(int kind,
+                       CharSequence image,
+                       TextRegion region,
+                       JavaccTokenDocument document) {
+
+        assert document != null : "Null document";
+        assert region != null : "Null region";
 
         this.kind = kind;
         this.image = image;
-        this.startInclusive = startInclusive;
-        this.endExclusive = endExclusive;
+        this.region = region;
         this.document = document;
     }
 
@@ -140,34 +156,39 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return image.toString();
     }
 
-    @Override
-    public int getStartInDocument() {
-        return startInclusive;
+    /**
+     * Returns a region with the coordinates of this token.
+     * TODO move up to GenericToken, drop all getBegin/End/Line/Column methods
+     */
+    public TextRegion getRegion() {
+        return region;
     }
 
-    @Override
-    public int getEndInDocument() {
-        return endExclusive;
+    private FileLocation getLocation() {
+        if (location == null) {
+            location = document.getTextDocument().toLocation(getRegion());
+        }
+        return location;
     }
 
     @Override
     public int getBeginLine() {
-        return document == null ? -1 : document.lineNumberFromOffset(startInclusive);
+        return getLocation().getBeginLine();
     }
 
     @Override
     public int getEndLine() {
-        return document == null ? -1 : document.lineNumberFromOffset(endExclusive);
+        return getLocation().getEndLine();
     }
 
     @Override
     public int getBeginColumn() {
-        return document == null ? -1 : document.columnFromOffset(startInclusive);
+        return getLocation().getBeginColumn();
     }
 
     @Override
     public int getEndColumn() {
-        return document == null ? -1 : document.columnFromOffset(endExclusive);
+        return getLocation().getEndColumn();
     }
 
 
@@ -193,7 +214,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return new JavaccToken(
             this.kind,
             charStream.GetImage(),
-            this.startInclusive,
+            region.getStartOffset(),
             charStream.getEndOffset(),
             this.document
         );
@@ -223,8 +244,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         JavaccToken tok = new JavaccToken(
             newKind,
             this.image,
-            this.startInclusive,
-            this.endExclusive,
+            this.getRegion(),
             this.document
         );
         tok.specialToken = this.specialToken;
@@ -248,7 +268,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      */
     public static JavaccToken implicitBefore(JavaccToken next) {
 
-        JavaccToken implicit = newImplicit(next.getStartInDocument(), next.document);
+        JavaccToken implicit = newImplicit(next.getRegion().getStartOffset(), next.document);
 
         // insert it right before the next token
         // as a special token
@@ -273,11 +293,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      * @return A new token
      */
     public static JavaccToken newImplicit(int offset, JavaccTokenDocument document) {
-        return new JavaccToken(IMPLICIT_TOKEN,
-                               "",
-                               offset,
-                               offset,
-                               document);
+        return new JavaccToken(IMPLICIT_TOKEN, "", offset, offset, document);
     }
 }
 

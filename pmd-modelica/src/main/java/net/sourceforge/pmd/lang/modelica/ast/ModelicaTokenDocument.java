@@ -7,12 +7,13 @@ package net.sourceforge.pmd.lang.modelica.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 
 public class ModelicaTokenDocument extends JavaccTokenDocument {
 
-    public ModelicaTokenDocument(String fullText) {
-        super(fullText);
+    public ModelicaTokenDocument(TextDocument textDocument) {
+        super(textDocument);
     }
 
     @Override

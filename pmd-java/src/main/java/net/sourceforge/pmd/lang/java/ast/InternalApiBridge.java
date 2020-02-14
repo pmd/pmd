@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Acts as a bridge between outer parts of PMD and the restricted access
@@ -177,12 +178,11 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).setScope(scope);
     }
 
-    public static void setComment(JavaNode node, Comment comment) {
-        ((AbstractJavaNode) node).comment(comment);
-    }
-
     public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
         ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
+    public static JavaccTokenDocument javaTokenDoc(TextDocument fullText) {
+        return new JavaTokenDocument(fullText);
+    }
 }

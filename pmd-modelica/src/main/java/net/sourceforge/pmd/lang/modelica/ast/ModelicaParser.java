@@ -8,13 +8,14 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 
 public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
 
     @Override
-    protected JavaccTokenDocument newDocument(String fullText) {
-        return new ModelicaTokenDocument(fullText);
+    protected JavaccTokenDocument newDocumentImpl(TextDocument textDocument) {
+        return new ModelicaTokenDocument(textDocument);
     }
 
     @Override
