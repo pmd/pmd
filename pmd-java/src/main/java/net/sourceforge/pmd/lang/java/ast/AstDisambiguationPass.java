@@ -114,8 +114,10 @@ public final class AstDisambiguationPass {
                 throw new AssertionError("Unrecognised context for ambiguous name: " + name.getParent());
             }
 
+            // do resolve
             JavaNode resolved = startResolve(name, processor, isPackageOrTypeOnly);
 
+            // finish
             assert !isPackageOrTypeOnly
                 || resolved instanceof ASTTypeExpression
                 || resolved instanceof ASTAmbiguousName
@@ -136,13 +138,14 @@ public final class AstDisambiguationPass {
             }
         }
 
-        public void checkParentIsMember(JavaAstProcessor processor, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
+        private static void checkParentIsMember(JavaAstProcessor processor, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
             JTypeDeclSymbol sym = resolvedType.getReferencedSym();
             JClassSymbol parentClass = findTypeMember(sym, parent.getSimpleName());
             if (parentClass == null) {
                 reportUnresolvedMember(parent, processor, Fallback.TYPE, parent.getSimpleName(), sym);
                 String fullName = unresolvedQualifier(sym, parent.getSimpleName());
-                parentClass = processor.makeUnresolvedReference(fullName);
+                int numTypeArgs = ASTList.orEmpty(parent.getTypeArguments()).size();
+                parentClass = processor.makeUnresolvedReference(fullName, numTypeArgs);
             }
             parent.setSymbol(parentClass);
         }
@@ -277,10 +280,11 @@ public final class AstDisambiguationPass {
                 reportUnresolvedMember(ambig, processor, Fallback.AMBIGUOUS, nextIdent.getImage(), sym);
                 return ambig;
             } else {
+                // treat as unresolved field accesses, this is the smoothest for later type res
+
                 // todo report on the specific token failing
                 reportUnresolvedMember(ambig, processor, Fallback.FIELD_ACCESS, nextIdent.getImage(), sym);
                 ASTTypeExpression typeExpr = new ASTTypeExpression(type);
-                // treat as unresolved field accesses, this is the smoothest for later type res
                 return resolveExpr(typeExpr, nextIdent, remaining, processor); // this will chain for the rest of the name
             }
         }

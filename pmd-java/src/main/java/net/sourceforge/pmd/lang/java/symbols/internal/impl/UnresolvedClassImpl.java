@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
@@ -30,6 +32,9 @@ class UnresolvedClassImpl implements JClassSymbol {
     private final @Nullable JClassSymbol enclosing;
     private final String canonicalName;
 
+    private int arity = UnresolvedSymFactory.UNKNOWN_ARITY;
+    private List<JTypeParameterSymbol> tparams = Collections.emptyList();
+
     UnresolvedClassImpl(String canonicalName) {
         this(null, canonicalName);
     }
@@ -37,6 +42,35 @@ class UnresolvedClassImpl implements JClassSymbol {
     UnresolvedClassImpl(@Nullable JClassSymbol enclosing, String canonicalName) {
         this.enclosing = enclosing;
         this.canonicalName = canonicalName;
+    }
+
+    /**
+     * Set the number of type parameters of this type. If the arity was
+     * already set to a value different from {@value UnresolvedSymFactory#UNKNOWN_ARITY},
+     * this does nothing: the unresolved type appears several times with
+     * inconsistent arities, which must be reported later.
+     *
+     * @param newArity New number of type parameters
+     */
+    void setTypeParameterCount(int newArity) {
+        if (arity == UnresolvedSymFactory.UNKNOWN_ARITY) {
+            this.arity = newArity;
+            ArrayList<JTypeParameterSymbol> newParams = new ArrayList<>(newArity);
+            for (int i = 0; i < newArity; i++) {
+                newParams.add(new FakeTypeParam("T" + i, this));
+            }
+            this.tparams = Collections.unmodifiableList(newParams);
+        }
+    }
+
+    @Override
+    public int getTypeParameterCount() {
+        return arity;
+    }
+
+    @Override
+    public List<JTypeParameterSymbol> getTypeParameters() {
+        return tparams;
     }
 
     @Override
@@ -172,12 +206,6 @@ class UnresolvedClassImpl implements JClassSymbol {
     }
 
     @Override
-    public List<JTypeParameterSymbol> getTypeParameters() {
-        return Collections.emptyList();
-    }
-
-
-    @Override
     public String toString() {
         return SymbolToStrings.SHARED.toString(this);
     }
@@ -192,4 +220,30 @@ class UnresolvedClassImpl implements JClassSymbol {
         return SymbolEquality.hash(this);
     }
 
+
+    private static class FakeTypeParam implements JTypeParameterSymbol {
+
+        private final String name;
+        private final JTypeParameterOwnerSymbol owner;
+
+        private FakeTypeParam(String name, JTypeParameterOwnerSymbol owner) {
+            this.name = name;
+            this.owner = owner;
+        }
+
+        @Override
+        public @NonNull String getSimpleName() {
+            return name;
+        }
+
+        @Override
+        public JTypeParameterOwnerSymbol getDeclaringSymbol() {
+            return owner;
+        }
+
+        @Override
+        public @Nullable Class<?> getJvmRepr() {
+            return null;
+        }
+    }
 }

@@ -38,7 +38,7 @@ final class SymbolTableHelper {
 
     public JClassSymbol findSymbolCannotFail(String name) {
         JClassSymbol found = processor.getSymResolver().resolveClassFromCanonicalName(name);
-        return found == null ? processor.makeUnresolvedReference(name)
+        return found == null ? processor.makeUnresolvedReference(name, 0)
                              : found;
     }
 

@@ -61,13 +61,12 @@ public final class JavaAstProcessor {
         return astSymFactory;
     }
 
-    public ReflectionSymFactory getReflectSymFactory() {
-        return reflectSymFactory;
+    public JClassSymbol makeUnresolvedReference(String canonicalName) {
+        return makeUnresolvedReference(canonicalName, 0);
     }
 
-    public JClassSymbol makeUnresolvedReference(String canonicalName) {
-        // we have to prefer one factory over another
-        return unresolvedSymFactory.makeUnresolvedReference(canonicalName);
+    public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
+        return unresolvedSymFactory.makeUnresolvedReference(canonicalName, typeArity);
     }
 
     public SymbolResolver getSymResolver() {
