@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
-import java.util.ConcurrentModificationException;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.util.document.io.TextFile;
@@ -22,8 +21,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private CharSequence text;
 
     private final String fileName;
-
-    private TextEditorImpl curEditor;
 
     TextDocumentImpl(TextFile backend) throws IOException {
         this.backend = backend;
@@ -41,37 +38,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public boolean isReadOnly() {
-        return backend.isReadOnly();
-    }
-
-    @Override
-    public TextEditor newEditor(EditorCommitHandler handler) throws IOException {
-        ensureOpen();
-        if (curEditor != null) {
-            throw new ConcurrentModificationException("An editor is already open on this document");
-        }
-        curEditor = new TextEditorImpl(this, backend, handler);
-        return curEditor;
-    }
-
-    void closeEditor(CharSequence text, long stamp) {
-
-        curEditor = null;
-        this.text = text.toString();
-        this.positioner = null;
-        this.curStamp = stamp;
-
-    }
-
-    @Override
     protected void doClose() throws IOException {
-        if (curEditor != null) {
-            curEditor.sever();
-            curEditor = null;
-            throw new IllegalStateException("Unclosed editor!");
-        }
-
         backend.close();
     }
 

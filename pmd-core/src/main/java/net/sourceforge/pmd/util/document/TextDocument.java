@@ -6,9 +6,7 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ConcurrentModificationException;
 
-import net.sourceforge.pmd.util.document.io.ReadOnlyFileException;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
 /**
@@ -29,8 +27,7 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns the current text of this document. Note that this can only
-     * be updated through {@link #newEditor()} and that this doesn't take
+     * Returns the current text of this document. Note that this doesn't take
      * external modifications to the {@link TextFile} into account.
      */
     CharSequence getText();
@@ -86,56 +83,6 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns true if this document cannot be edited. In that case,
-     * {@link #newEditor()} will throw an exception. In the general case,
-     * nothing prevents this method's result from changing from one
-     * invocation to another.
-     */
-    boolean isReadOnly();
-
-
-    /**
-     * Produce a new editor to edit this file. This is like calling
-     * {@link #newEditor(EditorCommitHandler)} with a commit handler
-     * that writes contents to the backend file.
-     *
-     * @return A new editor
-     *
-     * @see #newEditor(EditorCommitHandler)
-     */
-    default TextEditor newEditor() throws IOException {
-        return newEditor(TextFile::writeContents);
-    }
-
-
-    /**
-     * Produce a new editor to edit this file. An editor records modifications
-     * and finally commits them with {@link TextEditor#close() close}. After the
-     * {@code close} method is called, the commit handler parameter is called with
-     * this file's backend as parameter, and the {@linkplain #getText() text} of this
-     * document is updated. That may render existing text regions created by this
-     * document invalid (they won't address the same text, or could be out-of-bounds).
-     * Before then, all text regions created by this document stay valid, even after
-     * some updates.
-     *
-     * <p>Only a single editor may be open at a time.
-     *
-     * @param handler Handles closing of the {@link TextEditor}.
-     *                {@link EditorCommitHandler#commitNewContents(TextFile, CharSequence) commitNewContents}
-     *                is called with the backend file and the new text
-     *                as parameters.
-     *
-     * @return A new editor
-     *
-     * @throws IOException                     If an IO error occurs
-     * @throws IOException                     If this document was closed
-     * @throws ReadOnlyFileException           If this document is read-only
-     * @throws ConcurrentModificationException If an editor is already open for this document
-     */
-    TextEditor newEditor(EditorCommitHandler handler) throws IOException;
-
-
-    /**
      * Closing a document closes the underlying {@link TextFile}.
      * New editors cannot be produced after that, and the document otherwise
      * remains in its current state.
@@ -171,20 +118,5 @@ public interface TextDocument extends Closeable {
         }
     }
 
-
-    interface EditorCommitHandler {
-
-
-        /**
-         * Commits the edited contents of the file.
-         *
-         * @param originalFile File backing the {@link TextDocument}
-         * @param newContents  New contents of the file
-         *
-         * @throws IOException If an I/O error occurs
-         */
-        void commitNewContents(TextFile originalFile, CharSequence newContents) throws IOException;
-
-    }
 
 }
