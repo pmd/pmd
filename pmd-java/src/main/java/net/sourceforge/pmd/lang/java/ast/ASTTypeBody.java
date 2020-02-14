@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 /**
  * Body of a type declaration.
  *
@@ -18,4 +20,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * @author Clément Fournier
  */
 public interface ASTTypeBody extends JavaNode {
+
+
+    default NodeStream<ASTBodyDeclaration> getDeclarations() {
+        return children(ASTBodyDeclaration.class);
+    }
+
+
+    default NodeStream<ASTEnumConstant> getEnumConstants() {
+        return NodeStream.empty();
+    }
+
 }

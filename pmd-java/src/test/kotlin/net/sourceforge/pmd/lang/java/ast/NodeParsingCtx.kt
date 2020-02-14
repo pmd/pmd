@@ -96,7 +96,7 @@ object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
                     .getFirstDescendantOfType(ASTBlock::class.java).getChild(0)
 }
 
-object TypeBodyParsingCtx : NodeParsingCtx<JavaNode>("body declaration") {
+object TypeBodyParsingCtx : NodeParsingCtx<ASTBodyDeclaration>("body declaration") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String {
         val source = ctx.fullSource
@@ -111,8 +111,8 @@ $construct
                         """
     }
 
-    override fun retrieveNode(acu: ASTCompilationUnit): JavaNode =
-            acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java).declarationNode
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTBodyDeclaration =
+            acu.typeDeclarations.first().getFirstDescendantOfType(ASTBodyDeclaration::class.java)
 }
 
 object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {

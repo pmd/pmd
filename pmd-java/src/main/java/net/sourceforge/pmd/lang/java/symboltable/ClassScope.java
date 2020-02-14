@@ -15,8 +15,8 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
@@ -605,8 +605,7 @@ public class ClassScope extends AbstractJavaScope {
     private Class<?> resolveGenericType(Node argument, String typeImage) {
         List<ASTTypeParameter> types = new ArrayList<>();
         // first search only within the same method
-        ASTClassOrInterfaceBodyDeclaration firstParentOfType = argument
-                .getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        ASTBodyDeclaration firstParentOfType = argument.getFirstParentOfType(ASTBodyDeclaration.class);
         if (firstParentOfType != null) {
             types.addAll(firstParentOfType.findDescendantsOfType(ASTTypeParameter.class));
         }

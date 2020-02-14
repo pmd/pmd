@@ -11,7 +11,6 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -83,7 +83,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
         for (NameOccurrence occ : usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
-                Node node = jocc.getLocation();
+                JavaNode node = jocc.getLocation();
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null && isSameClass(field, constructor)) {
                     if (inLoopOrTry(node)) {
@@ -140,9 +140,8 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 || node.getFirstParentOfType(ASTDoStatement.class) != null;
     }
 
-    private boolean inAnonymousInnerClass(Node node) {
-        ASTClassOrInterfaceBodyDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        return parent != null && parent.isAnonymousInnerClass();
+    private boolean inAnonymousInnerClass(JavaNode node) {
+        return node.getEnclosingType().isAnonymous();
     }
 
     private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {

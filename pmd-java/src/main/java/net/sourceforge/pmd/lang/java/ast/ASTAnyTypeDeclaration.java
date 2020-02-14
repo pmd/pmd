@@ -25,6 +25,8 @@ public interface ASTAnyTypeDeclaration
             JavaQualifiableNode,
             AccessNode,
             TypeParamOwnerNode,
+            ASTBodyDeclaration,
+            ASTTopLevelDeclaration,
             FinalizableNode {
 
     /**
@@ -100,7 +102,7 @@ public interface ASTAnyTypeDeclaration
      * class or annotation.
      */
     default boolean isNested() {
-        return getParent() instanceof ASTAnyTypeBodyDeclaration;
+        return getParent() instanceof ASTTypeBody;
     }
 
 

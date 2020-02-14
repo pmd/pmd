@@ -39,8 +39,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -278,7 +278,7 @@ public class ClassTypeResolverTest {
         Node acu = java8.parseClass(NestedAnonymousClass.class);
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
         ASTAllocationExpression nestedAllocation
-                = allocationExpression.getFirstDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class) // get the declaration (boundary)
+                = allocationExpression.getFirstDescendantOfType(ASTBodyDeclaration.class) // get the declaration (boundary)
                                       .getFirstDescendantOfType(ASTAllocationExpression.class); // and dive for the nested allocation
         TypeNode child = (TypeNode) nestedAllocation.getChild(0);
         Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));

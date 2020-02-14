@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public final class ASTInitializer extends AbstractJavaNode {
+public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDeclaration {
 
     private boolean isStatic;
 

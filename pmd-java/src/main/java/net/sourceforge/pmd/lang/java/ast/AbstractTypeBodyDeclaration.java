@@ -14,21 +14,4 @@ abstract class AbstractTypeBodyDeclaration extends AbstractJavaNode implements A
         super(id);
     }
 
-
-    @Override
-    public JavaNode getDeclarationNode() {
-        if (getNumChildren() == 0) {
-            return null;
-        }
-
-        // skips the annotations
-        AccessNode node = getFirstChildOfType(AccessNode.class);
-        if (node == null) {
-            return getFirstChildOfType(ASTInitializer.class);
-        }
-
-        return node;
-    }
-
-
 }

@@ -26,6 +26,7 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
                Iterable<ASTVariableDeclaratorId>,
                LeftRecursiveNode,
                AccessNode,
+               ASTBodyDeclaration,
                InternalInterfaces.MultiVariableIdOwner {
 
     private JavaFieldSignature signature;

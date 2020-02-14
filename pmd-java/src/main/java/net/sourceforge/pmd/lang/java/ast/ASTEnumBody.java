@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 /**
  * Body of an {@linkplain ASTEnumDeclaration enum declaration}.
  *
@@ -12,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * EnumBody ::= "{"
  *              [ {@link ASTEnumConstant EnumConstant} ( "," ( {@link ASTEnumConstant EnumConstant} )* ]
  *              [ "," ]
- *              [ ";" ( {@link ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* ]
+ *              [ ";" ( {@link ASTBodyDeclaration ClassOrInterfaceBodyDeclaration} )* ]
  *              "}"
  *
  * </pre>
@@ -37,6 +39,11 @@ public final class ASTEnumBody extends AbstractJavaNode implements ASTTypeBody {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+    @Override
+    public NodeStream<ASTEnumConstant> getEnumConstants() {
+        return children(ASTEnumConstant.class);
     }
 
     void setTrailingComma() {
