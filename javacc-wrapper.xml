@@ -410,7 +410,7 @@
 
         <!-- Make constructor package-private -->
         <replaceregexp>
-            <regexp pattern="(?&lt;!public[\n ])class" />
+            <regexp pattern="(?&lt;!public(\R| ))class" />
             <substitution expression="public class" />
             <fileset dir="${target-package-dir}">
                 <include name="${ast-prefix}*" />
