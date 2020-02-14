@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
@@ -95,9 +94,6 @@ final class AnnotationSuppressionUtil {
             || node instanceof ASTFieldDeclaration
             || node instanceof ASTFormalParameter) {
             return (Annotatable) node;
-        } else if (node instanceof ASTTypeDeclaration) {
-            // this is just necessary while we have this node in the tree, it will be removed
-            return (Annotatable) node.getChild(0);
         } else {
             return null;
         }

@@ -70,7 +70,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
@@ -213,16 +212,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // no need to visit children, the only child, ASTName, will have no type
         return data;
     }
-
-
-
-    @Override
-    public Object visit(ASTTypeDeclaration node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
-
 
     @Override
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {

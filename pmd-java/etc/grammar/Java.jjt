@@ -855,7 +855,7 @@ void ModifierList():
 /*
  * Declaration syntax follows.
  */
-void TypeDeclaration():
+void TypeDeclaration() #void:
 {}
 {
   ModifierList()

@@ -122,7 +122,7 @@ public interface ASTAnyTypeDeclaration
      * Returns true if this type is declared at the top-level of a file.
      */
     default boolean isTopLevel() {
-        return getParent() instanceof ASTTypeDeclaration;
+        return getParent() instanceof ASTCompilationUnit;
     }
 
 

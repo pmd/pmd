@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
@@ -60,7 +61,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -164,7 +164,6 @@ public class ClassTypeResolverTest {
     @Test
     public void acceptanceTest() {
         ASTCompilationUnit acu = java5.parseClass(ArrayListFound.class);
-        assertEquals(ArrayListFound.class, acu.getFirstDescendantOfType(ASTTypeDeclaration.class).getType());
         assertEquals(ArrayListFound.class,
                      acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         ASTImportDeclaration id = acu.getFirstDescendantOfType(ASTImportDeclaration.class);
@@ -214,15 +213,11 @@ public class ClassTypeResolverTest {
         Class<?> theExtraTopLevelClass = Class
                 .forName("net.sourceforge.pmd.typeresolution.testdata.TheExtraTopLevelClass");
         // First class
-        ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration) acu.getChild(1);
+        ASTAnyTypeDeclaration typeDeclaration = (ASTAnyTypeDeclaration) acu.getChild(1);
         assertEquals(ExtraTopLevelClass.class, typeDeclaration.getType());
-        assertEquals(ExtraTopLevelClass.class,
-                     typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Second class
-        typeDeclaration = (ASTTypeDeclaration) acu.getChild(2);
+        typeDeclaration = (ASTAnyTypeDeclaration) acu.getChild(2);
         assertEquals(theExtraTopLevelClass, typeDeclaration.getType());
-        assertEquals(theExtraTopLevelClass,
-                     typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
     }
 
 
@@ -231,14 +226,11 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(InnerClass.class);
         Class<?> theInnerClass = Class.forName("net.sourceforge.pmd.typeresolution.testdata.InnerClass$TheInnerClass");
         // Outer class
-        ASTTypeDeclaration typeDeclaration = acu.getFirstDescendantOfType(ASTTypeDeclaration.class);
+        ASTClassOrInterfaceDeclaration typeDeclaration = acu.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
         assertEquals(InnerClass.class, typeDeclaration.getType());
-        ASTClassOrInterfaceDeclaration outerClassDeclaration = typeDeclaration
-                .getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
-        assertEquals(InnerClass.class, outerClassDeclaration.getType());
         // Inner class
         assertEquals(theInnerClass,
-                     outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+                     typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Method parameter as inner class
         ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
         assertEquals(theInnerClass, formalParameter.getType());
@@ -301,14 +293,11 @@ public class ClassTypeResolverTest {
         Class<?> theAnonymousInnerClass = Class
                 .forName("net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass$1");
         // Outer class
-        ASTTypeDeclaration typeDeclaration = acu.getFirstDescendantOfType(ASTTypeDeclaration.class);
+        ASTClassOrInterfaceDeclaration typeDeclaration = acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
         assertEquals(AnonymousInnerClass.class, typeDeclaration.getType());
-        ASTClassOrInterfaceDeclaration outerClassDeclaration = typeDeclaration
-                .getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
-        assertEquals(AnonymousInnerClass.class, outerClassDeclaration.getType());
         // Anonymous Inner class
         assertEquals(theAnonymousInnerClass,
-                     outerClassDeclaration.getFirstDescendantOfType(ASTAllocationExpression.class).getType());
+                     typeDeclaration.getFirstDescendantOfType(ASTAnonymousClassDeclaration.class).getType());
     }
 
 
