@@ -57,7 +57,7 @@ The examples below won't repeat this taskdef element, as this is always required
   <tr>
     <td>rulesetfiles</td>
     <td>
-        A comma delimited list of ruleset files ('rulesets/java/basic.xml,rulesets/java/design.xml').
+        A comma delimited list of ruleset files ('rulesets/java/quickstart.xml,config/my-ruleset.xml').
         If you write your own ruleset files, you can put them on the classpath and plug them in here.
     </td>
     <td>Yes, unless the ruleset nested element is used</td>
@@ -179,7 +179,7 @@ automatically and the latest language version is used.
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd shortFilenames="true">
-            <ruleset>rulesets/java/design.xml</ruleset>
+            <ruleset>rulesets/java/quickstart.xml</ruleset>
             <ruleset>java-basic</ruleset>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>
@@ -297,7 +297,7 @@ need to be configured when defining the task:
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
 
     <target name="pmd">
-        <pmd rulesetfiles="rulesets/java/design.xml">
+        <pmd rulesetfiles="category/java/design.xml">
             <formatter type="com.mycompany.MyRenderer" toFile="foo.html"/>
             <fileset dir="/path/to/java/src">
                 <include name="**/*.java"/>
