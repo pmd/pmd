@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.document;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -108,7 +109,7 @@ public class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertEquals(new int[] { 0, 40, 49 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[] { 0, 40, 49 }, positioner.getLineOffsets());
     }
 
     @Test
@@ -119,7 +120,7 @@ public class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertEquals(new int[] { 0, 41, 51 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[] { 0, 41, 51 }, positioner.getLineOffsets());
     }
 
     @Test
@@ -130,7 +131,7 @@ public class SourceCodePositionerTest {
 
         SourceCodePositioner positioner = new SourceCodePositioner(code);
 
-        assertEquals(new int[] { 0, 41, 50 }, positioner.getLineOffsets());
+        assertArrayEquals(new int[] { 0, 41, 50 }, positioner.getLineOffsets());
     }
 
 }

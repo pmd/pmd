@@ -20,22 +20,6 @@ public class TextRegionTest {
     public ExpectedException expect = ExpectedException.none();
 
     @Test
-    public void testNegativeOffset() {
-
-        expect.expect(IllegalArgumentException.class);
-
-        TextRegionImpl.fromOffsetLength(-1, 0);
-    }
-
-    @Test
-    public void testNegativeLength() {
-
-        expect.expect(IllegalArgumentException.class);
-
-        TextRegionImpl.fromOffsetLength(0, -1);
-    }
-
-    @Test
     public void testIsEmpty() {
         TextRegion r = TextRegionImpl.fromOffsetLength(0, 0);
 

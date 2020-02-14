@@ -13,6 +13,7 @@ import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -105,23 +106,11 @@ public interface TextFile extends Closeable {
      * Returns a read-only instance of this interface reading from a string.
      *
      * @param source Text of the file
-     *
-     * @throws NullPointerException If the source text is null
-     */
-    static TextFile readOnlyString(String source) {
-        return readOnlyString(source, "n/a");
-    }
-
-
-    /**
-     * Returns a read-only instance of this interface reading from a string.
-     *
-     * @param source Text of the file
      * @param name   File name to use
      *
      * @throws NullPointerException If the source text or the name is null
      */
-    static TextFile readOnlyString(String source, String name) {
-        return new StringTextFile(source, name);
+    static TextFile readOnlyString(String source, String name, LanguageVersion lv) {
+        return new StringTextFile(source, name, lv);
     }
 }

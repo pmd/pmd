@@ -484,6 +484,9 @@ public final class StringUtil {
         AssertionUtil.requireParamNotNull("str", str);
         AssertionUtil.requireParamNotNull("ellipsis", ellipsis);
         AssertionUtil.requireNonNegative("maximum width", maxWidth);
+        if (maxWidth < ellipsis.length()) {
+            throw AssertionUtil.mustBe("Ellipsis length", ellipsis, "smaller than maxWidth (" + maxWidth + ")");
+        }
 
         if (str.length() > maxWidth) {
             final int ix = Math.max(maxWidth - ellipsis.length(), 0);

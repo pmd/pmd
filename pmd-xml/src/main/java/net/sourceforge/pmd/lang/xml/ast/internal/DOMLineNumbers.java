@@ -12,8 +12,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
+import net.sourceforge.pmd.util.document.SourceCodePositioner;
 
 /**
  *

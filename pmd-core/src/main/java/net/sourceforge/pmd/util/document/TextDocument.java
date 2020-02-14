@@ -104,23 +104,13 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns a document backed by the given text "file".
-     *
-     * @throws IOException If an error occurs eg while reading the file contents
-     */
-    static TextDocument create(TextFile textFile) throws IOException {
-        return new TextDocumentImpl(textFile);
-    }
-
-
-    /**
      * Returns a read-only document for the given text.
      * FIXME for the moment, the language version may be null (for CPD languages).
      *  this may be fixed when CPD and PMD languages are merged
      */
     static TextDocument readOnlyString(final String source, LanguageVersion lv) {
         try {
-            return new TextDocumentImpl(TextFile.readOnlyString(source), lv);
+            return new TextDocumentImpl(TextFile.readOnlyString(source, "n/a", lv), lv);
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }

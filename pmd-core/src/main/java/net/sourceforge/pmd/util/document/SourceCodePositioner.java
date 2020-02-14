@@ -20,7 +20,7 @@ public final class SourceCodePositioner {
     // Idea from:
     // http://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/javascript/jscomp/SourceFile.java
 
-    /** Each entry is the start offset of a line (zero based). Never empty. */
+    /** Each entry is the inclusive start offset of a line (zero based). Never empty. */
     private final int[] lineOffsets;
     private final int sourceCodeLength;
 
@@ -60,8 +60,7 @@ public final class SourceCodePositioner {
         }
 
         int search = Arrays.binarySearch(lineOffsets, offset);
-        return search >= 0 ? search + 1 // 1-based line numbers
-                           : -(search + 1); // see spec of binarySearch
+        return search >= 0 ? search + 1 : ~search;
     }
 
     /**
@@ -135,25 +134,21 @@ public final class SourceCodePositioner {
 
     private static int[] makeLineOffsets(CharSequence sourceCode, int len) {
         List<Integer> buffer = new ArrayList<>();
+        buffer.add(0); // first line
 
         int off = 0;
         while (off < len) {
             char c = sourceCode.charAt(off);
+            off++;
             if (c == '\n') {
                 buffer.add(off);
             }
-            off++;
         }
 
-        if (buffer.isEmpty()) {
-            // empty text, consider it a single empty line
-            return new int[] {0};
-        } else {
-            int[] lineOffsets = new int[buffer.size()];
-            for (int i = 0; i < buffer.size(); i++) {
-                lineOffsets[i] = buffer.get(i);
-            }
-            return lineOffsets;
+        int[] lineOffsets = new int[buffer.size()];
+        for (int i = 0; i < buffer.size(); i++) {
+            lineOffsets[i] = buffer.get(i);
         }
+        return lineOffsets;
     }
 }

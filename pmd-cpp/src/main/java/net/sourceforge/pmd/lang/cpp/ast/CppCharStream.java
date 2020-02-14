@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,
@@ -67,7 +68,7 @@ public class CppCharStream extends SimpleCharStream {
 
     public static CppCharStream newCppCharStream(Reader dstream) {
         String source = CharStreamFactory.toString(dstream);
-        JavaccTokenDocument document = new JavaccTokenDocument(source) {
+        JavaccTokenDocument document = new JavaccTokenDocument(TextDocument.readOnlyString(source, null)) {
             @Override
             protected @Nullable String describeKindImpl(int kind) {
                 return CppTokenKinds.describe(kind);

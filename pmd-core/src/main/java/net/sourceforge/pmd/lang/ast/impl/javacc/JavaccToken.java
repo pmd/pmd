@@ -111,7 +111,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         assert document != null : "Null document";
         this.kind = kind;
         this.image = image;
-        this.region = document.getTextDocument().createRegion(startInclusive, endExclusive);
+        this.region = document.getTextDocument().createRegion(startInclusive, endExclusive - startInclusive);
         this.document = document;
     }
 

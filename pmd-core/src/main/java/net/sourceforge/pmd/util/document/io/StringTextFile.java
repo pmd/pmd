@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.document.io;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -16,8 +17,10 @@ class StringTextFile implements TextFile {
 
     private final String buffer;
     private final String name;
+    private final LanguageVersion lv;
 
-    StringTextFile(String source, @NonNull String name) {
+    StringTextFile(String source, @NonNull String name, LanguageVersion lv) {
+        this.lv = lv;
         AssertionUtil.requireParamNotNull("source text", source);
         AssertionUtil.requireParamNotNull("file name", name);
 
@@ -57,7 +60,7 @@ class StringTextFile implements TextFile {
 
     @Override
     public String toString() {
-        return "ReadOnlyString[" + StringUtil.truncate(buffer, 15, "...") + "]";
+        return "ReadOnlyString[" + StringUtil.truncate(buffer, 40, "...") + "]";
     }
 
 }

@@ -10,14 +10,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+
 public class TextDocumentTest {
 
     @Rule
     public ExpectedException expect = ExpectedException.none();
+    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
 
     @Test
     public void testSingleLineRegion() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
 
         TextRegion region = doc.createRegion(0, "bonjour".length());
 
@@ -36,7 +40,7 @@ public class TextDocumentTest {
 
     @Test
     public void testMultiLineRegion() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
         TextRegion region = doc.createRegion("bonjou".length(), "r\noha\ntri".length());
 
@@ -54,7 +58,7 @@ public class TextDocumentTest {
 
     @Test
     public void testEmptyRegion() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
         TextRegion region = doc.createRegion("bonjour".length(), 0);
 
@@ -72,9 +76,9 @@ public class TextDocumentTest {
 
     @Test
     public void testRegionOutOfBounds() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse");
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
-        expect.expect(IndexOutOfBoundsException.class);
+        expect.expect(InvalidRegionException.class);
 
         doc.createRegion(0, 40);
     }

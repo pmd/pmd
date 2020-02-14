@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public interface Reportable {
 
     /**
-     * Returns the location for which the file is reported.
+     * Returns the location at which this element should be reported.
      */
     FileLocation getReportLocation();
 
