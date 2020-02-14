@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Learn how to use PMD's simple test framework for unit testing rules.">
-<meta name="keywords" content="extendinguserdocs,  ">
-<title>Testing your rules | PMD Source Code Analyzer</title>
+<meta name="description" content="">
+<meta name="keywords" content="userdocstools,  ">
+<title>PMD Java API | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Testing your rules">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="PMD Java API">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -376,7 +376,7 @@
                         
                         
                         
-                        <li class="active"><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+                        <li><a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
                         
                         
                         
@@ -431,7 +431,7 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
+                        <li class="active"><a href="pmd_userdocs_tools_java_api.html">PMD Java API</a></li>
                         
                         
                         
@@ -1319,15 +1319,13 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">Testing your rules</h1>
+   <h1 class="post-title-main">PMD Java API</h1>
 </div>
 
 
 
 <div class="post-content">
 
-   
-    <div class="summary">Learn how to use PMD's simple test framework for unit testing rules.</div>
    
 
     
@@ -1352,306 +1350,285 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         
         
 
-    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/testing.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/tools/java-api.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     
 
-  <h2 id="introduction">Introduction</h2>
+  <p>The easiest way to run PMD is to just use a build plugin in your favorite build tool
+like <a href="pmd_userdocs_tools_ant.html">Apache Ant</a>, <a href="pmd_userdocs_tools_maven.html">Apache Maven</a> or
+<a href="pmd_userdocs_tools_gradle.html">Gradle</a>.</p>
 
-<p>Good rules have tests. At least a positive test case - a code example, that triggers the rule and reports
-a violation - and a negative test case - a code example, that doesn’t trigger the rule - should be created.
-Of course, the more tests, the better the rule is verified. If the rule is more complex or defines properties,
-with which the behavior can be modified, then these different cases can also be tested.</p>
+<p>There are also many integrations for IDEs available, see <a href="pmd_userdocs_tools.html">Tools</a>.</p>
 
-<p>And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
-with an additional test case, so that the bug is not accidentally reintroduced later on.</p>
+<p>If you have your own build tool or want to integrate PMD in a different way, you can call PMD programmatically,
+as described here.</p>
 
-<h2 id="how-it-works">How it works</h2>
+<h2 id="dependencies">Dependencies</h2>
 
-<p>PMD’s built-in rules are organized in rulesets, where all rules belonging to the same category are placed
-in a single ruleset, such as “category/java/bestpractices.xml”.
-Each category-ruleset has a single abstract base test class, from which the individual test classes inherit.
-We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
-stored in separate XML files, for each rule a separate file is used.</p>
+<p>You’ll need to add the dependency to the language, you want to analyze. For Java, it will be
+<code class="highlighter-rouge">net.sourceforge.pmd:pmd-java</code>. If you use Maven, you can add a new (compile time) dependency like this:</p>
 
-<p>All the test classes inherit from <code class="highlighter-rouge">net.sourceforge.pmd.testframework.PmdRuleTst</code>,
-which provides the seamless integration with JUnit. This base class determines the language, the category name
-and the rule name from the concrete test class. It then searches the test code on its own.
-E.g. the individual rule test class
-<code class="highlighter-rouge">net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest</code> tests the
-rule with the name “AbstractClassWithoutAbstractMethod”, which is in the category “bestpractices” for the
-language “java”.</p>
-
-<p>The test code (see below <a href="#test-xml-reference">Test XML Reference</a>) describes the test case completely with
-the expected behavior like number of expected rule violations, where the violations are expected, and so on.</p>
-
-<p>When you are running the test class in your IDE (e.g. Eclipse or IntelliJ IDEA) you can also select a single
-test case and just execute this one.</p>
-
-<h2 id="where-to-place-the-test-code">Where to place the test code</h2>
-
-<p>The <code class="highlighter-rouge">PmdRuleTst</code> class searches the XML file, that describes the test cases for a certain rule
-using the following convention:
-The XML file is a test resource, so it is searched in the tree under <code class="highlighter-rouge">src/test/resources</code>.</p>
-
-<p>The sub package <code class="highlighter-rouge">xml</code> of the test class’s package should contain a file with the same name as the rule’s name
-which is under test.</p>
-
-<p>For example, to test the rule “AbstractClassWithoutAbstractMethod”, the fully qualified test class is:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>pmd-java<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
 
-<p>The test code for the rule can be found in the file:</p>
+<p>Note: You’ll need to select a specific version. This is done in the example via the property <code class="highlighter-rouge">pmdVersion</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/test/resources/net/sourceforge/pmd/lang/java/rule/bestpractices/xml/AbstractClassWithoutAbstractMethod.xml
-</code></pre></div></div>
+<p>This will transitively pull in the artifact <code class="highlighter-rouge">pmd-core</code> which contains the API.</p>
 
-<p>In general, the class name and file name pattern for the test class and data is this:</p>
+<h2 id="command-line-interface">Command line interface</h2>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.sourceforge.pmd.lang.&lt;Language Terse Name&gt;.rule.&lt;Category Name&gt;.&lt;Rule Name&gt;Test
-src/test/resources/net/sourceforge/pmd/lang/&lt;Language Terse Name&gt;/rule/&lt;Category Name&gt;/xml/&lt;Rule Name&gt;.xml
-</code></pre></div></div>
+<p>The easiest way is to call PMD with the same interface as from command line. The main class is
+<code class="highlighter-rouge">net.sourceforge.pmd.PMD</code>:</p>
 
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> This convention allows you to quickly find the test cases for a given rule:
-Just search in the project for a file <code class="highlighter-rouge">&lt;RuleName&gt;.xml</code>. Search for a class <code class="highlighter-rouge">&lt;Rule Name&gt;Test</code> to find the
-unit test class for the given rule.</div>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMD</span><span class="o">;</span>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> If you want to use the test framework with a different package structure,
-see <a href="#using-the-test-framework-externally">Using the test framework externally</a>.</div>
-
-<h2 id="simple-example">Simple example</h2>
-
-<h3 id="test-class-abstractclasswithoutabstractmethodtest">Test Class: AbstractClassWithoutAbstractMethodTest</h3>
-
-<p>This class inherits from <code class="highlighter-rouge">PmdRuleTst</code> and is located in the package “bestpractices”, since the rule
-belongs to the category “Best Practices”:</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">sourceforge</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">rule</span><span class="o">.</span><span class="na">bestpractices</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.PmdRuleTst</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="n">PmdRuleTst</span> <span class="o">{</span>
-    <span class="c1">// no additional unit tests</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> You can also add additionally standard JUnit test methods annotated with <code class="highlighter-rouge">@Test</code> to
-this test class.</div>
-
-<h3 id="test-data-avoidbranchingstatementaslastinloopxml">Test Data: AvoidBranchingStatementAsLastInLoop.xml</h3>
-
-<p>This is a stripped down example which just contains two test cases.</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;test-data</span>
-    <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
-    <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;test-code&gt;</span>
-        <span class="nt">&lt;description&gt;</span>concrete class<span class="nt">&lt;/description&gt;</span>
-        <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
-        <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
-public class Foo {}
-     ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
-    <span class="nt">&lt;/test-code&gt;</span>
-    <span class="nt">&lt;test-code&gt;</span>
-        <span class="nt">&lt;description&gt;</span>failure case<span class="nt">&lt;/description&gt;</span>
-        <span class="nt">&lt;expected-problems&gt;</span>1<span class="nt">&lt;/expected-problems&gt;</span>
-        <span class="nt">&lt;expected-linenumbers&gt;</span>1<span class="nt">&lt;/expected-linenumbers&gt;</span>
-        <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
-public abstract class Foo {}
-     ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
-    <span class="nt">&lt;/test-code&gt;</span>
-<span class="nt">&lt;/test-data&gt;</span>
-</code></pre></div></div>
-
-<p>Each test case is in an own <code class="highlighter-rouge">&lt;test-code&gt;</code> element. The first defines 0 expected problems, means this code doesn’t
-trigger the rule. The second test case expects 1 problem. Since the rule violations also report the exact AST node,
-you can verify the line number, too.</p>
-
-<h2 id="test-xml-reference">Test XML Reference</h2>
-
-<p>The root element is <code class="highlighter-rouge">&lt;test-data&gt;</code>. It can contain one or more <code class="highlighter-rouge">&lt;test-code&gt;</code> and <code class="highlighter-rouge">&lt;code-fragment&gt;</code> elements.
-Each <code class="highlighter-rouge">&lt;test-code&gt;</code> element defines a single test case. <code class="highlighter-rouge">&lt;code-fragment&gt;</code> elements are used to share code snippets
-between different test cases.</p>
-
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The XML schema is available at <a href="https://github.com/pmd/pmd/blob/master/pmd-test/src/main/resources/rule-tests_1_0_0.xsd">rule-tests.xsd</a>.</div>
-
-<h3 id="test-code-attributes"><code class="highlighter-rouge">&lt;test-code&gt;</code> attributes</h3>
-
-<p>The <code class="highlighter-rouge">&lt;test-code&gt;</code> elements understands three optional attributes:</p>
-
-<ul>
-  <li>
-    <p><strong>reinitializeRule</strong>: By default, it’s <code class="highlighter-rouge">true</code>, so each test case starts with a fresh instantiated rule. Set it
-to <code class="highlighter-rouge">false</code> to reproduce cases, where the previous run has influences.</p>
-  </li>
-  <li>
-    <p><strong>regressionTest</strong>: By default, it’s <code class="highlighter-rouge">true</code>. Set it to <code class="highlighter-rouge">false</code>, to ignore and skip a test case.</p>
-  </li>
-  <li>
-    <p><strong>useAuxClasspath</strong>: By default, it’s <code class="highlighter-rouge">true</code>. Set it to <code class="highlighter-rouge">false</code> to reproduce issues which only
-appear without type resolution.</p>
-  </li>
-</ul>
-
-<h3 id="test-code-children"><code class="highlighter-rouge">&lt;test-code&gt;</code> children</h3>
-
-<ul>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;description&gt;</code></strong>: Short description of the test case. This will be the JUnit test name in the report.
-If applicable, this description should contain a reference to the bug number, this test case reproduces.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;rule-property&gt;</code></strong>: Optional rule properties, if the rule is configurable. Just add multiple elements, to
-set multiple properties for one test case. For an example, see below.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;expected-problems&gt;</code></strong>: The the raw number of expected rule violations, that this rule is expected to report.
-For false-positive test cases, this is always “0”. For false-negative test cases, it can be any positive number.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;expected-linenumbers&gt;</code></strong>: Optional element. It’s a comma separated list of line numbers.
-If there are rule violations reported, then this allows you to
-assert the line numbers. Useful if multiple violations should be detected and to be sure that
-false positives and negatives don’t erase each other.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;expected-messages&gt;</code></strong>: Optional element, with <code class="highlighter-rouge">&lt;message&gt;</code> elements as children.
-Can be used to validate the correct error message, e.g. if the error message references a variable name.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;code&gt;</code></strong>: Either the <code class="highlighter-rouge">&lt;code&gt;</code> element or the <code class="highlighter-rouge">&lt;code-ref&gt;</code> element is required. It provides the actual code
-snippet on which the rule is executed. The code itself is usually wrapped in a “CDATA” section, so that no
-further XML escapes (entity references such as &amp;lt;) are necessary.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;code-ref id=...&gt;</code></strong>: Alternative to <code class="highlighter-rouge">&lt;code&gt;</code>. References a <code class="highlighter-rouge">&lt;code-fragment&gt;</code> defined earlier in the file.
-This allows you to share the same code snippet with several test cases. The attribute <code class="highlighter-rouge">id</code> must match the
-id of the references code fragment.</p>
-  </li>
-  <li>
-    <p><strong><code class="highlighter-rouge">&lt;source-type&gt;</code></strong>: Optional element that specifies the source code language. This defines the parser that
-is used for parsing the code snippet. If not given, <strong>java</strong> is used as default.</p>
-  </li>
-</ul>
-
-<h3 id="code-fragment"><code class="highlighter-rouge">&lt;code-fragment&gt;</code></h3>
-
-<p>The code fragment has just one required attribute: <strong>id</strong>. This is used to reference it via a <code class="highlighter-rouge">&lt;code-ref&gt;</code> element
-inside a <code class="highlighter-rouge">&lt;test-code&gt;</code>. Similar like the <code class="highlighter-rouge">&lt;code&gt;</code> element, the content of <code class="highlighter-rouge">&lt;code-fragment&gt;</code> is usually wrapped
-in a “CDATA” section, so that no further XML escapes (entity references such as &amp;lt;) are necessary.</p>
-
-<h3 id="complete-xml-example">Complete XML example</h3>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;test-data</span>
-    <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
-    <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
-
-    <span class="nt">&lt;test-code</span> <span class="na">reinitializeRule=</span><span class="s">"true"</span> <span class="na">regressionTest=</span><span class="s">"true"</span> <span class="na">useAuxClasspath=</span><span class="s">"true"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;description&gt;</span>Just a description, will be used as the test name for JUnit in the reports<span class="nt">&lt;/description&gt;</span>
-        <span class="nt">&lt;rule-property</span> <span class="na">name=</span><span class="s">"somePropName"</span><span class="nt">&gt;</span>propValue<span class="nt">&lt;/rule-property&gt;</span>    <span class="c">&lt;!-- optional --&gt;</span>
-        <span class="nt">&lt;expected-problems&gt;</span>2<span class="nt">&lt;/expected-problems&gt;</span>
-        <span class="nt">&lt;expected-linenumbers&gt;</span>5,14<span class="nt">&lt;/expected-linenumbers&gt;</span>               <span class="c">&lt;!-- optional --&gt;</span>
-        <span class="nt">&lt;expected-messages&gt;</span>                                             <span class="c">&lt;!-- optional --&gt;</span>
-            <span class="nt">&lt;message&gt;</span>Violation message 1<span class="nt">&lt;/message&gt;</span>
-            <span class="nt">&lt;message&gt;</span>Violation message 2<span class="nt">&lt;/message&gt;</span>
-        <span class="nt">&lt;/expected-messages&gt;</span>
-        <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
-    public class ConsistentReturn {
-        public Boolean foo() {
-        }
-    }
-         ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
-            <span class="nt">&lt;source-type&gt;</span>apex<span class="nt">&lt;/source-type&gt;</span>                             <span class="c">&lt;!-- optional --&gt;</span>
-        <span class="nt">&lt;/test-code&gt;</span>
-
-        <span class="nt">&lt;code-fragment</span> <span class="na">id=</span><span class="s">"codeSnippet1"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[
-    public class ConsistentReturn {
-        public Boolean foo() {
-    }
-    }
-        ]]&gt;</span><span class="nt">&lt;/code-fragment&gt;</span>
-        <span class="nt">&lt;test-code&gt;</span>
-            <span class="nt">&lt;description&gt;</span>test case using a code fragment<span class="nt">&lt;/description&gt;</span>
-            <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
-            <span class="nt">&lt;code-ref</span> <span class="na">id=</span><span class="s">"codeSnippet1"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/test-code&gt;</span>
-    <span class="nt">&lt;/test-data&gt;</span>
-</code></pre></div></div>
-
-<h2 id="using-the-test-framework-externally">Using the test framework externally</h2>
-
-<p>It is also possible to use the test framework for custom rules developed outside the PMD source base.
-Therefore you just need to reference the dependency <code class="highlighter-rouge">net.sourceforge.pmd:pmd-test</code>.</p>
-
-<p>For maven, you can use this snippet:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
-    &lt;groupId&gt;net.sourceforge.pmd&lt;/groupId&gt;
-    &lt;artifactId&gt;pmd-test&lt;/artifactId&gt;
-    &lt;version&gt;6.22.0&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;
-</code></pre></div></div>
-
-<p>Then proceed as described earlier: create your test class, create your test cases and run the unit test.</p>
-
-<p>There is one difference however: Since your package structure is probably different, you’ll need to register
-the rule test manually, as SimpleAggregatorTst will fail to determine it correctly from the package and class names:</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">rules</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.SimpleAggregatorTst</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomRuleTest</span> <span class="kd">extends</span> <span class="n">SimpleAggregatorTst</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">addRule</span><span class="o">(</span><span class="s">"com/example/pmd/ruleset.xml"</span><span class="o">,</span> <span class="s">"CustomRule"</span><span class="o">);</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">pmdArgs</span> <span class="o">=</span> <span class="o">{</span>
+            <span class="s">"-d"</span><span class="o">,</span> <span class="s">"/home/workspace/src/main/java/code"</span><span class="o">,</span>
+            <span class="s">"-R"</span><span class="o">,</span> <span class="s">"rulesets/java/quickstart.xml"</span><span class="o">,</span>
+            <span class="s">"-f"</span><span class="o">,</span> <span class="s">"xml"</span><span class="o">,</span>
+            <span class="s">"-r"</span><span class="o">,</span> <span class="s">"/home/workspace/pmd-report.xml"</span>
+        <span class="o">};</span>
+        <span class="n">PMD</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="n">pmdArgs</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>This will then search for a rule named “CustomRule” in the ruleset, that is located in “src/main/resources” under
-the path “com/example/pmd/ruleset.xml”.</p>
+<p>It uses the same options as described in <a href="pmd_userdocs_cli_reference.html">PMD CLI reference</a>.</p>
 
-<p>The test data should be placed in an xml file located in “src/test/resources” under the path
-“com/example/pmd/rules/xml/CustomRule.xml”.</p>
+<h2 id="programmatically-variant-1">Programmatically, variant 1</h2>
 
-<h2 id="how-the-test-framework-is-implemented">How the test framework is implemented</h2>
+<p>This is very similar:</p>
 
-<p>The framework uses a custom JUnit test runner under the hood, among a couple of utility classes:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMDConfiguration</span><span class="o">;</span>
 
-<ul>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PmdExample</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PMDConfiguration</span><span class="o">();</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">setInputPaths</span><span class="o">(</span><span class="s">"/home/workspace/src/main/java/code"</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">setReportFormat</span><span class="o">(</span><span class="s">"xml"</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">setReportFile</span><span class="o">(</span><span class="s">"/home/workspace/pmd-report.xml"</span><span class="o">);</span>
+
+        <span class="n">PMD</span><span class="o">.</span><span class="na">doPMD</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="programmatically-variant-2">Programmatically, variant 2</h2>
+
+<p>This gives you more control over which files are processed, but is also more complicated.
+You can also provide your own listeners and renderers.</p>
+
+<ol>
   <li>
-    <p><code class="highlighter-rouge">PmdRuleTst</code>: This is the base class for tests in PMD’s code base. It is a subclass of <code class="highlighter-rouge">RuleTst</code> and just
-contains the logic to determine the test resources based on the test class name.</p>
+    <p>First we create a <code class="highlighter-rouge">PMDConfiguration</code>. This is currently the only way to specify a ruleset:</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PMDConfiguration</span><span class="o">();</span>
+<span class="n">configuration</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="n">RulePriority</span><span class="o">.</span><span class="na">MEDIUM</span><span class="o">);</span>
+<span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+</code></pre></div>    </div>
   </li>
   <li>
-    <p><code class="highlighter-rouge">SimpleAggregatorTst</code>: This is a more generic base class for the test classes and defines
-the custom JUnit test runner. It doesn’t register any test cases on its own.
-It itself is a subclass of <code class="highlighter-rouge">RuleTst</code>.</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">RuleTst</code>: contains the logic to parse the XML files and provide a list of <code class="highlighter-rouge">TestDescriptor</code>s. Each test descriptor
-describes a single test case. It also contains the logic to execute such a test descriptor and assert the results.</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">PMDTestRunner</code>: A custom JUnit test runner, that combines two separate test runners: The custom <code class="highlighter-rouge">RuleTestRunner</code>
-and the standard <code class="highlighter-rouge">JUnit4</code> test runner. This combination allows you to add additional standard unit test methods
-annotated with <code class="highlighter-rouge">@Test</code> to your test class.</p>
+    <p>In order to support type resolution, PMD needs to have access to the compiled classes and dependencies
+as well. This is called “auxclasspath” and is also configured here.
+Note: you can specify multiple class paths separated by <code class="highlighter-rouge">:</code> on Unix-systems or <code class="highlighter-rouge">;</code> under Windows.</p>
 
-    <p><em>Note:</em> Since the test class is executed through two test runners, it is actually instantiated twice. Be aware
-of this, if you do any initialization in the constructor. Also, the static hooks <code class="highlighter-rouge">@BeforeClass</code> and <code class="highlighter-rouge">@AfterClass</code>
-will be executed twice.</p>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">configuration</span><span class="o">.</span><span class="na">prependClasspath</span><span class="o">(</span><span class="s">"/home/workspace/target/classes:/home/.m2/repository/my/dependency.jar"</span><span class="o">);</span>
+</code></pre></div>    </div>
   </li>
   <li>
-    <p><code class="highlighter-rouge">RuleTestRunner</code>: This test runner executes the test descriptors with the help of <code class="highlighter-rouge">RuleTst</code>.</p>
+    <p>Then we need a ruleset factory. This is created using the configuration, taking the minimum priority into
+account:</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">RuleSetFactory</span> <span class="n">ruleSetFactory</span> <span class="o">=</span> <span class="n">RulesetsFactoryUtils</span><span class="o">.</span><span class="na">createFactory</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+</code></pre></div>    </div>
   </li>
-</ul>
+  <li>
+    <p>PMD operates on a list of <code class="highlighter-rouge">DataSource</code>. You can assemble a own list of <code class="highlighter-rouge">FileDataSource</code>, e.g.</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">List</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="n">FileDataSource</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"/path/to/src/MyClass.java"</span><span class="o">)));</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>For reporting, you can use a built-in renderer, e.g. <code class="highlighter-rouge">XMLRenderer</code>. Note, that you must manually initialize
+the renderer by setting a suitable <code class="highlighter-rouge">Writer</code> and calling <code class="highlighter-rouge">start()</code>. After the PMD run, you need to call
+<code class="highlighter-rouge">end()</code> and <code class="highlighter-rouge">flush()</code>. Then your writer should have received all output.</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">StringWriter</span> <span class="n">rendererOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringWriter</span><span class="o">();</span>
+<span class="n">Renderer</span> <span class="n">xmlRenderer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XMLRenderer</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
+<span class="n">xmlRenderer</span><span class="o">.</span><span class="na">setWriter</span><span class="o">(</span><span class="n">rendererOutput</span><span class="o">);</span>
+<span class="n">xmlRenderer</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Create a <code class="highlighter-rouge">RuleContext</code>. This is the context instance, that is available then in the rule implementations.
+Note: when running in multi-threaded mode (which is the default), the rule context instance is cloned for
+each thread.</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">RuleContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RuleContext</span><span class="o">();</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Optionally register a report listener. This allows you to react immediately on found violations. You could also
+use such a listener to implement your own renderer. The listener must implement the interface
+<code class="highlighter-rouge">ThreadSafeReportListener</code> and can be registered via <code class="highlighter-rouge">ctx.getReport().addListener(...)</code>.</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ctx</span><span class="o">.</span><span class="na">getReport</span><span class="o">().</span><span class="na">addListener</span><span class="o">(</span><span class="k">new</span> <span class="n">ThreadSafeReportListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ruleViolationAdded</span><span class="o">(</span><span class="n">RuleViolation</span> <span class="n">ruleViolation</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">metricAdded</span><span class="o">(</span><span class="n">Metric</span> <span class="n">metric</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Now, all the preparations are done, and PMD can be executed. This is done by calling
+<code class="highlighter-rouge">PMD.processFiles(...)</code>. This method call takes the configuration, the ruleset factory, the files
+to process, the rule context and the list of renderers. Provide an empty list, if you don’t want to use
+any renderer. Note: The auxclasspath needs to be closed explicitly. Otherwise the class or jar files may
+remain open and file resources are leaked.</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">{</span>
+    <span class="n">PMD</span><span class="o">.</span><span class="na">processFiles</span><span class="o">(</span><span class="n">configuration</span><span class="o">,</span> <span class="n">ruleSetFactory</span><span class="o">,</span> <span class="n">files</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span>
+            <span class="n">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="n">renderer</span><span class="o">));</span>
+<span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+    <span class="n">ClassLoader</span> <span class="n">auxiliaryClassLoader</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">auxiliaryClassLoader</span> <span class="k">instanceof</span> <span class="n">ClasspathClassLoader</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">((</span><span class="n">ClasspathClassLoader</span><span class="o">)</span> <span class="n">auxiliaryClassLoader</span><span class="o">).</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>After the call, you need to finish the renderer via <code class="highlighter-rouge">end()</code> and <code class="highlighter-rouge">flush()</code>.
+Then you can check the rendered output.</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">renderer</span><span class="o">.</span><span class="na">end</span><span class="o">();</span>
+<span class="n">renderer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Rendered Report:"</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">rendererOutput</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>Here is a complete example:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.StringWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.Writer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.FileSystems</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.FileVisitResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Files</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.PathMatcher</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.SimpleFileVisitor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.attribute.BasicFileAttributes</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMDConfiguration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RulePriority</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleSetFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleViolation</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RulesetsFactoryUtils</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.ThreadSafeReportListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.renderers.Renderer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.renderers.XMLRenderer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.stat.Metric</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.ClasspathClassLoader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.datasource.DataSource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.datasource.FileDataSource</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PmdExample2</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PMDConfiguration</span><span class="o">();</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="n">RulePriority</span><span class="o">.</span><span class="na">MEDIUM</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">prependClasspath</span><span class="o">(</span><span class="s">"/home/workspace/target/classes"</span><span class="o">);</span>
+        <span class="n">RuleSetFactory</span> <span class="n">ruleSetFactory</span> <span class="o">=</span> <span class="n">RulesetsFactoryUtils</span><span class="o">.</span><span class="na">createFactory</span><span class="o">(</span><span class="n">configuration</span><span class="o">);</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="n">determineFiles</span><span class="o">(</span><span class="s">"/home/workspace/src/main/java/code"</span><span class="o">);</span>
+
+        <span class="n">Writer</span> <span class="n">rendererOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringWriter</span><span class="o">();</span>
+        <span class="n">Renderer</span> <span class="n">renderer</span> <span class="o">=</span> <span class="n">createRenderer</span><span class="o">(</span><span class="n">rendererOutput</span><span class="o">);</span>
+        <span class="n">renderer</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="n">RuleContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RuleContext</span><span class="o">();</span>
+
+        <span class="n">ctx</span><span class="o">.</span><span class="na">getReport</span><span class="o">().</span><span class="na">addListener</span><span class="o">(</span><span class="n">createReportListener</span><span class="o">());</span> <span class="c1">// alternative way to collect violations</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">PMD</span><span class="o">.</span><span class="na">processFiles</span><span class="o">(</span><span class="n">configuration</span><span class="o">,</span> <span class="n">ruleSetFactory</span><span class="o">,</span> <span class="n">files</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span>
+                <span class="n">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="n">renderer</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">ClassLoader</span> <span class="n">auxiliaryClassLoader</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">auxiliaryClassLoader</span> <span class="k">instanceof</span> <span class="n">ClasspathClassLoader</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">((</span><span class="n">ClasspathClassLoader</span><span class="o">)</span> <span class="n">auxiliaryClassLoader</span><span class="o">).</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="n">renderer</span><span class="o">.</span><span class="na">end</span><span class="o">();</span>
+        <span class="n">renderer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Rendered Report:"</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">rendererOutput</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">ThreadSafeReportListener</span> <span class="nf">createReportListener</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">ThreadSafeReportListener</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ruleViolationAdded</span><span class="o">(</span><span class="n">RuleViolation</span> <span class="n">ruleViolation</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%-20s:%d %s%n"</span><span class="o">,</span> <span class="n">ruleViolation</span><span class="o">.</span><span class="na">getFilename</span><span class="o">(),</span>
+                        <span class="n">ruleViolation</span><span class="o">.</span><span class="na">getBeginLine</span><span class="o">(),</span> <span class="n">ruleViolation</span><span class="o">.</span><span class="na">getDescription</span><span class="o">());</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">metricAdded</span><span class="o">(</span><span class="n">Metric</span> <span class="n">metric</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// ignored</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Renderer</span> <span class="nf">createRenderer</span><span class="o">(</span><span class="n">Writer</span> <span class="n">writer</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">XMLRenderer</span> <span class="n">xml</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XMLRenderer</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
+        <span class="n">xml</span><span class="o">.</span><span class="na">setWriter</span><span class="o">(</span><span class="n">writer</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">xml</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span> <span class="nf">determineFiles</span><span class="o">(</span><span class="n">String</span> <span class="n">basePath</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">Path</span> <span class="n">dirPath</span> <span class="o">=</span> <span class="n">FileSystems</span><span class="o">.</span><span class="na">getDefault</span><span class="o">().</span><span class="na">getPath</span><span class="o">(</span><span class="n">basePath</span><span class="o">);</span>
+        <span class="n">PathMatcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">FileSystems</span><span class="o">.</span><span class="na">getDefault</span><span class="o">().</span><span class="na">getPathMatcher</span><span class="o">(</span><span class="s">"glob:*.java"</span><span class="o">);</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+        <span class="n">Files</span><span class="o">.</span><span class="na">walkFileTree</span><span class="o">(</span><span class="n">dirPath</span><span class="o">,</span> <span class="k">new</span> <span class="n">SimpleFileVisitor</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="n">FileVisitResult</span> <span class="nf">visitFile</span><span class="o">(</span><span class="n">Path</span> <span class="n">path</span><span class="o">,</span> <span class="n">BasicFileAttributes</span> <span class="n">attrs</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="n">path</span><span class="o">.</span><span class="na">getFileName</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"Using %s%n"</span><span class="o">,</span> <span class="n">path</span><span class="o">);</span>
+                    <span class="n">files</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">FileDataSource</span><span class="o">(</span><span class="n">path</span><span class="o">.</span><span class="na">toFile</span><span class="o">()));</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"Ignoring %s%n"</span><span class="o">,</span> <span class="n">path</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">visitFile</span><span class="o">(</span><span class="n">path</span><span class="o">,</span> <span class="n">attrs</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"Analyzing %d files in %s%n"</span><span class="o">,</span> <span class="n">files</span><span class="o">.</span><span class="na">size</span><span class="o">(),</span> <span class="n">basePath</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">files</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
 
 
     <div class="tags">
@@ -1660,11 +1637,11 @@ will be executed twice.</p>
         
         
         
-        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
-        
-        
-        
         <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        
+        
+        
+        <a href="tag_tools.html" class="btn btn-default navbar-btn cursorNorm" role="button">tools</a>
         
         
         
@@ -1680,7 +1657,7 @@ will be executed twice.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> November 2018<br/> Site last generated: Feb 14, 2020 <br />
+ Site last generated: Feb 14, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

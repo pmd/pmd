@@ -292,6 +292,12 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_gradle.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_about_help.html</loc>
   </url>
   
@@ -317,6 +323,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_userdocs_installation.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_java_api.html</loc>
   </url>
   
   

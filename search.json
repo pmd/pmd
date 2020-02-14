@@ -4157,6 +4157,22 @@
 
 
 {
+"title": "Gradle",
+"tags": "userdocstools",
+"keywords": "",
+"url": "pmd_userdocs_tools_gradle.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Getting Help",
 "tags": "",
 "keywords": "",
@@ -4226,6 +4242,22 @@
 "keywords": "pmdcpdoptionscommandauxclasspath",
 "url": "pmd_userdocs_installation.html",
 "summary": "Sums up the first steps to set up a CLI installation and get started using PMD"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "PMD Java API",
+"tags": "userdocstools",
+"keywords": "",
+"url": "pmd_userdocs_tools_java_api.html",
+"summary": ""
 }
 
 
