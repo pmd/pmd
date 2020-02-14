@@ -43,11 +43,14 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.vm.directive.Directive;
 import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
+
 
 /**
  * This class is responsible for parsing a Velocity
@@ -65,16 +68,6 @@ import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 */
 public class VmParserImpl
 {
-    /**
-     * Keep track of defined macros, used for escape processing
-     */
-    private Map macroNames = new HashMap();
-
-    /**
-     * Set to true if the property
-     * RuntimeConstants.RUNTIME_REFERENCES_STRICT_ESCAPE is set to true
-     */
-    public boolean strictEscape = false;
 
     /**
      *  This method gets a Directive from the directives Hashtable
@@ -82,76 +75,6 @@ public class VmParserImpl
     public Directive getDirective(String directive)
     {
         return DirectiveMapper.getDirective(directive);
-    }
-
-    /**
-     *  This method finds out of the directive exists in the directives Map.
-     */
-    public boolean isDirective(String directive)
-    {
-        return DirectiveMapper.getDirective(directive) != null;
-    }
-
-
-    /**
-     * Produces a processed output for an escaped control or
-     * pluggable directive
-     */
-    private String escapedDirective( String strImage )
-    {
-        int iLast = strImage.lastIndexOf("\\");
-
-        String strDirective = strImage.substring(iLast + 1);
-
-//        return ( strImage.substring(0,iLast/2) + strDirective);
-
-        boolean bRecognizedDirective = false;
-
-        // we don't have to call substring method all the time in this method
-        String dirTag = strDirective.substring(1);
-        if (dirTag.charAt(0) == '{')
-        {
-            dirTag = dirTag.substring(1, dirTag.length() - 1);
-        }
-
-        /*
-         *  If this is a predefined derective or if we detect
-         *  a macro definition (this is aproximate at best) then
-         *  we absorb the forward slash.  If in strict reference
-         *  mode then we always absord the forward slash regardless
-         *  if the derective is defined or not.
-         */
-
-        if (strictEscape
-             || isDirective(dirTag)
-             || macroNames.containsKey(dirTag)
-             || !DirectiveMapper.isDirective(dirTag)) //rsvc.isVelocimacro(dirTag, currentTemplateName))
-        {
-            bRecognizedDirective = true;
-        }
-        else
-        {
-
-            if ( dirTag.equals("if")
-                || dirTag.equals("end")
-                || dirTag.equals("set")
-                || dirTag.equals("else")
-                || dirTag.equals("elseif")
-            )
-            {
-                bRecognizedDirective = true;
-            }
-        }
-
-        /*
-         *  if so, make the proper prefix string (let the escapes do their thing..)
-         *  otherwise, just return what it is..
-         */
-
-        if (bRecognizedDirective)
-            return ( strImage.substring(0,iLast/2) + strDirective);
-        else
-            return ( strImage );
     }
 
     /**
@@ -196,41 +119,6 @@ public class VmParserImpl
             token_source.input_stream.backup(no);
         }
         return false;
-    }
-
-    /**
-     * We use this method in a lookahead to determine if we are in a macro
-     * default value assignment.  The standard lookahead is not smart enough.
-     * here we look for the equals after the reference.
-     */
-    private boolean isAssignment()
-    {
-       // Basically if the last character read was not '$' then false
-       if (token_source.curLexState != REFERENCE) return false;
-
-       char c = ' ';
-       int backup = 0;
-       try
-       {
-           // Read through any white space
-           while(Character.isWhitespace(c))
-           {
-                c = token_source.input_stream.readChar();
-                backup++;
-           }
-
-           // This is what we are ultimately looking for
-           if (c != '=') return false;
-       }
-       catch (IOException e)
-       {
-       }
-       finally
-       {
-           token_source.input_stream.backup(backup);
-       }
-
-       return true;
     }
 }
 
@@ -1134,18 +1022,7 @@ void Statement() #void : {}
  */
 void EscapedDirective() : {}
 {
-    {
-        JavaccToken t = null;
-    }
-
-    t = <ESCAPE_DIRECTIVE>
-    {
-        /*
-         *  churn and burn..
-         */
-        // fixme? whatever
-        // t.image = escapedDirective( t.getImage() );
-    }
+    <ESCAPE_DIRECTIVE>
 }
 
 /**
@@ -1155,51 +1032,13 @@ void EscapedDirective() : {}
  *  case, we want to suck in the #&lt;directive&gt; and here we don't.  We just want
  *  the escapes to render correctly
  */
-void Escape() : {}
+void Escape() :
+{ int count = 0; }
 {
+   ( LOOKAHEAD(2)  <DOUBLE_ESCAPE> { count++; } )+
     {
-        JavaccToken t = null;
-        int count = 0;
-        boolean control = false;
+        jjtThis.val = StringUtils.repeat("\\", count);
     }
-
-   ( LOOKAHEAD(2)  t = <DOUBLE_ESCAPE>
-    {
-        count++;
-    }
-   )+
-    {
-        /*
-         * first, check to see if we have a control directive
-         */
-        switch(t.next.kind ) {
-        	case FOREACH_DIRECTIVE :
-            case IF_DIRECTIVE :
-            case ELSE_DIRECTIVE :
-            case ELSEIF_DIRECTIVE :
-            case END :
-                control = true;
-                break;
-        }
-
-        /*
-         * if that failed, lets lookahead to see if we matched a PD or a VM
-         */
-        String nTag = t.next.getImage().substring(1);
-        if (strictEscape
-            || isDirective(nTag)
-            || macroNames.containsKey(nTag)
-            || !DirectiveMapper.isDirective(nTag)) //rsvc.isVelocimacro(nTag, currentTemplateName)
-        {
-            control = true;
-        }
-
-        jjtThis.val = "";
-
-        for( int i = 0; i < count; i++)
-            jjtThis.val += ( control ? "\\" : "\\\\");
-    }
-
 }
 
 void Comment() : {}
@@ -1417,8 +1256,7 @@ VmNode Directive() :
 	{
             // VELOCITY-667 We get here if we have a "#macro" construct
 	    // without parenthesis which is a parse error
-            throw new ParseException("A macro declaration requires at least a name argument"
-              , t);
+            throw new ParseException("A macro declaration requires at least a name argument", t);
 	}
 
         /**
@@ -1435,28 +1273,7 @@ VmNode Directive() :
 
     ( Statement() )* #Block
     <END>
-    {
-        /*
-         *  VM : if we are processing a #macro directive, we need to
-         *     process the block.  In truth, I can just register the name
-         *     and do the work later when init-ing.  That would work
-         *     as long as things were always defined before use.  This way
-         *     we don't have to worry about forward references and such...
-         */
-
-        if (doItNow)
-        {
-            // Add the macro name so that we can peform escape processing
-            // on defined macros
-            String macroName = ((AbstractVmNode)jjtThis.getChild(0)).getFirstToken().getImage();
-            macroNames.put(macroName, macroName);
-        }
-        /*
-         *  VM : end
-         */
-
-        return jjtThis;
-    }
+    { return jjtThis; }
 }
 
 /**
