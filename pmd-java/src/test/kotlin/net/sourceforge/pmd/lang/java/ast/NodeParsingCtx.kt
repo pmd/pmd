@@ -112,7 +112,7 @@ $construct
     }
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTBodyDeclaration =
-            acu.typeDeclarations.first().getFirstDescendantOfType(ASTBodyDeclaration::class.java)
+            acu.typeDeclarations.firstOrThrow().getFirstDescendantOfType(ASTBodyDeclaration::class.java)
 }
 
 object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {

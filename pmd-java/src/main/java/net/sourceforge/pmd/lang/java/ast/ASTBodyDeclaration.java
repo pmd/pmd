@@ -5,8 +5,22 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Marker interface for type body declarations, such as annotation members,
- * field or method declarations.
+ * Marker interface for declarations that can occur in a {@linkplain ASTTypeBody type body},
+ * such as field or method declarations. Some of those can also appear on the
+ * {@linkplain ASTTopLevelDeclaration top-level} of a file.
+ *
+ * <pre class="grammar">
+ *
+ * BodyDeclaration ::= {@link ASTAnyTypeDeclaration AnyTypeDeclaration}
+ *                   | {@link ASTMethodDeclaration MethodDeclaration}
+ *                   | {@link ASTConstructorDeclaration ConstructorDeclaration}
+ *                   | {@link ASTInitializer Initializer}
+ *                   | {@link ASTFieldDeclaration FieldDeclaration}
+ *                   | {@link ASTEnumConstant EnumConstant}
+ *                   | {@link ASTEmptyDeclaration EmptyDeclaration}
+ *
+ * </pre>
+ *
  */
 public interface ASTBodyDeclaration extends JavaNode {
 
