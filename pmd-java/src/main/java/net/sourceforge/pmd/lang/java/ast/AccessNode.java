@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.STRICTFP;
 
-import java.util.List;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
