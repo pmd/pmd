@@ -78,8 +78,8 @@ public interface ASTAnyTypeDeclaration
      *
      * @return The member declarations declared in this type declaration
      */
-    default NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getBody().children(ASTAnyTypeBodyDeclaration.class);
+    default NodeStream<ASTBodyDeclaration> getDeclarations() {
+        return getBody().getDeclarations();
     }
 
 

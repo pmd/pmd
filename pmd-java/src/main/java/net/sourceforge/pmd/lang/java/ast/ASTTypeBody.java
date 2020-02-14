@@ -27,8 +27,4 @@ public interface ASTTypeBody extends JavaNode {
     }
 
 
-    default NodeStream<ASTEnumConstant> getEnumConstants() {
-        return NodeStream.empty();
-    }
-
 }

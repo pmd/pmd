@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -140,13 +138,6 @@ public final class JavaMetrics {
     }
 
     public static List<MethodLikeNode> findOps(ASTAnyTypeDeclaration node) {
-        List<MethodLikeNode> operations = new ArrayList<>();
-
-        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.getDeclarationNode() instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((MethodLikeNode) decl.getDeclarationNode());
-            }
-        }
-        return operations;
+        return node.getDeclarations().filterIs(MethodLikeNode.class).toList();
     }
 }
