@@ -28,6 +28,8 @@ the suppressions with a `NOPMD` comment. See [Suppressing warnings](pmd_userdocs
 
 *   apex
     *   [#1087](https://github.com/pmd/pmd/issues/1087): \[apex] Support suppression via //NOPMD
+*   doc
+    *   [#2274](https://github.com/pmd/pmd/issues/2274): \[doc] Java API documentation for PMD
 *   java
     *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
 *   java-bestpractices
