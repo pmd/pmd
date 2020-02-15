@@ -34,14 +34,12 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @version $Id: ASTSubtractNode.java 691048 2008-09-01 20:26:11Z nbubna $
  */
 public class ASTSubtractNode extends ASTMathNode {
-    /**
-     * @param id
-     */
-    public ASTSubtractNode(final int id) {
+
+    ASTSubtractNode(int id) {
         super(id);
     }
 
-    /** Accept the visitor. **/
+
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

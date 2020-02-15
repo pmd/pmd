@@ -30,13 +30,12 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @version $Id: ASTEscape.java 517553 2007-03-13 06:09:58Z wglass $
  */
 public class ASTEscape extends AbstractVmNode {
+
     /** Used by the parser */
     public String val;
 
-    /**
-     * @param id
-     */
-    public ASTEscape(final int id) {
+
+    ASTEscape(int id) {
         super(id);
     }
 

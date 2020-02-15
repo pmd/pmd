@@ -23,9 +23,6 @@ package net.sourceforge.pmd.lang.vm.ast;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
-/**
- *
- */
 abstract class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode {
 
     protected AbstractVmNode(final int i) {

@@ -51,10 +51,8 @@ public class ASTReference extends AbstractVmNode {
      */
     public boolean toStringNullCheck = true;
 
-    /**
-     * @param id
-     */
-    public ASTReference(final int id) {
+
+    ASTReference(int id) {
         super(id);
     }
 

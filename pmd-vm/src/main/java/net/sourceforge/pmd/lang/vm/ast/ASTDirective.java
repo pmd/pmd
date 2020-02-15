@@ -36,12 +36,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @version $Id: ASTDirective.java 724825 2008-12-09 18:56:06Z nbubna $
  */
 public class ASTDirective extends AbstractVmNode {
+
     private String directiveName = "";
 
-    /**
-     * @param id
-     */
-    public ASTDirective(final int id) {
+
+    ASTDirective(int id) {
         super(id);
     }
 

@@ -26,10 +26,8 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @version $Id: ASTStringLiteral.java 705297 2008-10-16 17:59:24Z nbubna $
  */
 public class ASTStringLiteral extends AbstractVmNode {
-    /**
-     * @param id
-     */
-    public ASTStringLiteral(final int id) {
+
+    ASTStringLiteral(int id) {
         super(id);
     }
 

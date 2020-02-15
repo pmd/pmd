@@ -40,10 +40,8 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id: ASTMethod.java 720228 2008-11-24 16:58:33Z nbubna $
  */
 public class ASTMethod extends AbstractVmNode {
-    /**
-     * @param id
-     */
-    public ASTMethod(final int id) {
+
+    ASTMethod(int id) {
         super(id);
     }
 
