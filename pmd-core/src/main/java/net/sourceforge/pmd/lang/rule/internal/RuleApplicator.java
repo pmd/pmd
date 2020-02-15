@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -35,14 +37,14 @@ public class RuleApplicator {
 
     // This has an excellent cache hit ratio on longer runs, making the indexing
     // time insignificant
-    private final NodeIdx idx = new NodeIdx();
+    private final NodeIdx idx;
 
-    // TODO the rulechain used to index only the nodes at least one rule cares about,
-    //  implement the same behavior? Even when there are only a few rules, and the indexing
-    //  time outweighs the rule application time, the parsing/symbol table/ type res VASTLY
-    //  outweighs both of those. So it might be unnecessary
+    private RuleApplicator(NodeIdx index) {
+        this.idx = index;
+    }
 
-    public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
+
+    public void index(Collection<? extends Node> nodes) {
         idx.prepare();
 
         for (Node root : nodes) {
@@ -50,12 +52,17 @@ public class RuleApplicator {
         }
 
         idx.complete();
+    }
 
+    public void apply(Collection<? extends Rule> rules, RuleContext ctx) {
         applyOnIndex(idx, rules, ctx);
     }
 
     private void applyOnIndex(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
+            if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
+                continue;
+            }
 
             Iterator<? extends Node> targets = rule.getTargetingStrategy().getVisitedNodes(idx);
             while (targets.hasNext()) {
@@ -81,6 +88,15 @@ public class RuleApplicator {
     }
 
 
+    public static RuleApplicator build(Iterable<? extends Rule> rules) {
+        ApplicatorBuilder builder = new ApplicatorBuilder();
+        for (Rule it : rules) {
+            it.getTargetingStrategy().prepare(builder);
+        }
+        return builder.build();
+    }
+
+
     private void indexTree(Node top, NodeIdx idx) {
         idx.indexNode(top);
         for (Node child : top.children()) {
@@ -88,13 +104,30 @@ public class RuleApplicator {
         }
     }
 
+    public static class ApplicatorBuilder {
+
+        private final Set<String> namesToIndex = new HashSet<>();
+
+
+        void registerXPathNames(Set<String> names) {
+            namesToIndex.addAll(names);
+        }
+
+        RuleApplicator build() {
+            return new RuleApplicator(new NodeIdx(namesToIndex));
+        }
+    }
+
+
     static class NodeIdx {
 
         private final LatticeRelation<Class<?>, Set<Node>> byClass;
+        private final Set<String> interestingNames;
         private final Map<String, List<Node>> byName;
 
 
-        NodeIdx() {
+        NodeIdx(Set<String> interestingNames) {
+
             byClass = new LatticeRelation<>(
                 SymMonoid.forSet(),
                 SymMonoid.forMutableSet(),
@@ -102,7 +135,15 @@ public class RuleApplicator {
                 NodeIdx::filterClassFromIndex,
                 Class::getSimpleName
             );
+            this.interestingNames = interestingNames;
             byName = new HashMap<>();
+        }
+
+        void indexNode(Node n) {
+            if (interestingNames.contains(n.getXPathNodeName())) {
+                byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
+            }
+            byClass.put(n.getClass(), Collections.singleton(n));
         }
 
         // prune non-public classes from the index, also abstract classes,
@@ -111,11 +152,6 @@ public class RuleApplicator {
             return Modifier.isPublic(klass.getModifiers())
                 && Node.class.isAssignableFrom(klass)
                 && (!Modifier.isAbstract(klass.getModifiers()) || klass.isInterface());
-        }
-
-        void indexNode(Node n) {
-            byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
-            byClass.put(n.getClass(), Collections.singleton(n));
         }
 
         void complete() {

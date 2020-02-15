@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -413,9 +414,7 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
 
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
         RuleContext ctx = new RuleContext();
@@ -432,9 +431,7 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
 
-        ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         r = new Report();
         ctx.setReport(r);

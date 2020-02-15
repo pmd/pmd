@@ -13,6 +13,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.internal.RuleApplicator.ApplicatorBuilder;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator.NodeIdx;
 
 /** A strategy for selecting nodes that will be targeted by a rule. */
@@ -21,6 +22,8 @@ public abstract class TargetSelectionStrategy {
     TargetSelectionStrategy() {
         // package private
     }
+
+    abstract void prepare(ApplicatorBuilder idx);
 
 
     abstract Iterator<? extends Node> getVisitedNodes(NodeIdx index);
@@ -34,6 +37,11 @@ public abstract class TargetSelectionStrategy {
             this.visits = new HashSet<>(visits);
         }
 
+        @Override
+        void prepare(ApplicatorBuilder builder) {
+            // nothing to do
+            builder.registerXPathNames(visits);
+        }
 
         @Override
         Iterator<? extends Node> getVisitedNodes(NodeIdx index) {
@@ -49,6 +57,21 @@ public abstract class TargetSelectionStrategy {
 
         public ClassRulechainVisits(Collection<Class<? extends Node>> visits) {
             this.visits = new HashSet<>(visits);
+        }
+
+        @Override
+        void prepare(ApplicatorBuilder builder) {
+            // builder doesn't support filtering classes
+            //
+            // Even when there are only a few rules, and the indexing
+            // time outweighs the rule application time, the parsing/symbol table/ type res
+            // vastly outweighs both of those. So it might be plain unnecessary
+
+            // The only way to implement that I can think of would become very inefficient
+            // when the set of interesting classes becomes large.
+
+            // TODO The only optimisation that would be relevant, would be to skip
+            //  indexing if the only found strategy is ROOT_ONLY
         }
 
         @Override
