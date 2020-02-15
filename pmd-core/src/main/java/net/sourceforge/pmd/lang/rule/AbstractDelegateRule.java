@@ -236,31 +236,6 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public boolean isRuleChain() {
-        return rule.isRuleChain();
-    }
-
-    @Override
-    public Set<String> getRuleChainVisits() {
-        return rule.getRuleChainVisits();
-    }
-
-    @Override
-    public Set<Class<?>> getClassRuleChainVisits() {
-        return rule.getClassRuleChainVisits();
-    }
-
-    @Override
-    public void addRuleChainVisit(Class<? extends Node> nodeClass) {
-        rule.addRuleChainVisit(nodeClass);
-    }
-
-    @Override
-    public void addRuleChainVisit(String astNodeName) {
-        rule.addRuleChainVisit(astNodeName);
-    }
-
-    @Override
     public TargetSelectionStrategy getTargetingStrategy() {
         return rule.getTargetingStrategy();
     }

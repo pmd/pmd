@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,6 +23,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -35,6 +37,7 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 
 public class RuleSetTest {
 
@@ -402,8 +405,6 @@ public class RuleSetTest {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyRootNode");
-        assertTrue("RuleChain rule", rule.isRuleChain());
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -446,7 +447,6 @@ public class RuleSetTest {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
                 .build();
@@ -568,8 +568,10 @@ public class RuleSetTest {
     @Test
     public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyRootNode");
+
+            @Override
+            protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
+                return Rule.visitNodesNamed(setOf("dummyRootNode"));
             }
 
             @Override
@@ -577,8 +579,10 @@ public class RuleSetTest {
                 throw new RuntimeException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyRootNode");
+
+            @Override
+            protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
+                return Rule.visitNodesNamed(setOf("dummyRootNode"));
             }
 
             @Override

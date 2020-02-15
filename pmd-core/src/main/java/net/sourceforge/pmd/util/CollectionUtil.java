@@ -183,15 +183,6 @@ public final class CollectionUtil {
         return map;
     }
 
-
-    @SafeVarargs
-    public static <T> Set<T> setOf(T first, T... ts) {
-        LinkedHashSet<T> set = new LinkedHashSet<>(ts.length + 1);
-        set.add(first);
-        Collections.addAll(set, ts);
-        return set;
-    }
-
     /**
      * Consumes all the elements of the iterator and
      * returns a list containing them. The iterator is

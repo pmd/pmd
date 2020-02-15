@@ -221,7 +221,6 @@ public class AbstractRuleTest {
         assertEquals(r1.getName(), r2.getName());
         assertEquals(r1.getPriority(), r2.getPriority());
         assertEquals(r1.getPropertyDescriptors(), r2.getPropertyDescriptors());
-        assertEquals(r1.getRuleChainVisits(), r2.getRuleChainVisits());
         assertEquals(r1.getRuleClass(), r2.getRuleClass());
         assertEquals(r1.getRuleSetName(), r2.getRuleSetName());
         assertEquals(r1.getSince(), r2.getSince());

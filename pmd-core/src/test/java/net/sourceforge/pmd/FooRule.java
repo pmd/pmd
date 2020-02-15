@@ -4,20 +4,31 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 
 /**
  * Sample rule that detect any node with an image of "Foo". Used for testing.
  */
 public class FooRule extends AbstractRule {
+
     public FooRule() {
         setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         setName("Foo");
+    }
+
+    @Override
+    protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
+        return Rule.visitNodesNamed(setOf("dummyNode"));
     }
 
     @Override

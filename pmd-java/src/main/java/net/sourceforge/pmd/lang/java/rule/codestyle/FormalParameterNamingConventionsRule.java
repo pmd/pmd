@@ -5,9 +5,14 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -34,10 +39,12 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
         definePropertyDescriptor(finalFormalParamRegex);
         definePropertyDescriptor(lambdaParamRegex);
         definePropertyDescriptor(explicitLambdaParamRegex);
-
-        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
+    @Override
+    protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
+        return visitNodesWithType(setOf(ASTVariableDeclaratorId.class));
+    }
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {

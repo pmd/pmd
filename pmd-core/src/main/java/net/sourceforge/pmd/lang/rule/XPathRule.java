@@ -13,16 +13,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
@@ -72,7 +73,7 @@ public class XPathRule extends AbstractRule {
             .build();
 
     /**
-     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} or {@link #getRuleChainVisits()}.
+     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} {@link #getTargetingStrategy()}.
      */
     private XPathRuleQuery xpathRuleQuery;
 
@@ -216,16 +217,17 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    public Set<String> getRuleChainVisits() {
+    protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
-
-            for (String nodeName : xpathRuleQuery.getRuleChainVisits()) {
-                super.addRuleChainVisit(nodeName);
-            }
-            logXPathRuleChainUsage(!xpathRuleQuery.getRuleChainVisits().isEmpty());
         }
-        return super.getRuleChainVisits();
+
+        List<String> visits = xpathRuleQuery.getRuleChainVisits();
+
+        logXPathRuleChainUsage(!visits.isEmpty());
+
+        return visits.isEmpty() ? Rule.visitRootOnly()
+                                : Rule.visitNodesNamed(visits);
     }
 
 

@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.rule.internal;
 
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -28,8 +30,8 @@ public abstract class TargetSelectionStrategy {
 
         private final Set<String> visits;
 
-        public StringRulechainVisits(Set<String> visits) {
-            this.visits = visits;
+        public StringRulechainVisits(Collection<String> visits) {
+            this.visits = new HashSet<>(visits);
         }
 
 
@@ -43,12 +45,11 @@ public abstract class TargetSelectionStrategy {
 
         public static final TargetSelectionStrategy ROOT_ONLY = new ClassRulechainVisits(Collections.singleton(RootNode.class));
 
-        private final Set<? extends Class<?>> visits;
+        private final Set<Class<?>> visits;
 
-        public ClassRulechainVisits(Set<? extends Class<?>> visits) {
-            this.visits = visits;
+        public ClassRulechainVisits(Collection<Class<?>> visits) {
+            this.visits = new HashSet<>(visits);
         }
-
 
         @Override
         Iterator<? extends Node> getVisitedNodes(NodeIdx index) {

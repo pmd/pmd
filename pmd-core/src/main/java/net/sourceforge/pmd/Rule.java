@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.ClassRulechainVisits;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.StringRulechainVisits;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
@@ -289,56 +291,19 @@ public interface Rule extends PropertySource {
 
 
     /**
-     * Gets whether this Rule uses the RuleChain.
-     *
-     * @return <code>true</code> if RuleChain is used.
+     * Returns the object that selects the nodes to which this rule applies
+     * in a tree.
      */
-    default boolean isRuleChain() {
-        return !getRuleChainVisits().isEmpty() || !getClassRuleChainVisits().isEmpty();
-    }
-
-
-    /**
-     * Gets the collection of AST node names visited by the Rule on the
-     * RuleChain.
-     *
-     * @return the list of AST node names
-     */
-    Set<String> getRuleChainVisits();
-
-
-    Set<Class<?>> getClassRuleChainVisits();
-
-
-    /**
-     * Adds an AST node by class to be visited by the Rule on the RuleChain.
-     *
-     * @param nodeClass
-     *            the AST node to add to the RuleChain visit list
-     */
-    void addRuleChainVisit(Class<? extends Node> nodeClass);
-
-    /**
-     * Adds an AST node by XPath name to be visited by the Rule on the RuleChain.
-     *
-     * @param astNodeName
-     *            the XPath name of the node to add to the RuleChain visit list
-     *
-     * @see Node#getXPathNodeName()
-     */
-    void addRuleChainVisit(String astNodeName);
-
-
     TargetSelectionStrategy getTargetingStrategy();
 
 
     /**
      * Start processing. Called once, before apply() is first called.
      *
-     * @param ctx
-     *            the rule context
+     * @param ctx the rule context
      */
     void start(RuleContext ctx);
+
 
     /**
      * Apply this rule to the given collection of nodes, using the given
@@ -365,4 +330,25 @@ public interface Rule extends PropertySource {
      * @return A new exact copy of this rule
      */
     Rule deepCopy();
+
+
+    static TargetSelectionStrategy visitNodesNamed(Collection<String> names) {
+        if (names.isEmpty()) {
+            throw new IllegalArgumentException("Cannot visit zero nodes");
+        }
+        return new StringRulechainVisits(names);
+    }
+
+
+    static TargetSelectionStrategy visitNodesWithType(Collection<Class<?>> types) {
+        if (types.isEmpty()) {
+            throw new IllegalArgumentException("Cannot visit zero types");
+        }
+        return new ClassRulechainVisits(types);
+    }
+
+
+    static TargetSelectionStrategy visitRootOnly() {
+        return ClassRulechainVisits.ROOT_ONLY;
+    }
 }

@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.ClassRulechainVisits;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.StringRulechainVisits;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -235,53 +234,37 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         return new ParserOptions();
     }
 
-    @Override
-    public boolean isRuleChain() {
-        return !getRuleChainVisits().isEmpty();
-    }
 
-    @Override
-    public Set<String> getRuleChainVisits() {
-        return ruleChainVisits;
-    }
-
-    @Override
-    public Set<Class<?>> getClassRuleChainVisits() {
+    protected Set<Class<?>> getClassRuleChainVisits() {
         if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
             return Collections.singleton(RootNode.class);
         }
         return classRuleChainVisits;
     }
 
-    @Override
-    public void addRuleChainVisit(Class<? extends Node> nodeClass) {
+
+    /**
+     * @deprecated Override {@link #buildTargetingStrategy()}, this is
+     *     provided for legacy compatibility
+     */
+    @Deprecated
+    protected void addRuleChainVisit(Class<? extends Node> nodeClass) {
         classRuleChainVisits.add(nodeClass);
     }
 
     @Override
-    public void addRuleChainVisit(String astNodeName) {
-        ruleChainVisits.add(astNodeName);
-    }
-
-    @Override
-    public TargetSelectionStrategy getTargetingStrategy() {
+    public final TargetSelectionStrategy getTargetingStrategy() {
         if (myStrategy == null) {
-            myStrategy = buildSelectionStrat();
+            myStrategy = buildTargetingStrategy();
         }
         return myStrategy;
     }
 
     @NonNull
-    private TargetSelectionStrategy buildSelectionStrat() {
-        Set<String> rvs = getRuleChainVisits();
+    protected TargetSelectionStrategy buildTargetingStrategy() {
         Set<Class<?>> crvs = getClassRuleChainVisits();
-        if (rvs.isEmpty() && crvs.isEmpty()) {
-            return ClassRulechainVisits.ROOT_ONLY;
-        } else if (rvs.isEmpty()) {
-            return new ClassRulechainVisits(crvs);
-        } else {
-            return new StringRulechainVisits(rvs);
-        }
+        return crvs.isEmpty() ? ClassRulechainVisits.ROOT_ONLY
+                              : Rule.visitNodesWithType(crvs);
     }
 
     @Override
@@ -426,4 +409,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         }
         return rule;
     }
+
+
 }
