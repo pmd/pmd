@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule.internal;
 
 import static net.sourceforge.pmd.internal.util.IteratorUtil.toIterable;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class RuleApplicator {
     // and there's no need to perform more topological checks when freezing
     // it
     // This has a cache hit ratio of more than 99% on longer runs, making
-    // the indexing less than 2% of the total runtime of the apply method.
+    // the indexing time insignificant
     private final NodeIdx idx = new NodeIdx();
 
     public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
@@ -93,9 +94,18 @@ public class RuleApplicator {
                 Monoid.forSet(),
                 Monoid.forMutableSet(),
                 TopoOrder.TYPE_HIERARCHY_ORDERING,
+                NodeIdx::filterClassFromIndex,
                 Class::getSimpleName
             );
             byName = new HashMap<>();
+        }
+
+        // prune non-public classes from the index, also abstract classes,
+        // which are supposed to be implementation details
+        private static boolean filterClassFromIndex(Class<?> klass) {
+            return Modifier.isPublic(klass.getModifiers())
+                && Node.class.isAssignableFrom(klass)
+                && (!Modifier.isAbstract(klass.getModifiers()) || klass.isInterface());
         }
 
         void indexNode(Node n) {

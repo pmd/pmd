@@ -23,7 +23,9 @@ import java.util.List;
  */
 interface TopoOrder<T> {
 
-    /** TopoOrder on classes. A class's successors are its direct supertypes. */
+    /**
+     * TopoOrder on classes. A class's successors are its direct supertypes.
+     */
     TopoOrder<Class<?>> TYPE_HIERARCHY_ORDERING = node -> {
         if (node == Object.class || node.isPrimitive()) {
             // Object
