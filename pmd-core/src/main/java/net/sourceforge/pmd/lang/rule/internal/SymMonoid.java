@@ -10,14 +10,12 @@ import java.util.function.BinaryOperator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Describes an associative, binary operation on a type
- * {@code <U>}, that has an identity element.
- *
- * <p>This is used to merge values in a {@link LatticeRelation}.
+ * Describes an operation used to combine values in a {@link LatticeRelation}.
+ * This operation must satisfy some properties, explained on {@link #apply(Object, Object) apply}.
  *
  * @param <U> Domain of the operation
  */
-interface Monoid<@NonNull U> extends BinaryOperator<U> {
+interface SymMonoid<@NonNull U> extends BinaryOperator<U> {
 
     /**
      * Combine two U, in a way consistent with {@link #zero()}.
@@ -26,6 +24,12 @@ interface Monoid<@NonNull U> extends BinaryOperator<U> {
      *     apply(zero(), U) == apply(U, zero()) == U        (identity element)
      *     apply(apply(U, V), W) == apply(U, apply(V, W))   (associativity)
      * }</pre>
+     * This operation must also be commutative, because ordering
+     * of lattice nodes is unspecified:
+     * <pre>{@code
+     *   apply(U, V) == apply(V, U)
+     * }</pre>
+     * The latter property explains the choice of name ("Sym").
      */
     @Override
     U apply(U u, U u2);
@@ -41,15 +45,15 @@ interface Monoid<@NonNull U> extends BinaryOperator<U> {
 
     /** Apply produces a new set, the union of both arguments. */
     @SuppressWarnings("unchecked")
-    static <T> Monoid<Set<T>> forSet() {
-        return (Monoid<Set<T>>) MonoidImplUtils.PSET_MONOID;
+    static <T> SymMonoid<Set<T>> forSet() {
+        return (SymMonoid<Set<T>>) MonoidImplUtils.PSET_MONOID;
     }
 
 
     /** Accumulates the right argument into the left one (mutating it). */
     @SuppressWarnings("unchecked")
-    static <T> Monoid<Set<T>> forMutableSet() {
-        return (Monoid<Set<T>>) MonoidImplUtils.MSET_MONOID;
+    static <T> SymMonoid<Set<T>> forMutableSet() {
+        return (SymMonoid<Set<T>>) MonoidImplUtils.MSET_MONOID;
     }
 
 

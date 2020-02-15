@@ -27,8 +27,8 @@ public class LatticeRelationTest {
     public void testCustomTopo() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            Monoid.forSet(),
-            Monoid.forMutableSet(),
+            SymMonoid.forSet(),
+            SymMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             PredicateUtil.always(),
             Objects::toString
@@ -54,8 +54,8 @@ public class LatticeRelationTest {
     public void testClearing() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            Monoid.forSet(),
-            Monoid.forMutableSet(),
+            SymMonoid.forSet(),
+            SymMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             PredicateUtil.always(),
             Objects::toString
@@ -88,8 +88,8 @@ public class LatticeRelationTest {
     public void testTopoFilter() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            Monoid.forSet(),
-            Monoid.forMutableSet(),
+            SymMonoid.forSet(),
+            SymMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             // filter out sets with size 2
             // this cuts out one level of the graph

@@ -25,7 +25,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * The internal representation is a directed acyclic graph of {@code <T>},
  * built according to a {@link TopoOrder}. The value {@code <U>} associated
  * to a node is the recursive combination of the values of all its children,
- * plus its own value, as defined by a {@link Monoid  Monoid&lt;U&gt;}.
+ * plus its own value, as defined by a {@link SymMonoid  Monoid&lt;U&gt;}.
  *
  * <p>An instance has two states:
  * <ul>
@@ -52,7 +52,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
  *            must implement a consistent {@link Object#equals(Object) equals} and
  *            {@link Object#hashCode() hashcode} and be immutable.
- * @param <U> Type of values, must have a conformant {@link Monoid}
+ * @param <U> Type of values, must have a conformant {@link SymMonoid}
  */
 class LatticeRelation<T, @NonNull U> {
 
@@ -62,8 +62,8 @@ class LatticeRelation<T, @NonNull U> {
     private static final int TMP_TOPOMARK = 1;
 
     // behavior parameters for this lattice
-    private final Monoid<U> combine;
-    private final Monoid<U> accumulate;
+    private final SymMonoid<U> combine;
+    private final SymMonoid<U> accumulate;
     private final Predicate<? super T> filter;
     private final TopoOrder<T> keyOrder;
     private final Function<? super T, String> keyToString;
@@ -86,8 +86,8 @@ class LatticeRelation<T, @NonNull U> {
      *                    filter are kept.
      * @param keyToString Strategy to render keys when dumping the lattice to a graph
      */
-    LatticeRelation(Monoid<U> combine,
-                    Monoid<U> accumulate,
+    LatticeRelation(SymMonoid<U> combine,
+                    SymMonoid<U> accumulate,
                     TopoOrder<T> keyOrder,
                     Predicate<? super T> filter,
                     Function<? super T, String> keyToString) {
@@ -136,7 +136,7 @@ class LatticeRelation<T, @NonNull U> {
     }
 
     /**
-     * Returns the computed value for the given key, or the {@link Monoid#zero() zero}
+     * Returns the computed value for the given key, or the {@link SymMonoid#zero() zero}
      * of the {@link #combine} monoid if the key is not recorded in this lattice.
      */
     @NonNull
@@ -385,7 +385,10 @@ class LatticeRelation<T, @NonNull U> {
         }
 
         U computeValue() {
-            return computeValImpl(new HashSet<>());
+            if (frozenVal == null) {
+                frozenVal = computeValImpl(new HashSet<>());
+            }
+            return frozenVal;
         }
 
         private U computeValImpl(Set<LNode> seen) {

@@ -16,15 +16,17 @@ import java.util.List;
 
 /**
  * Represents a partial order on a type {@code <T>}. This ordering
- * generates a directed *acyclic* graph on instances of {@code <T>}.
+ * generates a directed acyclic graph on instances of {@code <T>}.
  *
  * <p>This violates the contract of {@link Comparator} (total ordering)
- * so doesn't extend that interface. It couldn't be used in {@link Collections#sort(List, Comparator)} anyway.
+ * so doesn't extend that interface. It couldn't be used in
+ * {@link Collections#sort(List, Comparator)} anyway.
  */
 interface TopoOrder<T> {
 
     /**
-     * TopoOrder on classes. A class's successors are its direct supertypes.
+     * Partial order on classes. The direct successors of a class are
+     * its direct supertypes.
      */
     TopoOrder<Class<?>> TYPE_HIERARCHY_ORDERING = node -> {
         if (node == Object.class || node.isPrimitive()) {
@@ -45,7 +47,11 @@ interface TopoOrder<T> {
     };
 
 
-    /** Returns all nodes that directly follow this node. */
+    /**
+     * Returns all nodes that directly follow this node.
+     * The returned nodes may be pruned by the filter of
+     * the lattice.
+     */
     Iterator<T> directSuccessors(T node);
 
 
