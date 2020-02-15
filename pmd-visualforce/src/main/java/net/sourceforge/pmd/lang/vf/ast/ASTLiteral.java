@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTLiteral extends AbstractVFNode {
+public class ASTLiteral extends AbstractVfNode {
     public ASTLiteral(int id) {
         super(id);
-    }
-
-    public ASTLiteral(VfParser p, int id) {
-        super(p, id);
     }
 
     /** Accept the visitor. **/

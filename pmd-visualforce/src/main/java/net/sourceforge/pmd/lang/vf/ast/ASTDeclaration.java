@@ -5,16 +5,12 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTDeclaration extends AbstractVFNode {
+public class ASTDeclaration extends AbstractVfNode {
 
     private String name;
 
     public ASTDeclaration(int id) {
         super(id);
-    }
-
-    public ASTDeclaration(VfParser p, int id) {
-        super(p, id);
     }
 
     /**

@@ -1,23 +1,23 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.vf;
+
+package net.sourceforge.pmd.lang.vf.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.vf.ast.VfParserTokenManager;
 
 /**
  * VF Token Manager implementation.
  */
 public class VfTokenManager implements TokenManager {
-    private final VfParserTokenManager tokenManager;
+    private final VfParserImplTokenManager tokenManager;
 
     public VfTokenManager(Reader source) {
-        tokenManager = new VfParserTokenManager(CharStreamFactory.javaCharStream(source));
+        tokenManager = new VfParserImplTokenManager(CharStreamFactory.javaCharStream(source));
     }
 
     @Override
@@ -27,6 +27,6 @@ public class VfTokenManager implements TokenManager {
 
     @Override
     public void setFileName(String fileName) {
-        VfParserTokenManager.setFileName(fileName);
+        VfParserImplTokenManager.setFileName(fileName);
     }
 }

@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
-import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
+import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
@@ -441,14 +441,14 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return !nonEscapedIds.isEmpty();
     }
 
-    private boolean containsSafeFields(final AbstractVFNode expression) {
+    private boolean containsSafeFields(final VfNode expression) {
         final ASTExpression ex = expression.getFirstChildOfType(ASTExpression.class);
 
         return ex != null && innerContainsSafeFields(ex);
 
     }
 
-    private boolean innerContainsSafeFields(final AbstractVFNode expression) {
+    private boolean innerContainsSafeFields(final VfNode expression) {
         for (int i = 0; i < expression.getNumChildren(); i++) {
             Node child = expression.getChild(i);
 

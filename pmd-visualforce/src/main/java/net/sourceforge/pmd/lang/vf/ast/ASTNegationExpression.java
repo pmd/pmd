@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTNegationExpression extends AbstractVFNode {
+public class ASTNegationExpression extends AbstractVfNode {
     public ASTNegationExpression(int id) {
         super(id);
-    }
-
-    public ASTNegationExpression(VfParser p, int id) {
-        super(p, id);
     }
 
     /** Accept the visitor. **/

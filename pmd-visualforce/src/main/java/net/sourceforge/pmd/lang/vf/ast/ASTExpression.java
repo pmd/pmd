@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTExpression extends AbstractVFNode {
+public class ASTExpression extends AbstractVfNode {
     public ASTExpression(int id) {
         super(id);
-    }
-
-    public ASTExpression(VfParser p, int id) {
-        super(p, id);
     }
 
     /** Accept the visitor. **/

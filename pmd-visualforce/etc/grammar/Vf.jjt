@@ -11,13 +11,13 @@ options {
 	TRACK_TOKENS = true;
 }
 
-PARSER_BEGIN(VfParser)
+PARSER_BEGIN(VfParserImpl)
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class VfParser {
+public class VfParserImpl {
 
 
 	/**
@@ -46,7 +46,7 @@ public class VfParser {
 	}
 }
 
-PARSER_END(VfParser)
+PARSER_END(VfParserImpl)
 
 /** *************************  VF LEXICON  **************************** */
 
@@ -163,13 +163,13 @@ PARSER_END(VfParser)
 
 <ElAttribTagStateSQ> TOKEN :
 {
-	<COMMENT_OPEN_SQ: <COMMNT_START> > : InlineCommentStateSQ 	
+	<COMMENT_OPEN_SQ: <COMMNT_START> > : InlineCommentStateSQ
 |	<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
 }
 
 <ElAttribTagStateDQ> TOKEN :
-{	
-	<COMMENT_OPEN_DQ: <COMMNT_START> > : InlineCommentStateDQ 	
+{
+	<COMMENT_OPEN_DQ: <COMMNT_START> > : InlineCommentStateDQ
 |	<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
 }
 
@@ -264,20 +264,20 @@ PARSER_END(VfParser)
 
 <InlineCommentStateScript> TOKEN :
 {
-  < COMMENT_CLOSE_SCRIPT:  (<COMMNT_END>) > : ElInScriptState 
+  < COMMENT_CLOSE_SCRIPT:  (<COMMNT_END>) > : ElInScriptState
 | < COMMENT_INNER_TEXT_SCRIPT: (~[]) >
 }
 
 <InlineCommentStateSQ> TOKEN :
 {
-  < COMMENT_CLOSE_SQ:  (<COMMNT_END>) > : ElAttribTagStateSQ 
+  < COMMENT_CLOSE_SQ:  (<COMMNT_END>) > : ElAttribTagStateSQ
 | < COMMENT_INNER_TEXT_SQ: (~[]) >
 }
 
 
 <InlineCommentStateDQ> TOKEN :
 {
-  < COMMENT_CLOSE_DQ:  (<COMMNT_END>) > : ElAttribTagStateDQ 
+  < COMMENT_CLOSE_DQ:  (<COMMNT_END>) > : ElAttribTagStateDQ
 | < COMMENT_INNER_TEXT_DQ: (~[]) >
 }
 
@@ -502,32 +502,32 @@ void UnaryExpression()  #void :
 void PrimaryExpression() #void :
 {}
 {
-   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* 
+   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
 }
 
 void ELSQCommentExpression() #void :
 {}
 {
-  <COMMENT_OPEN_SQ>  ( <COMMENT_INNER_TEXT_SQ> )*  <COMMENT_CLOSE_SQ> 
+  <COMMENT_OPEN_SQ>  ( <COMMENT_INNER_TEXT_SQ> )*  <COMMENT_CLOSE_SQ>
 }
 
 void ELDQCommentExpression() #void :
 {}
 {
-  <COMMENT_OPEN_DQ>  (  <COMMENT_INNER_TEXT_DQ> )*  <COMMENT_CLOSE_DQ> 
+  <COMMENT_OPEN_DQ>  (  <COMMENT_INNER_TEXT_DQ> )*  <COMMENT_CLOSE_DQ>
 }
 
 void CommentExpression() #void :
 {}
 {
-  <COMMENT_OPEN_SCRIPT>  ( <COMMENT_INNER_TEXT_SCRIPT> )*  <COMMENT_CLOSE_SCRIPT> 
+  <COMMENT_OPEN_SCRIPT>  ( <COMMENT_INNER_TEXT_SCRIPT> )*  <COMMENT_CLOSE_SCRIPT>
 }
 
 void PrimaryPrefix() #void :
 {}
 {
 	  Literal()
-	| Identifier()	
+	| Identifier()
 	| <LPAREN> Expression() <RPAREN>
 	| <LSQUARE> Expression() (<COMMA> Expression())*   <RSQUARE>
 	| NegationExpression()

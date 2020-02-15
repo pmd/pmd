@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTElement extends AbstractVFNode {
+public class ASTElement extends AbstractVfNode {
 
     /**
      * Name of the element-tag. Cannot be null.
@@ -25,10 +25,6 @@ public class ASTElement extends AbstractVFNode {
 
     public ASTElement(int id) {
         super(id);
-    }
-
-    public ASTElement(VfParser p, int id) {
-        super(p, id);
     }
 
     /**

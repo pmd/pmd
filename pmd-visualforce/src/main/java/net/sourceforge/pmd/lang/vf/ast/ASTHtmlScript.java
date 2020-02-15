@@ -6,13 +6,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTHtmlScript extends AbstractVFNode {
+public class ASTHtmlScript extends AbstractVfNode {
     public ASTHtmlScript(int id) {
         super(id);
-    }
-
-    public ASTHtmlScript(VfParser p, int id) {
-        super(p, id);
     }
 
     /** Accept the visitor. **/

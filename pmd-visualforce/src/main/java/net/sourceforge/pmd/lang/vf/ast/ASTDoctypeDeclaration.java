@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTDoctypeDeclaration extends AbstractVFNode {
+public class ASTDoctypeDeclaration extends AbstractVfNode {
 
     /**
      * Name of the document type. Cannot be null.
@@ -14,10 +14,6 @@ public class ASTDoctypeDeclaration extends AbstractVFNode {
 
     public ASTDoctypeDeclaration(int id) {
         super(id);
-    }
-
-    public ASTDoctypeDeclaration(VfParser p, int id) {
-        super(p, id);
     }
 
     /**

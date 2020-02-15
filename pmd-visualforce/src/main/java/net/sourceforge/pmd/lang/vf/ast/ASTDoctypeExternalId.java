@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTDoctypeExternalId extends AbstractVFNode {
+public class ASTDoctypeExternalId extends AbstractVfNode {
 
     /**
      * URI of the external entity. Cannot be null.
@@ -19,10 +19,6 @@ public class ASTDoctypeExternalId extends AbstractVFNode {
 
     public ASTDoctypeExternalId(int id) {
         super(id);
-    }
-
-    public ASTDoctypeExternalId(VfParser p, int id) {
-        super(p, id);
     }
 
     public boolean isHasPublicId() {
