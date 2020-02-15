@@ -6,8 +6,6 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -47,13 +45,7 @@ public class FooRule extends AbstractRule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
-            apply(node, ctx);
-        }
-    }
-
-    protected void apply(Node node, RuleContext ctx) {
+    public void apply(Node node, RuleContext ctx) {
         for (int i = 0; i < node.getNumChildren(); i++) {
             apply(node.getChild(i), ctx);
         }

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.testframework;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -53,7 +52,7 @@ public class RuleTstTest {
         verify(rule).getTargetingStrategy();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
-        verify(rule).apply(anyList(), any(RuleContext.class));
+        verify(rule).apply(any(Node.class), any(RuleContext.class));
         verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
         verifyNoMoreInteractions(rule);
@@ -80,7 +79,7 @@ public class RuleTstTest {
                 context.getReport().addRuleViolation(createViolation(context, 5, "second reported violation"));
                 return null;
             }
-        }).when(rule).apply(Mockito.anyList(), Mockito.any(RuleContext.class));
+        }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));
 
         TestDescriptor testDescriptor = new TestDescriptor("the code", "sample test", 2, rule, dummyLanguage);
         testDescriptor.setReinitializeRule(false);

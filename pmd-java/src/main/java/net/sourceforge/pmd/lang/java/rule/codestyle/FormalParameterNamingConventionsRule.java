@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -43,7 +44,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
     @Override
     protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
-        return visitNodesWithType(setOf(ASTVariableDeclaratorId.class));
+        return Rule.visitNodesWithType(setOf(ASTVariableDeclaratorId.class));
     }
 
     @Override

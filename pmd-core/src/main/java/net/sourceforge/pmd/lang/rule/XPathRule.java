@@ -158,10 +158,8 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
-            evaluate(node, ctx);
-        }
+    public void apply(Node target, RuleContext ctx) {
+        evaluate(target, ctx);
     }
 
     /**

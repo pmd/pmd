@@ -291,8 +291,8 @@ public interface Rule extends PropertySource {
 
 
     /**
-     * Returns the object that selects the nodes to which this rule applies
-     * in a tree.
+     * Returns the object that selects the nodes to which this rule applies.
+     * The selected nodes will be handed to {@link #apply(Node, RuleContext)}.
      */
     TargetSelectionStrategy getTargetingStrategy();
 
@@ -306,16 +306,13 @@ public interface Rule extends PropertySource {
 
 
     /**
-     * Apply this rule to the given collection of nodes, using the given
-     * context.
+     * Process the given node. The nodes that are fed to this method
+     * are the nodes selected by {@link #getTargetingStrategy()}.
      *
-     * @param nodes
-     *            the nodes
-     * @param ctx
-     *            the rule context
+     * @param target Node on which to apply the rule
+     * @param ctx    Rule context, handling violations
      */
-    // TODO should be apply(Node), apply(List) hides exceptions and implementation is duplicated
-    void apply(List<? extends Node> nodes, RuleContext ctx);
+    void apply(Node target, RuleContext ctx);
 
     /**
      * End processing. Called once, after apply() is last called.

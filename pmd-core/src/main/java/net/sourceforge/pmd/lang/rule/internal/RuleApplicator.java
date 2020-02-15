@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -23,6 +23,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /** Applies a set of rules to a set of ASTs. */
@@ -55,7 +56,7 @@ public class RuleApplicator {
             for (Node node : toIterable(rule.getTargetingStrategy().getVisitedNodes(idx))) {
 
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
-                    rule.apply(Collections.singletonList(node), ctx);
+                    rule.apply(node, ctx);
                     rcto.close(1);
                 } catch (RuntimeException e) {
                     if (ctx.isIgnoreExceptions()) {
@@ -76,8 +77,8 @@ public class RuleApplicator {
 
     private void indexTree(Node top, NodeIdx idx) {
         idx.indexNode(top);
-        for (int i = 0; i < top.jjtGetNumChildren(); i++) {
-            indexTree(top.jjtGetChild(i), idx);
+        for (Node child : top.children()) {
+            indexTree(child, idx);
         }
     }
 
@@ -112,20 +113,20 @@ public class RuleApplicator {
         }
 
         // TODO this could be parameterized by a DataKey and extensible
-        Stream<Node> getByName(String n) {
-            return byName.getOrDefault(n, Collections.emptyList()).stream();
+        Iterator<Node> getByName(String n) {
+            return byName.getOrDefault(n, Collections.emptyList()).iterator();
         }
 
-        Stream<Node> getByClass(Class<?> n) {
-            return byClass.get(n).stream();
+        Iterator<Node> getByClass(Class<?> n) {
+            return byClass.get(n).iterator();
         }
 
-        Stream<Node> getByName(Collection<String> n) {
-            return n.stream().flatMap(this::getByName);
+        Iterator<Node> getByName(Collection<String> n) {
+            return IteratorUtil.flatMap(n.iterator(), this::getByName);
         }
 
-        Stream<Node> getByClass(Collection<? extends Class<?>> n) {
-            return n.stream().flatMap(this::getByClass);
+        Iterator<Node> getByClass(Collection<? extends Class<?>> n) {
+            return IteratorUtil.flatMap(n.iterator(), this::getByClass);
         }
     }
 }

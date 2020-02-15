@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -40,16 +38,10 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
         return new EcmascriptParserOptions(this);
     }
 
-    @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        visitAll(nodes, ctx);
-    }
 
-    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        for (Object element : nodes) {
-            ASTAstRoot node = (ASTAstRoot) element;
-            visit(node, ctx);
-        }
+    @Override
+    public void apply(Node target, RuleContext ctx) {
+        ((EcmascriptNode<?>) target).jjtAccept(this, ctx);
     }
 
 }

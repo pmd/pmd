@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.scala.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -175,13 +173,10 @@ public class ScalaRule extends AbstractRule implements ScalaParserVisitor<RuleCo
         super.setLanguage(LanguageRegistry.getLanguage(ScalaLanguageModule.NAME));
     }
 
+
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
-            if (node instanceof ASTSource) {
-                visit((ASTSource) node, ctx);
-            }
-        }
+    public void apply(Node target, RuleContext ctx) {
+        ((ScalaNode<?>) target).accept(this, ctx);
     }
 
     @Override

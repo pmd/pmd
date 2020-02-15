@@ -158,7 +158,7 @@ class LatticeRelation<T, @NonNull U> {
      * @throws IllegalStateException If the lattice has a cycle
      */
     void freezeTopo() {
-        frozen = true; // TODO non-thread-safe
+        frozen = true; // non-thread-safe
         if (up2DateTopo) {
             // topology up to date
             return;
@@ -184,7 +184,6 @@ class LatticeRelation<T, @NonNull U> {
             lst.get(i).idx = i;
         }
 
-        // todo use a BitSet[]
         boolean[][] path = new boolean[n][n];
 
         for (LNode k : lst) {

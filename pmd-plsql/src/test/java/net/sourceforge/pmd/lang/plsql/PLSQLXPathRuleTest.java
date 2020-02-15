@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import static java.util.Collections.singletonList;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,7 +59,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(plsql.getDefaultVersion());
 
-        rule.apply(singletonList(node), ctx);
+        rule.apply(node, ctx);
         Assert.assertEquals(2, ctx.getReport().size());
     }
 

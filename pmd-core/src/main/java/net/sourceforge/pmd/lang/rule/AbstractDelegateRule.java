@@ -246,8 +246,8 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        rule.apply(nodes, ctx);
+    public void apply(Node target, RuleContext ctx) {
+        rule.apply(target, ctx);
     }
 
     @Override

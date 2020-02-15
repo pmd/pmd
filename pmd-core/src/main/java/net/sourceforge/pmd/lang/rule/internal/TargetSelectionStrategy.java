@@ -37,7 +37,7 @@ public abstract class TargetSelectionStrategy {
 
         @Override
         Iterator<? extends Node> getVisitedNodes(NodeIdx index) {
-            return index.getByName(visits).iterator();
+            return index.getByName(visits);
         }
     }
 
@@ -53,7 +53,7 @@ public abstract class TargetSelectionStrategy {
 
         @Override
         Iterator<? extends Node> getVisitedNodes(NodeIdx index) {
-            return index.getByClass(visits).iterator();
+            return index.getByClass(visits);
         }
     }
 
