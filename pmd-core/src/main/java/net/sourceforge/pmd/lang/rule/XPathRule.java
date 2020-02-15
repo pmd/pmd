@@ -224,8 +224,8 @@ public class XPathRule extends AbstractRule {
 
         logXPathRuleChainUsage(!visits.isEmpty());
 
-        return visits.isEmpty() ? Rule.visitRootOnly()
-                                : Rule.visitNodesNamed(visits);
+        return visits.isEmpty() ? Rule.targetRootOnly()
+                                : Rule.targetNodesNamed(visits);
     }
 
 

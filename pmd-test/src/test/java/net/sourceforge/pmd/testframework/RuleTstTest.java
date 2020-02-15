@@ -42,7 +42,7 @@ public class RuleTstTest {
         Report report = new Report();
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
-        when(rule.getTargetingStrategy()).thenReturn(Rule.visitRootOnly());
+        when(rule.getTargetingStrategy()).thenReturn(Rule.targetRootOnly());
 
         ruleTester.runTestFromString("the code", rule, report, dummyLanguage, false);
 
@@ -62,7 +62,7 @@ public class RuleTstTest {
     public void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
-        when(rule.getTargetingStrategy()).thenReturn(Rule.visitRootOnly());
+        when(rule.getTargetingStrategy()).thenReturn(Rule.targetRootOnly());
 
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(RuleContext context, int beginLine, String message) {

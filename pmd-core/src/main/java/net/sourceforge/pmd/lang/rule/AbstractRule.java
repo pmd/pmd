@@ -264,7 +264,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     protected TargetSelectionStrategy buildTargetingStrategy() {
         Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
         return crvs.isEmpty() ? ClassRulechainVisits.ROOT_ONLY
-                              : Rule.visitNodesWithType(crvs);
+                              : Rule.targetNodesWithType(crvs);
     }
 
     @Override

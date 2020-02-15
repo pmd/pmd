@@ -37,6 +37,11 @@ public class RuleApplicator {
     // time insignificant
     private final NodeIdx idx = new NodeIdx();
 
+    // TODO the rulechain used to index only the nodes at least one rule cares about,
+    //  implement the same behavior? Even when there are only a few rules, and the indexing
+    //  time outweighs the rule application time, the parsing/symbol table/ type res VASTLY
+    //  outweighs both of those. So it might be unnecessary
+
     public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
         idx.prepare();
 

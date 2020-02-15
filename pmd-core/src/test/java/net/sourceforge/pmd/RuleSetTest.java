@@ -569,7 +569,7 @@ public class RuleSetTest {
 
             @Override
             protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
-                return Rule.visitNodesNamed(setOf("dummyRootNode"));
+                return Rule.targetNodesNamed(setOf("dummyRootNode"));
             }
 
             @Override
@@ -580,7 +580,7 @@ public class RuleSetTest {
 
             @Override
             protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
-                return Rule.visitNodesNamed(setOf("dummyRootNode"));
+                return Rule.targetNodesNamed(setOf("dummyRootNode"));
             }
 
             @Override

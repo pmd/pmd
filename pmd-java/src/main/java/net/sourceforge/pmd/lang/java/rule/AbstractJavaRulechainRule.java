@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import java.lang.reflect.Modifier;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 

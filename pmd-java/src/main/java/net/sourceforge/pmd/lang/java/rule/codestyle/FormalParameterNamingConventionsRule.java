@@ -44,7 +44,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
     @Override
     protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
-        return Rule.visitNodesWithType(setOf(ASTVariableDeclaratorId.class));
+        return Rule.targetNodesWithType(setOf(ASTVariableDeclaratorId.class));
     }
 
     @Override

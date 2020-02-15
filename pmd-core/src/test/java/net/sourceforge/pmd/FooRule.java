@@ -26,7 +26,7 @@ public class FooRule extends AbstractRule {
 
     @Override
     protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
-        return Rule.visitNodesNamed(setOf("dummyNode"));
+        return Rule.targetNodesNamed(setOf("dummyNode"));
     }
 
     @Override

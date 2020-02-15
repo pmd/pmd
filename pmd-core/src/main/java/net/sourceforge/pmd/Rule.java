@@ -329,7 +329,7 @@ public interface Rule extends PropertySource {
     Rule deepCopy();
 
 
-    static TargetSelectionStrategy visitNodesNamed(Collection<String> names) {
+    static TargetSelectionStrategy targetNodesNamed(Collection<String> names) {
         if (names.isEmpty()) {
             throw new IllegalArgumentException("Cannot visit zero nodes");
         }
@@ -337,7 +337,7 @@ public interface Rule extends PropertySource {
     }
 
 
-    static TargetSelectionStrategy visitNodesWithType(Collection<Class<? extends Node>> types) {
+    static TargetSelectionStrategy targetNodesWithType(Collection<Class<? extends Node>> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot visit zero types");
         }
@@ -345,7 +345,7 @@ public interface Rule extends PropertySource {
     }
 
 
-    static TargetSelectionStrategy visitRootOnly() {
+    static TargetSelectionStrategy targetRootOnly() {
         return ClassRulechainVisits.ROOT_ONLY;
     }
 }
