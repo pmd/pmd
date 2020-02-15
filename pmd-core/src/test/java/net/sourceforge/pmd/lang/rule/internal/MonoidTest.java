@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-public class IdMonoidTest {
+public class MonoidTest {
 
     @Test
     public void testSetMonoid() {
 
-        IdMonoid<Set<String>> monoid = IdMonoid.forSet();
+        Monoid<Set<String>> monoid = Monoid.forSet();
 
         this.neutralTest(monoid, Stream.of(
             emptySet(),
@@ -33,7 +33,7 @@ public class IdMonoidTest {
 
     }
 
-    private <T> void neutralTest(IdMonoid<T> monoid, Stream<T> generator) {
+    private <T> void neutralTest(Monoid<T> monoid, Stream<T> generator) {
         generator.forEach(t -> {
             assertEquals(t, monoid.apply(t, monoid.zero()));
             assertEquals(t, monoid.apply(monoid.zero(), t));

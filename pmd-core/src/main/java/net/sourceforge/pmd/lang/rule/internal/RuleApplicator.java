@@ -91,8 +91,8 @@ public class RuleApplicator {
 
         NodeIdx() {
             byClass = new LatticeRelation<>(
-                IdMonoid.forSet(),
-                IdMonoid.forMutableSet(),
+                Monoid.forSet(),
+                Monoid.forMutableSet(),
                 TopoOrder.TYPE_HIERARCHY_ORDERING,
                 NodeIdx::filterClassFromIndex,
                 Class::getSimpleName
