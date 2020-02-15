@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -262,7 +261,7 @@ class LatticeRelation<T, @NonNull U> {
         // transitive reduction
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (kept[j] && path[i][j]) {
+                if (kept[j] && path[i][j]) { // reduce only if j is kept
                     for (int k = j + 1; k < n; k++) {
                         if (path[j][k]) {
                             // i -> j -> k
@@ -286,7 +285,7 @@ class LatticeRelation<T, @NonNull U> {
             }
 
             for (int j = 0; j < i; j++) {
-                if (path[j][i] && kept[j]) {
+                if (kept[j] && path[j][i]) {
                     // succ means "pred" now
                     inode.succ.add(lst.get(j));
                 }
@@ -363,8 +362,7 @@ class LatticeRelation<T, @NonNull U> {
                      .replaceAll("\"", "\\\"");
     }
 
-    //test only
-    final class LNode {
+    private final class LNode { // "Lattice Node"
 
         private final @NonNull T key;
         // before freezing this contains the successors of a node
@@ -386,19 +384,19 @@ class LatticeRelation<T, @NonNull U> {
 
         U computeValue() {
             if (frozenVal == null) {
-                frozenVal = computeValImpl(new HashSet<>());
+                frozenVal = computeValIfNotSeen(new HashSet<>());
             }
             return frozenVal;
         }
 
-        private U computeValImpl(Set<LNode> seen) {
+        private U computeValIfNotSeen(Set<LNode> seen) {
             if (seen.add(this)) {
                 if (frozenVal == null) {
                     frozenVal = reduceSuccessors(seen);
                 }
                 return frozenVal;
             }
-            // if already seen, don't recurse on the successors
+            // otherwise, already seen, return identity element
             return combine.zero();
         }
 
@@ -408,7 +406,7 @@ class LatticeRelation<T, @NonNull U> {
             U val = combine.lift(properVal);
 
             for (LNode s : succ) {
-                U vs = s.computeValImpl(seen);
+                U vs = s.computeValIfNotSeen(seen);
                 val = combine.apply(val, vs);
             }
             return val;
@@ -434,28 +432,6 @@ class LatticeRelation<T, @NonNull U> {
         @Override
         public String toString() {
             return "(" + key + ')';
-        }
-
-        private LatticeRelation<T, U> getOwner() {
-            return LatticeRelation.this;
-        }
-
-        @Override
-        public boolean equals(Object data) {
-            if (this == data) {
-                return true;
-            }
-            if (data == null || getClass() != data.getClass()) {
-                return false;
-            }
-            LNode lNode = (LNode) data;
-            return getOwner() == lNode.getOwner()
-                && key.equals(lNode.key);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(key);
         }
     }
 

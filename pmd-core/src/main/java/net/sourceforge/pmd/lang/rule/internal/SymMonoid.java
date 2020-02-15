@@ -38,6 +38,12 @@ interface SymMonoid<@NonNull U> extends BinaryOperator<U> {
     /** Identity element for the {@link #apply} operation. */
     U zero();
 
+
+    /**
+     * Transform a value of type U before performing a reduction.
+     * This is to allow several monoids for the same type to cooperate,
+     * in case one needs a specific implementation.
+     */
     default U lift(U u) {
         return apply(zero(), u);
     }
