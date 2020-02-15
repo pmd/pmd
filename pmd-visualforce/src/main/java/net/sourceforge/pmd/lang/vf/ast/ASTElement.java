@@ -23,7 +23,7 @@ public class ASTElement extends AbstractVfNode {
      */
     private boolean unclosed;
 
-    public ASTElement(int id) {
+    ASTElement(int id) {
         super(id);
     }
 

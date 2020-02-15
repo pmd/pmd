@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 public class ASTNegationExpression extends AbstractVfNode {
-    public ASTNegationExpression(int id) {
+    ASTNegationExpression(int id) {
         super(id);
     }
 

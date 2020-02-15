@@ -9,7 +9,7 @@ public class ASTDeclaration extends AbstractJspNode {
 
     private String name;
 
-    public ASTDeclaration(int id) {
+    ASTDeclaration(int id) {
         super(id);
     }
 

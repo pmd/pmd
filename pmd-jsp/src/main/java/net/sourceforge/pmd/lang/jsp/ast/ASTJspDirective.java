@@ -12,7 +12,7 @@ public class ASTJspDirective extends AbstractJspNode {
      */
     private String name;
 
-    public ASTJspDirective(int id) {
+    ASTJspDirective(int id) {
         super(id);
     }
 

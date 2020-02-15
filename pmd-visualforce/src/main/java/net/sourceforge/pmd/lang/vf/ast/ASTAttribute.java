@@ -9,7 +9,7 @@ public class ASTAttribute extends AbstractVfNode {
 
     private String name;
 
-    public ASTAttribute(int id) {
+    ASTAttribute(int id) {
         super(id);
     }
 

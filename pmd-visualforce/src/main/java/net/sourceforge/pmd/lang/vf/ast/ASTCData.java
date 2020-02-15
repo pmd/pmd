@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 public class ASTCData extends AbstractVfNode {
-    public ASTCData(int id) {
+    ASTCData(int id) {
         super(id);
     }
 

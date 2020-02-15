@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public class ASTCompilationUnit extends AbstractVfNode implements RootNode {
-    public ASTCompilationUnit(int id) {
+    ASTCompilationUnit(int id) {
         super(id);
     }
 

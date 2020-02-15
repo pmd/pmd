@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 public class ASTElExpression extends AbstractVfNode {
-    public ASTElExpression(int id) {
+    ASTElExpression(int id) {
         super(id);
     }
 

@@ -9,7 +9,7 @@ public class ASTDeclaration extends AbstractVfNode {
 
     private String name;
 
-    public ASTDeclaration(int id) {
+    ASTDeclaration(int id) {
         super(id);
     }
 

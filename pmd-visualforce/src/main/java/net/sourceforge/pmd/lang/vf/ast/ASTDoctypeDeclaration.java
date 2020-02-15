@@ -12,7 +12,7 @@ public class ASTDoctypeDeclaration extends AbstractVfNode {
      */
     private String name;
 
-    public ASTDoctypeDeclaration(int id) {
+    ASTDoctypeDeclaration(int id) {
         super(id);
     }
 

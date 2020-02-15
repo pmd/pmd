@@ -23,7 +23,7 @@ public class ASTElement extends AbstractJspNode {
      */
     private boolean unclosed;
 
-    public ASTElement(int id) {
+    ASTElement(int id) {
         super(id);
     }
 

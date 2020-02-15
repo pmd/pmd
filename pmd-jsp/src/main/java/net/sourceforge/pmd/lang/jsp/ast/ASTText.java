@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTText extends AbstractJspNode {
-    public ASTText(int id) {
+    ASTText(int id) {
         super(id);
     }
 

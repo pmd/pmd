@@ -17,7 +17,7 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
      */
     private String publicId;
 
-    public ASTDoctypeExternalId(int id) {
+    ASTDoctypeExternalId(int id) {
         super(id);
     }
 

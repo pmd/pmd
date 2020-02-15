@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public class ASTCompilationUnit extends AbstractJspNode implements RootNode {
-    public ASTCompilationUnit(int id) {
+    ASTCompilationUnit(int id) {
         super(id);
     }
 

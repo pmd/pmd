@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
 abstract class AbstractJspNode extends AbstractJjtreeNode<JspNode> implements JspNode {
 
-    public AbstractJspNode(int id) {
+    protected AbstractJspNode(int id) {
         super(id);
     }
 

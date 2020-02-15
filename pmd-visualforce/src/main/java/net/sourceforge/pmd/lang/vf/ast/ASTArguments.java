@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 public class ASTArguments extends AbstractVfNode {
-    public ASTArguments(int id) {
+    ASTArguments(int id) {
         super(id);
     }
 
