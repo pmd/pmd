@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import static net.sourceforge.pmd.internal.util.IteratorUtil.toIterable;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -33,14 +31,14 @@ public class RuleApplicator {
     private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
     // we reuse the type lattice from run to run, eventually it converges
     // towards the final topology (all node types have been encountered)
-    // and there's no need to perform more topological checks when freezing
-    // it
-    // This has a cache hit ratio of more than 99% on longer runs, making
-    // the indexing time insignificant
+    // and there's no need to perform more topological checks when freezing it
+    
+    // This has an excellent cache hit ratio on longer runs, making the indexing
+    // time insignificant
     private final NodeIdx idx = new NodeIdx();
 
     public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
-        idx.clear();
+        idx.prepare();
 
         for (Node root : nodes) {
             indexTree(root, idx);
@@ -54,14 +52,16 @@ public class RuleApplicator {
     private void applyOnIndex(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
 
-            for (Node node : toIterable(rule.getTargetingStrategy().getVisitedNodes(idx))) {
+            Iterator<? extends Node> targets = rule.getTargetingStrategy().getVisitedNodes(idx);
+            while (targets.hasNext()) {
+                Node node = targets.next();
 
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
                     rule.apply(node, ctx);
                     rcto.close(1);
                 } catch (RuntimeException e) {
                     if (ctx.isIgnoreExceptions()) {
-                        ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
+                        ctx.getReport().addError(new ProcessingError(e, ctx.getSourceCodeFilename()));
 
                         if (LOG.isLoggable(Level.WARNING)) {
                             LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
@@ -113,15 +113,11 @@ public class RuleApplicator {
             byClass.put(n.getClass(), Collections.singleton(n));
         }
 
-        /**
-         * Freezing the lattice divides by on-average 6 the number of
-         * recursive computations (and hence of lists created).
-         */
         void complete() {
             byClass.freezeTopo();
         }
 
-        void clear() {
+        void prepare() {
             byClass.unfreezeTopo();
             byClass.clearValues();
             byName.clear();
@@ -132,7 +128,7 @@ public class RuleApplicator {
             return byName.getOrDefault(n, Collections.emptyList()).iterator();
         }
 
-        Iterator<Node> getByClass(Class<?> n) {
+        Iterator<Node> getByClass(Class<? extends Node> n) {
             return byClass.get(n).iterator();
         }
 
@@ -140,7 +136,7 @@ public class RuleApplicator {
             return IteratorUtil.flatMap(n.iterator(), this::getByName);
         }
 
-        Iterator<Node> getByClass(Collection<? extends Class<?>> n) {
+        Iterator<Node> getByClass(Collection<? extends Class<? extends Node>> n) {
             return IteratorUtil.flatMap(n.iterator(), this::getByClass);
         }
     }

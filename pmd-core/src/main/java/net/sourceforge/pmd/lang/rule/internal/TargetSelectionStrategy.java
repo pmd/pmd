@@ -45,9 +45,9 @@ public abstract class TargetSelectionStrategy {
 
         public static final TargetSelectionStrategy ROOT_ONLY = new ClassRulechainVisits(Collections.singleton(RootNode.class));
 
-        private final Set<Class<?>> visits;
+        private final Set<Class<? extends Node>> visits;
 
-        public ClassRulechainVisits(Collection<Class<?>> visits) {
+        public ClassRulechainVisits(Collection<Class<? extends Node>> visits) {
             this.visits = new HashSet<>(visits);
         }
 

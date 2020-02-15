@@ -337,7 +337,7 @@ public interface Rule extends PropertySource {
     }
 
 
-    static TargetSelectionStrategy visitNodesWithType(Collection<Class<?>> types) {
+    static TargetSelectionStrategy visitNodesWithType(Collection<Class<? extends Node>> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot visit zero types");
         }

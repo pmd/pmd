@@ -77,7 +77,12 @@ public class LatticeRelationTest {
 
         lattice.freezeTopo();
 
-        lattice.getNodes().values().forEach(it -> assertEquals(emptySet(), it.computeValue()));
+        assertEquals(emptySet(), lattice.get(setOf(2)));
+        assertEquals(emptySet(), lattice.get(setOf(1)));
+        assertEquals(emptySet(), lattice.get(setOf(1, 2)));
+        assertEquals(emptySet(), lattice.get(setOf(3)));
+        assertEquals(emptySet(), lattice.get(setOf(5)));
+        assertEquals(emptySet(), lattice.get(emptySet()));
     }
 
 

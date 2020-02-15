@@ -47,7 +47,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private String externalInfoUrl;
     private RulePriority priority = RulePriority.LOW;
     private Set<String> ruleChainVisits = new LinkedHashSet<>();
-    private Set<Class<?>> classRuleChainVisits = new LinkedHashSet<>();
+    private Set<Class<? extends Node>> classRuleChainVisits = new LinkedHashSet<>();
     private TargetSelectionStrategy myStrategy;
 
     public AbstractRule() {
@@ -235,7 +235,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
 
-    protected Set<Class<?>> getClassRuleChainVisits() {
+    protected Set<Class<? extends Node>> getClassRuleChainVisits() {
         if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
             return Collections.singleton(RootNode.class);
         }
@@ -262,7 +262,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @NonNull
     protected TargetSelectionStrategy buildTargetingStrategy() {
-        Set<Class<?>> crvs = getClassRuleChainVisits();
+        Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
         return crvs.isEmpty() ? ClassRulechainVisits.ROOT_ONLY
                               : Rule.visitNodesWithType(crvs);
     }

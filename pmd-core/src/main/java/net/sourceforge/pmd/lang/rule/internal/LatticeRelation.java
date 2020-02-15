@@ -147,11 +147,6 @@ class LatticeRelation<T, @NonNull U> {
         return n == null ? combine.zero() : n.computeValue();
     }
 
-    // test only
-    Map<T, LNode> getNodes() {
-        return nodes;
-    }
-
     /**
      * Clear values on the lattice nodes. The lattice topology is preserved.
      * Reusing the lattice for another run may avoid having to make topological
