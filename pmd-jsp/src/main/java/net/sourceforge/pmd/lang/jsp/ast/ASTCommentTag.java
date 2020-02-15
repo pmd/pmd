@@ -10,10 +10,6 @@ public class ASTCommentTag extends AbstractJspNode {
         super(id);
     }
 
-    public ASTCommentTag(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

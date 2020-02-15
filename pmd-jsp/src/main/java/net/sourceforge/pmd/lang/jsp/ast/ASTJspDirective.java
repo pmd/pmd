@@ -16,10 +16,6 @@ public class ASTJspDirective extends AbstractJspNode {
         super(id);
     }
 
-    public ASTJspDirective(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @return Returns the name.
      */

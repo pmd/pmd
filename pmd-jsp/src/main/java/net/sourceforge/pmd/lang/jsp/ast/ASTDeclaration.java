@@ -13,10 +13,6 @@ public class ASTDeclaration extends AbstractJspNode {
         super(id);
     }
 
-    public ASTDeclaration(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @return Returns the name.
      */

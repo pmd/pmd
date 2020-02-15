@@ -21,10 +21,6 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
         super(id);
     }
 
-    public ASTDoctypeExternalId(JspParser p, int id) {
-        super(p, id);
-    }
-
     public boolean isHasPublicId() {
         return null != publicId;
     }

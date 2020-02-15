@@ -10,10 +10,6 @@ public class ASTJspExpressionInAttribute extends AbstractJspNode {
         super(id);
     }
 
-    public ASTJspExpressionInAttribute(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

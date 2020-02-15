@@ -10,10 +10,6 @@ public class ASTCData extends AbstractJspNode {
         super(id);
     }
 
-    public ASTCData(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

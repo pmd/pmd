@@ -10,10 +10,6 @@ public class ASTAttributeValue extends AbstractJspNode {
         super(id);
     }
 
-    public ASTAttributeValue(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

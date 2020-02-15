@@ -16,10 +16,6 @@ public class ASTDoctypeDeclaration extends AbstractJspNode {
         super(id);
     }
 
-    public ASTDoctypeDeclaration(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @return Returns the name.
      */

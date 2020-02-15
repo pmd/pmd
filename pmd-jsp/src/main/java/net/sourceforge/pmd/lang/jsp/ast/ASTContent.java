@@ -10,10 +10,6 @@ public class ASTContent extends AbstractJspNode {
         super(id);
     }
 
-    public ASTContent(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

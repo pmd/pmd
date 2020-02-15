@@ -10,10 +10,6 @@ public class ASTValueBinding extends AbstractJspNode {
         super(id);
     }
 
-    public ASTValueBinding(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

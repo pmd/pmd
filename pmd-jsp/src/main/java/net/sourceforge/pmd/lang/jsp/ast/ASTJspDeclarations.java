@@ -10,10 +10,6 @@ public class ASTJspDeclarations extends AbstractJspNode {
         super(id);
     }
 
-    public ASTJspDeclarations(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

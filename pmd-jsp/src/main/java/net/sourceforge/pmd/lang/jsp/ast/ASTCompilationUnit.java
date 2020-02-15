@@ -12,10 +12,6 @@ public class ASTCompilationUnit extends AbstractJspNode implements RootNode {
         super(id);
     }
 
-    public ASTCompilationUnit(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

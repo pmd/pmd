@@ -15,15 +15,6 @@ public interface JspNode extends Node {
     Object jjtAccept(JspParserVisitor visitor, Object data);
 
 
-    /**
-     * Accept the visitor. *
-     * @deprecated This method is not useful, the logic for combining
-     *     children values should be present on the visitor, not the node
-     */
-    @Deprecated
-    Object childrenAccept(JspParserVisitor visitor, Object data);
-
-
     @Override
     JspNode getChild(int index);
 

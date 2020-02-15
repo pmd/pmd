@@ -27,10 +27,6 @@ public class ASTElement extends AbstractJspNode {
         super(id);
     }
 
-    public ASTElement(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @return boolean - true if the element has a namespace-prefix, false
      *         otherwise

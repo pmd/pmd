@@ -13,10 +13,6 @@ public class ASTAttribute extends AbstractJspNode {
         super(id);
     }
 
-    public ASTAttribute(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @return Returns the name.
      */

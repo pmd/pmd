@@ -11,10 +11,6 @@ public class ASTHtmlScript extends AbstractJspNode {
         super(id);
     }
 
-    public ASTHtmlScript(JspParser p, int id) {
-        super(p, id);
-    }
-
     /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {

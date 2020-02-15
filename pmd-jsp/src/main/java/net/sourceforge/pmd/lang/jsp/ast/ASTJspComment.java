@@ -10,10 +10,6 @@ public class ASTJspComment extends AbstractJspNode {
         super(id);
     }
 
-    public ASTJspComment(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

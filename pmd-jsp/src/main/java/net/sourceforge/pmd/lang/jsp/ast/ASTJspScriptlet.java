@@ -10,10 +10,6 @@ public class ASTJspScriptlet extends AbstractJspNode {
         super(id);
     }
 
-    public ASTJspScriptlet(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */

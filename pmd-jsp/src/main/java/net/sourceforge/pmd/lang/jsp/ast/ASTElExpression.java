@@ -10,10 +10,6 @@ public class ASTElExpression extends AbstractJspNode {
         super(id);
     }
 
-    public ASTElExpression(JspParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * Accept the visitor. *
      */
