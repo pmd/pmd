@@ -350,7 +350,7 @@ class LatticeRelation<T, @NonNull U> {
             String id = ids.get(node);
             for (LNode succ : node.succ) {
                 String succId = ids.get(succ);
-                sb.append(succId).append(" -> ").append(id).append(";\n");
+                sb.append(id).append(" -> ").append(succId).append(";\n");
             }
         }
 
