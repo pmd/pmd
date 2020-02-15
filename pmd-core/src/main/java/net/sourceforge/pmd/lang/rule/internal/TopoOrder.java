@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.util.Arrays;
+import static java.util.Collections.emptyIterator;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.concat;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.iterate;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.singletonIterator;
+
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Represents a partial order on a type {@code <T>}. This ordering
@@ -23,23 +27,24 @@ interface TopoOrder<T> {
     TopoOrder<Class<?>> TYPE_HIERARCHY_ORDERING = node -> {
         if (node == Object.class || node.isPrimitive()) {
             // Object
-            return Stream.empty();
+            return emptyIterator();
         }
 
         Class<?> superclass = node.getSuperclass();
-        Stream<Class<?>> stream = superclass != null ? Stream.of(superclass)
-                                                     : Stream.empty();
+        Iterator<Class<?>> iter = superclass != null ? singletonIterator(superclass)
+                                                     : emptyIterator();
 
-        stream = Stream.concat(stream, Arrays.stream(node.getInterfaces()));
+        iter = concat(iter, iterate(node.getInterfaces()));
         if (node.isInterface() && node.getInterfaces().length == 0) {
-            stream = Stream.concat(stream, Stream.of(Object.class));
+            iter = concat(iter, singletonIterator(Object.class));
         }
 
-        return stream;
+        return iter;
     };
 
-    /** Returns all nodes that strictly follow this node. */
-    Stream<T> directSuccessors(T node);
+
+    /** Returns all nodes that directly follow this node. */
+    Iterator<T> directSuccessors(T node);
 
 
 }

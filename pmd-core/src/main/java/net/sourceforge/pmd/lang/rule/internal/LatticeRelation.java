@@ -8,11 +8,13 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -64,23 +66,25 @@ class LatticeRelation<T, @NonNull U> {
     private final Monoid<U> accumulate;
 
     private final TopoOrder<T> keyOrder;
+    private final Function<? super T, String> keyToString;
     private final Map<T, LNode> nodes;
     private boolean frozen;
     private boolean up2DateTopo;
 
     LatticeRelation(Monoid<U> combine, TopoOrder<T> keyOrder) {
-        this(combine, combine, keyOrder);
+        this(combine, combine, keyOrder, Object::toString);
     }
 
-    LatticeRelation(Monoid<U> combine, Monoid<U> accumulate, TopoOrder<T> keyOrder) {
-
+    LatticeRelation(Monoid<U> combine, Monoid<U> accumulate, TopoOrder<T> keyOrder, Function<? super T, String> keyToString) {
         this.combine = combine;
         this.accumulate = accumulate;
         this.keyOrder = keyOrder;
+        this.keyToString = keyToString;
         nodes = new HashMap<>();
     }
 
     private LNode getOrCreateNode(T key) {
+        assert key != null : "null key is not allowed";
         if (nodes.containsKey(key)) {
             return nodes.get(key);
         } else {
@@ -88,9 +92,19 @@ class LatticeRelation<T, @NonNull U> {
             LNode n = new LNode(key);
             nodes.put(key, n);
             // add all successors recursively
-            keyOrder.directSuccessors(key).distinct().map(this::getOrCreateNode).forEach(n.succ::add);
+            addSuccessors(key, n);
             return n;
         }
+    }
+
+    private void addSuccessors(T key, LNode n) {
+        Set<T> seen = new HashSet<>();
+        keyOrder.directSuccessors(key)
+                .forEachRemaining(s -> {
+                    if (seen.add(s)) { // only add distinct ones
+                        n.succ.add(this.getOrCreateNode(s));
+                    }
+                });
     }
 
     /**
@@ -263,6 +277,7 @@ class LatticeRelation<T, @NonNull U> {
 
 
         // assign predecessors to all nodes
+        // this inverts the graph
         for (int i = 0; i < n; i++) {
             LNode ln = lst.get(i);
             ln.succ.clear();
@@ -312,24 +327,60 @@ class LatticeRelation<T, @NonNull U> {
         sorted.addFirst(v);
     }
 
+    @Override
+    public String toString() {
+        // generates a DOT representation of the lattice
+        // Visualize eg
+        // https://dreampuf.github.io/GraphvizOnline/#strict%20digraph%20%7B%0An0%20%5B%20shape%3Dbox%3B%20label%3D%22SignedNode%22%20%5D%3B%0An1%20%5B%20shape%3Ddiamond%3B%20label%3D%22JavaNode%22%20%5D%3B%0An2%20%5B%20shape%3Dbox%3B%20label%3D%22ASTFieldDeclaration%22%20%5D%3B%0An3%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractJavaAccessNode%22%20%5D%3B%0An4%20%5B%20shape%3Dbox%3B%20label%3D%22ASTVariableDeclarator%22%20%5D%3B%0An5%20%5B%20shape%3Dbox%3B%20label%3D%22ASTCompilationUnit%22%20%5D%3B%0An6%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractNode%22%20%5D%3B%0An7%20%5B%20shape%3Dbox%3B%20label%3D%22ASTClassOrInterfaceBodyDeclaration%22%20%5D%3B%0An8%20%5B%20shape%3Dbox%3B%20label%3D%22ASTPrimitiveType%22%20%5D%3B%0An9%20%5B%20shape%3Ddiamond%3B%20label%3D%22Node%22%20%5D%3B%0An10%20%5B%20shape%3Dbox%3B%20label%3D%22ASTClassOrInterfaceBody%22%20%5D%3B%0An11%20%5B%20shape%3Ddiamond%3B%20label%3D%22TextAvailableNode%22%20%5D%3B%0An12%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractJavaAnnotatableNode%22%20%5D%3B%0An13%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractAnyTypeDeclaration%22%20%5D%3B%0An14%20%5B%20shape%3Ddiamond%3B%20label%3D%22TypeNode%22%20%5D%3B%0An15%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractTypeBodyDeclaration%22%20%5D%3B%0An16%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractJavaTypeNode%22%20%5D%3B%0An17%20%5B%20shape%3Dbox%3B%20label%3D%22RootNode%22%20%5D%3B%0An18%20%5B%20shape%3Dbox%3B%20label%3D%22JavaQualifiableNode%22%20%5D%3B%0An19%20%5B%20shape%3Ddiamond%3B%20label%3D%22ScopedNode%22%20%5D%3B%0An20%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractJjtreeNode%22%20%5D%3B%0An21%20%5B%20shape%3Dbox%3B%20label%3D%22Iterable%22%20%5D%3B%0An22%20%5B%20shape%3Dbox%3B%20label%3D%22Dimensionable%22%20%5D%3B%0An23%20%5B%20shape%3Ddiamond%3B%20label%3D%22Object%22%20%5D%3B%0An24%20%5B%20shape%3Dbox%3B%20label%3D%22Annotatable%22%20%5D%3B%0An25%20%5B%20shape%3Dbox%3B%20label%3D%22ASTClassOrInterfaceDeclaration%22%20%5D%3B%0An26%20%5B%20shape%3Ddiamond%3B%20label%3D%22AccessNode%22%20%5D%3B%0An27%20%5B%20shape%3Dbox%3B%20label%3D%22CanSuppressWarnings%22%20%5D%3B%0An28%20%5B%20shape%3Dbox%3B%20label%3D%22ASTAnyTypeDeclaration%22%20%5D%3B%0An29%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractJavaAccessTypeNode%22%20%5D%3B%0An30%20%5B%20shape%3Dbox%3B%20label%3D%22ASTVariableDeclaratorId%22%20%5D%3B%0An31%20%5B%20shape%3Dbox%3B%20label%3D%22QualifiableNode%22%20%5D%3B%0An32%20%5B%20shape%3Dbox%3B%20label%3D%22AbstractJavaNode%22%20%5D%3B%0An33%20%5B%20shape%3Dbox%3B%20label%3D%22ASTAnyTypeBodyDeclaration%22%20%5D%3B%0An34%20%5B%20shape%3Dbox%3B%20label%3D%22ASTTypeDeclaration%22%20%5D%3B%0An35%20%5B%20shape%3Dbox%3B%20label%3D%22ASTType%22%20%5D%3B%0An2%20-%3E%20n0%3B%0An33%20-%3E%20n1%3B%0An14%20-%3E%20n1%3B%0An24%20-%3E%20n1%3B%0An32%20-%3E%20n1%3B%0An29%20-%3E%20n3%3B%0An20%20-%3E%20n6%3B%0An31%20-%3E%20n9%3B%0An17%20-%3E%20n9%3B%0An26%20-%3E%20n9%3B%0An6%20-%3E%20n9%3B%0An11%20-%3E%20n9%3B%0An19%20-%3E%20n9%3B%0An0%20-%3E%20n9%3B%0An20%20-%3E%20n11%3B%0An1%20-%3E%20n11%3B%0An3%20-%3E%20n12%3B%0An25%20-%3E%20n13%3B%0An28%20-%3E%20n14%3B%0An16%20-%3E%20n14%3B%0An29%20-%3E%20n14%3B%0An7%20-%3E%20n15%3B%0An35%20-%3E%20n16%3B%0An34%20-%3E%20n16%3B%0An30%20-%3E%20n16%3B%0An8%20-%3E%20n16%3B%0An5%20-%3E%20n16%3B%0An4%20-%3E%20n16%3B%0An5%20-%3E%20n17%3B%0An28%20-%3E%20n18%3B%0An1%20-%3E%20n19%3B%0An32%20-%3E%20n20%3B%0An2%20-%3E%20n21%3B%0An30%20-%3E%20n22%3B%0An8%20-%3E%20n22%3B%0An2%20-%3E%20n22%3B%0An27%20-%3E%20n23%3B%0An21%20-%3E%20n23%3B%0An22%20-%3E%20n23%3B%0An9%20-%3E%20n23%3B%0An12%20-%3E%20n24%3B%0An28%20-%3E%20n26%3B%0An3%20-%3E%20n26%3B%0An34%20-%3E%20n27%3B%0An7%20-%3E%20n27%3B%0An13%20-%3E%20n28%3B%0An13%20-%3E%20n29%3B%0An2%20-%3E%20n29%3B%0An18%20-%3E%20n31%3B%0An10%20-%3E%20n32%3B%0An15%20-%3E%20n32%3B%0An16%20-%3E%20n32%3B%0An12%20-%3E%20n32%3B%0An15%20-%3E%20n33%3B%0A%7D
+        StringBuilder sb = new StringBuilder("strict digraph {\n");
+        Map<LNode, String> ids = new HashMap<>();
+        int i = 0;
+        for (LNode node : nodes.values()) {
+            String id = "n" + i++;
+            ids.put(node, id);
+            String shape = node.hasDiamond ? "diamond" : "box";
+            sb.append(id).append(" [ shape=").append(shape)
+              .append(", label=\"").append(escapeDotString(keyToString.apply(node.key)))
+              .append("\" ];\n");
+        }
+
+        for (LNode node : nodes.values()) {
+            // edges
+            String id = ids.get(node);
+            for (LNode succ : node.succ) {
+                String succId = ids.get(succ);
+                sb.append(succId).append(" -> ").append(id).append(";\n");
+            }
+        }
+
+        return sb.append('}').toString();
+    }
+
+    @NonNull
+    public String escapeDotString(String string) {
+        return string.replaceAll("\\R", "\\\n")
+                     .replaceAll("\"", "\\\"");
+    }
+
     //test only
     final class LNode {
 
-        private final T key;
+        private final @NonNull T key;
         // before freezing this contains the successors of a node
         // after, it contains its direct predecessors
         private final Set<LNode> succ = new LinkedHashSet<>(0);
 
         // topological state, to be reset between freeze cycles
         boolean hasDiamond = false;
+        private int topoMark = UNDEFINED_TOPOMARK;
+        private int idx = -1;
+
         /** Proper value associated with this node (independent of topology). */
         private @NonNull U properVal = accumulate.zero();
         /** Cached value */
         private @Nullable U frozenVal;
-        private int topoMark = UNDEFINED_TOPOMARK;
-        private int idx = -1;
 
-        private LNode(T key) {
+        private LNode(@NonNull T key) {
             this.key = key;
         }
 
@@ -372,12 +423,16 @@ class LatticeRelation<T, @NonNull U> {
             hasDiamond = false;
             frozenVal = null;
             succ.clear();
-            keyOrder.directSuccessors(key).distinct().map(LatticeRelation.this::getOrCreateNode).forEach(succ::add);
+            addSuccessors(key, this);
         }
 
         @Override
         public String toString() {
             return "(" + key + ')';
+        }
+
+        private LatticeRelation<T, U> getOwner() {
+            return LatticeRelation.this;
         }
 
         @Override
@@ -389,7 +444,8 @@ class LatticeRelation<T, @NonNull U> {
                 return false;
             }
             LNode lNode = (LNode) data;
-            return Objects.equals(key, lNode.key);
+            return getOwner() == lNode.getOwner()
+                && key.equals(lNode.key);
         }
 
         @Override

@@ -138,6 +138,23 @@ public final class IteratorUtil {
         };
     }
 
+    @SafeVarargs
+    public static <T> Iterator<T> iterate(T... elements) {
+        return new AbstractIterator<T>() {
+            private int i = 0;
+
+            @Override
+            protected void computeNext() {
+                if (i < elements.length) {
+                    setNext(elements[i]);
+                    i++;
+                } else {
+                    done();
+                }
+            }
+        };
+    }
+
     public static <T> Iterator<T> concat(Iterator<? extends T> as, Iterator<? extends T> bs) {
         return new Iterator<T>() {
 

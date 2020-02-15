@@ -89,7 +89,12 @@ public class RuleApplicator {
 
 
         NodeIdx() {
-            byClass = new LatticeRelation<>(Monoid.forSet(), Monoid.forMutableSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
+            byClass = new LatticeRelation<>(
+                Monoid.forSet(),
+                Monoid.forMutableSet(),
+                TopoOrder.TYPE_HIERARCHY_ORDERING,
+                Class::getSimpleName
+            );
             byName = new HashMap<>();
         }
 
