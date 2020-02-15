@@ -189,7 +189,7 @@ class LatticeRelation<T, @NonNull U> {
             return;
         }
 
-        for (LNode node : nodes.values()) {
+        for (LNode node : new HashSet<>(nodes.values())) {
             node.resetFrozenData();
         }
 
