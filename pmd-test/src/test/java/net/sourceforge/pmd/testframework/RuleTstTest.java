@@ -49,7 +49,7 @@ public class RuleTstTest {
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
         verify(rule).getLanguage();
-        verify(rule).getTargetingStrategy();
+        verify(rule, times(2)).getTargetingStrategy();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(any(Node.class), any(RuleContext.class));

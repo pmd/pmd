@@ -202,13 +202,6 @@ class LatticeRelation<T, @NonNull U> {
             node.resetFrozenData();
         }
 
-        /*
-            We need to do all this because there may be diamonds
-            in the lattice, in which case some nodes are reachable through
-            several paths and we would risk combining their proper values
-            several times.
-         */
-
         int n = nodes.size();
 
         // topological sort

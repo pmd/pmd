@@ -63,7 +63,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    private static class DummyRootNode extends DummyNode implements RootNode {
+    public static class DummyRootNode extends DummyNode implements RootNode {
 
     }
 
