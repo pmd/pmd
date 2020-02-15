@@ -18,6 +18,8 @@ import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 /**
  * Represents a property of type {@code <U>} on a datatype {@code <T>}.
@@ -68,9 +70,17 @@ class LatticeRelation<T, @NonNull U> {
     private final Function<? super T, String> keyToString;
 
     // state
-    private final Map<T, LNode> nodes;
+    private final Map<T, LNode> nodes = new HashMap<>();
+    /** Keys that have been submitted to {@link #put(Object, Object)} as of now. */
+    private PSet<T> seeds = HashTreePSet.empty();
+
+    /**
+     * Value of {@link #seeds} after the last freeze cycle. If this has not changed
+     * during the write phase, then the topo is already up to date and we can avoid
+     * doing the computations of {@link #freezeTopo()}.
+     */
+    private PSet<T> lastSeeds = seeds;
     private boolean frozen;
-    private boolean up2DateTopo;
 
     /**
      * Creates a new relation with the given configuration.
@@ -95,7 +105,6 @@ class LatticeRelation<T, @NonNull U> {
         this.keyOrder = keyOrder;
         this.filter = filter;
         this.keyToString = keyToString;
-        nodes = new HashMap<>();
     }
 
     private LNode getOrCreateNode(T key) {
@@ -103,7 +112,6 @@ class LatticeRelation<T, @NonNull U> {
         if (nodes.containsKey(key)) {
             return nodes.get(key);
         } else {
-            up2DateTopo = false;
             LNode n = new LNode(key);
             nodes.put(key, n);
             // add all successors recursively
@@ -130,6 +138,7 @@ class LatticeRelation<T, @NonNull U> {
         if (frozen) {
             throw new IllegalStateException("A frozen lattice may not be mutated");
         }
+        seeds = seeds.plus(key);
         LNode node = getOrCreateNode(key);
         node.properVal = accumulate.apply(node.properVal, value);
     }
@@ -171,6 +180,7 @@ class LatticeRelation<T, @NonNull U> {
      */
     void unfreezeTopo() {
         frozen = false;
+        lastSeeds = seeds;
     }
 
     /**
@@ -183,8 +193,8 @@ class LatticeRelation<T, @NonNull U> {
      */
     void freezeTopo() {
         frozen = true; // non-thread-safe
-        if (up2DateTopo) {
-            // topology up to date
+        if (lastSeeds.equals(seeds)) {
+            // no new seeds have been encountered, topo is up to date
             return;
         }
 
@@ -287,7 +297,6 @@ class LatticeRelation<T, @NonNull U> {
             }
         }
 
-        up2DateTopo = true;
     }
 
 

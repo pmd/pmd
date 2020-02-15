@@ -32,7 +32,7 @@ public class RuleApplicator {
     // we reuse the type lattice from run to run, eventually it converges
     // towards the final topology (all node types have been encountered)
     // and there's no need to perform more topological checks when freezing it
-    
+
     // This has an excellent cache hit ratio on longer runs, making the indexing
     // time insignificant
     private final NodeIdx idx = new NodeIdx();

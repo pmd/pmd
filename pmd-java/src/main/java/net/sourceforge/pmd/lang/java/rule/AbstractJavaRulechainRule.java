@@ -33,10 +33,6 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
         }
     }
 
-    private boolean isAbstract(Class<?> clazz) {
-        return Modifier.isAbstract(clazz.getModifiers()) || clazz.isInterface();
-    }
-
 
     @Override
     public Object visit(JavaNode node, Object data) {
