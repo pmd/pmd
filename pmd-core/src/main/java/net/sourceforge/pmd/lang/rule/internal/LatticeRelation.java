@@ -16,19 +16,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.internal.util.PredicateUtil;
 
 /**
  * Represents a property of type {@code <U>} on a datatype {@code <T>}.
  * The internal representation is a directed acyclic graph of {@code <T>},
  * built according to a {@link TopoOrder}. The value {@code <U>} associated
  * to a node is the recursive combination of the values of all its children,
- * plus its own value, as defined by a {@link Monoid  Monoid&lt;U&gt;}.
+ * plus its own value, as defined by a {@link IdMonoid  Monoid&lt;U&gt;}.
  *
  * <p>An instance has two states:
  * <ul>
@@ -55,41 +52,49 @@ import net.sourceforge.pmd.internal.util.PredicateUtil;
  * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
  *            must implement a consistent {@link Object#equals(Object) equals} and
  *            {@link Object#hashCode() hashcode} and be immutable.
- * @param <U> Type of values, must have a corresponding {@link Monoid}
+ * @param <U> Type of values, must have a conformant {@link IdMonoid}
  */
 class LatticeRelation<T, @NonNull U> {
 
+    // constants for the toposort
     private static final int UNDEFINED_TOPOMARK = -1;
     private static final int PERMANENT_TOPOMARK = 0;
     private static final int TMP_TOPOMARK = 1;
 
-    /** Used to combine values of the predecessors of a node. */
-    private final Monoid<U> combine;
-    /** Used to accumulate proper values into the same node. */
-    private final Monoid<U> accumulate;
-
-    /** Nodes that are not queryable don't propagate diamond situations. */
-    private final Predicate<? super T> isQueryable;
-
+    // behavior parameters for this lattice
+    private final IdMonoid<U> combine;
+    private final IdMonoid<U> accumulate;
+    private final Predicate<? super T> filter;
     private final TopoOrder<T> keyOrder;
     private final Function<? super T, String> keyToString;
+
+    // state
     private final Map<T, LNode> nodes;
     private boolean frozen;
     private boolean up2DateTopo;
 
-    LatticeRelation(Monoid<U> combine, TopoOrder<T> keyOrder) {
-        this(combine, combine, keyOrder, PredicateUtil.always(), Object::toString);
-    }
-
-    LatticeRelation(Monoid<U> combine,
-                    Monoid<U> accumulate,
+    /**
+     * Creates a new relation with the given configuration.
+     *
+     * @param combine     Monoid used to combine values of the predecessors of a node
+     * @param accumulate  Monoid used to accumulate proper values (those added directly
+     *                    through {@link #put(Object, Object)}) into the same node
+     * @param keyOrder    Partial order generating the lattice
+     * @param filter      Filter for nodes to keep. During the construction phase,
+     *                    all nodes are in the lattice. When freezing, the lattice
+     *                    is completely expanded, then only nodes satisfying this
+     *                    filter are kept.
+     * @param keyToString Strategy to render keys when dumping the lattice to a graph
+     */
+    LatticeRelation(IdMonoid<U> combine,
+                    IdMonoid<U> accumulate,
                     TopoOrder<T> keyOrder,
-                    Predicate<? super T> isQueryable,
+                    Predicate<? super T> filter,
                     Function<? super T, String> keyToString) {
         this.combine = combine;
         this.accumulate = accumulate;
         this.keyOrder = keyOrder;
-        this.isQueryable = isQueryable;
+        this.filter = filter;
         this.keyToString = keyToString;
         nodes = new HashMap<>();
     }
@@ -131,7 +136,7 @@ class LatticeRelation<T, @NonNull U> {
     }
 
     /**
-     * Returns the computed value for the given key, or the {@link Monoid#zero() zero}
+     * Returns the computed value for the given key, or the {@link IdMonoid#zero() zero}
      * of the {@link #combine} monoid if the key is not recorded in this lattice.
      */
     @NonNull
@@ -247,38 +252,12 @@ class LatticeRelation<T, @NonNull U> {
 
         boolean[] kept = new boolean[n];
         for (int i = 0; i < n; i++) {
-            if (isQueryable.test(lst.get(i).key)) {
+            if (filter.test(lst.get(i).key)) {
                 kept[i] = true;
             }
         }
 
         // kept[i] means the node is not pruned
-
-        // diamond detection
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (kept[j] && path[i][j]) {
-                    for (int k = j + 1; k < n; k++) {
-                        if (kept[k] && path[j][k]) {
-                            // i -> j -> k
-                            // Look for an "m" s.t.
-                            // i -> m -> k
-                            for (int m = i + 1; m < n; m++) {
-                                if (m != j && kept[m] && !path[j][m] && !path[m][j] && path[i][m] && path[m][k]) {
-                                    lst.get(k).hasDiamond = true;
-                                    for (int o = k; o < n; o++) {
-                                        if (path[k][o]) {
-                                            lst.get(o).hasDiamond = true;
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         // transitive reduction
         for (int i = 0; i < n; i++) {
@@ -361,9 +340,8 @@ class LatticeRelation<T, @NonNull U> {
         for (LNode node : nodes.values()) {
             String id = "n" + i++;
             ids.put(node, id);
-            String shape = node.hasDiamond ? "diamond" : "box";
-            sb.append(id).append(" [ shape=").append(shape)
-              .append(", label=\"").append(escapeDotString(keyToString.apply(node.key)))
+            sb.append(id).append(" [ shape=box, label=\"")
+              .append(escapeDotString(keyToString.apply(node.key)))
               .append("\" ];\n");
         }
 
@@ -394,7 +372,6 @@ class LatticeRelation<T, @NonNull U> {
         private final Set<LNode> succ = new LinkedHashSet<>(0);
 
         // topological state, to be reset between freeze cycles
-        boolean hasDiamond = false;
         private int topoMark = UNDEFINED_TOPOMARK;
         private int idx = -1;
 
@@ -408,27 +385,30 @@ class LatticeRelation<T, @NonNull U> {
         }
 
         U computeValue() {
-            if (frozenVal == null) {
-                frozenVal = computeVal();
-            }
-            return frozenVal;
+            return computeValImpl(new HashSet<>());
         }
 
-        private U computeVal() {
-            // we use the combine monoid here, but properVal's default value is accumulate#zero
-            U zero = combine.apply(combine.zero(), properVal);
-
-            if (hasDiamond) {
-                // then we can't reuse values of children, because some
-                // descendants are reachable through several paths
-                return descendantsAndSelf().distinct().map(it -> it.properVal).reduce(zero, combine);
+        private U computeValImpl(Set<LNode> seen) {
+            if (seen.add(this)) {
+                if (frozenVal == null) {
+                    frozenVal = reduceSuccessors(seen);
+                }
+                return frozenVal;
             }
-
-            return succ.stream().map(LNode::computeValue).reduce(zero, combine);
+            // if already seen, don't recurse on the successors
+            return combine.zero();
         }
 
-        private Stream<LNode> descendantsAndSelf() {
-            return Stream.concat(Stream.of(this), succ.stream().flatMap(LNode::descendantsAndSelf));
+        private U reduceSuccessors(Set<LNode> seen) {
+            // we use the #combine monoid here, but properVal was made from #accumulate
+            // so we lift the proper val to the representation of #combine
+            U val = combine.lift(properVal);
+
+            for (LNode s : succ) {
+                U vs = s.computeValImpl(seen);
+                val = combine.apply(val, vs);
+            }
+            return val;
         }
 
         private void resetValue() {
@@ -443,7 +423,6 @@ class LatticeRelation<T, @NonNull U> {
         private void resetFrozenData() {
             topoMark = UNDEFINED_TOPOMARK;
             idx = -1;
-            hasDiamond = false;
             frozenVal = null;
             succ.clear();
             addSuccessors(key, this);

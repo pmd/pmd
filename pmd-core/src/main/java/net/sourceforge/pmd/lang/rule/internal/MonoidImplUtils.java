@@ -18,7 +18,7 @@ final class MonoidImplUtils {
         // utility class
     }
 
-    static final Monoid PSET_MONOID = new Monoid<Set>() {
+    static final IdMonoid PSET_MONOID = new IdMonoid<Set>() {
         @Override
         public Set apply(Set l, Set r) {
             if (l instanceof PSet) {
@@ -36,7 +36,7 @@ final class MonoidImplUtils {
         }
     };
 
-    static final Monoid MSET_MONOID = new Monoid<Set>() {
+    static final IdMonoid MSET_MONOID = new IdMonoid<Set>() {
         @Override
         public Set apply(Set l, Set r) {
             l.addAll(r);

@@ -7,12 +7,8 @@ package net.sourceforge.pmd.lang.rule.internal;
 import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,55 +24,11 @@ import net.sourceforge.pmd.internal.util.PredicateUtil;
 public class LatticeRelationTest {
 
     @Test
-    public void testLattice() {
-
-        LatticeRelation<Class<?>, Set<String>> lattice = new LatticeRelation<>(Monoid.forSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
-
-
-        lattice.put(String.class, setOf("string"));
-        lattice.put(Integer.class, setOf("int"));
-        lattice.put(Long.class, setOf("long"));
-
-        lattice.freezeTopo();
-
-        assertEquals(setOf("string", "int", "long"), lattice.get(Object.class));
-
-        Map<Class<?>, LatticeRelation<Class<?>, Set<String>>.LNode> nodes = lattice.getNodes();
-
-        assertTrue(nodes.get(Object.class).hasDiamond);
-        assertFalse(nodes.get(Serializable.class).hasDiamond);
-        assertFalse(nodes.get(Comparable.class).hasDiamond);
-    }
-
-    @Test
-    public void testClearing() {
-
-        LatticeRelation<Class<?>, Set<String>> lattice = new LatticeRelation<>(Monoid.forSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
-
-
-        lattice.put(String.class, setOf("string"));
-        lattice.put(Integer.class, setOf("int"));
-        lattice.put(Long.class, setOf("long"));
-
-        lattice.freezeTopo();
-
-        assertEquals(setOf("string", "int", "long"), lattice.get(Object.class));
-
-        lattice.unfreezeTopo();
-
-        lattice.clearValues();
-
-        lattice.freezeTopo();
-
-        lattice.getNodes().values().forEach(it -> assertEquals(emptySet(), it.computeValue()));
-    }
-
-    @Test
     public void testCustomTopo() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            Monoid.forSet(),
-            Monoid.forMutableSet(),
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             PredicateUtil.always(),
             Objects::toString
@@ -99,11 +51,45 @@ public class LatticeRelationTest {
     }
 
     @Test
+    public void testClearing() {
+
+        LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
+            LatticeRelationTest.setTopoOrder(),
+            PredicateUtil.always(),
+            Objects::toString
+        );
+
+        lattice.put(setOf(1, 2), setOf("12"));
+        lattice.put(setOf(1), setOf("1"));
+        lattice.put(setOf(3), setOf("3"));
+
+        lattice.freezeTopo();
+
+        assertEquals(setOf("12"), lattice.get(setOf(2)));
+        assertEquals(setOf("12", "1"), lattice.get(setOf(1)));
+        assertEquals(setOf("12"), lattice.get(setOf(1, 2)));
+        assertEquals(setOf("3"), lattice.get(setOf(3)));
+        assertEquals(emptySet(), lattice.get(setOf(5)));
+        assertEquals(setOf("1", "12", "3"), lattice.get(emptySet()));
+
+        lattice.unfreezeTopo();
+
+        lattice.clearValues();
+
+        lattice.freezeTopo();
+
+        lattice.getNodes().values().forEach(it -> assertEquals(emptySet(), it.computeValue()));
+    }
+
+
+    @Test
     public void testTopoFilter() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            Monoid.forSet(),
-            Monoid.forMutableSet(),
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             // filter out sets with size 2
             // this cuts out one level of the graph
