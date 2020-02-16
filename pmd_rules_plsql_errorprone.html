@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1377,7 +1389,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <span class="k">IS</span>
 
 <span class="c1">-- Take single parameter, relying on current default NLS date format</span>
-<span class="k">FUNCTION</span> <span class="n">strip_time</span> <span class="p">(</span><span class="n">p_date</span> <span class="k">IN</span> <span class="n">DATE</span><span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">strip_time</span> <span class="p">(</span><span class="n">p_date</span> <span class="k">IN</span> <span class="nb">DATE</span><span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="k">RETURN</span> <span class="n">TO_DATE</span><span class="p">(</span><span class="n">TO_CHAR</span><span class="p">(</span><span class="n">p_date</span><span class="p">));</span>
@@ -1411,21 +1423,21 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <span class="k">IS</span>
 
 <span class="c1">-- Take single parameter, relying on current default NLS date format</span>
-<span class="k">FUNCTION</span> <span class="n">to_date_single_parameter</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">to_date_single_parameter</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="k">RETURN</span> <span class="n">TO_DATE</span><span class="p">(</span><span class="n">p_date_string</span><span class="p">);</span>
 <span class="k">END</span> <span class="n">to_date_single_parameter</span> <span class="p">;</span>
 
 <span class="c1">-- Take 2 parameters, using an explicit date format string</span>
-<span class="k">FUNCTION</span> <span class="n">to_date_two_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">to_date_two_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="n">TO_DATE</span><span class="p">(</span><span class="n">p_date_string</span><span class="p">,</span> <span class="n">p_date_format</span><span class="p">);</span>
 <span class="k">END</span> <span class="n">to_date_two_parameters</span><span class="p">;</span>
 
 <span class="c1">-- Take 3 parameters, using an explicit date format string and an explicit language</span>
-<span class="k">FUNCTION</span> <span class="n">to_date_three_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_nls_language</span> <span class="n">VARCHAR2</span> <span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">to_date_three_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_nls_language</span> <span class="n">VARCHAR2</span> <span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="n">TO_DATE</span><span class="p">(</span><span class="n">p_date_string</span><span class="p">,</span> <span class="n">p_format_mask</span><span class="p">,</span> <span class="n">p_nls_language</span><span class="p">);</span>
@@ -1458,21 +1470,21 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <span class="k">IS</span>
 
 <span class="c1">-- Take single parameter, relying on current default NLS date format</span>
-<span class="k">FUNCTION</span> <span class="n">to_timestamp_single_parameter</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">to_timestamp_single_parameter</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="k">RETURN</span> <span class="n">TO_TIMESTAMP</span><span class="p">(</span><span class="n">p_date_string</span><span class="p">);</span>
 <span class="k">END</span> <span class="n">to_timestamp_single_parameter</span><span class="p">;</span>
 
 <span class="c1">-- Take 2 parameters, using an explicit date format string</span>
-<span class="k">FUNCTION</span> <span class="n">to_timestamp_two_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">to_timestamp_two_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="n">TO_TIMESTAMP</span><span class="p">(</span><span class="n">p_date_string</span><span class="p">,</span> <span class="n">p_date_format</span><span class="p">);</span>
 <span class="k">END</span> <span class="n">to_timestamp_two_parameters</span><span class="p">;</span>
 
 <span class="c1">-- Take 3 parameters, using an explicit date format string and an explicit language</span>
-<span class="k">FUNCTION</span> <span class="n">to_timestamp_three_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_nls_language</span> <span class="n">VARCHAR2</span> <span class="p">)</span> <span class="k">RETURN</span> <span class="n">DATE</span>
+<span class="k">FUNCTION</span> <span class="n">to_timestamp_three_parameters</span> <span class="p">(</span><span class="n">p_date_string</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_format_mask</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">p_nls_language</span> <span class="n">VARCHAR2</span> <span class="p">)</span> <span class="k">RETURN</span> <span class="nb">DATE</span>
 <span class="k">IS</span>
 <span class="k">BEGIN</span>
    <span class="n">TO_TIMESTAMP</span><span class="p">(</span><span class="n">p_date_string</span><span class="p">,</span> <span class="n">p_format_mask</span><span class="p">,</span> <span class="n">p_nls_language</span><span class="p">);</span>
@@ -1502,7 +1514,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

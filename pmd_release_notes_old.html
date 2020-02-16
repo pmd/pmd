@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -3560,11 +3572,11 @@ are discontinued for lack of a use-case, and have no planned replacement in 7.0.
 
 <p>Here’s an example:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Before 7.0.0, these are equivalent:</span>
-<span class="n">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntegerProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Top score value"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">40</span><span class="o">,</span> <span class="mf">3.0f</span><span class="o">);</span>
-<span class="n">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="n">IntegerProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">range</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">).</span><span class="na">uiOrder</span><span class="o">(</span><span class="mf">3.0f</span><span class="o">);</span>
+<span class="nc">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IntegerProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Top score value"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">40</span><span class="o">,</span> <span class="mf">3.0f</span><span class="o">);</span>
+<span class="nc">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="nc">IntegerProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">range</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">).</span><span class="na">uiOrder</span><span class="o">(</span><span class="mf">3.0f</span><span class="o">);</span>
 
 <span class="c1">// They both map to the following in 7.0.0</span>
-<span class="n">PropertyDescriptor</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="n">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">require</span><span class="o">(</span><span class="n">inRange</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">)).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">);</span>
+<span class="nc">PropertyDescriptor</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">require</span><span class="o">(</span><span class="n">inRange</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">)).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">);</span>
 </code></pre></div></div>
 
 <p>You’re highly encouraged to migrate to using this new API as soon as possible, to ease your migration to 7.0.0.</p>
@@ -4689,22 +4701,22 @@ and has since been the preferred way to suppress CPD warnings.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BaseHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># some unignored code</span>
+        <span class="c1"># some unignored code
+</span>
+        <span class="c1"># tell cpd to start ignoring code - CPD-OFF
+</span>
+        <span class="c1"># mission critical code, manually loop unroll
+</span>        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
 
-        <span class="c"># tell cpd to start ignoring code - CPD-OFF</span>
-
-        <span class="c"># mission critical code, manually loop unroll</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-
-        <span class="c"># resume CPD analysis - CPD-ON</span>
-
-        <span class="c"># further code will *not* be ignored</span>
-</code></pre></div></div>
+        <span class="c1"># resume CPD analysis - CPD-ON
+</span>
+        <span class="c1"># further code will *not* be ignored
+</span></code></pre></div></div>
 
 <p>Other languages are equivalent.</p>
 
@@ -6666,7 +6678,7 @@ See <a href="https://github.com/pmd/pmd/pull/250">PR #250</a>.</p>
 
 <p>For example:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">someMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
         <span class="c1">// some unignored code</span>
 
         <span class="c1">// tell cpd to start ignoring code - CPD-OFF</span>
@@ -11273,7 +11285,7 @@ Added new HTML report format
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

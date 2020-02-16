@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1372,14 +1384,14 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;HTML&gt;&lt;title&gt;bad example&gt;&lt;BODY&gt;
-&lt;iframe&gt;&lt;/iframe&gt;
-&lt;/BODY&gt; &lt;/HTML&gt;
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;HTML&gt;&lt;title&gt;</span>bad example&gt;<span class="nt">&lt;BODY&gt;</span>
+<span class="nt">&lt;iframe&gt;&lt;/iframe&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span> <span class="nt">&lt;/HTML&gt;</span>
 
-&lt;HTML&gt;&lt;title&gt;good example&gt;&lt;BODY&gt;
-&lt;iframe src="foo"&gt;&lt;/iframe&gt;
-&lt;/BODY&gt; &lt;/HTML&gt;
-</code></pre>
+<span class="nt">&lt;HTML&gt;&lt;title&gt;</span>good example&gt;<span class="nt">&lt;BODY&gt;</span>
+<span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">"foo"</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span> <span class="nt">&lt;/HTML&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/security.xml/IframeMissingSrcAttribute"</span> <span class="nt">/&gt;</span>
@@ -1398,12 +1410,12 @@ would be interpreted by the browser directly (e.g. "&lt;script&gt;alert(‘hello
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;%@ page contentType="text/html; charset=UTF-8" %&gt;
-&lt;%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %&gt;
-${expression}                    &lt;!-- don't use this --&gt;
-${fn:escapeXml(expression)}      &lt;!-- instead, escape it --&gt;
-&lt;c:out value="${expression}" /&gt;  &lt;!-- or use c:out --&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;%@ taglib </span><span class="na">prefix=</span><span class="s">"fn"</span><span class="na"> uri=</span><span class="s">"http://java.sun.com/jsp/jstl/functions"</span> <span class="nt">%&gt;</span>
+${expression}                    <span class="c">&lt;!-- don't use this --&gt;</span>
+${fn:escapeXml(expression)}      <span class="c">&lt;!-- instead, escape it --&gt;</span>
+<span class="nt">&lt;c:out </span><span class="na">value=</span><span class="s">"</span><span class="si">${</span><span class="n">expression</span><span class="si">}</span><span class="s">"</span> <span class="nt">/&gt;</span>  <span class="c">&lt;!-- or use c:out --&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/security.xml/NoUnsanitizedJSPExpression"</span> <span class="nt">/&gt;</span>
@@ -1425,7 +1437,7 @@ ${fn:escapeXml(expression)}      &lt;!-- instead, escape it --&gt;
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

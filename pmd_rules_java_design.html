@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1377,7 +1389,7 @@ protected constructor in order to prevent instantiation than make the class misl
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">field</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">field</span><span class="o">;</span>
     <span class="kt">int</span> <span class="n">otherField</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1409,12 +1421,12 @@ protected constructor in order to prevent instantiation than make the class misl
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">downCastPrimitiveType</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" i ["</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s">"]"</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" i ["</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s">"]"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="n">RuntimeException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">RuntimeException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="n">NullPointerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">NullPointerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
         <span class="o">}</span>
     <span class="o">}</span>
@@ -1503,7 +1515,7 @@ protected constructor in order to prevent instantiation than make the class misl
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">try</span> <span class="o">{</span>
         <span class="c1">// do something</span>
-    <span class="o">}</span>  <span class="k">catch</span> <span class="o">(</span><span class="n">SomeException</span> <span class="n">se</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span>  <span class="k">catch</span> <span class="o">(</span><span class="nc">SomeException</span> <span class="n">se</span><span class="o">)</span> <span class="o">{</span>
        <span class="k">throw</span> <span class="n">se</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1539,7 +1551,7 @@ code size and runtime complexity.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">try</span> <span class="o">{</span>
         <span class="c1">// do something</span>
-    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">SomeException</span> <span class="n">se</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SomeException</span> <span class="n">se</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// harmless comment</span>
         <span class="k">throw</span> <span class="k">new</span> <span class="nf">SomeException</span><span class="o">(</span><span class="n">se</span><span class="o">);</span>
     <span class="o">}</span>
@@ -1627,7 +1639,7 @@ Exception, or Error, use a subclassed exception or error instead.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
         <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1656,7 +1668,7 @@ exceptional cases with a <code class="highlighter-rouge">@throws</code> Javadoc 
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RuntimeException</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">RuntimeException</span> <span class="o">{</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1748,14 +1760,14 @@ A number higher than the specified threshold can indicate a high degree of coupl
 <span class="kn">import</span> <span class="nn">org.Bardo</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Blah</span> <span class="n">var1</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="n">Bar</span> <span class="n">var2</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Blah</span> <span class="n">var1</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Bar</span> <span class="n">var2</span><span class="o">;</span>
 
     <span class="c1">//followed by many imports of unique objects</span>
-    <span class="kt">void</span> <span class="n">ObjectC</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Bardo</span> <span class="n">var55</span><span class="o">;</span>
-        <span class="n">ObjectA</span> <span class="n">var44</span><span class="o">;</span>
-        <span class="n">ObjectZ</span> <span class="n">var93</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nc">ObjectC</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Bardo</span> <span class="n">var55</span><span class="o">;</span>
+        <span class="nc">ObjectA</span> <span class="n">var44</span><span class="o">;</span>
+        <span class="nc">ObjectZ</span> <span class="n">var93</span><span class="o">;</span>
         <span class="k">return</span> <span class="n">something</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1953,7 +1965,7 @@ into the former client classes.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Error</span> <span class="o">{</span> <span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Error</span> <span class="o">{</span> <span class="o">}</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1976,11 +1988,11 @@ Either add the necessary validation or use an alternate control structure.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">try</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="k">throw</span> <span class="k">new</span> <span class="nf">WrapperException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
             <span class="c1">// this is essentially a GOTO to the WrapperException catch block</span>
         <span class="o">}</span>
-    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">WrapperException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">WrapperException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// do some more stuff</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -2149,8 +2161,8 @@ Try to reduce the method length by creating helper methods and removing any copy
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello world!"</span><span class="o">);</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello world!"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello world!"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello world!"</span><span class="o">);</span>
     <span class="c1">// 98 copies omitted for brevity.</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2220,7 +2232,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 <span class="o">}</span>
 
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span>      <span class="c1">// preferred approach</span>
-    <span class="n">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="n">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="nc">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
 
     <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
 <span class="o">}</span>
@@ -2287,9 +2299,9 @@ developed easily.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="n">Bar</span> <span class="n">something</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="n">Variable</span> <span class="n">var</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="n">value</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Bar</span> <span class="n">something</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Variable</span> <span class="kt">var</span><span class="o">;</span>
     <span class="c1">// [... more more public attributes ...]</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{}</span>
@@ -2363,7 +2375,7 @@ in each object at runtime.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="kd">public</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">BAR</span> <span class="o">=</span> <span class="mi">42</span><span class="o">;</span> <span class="c1">// this could be static and save some space</span>
+  <span class="kd">public</span> <span class="kd">final</span> <span class="kt">int</span> <span class="no">BAR</span> <span class="o">=</span> <span class="mi">42</span><span class="o">;</span> <span class="c1">// this could be static and save some space</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2477,9 +2489,9 @@ or objects.</p>
     <span class="cm">/**
      * This example will result in two violations.
      */</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">example</span><span class="o">(</span><span class="n">Bar</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">example</span><span class="o">(</span><span class="nc">Bar</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// this method call is ok, as b is a parameter of "example"</span>
-        <span class="n">C</span> <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="na">getC</span><span class="o">();</span>
+        <span class="no">C</span> <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="na">getC</span><span class="o">();</span>
 
         <span class="c1">// this method call is a violation, as we are using c, which we got from B.</span>
         <span class="c1">// We should ask b directly instead, e.g. "b.doItOnC();"</span>
@@ -2489,7 +2501,7 @@ or objects.</p>
         <span class="n">b</span><span class="o">.</span><span class="na">getC</span><span class="o">().</span><span class="na">doIt</span><span class="o">();</span>
 
         <span class="c1">// a constructor call, not a method call.</span>
-        <span class="n">D</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="n">D</span><span class="o">();</span>
+        <span class="no">D</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="no">D</span><span class="o">();</span>
         <span class="c1">// this method call is ok, because we have create the new instance of D locally.</span>
         <span class="n">d</span><span class="o">.</span><span class="na">doSomethingElse</span><span class="o">();</span>
     <span class="o">}</span>
@@ -2550,7 +2562,7 @@ except when using one of the configured allowed classes.</p>
 <span class="kn">import</span> <span class="nn">some.other.package.subpackage.subsubpackage.DontUseThisClass</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
-    <span class="n">DontUseThisClass</span> <span class="n">boo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DontUseThisClass</span><span class="o">();</span>
+    <span class="nc">DontUseThisClass</span> <span class="n">boo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DontUseThisClass</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2719,7 +2731,7 @@ by the rule <a href="pmd_rules_java_design.html#ncsscount"><code class="highligh
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">();</span>
 
@@ -2799,7 +2811,7 @@ the <a href="pmd_java_metrics_index.html#non-commenting-source-statements-ncss">
 <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>                         <span class="c1">// +1, total Ncss = 12</span>
 
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bigMethod</span><span class="o">()</span>           <span class="c1">// +1</span>
-      <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+      <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>               <span class="c1">// +1</span>
     <span class="kt">boolean</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>    <span class="c1">// +1</span>
 
@@ -2809,8 +2821,8 @@ the <a href="pmd_java_metrics_index.html#non-commenting-source-statements-ncss">
           <span class="n">x</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">;</span>                   <span class="c1">// +1</span>
         <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="o">);</span>
 
-        <span class="n">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>             <span class="c1">// +1</span>
-      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>   <span class="c1">// +1</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>             <span class="c1">// +1</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>   <span class="c1">// +1</span>
         <span class="k">throw</span> <span class="k">new</span> <span class="nf">PatheticFailException</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span> <span class="c1">// +1</span>
       <span class="o">}</span>
     <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
@@ -2886,7 +2898,7 @@ by the rule <a href="pmd_rules_java_design.html#ncsscount"><code class="highligh
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">int</span> <span class="nf">methd</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">.</span><span class="na">methd</span><span class="o">();</span>
 
@@ -2965,7 +2977,7 @@ by the rule <a href="pmd_rules_java_design.html#ncsscount"><code class="highligh
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">//this class only has 6 NCSS lines</span>
         <span class="kd">super</span><span class="o">();</span>
@@ -3048,20 +3060,20 @@ complexity and increase readability.</p>
     <span class="kt">boolean</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
     <span class="k">try</span> <span class="o">{</span> <span class="c1">// 2 * 2 + 2 = 6</span>
       <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 2</span>
-        <span class="n">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+        <span class="nc">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
       <span class="o">}</span>
 
       <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">19</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span> <span class="c1">// * 2</span>
-        <span class="n">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+        <span class="nc">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
       <span class="o">}</span>
-    <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
       <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 2</span>
         <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
       <span class="o">}</span>
     <span class="o">}</span>
 
     <span class="k">while</span> <span class="o">(</span><span class="n">j</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//  * 2</span>
-      <span class="n">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+      <span class="nc">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
     <span class="o">}</span>
 
     <span class="k">switch</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// * 7</span>
@@ -3073,7 +3085,7 @@ complexity and increase readability.</p>
     <span class="o">}</span>
 
     <span class="k">do</span> <span class="o">{</span> <span class="c1">// * 3</span>
-        <span class="n">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+        <span class="nc">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
     <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">a</span> <span class="o">&amp;&amp;</span> <span class="n">j</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -3133,7 +3145,7 @@ derived from RuntimeException or a checked exception.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -3256,7 +3268,7 @@ or
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="n">TestCase</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testX</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">assertTrue</span><span class="o">(</span><span class="s">"not empty"</span><span class="o">,</span> <span class="o">!</span><span class="n">r</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">());</span>  <span class="c1">// replace with assertFalse("not empty", r.isEmpty())</span>
         <span class="n">assertFalse</span><span class="o">(!</span><span class="n">r</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">());</span>              <span class="c1">// replace with assertTrue(r.isEmpty())</span>
@@ -3364,8 +3376,8 @@ the conditional test can be returned instead.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="n">Object</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">x</span> <span class="k">instanceof</span> <span class="n">Bar</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">Object</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">x</span> <span class="k">instanceof</span> <span class="nc">Bar</span><span class="o">)</span> <span class="o">{</span>
       <span class="c1">// just drop the "x != null" check</span>
     <span class="o">}</span>
   <span class="o">}</span>
@@ -3648,8 +3660,8 @@ city/state/zip fields could park them within a single Address field.</p>
 <span class="o">}</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>   <span class="c1">// this is more manageable</span>
-   <span class="n">Date</span> <span class="n">birthDate</span><span class="o">;</span>
-   <span class="n">BodyMeasurements</span> <span class="n">measurements</span><span class="o">;</span>
+   <span class="nc">Date</span> <span class="n">birthDate</span><span class="o">;</span>
+   <span class="nc">BodyMeasurements</span> <span class="n">measurements</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -3755,16 +3767,16 @@ complexity and find a way to have more fine grained objects.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">String</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">String</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
     <span class="kd">super</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="n">bar</span><span class="o">);</span>      <span class="c1">// why bother overriding?</span>
 <span class="o">}</span>
 
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="nc">String</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">foo</span><span class="o">();</span>  <span class="c1">// why bother overriding?</span>
 <span class="o">}</span>
 
 <span class="nd">@Id</span>
-<span class="kd">public</span> <span class="n">Long</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="nc">Long</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>  <span class="c1">// OK if 'ignoreAnnotations' is false, which is the default behavior</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -3824,10 +3836,10 @@ your API.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">connect</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">,</span>
-        <span class="n">String</span> <span class="n">pssd</span><span class="o">,</span>
-        <span class="n">String</span> <span class="n">databaseName</span><span class="o">,</span>
-        <span class="n">String</span> <span class="n">databaseAdress</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">connect</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span>
+        <span class="nc">String</span> <span class="n">pssd</span><span class="o">,</span>
+        <span class="nc">String</span> <span class="n">databaseName</span><span class="o">,</span>
+        <span class="nc">String</span> <span class="n">databaseAdress</span><span class="o">)</span>
         <span class="c1">// Instead of those parameters object</span>
         <span class="c1">// would ensure a cleaner API and permit</span>
         <span class="c1">// to add extra data transparently (no code change):</span>
@@ -3913,7 +3925,7 @@ remember to add a private constructor to prevent instantiation.
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

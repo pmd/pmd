@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1369,8 +1381,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%&gt;&lt;html&gt;&lt;body&gt;&lt;b&gt;&lt;img src=\"&lt;%=Some.get()%&gt;/foo\"&gt;xx&lt;/img&gt;text&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">import=</span><span class="s">\"com.foo.MyClass,com.foo.MyClass\"%</span>&gt;<span class="nt">&lt;html&gt;&lt;body&gt;&lt;b&gt;&lt;img</span> <span class="na">src=</span><span class="s">\"&lt;%=Some.get()</span><span class="nt">%&gt;</span><span class="err">/</span><span class="na">foo</span><span class="err">\"</span><span class="nt">&gt;</span>xx<span class="nt">&lt;/img&gt;</span>text<span class="nt">&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/codestyle.xml/DuplicateJspImports"</span> <span class="nt">/&gt;</span>
@@ -1392,7 +1404,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

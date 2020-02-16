@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1387,8 +1399,8 @@ tags, or attributes like "align=’center’".</p>
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;html&gt;&lt;body&gt;&lt;p align='center'&gt;&lt;b&gt;text&lt;/b&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;&lt;body&gt;&lt;p</span> <span class="na">align=</span><span class="s">'center'</span><span class="nt">&gt;&lt;b&gt;</span>text<span class="nt">&lt;/b&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/design.xml/NoInlineStyleInformation"</span> <span class="nt">/&gt;</span>
@@ -1408,11 +1420,11 @@ tags, or attributes like "align=’center’".</p>
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;HTML&gt;
-&lt;BODY&gt;
-&lt;!--Java Script--&gt;
-&lt;SCRIPT language="JavaScript" type="text/javascript"&gt;
-&lt;!--
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;HTML&gt;</span>
+<span class="nt">&lt;BODY&gt;</span>
+<span class="c">&lt;!--Java Script--&gt;</span>
+<span class="nt">&lt;SCRIPT</span> <span class="na">language=</span><span class="s">"JavaScript"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!--
 function calcDays(){
   var date1 = document.getElementById('d1').lastChild.data;
   var date2 = document.getElementById('d2').lastChild.data;
@@ -1425,11 +1437,11 @@ function calcDays(){
 }
 
 onload=calcDays;
-//--&gt;
-&lt;/SCRIPT&gt;
-&lt;/BODY&gt;
-&lt;/HTML&gt;
-</code></pre>
+//--&gt;</span>
+<span class="nt">&lt;/SCRIPT&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span>
+<span class="nt">&lt;/HTML&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/design.xml/NoLongScripts"</span> <span class="nt">/&gt;</span>
@@ -1451,17 +1463,17 @@ onload=calcDays;
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;HTML&gt;
-&lt;HEAD&gt;
-&lt;%
-response.setHeader("Pragma", "No-cache");
-%&gt;
-&lt;/HEAD&gt;
-    &lt;BODY&gt;
-        &lt;jsp:scriptlet&gt;String title = "Hello world!";&lt;/jsp:scriptlet&gt;
-    &lt;/BODY&gt;
-&lt;/HTML&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;HTML&gt;</span>
+<span class="nt">&lt;HEAD&gt;</span>
+<span class="nt">&lt;%</span>
+<span class="n">response</span><span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"Pragma"</span><span class="o">,</span> <span class="s">"No-cache"</span><span class="o">);</span>
+<span class="nt">%&gt;</span>
+<span class="nt">&lt;/HEAD&gt;</span>
+    <span class="nt">&lt;BODY&gt;</span>
+        <span class="nt">&lt;jsp:scriptlet&gt;</span><span class="nc">String</span> <span class="n">title</span> <span class="o">=</span> <span class="s">"Hello world!"</span><span class="o">;</span><span class="nt">&lt;/jsp:scriptlet&gt;</span>
+    <span class="nt">&lt;/BODY&gt;</span>
+<span class="nt">&lt;/HTML&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/design.xml/NoScriptlets"</span> <span class="nt">/&gt;</span>
@@ -1483,7 +1495,7 @@ response.setHeader("Pragma", "No-cache");
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

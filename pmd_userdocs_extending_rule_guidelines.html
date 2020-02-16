@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Rule Guidelines">
+<meta name="description" content="Rule Guidelines, or the last touches to a rule">
 <meta name="keywords" content="extendinguserdocs,  ">
 <title>Rule guidelines | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1327,7 +1339,7 @@
 <div class="post-content">
 
    
-    <div class="summary">Rule Guidelines</div>
+    <div class="summary">Rule Guidelines, or the last touches to a rule</div>
    
 
     
@@ -1356,11 +1368,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h1 id="rule-guidelines">Rule Guidelines</h1>
-
-<p>Or - Last touches to a rules</p>
-
-<p>Here is a bunch of thing to do you may consider once your rule is “up and running”.</p>
+  <p>Here is a bunch of thing to do you may consider once your rule is “up and running”.</p>
 
 <h2 id="how-to-define-rules-priority">How to define rules priority</h2>
 
@@ -1376,15 +1384,6 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p>For instance, let’s take the ExplicitCallToGC rule (“Do not explicitly trigger a garbage collection.”). Calling GC is a bad idea, but it doesn’t break the application. So we skip priority one. However, as explicit call to gc may really hinder application performances, we set for the priority 2.</p>
 
-<h2 id="code-formatting">Code formatting</h2>
-
-<p>We try to keep a consistent code formatting through out PMD code base to ensure an easier maintenance and also make
-the pull request as readable as possible.</p>
-
-<p>In order to ensure this, we use a PMD specific Eclipse formatter configuration, which is maintained in a
-separate project - “build-tools”: <a href="https://github.com/pmd/build-tools/blob/master/eclipse/pmd-eclipse-code-formatter.xml">eclipse-code-formatter.xml</a>.
-Please do not forget to use it before committing or any source code!</p>
-
 <h2 id="correctness">Correctness</h2>
 
 <p>You should try to run the rule on a large code base, like the jdk source code for instance. This will help ensure that the rule does not raise exceptions when dealing with unusual constructs.</p>
@@ -1398,31 +1397,6 @@ Please do not forget to use it before committing or any source code!</p>
 <p>Rules which use the RuleChain to visit the AST are faster than rules which perform manual visitation of the AST. The difference is small for an individual Java rule, but when running 100s of rules, it is measurable. For XPath rules, the difference is extremely noticeable due to Jaxen overhead for AST navigation. Make sure your XPath rules using the RuleChain.</p>
 
 <p>(TODO How does one know except by running in a debugger or horrendous performance?).</p>
-
-<h2 id="adding-test-cases">Adding test cases</h2>
-
-<p>See <a href="pmd_userdocs_extending_testing.html">Testing your rules</a> for the general documentation</p>
-
-<h3 id="-for-a-rule-i-want-to-submit-in-a-patch">… for a rule I want to submit (in a patch)</h3>
-
-<p>Figure out the category to which you want to the rule. Then add your rule to the appropriate test class for
-the category and add the XML test data in the correct xml subpackage.</p>
-
-<h3 id="-for-something-too-specific-that-i-wont-be-able-to-submit">… for something too specific, that I won’t be able to submit</h3>
-
-<p>See <a href="pmd_userdocs_extending_testing.html#using-the-test-framework-externally">Using the test framework externally</a></p>
-
-<h2 id="code-quality">Code quality</h2>
-
-<p>If you want to contribute a java rule to PMD, you should run PMD on it (Using the dogfood rulesets), to ensure that you rule follow the rules defined by the PMD community.</p>
-
-<p>Also note, that if this is not a strong policy, most developers uses the berkeley braces syntax.</p>
-
-<h2 id="committing">Committing</h2>
-
-<p>Before committing changes, make sure the verify phase of a maven build succeeds without test failures. Drink a beer while you wait for it to finish.</p>
-
-<p>Then read the output to make sure no fatal errors are present.</p>
 
 
     <div class="tags">
@@ -1451,7 +1425,7 @@ the category and add the XML test data in the correct xml subpackage.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 3, 2016<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

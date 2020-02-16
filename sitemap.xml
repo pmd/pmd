@@ -620,7 +620,19 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_java_rules.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_pmd_rules.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_writing_rules_intro.html</loc>
   </url>
   
   
@@ -639,6 +651,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_xsl.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_your_first_rule.html</loc>
   </url>
   
   

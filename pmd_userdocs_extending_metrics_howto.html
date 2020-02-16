@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1367,8 +1379,8 @@ a numeric result. In the Java framework, metrics can be computed on operation de
 method declaration), and type declaration nodes (class, interface, enum, and annotation declarations). A metric
 object in the framework can only handle either types or operations, but not both.</p>
 
-<p>PMD ships with a library of already implemented metrics. These metrics are referenced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricKey.html#"><code class="highlighter-rouge">MetricKey</code></a> objects,
-which are listed in two public enums: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code class="highlighter-rouge">JavaClassMetricKey</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code class="highlighter-rouge">JavaOperationMetricKey</code></a>.
+<p>PMD ships with a library of already implemented metrics. These metrics are referenced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricKey.html#"><code>MetricKey</code></a> objects,
+which are listed in two public enums: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a>.
 Metric keys wrap a metric, and know which type of node their metric can be computed on. That way, you cannot compute an operation metric on a class
 declaration node. Metrics that can be computed on both operation and type declarations (e.g. NCSS) have one metric key in
 each enum.</p>
@@ -1381,9 +1393,9 @@ which is the name of the metric key as defined in  <code class="highlighter-roug
 
 <p>The function will throw an exception in the following cases:</p>
 <ul>
-  <li>The context node is neither an instance of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code class="highlighter-rouge">ASTAnyTypeDeclaration</code></a> or <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code class="highlighter-rouge">MethodLikeNode</code></a>, that is,
-it’s not one of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#"><code class="highlighter-rouge">ASTClassOrInterfaceDeclaration</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code class="highlighter-rouge">ASTEnumDeclaration</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code class="highlighter-rouge">ASTMethodDeclaration</code></a>,
-<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#"><code class="highlighter-rouge">ASTConstructorDeclaration</code></a>, or <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code class="highlighter-rouge">ASTLambdaExpression</code></a>.</li>
+  <li>The context node is neither an instance of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a>, that is,
+it’s not one of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#"><code>ASTClassOrInterfaceDeclaration</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#"><code>ASTConstructorDeclaration</code></a>, or <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTLambdaExpression.html#"><code>ASTLambdaExpression</code></a>.</li>
   <li>The metric key does not exist (the name is case insensitive) or is not defined for the type of the context node.</li>
 </ul>
 
@@ -1401,7 +1413,7 @@ CYCLO’s only defined for methods and constructors.</li>
 
 <h2 id="for-java-rules">For Java Rules</h2>
 
-<p>The static façade class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code class="highlighter-rouge">JavaMetrics</code></a> is the single entry point to compute metrics in the Java framework.</p>
+<p>The static façade class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> is the single entry point to compute metrics in the Java framework.</p>
 
 <p>This class provides the method <code class="highlighter-rouge">get</code> and its overloads. The following sections describes the interface of this class.</p>
 
@@ -1410,8 +1422,8 @@ CYCLO’s only defined for methods and constructors.</li>
 <p>The simplest overloads of <code class="highlighter-rouge">JavaMetrics.get</code> take two parameters: <strong>a <code class="highlighter-rouge">MetricKey</code> and a node of the corresponding type.</strong>
 Say you want to write a rule to report methods that have a high cyclomatic complexity. In your rule’s visitor, you
 can get the value of Cyclo for a method node like so:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">);</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// add violation</span>
   <span class="o">}</span>
@@ -1429,13 +1441,13 @@ to <code class="highlighter-rouge">JavaMetrics.get</code>.</p>
 <h3 id="capability-checking">Capability checking</h3>
 
 <p>Metrics are not necessarily computable on any node of the type they handle. For example, Cyclo cannot be computed on
-abstract methods. Metric keys provides a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricKey.html#supports(net.sourceforge.pmd.lang.ast.Node)"><code class="highlighter-rouge">supports(Node)</code></a> boolean method
+abstract methods. Metric keys provides a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricKey.html#supports(net.sourceforge.pmd.lang.ast.Node)"><code>supports(Node)</code></a> boolean method
 to find out if the metric can be computed on
 the specified node. <strong>If the metric cannot be computed on the given node, <code class="highlighter-rouge">JavaMetrics.get</code> will return <code class="highlighter-rouge">Double.NaN</code> .</strong>
 If you’re concerned about that, you can condition your call on whether the node is supported or not:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">.</span><span class="na">supports</span><span class="o">(</span><span class="n">node</span><span class="o">))</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">.</span><span class="na">supports</span><span class="o">(</span><span class="n">node</span><span class="o">))</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">);</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
       <span class="c1">// add violation</span>
     <span class="o">}</span>
@@ -1450,12 +1462,12 @@ If you’re concerned about that, you can condition your call on whether the nod
 gathered inside an enum in the implementation class of the metric, for example <code class="highlighter-rouge">CycloMetric.CycloOption</code>. They’re
 also documented on the <a href="pmd_java_metrics_index.html">index of metrics</a>.</p>
 
-<p>To use options with a metric, you must first bundle them into a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricOptions.html#"><code class="highlighter-rouge">MetricOptions</code></a> object. <code class="highlighter-rouge">MetricOptions</code> provides the
+<p>To use options with a metric, you must first bundle them into a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricOptions.html#"><code>MetricOptions</code></a> object. <code class="highlighter-rouge">MetricOptions</code> provides the
 utility method <code class="highlighter-rouge">ofOptions</code> to get a <code class="highlighter-rouge">MetricOptions</code> bundle from a collection or with varargs parameters. You can then
 pass this bundle as a parameter to <code class="highlighter-rouge">JavaMetrics.get</code>:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
-                                    <span class="n">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="n">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">));</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
+                                    <span class="nc">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="nc">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">));</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
       <span class="c1">// add violation</span>
   <span class="o">}</span>
@@ -1472,9 +1484,9 @@ for an example usage.</p>
 
 <p>The Metrics API also gives you the possibility to aggregate the result of an operation metric on all operations of a
 class very simply. You can for example get the highest value of the metric over a class that way:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTClassOrInterfaceDeclaration</span> <span class="n">clazz</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">highest</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">clazz</span><span class="o">,</span>
-                                      <span class="n">ResultOption</span><span class="o">.</span><span class="na">HIGHEST</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTClassOrInterfaceDeclaration</span> <span class="n">clazz</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">highest</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">clazz</span><span class="o">,</span>
+                                      <span class="nc">ResultOption</span><span class="o">.</span><span class="na">HIGHEST</span><span class="o">);</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">highest</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
       <span class="c1">// add violation</span>
   <span class="o">}</span>
@@ -1495,30 +1507,30 @@ user-configured with a rule property. More complete examples can be found in
 <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssCountRule.java#L30">NcssCountRule</a>,
 or <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java#L24">GodClassRule</a>.</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CycloRule</span> <span class="kd">extends</span> <span class="n">AbstractJavaMetricsRule</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CycloRule</span> <span class="kd">extends</span> <span class="nc">AbstractJavaMetricsRule</span> <span class="o">{</span>
 
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BooleanProperty</span> <span class="n">COUNT_BOOLEAN_PATHS</span>
-      <span class="o">=</span> <span class="n">BooleanProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"countBooleanPaths"</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">BooleanProperty</span> <span class="no">COUNT_BOOLEAN_PATHS</span>
+      <span class="o">=</span> <span class="nc">BooleanProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"countBooleanPaths"</span><span class="o">)</span>
                        <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"Count boolean paths"</span><span class="o">)</span>
                        <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="kc">true</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
 
-  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">MetricOptions</span> <span class="n">options</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">MetricOptions</span> <span class="n">options</span><span class="o">;</span>
 
   <span class="kd">public</span> <span class="nf">CycloRule</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">definePropertyDescriptor</span><span class="o">(</span><span class="n">COUNT_BOOLEAN_PATHS</span><span class="o">);</span>
+    <span class="n">definePropertyDescriptor</span><span class="o">(</span><span class="no">COUNT_BOOLEAN_PATHS</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTCompilationUnit</span> <span class="n">node</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">options</span> <span class="o">=</span> <span class="n">getProperty</span><span class="o">(</span><span class="n">COUNT_BOOLEAN_PATHS</span><span class="o">)</span>
-              <span class="o">?</span> <span class="n">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="n">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">)</span>
-              <span class="o">:</span> <span class="n">MetricOptions</span><span class="o">.</span><span class="na">emptyOptions</span><span class="o">();</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTCompilationUnit</span> <span class="n">node</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">getProperty</span><span class="o">(</span><span class="no">COUNT_BOOLEAN_PATHS</span><span class="o">)</span>
+              <span class="o">?</span> <span class="nc">MetricOptions</span><span class="o">.</span><span class="na">ofOptions</span><span class="o">(</span><span class="nc">CycloOptions</span><span class="o">.</span><span class="na">IGNORE_BOOLEAN_PATHS</span><span class="o">)</span>
+              <span class="o">:</span> <span class="nc">MetricOptions</span><span class="o">.</span><span class="na">emptyOptions</span><span class="o">();</span>
   <span class="o">}</span>
 
   <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTAnyTypeDeclaration</span> <span class="n">clazz</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">clazz</span><span class="o">,</span>
-                                      <span class="n">options</span><span class="o">,</span> <span class="n">ResultOption</span><span class="o">.</span><span class="na">SUM</span><span class="o">);</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTAnyTypeDeclaration</span> <span class="n">clazz</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">clazz</span><span class="o">,</span>
+                                      <span class="n">options</span><span class="o">,</span> <span class="nc">ResultOption</span><span class="o">.</span><span class="na">SUM</span><span class="o">);</span>
 
     <span class="k">if</span> <span class="o">(</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="o">)</span> <span class="o">{</span>
      <span class="c1">// add violation</span>
@@ -1528,8 +1540,8 @@ or <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/so
   <span class="o">}</span>
 
   <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="n">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTMethodDeclaration</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">cyclo</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">JavaMetrics</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">JavaOperationMetricKey</span><span class="o">.</span><span class="na">CYCLO</span><span class="o">,</span> <span class="n">method</span><span class="o">,</span>
                                       <span class="n">options</span><span class="o">);</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">cyclo</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// this is safe if the node is not supported, as (Double.NaN &gt; 10) == false</span>
       <span class="c1">// add violation</span>
@@ -1643,8 +1655,8 @@ define a predicate to check that the node is supported by your metric. For examp
 if your metric can only be computed on classes, you may override the default behaviour
 like so:</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
-<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">ASTAnyTypeDeclaration</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="na">getTypeKind</span><span class="o">()</span> <span class="o">==</span> <span class="n">TypeKind</span><span class="o">.</span><span class="na">CLASS</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="nc">ASTAnyTypeDeclaration</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="na">getTypeKind</span><span class="o">()</span> <span class="o">==</span> <span class="nc">TypeKind</span><span class="o">.</span><span class="na">CLASS</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1709,7 +1721,7 @@ classes. Here’s the default behaviour by language and type of metric:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> December 18, 2017<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> December 18, 2017<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

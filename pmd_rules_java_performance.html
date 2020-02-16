@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1372,8 +1384,8 @@ It is much better to use one of the type-specific toString() methods instead.</p
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">""</span> <span class="o">+</span> <span class="mi">123</span><span class="o">;</span>                <span class="c1">// inefficient</span>
-<span class="n">String</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="mi">456</span><span class="o">);</span>   <span class="c1">// preferred approach</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">""</span> <span class="o">+</span> <span class="mi">123</span><span class="o">;</span>                <span class="c1">// inefficient</span>
+<span class="nc">String</span> <span class="n">t</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="mi">456</span><span class="o">);</span>   <span class="c1">// preferred approach</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1392,10 +1404,10 @@ It is much better to use one of the type-specific toString() methods instead.</p
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
 <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>     <span class="c1">// avoid this</span>
 
-<span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+<span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
 <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="sc">'a'</span><span class="o">);</span>     <span class="c1">// use this instead</span>
 </code></pre></div></div>
 
@@ -1493,20 +1505,20 @@ that one covers both.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// these instantiations cause garbage collection pauses, even if properly closed</span>
 
-    <span class="n">FileInputStream</span> <span class="n">fis</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
-    <span class="n">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
-    <span class="n">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
-    <span class="n">FileWriter</span> <span class="n">fw</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileWriter</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileInputStream</span> <span class="n">fis</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+    <span class="nc">FileWriter</span> <span class="n">fw</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileWriter</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
 
     <span class="c1">// the following instantiations help prevent Garbage Collection pauses, no finalization</span>
 
-    <span class="k">try</span><span class="o">(</span><span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">newInputStream</span><span class="o">(</span><span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">)))</span> <span class="o">{</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newInputStream</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">)))</span> <span class="o">{</span>
     <span class="o">}</span>
-    <span class="k">try</span><span class="o">(</span><span class="n">OutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">newOutputStream</span><span class="o">(</span><span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">)))</span> <span class="o">{</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">OutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newOutputStream</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">)))</span> <span class="o">{</span>
     <span class="o">}</span>
-    <span class="k">try</span><span class="o">(</span><span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">newBufferedReader</span><span class="o">(</span><span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">),</span> <span class="n">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newBufferedReader</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">),</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
     <span class="o">}</span>
-    <span class="k">try</span><span class="o">(</span><span class="n">BufferedWriter</span> <span class="n">wr</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">newBufferedWriter</span><span class="o">(</span><span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">),</span> <span class="n">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
+    <span class="k">try</span><span class="o">(</span><span class="nc">BufferedWriter</span> <span class="n">wr</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">newBufferedWriter</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">fileName</span><span class="o">),</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
     <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1527,9 +1539,9 @@ that one covers both.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Something</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span> <span class="n">as</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="n">as</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span>
         <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="n">Foo</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">();</span> <span class="c1">// Avoid this whenever you can it's really expensive</span>
+            <span class="nc">Foo</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span> <span class="c1">// Avoid this whenever you can it's really expensive</span>
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1593,11 +1605,11 @@ for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BigInteger</span> <span class="n">bi</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BigInteger</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>       <span class="c1">// reference BigInteger.ONE instead</span>
-<span class="n">BigInteger</span> <span class="n">bi2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BigInteger</span><span class="o">(</span><span class="s">"0"</span><span class="o">);</span>    <span class="c1">// reference BigInteger.ZERO instead</span>
-<span class="n">BigInteger</span> <span class="n">bi3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BigInteger</span><span class="o">(</span><span class="mf">0.0</span><span class="o">);</span>    <span class="c1">// reference BigInteger.ZERO instead</span>
-<span class="n">BigInteger</span> <span class="n">bi4</span><span class="o">;</span>
-<span class="n">bi4</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BigInteger</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>                 <span class="c1">// reference BigInteger.ZERO instead</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">BigInteger</span> <span class="n">bi</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>       <span class="c1">// reference BigInteger.ONE instead</span>
+<span class="nc">BigInteger</span> <span class="n">bi2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="s">"0"</span><span class="o">);</span>    <span class="c1">// reference BigInteger.ZERO instead</span>
+<span class="nc">BigInteger</span> <span class="n">bi3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="mf">0.0</span><span class="o">);</span>    <span class="c1">// reference BigInteger.ZERO instead</span>
+<span class="nc">BigInteger</span> <span class="n">bi4</span><span class="o">;</span>
+<span class="n">bi4</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigInteger</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>                 <span class="c1">// reference BigInteger.ZERO instead</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1617,8 +1629,8 @@ Note that new Boolean() is deprecated since JDK 9 for that reason.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Boolean</span> <span class="n">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Boolean</span><span class="o">(</span><span class="s">"true"</span><span class="o">);</span>        <span class="c1">// unnecessary creation, just reference Boolean.TRUE;</span>
-<span class="n">Boolean</span> <span class="n">buz</span> <span class="o">=</span> <span class="n">Boolean</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>    <span class="c1">// ...., just reference Boolean.FALSE;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Boolean</span> <span class="n">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Boolean</span><span class="o">(</span><span class="s">"true"</span><span class="o">);</span>        <span class="c1">// unnecessary creation, just reference Boolean.TRUE;</span>
+<span class="nc">Boolean</span> <span class="n">buz</span> <span class="o">=</span> <span class="nc">Boolean</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>    <span class="c1">// ...., just reference Boolean.FALSE;</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1644,7 +1656,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Byte</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Byte</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Byte i = Byte.valueOf(0);</span>
+    <span class="kd">private</span> <span class="nc">Byte</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Byte</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Byte i = Byte.valueOf(0);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1665,14 +1677,14 @@ by producing a smaller bytecode, reducing overhead and improving inlining. A com
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">String</span> <span class="n">foo</span> <span class="o">=</span> <span class="s">" "</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">foo</span> <span class="o">=</span> <span class="s">" "</span><span class="o">;</span>
 
-<span class="n">StringBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+<span class="nc">StringBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
 <span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">);</span> <span class="c1">// poor</span>
 <span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
 <span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span>
 
-<span class="n">StringBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+<span class="nc">StringBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
 <span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">foo</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span> <span class="c1">// good</span>
 </code></pre></div></div>
 
@@ -1694,7 +1706,7 @@ can be appended in a single method call.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">StringBuilder</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuilder</span> <span class="n">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
 <span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">" "</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span>    <span class="c1">// poor</span>
 <span class="n">buf</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>                          <span class="c1">// good</span>
 
@@ -1750,9 +1762,9 @@ Consider creating a static function that loops through a string, checking Charac
 on each character and returning false if a non-whitespace character is found. A Smarter code to
 check for an empty string would be:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">checkTrimEmpty</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">checkTrimEmpty</span><span class="o">(</span><span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-        <span class="k">if</span><span class="o">(!</span><span class="n">Character</span><span class="o">.</span><span class="na">isWhitespace</span><span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">)))</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(!</span><span class="nc">Character</span><span class="o">.</span><span class="na">isWhitespace</span><span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">)))</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
         <span class="o">}</span>
     <span class="o">}</span>
@@ -1769,7 +1781,7 @@ include the check for != null).</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">string</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">string</span><span class="o">.</span><span class="na">trim</span><span class="o">().</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">doSomething</span><span class="o">();</span>
     <span class="o">}</span>
@@ -1794,11 +1806,11 @@ need to be be created and destroyed by the JVM.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Avoid this, two buffers are actually being created here</span>
-<span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">(</span><span class="s">"tmp = "</span><span class="o">+</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"java.io.tmpdir"</span><span class="o">));</span>
+<span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="s">"tmp = "</span><span class="o">+</span><span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"java.io.tmpdir"</span><span class="o">));</span>
 
 <span class="c1">// do this instead</span>
-<span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">(</span><span class="s">"tmp = "</span><span class="o">);</span>
-<span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"java.io.tmpdir"</span><span class="o">));</span>
+<span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="s">"tmp = "</span><span class="o">);</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"java.io.tmpdir"</span><span class="o">));</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1821,10 +1833,10 @@ is assumed if the length of the constructor can not be determined.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">StringBuffer</span> <span class="n">bad</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuffer</span> <span class="n">bad</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
 <span class="n">bad</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"This is a long string that will exceed the default 16 characters"</span><span class="o">);</span>
 
-<span class="n">StringBuffer</span> <span class="n">good</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">(</span><span class="mi">41</span><span class="o">);</span>
+<span class="nc">StringBuffer</span> <span class="n">good</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="mi">41</span><span class="o">);</span>
 <span class="n">good</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"This is a long string, which is pre-sized"</span><span class="o">);</span>
 </code></pre></div></div>
 
@@ -1851,7 +1863,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Integer i = Integer.valueOf(0);</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Integer</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Integer i = Integer.valueOf(0);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1878,7 +1890,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Long</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Long i = Long.valueOf(0);</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Long</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Long i = Long.valueOf(0);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1918,14 +1930,14 @@ is faster, but returns only an array of type <code class="highlighter-rouge">Obj
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">List</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">foos</span> <span class="o">=</span> <span class="n">getFoos</span><span class="o">();</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Foo</span><span class="o">&gt;</span> <span class="n">foos</span> <span class="o">=</span> <span class="n">getFoos</span><span class="o">();</span>
 
 <span class="c1">// much better; this one allows the jvm to allocate an array of the correct size and effectively skip</span>
 <span class="c1">// the zeroing, since each array element will be overridden anyways</span>
-<span class="n">Foo</span><span class="o">[]</span> <span class="n">fooArray</span> <span class="o">=</span> <span class="n">foos</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="n">Foo</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+<span class="nc">Foo</span><span class="o">[]</span> <span class="n">fooArray</span> <span class="o">=</span> <span class="n">foos</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="nc">Foo</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
 
 <span class="c1">// inefficient, the array needs to be zeroed out by the jvm before it is handed over to the toArray method</span>
-<span class="n">Foo</span><span class="o">[]</span> <span class="n">fooArray</span> <span class="o">=</span> <span class="n">foos</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="n">Foo</span><span class="o">[</span><span class="n">foos</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+<span class="nc">Foo</span><span class="o">[]</span> <span class="n">fooArray</span> <span class="o">=</span> <span class="n">foos</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="nc">Foo</span><span class="o">[</span><span class="n">foos</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1955,9 +1967,9 @@ is redundant and results in a larger class file (approximately three additional 
 
     <span class="kt">float</span> <span class="n">f</span>     <span class="o">=</span> <span class="o">.</span><span class="mi">0</span><span class="n">f</span><span class="o">;</span>    <span class="c1">// all possible float literals</span>
     <span class="n">doable</span> <span class="n">d</span>    <span class="o">=</span> <span class="mi">0</span><span class="n">d</span><span class="o">;</span>     <span class="c1">// all possible double literals</span>
-    <span class="n">Object</span> <span class="n">o</span>    <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="nc">Object</span> <span class="n">o</span>    <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 
-    <span class="n">MyClass</span> <span class="n">mca</span><span class="o">[]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="nc">MyClass</span> <span class="n">mca</span><span class="o">[]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
     <span class="kt">int</span> <span class="n">i1</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">ia1</span><span class="o">[]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 
     <span class="kd">class</span> <span class="nc">Nested</span> <span class="o">{</span>
@@ -1989,7 +2001,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Short</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Short</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Short i = Short.valueOf(0);</span>
+    <span class="kd">private</span> <span class="nc">Short</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Short</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// change to Short i = Short.valueOf(0);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2023,11 +2035,11 @@ at the expense of some readability.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
 
-    <span class="kt">boolean</span> <span class="nf">checkIt</span><span class="o">(</span><span class="n">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="nf">checkIt</span><span class="o">(</span><span class="nc">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>   <span class="c1">// suboptimal</span>
     <span class="o">}</span>
 
-    <span class="kt">boolean</span> <span class="nf">fasterCheckIt</span><span class="o">(</span><span class="n">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="nf">fasterCheckIt</span><span class="o">(</span><span class="nc">String</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">==</span> <span class="sc">'a'</span><span class="o">;</span>  <span class="c1">// faster approach</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -2049,7 +2061,7 @@ at the expense of some readability.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="n">String</span> <span class="n">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span> <span class="c1">// just do a String bar = "bar";</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">String</span> <span class="n">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="s">"bar"</span><span class="o">);</span> <span class="c1">// just do a String bar = "bar";</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -2068,8 +2080,8 @@ at the expense of some readability.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="n">String</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">bar</span> <span class="o">=</span> <span class="s">"howdy"</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">String</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">bar</span> <span class="o">=</span> <span class="s">"howdy"</span><span class="o">;</span>
     <span class="k">return</span> <span class="n">bar</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2157,17 +2169,17 @@ garbage-collected later.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">int</span> <span class="nf">convert</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">int</span> <span class="nf">convert</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">i2</span><span class="o">;</span>
 
-    <span class="n">i</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">s</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span>  <span class="c1">// this wastes an object</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>            <span class="c1">// this is better</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">s</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span>  <span class="c1">// this wastes an object</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>            <span class="c1">// this is better</span>
 
-    <span class="n">i2</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span> <span class="c1">// this wastes an object</span>
+    <span class="n">i2</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span> <span class="c1">// this wastes an object</span>
     <span class="n">i2</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>                             <span class="c1">// this is better</span>
 
-    <span class="n">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i2</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span> <span class="c1">// this wastes an object</span>
-    <span class="n">s3</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">i2</span><span class="o">);</span>                  <span class="c1">// this is better</span>
+    <span class="nc">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i2</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span> <span class="c1">// this wastes an object</span>
+    <span class="n">s3</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">i2</span><span class="o">);</span>                  <span class="c1">// this is better</span>
 
     <span class="k">return</span> <span class="n">i2</span><span class="o">;</span>
 <span class="o">}</span>
@@ -2193,10 +2205,10 @@ garbage-collected later.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="n">TestCase</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testX</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Collection</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Vector</span><span class="o">();</span>
-    <span class="n">Collection</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>    <span class="c1">// achieves the same with much better performance</span>
+    <span class="nc">Collection</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Vector</span><span class="o">();</span>
+    <span class="nc">Collection</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>    <span class="c1">// achieves the same with much better performance</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2254,9 +2266,9 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient f
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">Integer</span><span class="o">[]</span> <span class="n">ints</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">Integer</span><span class="o">[]</span> <span class="n">ints</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// could just use Arrays.asList(ints)</span>
-        <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">l</span><span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;(</span><span class="mi">100</span><span class="o">);</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">l</span><span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;(</span><span class="mi">100</span><span class="o">);</span>
         <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
             <span class="n">l</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ints</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
         <span class="o">}</span>
@@ -2283,7 +2295,7 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient f
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"hello world"</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"hello world"</span><span class="o">;</span>
 <span class="c1">// avoid this</span>
 <span class="k">if</span> <span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="s">"d"</span><span class="o">)</span> <span class="o">{}</span>
 <span class="c1">// instead do this</span>
@@ -2306,9 +2318,9 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(…)) if that is inconvenient f
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">s</span><span class="o">;</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="s">"a"</span> <span class="o">+</span> <span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>    <span class="c1">// not required</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">s</span><span class="o">;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">"a"</span> <span class="o">+</span> <span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>    <span class="c1">// not required</span>
     <span class="n">s</span> <span class="o">=</span> <span class="s">"a"</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span>                    <span class="c1">// preferred approach</span>
     <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
 <span class="o">}</span>
@@ -2334,7 +2346,7 @@ threadsafe StringBuffer is recommended to avoid this.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">String</span> <span class="n">a</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">a</span><span class="o">;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="s">"foo"</span><span class="o">;</span>
         <span class="n">a</span> <span class="o">+=</span> <span class="s">" bar"</span><span class="o">;</span>
         <span class="c1">// better would be:</span>
@@ -2361,7 +2373,7 @@ or StringBuffer.toString().length() == …</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
 
 <span class="k">if</span> <span class="o">(</span><span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">))</span> <span class="o">{}</span>        <span class="c1">// inefficient</span>
 
@@ -2388,7 +2400,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

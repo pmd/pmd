@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1388,15 +1400,15 @@ Also primitives are not included into the count.</p>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span> <span class="c1">// total 8</span>
-    <span class="kd">public</span> <span class="n">Set</span> <span class="n">set</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">();</span> <span class="c1">// +2</span>
-    <span class="kd">public</span> <span class="n">Map</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span> <span class="c1">// +2</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="n">string</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
-    <span class="kd">public</span> <span class="n">Double</span> <span class="n">number</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="nc">Set</span> <span class="n">set</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashSet</span><span class="o">();</span> <span class="c1">// +2</span>
+    <span class="kd">public</span> <span class="nc">Map</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span> <span class="c1">// +2</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="nc">Double</span> <span class="n">number</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
     <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">intArray</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span> <span class="c1">// primitive -&gt; does not count</span>
 
     <span class="nd">@Deprecated</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
     <span class="nd">@Override</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">List</span> <span class="n">list</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span> <span class="c1">// +1 (Exception is from java.lang)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">List</span> <span class="n">list</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span> <span class="c1">// +1 (Exception is from java.lang)</span>
         <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">();</span> <span class="c1">// +1</span>
     <span class="o">}</span>
 
@@ -1528,7 +1540,7 @@ like that behaviour, use the <code class="highlighter-rouge">COUNT_IMPORTS</code
 <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>                         <span class="c1">// +1, total Ncss = 12</span>
   
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bigMethod</span><span class="o">()</span>           <span class="c1">// +1</span>
-      <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>     
+      <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>     
     <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>               <span class="c1">// +1</span>
     <span class="kt">boolean</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>    <span class="c1">// +1</span>
     
@@ -1538,8 +1550,8 @@ like that behaviour, use the <code class="highlighter-rouge">COUNT_IMPORTS</code
           <span class="n">x</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">;</span>                   <span class="c1">// +1</span>
         <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="o">);</span>
           
-        <span class="n">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>             <span class="c1">// +1</span>
-      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>   <span class="c1">// +1</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>             <span class="c1">// +1</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>   <span class="c1">// +1</span>
         <span class="k">throw</span> <span class="k">new</span> <span class="nf">PatheticFailException</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span> <span class="c1">// +1</span>
       <span class="o">}</span>
     <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
@@ -1726,7 +1738,7 @@ In Proceedings ACM Symposium on Software Reusability, 1995.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

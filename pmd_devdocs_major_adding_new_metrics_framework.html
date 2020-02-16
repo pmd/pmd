@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1358,29 +1370,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
   <h2 id="internal-architecture-of-the-metrics-framework">Internal architecture of the metrics framework</h2>
 
-<h3 id="overview-of-the-java-framework">Overview of the Java framework</h3>
-
-<p>The framework has several subsystems, the two most easily identifiable being:</p>
-<ul>
-  <li>
-    <p>A <strong>project memoizer</strong> (<code class="highlighter-rouge">ProjectMemoizer</code>). When a metric is computed, it’s stored back in this structure and can be
-reused later. This
- reduces the overhead on the calculation of e.g. aggregate results (<code class="highlighter-rouge">ResultOption</code> calculations). The contents of
- this data structure are indexed with fully qualified names (<code class="highlighter-rouge">JavaQualifiedName</code>), which must identify unambiguously
- classes and methods.</p>
-  </li>
-  <li>
-    <p>The <strong>façade</strong>. The static end-user façade (<code class="highlighter-rouge">JavaMetrics</code>) is backed by an instance of a <code class="highlighter-rouge">JavaMetricsFaçade</code>. This
-allows us to abstract the functionality of the façade into <code class="highlighter-rouge">pmd-core</code> for other frameworks to use. The façade
-instance contains a project memoizer for the analysed project, and a metrics computer
-(<code class="highlighter-rouge">JavaMetricsComputer</code>). It’s this last object which really computes the metric and stores back its result in the
-project mirror, while the façade only handles parameters.</p>
-  </li>
-</ul>
-
-<p>Metrics (<code class="highlighter-rouge">Metric&lt;N&gt;</code>) plug in to this static system and only provide behaviour that’s executed by the metrics computer.
-Internally, metric keys (<code class="highlighter-rouge">MetricKey&lt;N&gt;</code>) are parameterized with their version (<code class="highlighter-rouge">MetricVersion</code>) to index memoisation
-maps (see <code class="highlighter-rouge">ParameterizedMetricKey&lt;N&gt;</code>). This allows us to memoise several versions of the same metric without conflict.</p>
+<p>The framework is pretty simple. On a high level, a <code class="highlighter-rouge">Metric&lt;N&gt;</code> describes some numeric computation on a node of type <code class="highlighter-rouge">N</code>.
+You should wrap it into a <code class="highlighter-rouge">MetricKey&lt;N&gt;</code>, so that it can be cached on nodes (implemented by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a>).</p>
 
 <p>At the very least, a metrics framework has those two components and is just a convenient way to compute and memoize
 metrics on a single file. The expressive power of metrics can be improved by implementing <em>signature matching</em> capabilities,
@@ -1388,55 +1379,13 @@ which allows a metric to count signatures matching a specific pattern (a mask) o
 designed to work across files, given a working usage resolution. However, making that work with incremental analysis is
 harder than it looks, and has been rescheduled to another project.</p>
 
-<h3 id="abstraction-layer">Abstraction layer</h3>
-
-<p>As you may have seen, most of the functionality of the first two components are abstracted into <code class="highlighter-rouge">pmd-core</code>. This
-allows us to implement new metrics frameworks quite quickly. These abstract components are parameterized by the
-node types of the class and operation AST nodes. Moreover, it makes the external behaviour of the framework very
-stable across languages, yet each component can easily be customized by adding methods or overriding existing ones.</p>
-
-<p>The signature matching aspect is framed by generic interfaces, but it can’t really be abstracted more
-than that. The info given in the signatures is usually very language specific, as it includes info about e.g.
-visibility modifiers. So more work is required to implement that, but it can already be used to implement
-sophisticated metrics, that already give access to detection strategies.</p>
-
 <h2 id="implementation-of-a-new-framework">Implementation of a new framework</h2>
 
-<h3 id="1-groundwork">1. Groundwork</h3>
-
 <ul>
-  <li>Create a class implementing <code class="highlighter-rouge">QualifiedName</code>. This implementation must be tailored to the target language so
-that it can indentify unambiguously any class and operation in the analysed project. You
-must implement <code class="highlighter-rouge">equals</code>, <code class="highlighter-rouge">hashCode</code> and <code class="highlighter-rouge">toString</code>.
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.java">Example</a></li>
-  <li>Determine the AST nodes that correspond to class and method declaration in your language. These types are
-referred hereafter as <code class="highlighter-rouge">T</code> and <code class="highlighter-rouge">O</code>, respectively. Both these types must implement the interface <code class="highlighter-rouge">QualifiableNode</code>,
-which means they must expose a <code class="highlighter-rouge">getQualifiedName</code> method to give access to their qualified name.</li>
-</ul>
-
-<h3 id="2-implement-the-façade">2. Implement the façade</h3>
-<ul>
-  <li>Create a class extending <code class="highlighter-rouge">AbstractMetricsComputer&lt;T, O&gt;</code>. This object will be responsible for calculating metrics
-given a memoizer, a node and info about the metric. Typically, this object is stateless so you might as well make it
-a singleton.</li>
-  <li>Create a class extending <code class="highlighter-rouge">BasicProjectMemoizer&lt;T, O&gt;</code>. There’s no abstract functionality to implement.
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaProjectMemoizer.java">Example</a>
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetricsComputer.java">Example</a></li>
-  <li>Create a class extending <code class="highlighter-rouge">AbstractMetricsFacade&lt;T, O&gt;</code>. This class needs a reference to your <code class="highlighter-rouge">ProjectMemoizer</code> and
-your <code class="highlighter-rouge">MetricsComputer</code>. It backs the real end user façade, and handles user provided parameters before delegating to
-your <code class="highlighter-rouge">MetricsComputer</code>.
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetricsFacade.java">Example</a></li>
-  <li>Create the static façade of your framework. This one has an instance of your <code class="highlighter-rouge">MetricsFaçade</code> object and delegates
-static methods to that instance.
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.java">Example</a></li>
-  <li>Create classes <code class="highlighter-rouge">AbstractOperationMetric</code> and <code class="highlighter-rouge">AbstractClassMetric</code>. These must implement <code class="highlighter-rouge">Metric&lt;T&gt;</code> and
-<code class="highlighter-rouge">Metric&lt;O&gt;</code>, respectively. They typically provide defaults for the <code class="highlighter-rouge">supports</code> method of each metric.
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/AbstractJavaOperationMetric.java">Example</a></li>
-  <li>Create enums <code class="highlighter-rouge">ClassMetricKey</code> and <code class="highlighter-rouge">OperationMetricKey</code>. These must implement <code class="highlighter-rouge">MetricKey&lt;T&gt;</code> and <code class="highlighter-rouge">MetricKey&lt;O&gt;</code>. The
-enums list all available metric keys for your language.
-<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.java">Example</a></li>
-  <li>Create metrics by extending your base classes, reference them in your enums, and you can start using them with your
-façade!</li>
+  <li>Implement metrics (typically in an internal package)</li>
+  <li>Create some public enums/ utility classes to expose metric keys</li>
+  <li>Implement a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/LanguageMetricsProvider.html#"><code>LanguageMetricsProvider</code></a>, to expose your metrics to the designer</li>
+  <li>Use your metric keys in rules with <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/metrics/MetricsUtil.html#"><code>MetricsUtil</code></a></li>
 </ul>
 
 <h3 id="optional-signature-matching">Optional: Signature matching</h3>
@@ -1489,7 +1438,7 @@ build a <code class="highlighter-rouge">Signature&lt;N&gt;</code> from a <code c
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> December 2017<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> February 2020<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

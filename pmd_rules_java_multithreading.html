@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1389,7 +1401,7 @@ gets it.</p>
 
   <span class="c1">// Prefer this:</span>
   <span class="kd">static</span> <span class="kt">void</span> <span class="nf">barStatic</span><span class="o">()</span> <span class="o">{</span>
-    <span class="kd">synchronized</span><span class="o">(</span><span class="n">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">synchronized</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -1417,10 +1429,10 @@ it contains methods that are not thread-safe.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">buz</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">ThreadGroup</span> <span class="n">tg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadGroup</span><span class="o">(</span><span class="s">"My threadgroup"</span><span class="o">);</span>
-        <span class="n">tg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadGroup</span><span class="o">(</span><span class="n">tg</span><span class="o">,</span> <span class="s">"my thread group"</span><span class="o">);</span>
-        <span class="n">tg</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">();</span>
-        <span class="n">tg</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getSecurityManager</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">();</span>
+        <span class="nc">ThreadGroup</span> <span class="n">tg</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ThreadGroup</span><span class="o">(</span><span class="s">"My threadgroup"</span><span class="o">);</span>
+        <span class="n">tg</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ThreadGroup</span><span class="o">(</span><span class="n">tg</span><span class="o">,</span> <span class="s">"my thread group"</span><span class="o">);</span>
+        <span class="n">tg</span> <span class="o">=</span> <span class="nc">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">();</span>
+        <span class="n">tg</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">getSecurityManager</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1446,8 +1458,8 @@ the volatile keyword should not be used for maintenance purpose and portability.
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ThrDeux</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">String</span> <span class="n">var1</span><span class="o">;</span> <span class="c1">// not suggested</span>
-  <span class="kd">private</span>          <span class="n">String</span> <span class="n">var2</span><span class="o">;</span> <span class="c1">// preferred</span>
+  <span class="kd">private</span> <span class="kd">volatile</span> <span class="nc">String</span> <span class="n">var1</span><span class="o">;</span> <span class="c1">// not suggested</span>
+  <span class="kd">private</span>          <span class="nc">String</span> <span class="n">var2</span><span class="o">;</span> <span class="c1">// preferred</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1474,15 +1486,15 @@ Also EJB’s might be moved between machines in a cluster and only managed resou
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This is not allowed</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingThread</span> <span class="kd">extends</span> <span class="n">Thread</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingThread</span> <span class="kd">extends</span> <span class="nc">Thread</span> <span class="o">{</span>
 
 <span class="o">}</span>
 
 <span class="c1">// Neither this,</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OtherThread</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OtherThread</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
     <span class="c1">// Nor this ...</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methode</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Runnable</span> <span class="n">thread</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">();</span> <span class="n">thread</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+        <span class="nc">Runnable</span> <span class="n">thread</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">();</span> <span class="n">thread</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1515,7 +1527,7 @@ Also EJB’s might be moved between machines in a cluster and only managed resou
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Thread</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">();</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Thread</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">();</span>
 <span class="n">t</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>            <span class="c1">// use t.start() instead</span>
 <span class="k">new</span> <span class="nf">Thread</span><span class="o">().</span><span class="na">run</span><span class="o">();</span> <span class="c1">// same violation</span>
 </code></pre></div></div>
@@ -1544,12 +1556,12 @@ or <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.ht
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="cm">/*volatile */</span> <span class="n">Object</span> <span class="n">baz</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span> <span class="c1">// fix for Java5 and later: volatile</span>
-    <span class="n">Object</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+    <span class="cm">/*volatile */</span> <span class="nc">Object</span> <span class="n">baz</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span> <span class="c1">// fix for Java5 and later: volatile</span>
+    <span class="nc">Object</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">baz</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// baz may be non-null yet not fully created</span>
             <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
                 <span class="k">if</span> <span class="o">(</span><span class="n">baz</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                    <span class="n">baz</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">();</span>
+                    <span class="n">baz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span>
                 <span class="o">}</span>
               <span class="o">}</span>
         <span class="o">}</span>
@@ -1584,12 +1596,12 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 
 <span class="c1">//multiple simultaneous callers may see partially initialized objects</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">foo</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">();</span>
+        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
     <span class="o">}</span>
     <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
 <span class="o">}</span>
@@ -1654,7 +1666,7 @@ synchronized on block level.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">();</span>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
     <span class="o">}</span>
@@ -1715,7 +1727,7 @@ synchronized on block level.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">();</span>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
     <span class="o">}</span>
@@ -1780,11 +1792,11 @@ perform efficient map reads without blocking other threads.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConcurrentApp</span> <span class="o">{</span>
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getMyInstance</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Map</span> <span class="n">map1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>           <span class="c1">// fine for single-threaded access</span>
-    <span class="n">Map</span> <span class="n">map2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentHashMap</span><span class="o">();</span> <span class="c1">// preferred for use with multiple threads</span>
+    <span class="nc">Map</span> <span class="n">map1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span>           <span class="c1">// fine for single-threaded access</span>
+    <span class="nc">Map</span> <span class="n">map2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">();</span> <span class="c1">// preferred for use with multiple threads</span>
 
     <span class="c1">// the following case will be ignored by this rule</span>
-    <span class="n">Map</span> <span class="n">map3</span> <span class="o">=</span> <span class="n">someModule</span><span class="o">.</span><span class="na">methodThatReturnMap</span><span class="o">();</span> <span class="c1">// might be OK, if the returned map is already thread-safe</span>
+    <span class="nc">Map</span> <span class="n">map3</span> <span class="o">=</span> <span class="n">someModule</span><span class="o">.</span><span class="na">methodThatReturnMap</span><span class="o">();</span> <span class="c1">// might be OK, if the returned map is already thread-safe</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1844,7 +1856,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

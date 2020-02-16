@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1475,9 +1487,9 @@ static field, final field. Each regex can be configured through properties.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="n">Integer</span> <span class="n">instanceField</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
+    <span class="nc">Integer</span> <span class="n">instanceField</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
 
-    <span class="n">Integer</span> <span class="n">INSTANCE_FIELD</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
+    <span class="nc">Integer</span> <span class="no">INSTANCE_FIELD</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1641,9 +1653,9 @@ configured through properties.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="nf">bar</span><span class="o">(</span><span class="n">Integer</span> <span class="n">methodParameter</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
+    <span class="kd">public</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">methodParameter</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
 
-    <span class="kd">public</span> <span class="nf">baz</span><span class="o">(</span><span class="n">Integer</span> <span class="n">METHOD_PARAMETER</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
+    <span class="kd">public</span> <span class="nf">baz</span><span class="o">(</span><span class="nc">Integer</span> <span class="no">METHOD_PARAMETER</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1850,9 +1862,9 @@ properties.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Integer</span> <span class="n">localVariable</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
+        <span class="nc">Integer</span> <span class="n">localVariable</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
 
-        <span class="n">Integer</span> <span class="n">LOCAL_VARIABLE</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
+        <span class="nc">Integer</span> <span class="no">LOCAL_VARIABLE</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2030,13 +2042,13 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Integer</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">;</span>   <span class="c1">// not recommended</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Integer</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">;</span>   <span class="c1">// not recommended</span>
 
-<span class="n">Integer</span> <span class="n">a</span><span class="o">,</span>
+<span class="nc">Integer</span> <span class="n">a</span><span class="o">,</span>
         <span class="n">b</span><span class="o">;</span>      <span class="c1">// ok by default, can be flagged setting the strictMode property</span>
 
-<span class="n">Integer</span> <span class="n">a</span><span class="o">;</span>      <span class="c1">// preferred approach</span>
-<span class="n">Integer</span> <span class="n">b</span><span class="o">;</span>
+<span class="nc">Integer</span> <span class="n">a</span><span class="o">;</span>      <span class="c1">// preferred approach</span>
+<span class="nc">Integer</span> <span class="n">b</span><span class="o">;</span>
 </code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
@@ -2108,9 +2120,9 @@ configured through properties.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="n">Integer</span> <span class="n">instanceProperty</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="n">instanceProperty</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
 
-    <span class="kd">public</span> <span class="n">Integer</span> <span class="n">INSTANCE_PROPERTY</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="no">INSTANCE_PROPERTY</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2195,9 +2207,9 @@ by the more general rules <a href="pmd_rules_apex_codestyle.html#quot"><code cla
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Integer</span> <span class="n">MY_NUM</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="n">myTest</span> <span class="o">=</span> <span class="err">''</span><span class="o">;</span>
-    <span class="n">DataModule</span> <span class="n">dmTest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataModule</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="no">MY_NUM</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="n">myTest</span> <span class="o">=</span> <span class="err">''</span><span class="o">;</span>
+    <span class="nc">DataModule</span> <span class="n">dmTest</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DataModule</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2399,7 +2411,7 @@ controlled from the rest.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

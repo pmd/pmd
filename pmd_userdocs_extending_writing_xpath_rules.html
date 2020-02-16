@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Writing XPath rules for PMD">
+<meta name="description" content="This page describes XPath rule support in more details">
 <meta name="keywords" content="extendinguserdocs,  ">
 <title>Writing XPath rules | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li class="active"><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li class="active"><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1327,7 +1339,7 @@
 <div class="post-content">
 
    
-    <div class="summary">Writing XPath rules for PMD</div>
+    <div class="summary">This page describes XPath rule support in more details</div>
    
 
     
@@ -1356,189 +1368,402 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h1 id="xpath-rule-tutorial">XPath Rule tutorial</h1>
+  
+<p>This page describes some points of XPath rule support in more details. See
+also <a href="pmd_userdocs_extending_your_first_rule.html">the tutorial about how to write an XPath rule</a>.</p>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> For a translation to Georgian, see <a href="http://webhostinggeeks.com/science/xpath-sourceforge-ka">webhostinggeeks.com/science/xpath-sourceforge-ka</a></div>
+<!-- Later we can document the specific subset of XPath features our wrappers support -->
 
-<p>Writing PMD rules with XPath can be a bit easier than writing rules with Java code. Here’s an introduction on how to do that.</p>
+<h2 id="xpath-version">XPath version</h2>
 
-<h2 id="introduction">Introduction</h2>
+<p>PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
+The version can be specified with the <code class="highlighter-rouge">version</code> property in the rule definition, like so:</p>
 
-<p>PMD provides a very handy method for writing rules by writing an XPath query. When the XPath query finds a match, a violation is added to the report. This document focuses on XPath rules. You can go <a href="pmd_userdocs_extending_writing_pmd_rules.html">here</a> for more information about writing a rule.</p>
-
-<h2 id="what-is-the-abstract-syntax-tree-ast">What is the Abstract Syntax Tree (AST)?</h2>
-
-<p>From <a href="http://foldoc.org/abstract+syntax+tree">FOLDOC</a> an AST is</p>
-
-<blockquote>
-  <p>A data structure representing something which has been parsed, often used as a compiler or interpreter’s internal representation of a program while it is being optimised and from which code generation is performed.</p>
-</blockquote>
-
-<p>In our context, this means that we basically have a tree representation of the Java source file. This tree can viewed as a structured document - just like XML. And since it’s conceptually similar to XML, it can be queried with XPath to find a pattern.</p>
-
-<h2 id="using-designer">Using Designer</h2>
-
-<p>PMD comes with a handy tool that you will love if you want to write an XPath rule. Designer, runnable from a script in <code class="highlighter-rouge">bin/</code>, is a very simple and useful utility for writing rules.</p>
-
-<p>The basic steps involved in writing XPath rules are these:</p>
-
-<ol>
-  <li>Write a simple Java example source snippet in Designer</li>
-  <li>See the AST for the class you wrote</li>
-  <li>Write an XPath expression that matches the violation you are searching</li>
-  <li>Modify the Java class and go back to previous step to refine the XPath expression</li>
-</ol>
-
-<p>See <a href="pmd_userdocs_extending_designer_reference.html">Designer Reference</a> for a more detailed explanation on how to use the designer.</p>
-
-<h2 id="simple-xpath-expressions">Simple XPath expressions</h2>
-
-<p>This section provides hands-on examples of XPath queries over the AST. You will probably find this section more useful if you follow it with Designer and copy/paste the examples.</p>
-
-<p>Copy the following Java source code to Designer:</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">a</span> <span class="o">{</span>
-    <span class="kt">int</span> <span class="n">fOne</span><span class="o">;</span>
-    <span class="kt">int</span> <span class="n">fTwo</span><span class="o">;</span>
-
-    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kt">int</span> <span class="n">one</span><span class="o">;</span>
-        <span class="kt">int</span> <span class="n">two</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">version=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- or "1.0", or "1.0 compatibility" --&gt;</span>
 </code></pre></div></div>
 
-<p>Let’s assume you want to match something on class variable names. You see in the ASTVviewer that VariableDeclaratorId contains the variable name - in XML terms, the name is in the <code class="highlighter-rouge">@Image</code> attribute. So you try an XPath expression as follows:</p>
+<p>The default has always been version 1.0.</p>
 
-<p><code class="highlighter-rouge">//VariableDeclaratorId</code></p>
+<p><strong>As of PMD version 6.22.0, XPath versions 1.0 and the 1.0 compatibility mode are
+deprecated</strong>. XPath 2.0 is superior in many ways, for example for its support for
+type checking, sequence values, or quantified expressions. For a detailed
+but approachable review of the features of XPath 2.0 and above, see <a href="https://www.saxonica.com/documentation/index.html#!expressions">the Saxon documentation</a>.</p>
 
-<p>If you try this expression you’ll see that variables declared in methods are also matched. A more precise expression for matching field declarations is, well, using the FieldDeclaration node. This expression matches only the two fields declared in the class:</p>
+<p>It is recommended that you migrate to 2.0 before 7.0.0, but we expect
+to be able to provide an automatic migration tool when releasing 7.0.0.
+See <a href="#migrating-from-10-to-20">the migration guide</a> below.</p>
 
-<p><code class="highlighter-rouge">//FieldDeclaration</code></p>
+<h2 id="dom-representation-of-asts">DOM representation of ASTs</h2>
 
-<p>In a similar way, you can match only local variables with this expression</p>
+<p>XPath rules view the AST as an XML-like DOM, which is what the XPath language is
+defined on. Concretely, this means:</p>
+<ul>
+  <li>Every AST node is viewed as an XML element
+    <ul>
+      <li>The element has for local name the value of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
+for the given node</li>
+    </ul>
+  </li>
+  <li>Some Java getters are exposed as XML attributes on those elements
+    <ul>
+      <li>This means, that documentation for attributes can be found in our Javadocs. For
+example, the attribute <code class="highlighter-rouge">@SimpleName</code> of the Java node <code class="highlighter-rouge">EnumDeclaration</code> is backed
+by the Java getter <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
+    </ul>
+  </li>
+</ul>
 
-<p><code class="highlighter-rouge">//LocalVariableDeclaration</code></p>
+<h3 id="value-conversion">Value conversion</h3>
 
-<p>With local variables we need to be more careful. Consider the following class:</p>
+<p>To represent attributes, we must map Java values to <a href="https://www.w3.org/TR/xpath-datamodel/">XPath Data Model (XDM)</a> values. The conversion
+depends on the XPath version used.</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">a</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kd">final</span> <span class="kt">int</span> <span class="n">one</span><span class="o">;</span>
-        <span class="kt">int</span> <span class="n">two</span><span class="o">;</span>
+<h4 id="xpath-10">XPath 1.0</h4>
 
-        <span class="o">{</span>
-            <span class="kt">int</span> <span class="n">a</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<p>On XPath 1.0 we map every Java value to an <code class="highlighter-rouge">xs:string</code> value by using the <code class="highlighter-rouge">toString</code>
+of the object. Since XPath 1.0 allows many implicit conversions this works, but it
+causes some incompatibilities with XPath 2.0 (see the section about migration further
+ down).</p>
 
-<p>Local variable declarations will match ‘a’, since it is a perfectly legal Java local variable. Now, a more interesting expression is to match variables declared in a method, and not on an internal block, nor in the class. Maybe you’ll start with an expression like this:</p>
+<h4 id="xpath-20">XPath 2.0</h4>
 
-<p><code class="highlighter-rouge">//MethodDeclaration//LocalVariableDeclaration</code></p>
+<p>XPath 2.0 is a strongly typed language, and so we use more precise type annotations.
+In the following table we refer to the type conversion function as <code class="highlighter-rouge">conv</code>, a
+function from Java types to XDM types.</p>
 
-<p>You’ll quickly see that all three local variables are matched. A possible solution for this is to request that the parent of the local variable declaration is the MethodDeclaration node:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Java type <code class="highlighter-rouge">T</code></th>
+      <th>XSD type <code class="highlighter-rouge">conv(T)</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">int</code></td>
+      <td><code class="highlighter-rouge">xs:integer</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">long</code></td>
+      <td><code class="highlighter-rouge">xs:integer</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">double</code></td>
+      <td><code class="highlighter-rouge">xs:decimal</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">float</code></td>
+      <td><code class="highlighter-rouge">xs:decimal</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">boolean</code></td>
+      <td><code class="highlighter-rouge">xs:boolean</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">String</code></td>
+      <td><code class="highlighter-rouge">xs:string</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Character</code></td>
+      <td><code class="highlighter-rouge">xs:string</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">List&lt;E&gt;</code></td>
+      <td><code class="highlighter-rouge">conv(E)*</code> (a sequence type)</td>
+    </tr>
+  </tbody>
+</table>
 
-<p><code class="highlighter-rouge">//LocalVariableDeclaration[name(../../..) = 'MethodDeclaration']</code></p>
+<p>The same <code class="highlighter-rouge">conv</code> function is used to translate rule property values to XDM values.</p>
 
-<h2 id="matching-variables-by-name">Matching variables by name</h2>
+<h2 id="migrating-from-10-to-20">Migrating from 1.0 to 2.0</h2>
 
-<p>Let’s consider that we are writing rules for logger. Let’s assume we use the Java logging API and we want to find all classes that have more than one logger. The following expression returns all variable declarations whose type is ‘Logger’.</p>
+<p>XPath 1.0 and 2.0 have some incompatibilities. The <a href="https://www.w3.org/TR/xpath20/#id-incompat-in-false-mode">XPath 2.0 specification</a>
+describes them precisely. Those are however mostly corner cases and XPath
+rules usually don’t feature any of them.</p>
 
-<p><code class="highlighter-rouge">//VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']]</code></p>
+<p>The incompatibilities that are most relevant to migrating your rules are not
+caused by the specification, but by the different engines we use to run
+XPath 1.0 and 2.0 queries. Here’s a list of known incompatibilities:</p>
 
-<p>Finding a class with more than one logger is quite easy now. This expression matches the classes we are looking for.</p>
+<ul>
+  <li>The namespace prefixes <code class="highlighter-rouge">fn:</code> and <code class="highlighter-rouge">string:</code> should not be mentioned explicitly.
+In XPath 2.0 mode, the engine will complain about an undeclared namespace, but
+the functions are in the default namespace. Removing the namespace prefixes fixes it.
+    <ul>
+      <li><code><b style="color:red">fn:</b>substring("Foo", 1)</code> → <code class="highlighter-rouge">substring("Foo", 1)</code></li>
+    </ul>
+  </li>
+  <li>Conversely, calls to custom PMD functions like <code class="highlighter-rouge">typeIs</code> <em>must</em> be prefixed
+with the namespace of the declaring module (<code class="highlighter-rouge">pmd-java</code>).
+    <ul>
+      <li><code class="highlighter-rouge">typeIs("Foo")</code> → <code><b style="color:green">pmd-java:</b>typeIs("Foo")</code></li>
+    </ul>
+  </li>
+  <li>Boolean attribute values on our 1.0 engine are represented as the string values
+<code class="highlighter-rouge">"true"</code> and <code class="highlighter-rouge">"false"</code>. In 2.0 mode though, boolean values are truly represented
+as boolean values, which in XPath may only be obtained through the functions
+<code class="highlighter-rouge">true()</code> and <code class="highlighter-rouge">false()</code>.
+If your XPath 1.0 rule tests an attribute like <code class="highlighter-rouge">@Private="true"</code>, then it just
+needs to be changed to <code class="highlighter-rouge">@Private=true()</code> when migrating. A type error will warn
+you that you must update the comparison. More is explained on <a href="https://github.com/pmd/pmd/issues/1244">issue #1244</a>.
+    <ul>
+      <li><code class="highlighter-rouge">"true"</code>, <code class="highlighter-rouge">'true'</code> → <code class="highlighter-rouge">true()</code></li>
+      <li><code class="highlighter-rouge">"false"</code>, <code class="highlighter-rouge">'false'</code> → <code class="highlighter-rouge">false()</code></li>
+    </ul>
+  </li>
+  <li>In XPath 1.0, comparing a number to a string coerces the string to a number.
+In XPath 2.0, a type error occurs. Like for boolean values, numeric values are
+represented by our 1.0 implementation as strings, meaning that <code class="highlighter-rouge">@BeginLine &gt; "1"</code>
+worked —that’s not the case in 2.0 mode.
+    <ul>
+      <li><code>@ArgumentCount &gt; <b style="color:red">'</b>1<b style="color:red">'</b></code> → <code class="highlighter-rouge">@ArgumentCount &gt; 1</code></li>
+    </ul>
+  </li>
+</ul>
 
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">TypeDeclaration</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="o">//</span><span class="nt">VariableDeclarator</span><span class="p">[..</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Logger'</span><span class="p">]])</span><span class="o">&gt;</span><span class="m">1</span><span class="w">
-</span></code></pre></div></div>
+<h2 id="rule-properties">Rule properties</h2>
 
-<p>But let’s refine this expression a little bit more. Consider the following class:</p>
+<p><strong>See <a href="pmd_userdocs_extending_defining_properties.html#for-xpath-rules">Defining rule properties</a></strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">a</span> <span class="o">{</span>
-    <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="kt">int</span> <span class="n">b</span><span class="o">;</span>
+<h2 id="pmd-extension-functions">PMD extension functions</h2>
 
-    <span class="kt">void</span> <span class="nf">myMethod</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="kt">int</span> <span class="n">a</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="kd">class</span> <span class="nc">c</span> <span class="o">{</span>
-        <span class="n">Logger</span> <span class="n">a</span><span class="o">;</span>
-        <span class="n">Logger</span> <span class="n">a</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<p>PMD provides some language-specific XPath functions to access semantic
+information from the AST.</p>
 
-<p>With this class we will only be matching one violation, when we probably would have wanted to produce two violations (one for each class). The following refined expression matches classes that contain more than one logger.</p>
+<p>On XPath 2.0, the namespace of custom PMD function must be explicitly mentioned.</p>
 
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="o">//</span><span class="nt">VariableDeclarator</span><span class="p">[..</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Logger'</span><span class="p">]])</span><span class="o">&gt;</span><span class="m">1</span><span class="p">]</span><span class="w">
-</span></code></pre></div></div>
+<!-- Generates the documentation of XPath functions. -->
 
-<p>Let’s assume we have a Factory class, that could be always declared final. We’ll search an xpath expression that matches all declarations of Factory and reports a violation if it is not declared final. Consider the following class:</p>
+<h3 id="java">Java</h3>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">a</span> <span class="o">{</span>
-    <span class="n">Factory</span> <span class="n">f1</span><span class="o">;</span>
+<p>Java functions are in the namespace <code class="highlighter-rouge">pmd-java</code>.</p>
 
-    <span class="kt">void</span> <span class="nf">myMethod</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Factory</span> <span class="n">f2</span><span class="o">;</span>
-        <span class="kt">int</span> <span class="n">a</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<div class="table-responsive">
+    <table width="100%">
 
-<p>The following expression does the magic we need:</p>
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Description (click for details)</th>
+            <th></th>
+        </tr>
+        </thead>
 
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclarator</span><span class="w">
-    </span><span class="p">[..</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
-        </span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Factory'</span><span class="p">]</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..[</span><span class="na">@Final</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]]</span><span class="w">
-</span></code></pre></div></div>
 
-<p>We recommend at this point that you experiment with Designer putting the final modifier to the Factory and verifying that the results produced are those expected.</p>
+        
 
-<h2 id="creating-a-new-rule-definition">Creating a new rule definition</h2>
+        
 
-<p>To actually use your new XPath rule, it needs to be in a ruleset. You can create a new custom ruleset which just
-contains your new XPath rule. You can use the following template. Just make sure, to replace the <code class="highlighter-rouge">xpath</code> property,
-the example code and give your rule a useful name and message.</p>
+        <tr data-toggle="collapse" id="pmd-java-typeIs" data-target="#pmd-java-typeIs-expand" class="accordion-toggle">
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+            <td>typeIs</td>
+            <td>Tests a node's static type</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
 
-<span class="nt">&lt;ruleset</span> <span class="na">name=</span><span class="s">"Custom Rules"</span>
-    <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/ruleset/2.0.0"</span>
-    <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;description&gt;</span>
-Custom rules
-    <span class="nt">&lt;/description&gt;</span>
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-typeIs-expand">
 
-    <span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"My Rule"</span>
-          <span class="na">language=</span><span class="s">"java"</span>
-          <span class="na">message=</span><span class="s">"violation message"</span>
-          <span class="na">class=</span><span class="s">"net.sourceforge.pmd.lang.rule.XPathRule"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;description&gt;</span>
-Rule Description
-         <span class="nt">&lt;/description&gt;</span>
-         <span class="nt">&lt;priority&gt;</span>3<span class="nt">&lt;/priority&gt;</span>
-         <span class="nt">&lt;properties&gt;</span>
-             <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
-                 <span class="nt">&lt;value&gt;</span><span class="cp">&lt;![CDATA[
---- here comes your XPath expression
-]]&gt;</span><span class="nt">&lt;/value&gt;</span>
-             <span class="nt">&lt;/property&gt;</span>
-         <span class="nt">&lt;/properties&gt;</span>
-         <span class="nt">&lt;example&gt;</span>
- <span class="cp">&lt;![CDATA[
-public class ExampleCode {
-    public void foo() {
-    }
-}
-]]&gt;</span>
-        <span class="nt">&lt;/example&gt;</span>
-    <span class="nt">&lt;/rule&gt;</span>
-<span class="nt">&lt;/ruleset&gt;</span>
-</code></pre></div></div>
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-typeIs">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">typeIs</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
+                                <dt>Remarks</dt>
+                                <dd>The context node must be a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">javaQualifiedName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>The qualified name of a Java class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name.</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//FormalParameter[pmd-java:typeIs("java.lang.String[]")]</code></dt>
+                                        <dd>Matches formal parameters of type <code>String[]</code> (including vararg parameters)</dd>
+                                        
+                                        <dt><code>//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]</code></dt>
+                                        <dd>Matches variable declarators of type <code>List</code> or any of its subtypes (including e.g. <code>ArrayList</code>)</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-typeIsExactly" data-target="#pmd-java-typeIsExactly-expand" class="accordion-toggle">
+
+            <td>typeIsExactly</td>
+            <td>Tests a node's static type, ignoring subtypes</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-typeIsExactly-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-typeIsExactly">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">typeIsExactly</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.</dd>
+                                <dt>Remarks</dt>
+                                <dd>The context node must be a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">javaQualifiedName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>The qualified name of a Java class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name.</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//VariableDeclaratorId[pmd-java:typeIsExactly("java.lang.List")]</code></dt>
+                                        <dd>Matches variable declarators of type <code>List</code> (but not e.g. <code>ArrayList</code>)</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-metric" data-target="#pmd-java-metric-expand" class="accordion-toggle">
+
+            <td>metric</td>
+            <td>Computes and returns the value of a metric</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-metric-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-metric">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">metric</span><span class="fun-ns">(xs:string) as xs:decimal?</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the value of the metric as evaluated on the context node</dd>
+                                <dt>Remarks</dt>
+                                <dd>The context node must be a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">metricKey</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>The name of an enum constant in <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a> or <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a></dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+    </table>
+
+</div>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> There is also a <code class="highlighter-rouge">typeOf</code> function which is
+deprecated and whose usages should be replaced with uses of <code class="highlighter-rouge">typeIs</code> or
+<code class="highlighter-rouge">typeIsExactly</code>. That one will be removed with PMD 7.0.0.</div>
 
 
 
@@ -1568,7 +1793,7 @@ public class ExampleCode {
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 3, 2016<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

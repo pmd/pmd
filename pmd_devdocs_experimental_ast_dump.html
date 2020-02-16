@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1446,12 +1458,12 @@ with the name “a”.</p>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.util.treeexport.XmlTreeRenderer</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TreeExport</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-        <span class="n">LanguageVersionHandler</span> <span class="n">java</span> <span class="o">=</span> <span class="n">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="s">"Java"</span><span class="o">).</span><span class="na">getDefaultVersion</span><span class="o">().</span><span class="na">getLanguageVersionHandler</span><span class="o">();</span>
-        <span class="n">Parser</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">getParser</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">getDefaultParserOptions</span><span class="o">());</span>
-        <span class="n">Node</span> <span class="n">root</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="k">new</span> <span class="n">StringReader</span><span class="o">(</span><span class="s">"class Foo {}"</span><span class="o">));</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+        <span class="nc">LanguageVersionHandler</span> <span class="n">java</span> <span class="o">=</span> <span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="s">"Java"</span><span class="o">).</span><span class="na">getDefaultVersion</span><span class="o">().</span><span class="na">getLanguageVersionHandler</span><span class="o">();</span>
+        <span class="nc">Parser</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">getParser</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">getDefaultParserOptions</span><span class="o">());</span>
+        <span class="nc">Node</span> <span class="n">root</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">StringReader</span><span class="o">(</span><span class="s">"class Foo {}"</span><span class="o">));</span>
 
-        <span class="k">new</span> <span class="nf">XmlTreeRenderer</span><span class="o">().</span><span class="na">renderSubtree</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">);</span>
+        <span class="k">new</span> <span class="nf">XmlTreeRenderer</span><span class="o">().</span><span class="na">renderSubtree</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1481,7 +1493,7 @@ with the name “a”.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> January 17, 2020 (6.21.0)<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> January 17, 2020 (6.21.0)<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

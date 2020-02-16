@@ -5160,7 +5160,7 @@
 "tags": "extendinguserdocs",
 "keywords": "",
 "url": "pmd_userdocs_extending_rule_guidelines.html",
-"summary": "Rule Guidelines"
+"summary": "Rule Guidelines, or the last touches to a rule"
 }
 
 
@@ -5568,8 +5568,40 @@
 "title": "Writing a custom rule",
 "tags": "extendinguserdocs",
 "keywords": "",
-"url": "pmd_userdocs_extending_writing_pmd_rules.html",
+"url": "pmd_userdocs_extending_writing_java_rules.html",
 "summary": "Learn how to write a custom rule for PMD"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Writing a custom rule",
+"tags": "extendinguserdocs",
+"keywords": "",
+"url": "pmd_userdocs_extending_writing_pmd_rules.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Introduction to writing PMD rules",
+"tags": "extendinguserdocsgetting_started",
+"keywords": "",
+"url": "pmd_userdocs_extending_writing_rules_intro.html",
+"summary": "Writing your own PMD rules"
 }
 
 
@@ -5585,7 +5617,7 @@
 "tags": "extendinguserdocs",
 "keywords": "",
 "url": "pmd_userdocs_extending_writing_xpath_rules.html",
-"summary": "Writing XPath rules for PMD"
+"summary": "This page describes XPath rule support in more details"
 }
 
 
@@ -5618,6 +5650,22 @@
 "keywords": "",
 "url": "pmd_rules_xsl.html",
 "summary": "Index of all built-in rules available for XSL"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Your first rule XPath",
+"tags": "extendinguserdocs",
+"keywords": "",
+"url": "pmd_userdocs_extending_your_first_rule.html",
+"summary": "Introduction to rule writing through an example."
 }
 
 

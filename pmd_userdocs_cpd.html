@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -2304,7 +2316,7 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 <p>Arbitrary blocks of code can be ignored through comments on <strong>Java</strong>, <strong>C/C++</strong>, <strong>Dart</strong>, <strong>Go</strong>, <strong>Javascript</strong>,
 <strong>Kotlin</strong>, <strong>Lua</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong> and <strong>Swift</strong> by including the keywords <code class="highlighter-rouge">CPD-OFF</code> and <code class="highlighter-rouge">CPD-ON</code>.</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
         <span class="c1">// some unignored code</span>
 
         <span class="c1">// tell cpd to start ignoring code - CPD-OFF</span>
@@ -2332,11 +2344,11 @@ It’s legacy and the new comment’s based approach should be favored.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">//enable suppression</span>
     <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"CPD-START"</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
         <span class="c1">// any code here will be ignored for the duplication detection</span>
     <span class="o">}</span>
     <span class="c1">//disable suppression</span>
-    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">"</span><span class="n">CPD</span><span class="o">-</span><span class="n">END</span><span class="o">)</span>
+    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">"</span><span class="no">CPD</span><span class="o">-</span><span class="no">END</span><span class="o">)</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">nextMethod</span><span class="o">()</span> <span class="o">{</span>
     <span class="o">}</span>
 </code></pre></div></div>
@@ -2387,7 +2399,7 @@ the comment based approach will be extended to those of them that can support it
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

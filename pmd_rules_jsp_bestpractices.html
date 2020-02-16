@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1371,16 +1383,16 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;html&gt;
-  &lt;body&gt;
-    &lt;ul&gt;
-      &lt;c:forEach items='${books}' var='b'&gt;
-        &lt;li&gt; &lt;h:outputText value='#{b}' /&gt; &lt;/li&gt;
-      &lt;/c:forEach&gt;
-    &lt;/ul&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+      <span class="nt">&lt;c:forEach </span><span class="na">items=</span><span class="s">'</span><span class="si">${</span><span class="n">books</span><span class="si">}</span><span class="s">'</span><span class="na"> var=</span><span class="s">'b'</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;li&gt;</span> <span class="nt">&lt;h:outputText </span><span class="na">value=</span><span class="s">'#{b}'</span> <span class="nt">/&gt;</span> <span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;/c:forEach&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/bestpractices.xml/DontNestJsfInJstlIteration"</span> <span class="nt">/&gt;</span>
@@ -1400,10 +1412,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;HTML&gt; &lt;BODY&gt;
-&lt;P class="MajorHeading"&gt;Some text&lt;/P&gt;
-&lt;/BODY&gt; &lt;/HTML&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;HTML&gt;</span> <span class="nt">&lt;BODY&gt;</span>
+<span class="nt">&lt;P</span> <span class="na">class=</span><span class="s">"MajorHeading"</span><span class="nt">&gt;</span>Some text<span class="nt">&lt;/P&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span> <span class="nt">&lt;/HTML&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/bestpractices.xml/NoClassAttribute"</span> <span class="nt">/&gt;</span>
@@ -1425,14 +1437,14 @@ little other purpose. Consider switching to JSP comments.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;HTML&gt;&lt;title&gt;bad example&gt;&lt;BODY&gt;
-&lt;!-- HTML comment --&gt;
-&lt;/BODY&gt; &lt;/HTML&gt;
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;HTML&gt;&lt;title&gt;</span>bad example&gt;<span class="nt">&lt;BODY&gt;</span>
+<span class="c">&lt;!-- HTML comment --&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span> <span class="nt">&lt;/HTML&gt;</span>
 
-&lt;HTML&gt;&lt;title&gt;good example&gt;&lt;BODY&gt;
-&lt;%-- JSP comment --%&gt;
-&lt;/BODY&gt; &lt;/HTML&gt;
-</code></pre>
+<span class="nt">&lt;HTML&gt;&lt;title&gt;</span>good example&gt;<span class="nt">&lt;BODY&gt;</span>
+<span class="c">&lt;%-- JSP comment --%&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span> <span class="nt">&lt;/HTML&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/bestpractices.xml/NoHtmlComments"</span> <span class="nt">/&gt;</span>
@@ -1452,8 +1464,8 @@ little other purpose. Consider switching to JSP comments.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<pre><code class="language-jsp">&lt;jsp:forward page='UnderConstruction.jsp'/&gt;
-</code></pre>
+<div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;jsp:forward </span><span class="na">page=</span><span class="s">'UnderConstruction.jsp'</span><span class="nt">/&gt;</span>
+</code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/jsp/bestpractices.xml/NoJspForward"</span> <span class="nt">/&gt;</span>
@@ -1475,7 +1487,7 @@ little other purpose. Consider switching to JSP comments.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

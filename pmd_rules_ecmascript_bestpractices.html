@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1507,9 +1519,9 @@ is better to explicitly scope the variable name to the nearest enclosing scope w
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
 <span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="s1">'clean'</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">clean</span><span class="dl">'</span><span class="p">;</span>
     <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">dirty</span><span class="p">:</span> <span class="s1">'dirty'</span> <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">dirty</span><span class="p">:</span> <span class="dl">'</span><span class="s1">dirty</span><span class="dl">'</span> <span class="p">};</span>
         <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">p</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Use 'var' here.</span>
             <span class="nx">obj</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">p</span><span class="p">];</span>
         <span class="p">}</span>
@@ -1520,9 +1532,9 @@ is better to explicitly scope the variable name to the nearest enclosing scope w
 <span class="p">}</span>
 <span class="c1">// Bad</span>
 <span class="kd">function</span> <span class="nx">bar</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="s1">'clean'</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">clean</span><span class="dl">'</span><span class="p">;</span>
     <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">dirty</span><span class="p">:</span> <span class="s1">'dirty'</span> <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">dirty</span><span class="p">:</span> <span class="dl">'</span><span class="s1">dirty</span><span class="dl">'</span> <span class="p">};</span>
         <span class="k">for</span> <span class="p">(</span><span class="nx">p</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Oh no, missing 'var' here!</span>
             <span class="nx">obj</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">p</span><span class="p">];</span>
         <span class="p">}</span>
@@ -1559,9 +1571,9 @@ It also improves readability, if the base is given.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">parseInt</span><span class="p">(</span><span class="s2">"010"</span><span class="p">);</span>    <span class="c1">// unclear, could be interpreted as 10 or 7 (with a base of 7)</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">parseInt</span><span class="p">(</span><span class="dl">"</span><span class="s2">010</span><span class="dl">"</span><span class="p">);</span>    <span class="c1">// unclear, could be interpreted as 10 or 7 (with a base of 7)</span>
 
-<span class="nb">parseInt</span><span class="p">(</span><span class="s2">"10"</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="c1">// good</span>
+<span class="nb">parseInt</span><span class="p">(</span><span class="dl">"</span><span class="s2">10</span><span class="dl">"</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="c1">// good</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -1584,7 +1596,7 @@ It also improves readability, if the base is given.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

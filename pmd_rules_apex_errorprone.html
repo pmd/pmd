@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1447,10 +1459,10 @@ using DML in constructors is not a security problem, but crashes the application
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">trigger</span> <span class="n">AccountTrigger</span> <span class="n">on</span> <span class="nf">Account</span> <span class="o">(</span><span class="n">before</span> <span class="n">insert</span><span class="o">,</span> <span class="n">before</span> <span class="n">update</span><span class="o">)</span> <span class="o">{</span>
-   <span class="n">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Trigger</span><span class="o">.</span><span class="na">new</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span> <span class="c1">//Bad: Accessing the trigger array directly is not recommended.</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">trigger</span> <span class="nc">AccountTrigger</span> <span class="n">on</span> <span class="nf">Account</span> <span class="o">(</span><span class="n">before</span> <span class="n">insert</span><span class="o">,</span> <span class="n">before</span> <span class="n">update</span><span class="o">)</span> <span class="o">{</span>
+   <span class="nc">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="nc">Trigger</span><span class="o">.</span><span class="na">new</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span> <span class="c1">//Bad: Accessing the trigger array directly is not recommended.</span>
 
-   <span class="n">foreach</span> <span class="o">(</span> <span class="n">Account</span> <span class="n">a</span> <span class="o">:</span> <span class="n">Trigger</span><span class="o">.</span><span class="na">new</span> <span class="o">){</span>
+   <span class="n">foreach</span> <span class="o">(</span> <span class="nc">Account</span> <span class="n">a</span> <span class="o">:</span> <span class="nc">Trigger</span><span class="o">.</span><span class="na">new</span> <span class="o">){</span>
         <span class="c1">//Good: Iterate through the trigger.new array instead.</span>
    <span class="o">}</span>
 <span class="o">}</span>
@@ -1510,9 +1522,9 @@ the logic can dynamically identify the proper data to operate against and not fa
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">without</span> <span class="n">sharing</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">//Error - hardcoded the record type id</span>
-        <span class="k">if</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">RecordTypeId</span> <span class="o">==</span> <span class="err">'</span><span class="mo">01250000000</span><span class="mi">9</span><span class="n">WAr</span><span class="err">'</span><span class="o">){</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">RecordTypeId</span> <span class="o">==</span> <span class="err">'</span><span class="mo">01250000000</span><span class="mi">9</span><span class="nc">WAr</span><span class="err">'</span><span class="o">){</span>
             <span class="c1">//do some logic here.....</span>
-        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">RecordTypeId</span> <span class="o">==</span> <span class="err">'</span><span class="mo">01230000000</span><span class="mi">95</span><span class="n">Km</span><span class="err">'</span><span class="o">){</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">RecordTypeId</span> <span class="o">==</span> <span class="err">'</span><span class="mo">01230000000</span><span class="mi">95</span><span class="nc">Km</span><span class="err">'</span><span class="o">){</span>
             <span class="c1">//do some logic here for a different record type...</span>
         <span class="o">}</span>
     <span class="o">}</span>
@@ -1635,7 +1647,7 @@ or reported.</p>
   <span class="o">...</span>
   <span class="k">try</span> <span class="o">{</span>
     <span class="n">insert</span> <span class="n">accounts</span><span class="o">;</span>
-  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">DmlException</span> <span class="n">dmle</span><span class="o">)</span> <span class="o">{</span>
+  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">DmlException</span> <span class="n">dmle</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// not good</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -1694,7 +1706,7 @@ or reported.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="n">Integer</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
       <span class="c1">// empty!</span>
     <span class="o">}</span>
@@ -1820,7 +1832,7 @@ or reported.</p>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
           <span class="c1">// empty !</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
         <span class="o">}</span>
     <span class="o">}</span>
@@ -1890,7 +1902,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="n">Integer</span> <span class="n">a</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">a</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">while</span> <span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// empty!</span>
   <span class="o">}</span>
@@ -2007,7 +2019,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

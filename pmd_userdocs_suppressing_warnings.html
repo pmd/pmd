@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1389,7 +1401,7 @@ PMD project.</p>
   </li>
 </ol>
 
-<p>If you need to modify the Rule, see <a href="pmd_userdocs_extending_writing_pmd_rules.html">How to write a rule</a>.
+<p>If you need to modify the Rule, see <a href="pmd_userdocs_extending_writing_rules_intro.html">How to write a rule</a>.
 Otherwise, the other suppression methods are explained in the following sections.</p>
 
 <h2 id="annotations">Annotations</h2>
@@ -1408,7 +1420,7 @@ Otherwise, the other suppression methods are explained in the following sections
 <p>When using Apex make sure to use single quotes instead of double quotes</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This will suppress all the PMD warnings in this class</span>
-<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">'</span><span class="n">PMD</span><span class="err">'</span><span class="o">)</span>
+<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">'</span><span class="no">PMD</span><span class="err">'</span><span class="o">)</span>
 </code></pre></div></div>
 
 <p>Or you can suppress one rule with an annotation like this:</p>
@@ -1429,7 +1441,7 @@ Otherwise, the other suppression methods are explained in the following sections
 
 <p>For Apex, the syntax for this is slightly different:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">'</span><span class="n">PMD</span><span class="o">.</span><span class="na">UnusedLocalVariable</span><span class="o">,</span> <span class="n">PMD</span><span class="o">.</span><span class="na">UnusedPrivateMethod</span><span class="err">'</span><span class="o">)</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="err">'</span><span class="no">PMD</span><span class="o">.</span><span class="na">UnusedLocalVariable</span><span class="o">,</span> <span class="no">PMD</span><span class="o">.</span><span class="na">UnusedPrivateMethod</span><span class="err">'</span><span class="o">)</span>
 </code></pre></div></div>
 
 <p>PMD Java also obeys the JDK annotation @SuppressWarnings(“unused”), which will apply to all rules in the unused ruleset.</p>
@@ -1457,22 +1469,22 @@ Otherwise, the other suppression methods are explained in the following sections
 <p>You can use whatever text string you want to suppress warnings, by using the <code class="highlighter-rouge">-suppressmarker</code> CLI option.
 For example, here’s how to use <code class="highlighter-rouge">TURN_OFF_WARNINGS</code> as the suppressor:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cat</span> <span class="n">Foo</span><span class="o">.</span><span class="na">java</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cat</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">java</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> <span class="c1">// TURN_OFF_WARNINGS</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="err">$</span> <span class="o">./</span><span class="n">run</span><span class="o">.</span><span class="na">sh</span> <span class="n">pmd</span> <span class="o">-</span><span class="n">d</span> <span class="n">Foo</span><span class="o">.</span><span class="na">java</span> <span class="o">-</span><span class="n">f</span> <span class="n">text</span> <span class="o">-</span><span class="n">R</span> <span class="n">java</span><span class="o">-</span><span class="n">unusedcode</span> <span class="o">-</span><span class="n">suppressmarker</span> <span class="n">TURN_OFF_WARNINGS</span>
-<span class="n">No</span> <span class="n">problems</span> <span class="n">found</span><span class="o">!</span>
-<span class="n">UnusedLocalVariable</span> <span class="n">rule</span> <span class="n">violation</span> <span class="n">suppressed</span> <span class="n">by</span> <span class="c1">//NOPMD in /home/tom/pmd/pmd/bin/Foo.java</span>
+<span class="err">$</span> <span class="o">./</span><span class="n">run</span><span class="o">.</span><span class="na">sh</span> <span class="n">pmd</span> <span class="o">-</span><span class="n">d</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">java</span> <span class="o">-</span><span class="n">f</span> <span class="n">text</span> <span class="o">-</span><span class="no">R</span> <span class="n">java</span><span class="o">-</span><span class="n">unusedcode</span> <span class="o">-</span><span class="n">suppressmarker</span> <span class="no">TURN_OFF_WARNINGS</span>
+<span class="nc">No</span> <span class="n">problems</span> <span class="n">found</span><span class="o">!</span>
+<span class="nc">UnusedLocalVariable</span> <span class="n">rule</span> <span class="n">violation</span> <span class="n">suppressed</span> <span class="n">by</span> <span class="c1">//NOPMD in /home/tom/pmd/pmd/bin/Foo.java</span>
 </code></pre></div></div>
 <p>Note that PMD expects the //NOPMD marker to be on the same line as the violation. So, for
 example, if you want to suppress an “empty <code class="highlighter-rouge">if</code> statement” warning, you’ll need to place it on
 the line containing the <code class="highlighter-rouge">if</code> keyword, e.g.:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cat</span> <span class="o">~/</span><span class="n">tmp</span><span class="o">/</span><span class="n">Foo</span><span class="o">.</span><span class="na">java</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cat</span> <span class="o">~/</span><span class="n">tmp</span><span class="o">/</span><span class="nc">Foo</span><span class="o">.</span><span class="na">java</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">42</span><span class="o">;</span>
@@ -1480,8 +1492,8 @@ the line containing the <code class="highlighter-rouge">if</code> keyword, e.g.:
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-<span class="err">$</span> <span class="n">java</span> <span class="n">net</span><span class="o">.</span><span class="na">sourceforge</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">PMD</span> <span class="o">-</span><span class="n">d</span> <span class="o">~/</span><span class="n">tmp</span><span class="o">/</span><span class="n">Foo</span><span class="o">.</span><span class="na">java</span> <span class="o">-</span><span class="n">f</span> <span class="n">text</span> <span class="o">-</span><span class="n">R</span> <span class="n">java</span><span class="o">-</span><span class="n">basic</span>
-<span class="n">No</span> <span class="n">problems</span> <span class="n">found</span><span class="o">!</span>
+<span class="err">$</span> <span class="n">java</span> <span class="n">net</span><span class="o">.</span><span class="na">sourceforge</span><span class="o">.</span><span class="na">pmd</span><span class="o">.</span><span class="na">PMD</span> <span class="o">-</span><span class="n">d</span> <span class="o">~/</span><span class="n">tmp</span><span class="o">/</span><span class="nc">Foo</span><span class="o">.</span><span class="na">java</span> <span class="o">-</span><span class="n">f</span> <span class="n">text</span> <span class="o">-</span><span class="no">R</span> <span class="n">java</span><span class="o">-</span><span class="n">basic</span>
+<span class="nc">No</span> <span class="n">problems</span> <span class="n">found</span><span class="o">!</span>
 </code></pre></div></div>
 
 <p>A message placed after the NOPMD marker will get placed in the report, e.g.:</p>
@@ -1490,7 +1502,7 @@ the line containing the <code class="highlighter-rouge">if</code> keyword, e.g.:
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
             <span class="n">bar</span><span class="o">();</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{}</span> <span class="c1">// NOPMD - this surely will never happen</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{}</span> <span class="c1">// NOPMD - this surely will never happen</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1592,7 +1604,7 @@ violations you wish to suppress.  XPath queries are explained in
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

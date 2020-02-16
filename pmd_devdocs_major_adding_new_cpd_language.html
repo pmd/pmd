@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1373,11 +1385,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <li>For Antlr grammars you can take the grammar from <a href="https://github.com/antlr/grammars-v4">here</a>  and extend <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AntlrTokenizer.java">AntlrTokenizer</a>  taking Go as an example</li>
     </ul>
 
-    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoTokenizer</span> <span class="kd">extends</span> <span class="n">AntlrTokenizer</span> <span class="o">{</span>    
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoTokenizer</span> <span class="kd">extends</span> <span class="nc">AntlrTokenizer</span> <span class="o">{</span>    
         
-       <span class="nd">@Override</span> <span class="kd">protected</span> <span class="n">AntlrTokenManager</span> <span class="nf">getLexerForSource</span><span class="o">(</span><span class="n">SourceCode</span> <span class="n">sourceCode</span><span class="o">)</span> <span class="o">{</span>   
-           <span class="n">CharStream</span> <span class="n">charStream</span> <span class="o">=</span> <span class="n">AntlrTokenizer</span><span class="o">.</span><span class="na">getCharStreamFromSourceCode</span><span class="o">(</span><span class="n">sourceCode</span><span class="o">);</span>   
-           <span class="k">return</span> <span class="k">new</span> <span class="nf">AntlrTokenManager</span><span class="o">(</span><span class="k">new</span> <span class="n">GolangLexer</span><span class="o">(</span><span class="n">charStream</span><span class="o">),</span> <span class="n">sourceCode</span><span class="o">.</span><span class="na">getFileName</span><span class="o">());</span>   
+       <span class="nd">@Override</span> <span class="kd">protected</span> <span class="nc">AntlrTokenManager</span> <span class="nf">getLexerForSource</span><span class="o">(</span><span class="nc">SourceCode</span> <span class="n">sourceCode</span><span class="o">)</span> <span class="o">{</span>   
+           <span class="nc">CharStream</span> <span class="n">charStream</span> <span class="o">=</span> <span class="nc">AntlrTokenizer</span><span class="o">.</span><span class="na">getCharStreamFromSourceCode</span><span class="o">(</span><span class="n">sourceCode</span><span class="o">);</span>   
+           <span class="k">return</span> <span class="k">new</span> <span class="nf">AntlrTokenManager</span><span class="o">(</span><span class="k">new</span> <span class="nc">GolangLexer</span><span class="o">(</span><span class="n">charStream</span><span class="o">),</span> <span class="n">sourceCode</span><span class="o">.</span><span class="na">getFileName</span><span class="o">());</span>   
        <span class="o">}</span>
    <span class="o">}</span>
 </code></pre></div>    </div>
@@ -1390,10 +1402,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li>
     <p>Create your <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AbstractLanguage.java">Language</a> class</p>
 
-    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoLanguage</span> <span class="kd">extends</span> <span class="n">AbstractLanguage</span> <span class="o">{</span>    
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoLanguage</span> <span class="kd">extends</span> <span class="nc">AbstractLanguage</span> <span class="o">{</span>    
         
      <span class="kd">public</span> <span class="nf">GoLanguage</span><span class="o">()</span> <span class="o">{</span>   
-         <span class="kd">super</span><span class="o">(</span><span class="s">"Go"</span><span class="o">,</span> <span class="s">"go"</span><span class="o">,</span> <span class="k">new</span> <span class="n">GoTokenizer</span><span class="o">(),</span> <span class="s">".go"</span><span class="o">);</span>   
+         <span class="kd">super</span><span class="o">(</span><span class="s">"Go"</span><span class="o">,</span> <span class="s">"go"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">GoTokenizer</span><span class="o">(),</span> <span class="s">".go"</span><span class="o">);</span>   
      <span class="o">}</span>  
  <span class="o">}</span> 
 </code></pre></div>    </div>
@@ -1457,7 +1469,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> March 18, 2019 (6.13.0)<br/> Site last generated: Feb 15, 2020 <br />
+<span>Page last updated:</span> March 18, 2019 (6.13.0)<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1531,7 +1543,7 @@ If the goal is to avoid defining constants in a scope smaller than the class, th
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kd">final</span> <span class="n">String</span> <span class="n">finalLocalVariable</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">finalLocalVariable</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1567,7 +1579,7 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#formalparametern
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span>
       <span class="kt">int</span> <span class="n">inLeftOperand</span><span class="o">,</span>
-      <span class="n">Result</span> <span class="n">outRightOperand</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">Result</span> <span class="n">outRightOperand</span><span class="o">)</span> <span class="o">{</span>
       <span class="n">outRightOperand</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">inLeftOperand</span> <span class="o">*</span> <span class="n">outRightOperand</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -1582,7 +1594,7 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#formalparametern
    */</span>
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span>
         <span class="kt">int</span> <span class="n">leftOperand</span><span class="o">,</span>
-        <span class="n">Result</span> <span class="n">rightOperand</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Result</span> <span class="n">rightOperand</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">rightOperand</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">leftOperand</span> <span class="o">*</span> <span class="n">rightOperand</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -1612,7 +1624,7 @@ Clarify your intent by using private or package access modifiers instead.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
   <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
   <span class="kd">protected</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>  <span class="c1">// bar cannot be subclassed, so is y really private or package visible?</span>
-  <span class="n">Bar</span><span class="o">()</span> <span class="o">{}</span>
+  <span class="nc">Bar</span><span class="o">()</span> <span class="o">{}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1666,15 +1678,15 @@ and increases the maintenance burden.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SomeJNIClass</span> <span class="o">{</span>
 
      <span class="kd">public</span> <span class="nf">SomeJNIClass</span><span class="o">()</span> <span class="o">{</span>
-         <span class="n">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"nativelib"</span><span class="o">);</span>
+         <span class="nc">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"nativelib"</span><span class="o">);</span>
      <span class="o">}</span>
 
      <span class="kd">static</span> <span class="o">{</span>
-         <span class="n">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"nativelib"</span><span class="o">);</span>
+         <span class="nc">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"nativelib"</span><span class="o">);</span>
      <span class="o">}</span>
 
-     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">invalidCallsInMethod</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">SecurityException</span><span class="o">,</span> <span class="n">NoSuchMethodException</span> <span class="o">{</span>
-         <span class="n">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"nativelib"</span><span class="o">);</span>
+     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">invalidCallsInMethod</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">SecurityException</span><span class="o">,</span> <span class="nc">NoSuchMethodException</span> <span class="o">{</span>
+         <span class="nc">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"nativelib"</span><span class="o">);</span>
      <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1761,7 +1773,7 @@ another constructor (such as an overloaded constructor) is called, this rule wil
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span><span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span><span class="o">{</span>
   <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
    <span class="c1">// call the constructor of Bar</span>
    <span class="kd">super</span><span class="o">();</span>
@@ -1895,8 +1907,8 @@ property "ignoredAnnotations" to customize the recognized annotations.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">final</span> <span class="n">String</span> <span class="n">stringValue</span> <span class="o">=</span> <span class="s">"some string"</span><span class="o">;</span>
-    <span class="n">String</span> <span class="nf">getString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="nc">String</span> <span class="n">stringValue</span> <span class="o">=</span> <span class="s">"some string"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="nf">getString</span><span class="o">()</span> <span class="o">{</span>
        <span class="k">return</span> <span class="n">stringValue</span><span class="o">;</span>
     <span class="o">}</span>
 
@@ -1906,8 +1918,8 @@ property "ignoredAnnotations" to customize the recognized annotations.</p>
 
 <span class="c1">// should be</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="cm">/* default */</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">stringValue</span> <span class="o">=</span> <span class="s">"some string"</span><span class="o">;</span>
-    <span class="cm">/* default */</span> <span class="n">String</span> <span class="nf">getString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="cm">/* default */</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">stringValue</span> <span class="o">=</span> <span class="s">"some string"</span><span class="o">;</span>
+    <span class="cm">/* default */</span> <span class="nc">String</span> <span class="nf">getString</span><span class="o">()</span> <span class="o">{</span>
        <span class="k">return</span> <span class="n">stringValue</span><span class="o">;</span>
     <span class="o">}</span>
 
@@ -2243,7 +2255,7 @@ usage by developers who should be implementing their own versions in the concret
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">ShouldBeAbstract</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">couldBeAbstract</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">couldBeAbstract</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">// Should be abstract method ?</span>
         <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
@@ -2271,7 +2283,7 @@ usage by developers who should be implementing their own versions in the concret
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Object</span> <span class="o">{</span>     <span class="c1">// not required</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Object</span> <span class="o">{</span>     <span class="c1">// not required</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2294,14 +2306,14 @@ usage by developers who should be implementing their own versions in the concret
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldBean</span> <span class="o">{</span>
 
   <span class="c1">// Field declared before methods / inner classes - OK</span>
-  <span class="kd">private</span> <span class="n">String</span> <span class="n">_thing</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">_thing</span><span class="o">;</span>
 
-  <span class="kd">public</span> <span class="n">String</span> <span class="nf">getMessage</span><span class="o">()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMessage</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">return</span> <span class="s">"Hello World!"</span><span class="o">;</span>
   <span class="o">}</span>
 
   <span class="c1">// Field declared after methods / inner classes - avoid this</span>
-  <span class="kd">private</span> <span class="n">String</span> <span class="n">_fieldInWrongLocation</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">_fieldInWrongLocation</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2374,15 +2386,15 @@ convention for constants and enum constants.</p>
                 <span class="kt">int</span> <span class="n">my_Field</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// This contains an underscore, it's not ok by default</span>
                                   <span class="c1">// but you may allow it, or even require the "my_" prefix</span>
 
-                <span class="kd">final</span> <span class="kt">int</span> <span class="n">FinalField</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// you may configure a different convention for final fields,</span>
+                <span class="kd">final</span> <span class="kt">int</span> <span class="nc">FinalField</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// you may configure a different convention for final fields,</span>
                                           <span class="c1">// e.g. here PascalCase: [A-Z][a-zA-Z0-9]*</span>
 
                 <span class="kd">interface</span> <span class="nc">Interface</span> <span class="o">{</span>
-                    <span class="kt">double</span> <span class="n">PI</span> <span class="o">=</span> <span class="mf">3.14</span><span class="o">;</span> <span class="c1">// interface "fields" use the constantPattern property</span>
+                    <span class="kt">double</span> <span class="no">PI</span> <span class="o">=</span> <span class="mf">3.14</span><span class="o">;</span> <span class="c1">// interface "fields" use the constantPattern property</span>
                 <span class="o">}</span>
 
-                <span class="kd">enum</span> <span class="n">AnEnum</span> <span class="o">{</span>
-                    <span class="n">ORG</span><span class="o">,</span> <span class="n">NET</span><span class="o">,</span> <span class="n">COM</span><span class="o">;</span> <span class="c1">// These use a separate property but are set to ALL_UPPER by default</span>
+                <span class="kd">enum</span> <span class="nc">AnEnum</span> <span class="o">{</span>
+                    <span class="no">ORG</span><span class="o">,</span> <span class="no">NET</span><span class="o">,</span> <span class="no">COM</span><span class="o">;</span> <span class="c1">// These use a separate property but are set to ALL_UPPER by default</span>
                 <span class="o">}</span>
             <span class="o">}</span>
 </code></pre></div></div>
@@ -2548,10 +2560,10 @@ configured through properties.</p>
                 <span class="kt">void</span> <span class="nf">lambdas</span><span class="o">()</span> <span class="o">{</span>
 
                     <span class="c1">// lambdas parameters can be configured separately</span>
-                    <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">lambda1</span> <span class="o">=</span> <span class="n">s_str</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="o">};</span>
+                    <span class="nc">Consumer</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">lambda1</span> <span class="o">=</span> <span class="n">s_str</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="o">};</span>
 
                     <span class="c1">// lambda parameters with an explicit type can be configured separately</span>
-                    <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">lambda1</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="o">};</span>
+                    <span class="nc">Consumer</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">lambda1</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="o">};</span>
 
                 <span class="o">}</span>
 
@@ -2630,19 +2642,19 @@ configured through properties.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">BaseModel</span><span class="o">,</span> <span class="n">K</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">BaseDao</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="no">E</span> <span class="kd">extends</span> <span class="nc">BaseModel</span><span class="o">,</span> <span class="no">K</span> <span class="kd">extends</span> <span class="nc">Serializable</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="nc">BaseDao</span> <span class="o">{</span>
     <span class="c1">// This is ok...</span>
 <span class="o">}</span>
 
-<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">BaseModel</span><span class="o">,</span> <span class="n">K</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="no">E</span> <span class="kd">extends</span> <span class="nc">BaseModel</span><span class="o">,</span> <span class="no">K</span> <span class="kd">extends</span> <span class="nc">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="c1">// Also this</span>
 <span class="o">}</span>
 
-<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="n">e</span> <span class="kd">extends</span> <span class="n">BaseModel</span><span class="o">,</span> <span class="n">K</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="n">e</span> <span class="kd">extends</span> <span class="nc">BaseModel</span><span class="o">,</span> <span class="no">K</span> <span class="kd">extends</span> <span class="nc">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="c1">// 'e' should be an 'E'</span>
 <span class="o">}</span>
 
-<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="n">EF</span> <span class="kd">extends</span> <span class="n">BaseModel</span><span class="o">,</span> <span class="n">K</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericDao</span><span class="o">&lt;</span><span class="no">EF</span> <span class="kd">extends</span> <span class="nc">BaseModel</span><span class="o">,</span> <span class="no">K</span> <span class="kd">extends</span> <span class="nc">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
    <span class="c1">// 'EF' is not ok.</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2669,15 +2681,15 @@ branch.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">{</span>
     <span class="c1">// do something</span>
-<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IllegalArgumentException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
-<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalStateException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// Can be collapsed into the previous block</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IllegalStateException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// Can be collapsed into the previous block</span>
     <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
 <span class="o">}</span>
 
 <span class="k">try</span> <span class="o">{</span>
     <span class="c1">// do something</span>
-<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="o">|</span> <span class="n">IllegalStateException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// This is better</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IllegalArgumentException</span> <span class="o">|</span> <span class="nc">IllegalStateException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// This is better</span>
     <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -3001,8 +3013,8 @@ Developers Perceive Them</a>.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span> <span class="o">()</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">txtA</span> <span class="o">=</span> <span class="s">"a"</span><span class="o">;</span>          <span class="c1">// if txtA will not be assigned again it is better to do this:</span>
-    <span class="kd">final</span> <span class="n">String</span> <span class="n">txtB</span> <span class="o">=</span> <span class="s">"b"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">txtA</span> <span class="o">=</span> <span class="s">"a"</span><span class="o">;</span>          <span class="c1">// if txtA will not be assigned again it is better to do this:</span>
+    <span class="kd">final</span> <span class="nc">String</span> <span class="n">txtB</span> <span class="o">=</span> <span class="s">"b"</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -3066,7 +3078,7 @@ properties.</p>
 
                     <span class="k">try</span> <span class="o">{</span>
                         <span class="n">foo</span><span class="o">();</span>
-                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">e_illegal</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IllegalArgumentException</span> <span class="n">e_illegal</span><span class="o">)</span> <span class="o">{</span>
                         <span class="c1">// exception block parameters can be configured separately</span>
                     <span class="o">}</span>
 
@@ -3137,7 +3149,7 @@ properties.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Something</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">reallyLongIntName</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="o">;</span>             <span class="c1">// VIOLATION - Field</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span> <span class="n">argumentsList</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span> <span class="c1">// VIOLATION - Formal</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="n">argumentsList</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span> <span class="c1">// VIOLATION - Formal</span>
         <span class="kt">int</span> <span class="n">otherReallyLongName</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="o">;</span>       <span class="c1">// VIOLATION - Local</span>
         <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">interestingIntIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>   <span class="c1">// VIOLATION - For</span>
              <span class="n">interestingIntIndex</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span>
@@ -3205,9 +3217,9 @@ properties.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SomeBean</span> <span class="kd">implements</span> <span class="n">SessionBean</span><span class="o">{}</span>                  <span class="c1">// proper name</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SomeBean</span> <span class="kd">implements</span> <span class="nc">SessionBean</span><span class="o">{}</span>                  <span class="c1">// proper name</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MissingTheProperSuffix</span> <span class="kd">implements</span> <span class="n">SessionBean</span> <span class="o">{}</span>   <span class="c1">// non-standard name</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MissingTheProperSuffix</span> <span class="kd">implements</span> <span class="nc">SessionBean</span> <span class="o">{}</span>   <span class="c1">// non-standard name</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -3226,11 +3238,11 @@ properties.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo1</span> <span class="o">(</span><span class="n">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>       <span class="c1">// do stuff with param never assigning it</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo1</span> <span class="o">(</span><span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span>       <span class="c1">// do stuff with param never assigning it</span>
 
 <span class="o">}</span>
 
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo2</span> <span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// better, do stuff with param never assigning it</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo2</span> <span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">param</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// better, do stuff with param never assigning it</span>
 
 <span class="o">}</span>
 </code></pre></div></div>
@@ -3353,7 +3365,7 @@ by the more general rule
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">m_foo</span><span class="o">;</span> <span class="c1">// OK</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="n">String</span> <span class="n">m_baz</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// Bad</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">String</span> <span class="n">m_baz</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// Bad</span>
       <span class="kt">int</span> <span class="n">m_boz</span> <span class="o">=</span> <span class="mi">42</span><span class="o">;</span> <span class="c1">// Bad</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -3448,13 +3460,13 @@ by the more general rule
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">int</span> <span class="nf">getLength</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">int</span> <span class="nf">getLength</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span>
 
     <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="c1">// declared prematurely</span>
 
     <span class="k">if</span> <span class="o">(</span><span class="n">strings</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">strings</span><span class="o">.</span><span class="na">length</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
 
-    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">str</span> <span class="o">:</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">str</span> <span class="o">:</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">length</span> <span class="o">+=</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
     <span class="o">}</span>
 
@@ -3668,12 +3680,12 @@ by the more general rule
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Something</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">15</span><span class="o">;</span>                         <span class="c1">// field - too short</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span> <span class="n">as</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span>    <span class="c1">// formal arg - too short</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="n">as</span><span class="o">[]</span> <span class="o">)</span> <span class="o">{</span>    <span class="c1">// formal arg - too short</span>
         <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">+</span> <span class="n">q</span><span class="o">;</span>                         <span class="c1">// local var - too short</span>
         <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>          <span class="c1">// not a violation (inside 'for' loop)</span>
             <span class="n">r</span> <span class="o">+=</span> <span class="n">q</span><span class="o">;</span>
         <span class="o">}</span>
-        <span class="k">for</span> <span class="o">(</span><span class="n">Integer</span> <span class="n">i</span> <span class="o">:</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>             <span class="c1">// not a violation (inside 'for-each' loop)</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Integer</span> <span class="n">i</span> <span class="o">:</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>             <span class="c1">// not a violation (inside 'for-each' loop)</span>
             <span class="n">r</span> <span class="o">+=</span> <span class="n">q</span><span class="o">;</span>
         <span class="o">}</span>
     <span class="o">}</span>
@@ -3740,7 +3752,7 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#fieldnamingconve
  <span class="c1">// this is bad, since someone could accidentally</span>
  <span class="c1">// do PI = 2.71828; which is actually e</span>
  <span class="c1">// final double PI = 3.16; is ok</span>
-  <span class="kt">double</span> <span class="n">PI</span> <span class="o">=</span> <span class="mf">3.16</span><span class="o">;</span>
+  <span class="kt">double</span> <span class="no">PI</span> <span class="o">=</span> <span class="mf">3.16</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -3765,11 +3777,11 @@ which class a static member comes from (Sun 1.5 Language Guide).</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">static</span> <span class="n">Lennon</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">static</span> <span class="n">Ringo</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">static</span> <span class="n">George</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">static</span> <span class="n">Paul</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">static</span> <span class="n">Yoko</span><span class="o">;</span> <span class="c1">// Too much !</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">static</span> <span class="nc">Lennon</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="nc">Ringo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="nc">George</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="nc">Paul</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="nc">Yoko</span><span class="o">;</span> <span class="c1">// Too much !</span>
 </code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
@@ -3821,7 +3833,7 @@ which class a static member comes from (Sun 1.5 Language Guide).</p>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
 
     <span class="nd">@TestMemberAnnotation</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"TEST"</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">y</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">y</span><span class="o">;</span>
 
     <span class="nd">@TestMethodAnnotation</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"TEST"</span><span class="o">)</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
@@ -3836,7 +3848,7 @@ which class a static member comes from (Sun 1.5 Language Guide).</p>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
 
     <span class="nd">@TestMemberAnnotation</span><span class="o">(</span><span class="s">"TEST"</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">y</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">y</span><span class="o">;</span>
 
     <span class="nd">@TestMethodAnnotation</span><span class="o">(</span><span class="s">"TEST"</span><span class="o">)</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
@@ -3919,7 +3931,7 @@ which is covered by an import statement is redundant.  Consider using the non-fu
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">List</span> <span class="n">list1</span><span class="o">;</span>   <span class="c1">// Unnecessary FQN</span>
-    <span class="kd">private</span> <span class="n">List</span> <span class="n">list2</span><span class="o">;</span>             <span class="c1">// More appropriate given import of 'java.util.List'</span>
+    <span class="kd">private</span> <span class="nc">List</span> <span class="n">list2</span><span class="o">;</span>             <span class="c1">// More appropriate given import of 'java.util.List'</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -3996,22 +4008,22 @@ For historical reasons, modifiers which are implied by the context are accepted 
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Annotation</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nd">@interface</span> <span class="nc">Annotation</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">();</span>     <span class="c1">// both abstract and public are ignored by the compiler</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">X</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>  <span class="c1">// public, static, and final all ignored</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="no">X</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>  <span class="c1">// public, static, and final all ignored</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{}</span>      <span class="c1">// public, static ignored</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">interface</span> <span class="nc">Baz</span> <span class="o">{}</span>  <span class="c1">// ditto</span>
 <span class="o">}</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">();</span>     <span class="c1">// both abstract and public are ignored by the compiler</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">X</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>  <span class="c1">// public, static, and final all ignored</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="no">X</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>  <span class="c1">// public, static, and final all ignored</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{}</span>      <span class="c1">// public, static ignored</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">interface</span> <span class="nc">Baz</span> <span class="o">{}</span>  <span class="c1">// ditto</span>
 <span class="o">}</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">interface</span> <span class="nc">Baz</span> <span class="o">{}</span>  <span class="c1">// static ignored</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">enum</span> <span class="n">FoorBar</span> <span class="o">{</span>    <span class="c1">// static ignored</span>
-        <span class="n">FOO</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">enum</span> <span class="nc">FoorBar</span> <span class="o">{</span>    <span class="c1">// static ignored</span>
+        <span class="no">FOO</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -4071,8 +4083,8 @@ which makes the code also more readable.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">strings</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span> <span class="c1">// unnecessary duplication of type parameters</span>
-<span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">stringsWithDiamond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span> <span class="c1">// using the diamond operator is more concise</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">strings</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;();</span> <span class="c1">// unnecessary duplication of type parameters</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">stringsWithDiamond</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span> <span class="c1">// using the diamond operator is more concise</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -4149,10 +4161,10 @@ which makes the code also more readable.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
 
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">_bar1</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">_bar2</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">_bar2</span><span class="o">;</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setBar</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">_bar1</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">((</span><span class="n">n</span><span class="o">));</span> <span class="c1">// here</span>
+        <span class="n">_bar1</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">((</span><span class="n">n</span><span class="o">));</span> <span class="c1">// here</span>
         <span class="n">_bar2</span> <span class="o">=</span> <span class="o">(</span><span class="n">n</span><span class="o">);</span> <span class="c1">// and here</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -4182,27 +4194,27 @@ which makes the code also more readable.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">final</span> <span class="n">Foo</span> <span class="n">otherFoo</span> <span class="o">=</span> <span class="n">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// use "this" directly</span>
+    <span class="kd">final</span> <span class="nc">Foo</span> <span class="n">otherFoo</span> <span class="o">=</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// use "this" directly</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">()</span> <span class="o">{</span>
-         <span class="kd">final</span> <span class="n">Foo</span> <span class="n">anotherFoo</span> <span class="o">=</span> <span class="n">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// use "this" directly</span>
+         <span class="kd">final</span> <span class="nc">Foo</span> <span class="n">anotherFoo</span> <span class="o">=</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// use "this" directly</span>
     <span class="o">}</span>
 
-    <span class="kd">private</span> <span class="n">ActionListener</span> <span class="nf">returnListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">ActionListener</span> <span class="nf">returnListener</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="nf">ActionListener</span><span class="o">()</span> <span class="o">{</span>
             <span class="nd">@Override</span>
-            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">doSomethingWithQualifiedThis</span><span class="o">(</span><span class="n">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>  <span class="c1">// This is fine</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="nc">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">doSomethingWithQualifiedThis</span><span class="o">(</span><span class="nc">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>  <span class="c1">// This is fine</span>
             <span class="o">}</span>
         <span class="o">};</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kd">class</span> <span class="nc">Foo3</span> <span class="o">{</span>
-        <span class="kd">final</span> <span class="n">Foo</span> <span class="n">myFoo</span> <span class="o">=</span> <span class="n">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// This is fine</span>
+        <span class="kd">final</span> <span class="nc">Foo</span> <span class="n">myFoo</span> <span class="o">=</span> <span class="nc">Foo</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// This is fine</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kd">class</span> <span class="nc">Foo2</span> <span class="o">{</span>
-        <span class="kd">final</span> <span class="n">Foo2</span> <span class="n">myFoo2</span> <span class="o">=</span> <span class="n">Foo2</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// Use "this" direclty</span>
+        <span class="kd">final</span> <span class="nc">Foo2</span> <span class="n">myFoo2</span> <span class="o">=</span> <span class="nc">Foo2</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// Use "this" direclty</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -4230,8 +4242,8 @@ using <code class="highlighter-rouge">new</code>. Instead one can simply define 
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Foo</span><span class="o">[]</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">[]</span> <span class="o">{</span> <span class="o">...</span> <span class="o">};</span> <span class="c1">// Overly verbose</span>
-<span class="n">Foo</span><span class="o">[]</span> <span class="n">x</span> <span class="o">=</span> <span class="o">{</span> <span class="o">...</span> <span class="o">};</span> <span class="c1">//Equivalent to above line</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Foo</span><span class="o">[]</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">[]</span> <span class="o">{</span> <span class="o">...</span> <span class="o">};</span> <span class="c1">// Overly verbose</span>
+<span class="nc">Foo</span><span class="o">[]</span> <span class="n">x</span> <span class="o">=</span> <span class="o">{</span> <span class="o">...</span> <span class="o">};</span> <span class="c1">//Equivalent to above line</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -4340,9 +4352,9 @@ by the more general rules <a href="pmd_rules_java_codestyle.html#fieldnamingconv
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MY_NUM</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="n">myTest</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
-    <span class="n">DataModule</span> <span class="n">dmTest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataModule</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="no">MY_NUM</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="n">myTest</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+    <span class="nc">DataModule</span> <span class="n">dmTest</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DataModule</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -4505,7 +4517,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

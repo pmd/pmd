@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1371,10 +1383,10 @@ Hard-wiring these values greatly compromises the security of encrypted data.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">without</span> <span class="n">sharing</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="n">Blob</span> <span class="n">hardCodedIV</span> <span class="o">=</span> <span class="n">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="err">'</span><span class="n">Hardcoded</span> <span class="n">IV</span> <span class="mi">123</span><span class="err">'</span><span class="o">);</span>
-    <span class="n">Blob</span> <span class="n">hardCodedKey</span> <span class="o">=</span> <span class="n">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="err">'</span><span class="mo">0000000000000000</span><span class="err">'</span><span class="o">);</span>
-    <span class="n">Blob</span> <span class="n">data</span> <span class="o">=</span> <span class="n">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="err">'</span><span class="n">Data</span> <span class="n">to</span> <span class="n">be</span> <span class="n">encrypted</span><span class="err">'</span><span class="o">);</span>
-    <span class="n">Blob</span> <span class="n">encrypted</span> <span class="o">=</span> <span class="n">Crypto</span><span class="o">.</span><span class="na">encrypt</span><span class="o">(</span><span class="err">'</span><span class="n">AES128</span><span class="err">'</span><span class="o">,</span> <span class="n">hardCodedKey</span><span class="o">,</span> <span class="n">hardCodedIV</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+    <span class="nc">Blob</span> <span class="n">hardCodedIV</span> <span class="o">=</span> <span class="nc">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="err">'</span><span class="nc">Hardcoded</span> <span class="no">IV</span> <span class="mi">123</span><span class="err">'</span><span class="o">);</span>
+    <span class="nc">Blob</span> <span class="n">hardCodedKey</span> <span class="o">=</span> <span class="nc">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="err">'</span><span class="mo">0000000000000000</span><span class="err">'</span><span class="o">);</span>
+    <span class="nc">Blob</span> <span class="n">data</span> <span class="o">=</span> <span class="nc">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="err">'</span><span class="nc">Data</span> <span class="n">to</span> <span class="n">be</span> <span class="n">encrypted</span><span class="err">'</span><span class="o">);</span>
+    <span class="nc">Blob</span> <span class="n">encrypted</span> <span class="o">=</span> <span class="nc">Crypto</span><span class="o">.</span><span class="na">encrypt</span><span class="o">(</span><span class="err">'</span><span class="no">AES128</span><span class="err">'</span><span class="o">,</span> <span class="n">hardCodedKey</span><span class="o">,</span> <span class="n">hardCodedIV</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1430,11 +1442,11 @@ privilege and may produce runtime errors. This check forces you to handle such s
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="n">Contact</span> <span class="nf">foo</span><span class="o">(</span><span class="n">String</span> <span class="n">status</span><span class="o">,</span> <span class="n">String</span> <span class="n">ID</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Contact</span> <span class="n">c</span> <span class="o">=</span> <span class="o">[</span><span class="n">SELECT</span> <span class="n">Status__c</span> <span class="n">FROM</span> <span class="n">Contact</span> <span class="n">WHERE</span> <span class="n">Id</span><span class="o">=:</span><span class="n">ID</span><span class="o">];</span>
+    <span class="kd">public</span> <span class="nc">Contact</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">String</span> <span class="n">status</span><span class="o">,</span> <span class="nc">String</span> <span class="no">ID</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Contact</span> <span class="n">c</span> <span class="o">=</span> <span class="o">[</span><span class="no">SELECT</span> <span class="n">Status__c</span> <span class="no">FROM</span> <span class="nc">Contact</span> <span class="no">WHERE</span> <span class="nc">Id</span><span class="o">=:</span><span class="no">ID</span><span class="o">];</span>
 
         <span class="c1">// Make sure we can update the database before even trying</span>
-        <span class="k">if</span> <span class="o">(!</span><span class="n">Schema</span><span class="o">.</span><span class="na">sObjectType</span><span class="o">.</span><span class="na">Contact</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">Name</span><span class="o">.</span><span class="na">isUpdateable</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="nc">Schema</span><span class="o">.</span><span class="na">sObjectType</span><span class="o">.</span><span class="na">Contact</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">Name</span><span class="o">.</span><span class="na">isUpdateable</span><span class="o">())</span> <span class="o">{</span>
             <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
         <span class="o">}</span>
 
@@ -1587,7 +1599,7 @@ of private data.</li>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Configuration</span><span class="o">.</span><span class="na">disableTriggerCRUDSecurity</span><span class="o">();</span>
+        <span class="nc">Configuration</span><span class="o">.</span><span class="na">disableTriggerCRUDSecurity</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1644,7 +1656,7 @@ of private data.</li>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">without</span> <span class="n">sharing</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">HttpRequest</span> <span class="n">req</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpRequest</span><span class="o">();</span>
+        <span class="nc">HttpRequest</span> <span class="n">req</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpRequest</span><span class="o">();</span>
         <span class="n">req</span><span class="o">.</span><span class="na">setEndpoint</span><span class="o">(</span><span class="err">'</span><span class="nl">http:</span><span class="c1">//localhost:com');</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1701,8 +1713,8 @@ redirecting users to phishing sites.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">without</span> <span class="n">sharing</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">unsafeLocation</span> <span class="o">=</span> <span class="n">ApexPage</span><span class="o">.</span><span class="na">getCurrentPage</span><span class="o">().</span><span class="na">getParameters</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="err">'</span><span class="n">url_param</span><span class="err">'</span><span class="o">);</span>
-    <span class="n">PageReference</span> <span class="nf">page</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">unsafeLocation</span> <span class="o">=</span> <span class="nc">ApexPage</span><span class="o">.</span><span class="na">getCurrentPage</span><span class="o">().</span><span class="na">getParameters</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="err">'</span><span class="n">url_param</span><span class="err">'</span><span class="o">);</span>
+    <span class="nc">PageReference</span> <span class="nf">page</span><span class="o">()</span> <span class="o">{</span>
        <span class="k">return</span> <span class="k">new</span> <span class="nf">PageReference</span><span class="o">(</span><span class="n">unsafeLocation</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1813,8 +1825,8 @@ forces the developer to take access restrictions into account before modifying o
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test1</span><span class="o">(</span><span class="n">String</span> <span class="n">t1</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Database</span><span class="o">.</span><span class="na">query</span><span class="o">(</span><span class="err">'</span><span class="n">SELECT</span> <span class="n">Id</span> <span class="n">FROM</span> <span class="n">Account</span><span class="err">'</span> <span class="o">+</span> <span class="n">t1</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test1</span><span class="o">(</span><span class="nc">String</span> <span class="n">t1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Database</span><span class="o">.</span><span class="na">query</span><span class="o">(</span><span class="err">'</span><span class="no">SELECT</span> <span class="nc">Id</span> <span class="no">FROM</span> <span class="nc">Account</span><span class="err">'</span> <span class="o">+</span> <span class="n">t1</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1883,10 +1895,10 @@ forces the developer to take access restrictions into account before modifying o
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">,</span> <span class="n">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Blob</span> <span class="n">headerValue</span> <span class="o">=</span> <span class="n">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">username</span> <span class="o">+</span> <span class="sc">':'</span> <span class="o">+</span> <span class="n">password</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">authorizationHeader</span> <span class="o">=</span> <span class="err">'</span><span class="n">BASIC</span> <span class="err">'</span> <span class="o">+</span> <span class="n">EncodingUtil</span><span class="o">.</span><span class="na">base64Encode</span><span class="o">(</span><span class="n">headerValue</span><span class="o">);</span>
-        <span class="n">req</span><span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="err">'</span><span class="n">Authorization</span><span class="err">'</span><span class="o">,</span> <span class="n">authorizationHeader</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Blob</span> <span class="n">headerValue</span> <span class="o">=</span> <span class="nc">Blob</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">username</span> <span class="o">+</span> <span class="sc">':'</span> <span class="o">+</span> <span class="n">password</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">authorizationHeader</span> <span class="o">=</span> <span class="err">'</span><span class="no">BASIC</span> <span class="err">'</span> <span class="o">+</span> <span class="nc">EncodingUtil</span><span class="o">.</span><span class="na">base64Encode</span><span class="o">(</span><span class="n">headerValue</span><span class="o">);</span>
+        <span class="n">req</span><span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="err">'</span><span class="nc">Authorization</span><span class="err">'</span><span class="o">,</span> <span class="n">authorizationHeader</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1943,7 +1955,7 @@ attacks if unescaped.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">without</span> <span class="n">sharing</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="n">Trigger</span><span class="o">.</span><span class="na">new</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">addError</span><span class="o">(</span><span class="n">vulnerableHTMLGoesHere</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+    <span class="nc">Trigger</span><span class="o">.</span><span class="na">new</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">addError</span><span class="o">(</span><span class="n">vulnerableHTMLGoesHere</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1998,8 +2010,8 @@ to avoid XSS attacks.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="n">without</span> <span class="n">sharing</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">unescapedstring</span> <span class="o">=</span> <span class="n">ApexPage</span><span class="o">.</span><span class="na">getCurrentPage</span><span class="o">().</span><span class="na">getParameters</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="err">'</span><span class="n">url_param</span><span class="err">'</span><span class="o">);</span>
-    <span class="n">String</span> <span class="n">usedLater</span> <span class="o">=</span> <span class="n">unescapedstring</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">unescapedstring</span> <span class="o">=</span> <span class="nc">ApexPage</span><span class="o">.</span><span class="na">getCurrentPage</span><span class="o">().</span><span class="na">getParameters</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="err">'</span><span class="n">url_param</span><span class="err">'</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">usedLater</span> <span class="o">=</span> <span class="n">unescapedstring</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2056,7 +2068,7 @@ to avoid XSS attacks.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

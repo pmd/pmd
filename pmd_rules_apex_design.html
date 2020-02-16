@@ -340,13 +340,25 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a rule</a></li>
+                        <li><a href="pmd_userdocs_extending_writing_rules_intro.html">Introduction to writing rules</a></li>
                         
                         
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">Writing XPath rules</a></li>
+                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath rules</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_writing_java_rules.html">Java rules</a></li>
                         
                         
                         
@@ -1370,7 +1382,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="n">Integer</span> <span class="n">x</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">y</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">z</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">x</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">y</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">z</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">&gt;</span><span class="n">y</span><span class="o">)</span> <span class="o">{</span>
             <span class="k">if</span> <span class="o">(</span><span class="n">y</span><span class="o">&gt;</span><span class="n">z</span><span class="o">)</span> <span class="o">{</span>
                 <span class="k">if</span> <span class="o">(</span><span class="n">z</span><span class="o">==</span><span class="n">x</span><span class="o">)</span> <span class="o">{</span>
@@ -1652,7 +1664,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
     <span class="c1">// ...</span>
 <span class="o">}</span>
 <span class="c1">// preferred approach</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span><span class="n">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="n">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span><span class="nc">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="nc">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// ...</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1736,9 +1748,9 @@ developed easily.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="n">Bar</span> <span class="n">something</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="n">Variable</span> <span class="n">var</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="n">value</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Bar</span> <span class="n">something</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nc">Variable</span> <span class="kt">var</span><span class="o">;</span>
     <span class="c1">// [... more more public attributes ...]</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{}</span>
@@ -1825,7 +1837,7 @@ lines of code that are split are counted as one.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="c1">//this constructor only has 1 NCSS lines</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">();</span>
@@ -1915,9 +1927,9 @@ lines of code that are split are counted as one.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="c1">//this method only has 1 NCSS lines</span>
-    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">methd</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">methd</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">.</span><span class="na">methd</span><span class="o">();</span>
 
 
@@ -2005,7 +2017,7 @@ lines of code that are split are counted as one.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//this class only has 6 NCSS lines</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="n">Bar</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">();</span>
 
@@ -2224,8 +2236,8 @@ city/state/zip fields could park them within a single Address field.</p>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
     <span class="c1">// this is more manageable</span>
-    <span class="n">Date</span> <span class="n">birthDate</span><span class="o">;</span>
-    <span class="n">BodyMeasurements</span> <span class="n">measurements</span><span class="o">;</span>
+    <span class="nc">Date</span> <span class="n">birthDate</span><span class="o">;</span>
+    <span class="nc">BodyMeasurements</span> <span class="n">measurements</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2296,7 +2308,7 @@ city/state/zip fields could park them within a single Address field.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 15, 2020 <br />
+ Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

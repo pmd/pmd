@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" news, blog, updates, release notes, announcements">
-<title>News | PMD Source Code Analyzer</title>
+<meta name="description" content="Introduction to rule writing through an example.">
+<meta name="keywords" content="extendinguserdocs,  ">
+<title>Your first rule XPath | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="News">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Your first rule XPath">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -346,7 +346,7 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
+                        <li class="active"><a href="pmd_userdocs_extending_your_first_rule.html">Your first rule</a></li>
                         
                         
                         
@@ -1331,7 +1331,7 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">News</h1>
+   <h1 class="post-title-main">Your first rule XPath</h1>
 </div>
 
 
@@ -1339,6 +1339,22 @@
 <div class="post-content">
 
    
+    <div class="summary">Introduction to rule writing through an example.</div>
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+});
+</script>
+
+<div id="toc"></div>
 
     
 
@@ -1348,26 +1364,153 @@
         
         
 
-    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/news/news_archive.html" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/your_first_rule.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     
 
-  <div class="home">
+  <p>This page is a gentle introduction to rule writing, and the Rule Designer.</p>
 
-    <div class="post-list">
+<p>Using the designer is useful both to write Java
+rules and XPath rules, but it’s more specifically geared towards XPath rules.
+This page uses a simple XPath rule to illustrate the common workflow. We assume
+here that you already know what XPath is and how to read basic XPath queries. W3C
+has a good tutorial <a href="https://www.w3schools.com/xml/xpath_syntax.asp">here</a> if
+you don’t (in the context of XML only), and <a href="https://www.saxonica.com/documentation/index.html#!expressions">the Saxon documentation</a>
+features a comprehensive but approachable description of the syntax of XPath
+expressions.</p>
 
+<h2 id="the-rule-designer">The Rule Designer</h2>
 
-    <section id="archive">
-        <h3>This year's posts</h3>
-        
-        </ul>
-    </section>
-    <hr/>
-    </div>
-</div>
+<p>The rule designer is a tool that packs a lot of features to help you develop XPath
+rules quickly and painlessly. Basically, it allows you to examine the AST of a code
+snippet and evaluate an XPath expression against it.</p>
+
+<p>Like for PMD and CPD, you can launch it using <code class="highlighter-rouge">run.sh designer</code> on Linux/Unix
+and <code class="highlighter-rouge">designer.bat</code> on Windows. The interface looks like the following:</p>
+
+<figure><img class="docimage" src="images/userdocs/designer-overview-with-nums.png" alt="Designer overview" /></figure>
+
+<p>The zone (2) is the <strong>main editor</strong>. When you write a code snippet in the
+ code area to the left, you’ll see that the tree to the right will be updated
+ automatically: it’s the AST of the code.
+ Note that the code snippet must be a syntactically valid compilation unit for the
+ language you’ve chosen, e.g. for Java, a compilation unit necessarily has a top-level
+ type declaration.</p>
+
+<p>If you select a node in the AST, its specific properties will also be displayed
+in the panel (1): they’re the XPath attributes of the node. More on that later.</p>
+
+<p>The zone (3) is the <strong>XPath editor</strong>. If you enter an XPath query in that area,
+it will be evaluated on the current AST and the results will be displayed in the
+list to the bottom right.</p>
+
+<h3 id="rule-development-process">Rule development process</h3>
+
+<p>The basic development process is straightforward:</p>
+
+<ol>
+  <li>Write a code snippet in the main editor that features the offending code you’re looking for</li>
+  <li>Examine the AST and determine what node the violation should be reported on</li>
+  <li>Write an XPath expression matching that node in the XPath editor</li>
+  <li>Refine the XPath expression iteratively using different code snippets, so that
+it matches violation cases, but no other node</li>
+  <li>Export your XPath expression to an XML rule element, and place it in your ruleset</li>
+</ol>
+
+<p>Each time you test your rule against a different snippet, it’s a good idea to
+save it to <a href="pmd_userdocs_extending_testing.html">make test cases</a>.</p>
+
+<p>In the following sections, we walk through several examples to refine your rule.</p>
+
+<h2 id="a-simple-rule">A simple rule</h2>
+
+<p>Let’s say you want to prevent your coding team from naming variables of type
+<code class="highlighter-rouge">short</code> after your boss, whose name is Bill. You try the designer on the following
+ offending code snippet:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">KeepingItSerious</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">short</span> <span class="n">bill</span><span class="o">;</span> <span class="c1">// LocalVariableDeclaration</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
+descendant, whose <code class="highlighter-rouge">Image</code> XPath attribute is exactly <code class="highlighter-rouge">bill</code>. You thus write your first attempt
+in the XPath editor:</p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>You can see the XPath result list is updated with the variable declarator.
+If you try the query against the following updated snippet though, you can
+see that the field declaration id is matched even though it’s not of type <code class="highlighter-rouge">short</code>.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KeepingItSerious</span> <span class="o">{</span>
+
+    <span class="nc">Delegator</span> <span class="n">bill</span><span class="o">;</span> <span class="c1">// FieldDeclaration</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">short</span> <span class="n">bill</span><span class="o">;</span> <span class="c1">// LocalVariableDeclaration</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>You thus refine your XPath expression with an additional predicate,
+based on your examination of the Type node of the field and local variable
+declaration nodes.</p>
+
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="na">@TypeImage</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"short"</span><span class="p">]]</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="exporting-to-xml">Exporting to XML</h3>
+
+<p>You estimate that your rule is now production ready, and you’d like to use it in your ruleset.
+The <code class="highlighter-rouge">File &gt; Export XPath to rule...</code> allows you to do that in a few clicks: just enter some
+additional metadata for your rule, and the popup will generate an XML element that you can
+copy-paste into your ruleset XML. The resulting element looks like so:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"DontCallBossShort"</span>
+      <span class="na">language=</span><span class="s">"java"</span>
+      <span class="na">message=</span><span class="s">"Boss wants to talk to you."</span>
+      <span class="na">class=</span><span class="s">"net.sourceforge.pmd.lang.rule.XPathRule"</span> <span class="nt">&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
+TODO
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;priority&gt;</span>3<span class="nt">&lt;/priority&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;value&gt;</span>
+<span class="cp">&lt;![CDATA[
+//VariableDeclaratorId[../../Type[@TypeImage="short"] and @Image = "bill"]
+]]&gt;</span>
+            <span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<p>You can notice that your XPath expression ends up inside a <a href="pmd_userdocs_configuring_rules.html#rule-properties">property</a>
+of a rule of type XPathRule, which is how XPath rules are implemented.</p>
 
 
     <div class="tags">
+        
+        <b>Tags: </b>
+        
+        
+        
+        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
+        
+        
+        
+        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        
+        
         
     </div>
 
@@ -1381,7 +1524,7 @@
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 16, 2020 <br />
+<span>Page last updated:</span> February 2020 (6.22.0)<br/> Site last generated: Feb 16, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
