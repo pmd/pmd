@@ -2,7 +2,7 @@
 title:  Writing XPath rules
 tags: [extending, userdocs]
 summary: "This page describes XPath rule support in more details"
-last_updated: July 2018 (6.6.0)
+last_updated: February 2020 (6.22.0)
 permalink: pmd_userdocs_extending_writing_xpath_rules.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---

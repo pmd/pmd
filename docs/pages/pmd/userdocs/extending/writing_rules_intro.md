@@ -1,8 +1,8 @@
 ---
 title: Introduction to writing PMD rules
 tags: [extending, userdocs, getting_started]
-summary: "Writing your own PMD rules TODO"
-last_updated: July 2018 (6.6.0)
+summary: "Writing your own PMD rules"
+last_updated: February 2020 (6.22.0)
 permalink: pmd_userdocs_extending_writing_rules_intro.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---

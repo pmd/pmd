@@ -2,7 +2,7 @@
 title: Rule guidelines
 tags: [extending, userdocs]
 summary: "Rule Guidelines, or the last touches to a rule"
-last_updated: July 3, 2016
+last_updated: February 2020 (6.22.0)
 permalink: pmd_userdocs_extending_rule_guidelines.html
 author: Xavier Le Vourch, Ryan Gustafson, Romain Pelisse
 ---
