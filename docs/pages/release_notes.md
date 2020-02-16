@@ -42,8 +42,6 @@ the suppressions with a `NOPMD` comment. See [Suppressing warnings](pmd_userdocs
 
 ### API Changes
 
-#### Deprecated API
-
 #### Deprecated APIs
 
 ##### Internal API
@@ -111,6 +109,10 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
   * {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
     anymore come 7.0.0. Test the type of the expression nested within it.
   * {% jdoc java::lang.java.metrics.JavaMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+  * {% jdoc !!java::lang.java.ast.ASTArguments#getArgumentCount() %}.
+    Use {% jdoc java::lang.java.ast.ASTArguments#size() %} instead.
+  * {% jdoc !!java::lang.java.ast.ASTFormalParameters#getParameterCount() %}.
+    Use {% jdoc java::lang.java.ast.ASTFormalParameters#size() %} instead.
 * pmd-apex
   * {% jdoc java::lang.apex.metrics.ApexMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
 

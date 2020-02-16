@@ -40,7 +40,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
                 || jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class))
                 && !node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
             ASTArguments args = node.getFirstChildOfType(ASTArguments.class);
-            if (args.getArgumentCount() == 1) {
+            if (args.size() == 1) {
                 ASTLiteral literal = node.getFirstDescendantOfType(ASTLiteral.class);
                 if (literal == null
                         || literal.getParent().getParent().getParent().getParent().getParent() != args) {

@@ -151,7 +151,7 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
      * (excluding any receiver parameter). A varargs parameter counts as one.
      */
     public int getArity() {
-        return getFormalParameters().getParameterCount();
+        return getFormalParameters().size();
     }
 
 

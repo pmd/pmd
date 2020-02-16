@@ -24,4 +24,13 @@ public class ASTArgumentList extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    /**
+     * Gets the number of arguments.
+     *
+     * @return the number of arguments.
+     */
+    public int size() {
+        return this.getNumChildren();
+    }
 }

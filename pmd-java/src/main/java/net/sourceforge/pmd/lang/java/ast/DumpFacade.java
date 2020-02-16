@@ -107,7 +107,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 
         // Other extras
         if (node instanceof ASTArguments) {
-            extras.add(String.valueOf(((ASTArguments) node).getArgumentCount()));
+            extras.add(String.valueOf(((ASTArguments) node).size()));
         } else if (node instanceof ASTAssignmentOperator) {
             extras.add(((ASTAssignmentOperator) node).isCompound() ? "compound" : "simple");
         } else if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
@@ -146,7 +146,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
                 extras.add("varargs");
             }
         } else if (node instanceof ASTFormalParameters) {
-            extras.add(String.valueOf(((ASTFormalParameters) node).getParameterCount()));
+            extras.add(String.valueOf(((ASTFormalParameters) node).size()));
         } else if (node instanceof ASTIfStatement) {
             if (((ASTIfStatement) node).hasElse()) {
                 extras.add("has else");

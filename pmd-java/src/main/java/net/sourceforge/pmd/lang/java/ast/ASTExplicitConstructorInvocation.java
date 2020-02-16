@@ -29,9 +29,9 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
 
     public int getArgumentCount() {
         if (this.getNumChildren() == 1) {
-            return ((ASTArguments) this.getChild(0)).getArgumentCount();
+            return ((ASTArguments) this.getChild(0)).size();
         } else {
-            return ((ASTArguments) this.getChild(1)).getArgumentCount();
+            return ((ASTArguments) this.getChild(1)).size();
         }
     }
 

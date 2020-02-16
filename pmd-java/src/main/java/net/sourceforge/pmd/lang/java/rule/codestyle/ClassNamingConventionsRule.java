@@ -104,7 +104,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return decl.isStatic()
                 && "main".equals(decl.getName())
                 && decl.getResultType().isVoid()
-                && decl.getFormalParameters().getParameterCount() == 1
+                && decl.getFormalParameters().size() == 1
                 && String[].class.equals(decl.getFormalParameters().iterator().next().getType());
     }
 

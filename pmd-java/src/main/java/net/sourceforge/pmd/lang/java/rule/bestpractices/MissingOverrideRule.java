@@ -337,7 +337,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
          * @throws NoSuchMethodException if no method is registered with this name and paramcount, which is a bug
          */
         boolean isOverridden(String name, ASTFormalParameters params) throws NoSuchMethodException {
-            List<Method> methods = getMethods(name, params.getParameterCount());
+            List<Method> methods = getMethods(name, params.size());
 
             if (methods.size() == 1) { // only one method with this name and parameter count, we can conclude
                 return overridden.contains(methods.get(0));
@@ -358,7 +358,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
 
         private static Class<?>[] getParameterTypes(ASTFormalParameters params) {
-            Class<?>[] paramTypes = new Class[params.getParameterCount()];
+            Class<?>[] paramTypes = new Class[params.size()];
             int i = 0;
             for (ASTFormalParameter p : params) {
                 Class<?> pType = p.getType();
