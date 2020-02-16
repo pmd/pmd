@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;

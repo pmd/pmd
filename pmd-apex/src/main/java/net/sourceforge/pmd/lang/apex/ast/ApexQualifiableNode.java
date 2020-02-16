@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 /**
  * @author Clément Fournier
  */
-public interface ApexQualifiableNode  {
+public interface ApexQualifiableNode {
 
     ApexQualifiedName getQualifiedName();
 }
