@@ -1816,7 +1816,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@ArgumentCount</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'0'</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'0'</span><span class="p">]]</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="w">
         </span><span class="p">.</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'.notify'</span><span class="p">)]</span><span class="w">
