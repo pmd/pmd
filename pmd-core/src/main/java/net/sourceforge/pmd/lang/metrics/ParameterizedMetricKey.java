@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.metrics;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -18,11 +17,8 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  *
  * @author Clément Fournier
  * @since 5.8.0
- * @deprecated Is internal API
  */
-@InternalApi
-@Deprecated
-public final class ParameterizedMetricKey<N extends Node> implements DataKey<ParameterizedMetricKey<N>, Double> {
+final class ParameterizedMetricKey<N extends Node> implements DataKey<ParameterizedMetricKey<N>, Double> {
 
     private static final ConcurrentMap<ParameterizedMetricKey<?>, ParameterizedMetricKey<?>> POOL = new ConcurrentHashMap<>();
 

@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -92,13 +91,6 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
         JavaMetricsProvider() {
             super(ASTAnyTypeDeclaration.class, MethodLikeNode.class);
-        }
-
-        @Override
-        protected List<MethodLikeNode> findOps(ASTAnyTypeDeclaration astAnyTypeDeclaration) {
-            return astAnyTypeDeclaration.getDeclarations()
-                                        .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
-                                        .filterIs(MethodLikeNode.class).toList();
         }
 
         @Override

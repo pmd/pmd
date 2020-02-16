@@ -12,6 +12,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * metric keys.
  *
  * @param <N> Type of nodes the metric can be computed on
+ *
  * @author Clément Fournier
  * @since 5.8.0
  */
@@ -35,6 +36,7 @@ public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double>
 
     /**
      * Returns true if the metric held by this key can be computed on this node.
+     * TODO this should be turned into supports(Node)
      *
      * @param node The node to test
      *

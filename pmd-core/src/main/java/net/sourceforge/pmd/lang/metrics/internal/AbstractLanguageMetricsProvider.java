@@ -5,16 +5,12 @@
 package net.sourceforge.pmd.lang.metrics.internal;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 
 /**
@@ -23,7 +19,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  * @author Clément Fournier
  * @since 6.11.0
  */
-public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> implements LanguageMetricsProvider<T, O> {
+public abstract class AbstractLanguageMetricsProvider<T extends Node, O extends Node> implements LanguageMetricsProvider<T, O> {
 
     private final Class<T> tClass;
     private final Class<O> oClass;
@@ -46,14 +42,6 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
     public O asOperationNode(Node anyNode) {
         return oClass.isInstance(anyNode) ? oClass.cast(anyNode) : null;
     }
-
-
-    @Override
-    public double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption resultOption) {
-        return MetricsUtil.computeAggregate(key, findOps(node), options, resultOption);
-    }
-
-    protected abstract List<O> findOps(T t);
 
 
     @Override

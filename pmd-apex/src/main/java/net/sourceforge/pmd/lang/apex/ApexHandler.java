@@ -60,11 +60,6 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
 
         @Override
-        protected List<ASTMethod> findOps(ASTUserClassOrInterface<?> astUserClassOrInterface) {
-            return astUserClassOrInterface.getMethods().toList();
-        }
-
-        @Override
         public List<ApexOperationMetricKey> getAvailableOperationMetrics() {
             return Arrays.asList(ApexOperationMetricKey.values());
         }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.lang.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
@@ -46,15 +45,19 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  *             you have nodes. So we can do away with this class.
  */
 @Deprecated
-public abstract class JavaQualifiedName implements QualifiedName {
+public abstract class JavaQualifiedName {
 
     // toString cache
     private String toString;
     private int hashCode;
 
 
-
-    @Override
+    /**
+     * Returns the qualified name of the class the resource is located in. If this instance addresses a class, returns
+     * this instance.
+     *
+     * @return The qualified name of the class
+     */
     public abstract JavaTypeQualifiedName getClassName();
 
     /**
@@ -182,6 +185,21 @@ public abstract class JavaQualifiedName implements QualifiedName {
         }
         return toString;
     }
+
+    /**
+     * Returns true if the resource addressed by this qualified name is a class.
+     *
+     * @return true if the resource addressed by this qualified name is a class.
+     */
+    public abstract boolean isClass();
+
+
+    /**
+     * Returns true if the resource addressed by this qualified name is an operation.
+     *
+     * @return true if the resource addressed by this qualified name is an operation.
+     */
+    public abstract boolean isOperation();
 
 
     /**

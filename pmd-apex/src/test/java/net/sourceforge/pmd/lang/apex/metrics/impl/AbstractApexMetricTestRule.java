@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -139,7 +138,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
             String valueReport = String.valueOf(classValue);
 
             if (opKey != null) {
-                int highest = (int) MetricsUtil.computeAggregate(opKey, node.getMethods(), metricOptions, ResultOption.HIGHEST);
+                int highest = (int) MetricsUtil.computeStatistics(opKey, node.getMethods(), metricOptions).getMax();
                 valueReport += " highest " + highest;
             }
             if (classValue >= reportLevel) {

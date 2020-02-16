@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
@@ -96,6 +95,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -262,7 +262,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         String typeName = node.getImage();
 
         if (node.isAnonymousClass()) {
-            QualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
+            JavaQualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
 
             if (parent != null) {
                 typeName = parent.getQualifiedName().toString();

@@ -20,6 +20,7 @@ public interface Metric<N extends Node> {
 
     /**
      * Checks if the metric can be computed on the node.
+     * TODO this should be turned into supports(Node)
      *
      * @param node The node to check
      *

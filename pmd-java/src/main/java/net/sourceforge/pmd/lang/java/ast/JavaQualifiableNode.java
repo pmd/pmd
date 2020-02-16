@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
-
-
 /**
  * Java nodes that can be described with a qualified name.
  *
@@ -15,13 +12,12 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  * @deprecated See {@link JavaQualifiedName}
  */
 @Deprecated
-public interface JavaQualifiableNode extends QualifiableNode {
+public interface JavaQualifiableNode {
 
     /**
      * Returns a qualified name for this node.
      *
      * @return A qualified name.
      */
-    @Override
     JavaQualifiedName getQualifiedName();
 }

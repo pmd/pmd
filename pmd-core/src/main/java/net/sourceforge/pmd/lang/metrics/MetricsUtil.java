@@ -33,6 +33,10 @@ public final class MetricsUtil {
         return true;
     }
 
+    /**
+     * @deprecated Use {@link #computeStatistics(MetricKey, Iterable)}
+     */
+    @Deprecated
     public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, ResultOption resultOption) {
         return computeAggregate(key, ops, MetricOptions.emptyOptions(), resultOption);
     }
@@ -46,15 +50,17 @@ public final class MetricsUtil {
      * @param resultOption The type of aggregation to perform
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
+     *
+     * @deprecated Use {@link #computeStatistics(MetricKey, Iterable, MetricOptions)}
      */
+    @Deprecated
     public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, MetricOptions options, ResultOption resultOption) {
 
 
         Objects.requireNonNull(resultOption, "The result option must not be null");
 
 
-        DoubleSummaryStatistics stats =
-            computeStatistics(key, ops, options);
+        DoubleSummaryStatistics stats = computeStatistics(key, ops, options);
 
         // note these operations coalesce Double.NaN
         // (if any value is NaN, the result is NaN)
