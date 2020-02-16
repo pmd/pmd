@@ -1468,6 +1468,10 @@ function from Java types to XDM types.</p>
       <td><code class="highlighter-rouge">xs:string</code></td>
     </tr>
     <tr>
+      <td><code class="highlighter-rouge">Enum&lt;E&gt;</code></td>
+      <td><code class="highlighter-rouge">xs:string</code> (uses <code class="highlighter-rouge">Object::toString</code>)</td>
+    </tr>
+    <tr>
       <td><code class="highlighter-rouge">List&lt;E&gt;</code></td>
       <td><code class="highlighter-rouge">conv(E)*</code> (a sequence type)</td>
     </tr>
