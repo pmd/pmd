@@ -128,8 +128,8 @@ and the rule instance is reused. If you rely on a proper initialization of insta
 properties, you can do the initialization e.g. in the visit-method of the {% jdoc jast::ASTCompilationUnit %}
 node - which is visited first and only once per file. However, this
 solution would only work for rules written for the Java language. A language
-independent way is to override the method `apply` of the rule (and call super).
-The apply method is called exactly once per file.
+independent way is to override the method `start` of the rule.
+The start method is called exactly once per file.
 
 <!-- We don't support language-independent rules anyway... -->
 
