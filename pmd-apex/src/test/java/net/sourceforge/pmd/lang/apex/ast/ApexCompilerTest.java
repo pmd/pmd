@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
-public class ApexCompilerTest {
+public class ApexCompilerTest extends ApexParserTestBase {
 
     @Test(expected = ParseException.class)
     public void compileShouldFail() {
-        ApexNode<Compilation> node = parse("public class Foo { private String myField = \"a\"; }");
+        apex.parse("public class Foo { private String myField = \"a\"; }");
     }
 }
