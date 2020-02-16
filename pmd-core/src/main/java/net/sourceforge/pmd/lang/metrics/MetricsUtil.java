@@ -33,50 +33,6 @@ public final class MetricsUtil {
         return true;
     }
 
-    /**
-     * @deprecated Use {@link #computeStatistics(MetricKey, Iterable)}
-     */
-    @Deprecated
-    public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, ResultOption resultOption) {
-        return computeAggregate(key, ops, MetricOptions.emptyOptions(), resultOption);
-    }
-
-    /**
-     * Computes an aggregate result for a metric, identified with a {@link ResultOption}.
-     *
-     * @param key          The metric to compute
-     * @param ops          List of nodes for which to aggregate the metric
-     * @param options      The options of the metric
-     * @param resultOption The type of aggregation to perform
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     *
-     * @deprecated Use {@link #computeStatistics(MetricKey, Iterable, MetricOptions)}
-     */
-    @Deprecated
-    public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, MetricOptions options, ResultOption resultOption) {
-
-
-        Objects.requireNonNull(resultOption, "The result option must not be null");
-
-
-        DoubleSummaryStatistics stats = computeStatistics(key, ops, options);
-
-        // note these operations coalesce Double.NaN
-        // (if any value is NaN, the result is NaN)
-        switch (resultOption) {
-        case SUM:
-            return stats.getSum();
-        case HIGHEST:
-            double max = stats.getMax();
-            return max == Double.NEGATIVE_INFINITY ? 0 : max;
-        case AVERAGE:
-            return stats.getAverage();
-        default:
-            throw new IllegalArgumentException("Unknown result option " + resultOption);
-        }
-    }
-
 
     /**
      * Computes statistics for the results of a metric over a sequence of nodes.

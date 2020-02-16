@@ -45,13 +45,18 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
 ### API Changes
 
 * [#1648](https://github.com/pmd/pmd/pull/1702): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)
-  Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets. 
-  They were deprecated without replacement. 
+  Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets.
+  They were deprecated without replacement.
 
 * The old GUI applications accessible through `run.sh designerold` and `run.sh bgastviewer` (and corresponding Batch scripts)
   have been removed from the PMD distribution. Please use the newer rule designer with `run.sh designer`.
   The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and `java.net.sourceforge.pmd.util.designer` have
   all been removed.
+
+#### Metrics framework
+
+* {% jdoc_old !!core::lang.metrics.MetricKeyUtil#of(java.lang.String, core::lang.metrics.Metric) %} is replaced with {% jdoc_old !!core::lang.metrics.MetricKey#of(java.lang.String, core::lang.metrics.Metric) %}
+* {% jdoc_old !!core::lang.metrics.MetricsUtil#computeAggregate(core::lang.metrics.MetricKey, java.lang.Iterable, core::lang.metrics.ResultOption) %} and its overload are replaced with {% jdoc_old !!core::lang.metrics.MetricsUtil#computeStatistics(core::lang.metrics.MetricKey, java.lang.Iterable) %}, {% jdoc_old core::lang.metrics.ResultOption %} is removed
 
 ### External Contributions
 
