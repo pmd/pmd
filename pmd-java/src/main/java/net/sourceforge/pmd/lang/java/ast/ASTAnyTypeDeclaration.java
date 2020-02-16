@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
@@ -60,7 +60,13 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      *
      * @return The member declarations declared in this type declaration
      */
-    List<ASTAnyTypeBodyDeclaration> getDeclarations();
+    NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations();
+
+
+    default NodeStream<ASTMethodOrConstructorDeclaration> getOperations() {
+        return getDeclarations().map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
+                                .filterIs(ASTMethodOrConstructorDeclaration.class);
+    }
 
 
     /**

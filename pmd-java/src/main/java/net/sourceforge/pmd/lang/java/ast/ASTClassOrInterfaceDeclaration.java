@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 
@@ -68,9 +69,8 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
 
     @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTClassOrInterfaceBody.class)
-            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return children(ASTClassOrInterfaceBody.class).children(ASTAnyTypeBodyDeclaration.class);
     }
 
 

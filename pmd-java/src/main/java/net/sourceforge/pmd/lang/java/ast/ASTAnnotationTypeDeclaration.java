@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
@@ -36,8 +35,7 @@ public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
 
     @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTAnnotationTypeBody.class)
-            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return children(ASTAnnotationTypeBody.class).children(ASTAnyTypeBodyDeclaration.class);
     }
 }

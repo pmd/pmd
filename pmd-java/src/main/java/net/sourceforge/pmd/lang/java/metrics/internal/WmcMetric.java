@@ -6,10 +6,9 @@ package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
  * Weighed Method count. See the <a href="https://{pmd.website.baseurl}/pmd_java_metrics_index.html">documentation
@@ -22,7 +21,7 @@ public final class WmcMetric extends AbstractJavaClassMetric {
 
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-        return JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, options, ResultOption.SUM);
+        return MetricsUtil.computeStatistics(JavaOperationMetricKey.CYCLO, node.getOperations(), options).getSum();
     }
 
 }

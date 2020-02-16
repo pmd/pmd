@@ -17,14 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -94,7 +92,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
         if (JavaClassMetricKey.NCSS.supports(node)) {
             int classSize = (int) MetricsUtil.computeMetric(JavaClassMetricKey.NCSS, node, ncssOptions);
-            int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssOptions, ResultOption.HIGHEST);
+            int classHighest = (int) MetricsUtil.computeStatistics(JavaOperationMetricKey.NCSS, node.getOperations(), ncssOptions).getMax();
 
             if (classSize >= classReportLevel) {
                 String[] messageParams = {node.getTypeKind().name().toLowerCase(Locale.ROOT),

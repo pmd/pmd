@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -109,15 +108,10 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
 
 
     private <T extends Node> List<T> getDeclarationsOfType(ASTAnyTypeDeclaration node, Class<T> tClass) {
-
-        List<T> result = new ArrayList<>();
-        List<ASTAnyTypeBodyDeclaration> decls = node.getDeclarations();
-
-        for (ASTAnyTypeBodyDeclaration decl : decls) {
-            result.addAll(decl.findChildrenOfType(tClass));
-        }
-
-        return result;
+        return node.getDeclarations()
+                   .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
+                   .filterIs(tClass)
+                   .toList();
     }
 
 

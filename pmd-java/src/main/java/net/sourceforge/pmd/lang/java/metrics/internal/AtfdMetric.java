@@ -11,11 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.
@@ -46,7 +45,7 @@ public final class AtfdMetric {
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             // TODO maybe consider code outside methods
-            return JavaMetrics.get(JavaOperationMetricKey.ATFD, node, options, ResultOption.SUM);
+            return MetricsUtil.computeStatistics(JavaOperationMetricKey.ATFD, node.getOperations(), options).getSum();
         }
 
 

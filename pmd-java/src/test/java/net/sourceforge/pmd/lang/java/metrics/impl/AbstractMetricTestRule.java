@@ -12,14 +12,12 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -157,7 +155,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
             String valueReport = niceDoubleString(classValue);
 
             if (opKey != null) {
-                double highest = JavaMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
+                double highest = MetricsUtil.computeStatistics(opKey, node.getOperations(), metricOptions).getMax();
                 valueReport += " highest " + niceDoubleString(highest);
             }
             if (classValue >= reportLevel) {
