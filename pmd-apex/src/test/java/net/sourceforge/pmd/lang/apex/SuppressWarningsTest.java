@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -164,7 +164,7 @@ public class SuppressWarningsTest extends RuleTst {
         assertEquals(1, suppressions.size());
         Report.SuppressedViolation suppression = suppressions.get(0);
 
-        assertTrue(suppression.suppressedByNOPMD());
+        assertEquals(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, suppression.getSuppressor());
         assertEquals("We allow foo here", suppression.getUserMessage());
     }
 
