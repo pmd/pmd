@@ -1,7 +1,7 @@
 ---
 title: Maven PMD Plugin
 tags: [userdocs, tools]
-permalink: /pmd_userdocs_tools_maven.html
+permalink: pmd_userdocs_tools_maven.html
 last_updated: August 2017
 author: >
     Miguel Griffa <mikkey@users.sourceforge.net>,

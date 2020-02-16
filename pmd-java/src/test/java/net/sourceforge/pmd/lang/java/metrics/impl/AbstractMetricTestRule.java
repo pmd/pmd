@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -151,7 +152,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            double classValue = JavaMetrics.get(classKey, node, metricOptions);
+            double classValue = MetricsUtil.computeMetric(classKey, node, metricOptions);
 
             String valueReport = niceDoubleString(classValue);
 
@@ -170,7 +171,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(MethodLikeNode node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            double methodValue = JavaMetrics.get(opKey, node, metricOptions);
+            double methodValue = MetricsUtil.computeMetric(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(),
                                                        "" + niceDoubleString(methodValue), });

@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.Parser;
@@ -16,7 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetricsProvider;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.xpath.JavaFunctions;
@@ -25,6 +30,8 @@ import net.sourceforge.pmd.lang.java.xpath.TypeIsExactlyFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeIsFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 import net.sf.saxon.sxpath.IndependentContext;
@@ -78,5 +85,29 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> getLanguageMetricsProvider() {
         return myMetricsProvider;
+    }
+
+
+    private static class JavaMetricsProvider extends AbstractLanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> {
+
+        JavaMetricsProvider() {
+            super(ASTAnyTypeDeclaration.class, MethodLikeNode.class);
+        }
+
+        @Override
+        protected List<MethodLikeNode> findOps(ASTAnyTypeDeclaration astAnyTypeDeclaration) {
+            return JavaMetrics.findOps(astAnyTypeDeclaration);
+        }
+
+        @Override
+        public List<? extends MetricKey<ASTAnyTypeDeclaration>> getAvailableTypeMetrics() {
+            return Arrays.asList(JavaClassMetricKey.values());
+        }
+
+
+        @Override
+        public List<? extends MetricKey<MethodLikeNode>> getAvailableOperationMetrics() {
+            return Arrays.asList(JavaOperationMetricKey.values());
+        }
     }
 }

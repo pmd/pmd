@@ -28,15 +28,26 @@ public final class ASTArgumentList extends AbstractJavaNode implements Iterable<
         return visitor.visit(this, data);
     }
 
-
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
 
     /**
-     * Returns the number of arguments of this list.
+     * Gets the number of arguments.
+     *
+     * @return the number of arguments.
      */
+    public int size() {
+        return this.getNumChildren();
+    }
+
+
+    /**
+     * Returns the number of arguments of this list.
+     * @deprecated Use {@link #size()}
+     */
+    @Deprecated
     public int getArgumentCount() {
         return getNumChildren();
     }

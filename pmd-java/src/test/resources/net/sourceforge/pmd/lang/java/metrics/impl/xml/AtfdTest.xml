@@ -129,7 +129,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <description>Full example</description> <!-- TODO issues w/ that-->
         <expected-problems>7</expected-problems>
         <expected-messages>
-            <message>'StatementAndBraceFinder' has value 10 highest 6.</message>
+            <message>'StatementAndBraceFinder' has value 36 highest 18.</message>
             <message>'StatementAndBraceFinder#buildDataFlowFor(JavaNode)' has value 6.</message>
             <message>'StatementAndBraceFinder#tryToLog(String, NodeType, Node)' has value 4.</message>
             <message>'StatementAndBraceFinder#tryToLog(NodeType, Node)' has value 0.</message>

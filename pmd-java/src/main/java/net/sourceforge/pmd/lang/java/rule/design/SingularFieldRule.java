@@ -40,8 +40,16 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
      * Restore old behavior by setting both properties to true, which will
      * result in many false positives
      */
-    private static final PropertyDescriptor<Boolean> CHECK_INNER_CLASSES = booleanProperty("checkInnerClasses").defaultValue(false).desc("Check inner classes").build();
-    private static final PropertyDescriptor<Boolean> DISALLOW_NOT_ASSIGNMENT = booleanProperty("disallowNotAssignment").defaultValue(false).desc("Disallow violations where the first usage is not an assignment").build();
+    private static final PropertyDescriptor<Boolean> CHECK_INNER_CLASSES =
+            booleanProperty("checkInnerClasses")
+                .defaultValue(false)
+                .desc("Check inner classes")
+                .build();
+    private static final PropertyDescriptor<Boolean> DISALLOW_NOT_ASSIGNMENT =
+            booleanProperty("disallowNotAssignment")
+                .defaultValue(false)
+                .desc("Disallow violations where the first usage is not an assignment")
+                .build();
 
 
     public SingularFieldRule() {

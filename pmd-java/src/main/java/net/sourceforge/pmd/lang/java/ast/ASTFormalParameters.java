@@ -38,8 +38,16 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
      * Returns the number of formal parameters in this parameter list.
      * This excludes the receiver parameter, if any.
      */
-    public int getParameterCount() {
+    public int size() {
         return getFirstChild() instanceof ASTReceiverParameter ? getNumChildren() - 1 : getNumChildren();
+    }
+
+    /**
+     * @deprecated for removal. Use {@link #size()} instead.
+     */
+    @Deprecated
+    public int getParameterCount() {
+        return size();
     }
 
     @Override
