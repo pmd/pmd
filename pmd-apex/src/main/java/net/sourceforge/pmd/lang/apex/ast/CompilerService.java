@@ -24,6 +24,8 @@ import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
 import apex.jorje.semantic.compiler.sfdc.NoopCompilerProgressCallback;
 import apex.jorje.semantic.compiler.sfdc.QueryValidator;
 import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
+import apex.jorje.services.exception.CompilationException;
+import apex.jorje.services.exception.ParseException;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -42,14 +44,6 @@ public class CompilerService {
 
     /**
      * Configure a compiler with the default configurations:
-     *
-     * @param symbolProvider
-     *            EmptySymbolProvider, doesn't provide any symbols that are not
-     *            part of source.
-     * @param accessEvaluator
-     *            TestAccessEvaluator, doesn't provide any validation.
-     * @param queryValidator
-     *            TestQueryValidators.Noop, no validation of queries.
      */
     CompilerService() {
         this(EmptySymbolProvider.get(), new TestAccessEvaluator(), new TestQueryValidators.Noop());
@@ -92,14 +86,32 @@ public class CompilerService {
         ApexCompiler compiler = ApexCompiler.builder().setInput(compilationInput).build();
         compiler.compile(compilerStage);
         callAdditionalPassVisitor(compiler);
-        compiler.throwErrorsIfAny();
+        throwParseErrorIfAny(compiler);
         return compiler;
     }
 
+    private void throwParseErrorIfAny(ApexCompiler compiler) {
+        // this ignores semantic errors
+
+        ParseException parseError = null;
+        for (CompilationException error : compiler.getErrors()) {
+            if (error instanceof ParseException) {
+                if (parseError == null) {
+                    parseError = (ParseException) error;
+                } else {
+                    parseError.addSuppressed(error);
+                }
+            }
+        }
+        if (parseError != null) {
+            throw parseError;
+        }
+    }
+
     private CompilationInput createCompilationInput(List<SourceFile> sourceFiles,
-            AstVisitor<AdditionalPassScope> visitor) {
+                                                    AstVisitor<AdditionalPassScope> visitor) {
         return new CompilationInput(sourceFiles, symbolProvider, accessEvaluator, queryValidator, visitor,
-                NoopCompilerProgressCallback.get());
+                                    NoopCompilerProgressCallback.get());
     }
 
     /**
