@@ -61,11 +61,17 @@ entries:
       - title: Extending PMD
         output: web, pdf
         subfolderitems:
-        - title: Writing a rule
-          url: /pmd_userdocs_extending_writing_pmd_rules.html
+        - title: Introduction to writing rules
+          url: /pmd_userdocs_extending_writing_rules_intro.html
           output: web, pdf
-        - title: Writing XPath rules
+        - title: Your first rule
+          url: /pmd_userdocs_extending_your_first_rule.html
+          output: web, pdf
+        - title: XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
+          output: web, pdf
+        - title: Java rules
+          url: /pmd_userdocs_extending_writing_java_rules.html
           output: web, pdf
         - title: Rule designer reference
           url: /pmd_userdocs_extending_designer_reference.html
