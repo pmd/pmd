@@ -13,6 +13,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
+/**
+ * @deprecated Only used by the deprecated designer
+ */
+@Deprecated
 public class JavaDFAGraphRule extends AbstractJavaRule implements DFAGraphRule {
 
     private List<DFAGraphMethod> methods;

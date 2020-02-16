@@ -19,11 +19,12 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Detects potential XSS when controller extracts a variable from URL query and
  * uses it without escaping first
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -120,7 +121,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private String getReturnType(ASTReturnStatement node) {
         ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
         if (method != null) {
-            return method.getNode().getMethodInfo().getReturnType().getApexName();
+            return method.getReturnType();
         }
 
         return "";
@@ -175,7 +176,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 String varType = null;
 
                 if (node instanceof ASTVariableDeclaration) {
-                    varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+                    varType = ((ASTVariableDeclaration) node).getType();
 
                 }
 
@@ -214,7 +215,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
             String varType = null;
             if (node instanceof ASTVariableDeclaration) {
-                varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+                varType = ((ASTVariableDeclaration) node).getType();
             }
 
             if (varType == null || !"id".equalsIgnoreCase(varType)) {

@@ -24,7 +24,7 @@ public class MatlabParser extends AbstractParser {
 
     /**
      * Creates a new Matlab Parser.
-     * 
+     *
      * @param parserOptions
      *            the options
      */

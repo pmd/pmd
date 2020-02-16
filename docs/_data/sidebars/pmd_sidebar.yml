@@ -61,11 +61,20 @@ entries:
       - title: Extending PMD
         output: web, pdf
         subfolderitems:
-        - title: Writing a rule
-          url: /pmd_userdocs_extending_writing_pmd_rules.html
+        - title: Introduction to writing rules
+          url: /pmd_userdocs_extending_writing_rules_intro.html
           output: web, pdf
-        - title: Writing XPath rules
+        - title: Your first rule
+          url: /pmd_userdocs_extending_your_first_rule.html
+          output: web, pdf
+        - title: XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
+          output: web, pdf
+        - title: Java rules
+          url: /pmd_userdocs_extending_writing_java_rules.html
+          output: web, pdf
+        - title: Rule designer reference
+          url: /pmd_userdocs_extending_designer_reference.html
           output: web, pdf
         - title: Defining rule properties
           url: /pmd_userdocs_extending_defining_properties.html
@@ -88,12 +97,18 @@ entries:
       - title: Tools / Integrations
         output: web, pdf
         subfolderitems:
-        - title: Maven PMD plugin
+        - title: Maven PMD Plugin
           output: web, pdf
           url: /pmd_userdocs_tools_maven.html
+        - title: Gradle
+          output: web, pdf
+          url: /pmd_userdocs_tools_gradle.html
         - title: Ant
           output: web, pdf
           url: /pmd_userdocs_tools_ant.html
+        - title: PMD Java API
+          output: web, pdf
+          url: /pmd_userdocs_tools_java_api.html
         - title: CI integrations
           output: web, pdf
           url: /pmd_userdocs_tools_ci.html
@@ -223,6 +238,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Modelica Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_modelica.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_modelica_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: PLSQL Rules
         output: web, pdf
         subfolderitems:
@@ -334,6 +361,9 @@ entries:
     - title: Pmdtester
       url: /pmd_devdocs_pmdtester.html
       output: web, pdf
+    - title: Rule Deprecation Policy
+      url: /pmd_devdocs_rule_deprecation_policy.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
@@ -348,6 +378,12 @@ entries:
           output: web, pdf
         - title: Adding metrics support to a language
           url: /pmd_devdocs_major_adding_new_metrics_framework.html
+          output: web, pdf
+      - title: Experimental features
+        output: web, pdf
+        subfolderitems:
+        - title: Creating (XML) dump of the AST
+          url: /pmd_devdocs_experimental_ast_dump.html
           output: web, pdf
   - title: Project documentation
     output: web, pdf

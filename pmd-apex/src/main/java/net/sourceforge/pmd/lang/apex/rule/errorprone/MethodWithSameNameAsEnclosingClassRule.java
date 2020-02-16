@@ -17,6 +17,8 @@ public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+
+        addRuleChainVisit(ASTUserClass.class);
     }
 
     @Override
@@ -28,11 +30,11 @@ public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
         for (ASTMethod m : methods) {
             String methodName = m.getImage();
 
-            if (!m.getNode().getMethodInfo().isConstructor() && methodName.equalsIgnoreCase(className)) {
+            if (!m.isConstructor() && methodName.equalsIgnoreCase(className)) {
                 addViolation(data, m);
             }
         }
 
-        return super.visit(node, data);
+        return data;
     }
 }

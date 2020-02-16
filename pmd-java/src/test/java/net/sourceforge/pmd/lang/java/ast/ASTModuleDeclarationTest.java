@@ -4,40 +4,28 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava9;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-public class ASTModuleDeclarationTest {
-    private static String loadSource(String name) {
-        try {
-            return IOUtils.toString(ASTModuleDeclarationTest.class.getResourceAsStream("jdkversiontests/" + name),
-                    StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class ASTModuleDeclarationTest extends BaseParserTest {
 
     @Test
     public final void jdk9ModuleInfo() {
-        ASTCompilationUnit ast = parseJava9(loadSource("jdk9_module_info.java"));
+        ASTCompilationUnit ast = java9.parseResource("jdkversiontests/jdk9_module_info.java");
         List<ASTModuleDeclaration> modules = ast.findDescendantsOfType(ASTModuleDeclaration.class);
         assertEquals(1, modules.size());
         ASTModuleDeclaration module = modules.get(0);
         assertTrue(module.isOpen());
         assertEquals("com.example.foo", module.getImage());
-        assertEquals(7, module.jjtGetNumChildren());
+        assertEquals(7, module.getNumChildren());
         List<ASTModuleDirective> directives = module.findChildrenOfType(ASTModuleDirective.class);
         assertEquals(7, directives.size());
-        
+
         // requires com.example.foo.http;
         assertEquals(ASTModuleDirective.DirectiveType.REQUIRES.name(), directives.get(0).getType());
         assertNull(directives.get(0).getRequiresModifier());

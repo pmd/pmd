@@ -21,13 +21,13 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
     }
 
     public String getMethodName() {
-        return getNode().getMethodName();
+        return node.getMethodName();
     }
 
     public String getFullMethodName() {
         final String methodName = getMethodName();
         StringBuilder typeName = new StringBuilder();
-        for (Iterator<Identifier> it = getNode().getReferenceContext().getNames().iterator(); it.hasNext();) {
+        for (Iterator<Identifier> it = node.getReferenceContext().getNames().iterator(); it.hasNext();) {
             typeName.append(it.next().getValue()).append('.');
         }
         return typeName.toString() + methodName;

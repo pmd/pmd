@@ -14,76 +14,117 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### Quickstart Ruleset for Apex
+#### Updated PMD Designer
 
-PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
-get your custom ruleset started. You can reference it with `rulesets/apex/quickstart.xml`.
-You are strongly encouraged to [create your own ruleset](https://pmd.github.io/pmd-6.12.0/pmd_userdocs_making_rulesets.html)
-though.
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.21.0).
 
-The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
-references only rules, that are most likely to apply everywhere.
+### Apex Suppressions
 
-Any feedback would be greatly appreciated.
-
-#### PMD Designer
-
-The rule designer's codebase has been moved out of the main repository and
-will be developed at [pmd/pmd-designer](https://github.com/pmd/pmd-designer)
-from now on. The maven coordinates will stay the same for the time being.
-The designer will still be shipped with PMD's binaries.
-
-#### New Rules
-
-*   The new Java rule {% rule "java/design/AvoidUncheckedExceptionsInSignatures" %} (`java-design`) finds methods or constructors
-    that declare unchecked exceptions in their `throws` clause. This forces the caller to handle the exception,
-    even though it is a runtime exception.
-
-*   The new Java rule {% rule "java/errorprone/DetachedTestCase" %} (`java-errorprone`) searches for public
-    methods in test classes, which are not annotated with `@Test`. These methods might be test cases where
-    the annotation has been forgotten. Because of that those test cases are never executed.
-
-*   The new Java rule {% rule "java/bestpractices/WhileLoopWithLiteralBoolean" %} (`java-bestpractices`) finds
-    Do-While-Loops and While-Loops that can be simplified since they use simply `true` or `false` as their
-    loop condition.
-
-*   The new Apex rule {% rule "apex/bestpractices/ApexAssertionsShouldIncludeMessage" %} (`apex-bestpractices`)
-    searches for assertions in unit tests and checks, whether they use a message argument.
-
-*   The new Apex rule {% rule "apex/bestpractices/ApexUnitTestMethodShouldHaveIsTestAnnotation" %} (`apex-bestpractices`)
-    searches for methods in test classes, which are missing the `@IsTest` annotation.
+In addition to suppressing violation with the `@SuppressWarnings` annotation, Apex now also supports
+the suppressions with a `NOPMD` comment. See [Suppressing warnings](pmd_userdocs_suppressing_warnings.html).
 
 ### Fixed Issues
 
+*   apex
+    *   [#1087](https://github.com/pmd/pmd/issues/1087): \[apex] Support suppression via //NOPMD
 *   doc
-    *   [#1721](https://github.com/pmd/pmd/issues/1721): \[doc] Documentation provides an invalid property configuration example
+    *   [#2274](https://github.com/pmd/pmd/issues/2274): \[doc] Java API documentation for PMD
+*   java
+    *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
 *   java-bestpractices
-    *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
-*   java-codestyle
-    *   [#1674](https://github.com/pmd/pmd/issues/1674): \[java] documentation of CommentDefaultAccessModifier is wrong
+    *   [#2277](https://github.com/pmd/pmd/issues/2277): \[java] FP in UnusedImports for ambiguous static on-demand imports
+*   java-errorprone
+    *   [#2250](https://github.com/pmd/pmd/issues/2250): \[java] InvalidLogMessageFormat flags logging calls using a slf4j-Marker
+    *   [#2255](https://github.com/pmd/pmd/issues/2255): \[java] InvalidLogMessageFormat false-positive for a lambda argument
+*   java-performance
+    *   [#2275](https://github.com/pmd/pmd/issues/2275): \[java] AppendCharacterWithChar flags literals in an expression
 
 ### API Changes
 
-#### Deprecated API
+#### Deprecated APIs
 
-*   {% jdoc core::renderers.CodeClimateRule %} is deprecated in 7.0.0 because it was unused for 2 years and
-    created an unwanted dependency.
-    Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed.
-    See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
+##### Internal API
 
-*   The Apex ruleset `rulesets/apex/ruleset.xml` has been deprecated and will be removed in 7.0.0. Please use the new
-    quickstart ruleset `rulesets/apex/quickstart.xml` instead.
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+* {% jdoc java::lang.java.JavaLanguageHandler %}
+* {% jdoc java::lang.java.JavaLanguageParser %}
+* {% jdoc java::lang.java.JavaDataFlowHandler %}
+* Implementations of {% jdoc core::lang.rule.RuleViolationFactory %} in each
+  language module, eg {% jdoc java::lang.java.rule.JavaRuleViolationFactory %}.
+  See javadoc of {% jdoc core::lang.rule.RuleViolationFactory %}.
+* Implementations of {% jdoc core::RuleViolation %} in each language module,
+  eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
+  {% jdoc core::RuleViolation %}.
+
+* {% jdoc core::rules.RuleFactory %}
+* {% jdoc core::rules.RuleBuilder %}
+* Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
+* {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
+
+* {% jdoc apex::lang.apex.ast.AbstractApexNode %}
+* {% jdoc apex::lang.apex.ast.AbstractApexNodeBase %}, and the related `visit`
+methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementations.
+ Use {% jdoc apex::lang.apex.ast.ApexNode %} instead, now considers comments too.
+
+##### For removal
+
+* pmd-core
+  * {% jdoc core::lang.dfa.DFAGraphRule %} and its implementations
+  * {% jdoc core::lang.dfa.DFAGraphMethod %}
+  * Many methods on the {% jdoc core::lang.ast.Node %} interface
+  and {% jdoc core::lang.ast.AbstractNode %} base class. See their javadoc for details.
+  * {% jdoc !!core::lang.ast.Node#isFindBoundary() %} is deprecated for XPath queries.
+  * Many APIs of {% jdoc_package core::lang.metrics %}, though most of them were internal and
+  probably not used directly outside of PMD. Use {% jdoc core::lang.metrics.MetricsUtil %} as
+  a replacement for the language-specific façades too.
+  * {% jdoc core::lang.ast.QualifiableNode %}, {% jdoc core::lang.ast.QualifiedName %}
+* pmd-java
+  * {% jdoc java::lang.java.AbstractJavaParser %}
+  * {% jdoc java::lang.java.AbstractJavaHandler %}
+  * [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
+  * {% jdoc java::lang.java.ast.JavaQualifiedName %}
+  * {% jdoc !!java::lang.java.ast.ASTCatchStatement#getBlock() %}
+  * {% jdoc !!java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
+  * {% jdoc java::lang.java.ast.JavaQualifiableNode %}
+    * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
+    * {% jdoc !!java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
+    * {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
+  * {% jdoc_package java::lang.java.qname %} and its contents
+  * {% jdoc java::lang.java.ast.MethodLikeNode %}
+    * Its methods will also be removed from its implementations,
+      {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration %},
+      {% jdoc java::lang.java.ast.ASTLambdaExpression %}.
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getImage() %} will be removed. Please use `getSimpleName()`
+    instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
+    {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
+    {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
+  * Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
+    have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+  * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
+    following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
+  * {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
+    anymore come 7.0.0. Test the type of the expression nested within it.
+  * {% jdoc java::lang.java.metrics.JavaMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+  * {% jdoc !!java::lang.java.ast.ASTArguments#getArgumentCount() %}.
+    Use {% jdoc java::lang.java.ast.ASTArguments#size() %} instead.
+  * {% jdoc !!java::lang.java.ast.ASTFormalParameters#getParameterCount() %}.
+    Use {% jdoc java::lang.java.ast.ASTFormalParameters#size() %} instead.
+* pmd-apex
+  * {% jdoc java::lang.apex.metrics.ApexMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+
 
 ### External Contributions
 
-*   [#1694](https://github.com/pmd/pmd/pull/1694): \[apex] New rules for test method and assert statements - [triandicAnt](https://github.com/triandicAnt)
-*   [#1697](https://github.com/pmd/pmd/pull/1697): \[doc] Update CPD documentation - [Matías Fraga](https://github.com/matifraga)
-*   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
-*   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
-*   [#1709](https://github.com/pmd/pmd/pull/1709): \[java] Detect while loops with literal booleans conditions - [David Burström](https://github.com/davidburstromspotify)
-*   [#1717](https://github.com/pmd/pmd/pull/1717): \[java] Fix false positive in useTryWithResources when using a custom close method with multiple arguments - [Rishabh Jain](https://github.com/jainrish)
-*   [#1724](https://github.com/pmd/pmd/pull/1724): \[doc] Correct property override example - [Felix W. Dekker](https://github.com/FWDekker)
-*   [#1737](https://github.com/pmd/pmd/pull/1737): \[java] fix escaping of CommentDefaultAccessModifier documentation - [itaigilo](https://github.com/itaigilo)
+*   [#2251](https://github.com/pmd/pmd/pull/2251): \[java] FP for InvalidLogMessageFormat when using slf4j-Markers - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#2253](https://github.com/pmd/pmd/pull/2253): \[modelica] Remove duplicated dependencies - [Piotrek Żygieło](https://github.com/pzygielo)
+*   [#2256](https://github.com/pmd/pmd/pull/2256): \[doc] Corrected XML attributes in release notes - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2276](https://github.com/pmd/pmd/pull/2276): \[java] AppendCharacterWithCharRule ignore literals in expressions - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#2278](https://github.com/pmd/pmd/pull/2278): \[java] fix UnusedImports rule for ambiguous static on-demand imports - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#2279](https://github.com/pmd/pmd/pull/2279): \[apex] Add support for suppressing violations using the // NOPMD comment - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 
 {% endtocmaker %}
 

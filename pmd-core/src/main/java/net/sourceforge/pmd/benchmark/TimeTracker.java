@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * A time tracker class to measure time spent on different sections of PMD analysis.
  * The class is thread-aware, allowing to differentiate CPU and wall clock time.
- * 
+ *
  * @author Juan Martín Sotuyo Dodero
  */
 public final class TimeTracker {
@@ -37,7 +37,7 @@ public final class TimeTracker {
          // noop
         }
     };
-    
+
     static {
         TIMER_ENTRIES = new ThreadLocal<Queue<TimerEntry>>() {
             @Override
@@ -46,11 +46,11 @@ public final class TimeTracker {
             }
         };
     }
-    
+
     private TimeTracker() {
         throw new AssertionError("Can't instantiate utility class");
     }
-    
+
     /**
      * Starts global tracking. Allows tracking operations to take place and starts the wall clock.
      * Must be called once PMD starts if tracking is desired, no tracking will be performed otherwise.
@@ -61,7 +61,7 @@ public final class TimeTracker {
         ACCUMULATED_RESULTS.clear(); // just in case
         initThread(); // init main thread
     }
-    
+
     /**
      * Stops global tracking. Stops the wall clock. All further operations will be treated as NOOP.
      * @return The timed data obtained through the run.
@@ -70,19 +70,19 @@ public final class TimeTracker {
         if (!trackTime) {
             return null;
         }
-        
+
         finishThread(); // finish the main thread
         trackTime = false;
-        
+
         // Fix UNACCOUNTED metric (total time is meaningless as is call count)
         final TimedResult unaccountedResult = ACCUMULATED_RESULTS.get(
                 new TimedOperationKey(TimedOperationCategory.UNACCOUNTED, null));
         unaccountedResult.totalTimeNanos.set(unaccountedResult.selfTimeNanos.get());
         unaccountedResult.callCount.set(0);
-        
+
         return new TimingReport(System.currentTimeMillis() - wallClockStartMillis, ACCUMULATED_RESULTS);
     }
-    
+
     /**
      * Initialize a thread, starting to track it's own time.
      */
@@ -90,10 +90,10 @@ public final class TimeTracker {
         if (!trackTime) {
             return;
         }
-        
+
         startOperation(TimedOperationCategory.UNACCOUNTED);
     }
-    
+
     /**
      * Finishes tracking a thread.
      */
@@ -101,15 +101,15 @@ public final class TimeTracker {
         if (!trackTime) {
             return;
         }
-        
+
         finishOperation(0);
-        
+
         // clean up thread-locals in multithread analysis
         if (TIMER_ENTRIES.get().isEmpty()) {
             TIMER_ENTRIES.remove();
         }
     }
-    
+
     /**
      * Starts tracking an operation.
      * @param category The category under which to track the operation.
@@ -118,7 +118,7 @@ public final class TimeTracker {
     public static TimedOperation startOperation(final TimedOperationCategory category) {
         return startOperation(category, null);
     }
-    
+
     /**
      * Starts tracking an operation.
      * @param category The category under which to track the operation.
@@ -129,11 +129,11 @@ public final class TimeTracker {
         if (!trackTime) {
             return NOOP_TIMED_OPERATION;
         }
-        
+
         TIMER_ENTRIES.get().add(new TimerEntry(category, label));
         return new TimedOperationImpl();
     }
-    
+
     /**
      * Finishes tracking an operation.
      * @param extraDataCounter An optional additional data counter to track along the measurements.
@@ -157,11 +157,11 @@ public final class TimeTracker {
 
         // Update counters and let next element on the stack ignore the time we spent
         final long delta = result.accumulate(timerEntry, extraDataCounter);
-        if (!queue.isEmpty()) { 
+        if (!queue.isEmpty()) {
             queue.peek().inNestedOperationsNanos += delta;
         }
     }
-    
+
     /**
      * An entry in the open timers queue. Defines an operation that has started and hasn't finished yet.
      */
@@ -169,7 +169,7 @@ public final class TimeTracker {
         /* package */ final TimedOperationKey operation;
         /* package */ final long start;
         /* package */ long inNestedOperationsNanos = 0;
-        
+
         /* package */ TimerEntry(final TimedOperationCategory category, final String label) {
             this.operation = new TimedOperationKey(category, label);
             this.start = System.nanoTime();
@@ -180,7 +180,7 @@ public final class TimeTracker {
             return "TimerEntry for " + operation;
         }
     }
-    
+
     /**
      * Aggregate results measured so far for a given category + label.
      */
@@ -189,7 +189,7 @@ public final class TimeTracker {
         /* package */ AtomicLong selfTimeNanos = new AtomicLong();
         /* package */ AtomicInteger callCount = new AtomicInteger();
         /* package */ AtomicLong extraDataCounter = new AtomicLong();
-        
+
         /**
          * Adds a new {@link TimerEntry} to the results.
          * @param timerEntry The entry to be added
@@ -198,15 +198,15 @@ public final class TimeTracker {
          */
         /* package */ long accumulate(final TimerEntry timerEntry, final long extraData) {
             final long delta = System.nanoTime() - timerEntry.start;
-            
+
             totalTimeNanos.getAndAdd(delta);
             selfTimeNanos.getAndAdd(delta - timerEntry.inNestedOperationsNanos);
             callCount.getAndIncrement();
             extraDataCounter.getAndAdd(extraData);
-            
+
             return delta;
         }
-        
+
         /**
          * Merges the times (and only the times) from another {@link TimedResult} into self.
          * @param timedResult The {@link TimedResult} to merge
@@ -216,14 +216,14 @@ public final class TimeTracker {
             selfTimeNanos.getAndAdd(timedResult.selfTimeNanos.get());
         }
     }
-    
+
     /**
      * A unique identifier for a timed operation
      */
     /* package */ static class TimedOperationKey {
         /* package */ final TimedOperationCategory category;
         /* package */ final String label;
-        
+
         /* package */ TimedOperationKey(final TimedOperationCategory category, final String label) {
             this.category = category;
             this.label = label;

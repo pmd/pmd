@@ -57,6 +57,10 @@ public final class LanguageRegistry {
         }
     }
 
+    /**
+     * @deprecated Use the static methods instead, will be made private
+     */
+    @Deprecated
     public static LanguageRegistry getInstance() {
         return instance;
     }
@@ -98,6 +102,10 @@ public final class LanguageRegistry {
         return null;
     }
 
+    /**
+     * @deprecated This is not useful, will be removed with 7.0.0
+     */
+    @Deprecated
     public static LanguageVersion findLanguageVersionByTerseName(String terseNameAndVersion) {
         String version;
         String terseName;
@@ -129,6 +137,10 @@ public final class LanguageRegistry {
         return languages;
     }
 
+    /**
+     * @deprecated This is not useful, will be removed with 7.0.0
+     */
+    @Deprecated
     public static List<LanguageVersion> findAllVersions() {
         List<LanguageVersion> versions = new ArrayList<>();
         for (Language language : getLanguages()) {
@@ -149,6 +161,10 @@ public final class LanguageRegistry {
         return new ArrayList<>(getLanguages());
     }
 
+    /**
+     * @deprecated This is too specific, will be removed with 7.0.0
+     */
+    @Deprecated
     public static String commaSeparatedTerseNamesForLanguage(List<Language> languages) {
         StringBuilder builder = new StringBuilder();
         for (Language language : languages) {
@@ -160,6 +176,10 @@ public final class LanguageRegistry {
         return builder.toString();
     }
 
+    /**
+     * @deprecated This is too specific, will be removed with 7.0.0
+     */
+    @Deprecated
     public static String commaSeparatedTerseNamesForLanguageVersion(List<LanguageVersion> languageVersions) {
         if (languageVersions == null || languageVersions.isEmpty()) {
             return "";

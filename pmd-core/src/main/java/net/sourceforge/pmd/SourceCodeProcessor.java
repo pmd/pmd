@@ -83,32 +83,42 @@ public class SourceCodeProcessor {
 
         // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
-            // Is the cache up to date?
-            if (configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
-                for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
-                    ctx.getReport().addRuleViolation(rv);
-                }
-                return;
+            if (isCacheUpToDate(ctx)) {
+                reportCachedRuleViolations(ctx);
+            } else {
+                processSourceCodeWithoutCache(sourceCode, ruleSets, ctx);
             }
+        }
+    }
 
-            try {
-                ruleSets.start(ctx);
-                processSource(sourceCode, ruleSets, ctx);
-            } catch (ParseException pe) {
-                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
-                throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);
-            } catch (Exception e) {
-                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
-                throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
-            } finally {
-                ruleSets.end(ctx);
-            }
+    private boolean isCacheUpToDate(final RuleContext ctx) {
+        return configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile());
+    }
+
+    private void reportCachedRuleViolations(final RuleContext ctx) {
+        for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
+            ctx.getReport().addRuleViolation(rv);
+        }
+    }
+
+    private void processSourceCodeWithoutCache(final Reader sourceCode, final RuleSets ruleSets, final RuleContext ctx) throws PMDException {
+        try {
+            ruleSets.start(ctx);
+            processSource(sourceCode, ruleSets, ctx);
+        } catch (ParseException pe) {
+            configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
+            throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
+        } catch (Exception e) {
+            configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
+            throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
+        } finally {
+            ruleSets.end(ctx);
         }
     }
 
     private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
-            Node rootNode = parser.parse(ctx.getSourceCodeFilename(), sourceCode);
+            Node rootNode = parser.parse(String.valueOf(ctx.getSourceCodeFile()), sourceCode);
             ctx.getReport().suppress(parser.getSuppressMap());
             return rootNode;
         }

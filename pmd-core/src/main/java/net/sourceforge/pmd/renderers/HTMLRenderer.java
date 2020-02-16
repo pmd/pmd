@@ -78,7 +78,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        Writer writer = getWriter();
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
@@ -88,13 +87,11 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         glomRuleViolations(writer, violations);
     }
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         writer.write("</table>");
         glomProcessingErrors(writer, errors);
         if (showSuppressedViolations) {
@@ -119,7 +116,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
             buf.append("<td width=\"*%\">"
-                    + maybeWrap(StringEscapeUtils.escapeHtml4(rv.getFilename()),
+                    + maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(rv.getFilename())),
                             linePrefix == null ? "" : linePrefix + Integer.toString(rv.getBeginLine()))
                     + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
@@ -158,7 +155,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td>" + pe.getFile() + "</td>" + PMD.EOL);
+            buf.append("<td>" + determineFileName(pe.getFile()) + "</td>" + PMD.EOL);
             buf.append("<td><pre>" + pe.getDetail() + "</pre></td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             writer.write(buf.toString());
@@ -186,7 +183,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td align=\"left\">" + sv.getRuleViolation().getFilename() + "</td>" + PMD.EOL);
+            buf.append("<td align=\"left\">" + determineFileName(sv.getRuleViolation().getFilename()) + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getBeginLine() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getRule().getName() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
@@ -197,7 +194,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
         writer.write("</table>");
     }
-    
+
     private void glomConfigurationErrors(final Writer writer, final List<ConfigurationError> configErrors) throws IOException {
         if (configErrors.isEmpty()) {
             return;

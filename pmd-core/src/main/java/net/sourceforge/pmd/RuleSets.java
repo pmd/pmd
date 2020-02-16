@@ -258,7 +258,7 @@ public class RuleSets {
     /**
      * Retrieves a checksum of the rulesets being used. Any change to any rule
      * of any ruleset should trigger a checksum change.
-     * 
+     *
      * @return The checksum for this ruleset collection.
      */
     public long getChecksum() {

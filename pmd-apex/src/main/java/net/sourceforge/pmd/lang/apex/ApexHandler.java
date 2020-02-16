@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsComputer;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
@@ -59,6 +59,7 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
         return new ApexParser(parserOptions);
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse) {
         return rootNode -> new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
@@ -70,21 +71,24 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
         return myMetricsProvider;
     }
 
-
     private static class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
 
         @SuppressWarnings("unchecked")
         ApexMetricsProvider() {
             // a wild double cast
-            super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class, ApexMetricsComputer.getInstance());
+            super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class);
         }
-
 
         @Override
         public List<ApexClassMetricKey> getAvailableTypeMetrics() {
             return Arrays.asList(ApexClassMetricKey.values());
         }
 
+
+        @Override
+        protected List<ASTMethod> findOps(ASTUserClassOrInterface<?> astUserClassOrInterface) {
+            return ApexMetrics.findOps(astUserClassOrInterface);
+        }
 
         @Override
         public List<ApexOperationMetricKey> getAvailableOperationMetrics() {

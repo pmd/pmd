@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.data.Identifier;
@@ -54,7 +55,7 @@ import com.google.common.collect.ListMultimap;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -412,9 +413,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private void recursivelyEvaluateCRUDMethodCalls(final AbstractApexNode<?> self,
             final Set<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
         if (blockStatement != null) {
-            int numberOfStatements = blockStatement.jjtGetNumChildren();
+            int numberOfStatements = blockStatement.getNumChildren();
             for (int i = 0; i < numberOfStatements; i++) {
-                Node n = blockStatement.jjtGetChild(i);
+                Node n = blockStatement.getChild(i);
 
                 if (n instanceof ASTIfElseBlockStatement) {
                     List<ASTBlockStatement> innerBlocks = n.findDescendantsOfType(ASTBlockStatement.class);

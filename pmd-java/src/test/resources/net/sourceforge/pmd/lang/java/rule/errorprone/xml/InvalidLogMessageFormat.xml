@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>missing argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+	public void call() {
+		final String oneArg = "one argument";
+		LOGGER.error("forget the arg {} and {}", oneArg);
+	}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>too many arguments</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+	private final String MESSAGE = "too many args {}";
+
+	public void call() {
+		LOGGER.error(MESSAGE, "arg1", "arg2");
+	}
+}
+         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Logger without problems</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+	public void call() {
+		final String message = "expected {} argument";
+		LOGGER.error(message, 1);
+	}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+         <description>ignore the exception param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+	public void call() {
+		LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
+	}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class cast exception with Method calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodCallClassCastExceptionProblem {
+    public void foo() {
+        // a method call
+        otherMethod();
+    }
+
+    private void otherMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullPointerTypeProblem {
+    public void foo() {
+        java.util.StringTokenizer st = new java.util.StringTokenizer("a.b.c.d", ".");
+        while (st.hasMoreTokens()) {
+            System.out.println(st.nextToken());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1509 [java] InvalidSlf4jMessageFormat NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package my.test;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Test {
+
+    private static final Logger log = LoggerFactory.getLogger(Test.class);
+
+    public static void main(String[] args) {
+        log.info("1" + "2");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1500 [java] InvalidSlf4jMessageFormat: doesn't ignore exception param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvalidSlf4jExceptionTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidSlf4jExceptionTest.class);
+
+    public void foo() {
+        try {
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            try {
+                LOGGER.error("Exception was thrown during conversion from tc model: {}.", jsonMarshaller.marshall(tcmport));
+            } catch (IOException e1) {
+                LOGGER.error("Problem to marshall to json tcImport: {}", tcsTripImport, e1);
+            }
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1541 [java] InvalidSlf4jMessageFormat: False positive with placeholder and exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvalidSl4jExceptionBug1541 {
+    private static final Logger log = LoggerFactory.getLogger(InvalidSl4jExceptionBug1541.class);
+
+    public static void main(String[] args) {
+        try {
+            // ...
+        } catch (Exception e) {
+            log.error("Arg1 = {}. Exception: {}", "arg1Value", e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1551 [java] InvalidSlf4jMessageFormat: fails with NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TestBug1551
+{
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestBug1551.class);
+
+    public void test()
+    {
+        String message = generateMessage();
+        LOGGER.info(message);
+    }
+
+    private String generateMessage()
+    {
+        return "message";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#365 [java] InvalidSlf4jMessageFormat: false positive with pre-incremented variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo
+{
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+    public void test()
+    {
+        int attempt = 0;
+        LOGGER.info("test (attempt #{})", ++attempt);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#721 NPE in PMD 5.8.1 InvalidSlf4jMessageFormat</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+        
+            public class LoggerHelper {
+                public LoggerHelper(String loggerName) {
+                    Logger logger = LoggerFactory.getLogger(loggerName);
+                    logger.info(message);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1291 [java] InvalidSlf4jMessageFormat false positive: too many arguments with string concatenation operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public final class Main {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
+    private Main() {
+    }
+
+    public static void main(String[] args) {
+        String string0 = "a";
+        String string1 = "b";
+        LOGGER.trace("first line {}"
+                + "second line {}",
+                string0,
+                string1);
+        String string2 = "c";
+        LOGGER.debug("first line {} "
+                + "second line {} and "
+                + "the third line {}.",
+                string0, string1, string2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE in static block (see #1512)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                static {
+                    Logger logger = LoggerFactory.getLogger(loggerName);
+                    logger.info(message);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>missing argument in static block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                static {
+                    final String pattern = "log: {}";
+
+                    Logger logger = LoggerFactory.getLogger(loggerName);
+                    logger.info(pattern, 1, 2);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE in lambda call (see #1512)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                final Logger logger = LoggerFactory.getLogger(loggerName);
+
+                final List<String> list = someMethod(message -> logger.info(message));
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>missing argument in lambda call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                final Logger logger = LoggerFactory.getLogger(loggerName);
+
+                final List<String> list = someMethod(message -> {
+                    final String pattern = "log: {}";
+
+                    logger.info(pattern, 1, 2);
+                });
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE in enums (see #1549)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+
+            public enum LoggerHelper {
+                INSTANCE;
+
+                private final Logger log = LoggerFactory.getLogger(LoggerHelper.class);
+
+                public void sendMessage(String message) {
+                    log.info(message);
+                }
+
+                public static void main(String[] args) {
+                    LoggerHelper.INSTANCE.sendMessage("A message");
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>missing argument in enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+
+            public enum LoggerHelper {
+                INSTANCE;
+
+                private static final String pattern = "log: {}";
+
+                public static void main(String[] args) {
+                    final Logger logger = LoggerFactory.getLogger(LoggerHelper.class);
+
+                    logger.info(pattern, 1, 2);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: missing argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Foo {
+	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+
+	public void call() {
+		final String oneArg = "one argument";
+		LOGGER.error("forget the arg {} and {}", oneArg);
+	}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: too many arguments</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Foo {
+	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+	private final String MESSAGE = "too many args {}";
+
+	public void call() {
+		LOGGER.error(MESSAGE, "arg1", "arg2");
+	}
+}
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: Logger without problems</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Foo {
+	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+
+	public void call() {
+		final String message = "expected {} argument";
+		LOGGER.error(message, 1);
+	}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+         <description>log4j2: ignore the exception param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Foo {
+	private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+
+	public void call() {
+		LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
+	}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: Class cast exception with Method calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodCallClassCastExceptionProblem {
+    public void foo() {
+        // a method call
+        otherMethod();
+    }
+
+    private void otherMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullPointerTypeProblem {
+    public void foo() {
+        java.util.StringTokenizer st = new java.util.StringTokenizer("a.b.c.d", ".");
+        while (st.hasMoreTokens()) {
+            System.out.println(st.nextToken());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Log4j2 NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package my.test;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Test {
+
+    private static final Logger log = LogManager.getLogger(Test.class);
+
+    public static void main(String[] args) {
+        log.info("1" + "2");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Log4j2: doesn't ignore exception param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class InvalidLog4j2ExceptionTest {
+
+    private static final Logger LOGGER = LogManager.getLogger(InvalidLog4j2ExceptionTest.class);
+
+    public void foo() {
+        try {
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            try {
+                LOGGER.error("Exception was thrown during conversion from tc model: {}.", jsonMarshaller.marshall(tcmport));
+            } catch (IOException e1) {
+                LOGGER.error("Problem to marshall to json tcImport: {}", tcsTripImport, e1);
+            }
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Log4j2: False positive with placeholder and exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class InvalidSl4jExceptionBug1541 {
+    private static final Logger log = LogManager.getLogger(InvalidSl4jExceptionBug1541.class);
+
+    public static void main(String[] args) {
+        try {
+            // ...
+        } catch (Exception e) {
+            log.error("Arg1 = {}. Exception: {}", "arg1Value", e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Log4j2: fails with NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class TestBug1551
+{
+    private static final Logger LOGGER = LogManager.getLogger(TestBug1551.class);
+
+    public void test()
+    {
+        String message = generateMessage();
+        LOGGER.info(message);
+    }
+
+    private String generateMessage()
+    {
+        return "message";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Log4j2: false positive with pre-incremented variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Foo
+{
+    private static final Logger LOGGER = LogManager.getLogger(Foo.class);
+
+    public void test()
+    {
+        int attempt = 0;
+        LOGGER.info("test (attempt #{})", ++attempt);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE in PMD 5.8.1 Log4j2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+        
+            public class LoggerHelper {
+                public LoggerHelper(String loggerName) {
+                    Logger logger = LogManager.getLogger(loggerName);
+                    logger.info(message);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Log4j2 false positive: too many arguments with string concatenation operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public final class Main {
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+
+    private Main() {
+    }
+
+    public static void main(String[] args) {
+        String string0 = "a";
+        String string1 = "b";
+        LOGGER.trace("first line {}"
+                + "second line {}",
+                string0,
+                string1);
+        String string2 = "c";
+        LOGGER.debug("first line {} "
+                + "second line {} and "
+                + "the third line {}.",
+                string0, string1, string2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: NPE in static block (see #1512)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+
+            public class LoggerHelper {
+                static {
+                    Logger logger = LogManager.getLogger(loggerName);
+                    logger.info(message);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: missing argument in static block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+
+            public class LoggerHelper {
+                static {
+                    final String pattern = "log: {}";
+
+                    Logger logger = LogManager.getLogger(loggerName);
+                    logger.info(pattern, 1, 2);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: NPE in lambda call (see #1512)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+
+            public class LoggerHelper {
+                final Logger logger = LogManager.getLogger(loggerName);
+
+                final List<String> list = someMethod(message -> logger.info(message));
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: missing argument in lambda call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+
+            public class LoggerHelper {
+                final Logger logger = LogManager.getLogger(loggerName);
+
+                final List<String> list = someMethod(message -> {
+                    final String pattern = "log: {}";
+
+                    logger.info(pattern, 1, 2);
+                });
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: NPE in enums (see #1549)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+            import org.apache.logging.log4j.LogManager;
+
+            public enum LoggerHelper {
+                INSTANCE;
+
+                private final Logger log = LogManager.getLogger(LoggerHelper.class);
+
+                public void sendMessage(String message) {
+                    log.info(message);
+                }
+
+                public static void main(String[] args) {
+                    LoggerHelper.INSTANCE.sendMessage("A message");
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: missing argument in enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            import org.apache.logging.log4j.Logger;
+            import org.apache.logging.log4j.LogManager;
+
+            public enum LoggerHelper {
+                INSTANCE;
+
+                private static final String pattern = "log: {}";
+
+                public static void main(String[] args) {
+                    final Logger logger = LogManager.getLogger(LoggerHelper.class);
+
+                    logger.info(pattern, 1, 2);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>log4j2: #2196 [java] InvalidLogMessageFormat does not detect extra parameters when no placeholders</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class InvalidLogMessageFormatTest {
+    private static final Logger logger = LogManager.getLogger("MyLogger");
+
+    public static void main(String[] args) {
+        logger.warn("foo {}", "flibble", "moo", "blah", "blah"); // PMD flags this
+        logger.warn("foo", "flibble", "moo", "blah", "blah"); // PMD doesn't flag this
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>slf4j: #2196 [java] InvalidLogMessageFormat does not detect extra parameters when no placeholders</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvalidLogMessageFormatTest {
+    private static final Logger logger = LoggerFactory.getLogger("MyLogger");
+
+    public static void main(String[] args) {
+        logger.warn("foo {}", "flibble", "moo", "blah", "blah"); // PMD flags this
+        logger.warn("foo", "flibble", "moo", "blah", "blah"); // PMD doesn't flag this
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ignore slf4j-Markers when detecting the number of arguments #2250</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,17</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.helpers.BasicMarkerFactory;
+
+public class InvalidLogMessageFormatTest {
+    private static final Logger logger = LoggerFactory.getLogger("MyLogger");
+    private static final Marker marker = BasicMarkerFactory.getMarker("MARKER");
+
+    public static void main(String[] args) {
+        logger.warn(marker, "foo {}", "flibble", "moo", "blah", "blah"); // wrong number of arguments
+        logger.warn(marker, "foo"); // correct: marker and no arguments
+        logger.warn(marker, "foo", new Exception()); // correct: marker and one exception parameter
+        logger.warn(marker, "foo {}", "bar"); // correct: marker and one argument
+
+        final var otherMarker = MarkerFactory.getMarker("OTHER_MARKER");
+        logger.warn(otherMarker, "foo"); // gets flagged as we can't statically determine the type of the "otherMarker" variable
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat false-positive for a lambda argument #2255</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class InvalidLogMessageFormatTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidLogMessageFormatTest.class);
+
+    private InvalidLogMessageFormatTest() {
+    }
+
+    public static void main(String[] args) {
+        foo(exception -> LOGGER.error("Foo", exception));
+    }
+
+    private static void foo(Consumer<Throwable> consumer) {
+        consumer.accept(new IllegalArgumentException());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <description>[java] InvalidLogMessageFormat false-negative for a lambda argument #2255</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>11,13,16</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class InvalidLogMessageFormatTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidLogMessageFormatTest.class);
+
+    private InvalidLogMessageFormatTest() {
+    }
+
+    public static void main(String[] args) {
+        foo(arg -> LOGGER.error("Foo", arg)); // missing violation: extra argument, that is not a exception
+        // explicit cast helps type resolution
+        foo((String arg) -> LOGGER.error("Foo", arg)); // violation: extra argument, that is not a exception
+        foo((String arg) -> LOGGER.error("Foo {}", arg)); // no violation: correct number of arguments
+        foo(arg -> LOGGER.error("Foo {}", arg)); // no violation: correct number of arguments
+        foo(arg -> LOGGER.error("Foo {} {}", arg)); // violation: missing argument
+    }
+
+    private static void foo(Consumer<String> consumer) {
+        consumer.accept("bar");
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

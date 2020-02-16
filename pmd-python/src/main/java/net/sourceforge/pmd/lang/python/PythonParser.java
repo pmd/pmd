@@ -24,7 +24,7 @@ public class PythonParser extends AbstractParser {
 
     /**
      * Creates a new Python Parser.
-     * 
+     *
      * @param parserOptions
      *            the options
      */

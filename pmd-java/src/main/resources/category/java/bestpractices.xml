@@ -131,6 +131,58 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidMessageDigestField"
+          language="java"
+          since="6.18.0"
+          message="You shouldn't declare field of MessageDigest type, because unsynchronized access could cause problems"
+          typeResolution="true"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidmessagedigestfield">
+        <description>
+            Declaring a MessageDigest instance as a field make this instance directly available to multiple threads.
+            Such sharing of MessageDigest instances should be avoided if possible since it leads to wrong results
+            if the access is not synchronized correctly.
+            Just create a new instance and use it locally, where you need it.
+            Creating a new instance is easier than synchronizing access to a shared instance.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//FieldDeclaration[pmd-java:typeIs('java.security.MessageDigest')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.security.MessageDigest;
+public class AvoidMessageDigestFieldExample {
+    private final MessageDigest sharedMd;
+    public AvoidMessageDigestFieldExample() throws Exception {
+        sharedMd = MessageDigest.getInstance("SHA-256");
+    }
+    public byte[] calculateHashShared(byte[] data) {
+        // sharing a MessageDigest like this without synchronizing access
+        // might lead to wrong results
+        sharedMd.reset();
+        sharedMd.update(data);
+        return sharedMd.digest();
+    }
+
+    // better
+    public byte[] calculateHash(byte[] data) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(data);
+        return md.digest();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidPrintStackTrace"
           language="java"
           since="3.2"
@@ -398,6 +450,51 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="DoubleBraceInitialization"
+          language="java"
+          since="6.16.0"
+          message="Double-brace initialization should be avoided"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#doublebraceinitialization">
+        <description>
+            Double brace initialisation is a pattern to initialise eg collections concisely. But it implicitly
+            generates a new .class file, and the object holds a strong reference to the enclosing object. For those
+            reasons, it is preferable to initialize the object normally, even though it's verbose.
+
+            This rule counts any anonymous class which only has a single initializer as an instance of double-brace
+            initialization. There is currently no way to find out whether a method called in the initializer is not
+            accessible from outside the anonymous class, and those legit cases should be suppressed for the time being.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//AllocationExpression/ClassOrInterfaceBody[count(*)=1]/*/Initializer[@Static=false()]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example><![CDATA[
+// this is double-brace initialization
+return new ArrayList<String>(){{
+    add("a");
+    add("b");
+    add("c");
+}};
+
+// the better way is to not create an anonymous class:
+List<String> a = new ArrayList<>();
+a.add("a");
+a.add("b");
+a.add("c");
+return a;
+]]>
+        </example>
+    </rule>
+
+
     <rule name="ForLoopCanBeForeach"
           language="java"
           since="6.0.0"
@@ -493,8 +590,8 @@ through the @RunWith(Suite.class) annotation.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
-[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+//ClassOrInterfaceBodyDeclaration
+[MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
 [not(MethodDeclaration/Block//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
@@ -525,7 +622,7 @@ public class GoodTest {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">
         <description>
-In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
+In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.
 JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.
         </description>
@@ -535,7 +632,7 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
                 <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration/MethodDeclarator[@Image='tearDown']]
+    [MethodDeclaration[@Name='tearDown']]
     [count(Annotation//Name[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
@@ -569,7 +666,7 @@ public class MyTest2 {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusebeforeannotation">
         <description>
-In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
+In JUnit 3, the setUp method was used to set up all data entities required in running tests.
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.
 JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.
         </description>
@@ -579,7 +676,7 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
                 <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration/MethodDeclarator[@Image='setUp']]
+    [MethodDeclaration[@Name='setUp']]
     [count(Annotation//Name[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
@@ -613,7 +710,7 @@ public class MyTest2 {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
-In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
+In JUnit 3, the framework executed all methods which started with the word test as a unit test.
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
         </description>
@@ -623,10 +720,10 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration[
-       matches(@Image, $testClassPattern)
+       matches(@SimpleName, $testClassPattern)
         or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
 
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true() and starts-with(@Name, 'test')]]
     [not(Annotation//Name[
         pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -661,7 +758,7 @@ public class MyTest {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitAssertionsShouldIncludeMessageRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage">
         <description>
-JUnit assertions should include an informative message - i.e., use the three-argument version of 
+JUnit assertions should include an informative message - i.e., use the three-argument version of
 assertEquals(), not the two-argument version.
         </description>
         <priority>3</priority>
@@ -687,7 +784,7 @@ public class Foo extends TestCase {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestcontainstoomanyasserts">
         <description>
-Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which 
+Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.
 
@@ -699,7 +796,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclarator[@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
+//MethodDeclaration[@Name[matches(.,'^test')] or ../Annotation/MarkerAnnotation/Name[
            pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -708,10 +805,11 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         or pmd-java:typeIs('org.testng.annotations.Test')
     ]]
-    [count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
+    [count(.//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
 ]]>
                 </value>
             </property>
+            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
@@ -739,7 +837,7 @@ public class MyTestCase extends TestCase {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitTestsShouldIncludeAssertRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert">
         <description>
-JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
+JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.
         </description>
         <priority>3</priority>
@@ -829,7 +927,7 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#methodreturnsinternalarray">
         <description>
-Exposing internal arrays to the caller violates object encapsulation since elements can be 
+Exposing internal arrays to the caller violates object encapsulation since elements can be
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
         </description>
         <priority>3</priority>
@@ -1203,6 +1301,9 @@ class Foo{
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedformalparameter">
         <description>
 Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Removing unused formal parameters from public methods could cause a ripple effect through the code base.
+Hence, by default, this rule only considers private methods. To include non-private methods, set the
+`checkAll` property to `true`.
         </description>
         <priority>3</priority>
         <example>
@@ -1354,7 +1455,7 @@ public class FooTest extends TestCase {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue">
         <description>
-This rule detects JUnit assertions in object references equality. These assertions should be made by 
+This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.
         </description>
         <priority>3</priority>
@@ -1403,7 +1504,7 @@ public class FooTest extends TestCase {
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue">
         <description>
-This rule detects JUnit assertions in object references equality. These assertions should be made 
+This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.
         </description>
         <priority>3</priority>
@@ -1586,6 +1687,7 @@ public class TryWithResources {
           since="5.0"
           message="Consider using varargs for methods or constructors which take an array the last parameter."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
         <description>
 Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
@@ -1607,12 +1709,15 @@ having to deal with the creation of an array.
     [not (./Type/PrimitiveType[@Image='byte'])]
     [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
     [not(
-        ancestor::MethodDeclaration
-            [@Public=true() and @Static=true()]
-            [child::ResultType[@Void=true()]] and
-        ancestor::MethodDeclarator[@Image='main'] and
-        ..[@ParameterCount=1] and
-        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
+         ancestor::MethodDeclaration
+            [    @Public=true()
+             and @Static=true()
+             and child::ResultType[@Void=true()]
+             and @Name = 'main'
+             and @Arity = 1
+            ]
+         (: Type of the formal parameter here. :)
+         and pmd-java:typeIs('java.lang.String[]')
     )]
 ]]>
                 </value>

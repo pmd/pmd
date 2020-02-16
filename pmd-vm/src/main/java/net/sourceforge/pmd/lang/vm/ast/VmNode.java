@@ -12,9 +12,26 @@ public interface VmNode extends Node {
      */
     Object jjtAccept(VmParserVisitor visitor, Object data);
 
+
     /**
      * Accept the visitor. *
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(VmParserVisitor visitor, Object data);
+
+
+    @Override
+    VmNode getChild(int index);
+
+
+    @Override
+    VmNode getParent();
+
+
+    @Override
+    Iterable<? extends VmNode> children();
 
 }

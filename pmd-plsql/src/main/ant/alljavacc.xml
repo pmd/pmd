@@ -56,6 +56,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTName.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTOuterJoinClause.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTOuterJoinType.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTInlineConstraint.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTOutOfLineConstraint.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPackageBody.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPackageSpecification.java" />
@@ -66,6 +67,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTRegexpLikeCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectIntoStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectStatement.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTStringLiteral.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSubqueryOperation.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerTimingPointSection.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerUnit.java" />
@@ -139,5 +141,20 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
 ]]></replacevalue>
         </replace>
 
+
+        <replaceregexp>
+            <regexp pattern="class|interface" />
+            <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset dir="${target}/net/sourceforge/pmd/lang/plsql/ast">
+                <exclude name="AST*.java" />
+            </fileset>
+        </replaceregexp>
+
+        <replaceregexp>
+            <regexp pattern="public class ParseException " />
+            <substitution expression=" /** @deprecated Use superclass {@link net.sourceforge.pmd.lang.ast.ParseException} */
+@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
+            <fileset file="${target}/net/sourceforge/pmd/lang/plsql/ast/ParseException.java"/>
+        </replaceregexp>
     </target>
 </project>

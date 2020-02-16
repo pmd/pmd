@@ -115,6 +115,85 @@ public class Foo {
         <code-ref id="nested-class-with-default-access-modifier"/>
     </test-code>
 
+    <code-fragment id="top-level-annotations-with-default-access-modifier"><![CDATA[
+@interface Bar {}
+
+public @interface Foo {}
+
+@SomeAnnotation
+@interface Baz {}
+
+@VisibleForTesting
+@interface Foobar {}
+
+/* default */ @interface FoobarWithComment {}
+    ]]></code-fragment>
+    <test-code>
+        <description>Top-level annotations with default access modifier are ignored by default (#1880)</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="top-level-annotations-with-default-access-modifier"/>
+    </test-code>
+
+    <test-code>
+        <description>Top-level annotations with default access modifier checks enabled with property</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-annotations-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-enums-with-default-access-modifier"><![CDATA[
+enum Bar {}
+
+public enum Foo {}
+
+@SomeAnnotation
+enum Baz {}
+
+@VisibleForTesting
+enum Foobar {}
+
+/* default */ enum FoobarWithComment {}
+    ]]></code-fragment>
+    <test-code>
+        <description>Top-level enums with default access modifier are ignored by default (#1880)</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="top-level-enums-with-default-access-modifier"/>
+    </test-code>
+    <test-code>
+        <description>Top-level enums with default access modifier checks enabled with property</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-enums-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-classes-with-default-access-modifier"><![CDATA[
+class Bar {}
+
+public class Foo {}
+
+@SomeAnnotation
+class Baz {}
+
+@VisibleForTesting
+class Foobar {}
+
+/* default */ class FoobarWithComment {}
+    ]]></code-fragment>
+    <test-code>
+        <description>Top-level classes with default access modifier are ignored by default (#1880)</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="top-level-classes-with-default-access-modifier"/>
+    </test-code>
+    <test-code>
+        <description>Top-level classes with default access modifier checks enabled with property</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-classes-with-default-access-modifier"/>
+    </test-code>
+
     <code-fragment id="own-regex-to-default-access-modifier-rule"><![CDATA[
 public class Foo {
 	/* default */ final String stringValue = "stringValue";
@@ -274,5 +353,26 @@ public class Foo {
                 <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
             </expected-messages>
         <code-ref id="constructor-with-default-access-modifier-rule"/>
+    </test-code>
+
+    <test-code>
+        <description>Nested classes inside interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface MyInterface {
+    class MyNestedClass {} // this is always implicitly public static
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested classes inside enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum MyEnum {
+    FOO;
+    class MyNestedClass {}
+}
+        ]]></code>
     </test-code>
 </test-data>

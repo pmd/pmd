@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
@@ -41,7 +40,6 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
             return;
         }
 
-        Writer writer = getWriter();
         StringBuilder sb = new StringBuilder(500);
         String filename = null;
         String lineSep = PMD.EOL;
@@ -50,12 +48,13 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             sb.setLength(0);
             RuleViolation rv = violations.next();
-            if (!rv.getFilename().equals(filename)) { // New File
+            String nextFilename = determineFileName(rv.getFilename());
+            if (!nextFilename.equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");
                     colorize = false;
                 }
-                filename = rv.getFilename();
+                filename = nextFilename;
                 sb.append("<table border=\"0\" width=\"80%\">");
                 sb.append("<tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;").append(filename)
                         .append("</font></tr>");
@@ -83,7 +82,6 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         StringBuilder sb = new StringBuilder();
 
         writer.write("<br>");
@@ -101,13 +99,13 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(error.getFile()).append("</font></td>");
+                sb.append("<td><font class=body>").append(determineFileName(error.getFile())).append("</font></td>");
                 sb.append("<td><font class=body><pre>").append(error.getDetail()).append("</pre></font></td></tr>");
             }
             sb.append("</table>");
             writer.write(sb.toString());
         }
-        
+
         if (!configErrors.isEmpty()) {
             sb.setLength(0);
             sb.append("<table border=\"0\" width=\"80%\">");

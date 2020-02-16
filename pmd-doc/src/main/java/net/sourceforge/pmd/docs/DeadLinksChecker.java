@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +49,7 @@ public class DeadLinksChecker {
     private static final boolean CHECK_EXTERNAL_LINKS = Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
 
     // Markdown-Link: something in []'s followed by something in ()'s
-    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("\\[.*?\\]\\((.*?)\\)");
+    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((.*?)\\)");
 
     // Markdown permalink-header and captions
     private static final Pattern MD_HEADER_PERMALINK = Pattern.compile("permalink:\\s*(.*)");
@@ -77,9 +78,11 @@ public class DeadLinksChecker {
 
     public void checkDeadLinks(Path rootDirectory) {
         final Path pagesDirectory = rootDirectory.resolve("docs/pages");
+        final Path docsDirectory = rootDirectory.resolve("docs");
 
         if (!Files.isDirectory(pagesDirectory)) {
-            LOG.warning("can't check for dead links, didn't find \"pages\" directory at: " + pagesDirectory);
+            // docsDirectory is implicitly checked by this statement too
+            LOG.severe("can't check for dead links, didn't find \"pages\" directory at: " + pagesDirectory);
             System.exit(1);
         }
 
@@ -110,10 +113,14 @@ public class DeadLinksChecker {
                 linkCheck:
                 while (matcher.find()) {
                     final String linkText = matcher.group();
-                    final String linkTarget = matcher.group(1).replaceAll("^/+", ""); // remove the leading "/"
+                    final boolean isImageLink = matcher.group(1) != null;
+                    final String linkTarget = matcher.group(2);
                     boolean linkOk;
 
-                    if (linkTarget.startsWith(LOCAL_FILE_PREFIX)) {
+                    if (linkTarget.charAt(0) == '/') {
+                        // links must never start with / - they must be relative or start with https?//...
+                        linkOk = false;
+                    } else if (linkTarget.startsWith(LOCAL_FILE_PREFIX)) {
                         String localLinkPart = linkTarget.substring(LOCAL_FILE_PREFIX.length());
                         if (localLinkPart.contains("#")) {
                             localLinkPart = localLinkPart.substring(0, localLinkPart.indexOf('#'));
@@ -164,11 +171,20 @@ public class DeadLinksChecker {
                             continue;
                         }
 
-                        linkOk = linkTarget.isEmpty() || htmlPages.contains(linkTarget);
+                        if (isImageLink) {
+                            Path localResource = docsDirectory.resolve(linkTarget);
+                            linkOk = Files.exists(localResource);
+                        } else {
+                            linkOk = linkTarget.isEmpty() || htmlPages.contains(linkTarget);
+                        }
                     }
 
                     if (!linkOk) {
-                        addDeadLink(fileToDeadLinks, mdFile, new FutureTask<>(() -> String.format("%8d: %s", lineNo, linkText)));
+                        RunnableFuture<String> futureTask = new FutureTask<>(() -> String.format("%8d: %s", lineNo, linkText));
+                        // execute this task immediately in this thread.
+                        // External links are checked by another executor and don't end up here.
+                        futureTask.run();
+                        addDeadLink(fileToDeadLinks, mdFile, futureTask);
                     }
                 }
             }
@@ -322,6 +338,12 @@ public class DeadLinksChecker {
 
 
     public static void main(String[] args) throws IOException {
+        if (args.length != 1) {
+            System.err.println("Wrong arguments!");
+            System.err.println();
+            System.err.println("java " + DeadLinksChecker.class.getSimpleName() + " <project base directory>");
+            System.exit(1);
+        }
         final Path rootDirectory = Paths.get(args[0]).resolve("..").toRealPath();
 
         DeadLinksChecker deadLinksChecker = new DeadLinksChecker();

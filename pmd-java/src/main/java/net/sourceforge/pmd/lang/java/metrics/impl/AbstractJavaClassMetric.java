@@ -115,9 +115,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
         List<ASTAnyTypeBodyDeclaration> decls = node.getDeclarations();
 
         for (ASTAnyTypeBodyDeclaration decl : decls) {
-            if (decl.jjtGetNumChildren() > 0 && tClass.isInstance(decl.jjtGetChild(0))) {
-                result.add(tClass.cast(decl.jjtGetChild(0)));
-            }
+            result.addAll(decl.findChildrenOfType(tClass));
         }
 
         return result;

@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.lang.reflect.Field;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
 
 import apex.jorje.data.Identifier;
+import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
 public class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
@@ -27,14 +28,8 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
 
     @Override
     public String getImage() {
-        try {
-            Field field = node.getClass().getDeclaredField("name");
-            field.setAccessible(true);
-            Identifier name = (Identifier) field.get(node);
-            return name.getValue();
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        String apexName = node.getDefiningType().getApexName();
+        return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 
     @Override
@@ -68,5 +63,15 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
             }
         }
         return false;
+    }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getSuperInterfaceName() {
+        return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream().map(TypeRef::getNames)
+                .map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
+                .findFirst().orElse("");
     }
 }

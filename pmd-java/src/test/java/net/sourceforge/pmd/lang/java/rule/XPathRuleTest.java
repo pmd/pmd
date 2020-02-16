@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,9 +21,9 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
@@ -99,11 +100,29 @@ public class XPathRuleTest extends RuleTst {
         assertEquals(3, rv.getBeginLine());
     }
 
+    @Test
+    public void testFnPrefixOnSaxon() throws Exception {
+        rule.setXPath("//VariableDeclaratorId[fn:matches(@Image, 'fiddle')]");
+        rule.setVersion(XPathRuleQuery.XPATH_2_0);
+        Report report = getReportForTestString(rule, TEST2);
+        RuleViolation rv = report.iterator().next();
+        assertEquals(3, rv.getBeginLine());
+    }
+
+    @Test
+    public void testNoFnPrefixOnSaxon() throws Exception {
+        rule.setXPath("//VariableDeclaratorId[matches(@Image, 'fiddle')]");
+        rule.setVersion(XPathRuleQuery.XPATH_2_0);
+        Report report = getReportForTestString(rule, TEST2);
+        RuleViolation rv = report.iterator().next();
+        assertEquals(3, rv.getBeginLine());
+    }
+
 
     /**
      * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
      * in some cases in xpath 2.0
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -148,7 +167,7 @@ public class XPathRuleTest extends RuleTst {
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -191,8 +210,8 @@ public class XPathRuleTest extends RuleTst {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
+        ctx.setSourceCodeFile(new File("n/a"));
+        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;
     }

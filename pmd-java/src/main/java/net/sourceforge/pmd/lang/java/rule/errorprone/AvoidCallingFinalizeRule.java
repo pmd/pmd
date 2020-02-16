@@ -40,7 +40,7 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTPrimaryPrefix pp, Object ctx) {
-        List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
+        List<ASTPrimarySuffix> primarySuffixes = pp.getParent().findChildrenOfType(ASTPrimarySuffix.class);
         ASTPrimarySuffix firstSuffix = null;
         if (!primarySuffixes.isEmpty()) {
             firstSuffix = primarySuffixes.get(0);

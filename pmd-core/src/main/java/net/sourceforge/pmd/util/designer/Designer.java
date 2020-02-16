@@ -348,7 +348,7 @@ public class Designer implements ClipboardOwner {
         ASTTreeNode(Node theNode) {
             node = theNode;
 
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             if (parent != null) {
                 this.parent = new ASTTreeNode(parent);
             }
@@ -361,7 +361,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public int getChildCount() {
-            return node.jjtGetNumChildren();
+            return node.getNumChildren();
         }
 
         @Override
@@ -371,7 +371,7 @@ public class Designer implements ClipboardOwner {
 
         @Override
         public boolean isLeaf() {
-            return node.jjtGetNumChildren() == 0;
+            return node.getNumChildren() == 0;
         }
 
         @Override
@@ -412,9 +412,9 @@ public class Designer implements ClipboardOwner {
         public TreeNode getChildAt(int childIndex) {
 
             if (kids == null) {
-                kids = new ASTTreeNode[node.jjtGetNumChildren()];
+                kids = new ASTTreeNode[node.getNumChildren()];
                 for (int i = 0; i < kids.length; i++) {
-                    kids[i] = new ASTTreeNode(this.parent, node.jjtGetChild(i));
+                    kids[i] = new ASTTreeNode(this.parent, node.getChild(i));
                 }
             }
             return kids[childIndex];
@@ -566,12 +566,11 @@ public class Designer implements ClipboardOwner {
             if (dfaGraphRule != null) {
                 final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
-                ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
-                StringReader reader = new StringReader(codeEditorPane.getText());
+                ctx.setSourceCodeFile(new File("[no filename]." + languageVersion.getLanguage().getExtensions().get(0)));
                 PMDConfiguration config = new PMDConfiguration();
                 config.setDefaultLanguageVersion(languageVersion);
 
-                try {
+                try (StringReader reader = new StringReader(codeEditorPane.getText())) {
                     new SourceCodeProcessor(config).processSourceCode(reader, new RuleSets(rs), ctx);
                     // } catch (PMDException pmde) {
                     // loadTreeData(new ExceptionNode(pmde));
@@ -939,7 +938,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private String getXmlTreeCode() {
-        if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
+        if (codeEditorPane.getText() != null && !codeEditorPane.getText().trim().isEmpty()) {
             Node cu = getCompilationUnit();
             return getXmlTreeCode(cu);
         }

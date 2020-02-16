@@ -59,11 +59,11 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
         }
 
         for (ASTConditionalOrExpression element : orNodes) {
-            complexity += element.jjtGetNumChildren() - 1;
+            complexity += element.getNumChildren() - 1;
         }
 
         for (ASTConditionalAndExpression element : andNodes) {
-            complexity += element.jjtGetNumChildren() - 1;
+            complexity += element.getNumChildren() - 1;
         }
 
         return complexity;

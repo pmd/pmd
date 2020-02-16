@@ -92,7 +92,7 @@ public class Complicated {
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveclasslength">
         <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
+Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
         </description>
@@ -133,7 +133,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
     // ...
 }
-// preferred approach 
+// preferred approach
 public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     // ...
 }
@@ -260,8 +260,8 @@ public class Foo extends Bar {
           class="net.sourceforge.pmd.lang.apex.rule.design.StdCyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#stdcyclomaticcomplexity">
         <description>
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
         </description>
@@ -315,7 +315,7 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
+possibly through grouping related fields in new objects.  For example, a class with individual
 city/state/zip fields could park them within a single Address field.
         </description>
         <priority>3</priority>

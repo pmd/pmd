@@ -139,7 +139,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a getter. */
         private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 0
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).size() != 0
                 || node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }
@@ -158,7 +158,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 1
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).size() != 1
                 || !node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }

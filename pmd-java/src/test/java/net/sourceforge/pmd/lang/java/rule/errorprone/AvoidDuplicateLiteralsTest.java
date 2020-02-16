@@ -9,8 +9,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
 public class AvoidDuplicateLiteralsTest extends PmdRuleTst {
@@ -49,5 +51,14 @@ public class AvoidDuplicateLiteralsTest extends PmdRuleTst {
         assertTrue(res.contains("a"));
         assertTrue(res.contains("b"));
         assertTrue(res.contains("\\"));
+    }
+
+    @Test
+    public void testSeparatorPropertyWarning() throws Exception {
+        AvoidDuplicateLiteralsRule rule = new AvoidDuplicateLiteralsRule();
+        Assert.assertFalse(rule.isPropertyOverridden(AvoidDuplicateLiteralsRule.SEPARATOR_DESCRIPTOR));
+
+        Rule copy = rule.deepCopy();
+        Assert.assertFalse(copy.isPropertyOverridden(AvoidDuplicateLiteralsRule.SEPARATOR_DESCRIPTOR));
     }
 }

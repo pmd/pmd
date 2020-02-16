@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
+// package private
 abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements Annotatable {
 
     AbstractJavaAnnotatableNode(int i) {
@@ -21,7 +22,7 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
 
     @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
-        return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        return this.getParent().findChildrenOfType(ASTAnnotation.class);
     }
 
     @Override

@@ -4,19 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Decorates a control less visitor. This must be wrapped into a {@link JavaParserDecoratedVisitor} to work properly.
  *
- * @deprecated Visitor decorators are deprecated because they lead to fragile code.
- *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
  */
 @Deprecated
 public class JavaParserVisitorDecorator implements JavaParserControllessVisitor {
 
     private JavaParserVisitor visitor;
 
+    @InternalApi
+    @Deprecated
     public void setBase(JavaParserControllessVisitor base) {
         visitor = base;
     }
@@ -728,6 +731,31 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     @Override
     public Object visit(ASTModuleName node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledBlock node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledExpression node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
         return visitor.visit(node, data);
     }
 }

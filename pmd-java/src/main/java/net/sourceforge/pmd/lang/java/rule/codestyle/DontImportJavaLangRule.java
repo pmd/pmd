@@ -17,7 +17,7 @@ public class DontImportJavaLangRule extends AbstractJavaRule {
             return data;
         }
 
-        String img = node.jjtGetChild(0).getImage();
+        String img = node.getChild(0).getImage();
         if (img.startsWith(IMPORT_JAVA_LANG)) {
             if (!IMPORT_JAVA_LANG.equals(img)) {
                 if (img.indexOf('.', IMPORT_JAVA_LANG.length() + 1) != -1 || node.isImportOnDemand()) {

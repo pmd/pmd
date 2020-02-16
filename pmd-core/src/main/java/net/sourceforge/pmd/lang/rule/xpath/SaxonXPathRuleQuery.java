@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import net.sf.saxon.om.Item;
+import net.sf.saxon.om.NamespaceConstant;
 import net.sf.saxon.om.ValueRepresentation;
 import net.sf.saxon.sxpath.AbstractStaticContext;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -37,6 +38,7 @@ import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
+import net.sf.saxon.value.Value;
 
 /**
  * This is a Saxon based XPathRule query.
@@ -127,15 +129,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private ValueRepresentation getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
         if (descriptor.isMultiValue()) {
-            final List<?> val = (List<?>) value;
-            if (val.isEmpty()) {
-                return EmptySequence.getInstance();
-            }
-            final Item[] converted = new Item[val.size()];
-            for (int i = 0; i < val.size(); i++) {
-                converted[i] = getAtomicRepresentation(val.get(i));
-            }
-            return new SequenceExtent(converted);
+            return getSequenceRepresentation((List<?>) value);
         } else {
             return getAtomicRepresentation(value);
         }
@@ -171,8 +165,8 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
      */
     private Node getRootNode(final Node node) {
         Node root = node;
-        while (root.jjtGetParent() != null) {
-            root = root.jjtGetParent();
+        while (root.getParent() != null) {
+            root = root.getParent();
         }
         return root;
     }
@@ -192,6 +186,8 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             if (XPATH_1_0_COMPATIBILITY.equals(version)) {
                 ((AbstractStaticContext) xpathStaticContext).setBackwardsCompatibilityMode(true);
             }
+
+            ((IndependentContext) xpathEvaluator.getStaticContext()).declareNamespace("fn", NamespaceConstant.FN);
 
             // Register PMD functions
             Initializer.initialize((IndependentContext) xpathStaticContext);
@@ -221,7 +217,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
 
     /**
-     * Gets the Saxon representation of the parameter, if its type corresponds 
+     * Gets the Saxon representation of the parameter, if its type corresponds
      * to an XPath 2.0 atomic datatype.
      *
      * @param value The value to convert
@@ -259,5 +255,16 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             // We could maybe use UntypedAtomicValue
             throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());
         }
+    }
+
+    public static Value getSequenceRepresentation(List<?> list) {
+        if (list == null || list.isEmpty()) {
+            return EmptySequence.getInstance();
+        }
+        final Item[] converted = new Item[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            converted[i] = getAtomicRepresentation(list.get(i));
+        }
+        return new SequenceExtent(converted);
     }
 }

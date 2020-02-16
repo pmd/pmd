@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
+import java.io.File;
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class XMLRendererTest extends AbstractRendererTst {
+public class XMLRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
@@ -35,7 +36,7 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return getHeader() + "<file name=\"n/a\">" + PMD.EOL
+        return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
@@ -47,7 +48,7 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return getHeader() + "<file name=\"n/a\">" + PMD.EOL
+        return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
@@ -78,14 +79,14 @@ public class XMLRendererTest extends AbstractRendererTst {
         return result;
     }
 
-    private static RuleViolation createRuleViolation(String description) {
+    private RuleViolation createRuleViolation(String description) {
         DummyNode node = new DummyNode(1);
         node.testingOnlySetBeginLine(1);
         node.testingOnlySetBeginColumn(1);
         node.testingOnlySetEndLine(1);
         node.testingOnlySetEndColumn(1);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, description);
     }
 
@@ -116,7 +117,7 @@ public class XMLRendererTest extends AbstractRendererTst {
         renderer.setProperty(XMLRenderer.ENCODING, "ISO-8859-1");
         verifyXmlEscaping(renderer, "&#x1041c;");
     }
-    
+
     public String getHeader() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL
                 + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"" + PMD.EOL

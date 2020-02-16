@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class YAHTMLRendererTest extends AbstractRendererTst {
+public class YAHTMLRendererTest extends AbstractRendererTest {
 
     private String outputDir;
 
@@ -71,7 +71,7 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
     private RuleViolation newRuleViolation(int endColumn, final String packageNameArg, final String classNameArg) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename(getSourceCodeFilename());
+        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah") {
             {
                 packageName = packageNameArg;

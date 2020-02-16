@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.benchmark;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
@@ -115,7 +117,7 @@ public final class Benchmarker {
                 System.out.println("Checking directory " + srcDir);
             }
             Set<RuleDuration> results = new TreeSet<>();
-            RuleSetFactory factory = new RuleSetFactory();
+            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
             if (StringUtils.isNotBlank(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
             } else {
@@ -143,8 +145,8 @@ public final class Benchmarker {
 
         long start = System.currentTimeMillis();
 
-        for (DataSource dataSource : dataSources) {
-            try (InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
+        for (DataSource ds : dataSources) {
+            try (DataSource dataSource = ds; InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
                 parser.parse(dataSource.getNiceFileName(false, null), reader);
             }
         }
@@ -173,7 +175,7 @@ public final class Benchmarker {
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
             Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
-        final RuleSetFactory factory = new RuleSetFactory();
+        final RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
         for (Rule rule: ruleSet.getRules()) {
             if (debug) {
                 System.out.println("Starting " + rule.getName());
@@ -187,9 +189,9 @@ public final class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (DataSource dataSource : dataSources) {
-                try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
-                    ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
+            for (DataSource ds : dataSources) {
+                try (DataSource dataSource = ds; InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
+                    ctx.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
                     new SourceCodeProcessor(config).processSourceCode(stream, ruleSets, ctx);
                 }
             }

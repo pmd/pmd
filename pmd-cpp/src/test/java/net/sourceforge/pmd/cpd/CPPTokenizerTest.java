@@ -41,7 +41,7 @@ public class CPPTokenizerTest {
         assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
         assertEquals(24, tokens.size());
     }
-    
+
     @Test
     public void testIgnoreBetweenSpecialComments() {
         String code = "#include <iostream>\n" + "#include <string>\n" + "\n" + "// CPD-OFF\n"
@@ -157,6 +157,86 @@ public class CPPTokenizerTest {
         expectedException.expect(TokenMgrError.class);
         expectedException.expectMessage("Lexical error in file issue-1559.cpp at");
         tokenizer.tokenize(code, new Tokens());
+    }
+
+    public void testStringPrefix(String code, String expToken, int tokenIndex, int expNoTokens) {
+        final Tokens tokens = parse(code);
+        final TokenEntry token = tokens.getTokens().get(tokenIndex);
+        assertEquals(expNoTokens, tokens.size());
+        assertEquals(expToken, token.toString());
+    }
+
+    public void testCharacterPrefix(String code, String expToken) {
+        testStringPrefix(code, expToken, 3, 6);
+    }
+
+    public void testStringPrefix(String code, String expToken) {
+        testStringPrefix(code, expToken, 5, 8);
+    }
+
+    @Test
+    public void testCharacterPrefixNoPrefix() {
+        testCharacterPrefix("char a =  '\\x30';", "'\\x30'");
+    }
+
+    @Test
+    public void testCharacterPrefixWideCharacter() {
+        testCharacterPrefix("wchar_t b = L'\\xFFEF';", "L'\\xFFEF'");
+    }
+
+    @Test
+    public void testCharacterPrefixChar16() {
+        testCharacterPrefix("char16_t c = u'\\u00F6';", "u'\\u00F6'");
+    }
+
+    @Test
+    public void testCharacterPrefixChar32() {
+        testCharacterPrefix("char32_t d = U'\\U0010FFFF';", "U'\\U0010FFFF'");
+    }
+
+    @Test
+    public void testStringPrefixNoPrefix() {
+        testStringPrefix("char A[] = \"Hello\\x0A\";", "\"Hello\\x0A\"");
+    }
+
+    @Test
+    public void testStringPrefixWideString() {
+        testStringPrefix("wchar_t B[] = L\"Hell\\xF6\\x0A\";", "L\"Hell\\xF6\\x0A\"");
+    }
+
+    @Test
+    public void testStringPrefixChar16() {
+        testStringPrefix("char16_t C[] = u\"Hell\\u00F6\";", "u\"Hell\\u00F6\"");
+    }
+
+    @Test
+    public void testStringPrefixChar32() {
+        testStringPrefix("char32_t D[] = U\"Hell\\U000000F6\\U0010FFFF\";", "U\"Hell\\U000000F6\\U0010FFFF\"");
+    }
+
+    @Test
+    public void testStringPrefixUtf8() {
+        testStringPrefix("auto E[] = u8\"\\u00F6\\U0010FFFF\";", "u8\"\\u00F6\\U0010FFFF\"");
+    }
+
+    @Test
+    public void testRawStringLiterals() throws IOException {
+        final String code = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/issue-1784.cpp"), StandardCharsets.UTF_8);
+        Tokens tokens = parse(code);
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals(16, tokens.size());
+    }
+
+    @Test
+    public void testDigitSeparators() {
+        final String code = "auto integer_literal = 1'000'000;" + PMD.EOL
+                + "auto floating_point_literal = 0.000'015'3;" + PMD.EOL
+                + "auto hex_literal = 0x0F00'abcd'6f3d;" + PMD.EOL
+                + "auto silly_example = 1'0'0'000'00;";
+        Tokens tokens = parse(code);
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals("1'000'000", tokens.getTokens().get(3).toString());
+        assertEquals(21, tokens.size());
     }
 
     private Tokens parse(String snippet) {

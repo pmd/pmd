@@ -322,7 +322,38 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    int value = 0.3936;
+    double value1 = 0.393_6;
+    double value2 = 0.39;
+    double value3 = -0.1;
+    double value4 = -0.123_456;
+    double value5 = +0.123_456;
+
+    double valid1 = 0.3936;
+    double valid2 = 1000.0;
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1527 [java] UseUnderscoresInNumericLiterals false positive on floating point numbers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double value1 = 36.363_636_363_636_37;
+    double value2 = 0.000_000_1;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Decimal number test - bad cases</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double value1 = 0.39361234;
+    double value2 = 0.39_361_234;
+    double value3 = -0.123456;
+    double value4 = +0.123456;
 }
      ]]></code>
     </test-code>

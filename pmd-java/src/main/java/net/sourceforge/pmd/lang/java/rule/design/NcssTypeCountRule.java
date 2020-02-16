@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for type declarations.
- * 
+ *
  * @author Jason Bennett
  */
 @Deprecated
@@ -58,7 +58,7 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
          * If the enum is a type in and of itself, don't count its declaration
          * twice.
          */
-        if (node.jjtGetParent() instanceof ASTTypeDeclaration) {
+        if (node.getParent() instanceof ASTTypeDeclaration) {
             Integer nodeCount = countNodeChildren(node, data);
             int count = nodeCount.intValue() - 1;
             return Integer.valueOf(count);

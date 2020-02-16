@@ -4,7 +4,7 @@ namespace ABC
   {
 
 #ifdef USE_QT
-    const char* perPixelQml = R"QML(
+    const char* perPixelQml = "QML( // provoking a parser error
 )QML";
   }
 }

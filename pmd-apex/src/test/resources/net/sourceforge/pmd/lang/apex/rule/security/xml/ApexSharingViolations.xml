@@ -97,4 +97,15 @@ public without sharing class Foo {
 		]]></code>
 	</test-code>
 
+    <test-code>
+       <description>Apex class with inherited sharing doing a safe SOQL query</description>
+       <expected-problems>0</expected-problems>
+       <code><![CDATA[
+public inherited sharing class MyClass {
+   public List<Contact> getAllTheSecrets(){
+       return [SELECT Name FROM Contact];
+   }
+}
+     ]]></code>
+    </test-code>
 </test-data>

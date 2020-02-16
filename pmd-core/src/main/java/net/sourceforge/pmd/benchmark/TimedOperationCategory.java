@@ -26,7 +26,7 @@ public enum TimedOperationCategory {
     REPORTING,
     FILE_PROCESSING,
     UNACCOUNTED;
-    
+
     public String displayName() {
         final String[] parts = name().toLowerCase(Locale.getDefault()).split("_");
         final StringBuilder sb = new StringBuilder();

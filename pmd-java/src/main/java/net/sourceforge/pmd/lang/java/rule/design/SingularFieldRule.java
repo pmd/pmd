@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -38,13 +40,29 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
      * Restore old behavior by setting both properties to true, which will
      * result in many false positives
      */
-    private static final PropertyDescriptor<Boolean> CHECK_INNER_CLASSES = booleanProperty("checkInnerClasses").defaultValue(false).desc("Check inner classes").build();
-    private static final PropertyDescriptor<Boolean> DISALLOW_NOT_ASSIGNMENT = booleanProperty("disallowNotAssignment").defaultValue(false).desc("Disallow violations where the first usage is not an assignment").build();
+    private static final PropertyDescriptor<Boolean> CHECK_INNER_CLASSES =
+            booleanProperty("checkInnerClasses")
+                .defaultValue(false)
+                .desc("Check inner classes")
+                .build();
+    private static final PropertyDescriptor<Boolean> DISALLOW_NOT_ASSIGNMENT =
+            booleanProperty("disallowNotAssignment")
+                .defaultValue(false)
+                .desc("Disallow violations where the first usage is not an assignment")
+                .build();
 
 
     public SingularFieldRule() {
         definePropertyDescriptor(CHECK_INNER_CLASSES);
         definePropertyDescriptor(DISALLOW_NOT_ASSIGNMENT);
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> defaultValues = new ArrayList<>();
+        defaultValues.addAll(super.defaultSuppressionAnnotations());
+        defaultValues.add("lombok.experimental.Delegate");
+        return defaultValues;
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -55,7 +73,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
 
         if (node.isPrivate() && !node.isStatic() && !hasClassLombokAnnotation() && !hasIgnoredAnnotation(node)) {
             for (ASTVariableDeclarator declarator : node.findChildrenOfType(ASTVariableDeclarator.class)) {
-                ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.jjtGetChild(0);
+                ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.getChild(0);
                 List<NameOccurrence> usages = declaration.getUsages();
                 Node decl = null;
                 boolean violation = true;
@@ -77,7 +95,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                         }
 
                         // Is the first usage in an assignment?
-                        Node potentialStatement = primaryExpressionParent.jjtGetParent();
+                        Node potentialStatement = primaryExpressionParent.getParent();
                         // Check that the assignment is not to a field inside
                         // the field object
                         boolean assignmentToField = no.getImage().equals(location.getImage());
@@ -114,7 +132,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                         }
                     }
 
-                    if (primaryExpressionParent.jjtGetParent() instanceof ASTSynchronizedStatement) {
+                    if (primaryExpressionParent.getParent() instanceof ASTSynchronizedStatement) {
                         // This usage is directly in an expression of a
                         // synchronized block
                         violation = false;

@@ -12,13 +12,11 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-
-import apex.jorje.semantic.ast.modifier.OldModifiers.ModifierType;
-import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
+import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
  * Finds Apex class that do not define sharing
- * 
+ *
  * @author sergey.gorbaty
  */
 public class ApexSharingViolationsRule extends AbstractApexRule {
@@ -51,7 +49,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     /**
      * Check if class contains any Database.query / Database.insert [ Database.*
      * ] methods
-     * 
+     *
      * @param node
      * @param data
      */
@@ -81,7 +79,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
 
     /**
      * Check if class has no sharing declared
-     * 
+     *
      * @param node
      * @param data
      */
@@ -94,25 +92,13 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
 
     /**
      * Does class have sharing keyword declared?
-     * 
+     *
      * @param node
      * @return
      */
-    private boolean isSharingPresent(ApexNode<?> node) {
-        boolean sharingFound = false;
-
-        for (ModifierOrAnnotationTypeInfo type : node.getNode().getDefiningType().getModifiers().all()) {
-            if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithoutSharing.toString())) {
-                sharingFound = true;
-                break;
-            }
-            if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithSharing.toString())) {
-                sharingFound = true;
-                break;
-            }
-
-        }
-        return sharingFound;
+    private boolean isSharingPresent(ASTUserClass node) {
+        return node.getModifiers().isWithoutSharing() || node.getModifiers().isWithSharing()
+                || node.getModifiers().isInheritedSharing();
     }
 
 }

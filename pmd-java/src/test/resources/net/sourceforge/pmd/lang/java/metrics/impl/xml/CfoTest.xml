@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example"><![CDATA[
+import java.util.*;
+import java.io.IOException;
+
+public class Foo {
+    public Set set = new HashSet();
+    public Map map = new HashMap();
+    public String string = "";
+    public Double number = 0.0;
+    public int[] intArray = new int[3];
+
+    public Foo(Data data) {
+    }
+
+    @Deprecated
+    @Override
+    public void foo(List list) throws Exception {
+        throw new IOException();
+    }
+
+    public int getMapSize() {
+        return map.size();
+    }
+
+    public class Data {
+        public Double amount = 0.0;
+
+        public String getAmountFormatted() {
+            return String.format("amount: %f", amount);
+        }
+    }
+}
+     ]]></code-fragment>
+
+
+    <test-code>
+        <description>Full example with default options</description>
+        <expected-problems>6</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 7 highest 2.</message>
+            <message>'Foo#Foo(Data)' has value 1.</message>
+            <message>'Foo#foo(List)' has value 2.</message>
+            <message>'Foo#getMapSize()' has value 1.</message>
+            <message>'Foo$Data' has value 0 highest 0.</message>
+            <message>'Foo$Data#getAmountFormatted()' has value 0.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example with included java.lang packages</description>
+        <rule-property name="metricOptions">includeJavaLang</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 12 highest 5.</message>
+            <message>'Foo#Foo(Data)' has value 1.</message>
+            <message>'Foo#foo(List)' has value 5.</message>
+            <message>'Foo#getMapSize()' has value 1.</message>
+            <message>'Foo$Data' has value 2 highest 2.</message>
+            <message>'Foo$Data#getAmountFormatted()' has value 2.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Test empty class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 0 highest 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+        public class Foo {
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class with single other class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 1 highest 0.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {
+    private File file;
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

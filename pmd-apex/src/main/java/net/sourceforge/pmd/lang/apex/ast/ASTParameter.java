@@ -35,4 +35,12 @@ public class ASTParameter extends AbstractApexNode<Parameter> implements CanSupp
         }
         return false;
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getType() {
+        return node.getType().getApexName();
+    }
 }

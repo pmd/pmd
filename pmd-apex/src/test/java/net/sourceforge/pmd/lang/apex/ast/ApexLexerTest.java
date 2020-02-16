@@ -27,7 +27,7 @@ public class ApexLexerTest {
     public void testLexer() throws Exception {
         CharStream in = new ANTLRStringStream(CODE);
         ApexLexer lexer = new ApexLexer(in);
-        
+
         Token token = lexer.nextToken();
         int tokenCount = 0;
         while (token.getType() != Token.EOF) {

@@ -26,7 +26,7 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
     @Override
     public Object visit(final ASTElseIfStatement node, final Object data) {
         // verify that this elseif doesn't have any siblings
-        if (node.jjtGetParent().findChildrenOfType(ASTElseIfStatement.class).size() == 1) {
+        if (node.getParent().findChildrenOfType(ASTElseIfStatement.class).size() == 1) {
             handleIfElseIf(node, data);
         }
         return super.visit(node, data);
@@ -38,8 +38,8 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
             final ASTBlock ifBlock = node.getFirstChildOfType(ASTBlock.class);
             boolean violationFound = false;
             int ifCounter = 0;
-            for (int i = 0; i < ifBlock.jjtGetNumChildren(); i++) {
-                final Node blockChild = ifBlock.jjtGetChild(i);
+            for (int i = 0; i < ifBlock.getNumChildren(); i++) {
+                final Node blockChild = ifBlock.getChild(i);
                 if (blockChild instanceof ASTText) {
                     if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().toString())) {
                         violationFound = false;

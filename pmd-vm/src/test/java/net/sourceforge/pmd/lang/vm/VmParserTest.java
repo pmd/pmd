@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Unit test for VM parsing.
- * 
+ *
  */
 public class VmParserTest {
 

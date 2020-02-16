@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -13,72 +11,62 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.jaxen.JaxenException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class SimpleNodeTest {
+public class SimpleNodeTest extends BaseParserTest {
 
     @Test
     public void testMethodDiffLines() {
-        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
+        List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
         verifyNode(methods.iterator().next(), 2, 9, 4, 2);
     }
 
     @Test
     public void testMethodSameLine() {
-        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
+        List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
         verifyNode(methods.iterator().next(), 2, 9, 2, 21);
     }
 
     @Test
     public void testNoLookahead() {
-        String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
-        Set<ASTClassOrInterfaceDeclaration> uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
+        List<ASTClassOrInterfaceDeclaration> uCD = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_LOOKAHEAD);
         verifyNode(uCD.iterator().next(), 1, 8, 1, 20);
     }
 
     @Test
     public void testHasExplicitExtends() {
-        String code = HAS_EXPLICIT_EXTENDS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
-        assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS).iterator().next();
+        assertTrue(ucd.getChild(0) instanceof ASTExtendsList);
     }
 
     @Test
     public void testNoExplicitExtends() {
-        String code = NO_EXPLICIT_EXTENDS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
-        assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_EXTENDS).iterator().next();
+        assertFalse(ucd.getChild(0) instanceof ASTExtendsList);
     }
 
     @Test
     public void testHasExplicitImplements() {
-        String code = HAS_EXPLICIT_IMPLEMENTS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
-        assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_IMPLEMENTS).iterator().next();
+        assertTrue(ucd.getChild(0) instanceof ASTImplementsList);
     }
 
     @Test
     public void testNoExplicitImplements() {
-        String code = NO_EXPLICIT_IMPLEMENTS;
-        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
-        assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
+        ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_IMPLEMENTS).iterator().next();
+        assertFalse(ucd.getChild(0) instanceof ASTImplementsList);
     }
 
     @Test
     public void testColumnsOnQualifiedName() {
-        Set<ASTName> name = getNodes(ASTName.class, QUALIFIED_NAME);
-        Iterator<ASTName> i = name.iterator();
-        while (i.hasNext()) {
-            Node node = i.next();
+        for (Node node : java.getNodes(ASTName.class, QUALIFIED_NAME)) {
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 8, 1, 19);
             }
@@ -87,10 +75,7 @@ public class SimpleNodeTest {
 
     @Test
     public void testLineNumbersForNameSplitOverTwoLines() {
-        Set<ASTName> name = getNodes(ASTName.class, BROKEN_LINE_IN_NAME);
-        Iterator<ASTName> i = name.iterator();
-        while (i.hasNext()) {
-            Node node = i.next();
+        for (Node node : java.getNodes(ASTName.class, BROKEN_LINE_IN_NAME)) {
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 8, 2, 4);
             }
@@ -102,13 +87,13 @@ public class SimpleNodeTest {
 
     @Test
     public void testLineNumbersAreSetOnAllSiblings() {
-        for (ASTBlock b : getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTBlock b : java.getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        for (ASTVariableInitializer b : getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTVariableInitializer b : java.getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        for (ASTExpression b : getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTExpression b : java.getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
     }
@@ -187,27 +172,26 @@ public class SimpleNodeTest {
 
     @Test
     public void testParentMethods() {
-        ASTCompilationUnit u = parseJava14(TEST1);
+        ASTCompilationUnit u = JavaParsingHelper.JUST_PARSE.parse(TEST1);
 
         ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
-        assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(),
+        assertSame("getFirstParentOfType ASTMethodDeclaration", d.getParent(),
                 d.getFirstParentOfType(ASTMethodDeclaration.class));
         assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
 
-        assertSame("getNthParent 1", d.jjtGetParent(), d.getNthParent(1));
-        assertSame("getNthParent 2", d.jjtGetParent().jjtGetParent(), d.getNthParent(2));
+        assertSame("getNthParent 1", d.getParent(), d.getNthParent(1));
+        assertSame("getNthParent 2", d.getParent().getParent(), d.getNthParent(2));
         assertSame("getNthParent 6", u, d.getNthParent(6));
         assertNull("getNthParent 7", d.getNthParent(7));
         assertNull("getNthParent 8", d.getNthParent(8));
     }
 
-    private static final String TEST1 = "public class Test {" + PMD.EOL + "  void bar(String s) {" + PMD.EOL
-            + "   s = s.toLowerCase();" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Test {\n  void bar(String s) {\n   s = s.toLowerCase();\n  }\n}";
 
     @Ignore
     @Test
     public void testContainsNoInner() {
-        ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
+        ASTCompilationUnit c = java.getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
         List<ASTFieldDeclaration> res = c.findDescendantsOfType(ASTFieldDeclaration.class);
         assertTrue(res.isEmpty());
         /*
@@ -251,21 +235,21 @@ public class SimpleNodeTest {
 
     @Test
     public void testContainsNoInnerWithAnonInner() {
-        ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
+        ASTCompilationUnit c = java.parse(CONTAINS_NO_INNER_WITH_ANON_INNER);
         List<ASTFieldDeclaration> res = c.findDescendantsOfType(ASTFieldDeclaration.class);
         assertTrue(res.isEmpty());
     }
 
     @Test
     public void testContainsChildOfType() {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE)
+        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE)
                 .iterator().next();
         assertTrue(c.hasDescendantOfType(ASTFieldDeclaration.class));
     }
 
     @Test
     public void testXPathNodeSelect() throws JaxenException {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
+        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
         List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
@@ -276,7 +260,7 @@ public class SimpleNodeTest {
 
     @Test
     public void testUserData() {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
+        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
                 .iterator().next();
         assertNull(c.getUserData());
         c.setUserData("foo");
@@ -300,32 +284,24 @@ public class SimpleNodeTest {
 
     private static final String NO_EXPLICIT_IMPLEMENTS = "public class Test {}";
 
-    private static final String METHOD_SAME_LINE = "public class Test {" + PMD.EOL + " public void foo() {}" + PMD.EOL
-            + "}";
+    private static final String METHOD_SAME_LINE = "public class Test {\n public void foo() {}\n}";
 
-    private static final String QUALIFIED_NAME = "import java.io.File;" + PMD.EOL + "public class Foo{}";
+    private static final String QUALIFIED_NAME = "import java.io.File;\npublic class Foo{}";
 
-    private static final String BROKEN_LINE_IN_NAME = "import java.io." + PMD.EOL + "File;" + PMD.EOL
-            + "public class Foo{}";
+    private static final String BROKEN_LINE_IN_NAME = "import java.io.\nFile;\npublic class Foo{}";
 
-    private static final String LINE_NUMBERS_ON_SIBLINGS = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
-            + "  try {" + PMD.EOL + "  } catch (Exception1 e) {" + PMD.EOL + "   int x =2;" + PMD.EOL + "  }" + PMD.EOL
-            + " if (x != null) {}" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String LINE_NUMBERS_ON_SIBLINGS =
+        "public class Foo {\n void bar() {\n  try {\n  } catch (Exception1 e) {\n   int x =2;\n  }\n if (x != null) {}\n }\n}";
 
     private static final String NO_LOOKAHEAD = "public class Foo { }";
 
-    private static final String METHOD_DIFF_LINES = "public class Test {" + PMD.EOL + " public void foo() {" + PMD.EOL
-            + "  int x;" + PMD.EOL + " }" + PMD.EOL + "}";
+    private static final String METHOD_DIFF_LINES = "public class Test {\n public void foo() {\n  int x;\n }\n}";
 
-    private static final String CONTAINS_CHILDREN_OF_TYPE = "public class Test {" + PMD.EOL + "  int x;" + PMD.EOL
-            + "}";
+    private static final String CONTAINS_CHILDREN_OF_TYPE = "public class Test {\n  int x;\n}";
 
-    private static final String CONTAINS_NO_INNER = "public class Test {" + PMD.EOL + "  public class Inner {" + PMD.EOL
-            + "   int foo;" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String CONTAINS_NO_INNER = "public class Test {\n  public class Inner {\n   int foo;\n  }\n}";
 
-    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER = "public class Test {" + PMD.EOL + "  void bar() {"
-            + PMD.EOL + "   foo(new Fuz() { int x = 2;});" + PMD.EOL + "  }" + PMD.EOL + "}";
+    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER = "public class Test {\n  void bar() {\n   foo(new Fuz() { int x = 2;});\n  }\n}";
 
-    private static final String TEST_XPATH = "public class Test {" + PMD.EOL + "  int x = 2;" + PMD.EOL
-            + "  int y = 42;" + PMD.EOL + "}";
+    private static final String TEST_XPATH = "public class Test {\n  int x = 2;\n  int y = 42;\n}";
 }

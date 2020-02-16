@@ -63,7 +63,7 @@ public class RuleReferenceTest {
 
         validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
     }
-    
+
     @Test
     public void testDeepCopyOverride() {
         final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);

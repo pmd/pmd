@@ -76,7 +76,7 @@ public class AbstractNodeTest {
     }
 
     private static Node addChild(final Node parent, final Node child) {
-        parent.jjtAddChild(child, parent.jjtGetNumChildren()); // Append child at the end
+        parent.jjtAddChild(child, parent.getNumChildren()); // Append child at the end
         child.jjtSetParent(parent);
         return parent;
     }
@@ -102,10 +102,10 @@ public class AbstractNodeTest {
     @Test
     @Parameters(method = "childrenIndexes")
     public void testRemoveChildOfRootNode(final int childIndex) {
-        final Node child = rootNode.jjtGetChild(childIndex);
-        final Node[] grandChildren = new Node[child.jjtGetNumChildren()];
+        final Node child = rootNode.getChild(childIndex);
+        final Node[] grandChildren = new Node[child.getNumChildren()];
         for (int i = 0; i < grandChildren.length; i++) {
-            final Node grandChild = child.jjtGetChild(i);
+            final Node grandChild = child.getChild(i);
             grandChildren[i] = grandChild;
         }
 
@@ -113,12 +113,12 @@ public class AbstractNodeTest {
         child.remove();
 
         // Check that conditions have been successfully changed
-        assertEquals(NUM_CHILDREN - 1, rootNode.jjtGetNumChildren());
-        assertNull(child.jjtGetParent());
+        assertEquals(NUM_CHILDREN - 1, rootNode.getNumChildren());
+        assertNull(child.getParent());
         // The child node is expected to still have all its children and vice versa
-        assertEquals(NUM_GRAND_CHILDREN, child.jjtGetNumChildren());
+        assertEquals(NUM_GRAND_CHILDREN, child.getNumChildren());
         for (final Node grandChild : grandChildren) {
-            assertEquals(child, grandChild.jjtGetParent());
+            assertEquals(child, grandChild.getParent());
         }
     }
 
@@ -129,9 +129,9 @@ public class AbstractNodeTest {
     @Test
     public void testRemoveRootNode() {
         // Check that the root node has the expected properties
-        final Node[] children = new Node[rootNode.jjtGetNumChildren()];
+        final Node[] children = new Node[rootNode.getNumChildren()];
         for (int i = 0; i < children.length; i++) {
-            final Node child = rootNode.jjtGetChild(i);
+            final Node child = rootNode.getChild(i);
             children[i] = child;
         }
 
@@ -140,10 +140,10 @@ public class AbstractNodeTest {
 
         // Check that conditions have been successfully changed, i.e.,
         //  the root node is expected to still have all its children and vice versa
-        assertEquals(NUM_CHILDREN, rootNode.jjtGetNumChildren());
-        assertNull(rootNode.jjtGetParent());
+        assertEquals(NUM_CHILDREN, rootNode.getNumChildren());
+        assertNull(rootNode.getParent());
         for (final Node aChild : children) {
-            assertEquals(rootNode, aChild.jjtGetParent());
+            assertEquals(rootNode, aChild.getParent());
         }
     }
 
@@ -154,16 +154,16 @@ public class AbstractNodeTest {
     @Test
     @Parameters(method = "childrenAndGrandChildrenIndexes")
     public void testRemoveGrandChildNode(final int childIndex, final int grandChildIndex) {
-        final Node child = rootNode.jjtGetChild(childIndex);
-        final Node grandChild = child.jjtGetChild(grandChildIndex);
+        final Node child = rootNode.getChild(childIndex);
+        final Node grandChild = child.getChild(grandChildIndex);
 
         // Do the actual removal
         grandChild.remove();
 
         // Check that conditions have been successfully changed
-        assertEquals(NUM_GRAND_CHILDREN - 1, child.jjtGetNumChildren());
-        assertEquals(0, grandChild.jjtGetNumChildren());
-        assertNull(grandChild.jjtGetParent());
+        assertEquals(NUM_GRAND_CHILDREN - 1, child.getNumChildren());
+        assertEquals(0, grandChild.getNumChildren());
+        assertNull(grandChild.getParent());
     }
 
     /**
@@ -172,26 +172,26 @@ public class AbstractNodeTest {
     @Test
     @Parameters(method = "childrenIndexes")
     public void testRemoveRootNodeChildAtIndex(final int childIndex) {
-        final Node[] originalChildren = new Node[rootNode.jjtGetNumChildren()];
+        final Node[] originalChildren = new Node[rootNode.getNumChildren()];
 
         for (int i = 0; i < originalChildren.length; i++) {
-            originalChildren[i] = rootNode.jjtGetChild(i);
+            originalChildren[i] = rootNode.getChild(i);
         }
 
         // Do the actual removal
         rootNode.removeChildAtIndex(childIndex);
 
         // Check that conditions have been successfully changed
-        assertEquals(NUM_CHILDREN - 1, rootNode.jjtGetNumChildren());
+        assertEquals(NUM_CHILDREN - 1, rootNode.getNumChildren());
         int j = 0;
-        for (int i = 0; i < rootNode.jjtGetNumChildren(); i++) {
+        for (int i = 0; i < rootNode.getNumChildren(); i++) {
             if (j == childIndex) { // Skip the removed child
                 j++;
             }
             // Check that the nodes have been rightly shifted
-            assertEquals(originalChildren[j], rootNode.jjtGetChild(i));
+            assertEquals(originalChildren[j], rootNode.getChild(i));
             // Check that the child index has been updated
-            assertEquals(i, rootNode.jjtGetChild(i).jjtGetChildIndex());
+            assertEquals(i, rootNode.getChild(i).getIndexInParent());
             j++;
         }
     }
@@ -204,7 +204,7 @@ public class AbstractNodeTest {
     public void testRemoveChildAtIndexWithInvalidIndex() {
         try {
             rootNode.removeChildAtIndex(-1);
-            rootNode.removeChildAtIndex(rootNode.jjtGetNumChildren());
+            rootNode.removeChildAtIndex(rootNode.getNumChildren());
         } catch (final Exception e) {
             fail("No exception was expected.");
         }
@@ -218,14 +218,14 @@ public class AbstractNodeTest {
     @Parameters(method = "grandChildrenIndexes")
     public void testRemoveChildAtIndexOnNodeWithNoChildren(final int grandChildIndex) {
         // grandChild does not have any child
-        final Node grandChild = rootNode.jjtGetChild(grandChildIndex).jjtGetChild(grandChildIndex);
+        final Node grandChild = rootNode.getChild(grandChildIndex).getChild(grandChildIndex);
 
         // Do the actual removal
         grandChild.removeChildAtIndex(0);
 
         // If here, no exception has been thrown
         // Check that this node still does not have any children
-        assertEquals(0, grandChild.jjtGetNumChildren());
+        assertEquals(0, grandChild.getNumChildren());
     }
 
 

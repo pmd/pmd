@@ -4,17 +4,16 @@ import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.java.ParserTstUtil
-import io.kotlintest.should as kotlintestShould
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
 
 /**
  * Represents the different Java language versions.
  */
 enum class JavaVersion : Comparable<JavaVersion> {
-    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11;
+    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11, J12, J12__PREVIEW, J13, J13__PREVIEW;
 
-    /** Name suitable for use with e.g. [ParserTstUtil.parseAndTypeResolveJava] */
-    val pmdName: String = name.removePrefix("J").replace('_', '.')
+    /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
+    val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
 
     /**
      * Overloads the range operator, e.g. (`J9..J11`).
@@ -211,7 +210,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
              * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
              */
             fun parseNode(construct: String): T {
-                val root = ParserTstUtil.parseAndTypeResolveJava(ctx.javaVersion.pmdName, getTemplate(construct))
+                val root = JavaParsingHelper.WITH_PROCESSING.parse(getTemplate(construct), ctx.javaVersion.pmdName)
 
                 return retrieveNode(root)
             }

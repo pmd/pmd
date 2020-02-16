@@ -207,7 +207,36 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="category/apex/codestyle.xml/VariableNamingConventions" message="{0} variable {1} should begin with {2}">
+
+   <!-- NAMING -->
+   <rule ref="category/apex/codestyle.xml/FieldNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/FormalParameterNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/LocalVariableNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/PropertyNamingConventions">
       <priority>3</priority>
       <properties>
          <!-- relevant for Code Climate output only -->
@@ -236,6 +265,8 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+<!--    <rule ref="category/apex/bestpractices.xml/ApexAssertionsShouldIncludeMessage"/> -->
+<!--    <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation"/> -->
 
    <!-- SECURITY -->
    <rule ref="category/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
@@ -256,7 +287,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="category/apex/security.xml/ApexCSRF" message="Avoid making DML operations in Apex class constructor/init method">
+   <rule ref="category/apex/errorprone.xml/ApexCSRF">
       <priority>3</priority>
       <properties>
          <!-- relevant for Code Climate output only -->
@@ -441,6 +472,17 @@
          <!-- relevant for Code Climate output only -->
          <property name="cc_categories" value="Style" />
          <property name="cc_remediation_points_multiplier" value="50" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+
+   <!-- CLARITY / BEST PRACTICES -->
+   <rule ref="category/apex/bestpractices.xml/DebugsShouldUseLoggingLevel">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Clarity" />
+         <property name="cc_remediation_points_multiplier" value="5" />
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>

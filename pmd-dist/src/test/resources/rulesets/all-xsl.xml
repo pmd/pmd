@@ -1,0 +1,18 @@
+<?xsl version="1.0"?>
+
+<ruleset name="All XSL Rules" 
+    xslns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xslns:xsi="http://www.w3.org/2001/xslSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every XSL Rule in PMD</description>
+
+    <rule ref="category/xsl/bestpractices.xml" />
+    <rule ref="category/xsl/codestyle.xml" />
+    <rule ref="category/xsl/design.xml" />
+    <rule ref="category/xsl/documentation.xml" />
+    <rule ref="category/xsl/errorprone.xml" />
+    <rule ref="category/xsl/multithreading.xml" />
+    <rule ref="category/xsl/performance.xml" />
+    <rule ref="category/xsl/security.xml" />
+
+</ruleset>

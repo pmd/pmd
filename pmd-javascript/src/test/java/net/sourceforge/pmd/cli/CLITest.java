@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.FileUtil;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- * 
+ *
  */
 public class CLITest extends BaseCLITest {
     @Test

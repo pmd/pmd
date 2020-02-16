@@ -31,13 +31,13 @@ A rule for the politically correct... we don't want to offend anyone.
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentrequired">
         <description>
-Denotes whether comments are required (or unwanted) for specific language elements.
+Denotes whether javadoc (formal) comments are required (or unwanted) for specific language elements.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 /**
-* 
+*
 *
 * @author Jon Doe
 */

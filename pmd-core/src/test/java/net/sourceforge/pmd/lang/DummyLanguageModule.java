@@ -11,15 +11,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jaxen.Navigator;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Dummy language used for testing PMD.
@@ -36,10 +41,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.2", new Handler(), false);
         addVersion("1.3", new Handler(), false);
         addVersion("1.4", new Handler(), false);
-        addVersion("1.5", new Handler(), false);
-        addVersion("1.6", new Handler(), false);
-        addVersion("1.7", new Handler(), true);
-        addVersion("1.8", new Handler(), false);
+        addVersions(new Handler(), false, "1.5", "5");
+        addVersions(new Handler(), false, "1.6", "6");
+        addVersions(new Handler(), true, "1.7", "7");
+        addVersions(new Handler(), false, "1.8", "8");
     }
 
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
@@ -53,8 +58,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
             for (Node n : nodes) {
                 indexNode(n);
                 List<Node> childs = new ArrayList<>();
-                for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-                    childs.add(n.jjtGetChild(i));
+                for (int i = 0; i < n.getNumChildren(); i++) {
+                    childs.add(n.getChild(i));
                 }
                 indexNodes(childs, ctx);
             }
@@ -62,6 +67,24 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractLanguageVersionHandler {
+        @Override
+        public XPathHandler getXPathHandler() {
+            return new XPathHandler() {
+                @Override
+                public void initialize(IndependentContext context) {
+                }
+
+                @Override
+                public void initialize() {
+                }
+
+                @Override
+                public Navigator getNavigator() {
+                    return new DocumentNavigator();
+                }
+            };
+        }
+
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();

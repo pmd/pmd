@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -30,7 +29,7 @@ public class AbstractNodeTransversalTest {
     }
 
     private Node addChild(final Node parent, final Node child) {
-        parent.jjtAddChild(child, parent.jjtGetNumChildren()); // Append child at the end
+        parent.jjtAddChild(child, parent.getNumChildren()); // Append child at the end
         child.jjtSetParent(parent);
         return parent;
     }
@@ -44,27 +43,26 @@ public class AbstractNodeTransversalTest {
     @Test
     public void testBoundaryIsHonored() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
-        
+
         List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class);
         assertEquals(1, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
     }
-    
+
     @Test
     public void testSearchFromBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
-        
+
         List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class).get(0).findDescendantsOfType(DummyNode.class);
         assertEquals(1, descendantsOfType.size());
         assertFalse(descendantsOfType.get(0).isFindBoundary());
     }
-    
+
     @Test
     public void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
-        
-        List<DummyNode> descendantsOfType = new ArrayList<>();
-        rootNode.findDescendantsOfType(DummyNode.class, descendantsOfType, true);
+
+        List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class, true);
         assertEquals(2, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
         assertFalse(descendantsOfType.get(1).isFindBoundary());

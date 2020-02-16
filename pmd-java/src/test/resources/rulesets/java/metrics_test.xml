@@ -59,4 +59,9 @@
           class="net.sourceforge.pmd.lang.java.metrics.impl.AtfdTestRule">
     </rule>
 
+    <rule name="CfoTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.CfoTestRule">
+    </rule>
+
 </ruleset>

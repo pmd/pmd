@@ -9,7 +9,9 @@ package net.sourceforge.pmd.util.filter;
  *
  * @param <T>
  *            The underlying type on which the filter applies.
+ * @deprecated See {@link Filter}
  */
+@Deprecated
 public class OrFilter<T> extends AbstractCompoundFilter<T> {
 
     public OrFilter() {

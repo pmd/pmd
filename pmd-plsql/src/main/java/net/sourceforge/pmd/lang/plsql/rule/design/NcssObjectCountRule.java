@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for Oracle Object declarations.
- * 
+ *
  * @author Stuart Turton
  */
 public class NcssObjectCountRule extends AbstractNcssCountRule {
@@ -37,7 +37,7 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
         LOGGER.entering(CLASS_NAME, "visit(NcssObjectCountRule)");
         // Treat Schema-level ProgramUnits as Oracle Objects, otherwise as
         // subprograms
-        if (node.jjtGetParent() instanceof ASTGlobal) {
+        if (node.getParent() instanceof ASTGlobal) {
             LOGGER.fine("Schema-level");
             return super.visit(node, data);
         }
@@ -54,15 +54,15 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
     public Object visit(ASTProgramUnit node, Object data) {
         int numNodes = 0;
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.getChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
 
         // This override is necessary because only Schema-level OracleObject
         // instances should result in DataPoints
-        if (node instanceof OracleObject && node.jjtGetParent() instanceof ASTGlobal) {
+        if (node instanceof OracleObject && node.getParent() instanceof ASTGlobal) {
 
             // Add 1 to account for base node
             numNodes++;

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,17 @@ public class AbstractRuleTest {
 
     public static class MyRule extends AbstractRule {
         private static final StringProperty FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
+        private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
+                .defaultValue("bar")
+                .desc("Property without value uses default value")
+                .build();
 
         private static final StringProperty XPATH_PROPERTY = new StringProperty("xpath", "xpath property", "", 2.0f);
 
         public MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
             definePropertyDescriptor(XPATH_PROPERTY);
+            definePropertyDescriptor(FOO_DEFAULT_PROPERTY);
             setName("MyRule");
             setMessage("my rule msg");
             setPriority(RulePriority.MEDIUM);
@@ -68,7 +74,7 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
@@ -84,7 +90,7 @@ public class AbstractRuleTest {
     public void testCreateRV2() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
@@ -103,7 +109,7 @@ public class AbstractRuleTest {
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ctx.setReport(new Report());
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
@@ -121,7 +127,7 @@ public class AbstractRuleTest {
         m.put(Integer.valueOf(5), "");
         ctx.setReport(new Report());
         ctx.getReport().suppress(m);
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode n = new DummyNode(1);
         n.testingOnlySetBeginColumn(5);
         n.testingOnlySetBeginLine(5);
@@ -204,7 +210,7 @@ public class AbstractRuleTest {
         assertEquals("Rules with different messages are still equal", r1, r2);
         assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
     }
-    
+
     @Test
     public void testDeepCopyRule() {
         MyRule r1 = new MyRule();
@@ -223,9 +229,8 @@ public class AbstractRuleTest {
         assertEquals(r1.getRuleClass(), r2.getRuleClass());
         assertEquals(r1.getRuleSetName(), r2.getRuleSetName());
         assertEquals(r1.getSince(), r2.getSince());
-    }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(AbstractRuleTest.class);
+        assertEquals(r1.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY),
+                r2.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY));
     }
 }

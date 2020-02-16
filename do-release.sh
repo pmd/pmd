@@ -75,12 +75,15 @@ echo
 echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
+echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
+echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
+echo
 echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
 echo "    the new release based on the release notes"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
-echo "*   Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release"
+echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the latest pmd-designer release"
 echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
 echo
 echo "Press enter to continue..."
@@ -109,17 +112,20 @@ fi
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
-    echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
     git add ${RELEASE_NOTES_POST}
-    git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
-    git push
+    changes=$(git status --porcelain 2>/dev/null| egrep "^[AMDRC]" | wc -l)
+    if [ $changes -gt 0 ]; then
+        echo "Committing current changes (pmd.github.io)"
+        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}" && git push
+    fi
 )
 
 ./mvnw -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION}
+    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
+    -Pgenerate-rule-docs
 
 
 echo
@@ -197,6 +203,16 @@ echo
 echo "$NEW_RELEASE_NOTES"
 echo
 echo
+echo
+tweet="PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
+tweet="${tweet// /%20}"
+tweet="${tweet//:/%3A}"
+tweet="${tweet//#/%23}"
+tweet="${tweet//\//%2F}"
+tweet="${tweet//$'\r'//}"
+tweet="${tweet//$'\n'//%0A}"
+echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
+echo "        <https://twitter.com/intent/tweet?text=$tweet>"
 echo
 echo "------------------------------------------"
 echo "Done."

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -47,8 +46,8 @@ public class ApexParser {
         try {
             final String sourceCode = IOUtils.toString(reader);
             final Compilation astRoot = parseApex(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode);
-            suppressMap = new HashMap<>();
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, parserOptions);
+            suppressMap = treeBuilder.getSuppressMap();
 
             if (astRoot == null) {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");

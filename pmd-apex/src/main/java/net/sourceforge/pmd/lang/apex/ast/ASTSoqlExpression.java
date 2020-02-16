@@ -16,4 +16,8 @@ public class ASTSoqlExpression extends AbstractApexNode<SoqlExpression> {
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public String getQuery() {
+        return getNode().getRawQuery();
+    }
 }

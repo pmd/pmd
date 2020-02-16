@@ -17,6 +17,8 @@ public class Foo {
   public int i;
   public int j;
 
+  @Inject public int k;
+
   public static void bar() {
 
   }
@@ -28,7 +30,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 7.</message>
+            <message>'Foo' has value 8.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

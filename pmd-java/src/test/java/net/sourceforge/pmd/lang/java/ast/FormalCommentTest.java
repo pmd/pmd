@@ -25,12 +25,12 @@ public class FormalCommentTest {
         token.image = comment;
         FormalComment commentNode = new FormalComment(token);
 
-        Assert.assertEquals(2, commentNode.jjtGetNumChildren());
+        Assert.assertEquals(2, commentNode.getNumChildren());
 
-        JavadocElement paramTag = (JavadocElement) commentNode.jjtGetChild(0);
+        JavadocElement paramTag = (JavadocElement) commentNode.getChild(0);
         Assert.assertEquals("param", paramTag.tag().label);
 
-        JavadocElement returnTag = (JavadocElement) commentNode.jjtGetChild(1);
+        JavadocElement returnTag = (JavadocElement) commentNode.getChild(1);
         Assert.assertEquals("return", returnTag.tag().label);
     }
 }

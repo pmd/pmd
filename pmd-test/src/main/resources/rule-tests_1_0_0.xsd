@@ -50,7 +50,7 @@
             <element name="source-type" minOccurs="0" default="java">
                 <simpleType>
                     <restriction base="string">
-                        <pattern value="(apex|ecmascript|java|jsp|plsql|pom|vf|vm|wsdl|xml|xsl)( [0-9.]+)?"></pattern>
+                        <pattern value="(apex|ecmascript|java|jsp|modelica|plsql|pom|scala|vf|vm|wsdl|xml|xsl)( [0-9.]+)?"></pattern>
                     </restriction>
                 </simpleType>
             </element>

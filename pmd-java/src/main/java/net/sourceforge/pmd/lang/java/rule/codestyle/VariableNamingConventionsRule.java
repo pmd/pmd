@@ -117,7 +117,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         boolean isStatic = node.isStatic();
         boolean isFinal = node.isFinal();
 
-        Node type = node.jjtGetParent().jjtGetParent().jjtGetParent();
+        Node type = node.getParent().getParent().getParent();
         // Anything from an interface is necessarily static and final
         // Anything inside an annotation type is also static and final
         if (type instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) type).isInterface()

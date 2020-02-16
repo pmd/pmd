@@ -6,7 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 
-public class TextPadRendererTest extends AbstractRendererTst {
+public class TextPadRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
@@ -15,7 +15,7 @@ public class TextPadRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "n/a(1,  Foo):  blah" + PMD.EOL;
+        return getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class TextPadRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "n/a(1,  Foo):  blah" + PMD.EOL + "n/a(1,  Foo):  blah" + PMD.EOL;
+        return getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL + getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

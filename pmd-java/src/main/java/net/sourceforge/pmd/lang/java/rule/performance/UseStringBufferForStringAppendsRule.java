@@ -21,13 +21,13 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
-    
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node, String.class) || node.isArray()) {
             return data;
         }
-        Node parent = node.jjtGetParent().jjtGetParent();
+        Node parent = node.getParent().getParent();
         if (!(parent instanceof ASTLocalVariableDeclaration)) {
             return data;
         }
@@ -59,8 +59,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                     continue;
                 }
             }
-            if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
-                ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
+            if (statement.getNumChildren() > 0 && statement.getChild(0) instanceof ASTPrimaryExpression) {
+                ASTName astName = statement.getChild(0).getFirstDescendantOfType(ASTName.class);
                 if (astName != null) {
                     if (astName.equals(name)) {
                         ASTAssignmentOperator assignmentOperator = statement

@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
-import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -69,7 +68,6 @@ public class Report implements Iterable<RuleViolation> {
         report.addListeners(ctx.getReport().getListeners());
 
         ctx.setReport(report);
-        ctx.setSourceCodeFilename(fileName);
         ctx.setSourceCodeFile(new File(fileName));
         return report;
     }
@@ -163,7 +161,7 @@ public class Report implements Iterable<RuleViolation> {
         public String getMsg() {
             return error.getClass().getSimpleName() + ": " + error.getMessage();
         }
-        
+
         public String getDetail() {
             try (StringWriter stringWriter = new StringWriter();
                     PrintWriter writer = new PrintWriter(stringWriter)) {
@@ -418,7 +416,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return <code>true</code> if there are metrics, <code>false</code>
      *         otherwise
+     *
+     * @deprecated see {@link StatisticalRule}
      */
+    @Deprecated
     public boolean hasMetrics() {
         return !metrics.isEmpty();
     }
@@ -427,7 +428,10 @@ public class Report implements Iterable<RuleViolation> {
      * Iterate over the metrics.
      *
      * @return an iterator over the metrics
+     *
+     * @deprecated see {@link StatisticalRule}
      */
+    @Deprecated
     public Iterator<Metric> metrics() {
         return metrics.iterator();
     }
@@ -486,7 +490,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return the iterator
      */
     public Iterator<ProcessingError> errors() {
-        return errors == null ? EmptyIterator.<ProcessingError>instance() : errors.iterator();
+        return errors == null ? Collections.<ProcessingError>emptyIterator() : errors.iterator();
     }
 
     /**
@@ -495,7 +499,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return the iterator
      */
     public Iterator<ConfigurationError> configErrors() {
-        return configErrors == null ? EmptyIterator.<ConfigurationError>instance() : configErrors.iterator();
+        return configErrors == null ? Collections.<ConfigurationError>emptyIterator() : configErrors.iterator();
     }
 
     /**

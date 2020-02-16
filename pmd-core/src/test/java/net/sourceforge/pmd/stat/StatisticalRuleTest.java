@@ -32,6 +32,7 @@ import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCR
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -857,7 +858,7 @@ public class StatisticalRuleTest {
 
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename(testName);
+        ctx.setSourceCodeFile(new File(testName));
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
 
         rule.apply(list, ctx);

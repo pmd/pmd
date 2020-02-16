@@ -11,13 +11,13 @@ author: Tom Copeland <tom@infoether.com>
 Duplicate code can be hard to find, especially in a large project.
 But PMD's **Copy/Paste Detector (CPD)** can find it for you!
 
-CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and [some more languages](#supported-languages).
+CPD works with Java, JSP, C/C++, C#, Go, Kotlin, Ruby, Swift and [many more languages](#supported-languages).
 It can be used via [command-line](#cli-usage), or via an [Ant task](#ant-task).
 It can also be run with Maven by using the `cpd-check` goal on the [Maven PMD Plugin](pmd_userdocs_tools_maven.html).
 
 
 Your own language is missing?
-See how to add it [here](/pmd_devdocs_major_adding_new_cpd_language.html).
+See how to add it [here](pmd_devdocs_major_adding_new_cpd_language.html).
 
 
 ### Why should you care about duplicates?
@@ -178,11 +178,15 @@ The default format is a text report, and there's also a `csv` report.
 
 Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
 
-    $ export HEAPSIZE=512m
+    $ export PMD_JAVA_OPTS=-Xmx512m
     $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
 
-In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` set the "OPTS"
-variable to `-Xmx512m`.
+In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` or
+set the environment variable `PMD_JAVA_OPTS` prior to starting CPD:
+
+    C:\ > cd C:\pmd-bin-{{site.pmd.version}}\bin
+    C:\...\bin > set PMD_JAVA_OPTS=-Xmx512m
+    C:\...\bin > .\cpd.bat --minimum-tokens 100 --files c:\temp\src
 
 
 If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
@@ -195,7 +199,7 @@ Please note that if CPD detects duplicated source code, it will exit with status
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, now code duplications found</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
 <tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
 </table>
@@ -206,12 +210,15 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Apex
 * C#
 * C/C++
+* Dart
 * EcmaScript (JavaScript)
 * Fortran
 * Go
 * Groovy
 * Java
 * Jsp
+* Kotlin
+* Lua
 * Matlab
 * Objective-C
 * Perl
@@ -359,8 +366,8 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
 ## Suppression
 
-Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Go**, **Javascript**,
-**Kotlin**, **Matlab**, **Objective-C**, **PL/SQL**, **Python** and **Swift** by including the keywords `CPD-OFF` and `CPD-ON`.
+Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
+**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python** and **Swift** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
     public Object someParameterizedFactoryMethod(int x) throws Exception {
@@ -387,7 +394,7 @@ Additionally, **Java** allows to toggle suppression by adding the annotations
 all code within will be ignored by CPD.
 
 This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
-It's legacy and the new comment's based approch should be favored.
+It's legacy and the new comment's based approach should be favored.
 
 ```java
     //enable suppression

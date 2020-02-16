@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+	<test-code>
+		<description>Apex CSRF in constructor</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+
+	public Foo() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+		upsert accounts;	
+	}
+}
+		]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Queueable class</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo implements Queueable {
+
+	public Foo() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+		upsert accounts;	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Apex CSRF in init method</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+
+	public void init() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+		upsert accounts;	
+	}
+}
+		]]></code>
+	</test-code>
+
+    <test-code>
+        <description>Apex CSRF in initializer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        upsert accounts;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Apex CSRF in static initializer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        upsert accounts;
+    }
+}
+        ]]></code>
+    </test-code>
+
+	<test-code>
+		<description>Apex CSRF in init method</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+
+	public void init() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+			
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Apex CSRF in constructor</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+
+	public Foo() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+	}
+}
+		]]></code>
+	</test-code>
+
+</test-data>

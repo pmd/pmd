@@ -600,4 +600,29 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTModuleName node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledBlock node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledExpression node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 }

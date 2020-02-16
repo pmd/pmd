@@ -20,7 +20,7 @@ public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
     }
 
     public ASTVariableDeclaration getVariables() {
-        return (ASTVariableDeclaration) jjtGetChild(0);
+        return (ASTVariableDeclaration) getChild(0);
     }
 
     public boolean hasBody() {
@@ -29,7 +29,7 @@ public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
 
     public EcmascriptNode<?> getBody() {
         if (hasBody()) {
-            return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
+            return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
         } else {
             return null;
         }

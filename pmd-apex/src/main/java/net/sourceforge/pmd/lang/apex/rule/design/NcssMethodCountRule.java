@@ -10,7 +10,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for methods.
- * 
+ *
  * @author ported from Java original of Jason Bennett
  */
 public class NcssMethodCountRule extends AbstractNcssCountRule {
@@ -28,7 +28,7 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.getNode().getMethodInfo().isConstructor()) {
+        if (!node.isConstructor()) {
             return super.visit(node, data);
         }
 
@@ -37,7 +37,7 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-        return new String[] { ((ASTMethod) point.getNode()).getNode().getMethodInfo().getName(),
+        return new String[] { ((ASTMethod) point.getNode()).getImage(),
             String.valueOf((int) point.getScore()), };
     }
 }

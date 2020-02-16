@@ -123,6 +123,13 @@ public class Foo {      // perfect, both methods provided
       // return some hash value
     }
 }
+
+// A sample with double braces (#1898)
+public class Foo {
+    public List<String> bar() {
+        return new ArrayList<String>(){{ addAll("a","b","c"); }};
+    }
+}
  ]]>
       </example>
     </rule>

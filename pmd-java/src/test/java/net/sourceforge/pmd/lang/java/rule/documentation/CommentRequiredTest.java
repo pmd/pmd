@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -23,6 +24,14 @@ public class CommentRequiredTest extends PmdRuleTst {
         assertNull("By default, the rule should be functional", rule.dysfunctionReason());
 
         List<PropertyDescriptor<?>> propertyDescriptors = getProperties(rule);
+        // remove  deprecated properties
+        for (Iterator<PropertyDescriptor<?>> it = propertyDescriptors.iterator(); it.hasNext();) {
+            PropertyDescriptor<?> property = it.next();
+            if (property.description().startsWith("Deprecated!")) {
+                it.remove();
+            }
+        }
+
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Ignored");
         }

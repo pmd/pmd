@@ -24,7 +24,7 @@ public class ObjectiveCParser extends AbstractParser {
 
     /**
      * Creates a new Objective-C Parser.
-     * 
+     *
      * @param parserOptions
      *            the options
      */

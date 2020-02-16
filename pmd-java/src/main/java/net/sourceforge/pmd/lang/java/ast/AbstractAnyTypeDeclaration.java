@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -12,6 +13,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Abstract class for type declarations nodes.
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private JavaTypeQualifiedName qualifiedName;
@@ -29,10 +32,25 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
     @Override
     public final boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
+            || getParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
+    @Override
+    @Deprecated
+    public String getImage() {
+        return super.getImage();
+    }
+
+    @Override
+    public String getBinaryName() {
+        return getQualifiedName().getBinaryName();
+    }
+
+    @Override
+    public String getSimpleName() {
+        return getImage();
+    }
 
     /**
      * Returns true if the enclosing type of this type declaration
@@ -80,6 +98,8 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     }
 
 
+    @InternalApi
+    @Deprecated
     public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
         this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());

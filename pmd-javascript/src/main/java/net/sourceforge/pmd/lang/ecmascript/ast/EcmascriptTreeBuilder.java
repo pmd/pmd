@@ -189,7 +189,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
-            parent.jjtAddChild(node, parent.jjtGetNumChildren());
+            parent.jjtAddChild(node, parent.getNumChildren());
             node.jjtSetParent(parent);
         }
 

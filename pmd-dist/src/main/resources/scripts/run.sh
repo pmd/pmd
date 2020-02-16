@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer, bgastviewer, designerold"
+    echo "pmd, cpd, cpdgui, designer, bgastviewer, designerold, ast-dump"
 }
 
 is_cygwin() {
@@ -193,6 +193,9 @@ case "${APPNAME}" in
   "cpdgui")
     readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
     ;;
+  "ast-dump")
+    readonly CLASSNAME="net.sourceforge.pmd.util.treeexport.TreeExportCli"
+    ;;
   *)
     echo "${APPNAME} is NOT a valid application name, valid options are:$(valid_app_options)"
     ;;
@@ -215,4 +218,4 @@ cygwin_paths
 
 java_heapsize_settings
 
-java ${HEAPSIZE} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@"
+java ${HEAPSIZE} ${PMD_JAVA_OPTS} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@"

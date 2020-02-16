@@ -7,6 +7,7 @@ package net.sourceforge.pmd.testframework;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -39,10 +40,10 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -98,7 +99,7 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
+            Rule rule = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
@@ -211,8 +212,9 @@ public abstract class RuleTst {
 
         List<Integer> expected = test.getExpectedLineNumbers();
         if (report.size() != expected.size()) {
-            throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
-                    + "number of violations for test case '" + test.getDescription() + "'");
+            throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
+                    + " doesn't match number of violations " + report.size() + " for test case '"
+                    + test.getDescription() + "'");
         }
 
         Iterator<RuleViolation> it = report.iterator();
@@ -275,10 +277,10 @@ public abstract class RuleTst {
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
-            ctx.setSourceCodeFilename("n/a");
+            ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
-            RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
+            RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         } catch (Exception e) {
             throw new RuntimeException(e);

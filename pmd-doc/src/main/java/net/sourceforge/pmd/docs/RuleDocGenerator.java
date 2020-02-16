@@ -38,6 +38,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -111,7 +112,7 @@ public class RuleDocGenerator {
         }
 
         List<RuleSet> rulesets = new ArrayList<>();
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         for (String filename : additionalRulesets) {
             try {
                 // do not take rulesets from pmd-test or pmd-core
@@ -422,7 +423,7 @@ public class RuleDocGenerator {
                         lines.add("");
                         for (String example : rule.getExamples()) {
                             lines.add("``` " + mapLanguageForHighlighting(languageTersename));
-                            lines.addAll(toLines(StringUtils.stripToEmpty(example)));
+                            lines.addAll(toLines("{%raw%}" + StringUtils.stripToEmpty(example) + "{%endraw%}"));
                             lines.add("```");
                             lines.add("");
                         }

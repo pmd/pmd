@@ -23,7 +23,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * Detects fields that are declared after methods, constructors, etc. It was a
  * XPath rule, but the Java version is much faster. The XPath rule for
  * reference:
- * 
+ *
  * <pre>
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
@@ -52,10 +52,10 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        Node parent = node.jjtGetParent().jjtGetParent();
-        for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-            Node child = parent.jjtGetChild(i);
-            if (child.jjtGetNumChildren() > 0) {
+        Node parent = node.getParent().getParent();
+        for (int i = 0; i < parent.getNumChildren(); i++) {
+            Node child = parent.getChild(i);
+            if (child.getNumChildren() > 0) {
                 child = skipAnnotations(child);
             }
             if (child.equals(node)) {
@@ -93,16 +93,16 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     /**
      * Ignore all annotations, until anything, that is not an annotation and
      * return this node
-     * 
+     *
      * @param child
      *            the node from where to start the search
      * @return the first child or the first child after annotations
      */
     private Node skipAnnotations(Node child) {
-        Node nextChild = child.jjtGetChild(0);
-        for (int j = 0; j < child.jjtGetNumChildren(); j++) {
-            if (!(child.jjtGetChild(j) instanceof ASTAnnotation)) {
-                nextChild = child.jjtGetChild(j);
+        Node nextChild = child.getChild(0);
+        for (int j = 0; j < child.getNumChildren(); j++) {
+            if (!(child.getChild(j) instanceof ASTAnnotation)) {
+                nextChild = child.getChild(j);
                 break;
             }
         }

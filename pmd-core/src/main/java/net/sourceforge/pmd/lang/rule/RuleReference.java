@@ -377,9 +377,22 @@ public class RuleReference extends AbstractDelegateRule {
             propertyDescriptors.remove(desc);
         }
     }
-    
+
     @Override
     public Rule deepCopy() {
         return new RuleReference(this);
+    }
+
+    /**
+     * Checks whether this rule reference explicitly overrides any of the possible
+     * attributes of the referenced rule.
+     * @return <code>true</code> if there is at least one attribute overridden. <code>false</code> if
+     *     the referenced rule is referenced without any change.
+     */
+    public boolean hasOverriddenAttributes() {
+        return deprecated != null || description != null || examples != null || externalInfoUrl != null
+                || maximumLanguageVersion != null || minimumLanguageVersion != null
+                || message != null || name != null || priority != null
+                || propertyDescriptors != null || propertyValues != null;
     }
 }

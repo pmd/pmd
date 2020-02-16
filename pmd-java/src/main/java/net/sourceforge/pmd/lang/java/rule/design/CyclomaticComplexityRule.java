@@ -13,7 +13,10 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -21,6 +24,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -34,7 +38,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @version 6.0.0
  */
 public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
-    
+
     private static final Logger LOG = Logger.getLogger(CyclomaticComplexityRule.class.getName());
 
     // Deprecated, kept for backwards compatibility (6.0.0)
@@ -56,7 +60,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
                          .require(positive()).defaultValue(10).build();
 
     private static final Map<String, CycloOption> OPTION_MAP;
-    
+
     static {
         OPTION_MAP = new HashMap<>();
         OPTION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
@@ -86,17 +90,17 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         int methodLevel = getProperty(METHOD_LEVEL_DESCRIPTOR);
         int classLevel = getProperty(CLASS_LEVEL_DESCRIPTOR);
         int commonLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
-        
+
         if (methodLevel == METHOD_LEVEL_DESCRIPTOR.defaultValue()
             && classLevel == CLASS_LEVEL_DESCRIPTOR.defaultValue()
             && commonLevel != REPORT_LEVEL_DESCRIPTOR.defaultValue()) {
-            LOG.warning("Rule CyclomaticComplexity uses deprecated property 'reportLevel'. " 
-                        + "Future versions of PMD will remove support for this property. " 
+            LOG.warning("Rule CyclomaticComplexity uses deprecated property 'reportLevel'. "
+                        + "Future versions of PMD will remove support for this property. "
                         + "Please use 'methodReportLevel' and 'classReportLevel' instead!");
             methodLevel = commonLevel;
             classLevel = commonLevel * 8;
         }
-        
+
         methodReportLevel = methodLevel;
         classReportLevel = classLevel;
     }
@@ -106,7 +110,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         // methodReportLevel = getProperty(METHOD_LEVEL_DESCRIPTOR);
         // classReportLevel = getProperty(CLASS_LEVEL_DESCRIPTOR);
         assignReportLevelsCompat();
-        
+
         cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
 
 
@@ -121,13 +125,13 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         super.visit(node, data);
 
         if (JavaClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node, cycloOptions);
+            int classWmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
                 int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);
 
-                String[] messageParams = {node.getTypeKind().getPrintableName(),
-                                          node.getImage(),
+                String[] messageParams = {PrettyPrintingUtil.kindName(node),
+                                          node.getSimpleName(),
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
 
@@ -141,15 +145,26 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public final Object visit(MethodLikeNode node, Object data) {
 
-        int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions);
-        if (cyclo >= methodReportLevel) {
+        if (JavaOperationMetricKey.CYCLO.supports(node)) {
+            int cyclo = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.CYCLO, node, cycloOptions);
+            if (cyclo >= methodReportLevel) {
 
-            addViolation(data, node, new String[]{node.getKind().getPrintableName(),
-                                                  node.getQualifiedName().getOperation(),
-                                                  "",
-                                                  "" + cyclo, });
+
+                String opname = node instanceof ASTMethodOrConstructorDeclaration
+                                ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
+                                : "lambda";
+
+                String kindname = node instanceof ASTMethodOrConstructorDeclaration
+                                  ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
+                                  : "lambda";
+
+
+                addViolation(data, node, new String[] {kindname,
+                                                       opname,
+                                                       "",
+                                                       "" + cyclo, });
+            }
         }
-
         return data;
     }
 

@@ -38,10 +38,10 @@ public class ElementNode extends AbstractNodeInfo {
         this.node = node;
         this.id = idGenerator.getNextId();
         this.siblingPosition = siblingPosition;
-        if (node.jjtGetNumChildren() > 0) {
-            this.children = new NodeInfo[node.jjtGetNumChildren()];
+        if (node.getNumChildren() > 0) {
+            this.children = new NodeInfo[node.getNumChildren()];
             for (int i = 0; i < children.length; i++) {
-                children[i] = new ElementNode(document, idGenerator, this, node.jjtGetChild(i), i);
+                children[i] = new ElementNode(document, idGenerator, this, node.getChild(i), i);
             }
         } else {
             this.children = null;
@@ -101,7 +101,25 @@ public class ElementNode extends AbstractNodeInfo {
 
     @Override
     public int compareOrder(NodeInfo other) {
-        return Integer.signum(this.node.jjtGetId() - ((ElementNode) other).node.jjtGetId());
+        int result;
+        if (this.isSameNodeInfo(other)) {
+            result = 0;
+        } else {
+            result = Integer.signum(this.getLineNumber() - other.getLineNumber());
+            if (result == 0) {
+                result = Integer.signum(this.getColumnNumber() - other.getColumnNumber());
+            }
+            if (result == 0) {
+                if (this.getParent().equals(other.getParent())) {
+                    result = Integer.signum(this.getSiblingPosition() - ((ElementNode) other).getSiblingPosition());
+                } else {
+                    // we must not return 0 here, otherwise the node might be removed as duplicate when creating
+                    // a union set. The the nodes are definitively different nodes (isSameNodeInfo == false).
+                    result = 1;
+                }
+            }
+        }
+        return result;
     }
 
     @SuppressWarnings("PMD.MissingBreakInSwitch")

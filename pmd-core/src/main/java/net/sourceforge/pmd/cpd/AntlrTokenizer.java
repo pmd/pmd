@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
- * 
+ *
  * @deprecated This is an internal API.
  */
 @Deprecated
@@ -59,7 +59,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
     }
 
     private void processToken(final Tokens tokenEntries, final String fileName, final AntlrToken token) {
-        final TokenEntry tokenEntry = new TokenEntry(token.getImage(), fileName, token.getBeginLine());
+        final TokenEntry tokenEntry = new TokenEntry(token.getImage(), fileName, token.getBeginLine(), token.getBeginColumn() + 1, token.getEndColumn() + 1);
         tokenEntries.add(tokenEntry);
     }
 }
