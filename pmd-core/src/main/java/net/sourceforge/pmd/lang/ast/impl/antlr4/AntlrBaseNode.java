@@ -6,9 +6,13 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
+
 public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
 
-    private Object userData;
+    private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
     /**
      * Constructor required by {@link ParserRuleContext}
@@ -63,12 +67,17 @@ public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNo
 
     @Override
     public Object getUserData() {
-        return userData;
+        return userData.get(AbstractNode.LEGACY_USER_DATA);
     }
 
     @Override
-    public void setUserData(final Object userData) {
-        this.userData = userData;
+    public void setUserData(Object userData) {
+        this.userData.set(AbstractNode.LEGACY_USER_DATA, userData);
+    }
+
+    @Override
+    public DataMap<DataKey<?, ?>> getUserMap() {
+        return userData;
     }
 
     @Override

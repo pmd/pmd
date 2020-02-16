@@ -28,7 +28,8 @@ public abstract class AbstractNode implements Node {
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
-    private static final SimpleDataKey<Object> LEGACY_USER_DATA = DataMap.simpleDataKey("legacy user data");
+    @Deprecated
+    public static final SimpleDataKey<Object> LEGACY_USER_DATA = DataMap.simpleDataKey("legacy user data");
 
     private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
