@@ -97,7 +97,7 @@ static PropertyDescriptor<ModeStrategy> modeProperty
 
 ### Example
 
-You can see an example of properties used in a PMD rule [here](https://github.com/pmd/pmd/blob/5d86217871f086f8223da327099d1d67a6e45dab/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.java#L41-L42).
+You can see an example of properties used in a PMD rule [here](https://github.com/pmd/pmd/blob/d06b01785a712e61d33f366520f37c2473f5bd1a/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.java#L43-L52).
 There are several things to notice here:
 * The property descriptors are declared `static final`, which should generally be
 the case, as descriptors are immutable and can be shared between instances of the same rule;
