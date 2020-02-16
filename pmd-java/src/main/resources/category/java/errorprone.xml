@@ -1195,7 +1195,7 @@ should be annotated with @Test and @Ignore.
 [not(Annotation)]
 [MethodDeclaration[(@Public = true() or @PackagePrivate = true()) and @Static = false() and
         ResultType[@Void = true()] and
-        MethodDeclarator/FormalParameters[@ParameterCount = 0]
+        MethodDeclarator/FormalParameters[@Size = 0]
     ]
 ]
 ]]></value>
@@ -2854,7 +2854,7 @@ formatting is used.
 <![CDATA[
 //AllocationExpression
  [ClassOrInterfaceType[@Image='SimpleDateFormat']]
- [Arguments[@ArgumentCount=1]]
+ [Arguments[@Size=1]]
 ]]>
                     </value>
                 </property>
@@ -3366,7 +3366,7 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [Type//ClassOrInterfaceType[@Image='Log']]
 /VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
-[PrimarySuffix/Arguments[@ArgumentCount='1']]
+[PrimarySuffix/Arguments[@Size='1']]
 [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
 ]]>
                 </value>
@@ -3482,13 +3482,13 @@ class Test {
 [
 PrimaryPrefix
 [Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
 
 or
 
 PrimarySuffix
 [ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
 ]
 [not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
 ]]>

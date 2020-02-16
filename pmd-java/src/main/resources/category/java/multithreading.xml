@@ -379,7 +379,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
                 <value>
 <![CDATA[
 //StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@ArgumentCount = '0']]
+[PrimarySuffix/Arguments[@Size = '0']]
 [
     PrimaryPrefix[
         ./Name[@Image='notify' or ends-with(@Image,'.notify')]
