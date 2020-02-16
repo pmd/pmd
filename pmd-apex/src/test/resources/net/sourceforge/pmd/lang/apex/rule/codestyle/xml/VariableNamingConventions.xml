@@ -147,16 +147,6 @@ public class Foo {
     </test-code>
     
     <test-code>
-        <description>variables in inner classes should not trigger problems in parent declaration</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	private static final Bar BAR = new FooBar() { public foo(String arg) { } };
-}
-		]]></code>
-    </test-code>
-    
-    <test-code>
         <description>Rule property control</description>
         <expected-problems>5</expected-problems>
         <code><![CDATA[
@@ -268,7 +258,7 @@ public class Foo {
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class X {
-	public final static String foo = "3";
+	public final static String foo = '3';
 }
 		]]></code>
     </test-code>

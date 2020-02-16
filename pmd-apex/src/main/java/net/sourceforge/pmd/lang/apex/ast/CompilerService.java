@@ -66,14 +66,18 @@ public class CompilerService {
         this.queryValidator = queryValidator;
     }
 
+
+    /** @throws ParseException If the code is unparsable */
     public ApexCompiler visitAstFromString(String source, AstVisitor<AdditionalPassScope> visitor) {
         return visitAstsFromStrings(ImmutableList.of(source), visitor, CompilerStage.POST_TYPE_RESOLVE);
     }
 
+    /** @throws ParseException If the code is unparsable */
     public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor) {
         return visitAstsFromStrings(sources, visitor, CompilerStage.POST_TYPE_RESOLVE);
     }
 
+    /** @throws ParseException If the code is unparsable */
     public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor,
             CompilerStage compilerStage) {
         List<SourceFile> sourceFiles = sources.stream().map(s -> SourceFile.builder().setBody(s).build())

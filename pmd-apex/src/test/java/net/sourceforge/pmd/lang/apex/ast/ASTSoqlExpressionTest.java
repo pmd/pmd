@@ -13,8 +13,8 @@ public class ASTSoqlExpressionTest extends ApexParserTestBase {
 
     @Test
     public void testQuery() {
-        ApexNode<Compilation> node = parse("class Foo { void test1() { Account acc = [SELECT 1 FROM Account]; } }");
+        ApexNode<Compilation> node = parse("class Foo { void test1() { Account acc = [SELECT col FROM Account]; } }");
         ASTSoqlExpression soqlExpression = node.getFirstDescendantOfType(ASTSoqlExpression.class);
-        Assert.assertEquals("SELECT 1 FROM Account", soqlExpression.getQuery());
+        Assert.assertEquals("SELECT col FROM Account", soqlExpression.getQuery());
     }
 }
