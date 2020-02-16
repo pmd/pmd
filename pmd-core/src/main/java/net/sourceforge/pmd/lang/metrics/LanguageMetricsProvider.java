@@ -60,20 +60,6 @@ public interface LanguageMetricsProvider<T extends QualifiableNode, O extends Qu
 
 
     /**
-     * Like {@link MetricsComputer#computeForType(MetricKey, QualifiableNode, boolean, MetricOptions, MetricMemoizer)},
-     * but performs no memoisation.
-     */
-    double computeForType(MetricKey<T> key, T node, MetricOptions options);
-
-
-    /**
-     * Like {@link MetricsComputer#computeForOperation(MetricKey, QualifiableNode, boolean, MetricOptions, MetricMemoizer)}
-     * but performs no memoisation.
-     */
-    double computeForOperation(MetricKey<O> key, O node, MetricOptions options);
-
-
-    /**
      * Like {@link MetricsComputer#computeWithResultOption(MetricKey, QualifiableNode, boolean, MetricOptions, ResultOption, ProjectMemoizer)}
      * but performs no memoisation.
      */

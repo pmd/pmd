@@ -49,18 +49,6 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
 
 
     @Override
-    public double computeForType(MetricKey<T> key, T node, MetricOptions options) {
-        return MetricsUtil.computeMetric(key, node, options, true);
-    }
-
-
-    @Override
-    public double computeForOperation(MetricKey<O> key, O node, MetricOptions options) {
-        return MetricsUtil.computeMetric(key, node, options, true);
-    }
-
-
-    @Override
     public double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption resultOption) {
         return MetricsUtil.computeAggregate(key, findOps(node), options, resultOption);
     }
@@ -74,13 +62,13 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
         T t = asTypeNode(node);
         if (t != null) {
             for (MetricKey<T> tkey : getAvailableTypeMetrics()) {
-                results.put(tkey, computeForType(tkey, t, MetricOptions.emptyOptions()));
+                results.put(tkey, MetricsUtil.computeMetric(tkey, t));
             }
         }
         O o = asOperationNode(node);
         if (o != null) {
             for (MetricKey<O> okey : getAvailableOperationMetrics()) {
-                results.put(okey, computeForOperation(okey, o, MetricOptions.emptyOptions()));
+                results.put(okey, MetricsUtil.computeMetric(okey, o));
             }
         }
 
