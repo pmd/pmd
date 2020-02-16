@@ -526,11 +526,13 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public Object getUserData() {
         return userData.get(LEGACY_USER_DATA);
     }
 
     @Override
+    @Deprecated
     public void setUserData(final Object userData) {
         this.userData.set(LEGACY_USER_DATA, userData);
     }
