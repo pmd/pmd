@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -72,7 +71,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
             int classWmc = (int) MetricsUtil.computeMetric(ApexClassMetricKey.WMC, node);
 
             if (classWmc >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
-                int classHighest = (int) MetricsUtil.computeAggregate(ApexOperationMetricKey.CYCLO, node.getMethods(), ResultOption.HIGHEST);
+                int classHighest = (int) MetricsUtil.computeStatistics(ApexOperationMetricKey.CYCLO, node.getMethods()).getMax();
 
                 String[] messageParams = {"class",
                                           node.getImage(),

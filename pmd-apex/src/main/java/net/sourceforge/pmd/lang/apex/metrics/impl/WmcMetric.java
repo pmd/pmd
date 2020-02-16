@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
  * See the doc for the Java metric.
@@ -19,6 +18,6 @@ public class WmcMetric extends AbstractApexClassMetric {
 
     @Override
     public double computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
-        return MetricsUtil.computeAggregate(ApexOperationMetricKey.CYCLO, node.getMethods(), ResultOption.SUM);
+        return MetricsUtil.computeStatistics(ApexOperationMetricKey.CYCLO, node.getMethods()).getSum();
     }
 }
