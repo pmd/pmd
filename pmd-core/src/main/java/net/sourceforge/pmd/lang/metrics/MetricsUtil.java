@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -55,22 +56,21 @@ public final class MetricsUtil {
         Objects.requireNonNull(resultOption, "The result option must not be null");
 
 
-        List<Double> values = new ArrayList<>();
-        for (O op : ops) {
-            if (key.supports(op)) {
-                double val = computeMetric(key, op, options);
-                values.add(val);
-            }
-        }
+        DoubleSummaryStatistics stats =
+            StreamSupport.stream(ops.spliterator(), false)
+                         .filter(key::supports)
+                         .collect(Collectors.summarizingDouble(op -> computeMetric(key, op, options)));
 
-        // FUTURE use streams to do that when we upgrade the compiler to 1.8
+        // note these operations coalesce Double.NaN
+        // (if any value is NaN, the result is NaN)
         switch (resultOption) {
         case SUM:
-            return sum(values);
+            return stats.getSum();
         case HIGHEST:
-            return highest(values);
+            double max = stats.getMax();
+            return max == Double.NEGATIVE_INFINITY ? 0 : max;
         case AVERAGE:
-            return average(values);
+            return stats.getAverage();
         default:
             throw new IllegalArgumentException("Unknown result option " + resultOption);
         }
@@ -165,30 +165,5 @@ public final class MetricsUtil {
         node.getUserMap().set(paramKey, val);
         return val;
     }
-
-    private static double sum(List<Double> values) {
-        double sum = 0;
-        for (double val : values) {
-            sum += val;
-        }
-        return sum;
-    }
-
-
-    private static double highest(List<Double> values) {
-        double highest = Double.NEGATIVE_INFINITY;
-        for (double val : values) {
-            if (val > highest) {
-                highest = val;
-            }
-        }
-        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
-    }
-
-
-    private static double average(List<Double> values) {
-        return sum(values) / values.size();
-    }
-
 
 }
