@@ -5,7 +5,7 @@ tags: [devdocs, extending, metrics]
 summary: "PMD's Java module has an extensive framework for the calculation of metrics, which allows rule developers
 to implement and use new code metrics very simply. Most of the functionality of this framework is abstracted in such
 a way that any PMD supported language can implement such a framework without too much trouble. Here's how."
-last_updated: December 2017
+last_updated: February 2020
 permalink: pmd_devdocs_major_adding_new_metrics_framework.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
