@@ -19,9 +19,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 
 /**
@@ -82,12 +83,16 @@ public class MetricFunction implements Function {
 
     public static double getMetric(Node n, String metricKeyName) {
         if (n instanceof ASTAnyTypeDeclaration) {
-            return getClassMetric((ASTAnyTypeDeclaration) n, getClassMetricKey(metricKeyName));
+            return computeMetric(getClassMetricKey(metricKeyName), (ASTAnyTypeDeclaration) n);
         } else if (n instanceof MethodLikeNode) {
-            return getOpMetric((MethodLikeNode) n, getOperationMetricKey(metricKeyName));
+            return computeMetric(getOperationMetricKey(metricKeyName), (MethodLikeNode) n);
         } else {
             throw new IllegalStateException(genericBadNodeMessage());
         }
+    }
+
+    private static <T extends Node> double computeMetric(MetricKey<T> metricKey, T n) {
+        return metricKey.supports(n) ? MetricsUtil.computeMetric(metricKey, n) : Double.NaN;
     }
 
 
@@ -106,16 +111,6 @@ public class MetricFunction implements Function {
             throw new IllegalArgumentException(badOperationMetricKeyMessage());
         }
         return OPERATION_METRIC_KEY_MAP.get(constantName);
-    }
-
-
-    private static double getOpMetric(MethodLikeNode node, JavaOperationMetricKey key) {
-        return JavaMetrics.get(key, node);
-    }
-
-
-    private static double getClassMetric(ASTAnyTypeDeclaration node, JavaClassMetricKey key) {
-        return JavaMetrics.get(key, node);
     }
 
 

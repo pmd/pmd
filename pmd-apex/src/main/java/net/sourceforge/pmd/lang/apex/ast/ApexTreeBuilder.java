@@ -15,6 +15,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
+import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
@@ -228,11 +229,15 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
     private List<ApexDocTokenLocation> apexDocTokenLocations;
+    private Map<Integer, String> suppressMap;
 
-    public ApexTreeBuilder(String sourceCode) {
+    public ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
-        apexDocTokenLocations = buildApexDocTokenLocations(sourceCode);
+
+        CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
+        apexDocTokenLocations = commentInformation.docTokenLocations;
+        suppressMap = commentInformation.suppressMap;
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
@@ -341,14 +346,18 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private static List<ApexDocTokenLocation> buildApexDocTokenLocations(String source) {
+    private static CommentInformation extractInformationFromComments(String source, String suppressMarker) {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
         List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
+        Map<Integer, String> suppressMap = new HashMap<>();
+
         int startIndex = 0;
         Token token = lexer.nextToken();
         int endIndex = lexer.getCharIndex();
+
+        boolean checkForCommentSuppression = suppressMarker != null;
 
         while (token.getType() != Token.EOF) {
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
@@ -356,14 +365,32 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 if (token.getText().startsWith("/**")) {
                     tokenLocations.add(new ApexDocTokenLocation(startIndex, token));
                 }
+            } else if (checkForCommentSuppression && token.getType() == ApexLexer.EOL_COMMENT) {
+                // check if it starts with the suppress marker
+                String trimmedCommentText = token.getText().substring(2).trim();
+
+                if (trimmedCommentText.startsWith(suppressMarker)) {
+                    String userMessage = trimmedCommentText.substring(suppressMarker.length()).trim();
+                    suppressMap.put(token.getLine(), userMessage);
+                }
             }
-            // TODO : Check other non-doc comments and tokens of type ApexLexer.EOL_COMMENT for "NOPMD" suppressions
+
             startIndex = endIndex;
             token = lexer.nextToken();
             endIndex = lexer.getCharIndex();
         }
 
-        return tokenLocations;
+        return new CommentInformation(suppressMap, tokenLocations);
+    }
+
+    private static class CommentInformation {
+        Map<Integer, String> suppressMap;
+        List<ApexDocTokenLocation> docTokenLocations;
+
+        CommentInformation(Map<Integer, String> suppressMap, List<ApexDocTokenLocation> docTokenLocations) {
+            this.suppressMap = suppressMap;
+            this.docTokenLocations = docTokenLocations;
+        }
     }
 
     private static class ApexDocTokenLocation {
@@ -385,6 +412,10 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             build(node);
             return false;
         }
+    }
+
+    public Map<Integer, String> getSuppressMap() {
+        return suppressMap;
     }
 
     @Override

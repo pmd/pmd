@@ -11,11 +11,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Abstract class for type declarations nodes.
  */
-abstract class AbstractAnyTypeDeclaration extends AbstractJavaNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
+abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
     private JavaTypeQualifiedName qualifiedName;
-    private JavaTypeDefinition typeDefinition;
-
 
     AbstractAnyTypeDeclaration(int i) {
         super(i);
@@ -44,16 +42,8 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaNode implements AS
 
     void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
-        this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());
+        setTypeDefinition(JavaTypeDefinition.forClass(qualifiedName.getType()));
     }
 
-    void setTypeDefinition(JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
-    }
-
-    @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
-    }
 }
 

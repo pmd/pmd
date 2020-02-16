@@ -235,7 +235,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     List<String> packagesAndClasses = new ArrayList<>();
                     String methodName = null;
                     ASTArguments args = (ASTArguments) lastNode.getChild(0);
-                    int numOfArguments = args.getArgumentCount();
+                    int numOfArguments = args.size();
                     List<String> argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(args);
                     boolean superFirst = false;
                     int thisIndex = -1;
@@ -456,7 +456,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
                 ASTArguments aa = l.get(0);
-                count = aa.getArgumentCount();
+                count = aa.size();
                 argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(aa);
             }
             name = eci.getImage();

@@ -16,7 +16,9 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated See package description
  */
+@Deprecated
 public interface MetricsComputer<T extends QualifiableNode, O extends QualifiableNode> {
 
 

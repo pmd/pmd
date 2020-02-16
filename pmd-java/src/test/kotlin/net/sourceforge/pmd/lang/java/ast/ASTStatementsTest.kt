@@ -19,7 +19,7 @@ class ASTStatementsTest : ParserTestSpec({
 
                 foreachLoop {
 
-                    it::getVariableId shouldBe fromChild<ASTLocalVariableDeclaration, ASTVariableDeclaratorId> {
+                    it::getVarId shouldBe fromChild<ASTLocalVariableDeclaration, ASTVariableDeclaratorId> {
                         it::getModifiers shouldBe modifiers {}
 
                         it::getTypeNode shouldBe classType("Integer")
@@ -52,7 +52,7 @@ class ASTStatementsTest : ParserTestSpec({
                         variableDeclarator("i")
                     }
 
-                    it.variableId::isFinal shouldBe true
+                    it.varId::isFinal shouldBe true
 
                     it::getIterableExpr shouldBe constructorCall()
 

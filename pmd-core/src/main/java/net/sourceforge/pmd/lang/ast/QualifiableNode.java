@@ -8,7 +8,10 @@ package net.sourceforge.pmd.lang.ast;
  * Nodes that can be described with a qualified name.
  *
  * @author Clément Fournier
+ *
+ * @deprecated Not useful anymore
  */
+@Deprecated
 public interface QualifiableNode extends Node {
 
     /**

@@ -189,6 +189,9 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             if (n.startsWith("uses")) {
                 return n.substring("uses".length());
             }
+            if ("size".equals(n)) {
+                return "Size";
+            }
 
             return n;
         }
