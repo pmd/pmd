@@ -25,8 +25,8 @@ import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
-import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
  * @author Clément Fournier
@@ -66,25 +66,23 @@ public class ProjectMemoizerTest extends BaseNonParserTest {
 
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
-        final JavaProjectMemoizer toplevel = JavaMetrics.getFacade().getLanguageSpecificProjectMemoizer();
-
         final List<Integer> result = new ArrayList<>();
 
         acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                MetricMemoizer<MethodLikeNode> op = toplevel.getOperationMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.getInstance().computeForOperation(opMetricKey, node, force,
-                                                                                  MetricOptions.emptyOptions(), op));
+                if (opMetricKey.supports(node)) {
+                    result.add((int) MetricsUtil.computeMetric(opMetricKey, node, MetricOptions.emptyOptions(), force));
+                }
                 return super.visit(node, data);
             }
 
 
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.getInstance().computeForType(classMetricKey, node, force,
-                                                                             MetricOptions.emptyOptions(), clazz));
+                if (classMetricKey.supports(node)) {
+                    result.add((int) MetricsUtil.computeMetric(classMetricKey, node, MetricOptions.emptyOptions(), force));
+                }
                 return super.visit(node, data);
             }
         }, null);

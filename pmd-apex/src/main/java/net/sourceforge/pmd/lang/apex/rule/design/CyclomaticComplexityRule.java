@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -69,7 +70,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
         classNames.pop();
 
         if (ApexClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) ApexMetrics.get(ApexClassMetricKey.WMC, node);
+            int classWmc = (int) MetricsUtil.computeMetric(ApexClassMetricKey.WMC, node);
 
             if (classWmc >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
                 int classHighest = (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node, ResultOption.HIGHEST);
@@ -89,16 +90,18 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
     @Override
     public final Object visit(ASTMethod node, Object data) {
 
-        int cyclo = (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node);
-        if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
-            String opType = inTrigger ? "trigger"
-                                      : node.getImage().equals(classNames.peek()) ? "constructor"
-                                                                                  : "method";
+        if (ApexOperationMetricKey.CYCLO.supports(node)) {
+            int cyclo = (int) MetricsUtil.computeMetric(ApexOperationMetricKey.CYCLO, node);
+            if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
+                String opType = inTrigger ? "trigger"
+                                          : node.getImage().equals(classNames.peek()) ? "constructor"
+                                                                                      : "method";
 
-            addViolation(data, node, new String[]{opType,
-                                                  node.getQualifiedName().getOperation(),
-                                                  "",
-                                                  "" + cyclo, });
+                addViolation(data, node, new String[] {opType,
+                                                       node.getQualifiedName().getOperation(),
+                                                       "",
+                                                       "" + cyclo, });
+            }
         }
 
         return data;

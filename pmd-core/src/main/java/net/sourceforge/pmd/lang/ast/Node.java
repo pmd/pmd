@@ -14,6 +14,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * Root interface for all AST nodes. This interface provides only the API
@@ -387,6 +389,7 @@ public interface Node {
      * unless it has been set via {@link #setUserData(Object)}.
      *
      * @return The user data set on this node.
+     * @deprecated Use {@link #getUserMap()}
      */
     Object getUserData();
 
@@ -403,6 +406,7 @@ public interface Node {
      *
      * @param userData
      *            The data to set on this node.
+     * @deprecated Use {@link #getUserMap()}
      */
     void setUserData(Object userData);
 
@@ -428,6 +432,14 @@ public interface Node {
     @InternalApi
     void removeChildAtIndex(int childIndex);
 
+
+    /**
+     * Returns a data map used to store additional information on this node.
+     * This replaces the legacy {@link #getUserData()}/{@link #setUserData(Object)}.
+     *
+     * @return The user data map of this node
+     */
+    DataMap<DataKey<?, ?>> getUserMap();
 
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}

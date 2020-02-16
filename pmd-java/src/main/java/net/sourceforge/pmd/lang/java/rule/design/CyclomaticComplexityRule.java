@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -124,7 +125,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         super.visit(node, data);
 
         if (JavaClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node, cycloOptions);
+            int classWmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
                 int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);
@@ -144,25 +145,26 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public final Object visit(MethodLikeNode node, Object data) {
 
-        int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions);
-        if (cyclo >= methodReportLevel) {
+        if (JavaOperationMetricKey.CYCLO.supports(node)) {
+            int cyclo = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.CYCLO, node, cycloOptions);
+            if (cyclo >= methodReportLevel) {
 
 
-            String opname = node instanceof ASTMethodOrConstructorDeclaration
-                            ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
-                            : "lambda";
+                String opname = node instanceof ASTMethodOrConstructorDeclaration
+                                ? PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node)
+                                : "lambda";
 
-            String kindname = node instanceof ASTMethodOrConstructorDeclaration
-                              ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
-                              : "lambda";
+                String kindname = node instanceof ASTMethodOrConstructorDeclaration
+                                  ? node instanceof ASTConstructorDeclaration ? "constructor" : "method"
+                                  : "lambda";
 
 
-            addViolation(data, node, new String[] {kindname,
-                                                   opname,
-                                                   "",
-                                                   "" + cyclo, });
+                addViolation(data, node, new String[] {kindname,
+                                                       opname,
+                                                       "",
+                                                       "" + cyclo, });
+            }
         }
-
         return data;
     }
 

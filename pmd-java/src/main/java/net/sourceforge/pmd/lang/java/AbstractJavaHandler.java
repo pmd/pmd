@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetricsProvider;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
@@ -49,7 +48,7 @@ import net.sf.saxon.sxpath.IndependentContext;
 @Deprecated
 public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler {
 
-    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaLanguageHandler.JavaMetricsProvider();
 
     @Override
     public DataFlowHandler getDataFlowHandler() {
