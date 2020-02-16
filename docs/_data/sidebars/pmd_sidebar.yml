@@ -61,11 +61,17 @@ entries:
       - title: Extending PMD
         output: web, pdf
         subfolderitems:
-        - title: Writing a rule
-          url: /pmd_userdocs_extending_writing_pmd_rules.html
+        - title: Introduction to writing rules
+          url: /pmd_userdocs_extending_writing_rules_intro.html
           output: web, pdf
-        - title: Writing XPath rules
+        - title: Your first rule
+          url: /pmd_userdocs_extending_your_first_rule.html
+          output: web, pdf
+        - title: XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
+          output: web, pdf
+        - title: Java rules
+          url: /pmd_userdocs_extending_writing_java_rules.html
           output: web, pdf
         - title: Rule designer reference
           url: /pmd_userdocs_extending_designer_reference.html
@@ -91,12 +97,18 @@ entries:
       - title: Tools / Integrations
         output: web, pdf
         subfolderitems:
-        - title: Maven PMD plugin
+        - title: Maven PMD Plugin
           output: web, pdf
           url: /pmd_userdocs_tools_maven.html
+        - title: Gradle
+          output: web, pdf
+          url: /pmd_userdocs_tools_gradle.html
         - title: Ant
           output: web, pdf
           url: /pmd_userdocs_tools_ant.html
+        - title: PMD Java API
+          output: web, pdf
+          url: /pmd_userdocs_tools_java_api.html
         - title: CI integrations
           output: web, pdf
           url: /pmd_userdocs_tools_ci.html

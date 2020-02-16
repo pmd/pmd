@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * Represents a key parameterized with its options. Used to index memoization maps.
@@ -16,10 +18,13 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @author Clément Fournier
  * @since 5.8.0
+ * @deprecated Is internal API
  */
-public final class ParameterizedMetricKey<N extends Node> {
+@InternalApi
+@Deprecated
+public final class ParameterizedMetricKey<N extends Node> implements DataKey<ParameterizedMetricKey<N>, Double> {
 
-    private static final Map<ParameterizedMetricKey<?>, ParameterizedMetricKey<?>> POOL = new HashMap<>();
+    private static final ConcurrentMap<ParameterizedMetricKey<?>, ParameterizedMetricKey<?>> POOL = new ConcurrentHashMap<>();
 
     /** The metric key. */
     public final MetricKey<N> key;
@@ -65,10 +70,9 @@ public final class ParameterizedMetricKey<N extends Node> {
      */
     @SuppressWarnings("PMD.SingletonClassReturningNewInstance")
     public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions options) {
+        // sharing instances allows using DataMap, which uses reference identity
         ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, options);
-        if (!POOL.containsKey(tmp)) {
-            POOL.put(tmp, tmp);
-        }
+        POOL.putIfAbsent(tmp, tmp);
 
         @SuppressWarnings("unchecked")
         ParameterizedMetricKey<N> result = (ParameterizedMetricKey<N>) POOL.get(tmp);

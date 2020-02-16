@@ -25,6 +25,7 @@ public abstract class AbstractJavaOperationMetric extends AbstractJavaMetric<Met
      *
      * @return True if the metric can be computed on this operation
      */
+    @Override
     public boolean supports(MethodLikeNode node) {
         return !node.isAbstract();
     }
