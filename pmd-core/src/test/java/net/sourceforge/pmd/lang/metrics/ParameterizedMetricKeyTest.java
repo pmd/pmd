@@ -22,7 +22,7 @@ public class ParameterizedMetricKeyTest {
 
     @Test
     public void testIdentity() {
-        MetricKey<DummyNode> key = MetricKeyUtil.of("metric", new DummyMetric());
+        MetricKey<DummyNode> key = MetricKey.of("metric", new DummyMetric());
 
         ParameterizedMetricKey<DummyNode> key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
         ParameterizedMetricKey<DummyNode> key2 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
@@ -33,7 +33,7 @@ public class ParameterizedMetricKeyTest {
 
     @Test
     public void testVersioning() {
-        MetricKey<DummyNode> key = MetricKeyUtil.of("metric", new DummyMetric());
+        MetricKey<DummyNode> key = MetricKey.of("metric", new DummyMetric());
 
         ParameterizedMetricKey<DummyNode> key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
         ParameterizedMetricKey<DummyNode> key2 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_2);
@@ -45,7 +45,7 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testToString() {
 
-        MetricKey<DummyNode> adHocKey = MetricKeyUtil.of("metric", new DummyMetric());
+        MetricKey<DummyNode> adHocKey = MetricKey.of("metric", new DummyMetric());
 
         ParameterizedMetricKey<DummyNode> key1 = ParameterizedMetricKey.getInstance(adHocKey, DUMMY_VERSION_1);
         assertTrue(key1.toString().contains(key1.key.name()));
@@ -56,7 +56,7 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testAdHocMetricKey() {
 
-        MetricKey<DummyNode> adHocKey = MetricKeyUtil.of("metric", new DummyMetric());
+        MetricKey<DummyNode> adHocKey = MetricKey.of("metric", new DummyMetric());
 
 
         ParameterizedMetricKey<DummyNode> key1 = ParameterizedMetricKey.getInstance(adHocKey, DUMMY_VERSION_1);

@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -46,4 +51,53 @@ public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double>
 
     // TODO the metric key should know about supported options
 
+
+    /**
+     * Creates a new metric key from its metric and name.
+     *
+     * @param name   The name of the metric
+     * @param metric The metric to use
+     * @param <T>    Type of node the metric can be computed on
+     *
+     * @return The metric key
+     *
+     * @throws NullPointerException If either parameter is null
+     */
+    static <T extends Node> MetricKey<T> of(@NonNull String name, @NonNull Metric<T> metric) {
+        AssertionUtil.requireParamNotNull("name", name);
+        AssertionUtil.requireParamNotNull("metric", metric);
+
+        return new MetricKey<T>() {
+            @Override
+            public String name() {
+                return name;
+            }
+
+
+            @Override
+            public Metric<T> getCalculator() {
+                return metric;
+            }
+
+
+            @Override
+            public boolean supports(T node) {
+                return metric.supports(node);
+            }
+
+
+            @Override
+            public boolean equals(Object obj) {
+                return obj != null && getClass() == obj.getClass()
+                    && Objects.equals(name(), ((MetricKey) obj).name())
+                    && Objects.equals(getCalculator(), ((MetricKey) obj).getCalculator());
+            }
+
+
+            @Override
+            public int hashCode() {
+                return metric.hashCode() * 31 + name.hashCode();
+            }
+        };
+    }
 }

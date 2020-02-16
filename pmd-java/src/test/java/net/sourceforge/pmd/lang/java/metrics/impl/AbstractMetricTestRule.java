@@ -156,6 +156,9 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
             if (opKey != null) {
                 double highest = MetricsUtil.computeStatistics(opKey, node.getOperations(), metricOptions).getMax();
+                if (highest == Double.NEGATIVE_INFINITY) {
+                    highest = 0;
+                }
                 valueReport += " highest " + niceDoubleString(highest);
             }
             if (classValue >= reportLevel) {

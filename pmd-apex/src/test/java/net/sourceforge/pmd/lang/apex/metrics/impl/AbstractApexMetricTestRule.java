@@ -139,6 +139,9 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
 
             if (opKey != null) {
                 int highest = (int) MetricsUtil.computeStatistics(opKey, node.getMethods(), metricOptions).getMax();
+                if (highest == Double.NEGATIVE_INFINITY) {
+                    highest = 0;
+                }
                 valueReport += " highest " + highest;
             }
             if (classValue >= reportLevel) {

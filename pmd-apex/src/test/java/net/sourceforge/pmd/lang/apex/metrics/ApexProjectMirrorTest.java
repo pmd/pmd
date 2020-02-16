@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexClassMetric;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexOperationMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
@@ -35,8 +34,8 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 public class ApexProjectMirrorTest extends ApexParserTestBase {
 
     private static ApexNode<Compilation> acu;
-    private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
-    private MetricKey<ASTMethod> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
+    private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKey.of("null", new RandomClassMetric());
+    private MetricKey<ASTMethod> opMetricKey = MetricKey.of("null", new RandomOperationMetric());
 
     @Before
     public void setup() {
