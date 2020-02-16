@@ -70,21 +70,27 @@ public final class PMDASMClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (dontBother.containsKey(name)) {
+        Class<?> aClass = loadClassOrNull(name);
+        if (aClass == null) {
             throw new ClassNotFoundException(name);
+        }
+        return aClass;
+    }
+
+    /**
+     * Not throwing CNFEs to represent failure makes a huge performance
+     * difference. Typeres as a whole is 2x faster.
+     */
+    public Class<?> loadClassOrNull(String name) {
+        if (dontBother.containsKey(name)) {
+            return null;
         }
 
         try {
             return super.loadClass(name);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | LinkageError e) {
             dontBother.put(name, Boolean.TRUE);
-            throw e;
-        } catch (NoClassDefFoundError e) {
-            dontBother.put(name, Boolean.TRUE);
-            // rethrow as ClassNotFoundException, as the remaining part just
-            // deals with that
-            // see also: https://sourceforge.net/p/pmd/bugs/1319/
-            throw new ClassNotFoundException(name, e);
+            return null;
         }
     }
 
