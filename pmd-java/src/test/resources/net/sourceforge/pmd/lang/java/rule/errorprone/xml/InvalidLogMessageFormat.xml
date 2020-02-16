@@ -785,7 +785,7 @@ public class InvalidLogMessageFormatTest {
     </test-code>
 
     <test-code>
-        <description>ignore slf4j-Markers when detecting the number of arguments</description>
+        <description>ignore slf4j-Markers when detecting the number of arguments #2250</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>11,17</expected-linenumbers>
         <code><![CDATA[
@@ -806,6 +806,60 @@ public class InvalidLogMessageFormatTest {
 
         final var otherMarker = MarkerFactory.getMarker("OTHER_MARKER");
         logger.warn(otherMarker, "foo"); // gets flagged as we can't statically determine the type of the "otherMarker" variable
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat false-positive for a lambda argument #2255</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class InvalidLogMessageFormatTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidLogMessageFormatTest.class);
+
+    private InvalidLogMessageFormatTest() {
+    }
+
+    public static void main(String[] args) {
+        foo(exception -> LOGGER.error("Foo", exception));
+    }
+
+    private static void foo(Consumer<Throwable> consumer) {
+        consumer.accept(new IllegalArgumentException());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <description>[java] InvalidLogMessageFormat false-negative for a lambda argument #2255</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>11,13,16</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class InvalidLogMessageFormatTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidLogMessageFormatTest.class);
+
+    private InvalidLogMessageFormatTest() {
+    }
+
+    public static void main(String[] args) {
+        foo(arg -> LOGGER.error("Foo", arg)); // missing violation: extra argument, that is not a exception
+        // explicit cast helps type resolution
+        foo((String arg) -> LOGGER.error("Foo", arg)); // violation: extra argument, that is not a exception
+        foo((String arg) -> LOGGER.error("Foo {}", arg)); // no violation: correct number of arguments
+        foo(arg -> LOGGER.error("Foo {}", arg)); // no violation: correct number of arguments
+        foo(arg -> LOGGER.error("Foo {} {}", arg)); // violation: missing argument
+    }
+
+    private static void foo(Consumer<String> consumer) {
+        consumer.accept("bar");
     }
 }
         ]]></code>
