@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -107,14 +106,19 @@ public class RuleApplicator {
     public static class ApplicatorBuilder {
 
         private final Set<String> namesToIndex = new HashSet<>();
+        private final Set<Class<? extends Node>> classesToIndex = new HashSet<>();
 
 
         void registerXPathNames(Set<String> names) {
             namesToIndex.addAll(names);
         }
 
+        void registerClasses(Set<Class<? extends Node>> names) {
+            classesToIndex.addAll(names);
+        }
+
         RuleApplicator build() {
-            return new RuleApplicator(new NodeIdx(namesToIndex));
+            return new RuleApplicator(new NodeIdx(namesToIndex, classesToIndex));
         }
     }
 
@@ -126,11 +130,11 @@ public class RuleApplicator {
         private final Map<String, List<Node>> byName;
 
 
-        NodeIdx(Set<String> interestingNames) {
+        NodeIdx(Set<String> interestingNames, Set<Class<? extends Node>> classesToIndex) {
 
             byClass = new LatticeRelation<>(
                 TopoOrder.TYPE_HIERARCHY_ORDERING,
-                NodeIdx::filterClassFromIndex,
+                classesToIndex,
                 Class::getSimpleName
             );
             this.interestingNames = interestingNames;
@@ -142,14 +146,6 @@ public class RuleApplicator {
                 byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
             }
             byClass.put(n.getClass(), n);
-        }
-
-        // prune non-public classes from the index, also abstract classes,
-        // which are supposed to be implementation details
-        private static boolean filterClassFromIndex(Class<?> klass) {
-            return Modifier.isPublic(klass.getModifiers())
-                && Node.class.isAssignableFrom(klass)
-                && (!Modifier.isAbstract(klass.getModifiers()) || klass.isInterface());
         }
 
         void complete() {

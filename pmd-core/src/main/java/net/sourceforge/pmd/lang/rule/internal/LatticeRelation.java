@@ -115,15 +115,13 @@ class LatticeRelation<K, @NonNull V> {
 
     private LNode getOrCreateNode(K key) {
         assert key != null : "null key is not allowed";
-        if (nodes.containsKey(key)) {
-            return nodes.get(key);
-        } else {
-            LNode n = new LNode(key);
-            nodes.put(key, n);
+        return nodes.computeIfAbsent(key, k -> {
+            LNode n = new LNode(k);
+            nodes.put(k, n);
             // add all successors recursively
-            addSuccessors(key, n);
+            addSuccessors(k, n);
             return n;
-        }
+        });
     }
 
     private void addSuccessors(K key, LNode n) {

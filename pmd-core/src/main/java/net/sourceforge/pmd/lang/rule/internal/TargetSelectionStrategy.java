@@ -61,17 +61,7 @@ public abstract class TargetSelectionStrategy {
 
         @Override
         void prepare(ApplicatorBuilder builder) {
-            // builder doesn't support filtering classes
-            //
-            // Even when there are only a few rules, and the indexing
-            // time outweighs the rule application time, the parsing/symbol table/ type res
-            // vastly outweighs both of those. So it might be plain unnecessary
-
-            // The only way to implement that I can think of would become very inefficient
-            // when the set of interesting classes becomes large.
-
-            // TODO The only optimisation that would be relevant, would be to skip
-            //  indexing if the only found strategy is ROOT_ONLY
+            builder.registerClasses(visits);
         }
 
         @Override
