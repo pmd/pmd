@@ -32,10 +32,11 @@ public class RuleApplicator {
     private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
     // we reuse the type lattice from run to run, eventually it converges
     // towards the final topology (all node types have been encountered)
-    // and there's no need to perform more topological checks when freezing it
+    // This has excellent performance! Indexing time is insignificant
+    // compared to rule application for any non-trivial ruleset. Even
+    // when you use a single rule, indexing time is insignificant compared
+    // to eg type resolution.
 
-    // This has an excellent cache hit ratio on longer runs, making the indexing
-    // time insignificant
     private final NodeIdx idx;
 
     private RuleApplicator(NodeIdx index) {
@@ -86,6 +87,12 @@ public class RuleApplicator {
         }
     }
 
+    private void indexTree(Node top, NodeIdx idx) {
+        idx.indexNode(top);
+        for (Node child : top.children()) {
+            indexTree(child, idx);
+        }
+    }
 
     public static RuleApplicator build(Iterable<? extends Rule> rules) {
         ApplicatorBuilder builder = new ApplicatorBuilder();
@@ -93,14 +100,6 @@ public class RuleApplicator {
             it.getTargetingStrategy().prepare(builder);
         }
         return builder.build();
-    }
-
-
-    private void indexTree(Node top, NodeIdx idx) {
-        idx.indexNode(top);
-        for (Node child : top.children()) {
-            indexTree(child, idx);
-        }
     }
 
     public static class ApplicatorBuilder {
@@ -149,12 +148,11 @@ public class RuleApplicator {
         }
 
         void complete() {
-            // byClass.freezeTopo();
+            byClass.makeReadable();
         }
 
         void prepare() {
-            // byClass.unfreezeTopo();
-            byClass.clearValues();
+            byClass.makeWritableAndClear();
             byName.clear();
         }
 

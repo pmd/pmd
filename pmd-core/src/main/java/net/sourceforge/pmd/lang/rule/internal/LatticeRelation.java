@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -26,6 +29,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * a partial order exists between the keys. The internal representation
  * is a directed acyclic graph on {@code <T>}. The value associated to
  * a key is the recursive union of the values of all the keys it covers.
+ *
+ * <p>An instance can be in either write-only or read-only mode, toggled
+ * by {@link #makeReadable()} and {@link #makeWritable()}. This avoids
+ * doing the invalidation every time we index a node, we do it in bulk.
  *
  * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
  *            must be suitable for use as a map key (immutable, consistent equals/hashcode)
@@ -48,6 +55,8 @@ class LatticeRelation<K, @NonNull V> {
      */
     private final Map<K, LNode> leaves = new HashMap<>();
     private final LNode blackHole = new BlackHoleNode();
+
+    private State state = State.WRITE_ALLOWED;
 
     /**
      * Creates a new relation with the given configuration.
@@ -81,15 +90,20 @@ class LatticeRelation<K, @NonNull V> {
             put(k, null);
         }
 
-        // since we know in advance which nodes are in the lattice, we
-        // can perform this optimisation
+        // Since we know in advance which nodes are in the lattice, we
+        // can perform this optimisation.
+        // This reduces the number of edges, so improves the number of
+        // values that can be cached immediately (removes some diamond situations).
         transitiveReduction();
     }
 
     /**
-     * Follows all paths starting from the key (all nodes that are greater
-     * w.r.t. the ordering). New nodes are created if they match the filter.
-     * Existing nodes are invalidated.
+     * Adds the val to the node corresponding to the [key], creating it
+     * if needed. If the key matches the filter, a QueryNode is created.
+     * Otherwise, either a LeafNode (if there is some QueryNode that cares),
+     * or the key is linked to the black hole. This is only done the first
+     * time we encounter the key, which means subsequently, #get and #put
+     * access will be "constant time" (uses one of the maps).
      */
     private void addSucc(@Nullable LNode pred, PSet<K> seen, K key, V val) {
         if (seen.contains(key)) {
@@ -98,7 +112,6 @@ class LatticeRelation<K, @NonNull V> {
         LNode leaf = leaves.get(key);
         if (leaf != null) {
             leaf.addProperVal(val);
-            invalidateSuccessors(leaf);
             return;
         }
 
@@ -108,7 +121,6 @@ class LatticeRelation<K, @NonNull V> {
                 n.addProperVal(val); // propagate new val to all successors, only if it was pruned
             }
             link(pred, n); // make sure the predecessor is linked
-            invalidateSuccessors(n);
         } else if (filter.test(key)) {
             n = new QueryNode(key);
             n.addProperVal(val);
@@ -143,13 +155,15 @@ class LatticeRelation<K, @NonNull V> {
     private void transitiveReduction() {
 
         // look for chains i -> j -> k, and delete i -> k if it exists
+        // note, that this is not optimal at all, but since we do it only
+        // upon construction it doesn't matter
 
         for (QueryNode j : qNodes.values()) {
             for (LNode i : j.preds) {
-                if (i != j) {
+                if (!i.equals(j)) {
                     for (QueryNode k : j.succ) {
                         // i -> j -> k
-                        if (k != j) {
+                        if (!k.equals(j)) {
                             if (i.succ.contains(k)) {
                                 // i -> k
                                 i.succ = i.succ.minus(k);
@@ -163,13 +177,6 @@ class LatticeRelation<K, @NonNull V> {
 
     }
 
-    private void invalidateSuccessors(LNode node) {
-        node.invalidate();
-        for (LNode s : node.succ) {
-            invalidateSuccessors(s);
-        }
-    }
-
     private void link(LNode pred, QueryNode succ) {
         if (pred == null || succ == null) {
             return;
@@ -180,12 +187,13 @@ class LatticeRelation<K, @NonNull V> {
 
     /**
      * Adds the value to the given key. This value will be joined to the
-     * values of all keys smaller than the given key when calling {@link #get(Object)}.
+     * values of all keys inferior to it when calling {@link #get(Object)}.
      *
      * @throws IllegalStateException If the order has a cycle
      */
     public void put(K key, V value) {
         AssertionUtil.requireParamNotNull("key", key);
+        state.ensureWritable();
         addSucc(null, HashTreePSet.empty(), key, value);
     }
 
@@ -196,15 +204,36 @@ class LatticeRelation<K, @NonNull V> {
      */
     @NonNull
     public Set<V> get(K key) {
+        AssertionUtil.requireParamNotNull("key", key);
+        state.ensureReadable();
         LNode n = qNodes.get(key);
         return n == null ? HashTreePSet.empty() : n.computeValue();
     }
 
-    /** Clear known values. */
-    void clearValues() {
-        for (LNode value : qNodes.values()) {
-            value.resetValue();
+    void makeWritable() {
+        state = State.WRITE_ALLOWED;
+        // just invalidate
+        for (LNode n : qNodes.values()) {
+            n.invalidate();
         }
+        for (LNode n : leaves.values()) {
+            n.invalidate();
+        }
+    }
+
+    void makeWritableAndClear() {
+        state = State.WRITE_ALLOWED;
+        // also resets proper values
+        for (LNode n : qNodes.values()) {
+            n.resetValue();
+        }
+        for (LNode n : leaves.values()) {
+            n.resetValue();
+        }
+    }
+
+    void makeReadable() {
+        state = State.READ_ALLOWED;
     }
 
 
@@ -225,14 +254,19 @@ class LatticeRelation<K, @NonNull V> {
               .append("\" ];\n");
         }
 
+        List<String> edges = new ArrayList<>();
+
         for (LNode node : allNodes()) {
             // edges
             String id = ids.get(node);
             for (LNode succ : node.succ) {
                 String succId = ids.get(succ);
-                sb.append(id).append(" -> ").append(succId).append(";\n");
+                edges.add(id + " -> " + succId + ";\n");
             }
         }
+
+        edges.sort(Comparator.naturalOrder()); // for reproducibility in tests
+        edges.forEach(sb::append);
 
         return sb.append('}').toString();
     }
@@ -245,6 +279,23 @@ class LatticeRelation<K, @NonNull V> {
     public String escapeDotString(String string) {
         return string.replaceAll("\\R", "\\\n")
                      .replaceAll("\"", "\\\"");
+    }
+
+    private enum State {
+        WRITE_ALLOWED,
+        READ_ALLOWED;
+
+        void ensureWritable() {
+            if (this != WRITE_ALLOWED) {
+                throw new IllegalStateException("Lattice may not be mutated");
+            }
+        }
+
+        void ensureReadable() {
+            if (this != READ_ALLOWED) {
+                throw new IllegalStateException("Lattice is not ready to be read");
+            }
+        }
     }
 
     private abstract class LNode { // "Lattice Node"
@@ -270,7 +321,7 @@ class LatticeRelation<K, @NonNull V> {
         }
 
         protected void invalidate() {
-
+            // to be overridden
         }
 
 
@@ -325,7 +376,7 @@ class LatticeRelation<K, @NonNull V> {
 
             for (LNode child : preds) {
                 if (seen.add(child)) {
-                    if (child.getClass() == getClass()) {// illegal to cast to generic type
+                    if (child.getClass() == getClass()) { // illegal to cast to generic type
                         val = val.plusAll(((QueryNode) child).reduceSuccessors(seen));
                         isValueUpToDate &= ((QueryNode) child).isValueUpToDate;
                     } else {
