@@ -6,23 +6,30 @@ package net.sourceforge.pmd.lang.rule.internal;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptySet;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.singletonIterator;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 
 public class LatticeRelationTest {
+
+    @Rule
+    public ExpectedException expect = ExpectedException.none();
 
     @Test
     public void testCustomTopo() {
@@ -223,6 +230,23 @@ public class LatticeRelationTest {
                          + "}", lattice.toString());
     }
 
+    @Test
+    public void testCycleDetection() {
+        List<String> cycle = Arrays.asList("a", "b", "c", "d");
+
+        TopoOrder<String> cyclicOrder = str -> {
+            int i = cycle.indexOf(str);
+            return i < 0 ? emptyIterator()
+                         : singletonIterator(cycle.get((i + 1) % cycle.size()));
+        };
+
+        LatticeRelation<String, String> lattice = new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString);
+
+        expect.expect(IllegalStateException.class);
+
+        lattice.put("a", "1");
+
+    }
 
     @NonNull
     private LatticeRelation<String, String> stringLattice(Predicate<String> filter) {
@@ -272,7 +296,7 @@ public class LatticeRelationTest {
      */
     private static TopoOrder<String> stringTopoOrder() {
         return str -> str.isEmpty() ? emptyIterator()
-                                    : IteratorUtil.singletonIterator(str.substring(1));
+                                    : singletonIterator(str.substring(1));
     }
 
 
