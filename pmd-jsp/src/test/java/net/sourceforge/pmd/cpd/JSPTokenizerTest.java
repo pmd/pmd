@@ -4,20 +4,18 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class JSPTokenizerTest {
+import net.sourceforge.pmd.lang.jsp.JspParserTest;
+
+public class JSPTokenizerTest extends JspParserTest {
 
     @Test
     public void scriptletWithString() throws Exception {
         JSPTokenizer tokenizer = new JSPTokenizer();
         Tokens tokenEntries = new Tokens();
-        String code = IOUtils.toString(JSPTokenizerTest.class.getResourceAsStream("scriptletWithString.jsp"),
-                                       StandardCharsets.UTF_8);
+        String code = jsp.readResource("scriptletWithString.jsp");
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(code));
         tokenizer.tokenize(sourceCode, tokenEntries);
 
