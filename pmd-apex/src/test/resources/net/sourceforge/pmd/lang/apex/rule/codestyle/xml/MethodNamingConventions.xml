@@ -36,6 +36,17 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#1343 MethodNamingConventions for overriden methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodNamingConventions implements SomeInterface {
+    public override void _foo() {}
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
         <description>#25 Method rules should ignore Property Getter/Setter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -70,11 +81,10 @@ public class Foo {
     <test-code>
         <description>#1573 method names should not contain underscores, but skip test methods 2</description>
         <rule-property name="skipTestMethodUnderscores">true</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    // this is not a test
-    void test_barFoo() {}
+    testmethod void test_barFoo() {}
 }
 		]]></code>
     </test-code>
