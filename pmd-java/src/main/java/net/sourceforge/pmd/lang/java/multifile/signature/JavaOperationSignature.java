@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
@@ -128,7 +127,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
                 if (field != null) {
                     Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
                     String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
-    
+
                     fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
                 }
             }
@@ -140,8 +139,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a getter. */
         private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 0
-                || node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
+            if (node.getArity() != 0 || node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }
 
@@ -159,8 +157,7 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 1
-                || !node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
+            if (node.getArity() != 1 || !node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }
 

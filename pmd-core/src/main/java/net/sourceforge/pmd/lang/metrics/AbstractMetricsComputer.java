@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
@@ -17,25 +16,16 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated See package description
  */
+@Deprecated
 public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends QualifiableNode>
     implements MetricsComputer<T, O> {
 
     @Override
     public double computeForType(MetricKey<T> key, T node, boolean force,
                                  MetricOptions options, MetricMemoizer<T> memoizer) {
-
-        ParameterizedMetricKey<T> paramKey = ParameterizedMetricKey.getInstance(key, options);
-        // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
-        Double prev = memoizer.getMemo(paramKey);
-        if (!force && prev != null) {
-            return prev;
-        }
-
-        double val = key.getCalculator().computeFor(node, options);
-        memoizer.memoize(paramKey, val);
-
-        return val;
+        return MetricsUtil.computeMetric(key, node, options);
     }
 
 
@@ -43,46 +33,14 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
     public double computeForOperation(MetricKey<O> key, O node, boolean force,
                                       MetricOptions options, MetricMemoizer<O> memoizer) {
 
-        ParameterizedMetricKey<O> paramKey = ParameterizedMetricKey.getInstance(key, options);
-        Double prev = memoizer.getMemo(paramKey);
-        if (!force && prev != null) {
-            return prev;
-        }
-
-        double val = key.getCalculator().computeFor(node, options);
-        memoizer.memoize(paramKey, val);
-        return val;
+        return MetricsUtil.computeMetric(key, node, options);
     }
 
 
     @Override
     public double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricOptions options,
                                           ResultOption option, ProjectMemoizer<T, O> stats) {
-
-        List<O> ops = findOperations(node);
-
-        List<Double> values = new ArrayList<>();
-        for (O op : ops) {
-            if (key.supports(op)) {
-                MetricMemoizer<O> opStats = stats.getOperationMemoizer(op.getQualifiedName());
-                double val = this.computeForOperation(key, op, force, options, opStats);
-                if (val != Double.NaN) {
-                    values.add(val);
-                }
-            }
-        }
-
-        // FUTURE use streams to do that when we upgrade the compiler to 1.8
-        switch (option) {
-        case SUM:
-            return sum(values);
-        case HIGHEST:
-            return highest(values);
-        case AVERAGE:
-            return average(values);
-        default:
-            return Double.NaN;
-        }
+        return MetricsUtil.computeAggregate(key, findOperations(node), options, option);
     }
 
 
@@ -95,31 +53,6 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
      * @return The list of all operations declared inside the specified class.
      */
     protected abstract List<O> findOperations(T node); // TODO:cf this one is computed every time
-
-
-    private static double sum(List<Double> values) {
-        double sum = 0;
-        for (double val : values) {
-            sum += val;
-        }
-        return sum;
-    }
-
-
-    private static double highest(List<Double> values) {
-        double highest = Double.NEGATIVE_INFINITY;
-        for (double val : values) {
-            if (val > highest) {
-                highest = val;
-            }
-        }
-        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
-    }
-
-
-    private static double average(List<Double> values) {
-        return sum(values) / values.size();
-    }
 
 
 }

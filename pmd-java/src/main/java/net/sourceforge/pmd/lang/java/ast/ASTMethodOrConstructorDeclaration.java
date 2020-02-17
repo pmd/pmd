@@ -79,7 +79,7 @@ public interface ASTMethodOrConstructorDeclaration
      * This excludes any receiver parameter, which is irrelevant to arity.
      */
     default int getArity() {
-        return getFormalParameters().getParameterCount();
+        return getFormalParameters().size();
     }
 
 

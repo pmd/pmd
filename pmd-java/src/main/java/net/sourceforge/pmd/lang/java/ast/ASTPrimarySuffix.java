@@ -35,7 +35,7 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
         if (!this.isArguments()) {
             return -1;
         }
-        return ((ASTArguments) getChild(getNumChildren() - 1)).getArgumentCount();
+        return ((ASTArguments) getChild(getNumChildren() - 1)).size();
     }
 
     @Override

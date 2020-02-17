@@ -72,7 +72,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
 
     private boolean isArrayAccess(ASTAllocationExpression node) {
         ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
-        if (arguments == null || arguments.getArgumentCount() != 1) {
+        if (arguments == null || arguments.size() != 1) {
             return false;
         }
 

@@ -10,6 +10,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
  * Base class for all implementations of the Node interface.
@@ -24,6 +27,11 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 public abstract class AbstractNode implements Node {
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
+
+    @Deprecated
+    public static final SimpleDataKey<Object> LEGACY_USER_DATA = DataMap.simpleDataKey("legacy user data");
+
+    private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
     /**
      * @deprecated Use {@link #getParent()}
@@ -56,7 +64,6 @@ public abstract class AbstractNode implements Node {
     @Deprecated
     protected GenericToken lastToken;
     private DataFlowNode dataFlowNode;
-    private Object userData;
     // @Deprecated?
     private String image;
 
@@ -294,13 +301,20 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public Object getUserData() {
-        return userData;
+        return userData.get(LEGACY_USER_DATA);
     }
 
     @Override
+    @Deprecated
     public void setUserData(final Object userData) {
-        this.userData = userData;
+        this.userData.set(LEGACY_USER_DATA, userData);
+    }
+
+    @Override
+    public DataMap<DataKey<?, ?>> getUserMap() {
+        return userData;
     }
 
     /**

@@ -12,7 +12,9 @@ package net.sourceforge.pmd.lang.ast;
  * from QualifiedName to e.g. JavaQualifiedName.
  *
  * @author Clément Fournier
+ * @deprecated Not useful anymore
  */
+@Deprecated
 public interface QualifiedName {
 
     @Override

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.metrics.internal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -12,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.MetricsComputer;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 
@@ -26,15 +27,12 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
 
     private final Class<T> tClass;
     private final Class<O> oClass;
-    private final MetricsComputer<T, O> myComputer;
 
 
     protected AbstractLanguageMetricsProvider(Class<T> tClass,
-                                    Class<O> oClass,
-                                    MetricsComputer<T, O> computer) {
+                                              Class<O> oClass) {
         this.tClass = tClass;
         this.oClass = oClass;
-        this.myComputer = computer;
     }
 
 
@@ -52,20 +50,22 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
 
     @Override
     public double computeForType(MetricKey<T> key, T node, MetricOptions options) {
-        return myComputer.computeForType(key, node, true, options, DummyMetricMemoizer.<T>getInstance());
+        return MetricsUtil.computeMetric(key, node, options, true);
     }
 
 
     @Override
     public double computeForOperation(MetricKey<O> key, O node, MetricOptions options) {
-        return myComputer.computeForOperation(key, node, true, options, DummyMetricMemoizer.<O>getInstance());
+        return MetricsUtil.computeMetric(key, node, options, true);
     }
 
 
     @Override
-    public double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption option) {
-        return myComputer.computeWithResultOption(key, node, true, options, option, DummyProjectMemoizer.<T, O>getInstance());
+    public double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption resultOption) {
+        return MetricsUtil.computeAggregate(key, findOps(node), options, resultOption);
     }
+
+    protected abstract List<O> findOps(T t);
 
 
     @Override

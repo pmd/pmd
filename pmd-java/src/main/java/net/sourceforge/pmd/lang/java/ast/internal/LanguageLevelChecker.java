@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
@@ -234,7 +235,7 @@ public class LanguageLevelChecker<T> {
         public void visit(ASTTryStatement node, T data) {
             if (node.isTryWithResources()) {
                 if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES, data)) {
-                    for (ASTResource resource : node.getResources()) {
+                    for (ASTResource resource : ASTList.orEmpty(node.getResources())) {
                         if (resource.isConciseResource()) {
                             check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
                             break;

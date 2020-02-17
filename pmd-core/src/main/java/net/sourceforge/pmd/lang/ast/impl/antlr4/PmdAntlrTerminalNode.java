@@ -8,12 +8,16 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
+
 /**
  * @author Clément Fournier
  */
 public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode {
 
-    private Object userData;
+    private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
     public PmdAntlrTerminalNode(Token t) {
         super(t);
@@ -72,12 +76,16 @@ public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode 
 
     @Override
     public Object getUserData() {
-        return userData;
+        return userData.get(AbstractNode.LEGACY_USER_DATA);
     }
 
     @Override
-    public void setUserData(Object userData) {
-        this.userData = userData;
+    public void setUserData(Object data) {
+        this.userData.set(AbstractNode.LEGACY_USER_DATA, data);
     }
 
+    @Override
+    public DataMap<DataKey<?, ?>> getUserMap() {
+        return userData;
+    }
 }

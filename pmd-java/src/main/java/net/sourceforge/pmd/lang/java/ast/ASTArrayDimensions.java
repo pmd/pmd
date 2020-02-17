@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
@@ -32,12 +30,12 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  *
  * </pre>
  */
-public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, AtLeastOneChildOfType<ASTArrayTypeDim> {
+public final class ASTArrayDimensions extends ASTNonEmptyList<ASTArrayTypeDim> {
+
 
     ASTArrayDimensions(int id) {
-        super(id);
+        super(id, ASTArrayTypeDim.class);
     }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -50,23 +48,4 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
         visitor.visit(this, data);
     }
 
-
-    @Override
-    public Iterator<ASTArrayTypeDim> iterator() {
-        return children(ASTArrayTypeDim.class).iterator();
-    }
-
-    @Override
-    public ASTArrayTypeDim getChild(int index) {
-        return (ASTArrayTypeDim) super.getChild(index);
-    }
-
-    /**
-     * Returns the number of array dimensions of this type.
-     * E.g. for [][], this will return 2. The returned number
-     * is always greater than 0.
-     */
-    public int getSize() {
-        return getNumChildren();
-    }
 }

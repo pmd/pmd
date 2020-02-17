@@ -27,7 +27,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         }
 
         public void check(Object ctx, ASTArguments node) {
-            if (node.getArgumentCount() == argumentsCount
+            if (node.size() == argumentsCount
                     && node.getNthParent(2) instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix primaryPrefix = node.getNthParent(2).getFirstChildOfType(ASTPrimaryPrefix.class);
 
