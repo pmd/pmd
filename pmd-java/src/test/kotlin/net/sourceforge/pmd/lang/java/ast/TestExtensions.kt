@@ -212,29 +212,43 @@ fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<No
             it::getOperand shouldBe baseExpr()
         }
 
-fun TreeNodeWrapper<Node, *>.typeParamList(size: Int? = null, contents: NodeSpec<ASTTypeParameters> = EmptyAssertions) =
-        child<ASTTypeParameters> { contents() }
-
-fun TreeNodeWrapper<Node, *>.argList(size: Int? = null, contents: NodeSpec<ASTArgumentList> = EmptyAssertions) =
-        child<ASTArgumentList> { contents() }
-
-fun TreeNodeWrapper<Node, *>.dimList(size: Int? = null, contents: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
-        child<ASTArrayDimensions> { contents() }
-
-fun TreeNodeWrapper<Node, *>.throwsList(size: Int? = null, contents: NodeSpec<ASTThrowsList> = EmptyAssertions) =
-        child<ASTThrowsList> { contents() }
-
-fun TreeNodeWrapper<Node, *>.typeArgList(size: Int? = null, contents: NodeSpec<ASTTypeArguments> = EmptyAssertions) =
-        child<ASTTypeArguments>(ignoreChildren = contents === EmptyAssertions) { contents() }
-
-fun TreeNodeWrapper<Node, *>.lambdaFormals(size: Int? = null, contents: NodeSpec<ASTLambdaParameterList> = EmptyAssertions) =
-        child<ASTLambdaParameterList> { contents() }
-
-fun TreeNodeWrapper<Node, *>.formalsList(arity: Int, contents: NodeSpec<ASTFormalParameters> = EmptyAssertions) =
-        child<ASTFormalParameters> {
-            it::getParameterCount shouldBe arity
+private fun <T : JavaNode, L : ASTList<T>> listSpec(size: Int?, contents: NodeSpec<L>) =
+        Pair<Boolean, NodeSpec<L>>(contents === EmptyAssertions) {
+            it.toList()::size shouldBe it.size()
+            if (size != null) {
+                it::size shouldBe size
+            }
             contents()
         }
+
+private inline fun <reified T : JavaNode> TreeNodeWrapper<Node, *>.childW(ignoreChildren: Boolean, crossinline contents: NodeSpec<T>): T =
+        child(ignoreChildren = ignoreChildren) {
+            contents()
+        }
+
+private inline fun <reified T : JavaNode> TreeNodeWrapper<Node, *>.childW(pair: Pair<Boolean, NodeSpec<T>>): T =
+        childW(ignoreChildren = pair.first, contents = pair.second)
+
+fun TreeNodeWrapper<Node, *>.typeParamList(size: Int? = null, contents: NodeSpec<ASTTypeParameters> = EmptyAssertions) =
+        childW(listSpec(size, contents))
+
+fun TreeNodeWrapper<Node, *>.argList(size: Int? = null, contents: NodeSpec<ASTArgumentList> = EmptyAssertions) =
+        childW(listSpec(size, contents))
+
+fun TreeNodeWrapper<Node, *>.dimList(size: Int? = null, contents: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
+        childW(listSpec(size, contents))
+
+fun TreeNodeWrapper<Node, *>.throwsList(size: Int? = null, contents: NodeSpec<ASTThrowsList> = EmptyAssertions) =
+        childW(listSpec(size, contents))
+
+fun TreeNodeWrapper<Node, *>.typeArgList(size: Int? = null, contents: NodeSpec<ASTTypeArguments> = EmptyAssertions) =
+        childW(listSpec(size, contents))
+
+fun TreeNodeWrapper<Node, *>.lambdaFormals(size: Int? = null, contents: NodeSpec<ASTLambdaParameterList> = EmptyAssertions) =
+        childW(listSpec(size, contents))
+
+fun TreeNodeWrapper<Node, *>.formalsList(arity: Int, contents: NodeSpec<ASTFormalParameters> = EmptyAssertions) =
+        childW(listSpec(arity, contents))
 
 fun TreeNodeWrapper<Node, *>.voidResult() =
         child<ASTResultType> {

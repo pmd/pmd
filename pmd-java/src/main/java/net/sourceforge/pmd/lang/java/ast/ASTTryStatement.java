@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -50,14 +49,13 @@ public final class ASTTryStatement extends AbstractStatement {
         return getChild(0) instanceof ASTResourceList;
     }
 
+    /**
+     * Returns the node for the resource list. This is null if this is
+     * not a try-with-resources.
+     */
     @Nullable
-    public ASTResourceList getResourceListNode() {
+    public ASTResourceList getResources() {
         return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
-    }
-
-    public List<ASTResource> getResources() {
-        ASTResourceList list = getResourceListNode();
-        return list == null ? Collections.emptyList() : list.asList();
     }
 
 

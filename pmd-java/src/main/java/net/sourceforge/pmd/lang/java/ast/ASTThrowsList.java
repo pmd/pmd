@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 /**
  * Throws clause of an {@link ASTConstructorDeclaration} or {@link ASTMethodDeclaration}.
@@ -15,10 +15,10 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTThrowsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTThrowsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
     ASTThrowsList(int id) {
-        super(id);
+        super(id, ASTClassOrInterfaceType.class);
     }
 
     @Override
@@ -32,14 +32,4 @@ public final class ASTThrowsList extends AbstractJavaNode implements Iterable<AS
         visitor.visit(this, data);
     }
 
-
-    @Override
-    public ASTClassOrInterfaceType getChild(int index) {
-        return (ASTClassOrInterfaceType) super.getChild(index);
-    }
-
-    @Override
-    public Iterator<ASTClassOrInterfaceType> iterator() {
-        return children(ASTClassOrInterfaceType.class).iterator();
-    }
 }

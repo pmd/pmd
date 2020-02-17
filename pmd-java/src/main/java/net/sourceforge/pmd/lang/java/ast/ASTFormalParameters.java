@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -26,28 +24,22 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * </pre>
  *
  */
-public final class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
+public final class ASTFormalParameters extends ASTList<ASTFormalParameter> {
 
     @InternalApi
     @Deprecated
     public ASTFormalParameters(int id) {
-        super(id);
+        super(id, ASTFormalParameter.class);
     }
 
     /**
-     * Returns the number of formal parameters in this parameter list.
+     * Returns the number of formal parameters.
      * This excludes the receiver parameter, if any.
      */
+    @Override
     public int size() {
-        return getFirstChild() instanceof ASTReceiverParameter ? getNumChildren() - 1 : getNumChildren();
-    }
-
-    /**
-     * @deprecated for removal. Use {@link #size()} instead.
-     */
-    @Deprecated
-    public int getParameterCount() {
-        return size();
+        return getFirstChild() instanceof ASTReceiverParameter ? getNumChildren() - 1
+                                                               : getNumChildren();
     }
 
     @Override
@@ -61,7 +53,6 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
         visitor.visit(this, data);
     }
 
-
     /**
      * Returns the receiver parameter if it is present, otherwise returns
      * null.
@@ -69,10 +60,5 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
     @Nullable
     public ASTReceiverParameter getReceiverParameter() {
         return AstImplUtil.getChildAs(this, 0, ASTReceiverParameter.class);
-    }
-
-    @Override
-    public Iterator<ASTFormalParameter> iterator() {
-        return children(ASTFormalParameter.class).iterator();
     }
 }

@@ -88,7 +88,6 @@ public interface ASTAnyTypeDeclaration
     @Deprecated
     JavaTypeQualifiedName getQualifiedName();
 
-
     /**
      * Returns the body of this type declaration.
      */

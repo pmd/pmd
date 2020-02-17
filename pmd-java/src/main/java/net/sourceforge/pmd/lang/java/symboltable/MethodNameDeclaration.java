@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
@@ -25,14 +24,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public boolean isVarargs() {
-        ASTFormalParameters params = (ASTFormalParameters) node.getChild(0);
-        if (params.size() == 0) {
-            return false;
-        }
-
-        // If it's a varargs, it HAS to be the last parameter
-        ASTFormalParameter p = (ASTFormalParameter) params.getChild(params.size() - 1);
-        return p.isVarargs();
+        return getDeclarator().isVarargs();
     }
 
     public String getParameterDisplaySignature() {
