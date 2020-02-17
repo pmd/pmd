@@ -149,11 +149,11 @@ public class RuleApplicator {
         }
 
         void complete() {
-            byClass.freezeTopo();
+            // byClass.freezeTopo();
         }
 
         void prepare() {
-            byClass.unfreezeTopo();
+            // byClass.unfreezeTopo();
             byClass.clearValues();
             byName.clear();
         }
