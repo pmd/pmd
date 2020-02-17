@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -201,10 +199,7 @@ class LatticeRelation<T, @NonNull U> {
 
         // topological sort
         List<LNode> lst = toposort();
-
-        for (int i = 0; i < lst.size(); i++) {
-            lst.get(i).idx = i;
-        }
+        // also LNode#idx is set to the index in the list
 
         // here path is an adjacency matrix
         // (ie path[i][j] means "j is a direct successor of i")
@@ -224,7 +219,7 @@ class LatticeRelation<T, @NonNull U> {
 
         for (LNode jn : lst) {
             final int j = jn.idx;
-            if (!kept[jn.idx]) {
+            if (!kept[j]) {
                 // node j is pruned, so for all paths i -> j -> k,
                 // we must add a path i -> k, otherwise path is lost
 
@@ -232,9 +227,9 @@ class LatticeRelation<T, @NonNull U> {
                 // Eg for i -> j -> k -> l, where both j and k are filtered out,
                 // this will first add i -> k, then i -> l, because i -> k already exists
                 for (LNode kn : jn.succ) {
-                    for (int i = 0; i < j; i++) { // find all i s.t. i -> j
+                    for (int i = j + 1; i < n; i++) { // find all i s.t. i -> j
                         LNode in = lst.get(i);
-                        if (kept[i] && in.succ.contains(jn)) {
+                        if (in.succ.contains(jn)) {
                             in.succ.add(kn);
                         }
                     }
@@ -257,7 +252,7 @@ class LatticeRelation<T, @NonNull U> {
 
         // assign predecessors to all nodes
         // this inverts the graph
-        for (int i = n - 1; i >= 0; i--) { // notice: reversed
+        for (int i = 0; i < n; i++) {
             LNode in = lst.get(i);
 
             in.succ.clear();
@@ -267,7 +262,7 @@ class LatticeRelation<T, @NonNull U> {
                 continue;
             }
 
-            for (int j = 0; j < i; j++) {
+            for (int j = i + 1; j < n; j++) {
                 LNode jn = lst.get(j);
                 if (kept[j] && jn.succ.contains(in)) {
                     // succ means "pred" now
@@ -282,19 +277,23 @@ class LatticeRelation<T, @NonNull U> {
      * Returns a list in which the vertices of this graph are sorted
      * in the following way:
      *
-     * if there exists an edge u -> v, then indexOf(u) &lt; indexOf(v) in the list.
+     * {@code if there exists an edge u -> v, then v comes before u in the list}
+     *
+     * <p>This means, {@code u -> v => idx(v) < idx(u)}, and the reverse,
+     * {@code idx(v) >= idx(v) => not(u -> v)}, which allows simplifying
+     * some algorithms.
      *
      * @throws IllegalStateException If the lattice has a cycle
      */
     private List<LNode> toposort() {
-        Deque<LNode> sorted = new ArrayDeque<>(nodes.size());
+        List<LNode> sorted = new ArrayList<>(nodes.size());
         for (LNode n : nodes.values()) {
             doToposort(n, sorted);
         }
-        return new ArrayList<>(sorted);
+        return sorted;
     }
 
-    private void doToposort(LNode v, Deque<LNode> sorted) {
+    private void doToposort(LNode v, List<LNode> sorted) {
         if (v.topoMark == PERMANENT_TOPOMARK) {
             return;
         } else if (v.topoMark == TMP_TOPOMARK) {
@@ -308,7 +307,8 @@ class LatticeRelation<T, @NonNull U> {
         }
 
         v.topoMark = PERMANENT_TOPOMARK;
-        sorted.addFirst(v);
+        v.idx = sorted.size();
+        sorted.add(v);
     }
 
     @Override
