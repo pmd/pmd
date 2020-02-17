@@ -156,6 +156,9 @@ public final class IteratorUtil {
     }
 
     public static <T> Iterator<T> concat(Iterator<? extends T> as, Iterator<? extends T> bs) {
+        if (!as.hasNext()) {
+            return (Iterator<T>) bs;
+        }
         return new Iterator<T>() {
 
             @Override

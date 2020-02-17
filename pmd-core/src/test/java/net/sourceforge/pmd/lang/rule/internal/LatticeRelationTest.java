@@ -27,12 +27,12 @@ public class LatticeRelationTest {
     @Test
     public void testCustomTopo() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());
+        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
 
 
-        lattice.put(setOf(1, 2, 3), setOf("123"));
-        lattice.put(setOf(4), setOf("4"));
-        lattice.put(setOf(4, 3), setOf("43"));
+        lattice.put(setOf(1, 2, 3), "123");
+        lattice.put(setOf(4), "4");
+        lattice.put(setOf(4, 3), "43");
 
         lattice.freezeTopo();
 
@@ -48,11 +48,11 @@ public class LatticeRelationTest {
     @Test
     public void testClearing() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());
+        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
 
-        lattice.put(setOf(1, 2), setOf("12"));
-        lattice.put(setOf(1), setOf("1"));
-        lattice.put(setOf(3), setOf("3"));
+        lattice.put(setOf(1, 2), "12");
+        lattice.put(setOf(1), "1");
+        lattice.put(setOf(3), "3");
 
         lattice.freezeTopo();
 
@@ -86,13 +86,13 @@ public class LatticeRelationTest {
         // goal of the test is to ensure, that their predecessors (sets with size > 2)
         // are still connected to successors (size < 2)
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(it -> it.size() != 2);
+        LatticeRelation<Set<Integer>, String> lattice = setLattice(it -> it.size() != 2);
 
 
-        lattice.put(setOf(1, 2, 3), setOf("123"));
-        lattice.put(setOf(4), setOf("4"));
-        lattice.put(setOf(4, 3), setOf("43"));
-        lattice.put(setOf(4, 3, 5), setOf("435"));
+        lattice.put(setOf(1, 2, 3), "123");
+        lattice.put(setOf(4), "4");
+        lattice.put(setOf(4, 3), "43");
+        lattice.put(setOf(4, 3, 5), "435");
 
         // before filter:
 
@@ -111,7 +111,7 @@ public class LatticeRelationTest {
 
         lattice.unfreezeTopo();
 
-        lattice.put(setOf(4, 3, 6), setOf("436"));
+        lattice.put(setOf(4, 3, 6), "436");
 
         lattice.freezeTopo();
 
@@ -122,20 +122,18 @@ public class LatticeRelationTest {
     @Test
     public void testInitialSetFilter() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice =
+        LatticeRelation<Set<Integer>, String> lattice =
             new LatticeRelation<>(
-                IdMonoid.forSet(),
-                IdMonoid.forMutableSet(),
-                LatticeRelationTest.setTopoOrder(),
+                setTopoOrder(),
                 setOf(setOf(1, 2), setOf(2, 3), emptySet()),
                 Objects::toString
             );
 
-        lattice.put(setOf(1, 2, 3), setOf("123"));
-        lattice.put(setOf(1, 2), setOf("12"));
-        lattice.put(setOf(1), setOf("1"));
-        lattice.put(setOf(2, 3, 4), setOf("234"));
-        lattice.put(setOf(4, 3, 5, 6), setOf("435"));
+        lattice.put(setOf(1, 2, 3), "123");
+        lattice.put(setOf(1, 2), "12");
+        lattice.put(setOf(1), "1");
+        lattice.put(setOf(2, 3, 4), "234");
+        lattice.put(setOf(4, 3, 5, 6), "435");
 
         // before filter:
 
@@ -157,7 +155,7 @@ public class LatticeRelationTest {
 
         lattice.unfreezeTopo();
 
-        lattice.put(setOf(2, 3, 4), setOf("234*"));
+        lattice.put(setOf(2, 3, 4), "234*");
 
         lattice.freezeTopo();
 
@@ -168,9 +166,9 @@ public class LatticeRelationTest {
     @Test
     public void testDiamond() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());
+        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
 
-        lattice.put(setOf(1, 2), setOf("12"));
+        lattice.put(setOf(1, 2), "12");
 
         lattice.freezeTopo();
 
@@ -197,9 +195,9 @@ public class LatticeRelationTest {
     public void testFilterOnChainSetup() {
         // setup for the next test (difference here is no filter)
 
-        LatticeRelation<String, Set<String>> lattice = stringLattice(PredicateUtil.always());
+        LatticeRelation<String, String> lattice = stringLattice(PredicateUtil.always());
 
-        lattice.put("abc", setOf("val"));
+        lattice.put("abc", "val");
 
         lattice.freezeTopo();
 
@@ -215,9 +213,9 @@ public class LatticeRelationTest {
     @Test
     public void testFilterOnChain() {
 
-        LatticeRelation<String, Set<String>> lattice = stringLattice(s -> s.length() != 2 && s.length() != 1);
+        LatticeRelation<String, String> lattice = stringLattice(s -> s.length() != 2 && s.length() != 1);
 
-        lattice.put("abc", setOf("val"));
+        lattice.put("abc", "val");
 
         lattice.freezeTopo();
 
@@ -234,26 +232,14 @@ public class LatticeRelationTest {
     }
 
     @NonNull
-    public LatticeRelation<String, Set<String>> stringLattice(Predicate<String> filter) {
-        return new LatticeRelation<>(
-            IdMonoid.forSet(),
-            IdMonoid.forMutableSet(),
-            LatticeRelationTest.stringTopoOrder(),
-            filter,
-            Objects::toString
-        );
+    private LatticeRelation<String, String> stringLattice(Predicate<String> filter) {
+        return new LatticeRelation<>(stringTopoOrder(), filter, Objects::toString);
     }
 
 
     @NonNull
-    public LatticeRelation<Set<Integer>, Set<String>> setLattice(Predicate<Set<Integer>> filter) {
-        return new LatticeRelation<>(
-            IdMonoid.forSet(),
-            IdMonoid.forMutableSet(),
-            LatticeRelationTest.setTopoOrder(),
-            filter,
-            Objects::toString
-        );
+    private LatticeRelation<Set<Integer>, String> setLattice(Predicate<Set<Integer>> filter) {
+        return new LatticeRelation<>(setTopoOrder(), filter, Objects::toString);
     }
 
     /**

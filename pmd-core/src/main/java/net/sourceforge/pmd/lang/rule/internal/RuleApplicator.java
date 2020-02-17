@@ -121,7 +121,7 @@ public class RuleApplicator {
 
     static class NodeIdx {
 
-        private final LatticeRelation<Class<?>, Set<Node>> byClass;
+        private final LatticeRelation<Class<?>, Node> byClass;
         private final Set<String> interestingNames;
         private final Map<String, List<Node>> byName;
 
@@ -129,8 +129,6 @@ public class RuleApplicator {
         NodeIdx(Set<String> interestingNames) {
 
             byClass = new LatticeRelation<>(
-                IdMonoid.forSet(),
-                IdMonoid.forMutableSet(),
                 TopoOrder.TYPE_HIERARCHY_ORDERING,
                 NodeIdx::filterClassFromIndex,
                 Class::getSimpleName
@@ -143,7 +141,7 @@ public class RuleApplicator {
             if (interestingNames.contains(n.getXPathNodeName())) {
                 byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
             }
-            byClass.put(n.getClass(), Collections.singleton(n));
+            byClass.put(n.getClass(), n);
         }
 
         // prune non-public classes from the index, also abstract classes,

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,11 +20,11 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 /**
- * Represents a property of type {@code <U>} on a datatype {@code <T>}.
+ * Represents a property of type {@code Set<U>} on a datatype {@code <T>}.
  * The internal representation is a directed acyclic graph of {@code <T>},
- * built according to a {@link TopoOrder}. The value {@code <U>} associated
- * to a node is the recursive combination of the values of all its children,
- * plus its own value, as defined by a {@link IdMonoid  Monoid&lt;U&gt;}.
+ * built according to a {@link TopoOrder}. The value associated to a node
+ * is the recursive union of the values of all the nodes it covers, plus
+ * its own value.
  *
  * <p>An instance has two states:
  * <ul>
@@ -50,18 +51,15 @@ import org.pcollections.PSet;
  * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
  *            must implement a consistent {@link Object#equals(Object) equals} and
  *            {@link Object#hashCode() hashcode} and be immutable.
- * @param <U> Type of values, must have a conformant {@link IdMonoid}
+ * @param <V> Type of values
  */
-class LatticeRelation<K, @NonNull U> {
+class LatticeRelation<K, @NonNull V> {
 
     // constants for the toposort
     private static final int UNDEFINED_TOPOMARK = -1;
     private static final int PERMANENT_TOPOMARK = 0;
     private static final int TMP_TOPOMARK = 1;
 
-    // behavior parameters for this lattice
-    private final IdMonoid<U> combine;
-    private final IdMonoid<U> accumulate;
     private final Predicate<? super K> filter;
     private final TopoOrder<K> keyOrder;
     private final Function<? super K, String> keyToString;
@@ -82,9 +80,6 @@ class LatticeRelation<K, @NonNull U> {
     /**
      * Creates a new relation with the given configuration.
      *
-     * @param combine     Monoid used to combine values of the predecessors of a node
-     * @param accumulate  Monoid used to accumulate proper values (those added directly
-     *                    through {@link #put(Object, Object)}) into the same node
      * @param keyOrder    Partial order generating the lattice
      * @param filter      Filter for nodes to keep. During the construction phase,
      *                    all nodes are in the lattice. When freezing, the lattice
@@ -92,13 +87,9 @@ class LatticeRelation<K, @NonNull U> {
      *                    filter are kept.
      * @param keyToString Strategy to render keys when dumping the lattice to a graph
      */
-    LatticeRelation(IdMonoid<U> combine,
-                    IdMonoid<U> accumulate,
-                    TopoOrder<K> keyOrder,
+    LatticeRelation(TopoOrder<K> keyOrder,
                     Predicate<? super K> filter,
                     Function<? super K, String> keyToString) {
-        this.combine = combine;
-        this.accumulate = accumulate;
         this.keyOrder = keyOrder;
         this.filter = filter;
         this.keyToString = keyToString;
@@ -110,19 +101,16 @@ class LatticeRelation<K, @NonNull U> {
      * set, or keys that were added individually through {@link #put(Object, Object)}
      * may be queried.
      */
-    LatticeRelation(IdMonoid<U> combine,
-                    IdMonoid<U> accumulate,
-                    TopoOrder<K> keyOrder,
+    LatticeRelation(TopoOrder<K> keyOrder,
                     Set<? extends K> querySet,
                     Function<? super K, String> keyToString) {
-        this.combine = combine;
-        this.accumulate = accumulate;
         this.keyOrder = keyOrder;
-        this.filter = k -> querySet.contains(k) || seeds.contains(k);
+        this.filter = k -> seeds.contains(k);
         this.keyToString = keyToString;
 
         for (K k : querySet) {
-            put(k, combine.zero());
+            seeds = seeds.plus(k);
+            getOrCreateNode(k);
         }
     }
 
@@ -145,27 +133,25 @@ class LatticeRelation<K, @NonNull U> {
     }
 
     /**
-     * Associate the value to the given key. If the key already had a
-     * value, it is accumulated using the {@link #accumulate} monoid.
+     * Adds the value to the given key.
      */
-    public void put(K key, U value) {
+    public void put(K key, V value) {
         ensureMutable();
         seeds = seeds.plus(key);
         LNode node = getOrCreateNode(key);
-        node.properVal = accumulate.apply(node.properVal, value);
+        node.addProperVal(value);
     }
 
     /**
-     * Returns the computed value for the given key, or the {@link IdMonoid#zero() zero}
-     * of the {@link #combine} monoid if the key is not recorded in this lattice.
+     * Returns the computed value for the given key, or an empty set.
      */
     @NonNull
-    public U get(K key) {
+    public PSet<V> get(K key) {
         if (!frozen) {
             throw new IllegalStateException("Lattice topology is not frozen");
         }
         LNode n = nodes.get(key);
-        return n == null ? combine.zero() : n.computeValue();
+        return n == null ? HashTreePSet.empty() : n.computeValue();
     }
 
     /**
@@ -387,9 +373,9 @@ class LatticeRelation<K, @NonNull U> {
         private int idx = -1;
 
         /** Proper value associated with this node (independent of topology). */
-        private @NonNull U properVal = accumulate.zero();
+        private @Nullable Set<V> properVal;
         /** Cached value */
-        private @Nullable U frozenVal;
+        private @Nullable PSet<V> frozenVal;
         /** Transient state */
         private boolean isFullyComputed = false;
 
@@ -397,31 +383,40 @@ class LatticeRelation<K, @NonNull U> {
             this.key = key;
         }
 
-        U computeValue() {
+        private void addProperVal(V v) {
+            if (properVal == null) {
+                properVal = new LinkedHashSet<>();
+            }
+            properVal.add(v);
+        }
+
+
+        PSet<V> computeValue() {
             if (frozenVal != null) {
                 return frozenVal;
             }
 
-            U value = reduceSuccessors(new HashSet<>());
+            PSet<V> value = reduceSuccessors(new HashSet<>());
             frozenVal = value;
             return value;
         }
 
-        private U reduceSuccessors(Set<LNode> seen) {
+        private PSet<V> accStart() {
+            return properVal == null ? HashTreePSet.empty() : HashTreePSet.from(properVal);
+        }
+
+        private PSet<V> reduceSuccessors(Set<LNode> seen) {
             if (frozenVal != null) {
                 return frozenVal;
             }
 
             isFullyComputed = true;
 
-            // we use the #combine monoid here, but properVal was made from #accumulate
-            // so we lift the proper val to the representation of #combine
-            U val = combine.lift(properVal);
+            PSet<V> val = accStart();
 
             for (LNode child : succ) {
                 if (seen.add(child)) {
-                    U vs = child.reduceSuccessors(seen);
-                    val = combine.apply(val, vs);
+                    val = val.plusAll(child.reduceSuccessors(seen));
                     isFullyComputed &= child.isFullyComputed;
                 } else {
                     isFullyComputed = false;
@@ -437,7 +432,7 @@ class LatticeRelation<K, @NonNull U> {
 
         private void resetValue() {
             frozenVal = null;
-            properVal = accumulate.zero();
+            properVal = null;
         }
 
         private void resetFrozenValue() {
