@@ -32,9 +32,10 @@ interface IdMonoid<@NonNull U> extends BinaryOperator<U> {
      * Lastly the operation must be idempotent, because dealing
      * with diamonds in the lattice is tricky:
      * <pre>{@code
-     *   apply(V, V) == lift(V)
+     *   apply(V, V) == V
      * }</pre>
-     * The latter property explains the choice of name ("Id").
+     * The latter property explains the choice of name ("Id"). In practice
+     * it restricts values to be sets or so.
      */
     @Override
     U apply(U u, U u2);

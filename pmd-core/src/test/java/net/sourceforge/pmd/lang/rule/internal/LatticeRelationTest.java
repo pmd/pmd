@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
@@ -11,11 +12,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 
 public class LatticeRelationTest {
@@ -23,13 +27,7 @@ public class LatticeRelationTest {
     @Test
     public void testCustomTopo() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            IdMonoid.forSet(),
-            IdMonoid.forMutableSet(),
-            LatticeRelationTest.setTopoOrder(),
-            PredicateUtil.always(),
-            Objects::toString
-        );
+        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());
 
 
         lattice.put(setOf(1, 2, 3), setOf("123"));
@@ -50,13 +48,7 @@ public class LatticeRelationTest {
     @Test
     public void testClearing() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            IdMonoid.forSet(),
-            IdMonoid.forMutableSet(),
-            LatticeRelationTest.setTopoOrder(),
-            PredicateUtil.always(),
-            Objects::toString
-        );
+        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());
 
         lattice.put(setOf(1, 2), setOf("12"));
         lattice.put(setOf(1), setOf("1"));
@@ -89,17 +81,12 @@ public class LatticeRelationTest {
     @Test
     public void testTopoFilter() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            IdMonoid.forSet(),
-            IdMonoid.forMutableSet(),
-            LatticeRelationTest.setTopoOrder(),
-            // filter out sets with size 2
-            // this cuts out one level of the graph
-            // goal of the test is to ensure, that their predecessors (sets with size > 2)
-            // are still connected to successors (size < 2)
-            it -> it.size() != 2,
-            Objects::toString
-        );
+        // filter out sets with size 2
+        // this cuts out one level of the graph
+        // goal of the test is to ensure, that their predecessors (sets with size > 2)
+        // are still connected to successors (size < 2)
+
+        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(it -> it.size() != 2);
 
 
         lattice.put(setOf(1, 2, 3), setOf("123"));
@@ -135,14 +122,7 @@ public class LatticeRelationTest {
     @Test
     public void testDiamond() {
 
-        LatticeRelation<Set<Integer>, Set<String>> lattice =
-            new LatticeRelation<>(
-                IdMonoid.forSet(),
-                IdMonoid.forMutableSet(),
-                LatticeRelationTest.setTopoOrder(),
-                PredicateUtil.always(),
-                Objects::toString
-            );
+        LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());
 
         lattice.put(setOf(1, 2), setOf("12"));
 
@@ -167,14 +147,77 @@ public class LatticeRelationTest {
     }
 
 
+    @Test
+    public void testFilterOnChainSetup() {
+        // setup for the next test (difference here is no filter)
+
+        LatticeRelation<String, Set<String>> lattice = stringLattice(PredicateUtil.always());
+
+        lattice.put("abc", setOf("val"));
+
+        lattice.freezeTopo();
+
+        // We have "abc" <: "bc" <: "c" <: ""
+
+        assertEquals(setOf("val"), lattice.get(""));
+        assertEquals(setOf("val"), lattice.get("abc"));
+        assertEquals(setOf("val"), lattice.get("bc"));
+        assertEquals(setOf("val"), lattice.get("c"));
+        assertEquals(emptySet(), lattice.get("d"));
+    }
+
+    @Test
+    public void testFilterOnChain() {
+
+        LatticeRelation<String, Set<String>> lattice = stringLattice(s -> s.length() != 2 && s.length() != 1);
+
+        lattice.put("abc", setOf("val"));
+
+        lattice.freezeTopo();
+
+        // We have "abc" <: "bc" <: "c" <: ""
+
+        // We filter out both "bc" and "c"
+        // "abc" should still be connected to ""
+
+        assertEquals(setOf("val"), lattice.get(""));
+        assertEquals(setOf("val"), lattice.get("abc"));
+        assertEquals(emptySet(), lattice.get("bc"));
+        assertEquals(emptySet(), lattice.get("c"));
+        assertEquals(emptySet(), lattice.get("d"));
+    }
+
+    @NonNull
+    public LatticeRelation<String, Set<String>> stringLattice(Predicate<String> filter) {
+        return new LatticeRelation<>(
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
+            LatticeRelationTest.stringTopoOrder(),
+            filter,
+            Objects::toString
+        );
+    }
+
+
+    @NonNull
+    public LatticeRelation<Set<Integer>, Set<String>> setLattice(Predicate<Set<Integer>> filter) {
+        return new LatticeRelation<>(
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
+            LatticeRelationTest.setTopoOrder(),
+            filter,
+            Objects::toString
+        );
+    }
+
     /**
      * Direct successors of a set are all the sets that have exactly
      * one less element. For example:
      * <pre>{@code
      *
-     * {1, 2, 3} -> {1, 2} {1, 3} {2, 3}
-     * {2, 3} -> {2} {3}
-     * {2} -> {}
+     * {1, 2, 3} <: {1, 2}, {1, 3}, {2, 3}
+     * {2, 3} <: {2}, {3}
+     * {2} <: {}
      * etc
      *
      * }</pre>
@@ -192,6 +235,19 @@ public class LatticeRelationTest {
 
             return successors.iterator();
         };
+    }
+
+    /**
+     * Generates a linear topo order according to suffix order. This
+     * can never form diamonds, as any string has at most one successor.
+     * Eg
+     * <pre>{@code
+     * "abc" <: "bc" <: "c" <: ""
+     * }</pre>
+     */
+    private static TopoOrder<String> stringTopoOrder() {
+        return str -> str.isEmpty() ? emptyIterator()
+                                    : IteratorUtil.singletonIterator(str.substring(1));
     }
 
 
