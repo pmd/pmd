@@ -225,27 +225,9 @@ class LatticeRelation<T, @NonNull U> {
         // here path is an adjacency matrix
         // (ie path[i][j] means "j is a direct successor of i")
 
-        // we turn it into a path matrix
-
         // since nodes are toposorted,
         //  path[i][j] => i < j
         // so we can avoid being completely cubic
-
-        // transitive closure, done before pruning nodes
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (path[i][j]) {
-                    for (int k = j + 1; k < n; k++) {
-                        if (path[j][k]) {
-                            // i -> j -> k
-                            path[i][k] = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        // now path[i][j] means "j is reachable from i"
 
         boolean[] kept = new boolean[n];
         for (int i = 0; i < n; i++) {
@@ -256,6 +238,26 @@ class LatticeRelation<T, @NonNull U> {
 
         // kept[i] means the node is not pruned
 
+        for (int j = 0; j < n; j++) {
+            if (!kept[j]) {
+                // node j is pruned, so for all paths i -> j -> k,
+                // we must add a path i -> k, otherwise path is lost
+
+                // This works in one pass because nodes are toposorted
+                // Eg for i -> j -> k -> l, where both j and k are filtered out,
+                // this will first add i -> k, then i -> l
+                for (LNode kn : lst.get(j).succ) {
+                    int k = kn.idx;
+                    for (int i = 0; i < j; i++) {
+                        if (kept[i] && path[i][j]) {
+                            path[i][k] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+
         // transitive reduction
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
@@ -263,6 +265,7 @@ class LatticeRelation<T, @NonNull U> {
                     for (int k = j + 1; k < n; k++) {
                         if (path[j][k]) {
                             // i -> j -> k
+                            // delete i -> k
                             path[i][k] = false;
                         }
                     }
