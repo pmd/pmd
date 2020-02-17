@@ -120,6 +120,52 @@ public class LatticeRelationTest {
 
 
     @Test
+    public void testInitialSetFilter() {
+
+        LatticeRelation<Set<Integer>, Set<String>> lattice =
+            new LatticeRelation<>(
+                IdMonoid.forSet(),
+                IdMonoid.forMutableSet(),
+                LatticeRelationTest.setTopoOrder(),
+                setOf(setOf(1, 2), setOf(2, 3), emptySet()),
+                Objects::toString
+            );
+
+        lattice.put(setOf(1, 2, 3), setOf("123"));
+        lattice.put(setOf(1, 2), setOf("12"));
+        lattice.put(setOf(1), setOf("1"));
+        lattice.put(setOf(2, 3, 4), setOf("234"));
+        lattice.put(setOf(4, 3, 5, 6), setOf("435"));
+
+        // before filter:
+
+        // https://dreampuf.github.io/GraphvizOnline/#strict%20digraph%20%7B%0An0%20%5B%20shape%3Dbox%2C%20label%3D%22%5B%5D%22%20%5D%3B%0An1%20%5B%20shape%3Dbox%2C%20label%3D%22%5B1%5D%22%20%5D%3B%0An2%20%5B%20shape%3Dbox%2C%20label%3D%22%5B2%5D%22%20%5D%3B%0An3%20%5B%20shape%3Dbox%2C%20label%3D%22%5B1%2C%202%5D%22%20%5D%3B%0An4%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%5D%22%20%5D%3B%0An5%20%5B%20shape%3Dbox%2C%20label%3D%22%5B1%2C%203%5D%22%20%5D%3B%0An6%20%5B%20shape%3Dbox%2C%20label%3D%22%5B4%5D%22%20%5D%3B%0An7%20%5B%20shape%3Dbox%2C%20label%3D%22%5B2%2C%203%5D%22%20%5D%3B%0An8%20%5B%20shape%3Dbox%2C%20label%3D%22%5B5%5D%22%20%5D%3B%0An9%20%5B%20shape%3Dbox%2C%20label%3D%22%5B1%2C%202%2C%203%5D%22%20%5D%3B%0An10%20%5B%20shape%3Dbox%2C%20label%3D%22%5B2%2C%204%5D%22%20%5D%3B%0An11%20%5B%20shape%3Dbox%2C%20label%3D%22%5B6%5D%22%20%5D%3B%0An12%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%2C%204%5D%22%20%5D%3B%0An13%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%2C%205%5D%22%20%5D%3B%0An14%20%5B%20shape%3Dbox%2C%20label%3D%22%5B2%2C%203%2C%204%5D%22%20%5D%3B%0An15%20%5B%20shape%3Dbox%2C%20label%3D%22%5B4%2C%205%5D%22%20%5D%3B%0An16%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%2C%206%5D%22%20%5D%3B%0An17%20%5B%20shape%3Dbox%2C%20label%3D%22%5B4%2C%206%5D%22%20%5D%3B%0An18%20%5B%20shape%3Dbox%2C%20label%3D%22%5B5%2C%206%5D%22%20%5D%3B%0An19%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%2C%204%2C%205%5D%22%20%5D%3B%0An20%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%2C%204%2C%206%5D%22%20%5D%3B%0An21%20%5B%20shape%3Dbox%2C%20label%3D%22%5B3%2C%205%2C%206%5D%22%20%5D%3B%0An22%20%5B%20shape%3Dbox%2C%20label%3D%22%5B4%2C%205%2C%206%5D%22%20%5D%3B%0An23%20%5B%20shape%3Dbox%2C%20label%3D%22%5B4%2C%203%2C%205%2C%206%5D%22%20%5D%3B%0An0%20-%3E%20n11%3B%0An0%20-%3E%20n8%3B%0An0%20-%3E%20n4%3B%0An0%20-%3E%20n1%3B%0An0%20-%3E%20n6%3B%0An0%20-%3E%20n2%3B%0An1%20-%3E%20n5%3B%0An1%20-%3E%20n3%3B%0An2%20-%3E%20n10%3B%0An2%20-%3E%20n3%3B%0An2%20-%3E%20n7%3B%0An3%20-%3E%20n9%3B%0An4%20-%3E%20n12%3B%0An4%20-%3E%20n16%3B%0An4%20-%3E%20n13%3B%0An4%20-%3E%20n5%3B%0An4%20-%3E%20n7%3B%0An5%20-%3E%20n9%3B%0An6%20-%3E%20n12%3B%0An6%20-%3E%20n15%3B%0An6%20-%3E%20n17%3B%0An6%20-%3E%20n10%3B%0An7%20-%3E%20n14%3B%0An7%20-%3E%20n9%3B%0An8%20-%3E%20n18%3B%0An8%20-%3E%20n15%3B%0An8%20-%3E%20n13%3B%0An10%20-%3E%20n14%3B%0An11%20-%3E%20n18%3B%0An11%20-%3E%20n16%3B%0An11%20-%3E%20n17%3B%0An12%20-%3E%20n19%3B%0An12%20-%3E%20n14%3B%0An12%20-%3E%20n20%3B%0An13%20-%3E%20n19%3B%0An13%20-%3E%20n21%3B%0An15%20-%3E%20n19%3B%0An15%20-%3E%20n22%3B%0An16%20-%3E%20n21%3B%0An16%20-%3E%20n20%3B%0An17%20-%3E%20n22%3B%0An17%20-%3E%20n20%3B%0An18%20-%3E%20n21%3B%0An18%20-%3E%20n22%3B%0An19%20-%3E%20n23%3B%0An20%20-%3E%20n23%3B%0An21%20-%3E%20n23%3B%0An22%20-%3E%20n23%3B%0A%7D
+
+        // after filter:
+
+        // http://bit.ly/2STFsum
+
+        lattice.freezeTopo();
+
+        assertEquals(setOf("123"), lattice.get(setOf(1, 2, 3)));
+        assertEquals(emptySet(), lattice.get(setOf(4))); // pruned
+        assertEquals(emptySet(), lattice.get(setOf(4, 5))); // pruned
+        assertEquals(setOf("12", "123"), lattice.get(setOf(1, 2)));
+        assertEquals(setOf("123", "234"), lattice.get(setOf(2, 3)));
+        assertEquals(setOf("234"), lattice.get(setOf(2, 3, 4)));
+        assertEquals(setOf("1", "12", "123", "234", "435"), lattice.get(emptySet()));
+
+        lattice.unfreezeTopo();
+
+        lattice.put(setOf(2, 3, 4), setOf("234*"));
+
+        lattice.freezeTopo();
+
+        assertEquals(setOf("123", "234", "234*"), lattice.get(setOf(2, 3))); // value "43" has been pruned
+    }
+
+
+    @Test
     public void testDiamond() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = setLattice(PredicateUtil.always());

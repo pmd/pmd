@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,12 +47,12 @@ import org.pcollections.PSet;
  * </ul>
  * <p>
  *
- * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
+ * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
  *            must implement a consistent {@link Object#equals(Object) equals} and
  *            {@link Object#hashCode() hashcode} and be immutable.
  * @param <U> Type of values, must have a conformant {@link IdMonoid}
  */
-class LatticeRelation<T, @NonNull U> {
+class LatticeRelation<K, @NonNull U> {
 
     // constants for the toposort
     private static final int UNDEFINED_TOPOMARK = -1;
@@ -63,21 +62,21 @@ class LatticeRelation<T, @NonNull U> {
     // behavior parameters for this lattice
     private final IdMonoid<U> combine;
     private final IdMonoid<U> accumulate;
-    private final Predicate<? super T> filter;
-    private final TopoOrder<T> keyOrder;
-    private final Function<? super T, String> keyToString;
+    private final Predicate<? super K> filter;
+    private final TopoOrder<K> keyOrder;
+    private final Function<? super K, String> keyToString;
 
     // state
-    private final Map<T, LNode> nodes = new HashMap<>();
+    private final Map<K, LNode> nodes = new HashMap<>();
     /** Keys that have been submitted to {@link #put(Object, Object)} as of now. */
-    private PSet<T> seeds = HashTreePSet.empty();
+    private PSet<K> seeds = HashTreePSet.empty();
 
     /**
      * Value of {@link #seeds} after the last freeze cycle. If this has not changed
      * during the write phase, then the topo is already up to date and we can avoid
      * doing the computations of {@link #freezeTopo()}.
      */
-    private PSet<T> lastSeeds = seeds;
+    private PSet<K> lastSeeds = seeds;
     private boolean frozen;
 
     /**
@@ -95,9 +94,9 @@ class LatticeRelation<T, @NonNull U> {
      */
     LatticeRelation(IdMonoid<U> combine,
                     IdMonoid<U> accumulate,
-                    TopoOrder<T> keyOrder,
-                    Predicate<? super T> filter,
-                    Function<? super T, String> keyToString) {
+                    TopoOrder<K> keyOrder,
+                    Predicate<? super K> filter,
+                    Function<? super K, String> keyToString) {
         this.combine = combine;
         this.accumulate = accumulate;
         this.keyOrder = keyOrder;
@@ -105,7 +104,29 @@ class LatticeRelation<T, @NonNull U> {
         this.keyToString = keyToString;
     }
 
-    private LNode getOrCreateNode(T key) {
+    /**
+     * Works like the other constructor, the filter being containment
+     * in the given query set. This means, only keys that are in this
+     * set, or keys that were added individually through {@link #put(Object, Object)}
+     * may be queried.
+     */
+    LatticeRelation(IdMonoid<U> combine,
+                    IdMonoid<U> accumulate,
+                    TopoOrder<K> keyOrder,
+                    Set<? extends K> querySet,
+                    Function<? super K, String> keyToString) {
+        this.combine = combine;
+        this.accumulate = accumulate;
+        this.keyOrder = keyOrder;
+        this.filter = k -> querySet.contains(k) || seeds.contains(k);
+        this.keyToString = keyToString;
+
+        for (K k : querySet) {
+            put(k, combine.zero());
+        }
+    }
+
+    private LNode getOrCreateNode(K key) {
         assert key != null : "null key is not allowed";
         if (nodes.containsKey(key)) {
             return nodes.get(key);
@@ -118,19 +139,17 @@ class LatticeRelation<T, @NonNull U> {
         }
     }
 
-    private void addSuccessors(T key, LNode n) {
+    private void addSuccessors(K key, LNode n) {
         keyOrder.directSuccessors(key)
-                .forEachRemaining(s -> n.succ.add(this.getOrCreateNode(s)));
+                .forEachRemaining(s -> n.succ = n.succ.plus(this.getOrCreateNode(s)));
     }
 
     /**
      * Associate the value to the given key. If the key already had a
      * value, it is accumulated using the {@link #accumulate} monoid.
      */
-    public void put(T key, U value) {
-        if (frozen) {
-            throw new IllegalStateException("A frozen lattice may not be mutated");
-        }
+    public void put(K key, U value) {
+        ensureMutable();
         seeds = seeds.plus(key);
         LNode node = getOrCreateNode(key);
         node.properVal = accumulate.apply(node.properVal, value);
@@ -141,7 +160,7 @@ class LatticeRelation<T, @NonNull U> {
      * of the {@link #combine} monoid if the key is not recorded in this lattice.
      */
     @NonNull
-    public U get(T key) {
+    public U get(K key) {
         if (!frozen) {
             throw new IllegalStateException("Lattice topology is not frozen");
         }
@@ -157,13 +176,16 @@ class LatticeRelation<T, @NonNull U> {
      * <p>If you want to clear the topology, use another instance.
      */
     void clearValues() {
-        if (frozen) {
-            // this is actually unnecessary
-            throw new IllegalStateException("A frozen lattice may not be mutated");
-        }
+        ensureMutable();
 
         for (LNode value : nodes.values()) {
             value.resetValue();
+        }
+    }
+
+    private void ensureMutable() {
+        if (frozen) {
+            throw new IllegalStateException("A frozen lattice may not be mutated");
         }
     }
 
@@ -185,14 +207,23 @@ class LatticeRelation<T, @NonNull U> {
      * @throws IllegalStateException If the lattice has a cycle
      */
     void freezeTopo() {
-        frozen = true; // non-thread-safe
+        if (frozen) {
+            return;
+        }
+        frozen = true;
         if (lastSeeds.equals(seeds)) {
             // no new seeds have been encountered, topo is up to date
+            // (but maybe not proper vals)
+
+            for (LNode node : nodes.values()) {
+                node.resetFrozenValue();
+            }
             return;
         }
 
         for (LNode node : new HashSet<>(nodes.values())) {
-            node.resetFrozenData();
+            node.resetFrozenValue();
+            node.resetTopoData();
         }
 
         int n = nodes.size();
@@ -230,7 +261,7 @@ class LatticeRelation<T, @NonNull U> {
                     for (int i = j + 1; i < n; i++) { // find all i s.t. i -> j
                         LNode in = lst.get(i);
                         if (in.succ.contains(jn)) {
-                            in.succ.add(kn);
+                            in.succ = in.succ.plus(kn);
                         }
                     }
                 }
@@ -244,7 +275,7 @@ class LatticeRelation<T, @NonNull U> {
                     for (LNode kn : jn.succ) {
                         // i -> j -> k
                         // delete i -> k
-                        in.succ.remove(kn);
+                        in.succ = in.succ.minus(kn);
                     }
                 }
             }
@@ -255,7 +286,7 @@ class LatticeRelation<T, @NonNull U> {
         for (int i = 0; i < n; i++) {
             LNode in = lst.get(i);
 
-            in.succ.clear();
+            in.succ = HashTreePSet.empty();
 
             if (!kept[i]) {
                 nodes.remove(in.key);
@@ -266,7 +297,7 @@ class LatticeRelation<T, @NonNull U> {
                 LNode jn = lst.get(j);
                 if (kept[j] && jn.succ.contains(in)) {
                     // succ means "pred" now
-                    in.succ.add(jn);
+                    in.succ = in.succ.plus(jn);
                 }
             }
         }
@@ -346,10 +377,10 @@ class LatticeRelation<T, @NonNull U> {
 
     private final class LNode { // "Lattice Node"
 
-        private final @NonNull T key;
+        private final @NonNull K key;
         // before freezing this contains the successors of a node
         // after, it contains its direct predecessors
-        private final Set<LNode> succ = new LinkedHashSet<>(0);
+        private PSet<LNode> succ = HashTreePSet.empty();
 
         // topological state, to be reset between freeze cycles
         private int topoMark = UNDEFINED_TOPOMARK;
@@ -362,7 +393,7 @@ class LatticeRelation<T, @NonNull U> {
         /** Transient state */
         private boolean isFullyComputed = false;
 
-        private LNode(@NonNull T key) {
+        private LNode(@NonNull K key) {
             this.key = key;
         }
 
@@ -409,16 +440,19 @@ class LatticeRelation<T, @NonNull U> {
             properVal = accumulate.zero();
         }
 
+        private void resetFrozenValue() {
+            frozenVal = null;
+        }
+
         /**
          * Resets the data that was frozen in the last freeze cycle,
          * Does not clear the proper value.
          */
-        private void resetFrozenData() {
+        private void resetTopoData() {
             topoMark = UNDEFINED_TOPOMARK;
             idx = -1;
-            frozenVal = null;
             // since "succ" means "pred" here, we need to readd everything
-            succ.clear();
+            succ = HashTreePSet.empty();
             addSuccessors(key, this);
         }
 

@@ -36,6 +36,10 @@ interface IdMonoid<@NonNull U> extends BinaryOperator<U> {
      * }</pre>
      * The latter property explains the choice of name ("Id"). In practice
      * it restricts values to be sets or so.
+     *
+     * @param u First value. This is always a value that comes from this
+     *          monoid, either a zero or the result of an apply.
+     * @param u2 Second value, may come from anywhere
      */
     @Override
     U apply(U u, U u2);
