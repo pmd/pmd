@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Sample rule that detect any node with an image of "Foo". Used for testing.
@@ -25,8 +25,8 @@ public class FooRule extends AbstractRule {
     }
 
     @Override
-    protected @NonNull RuleTargetSelector buildTargetingStrategy() {
-        return Rule.targetNodesNamed(setOf("dummyNode"));
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forXPathNames(setOf("dummyNode"));
     }
 
     @Override

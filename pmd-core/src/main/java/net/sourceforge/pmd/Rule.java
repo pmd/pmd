@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -13,9 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector.ClassRulechainVisits;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector.StringRulechainVisits;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
@@ -329,23 +326,4 @@ public interface Rule extends PropertySource {
     Rule deepCopy();
 
 
-    static RuleTargetSelector targetNodesNamed(Collection<String> names) {
-        if (names.isEmpty()) {
-            throw new IllegalArgumentException("Cannot visit zero nodes");
-        }
-        return new StringRulechainVisits(names);
-    }
-
-
-    static RuleTargetSelector targetNodesWithType(Collection<Class<? extends Node>> types) {
-        if (types.isEmpty()) {
-            throw new IllegalArgumentException("Cannot visit zero types");
-        }
-        return new ClassRulechainVisits(types);
-    }
-
-
-    static RuleTargetSelector targetRootOnly() {
-        return ClassRulechainVisits.ROOT_ONLY;
-    }
 }

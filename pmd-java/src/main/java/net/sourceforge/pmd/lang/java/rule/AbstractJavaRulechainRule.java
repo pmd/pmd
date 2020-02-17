@@ -8,11 +8,10 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -39,8 +38,8 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     }
 
     @Override
-    protected final @NonNull RuleTargetSelector buildTargetingStrategy() {
-        return Rule.targetNodesWithType(typesToVisit);
+    protected final @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(typesToVisit);
     }
 
     @Override

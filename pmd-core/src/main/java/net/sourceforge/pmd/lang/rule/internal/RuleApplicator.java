@@ -4,15 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +16,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /** Applies a set of rules to a set of ASTs. */
@@ -37,9 +29,9 @@ public class RuleApplicator {
     // when you use a single rule, indexing time is insignificant compared
     // to eg type resolution.
 
-    private final NodeIdx idx;
+    private final TreeIndex idx;
 
-    private RuleApplicator(NodeIdx index) {
+    public RuleApplicator(TreeIndex index) {
         this.idx = index;
     }
 
@@ -58,7 +50,7 @@ public class RuleApplicator {
         applyOnIndex(idx, rules, ctx);
     }
 
-    private void applyOnIndex(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
+    private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
             if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
                 continue;
@@ -87,7 +79,7 @@ public class RuleApplicator {
         }
     }
 
-    private void indexTree(Node top, NodeIdx idx) {
+    private void indexTree(Node top, TreeIndex idx) {
         idx.indexNode(top);
         for (Node child : top.children()) {
             indexTree(child, idx);
@@ -95,82 +87,11 @@ public class RuleApplicator {
     }
 
     public static RuleApplicator build(Iterable<? extends Rule> rules) {
-        ApplicatorBuilder builder = new ApplicatorBuilder();
+        TargetSelectorInternal.ApplicatorBuilder builder = new TargetSelectorInternal.ApplicatorBuilder();
         for (Rule it : rules) {
             it.getTargetSelector().prepare(builder);
         }
         return builder.build();
     }
 
-    public static class ApplicatorBuilder {
-
-        private final Set<String> namesToIndex = new HashSet<>();
-        private final Set<Class<? extends Node>> classesToIndex = new HashSet<>();
-
-
-        void registerXPathNames(Set<String> names) {
-            namesToIndex.addAll(names);
-        }
-
-        void registerClasses(Set<Class<? extends Node>> names) {
-            classesToIndex.addAll(names);
-        }
-
-        RuleApplicator build() {
-            return new RuleApplicator(new NodeIdx(namesToIndex, classesToIndex));
-        }
-    }
-
-
-    static class NodeIdx {
-
-        private final LatticeRelation<Class<?>, Node> byClass;
-        private final Set<String> interestingNames;
-        private final Map<String, List<Node>> byName;
-
-
-        NodeIdx(Set<String> interestingNames, Set<Class<? extends Node>> classesToIndex) {
-
-            byClass = new LatticeRelation<>(
-                TopoOrder.TYPE_HIERARCHY_ORDERING,
-                classesToIndex,
-                Class::getSimpleName
-            );
-            this.interestingNames = interestingNames;
-            byName = new HashMap<>();
-        }
-
-        void indexNode(Node n) {
-            if (interestingNames.contains(n.getXPathNodeName())) {
-                byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
-            }
-            byClass.put(n.getClass(), n);
-        }
-
-        void complete() {
-            byClass.makeReadable();
-        }
-
-        void prepare() {
-            byClass.makeWritableAndClear();
-            byName.clear();
-        }
-
-        // TODO this could be parameterized by a DataKey and extensible
-        Iterator<Node> getByName(String n) {
-            return byName.getOrDefault(n, Collections.emptyList()).iterator();
-        }
-
-        Iterator<Node> getByClass(Class<? extends Node> n) {
-            return byClass.get(n).iterator();
-        }
-
-        Iterator<Node> getByName(Collection<String> n) {
-            return IteratorUtil.flatMap(n.iterator(), this::getByName);
-        }
-
-        Iterator<Node> getByClass(Collection<? extends Class<? extends Node>> n) {
-            return IteratorUtil.flatMap(n.iterator(), this::getByClass);
-        }
-    }
 }

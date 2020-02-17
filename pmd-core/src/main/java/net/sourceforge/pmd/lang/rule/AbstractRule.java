@@ -20,8 +20,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector.ClassRulechainVisits;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -244,7 +242,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
 
     /**
-     * @deprecated Override {@link #buildTargetingStrategy()}, this is
+     * @deprecated Override {@link #buildTargetSelector()}, this is
      *     provided for legacy compatibility
      */
     @Deprecated
@@ -255,7 +253,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     @Override
     public final RuleTargetSelector getTargetSelector() {
         if (myStrategy == null) {
-            myStrategy = buildTargetingStrategy();
+            myStrategy = buildTargetSelector();
         }
         return myStrategy;
     }
@@ -263,12 +261,13 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * Create the targeting strategy for this node. Please override
      * this instead of using {@link #addRuleChainVisit(Class)}.
+     * Use the factory methods of {@link RuleTargetSelector}.
      */
     @NonNull
-    protected RuleTargetSelector buildTargetingStrategy() {
+    protected RuleTargetSelector buildTargetSelector() {
         Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
-        return crvs.isEmpty() ? ClassRulechainVisits.ROOT_ONLY
-                              : Rule.targetNodesWithType(crvs);
+        return crvs.isEmpty() ? RuleTargetSelector.forRootOnly()
+                              : RuleTargetSelector.forTypes(crvs);
     }
 
     @Override

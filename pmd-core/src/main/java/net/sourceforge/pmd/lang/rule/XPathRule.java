@@ -19,12 +19,10 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
@@ -215,7 +213,7 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    protected @NonNull RuleTargetSelector buildTargetingStrategy() {
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
         }
@@ -224,8 +222,8 @@ public class XPathRule extends AbstractRule {
 
         logXPathRuleChainUsage(!visits.isEmpty());
 
-        return visits.isEmpty() ? Rule.targetRootOnly()
-                                : Rule.targetNodesNamed(visits);
+        return visits.isEmpty() ? RuleTargetSelector.forRootOnly()
+                                : RuleTargetSelector.forXPathNames(visits);
     }
 
 

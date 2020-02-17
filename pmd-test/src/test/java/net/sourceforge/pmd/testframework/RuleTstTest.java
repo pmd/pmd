@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 public class RuleTstTest {
@@ -42,7 +43,7 @@ public class RuleTstTest {
         Report report = new Report();
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
-        when(rule.getTargetSelector()).thenReturn(Rule.targetRootOnly());
+        when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
 
         ruleTester.runTestFromString("the code", rule, report, dummyLanguage, false);
 
@@ -62,7 +63,7 @@ public class RuleTstTest {
     public void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
-        when(rule.getTargetSelector()).thenReturn(Rule.targetRootOnly());
+        when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
 
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(RuleContext context, int beginLine, String message) {

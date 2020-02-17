@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class RuleSetTest {
 
@@ -565,8 +565,8 @@ public class RuleSetTest {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
 
             @Override
-            protected @NonNull RuleTargetSelector buildTargetingStrategy() {
-                return Rule.targetNodesNamed(setOf("dummyRootNode"));
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
@@ -576,8 +576,8 @@ public class RuleSetTest {
         }).addRule(new MockRule() {
 
             @Override
-            protected @NonNull RuleTargetSelector buildTargetingStrategy() {
-                return Rule.targetNodesNamed(setOf("dummyRootNode"));
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
