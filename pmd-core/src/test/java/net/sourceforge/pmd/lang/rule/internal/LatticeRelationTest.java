@@ -231,6 +231,34 @@ public class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get("d"));
     }
 
+
+    @Test
+    public void testToString() {
+        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
+
+        lattice.put(setOf(1, 2), "12");
+
+        lattice.freezeTopo();
+
+        //    {1,2}
+        //    /   \
+        //  {1}   {2}
+        //    \   /
+        //     { }
+
+        assertEquals("strict digraph {\n"
+                         + "n0 [ shape=box, label=\"[]\" ];\n"
+                         + "n1 [ shape=box, label=\"[1]\" ];\n"
+                         + "n2 [ shape=box, label=\"[2]\" ];\n"
+                         + "n3 [ shape=box, label=\"[1, 2]\" ];\n"
+                         + "n0 -> n1;\n"
+                         + "n0 -> n2;\n"
+                         + "n1 -> n3;\n"
+                         + "n2 -> n3;\n"
+                         + "}", lattice.toString());
+    }
+
+
     @NonNull
     private LatticeRelation<String, String> stringLattice(Predicate<String> filter) {
         return new LatticeRelation<>(stringTopoOrder(), filter, Objects::toString);

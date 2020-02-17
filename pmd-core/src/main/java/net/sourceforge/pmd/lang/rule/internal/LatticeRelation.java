@@ -109,8 +109,7 @@ class LatticeRelation<K, @NonNull V> {
         this.keyToString = keyToString;
 
         for (K k : querySet) {
-            seeds = seeds.plus(k);
-            getOrCreateNode(k);
+            put(k, null);
         }
     }
 
@@ -133,13 +132,15 @@ class LatticeRelation<K, @NonNull V> {
     }
 
     /**
-     * Adds the value to the given key.
+     * Adds the value to the given key, unless it is null.
      */
     public void put(K key, V value) {
         ensureMutable();
         seeds = seeds.plus(key);
         LNode node = getOrCreateNode(key);
-        node.addProperVal(value);
+        if (value != null) {
+            node.addProperVal(value);
+        }
     }
 
     /**
