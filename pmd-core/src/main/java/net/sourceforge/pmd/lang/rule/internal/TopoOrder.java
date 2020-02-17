@@ -50,7 +50,7 @@ interface TopoOrder<T> {
     /**
      * Returns all nodes that directly follow this node.
      * The returned nodes may be pruned by the filter of
-     * the lattice.
+     * the lattice. The iterator must terminate.
      */
     Iterator<T> directSuccessors(T node);
 

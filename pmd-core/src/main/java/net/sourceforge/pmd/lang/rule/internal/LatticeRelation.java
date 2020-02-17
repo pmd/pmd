@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -107,21 +108,47 @@ class LatticeRelation<K, @NonNull V> {
         this.keyOrder = keyOrder;
         this.filter = k -> seeds.contains(k);
         this.keyToString = keyToString;
+        seeds = seeds.plusAll(querySet);
 
         for (K k : querySet) {
             put(k, null);
         }
     }
 
-    private LNode getOrCreateNode(K key) {
+    private @Nullable LNode getOrCreateNode(K key) {
         assert key != null : "null key is not allowed";
-        return nodes.computeIfAbsent(key, k -> {
-            LNode n = new LNode(k);
-            nodes.put(k, n);
-            // add all successors recursively
-            addSuccessors(k, n);
+        return addSucc(null, key);
+    }
+
+    private @Nullable LNode addSucc(@Nullable LNode pred, K key) {
+        if (nodes.containsKey(key)) {
+            LNode n = nodes.get(key);
+            link(pred, n);
             return n;
-        });
+        }
+
+        LNode n = null;
+        if (filter.test(key)) {
+            n = new LNode(key);
+            nodes.put(key, n);
+            link(pred, n);
+            pred = n;
+        }
+
+        // even if we didn't create a node, we carry on with the successors
+        Iterator<K> successors = keyOrder.directSuccessors(key);
+        while (successors.hasNext()) {
+            addSucc(pred, successors.next());
+        }
+        return n;
+    }
+
+    private void link(LNode pred, LNode succ) {
+        if (pred == null || succ == null) {
+            return;
+        }
+        pred.succ = pred.succ.plus(succ);
+        succ.preds = succ.preds.plus(pred);
     }
 
     private void addSuccessors(K key, LNode n) {
@@ -136,7 +163,7 @@ class LatticeRelation<K, @NonNull V> {
         ensureMutable();
         seeds = seeds.plus(key);
         LNode node = getOrCreateNode(key);
-        if (value != null) {
+        if (node != null && value != null) {
             node.addProperVal(value);
         }
     }
@@ -213,79 +240,79 @@ class LatticeRelation<K, @NonNull V> {
 
         int n = nodes.size();
 
-        // topological sort
-        List<LNode> lst = toposort();
-        // also LNode#idx is set to the index in the list
-
-        // here path is an adjacency matrix
-        // (ie path[i][j] means "j is a direct successor of i")
-
-        // since nodes are toposorted,
-        //  path[i][j] => i < j
-        // so we can avoid being completely cubic
-
-        boolean[] kept = new boolean[n];
-        for (int i = 0; i < n; i++) {
-            if (filter.test(lst.get(i).key)) {
-                kept[i] = true;
-            }
-        }
-
-        // kept[i] means the node is not pruned
-
-        for (LNode jn : lst) {
-            final int j = jn.idx;
-            if (!kept[j]) {
-                // node j is pruned, so for all paths i -> j -> k,
-                // we must add a path i -> k, otherwise path is lost
-
-                // This works in one pass because nodes are toposorted
-                // Eg for i -> j -> k -> l, where both j and k are filtered out,
-                // this will first add i -> k, then i -> l, because i -> k already exists
-                for (LNode kn : jn.succ) {
-                    for (int i = j + 1; i < n; i++) { // find all i s.t. i -> j
-                        LNode in = lst.get(i);
-                        if (in.succ.contains(jn)) {
-                            in.succ = in.succ.plus(kn);
-                        }
-                    }
-                }
-            }
-        }
-
-        // transitive reduction
-        for (LNode in : lst) {
-            for (LNode jn : in.succ) {
-                if (kept[jn.idx]) { // only if j is kept
-                    for (LNode kn : jn.succ) {
-                        // i -> j -> k
-                        // delete i -> k
-                        in.succ = in.succ.minus(kn);
-                    }
-                }
-            }
-        }
-
-        // assign predecessors to all nodes
-        // this inverts the graph
-        for (int i = 0; i < n; i++) {
-            LNode in = lst.get(i);
-
-            in.succ = HashTreePSet.empty();
-
-            if (!kept[i]) {
-                nodes.remove(in.key);
-                continue;
-            }
-
-            for (int j = i + 1; j < n; j++) {
-                LNode jn = lst.get(j);
-                if (kept[j] && jn.succ.contains(in)) {
-                    // succ means "pred" now
-                    in.succ = in.succ.plus(jn);
-                }
-            }
-        }
+//        // topological sort
+//        List<LNode> lst = toposort();
+//        // also LNode#idx is set to the index in the list
+//
+//        // here path is an adjacency matrix
+//        // (ie path[i][j] means "j is a direct successor of i")
+//
+//        // since nodes are toposorted,
+//        //  path[i][j] => i < j
+//        // so we can avoid being completely cubic
+//
+//        boolean[] kept = new boolean[n];
+//        for (int i = 0; i < n; i++) {
+//            if (filter.test(lst.get(i).key)) {
+//                kept[i] = true;
+//            }
+//        }
+//
+//        // kept[i] means the node is not pruned
+//
+//        for (LNode jn : lst) {
+//            final int j = jn.idx;
+//            if (!kept[j]) {
+//                // node j is pruned, so for all paths i -> j -> k,
+//                // we must add a path i -> k, otherwise path is lost
+//
+//                // This works in one pass because nodes are toposorted
+//                // Eg for i -> j -> k -> l, where both j and k are filtered out,
+//                // this will first add i -> k, then i -> l, because i -> k already exists
+//                for (LNode kn : jn.succ) {
+//                    for (int i = j + 1; i < n; i++) { // find all i s.t. i -> j
+//                        LNode in = lst.get(i);
+//                        if (in.succ.contains(jn)) {
+//                            in.succ = in.succ.plus(kn);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // transitive reduction
+//        for (LNode in : lst) {
+//            for (LNode jn : in.succ) {
+//                if (kept[jn.idx]) { // only if j is kept
+//                    for (LNode kn : jn.succ) {
+//                        // i -> j -> k
+//                        // delete i -> k
+//                        in.succ = in.succ.minus(kn);
+//                    }
+//                }
+//            }
+//        }
+//
+//        // assign predecessors to all nodes
+//        // this inverts the graph
+//        for (int i = 0; i < n; i++) {
+//            LNode in = lst.get(i);
+//
+//            in.succ = HashTreePSet.empty();
+//
+//            if (!kept[i]) {
+//                nodes.remove(in.key);
+//                continue;
+//            }
+//
+//            for (int j = i + 1; j < n; j++) {
+//                LNode jn = lst.get(j);
+//                if (kept[j] && jn.succ.contains(in)) {
+//                    // succ means "pred" now
+//                    in.succ = in.succ.plus(jn);
+//                }
+//            }
+//        }
     }
 
 
@@ -347,7 +374,7 @@ class LatticeRelation<K, @NonNull V> {
             String id = ids.get(node);
             for (LNode succ : node.succ) {
                 String succId = ids.get(succ);
-                sb.append(id).append(" -> ").append(succId).append(";\n");
+                sb.append(succId).append(" -> ").append(id).append(";\n");
             }
         }
 
@@ -366,6 +393,7 @@ class LatticeRelation<K, @NonNull V> {
         // before freezing this contains the successors of a node
         // after, it contains its direct predecessors
         private PSet<LNode> succ = HashTreePSet.empty();
+        private PSet<LNode> preds = HashTreePSet.empty();
 
         // topological state, to be reset between freeze cycles
         private int topoMark = UNDEFINED_TOPOMARK;
@@ -413,7 +441,7 @@ class LatticeRelation<K, @NonNull V> {
 
             PSet<V> val = accStart();
 
-            for (LNode child : succ) {
+            for (LNode child : preds) {
                 if (seen.add(child)) {
                     val = val.plusAll(child.reduceSuccessors(seen));
                     isFullyComputed &= child.isFullyComputed;
@@ -446,8 +474,8 @@ class LatticeRelation<K, @NonNull V> {
             topoMark = UNDEFINED_TOPOMARK;
             idx = -1;
             // since "succ" means "pred" here, we need to readd everything
-            succ = HashTreePSet.empty();
-            addSuccessors(key, this);
+//            succ = HashTreePSet.empty();
+//            addSuccessors(key, this);
         }
 
         @Override

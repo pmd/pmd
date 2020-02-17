@@ -253,8 +253,8 @@ public class LatticeRelationTest {
                          + "n3 [ shape=box, label=\"[1, 2]\" ];\n"
                          + "n0 -> n1;\n"
                          + "n0 -> n2;\n"
-                         + "n1 -> n3;\n"
                          + "n2 -> n3;\n"
+                         + "n1 -> n3;\n"
                          + "}", lattice.toString());
     }
 
