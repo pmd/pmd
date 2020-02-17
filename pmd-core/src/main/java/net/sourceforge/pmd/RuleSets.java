@@ -38,12 +38,10 @@ public class RuleSets {
             rsets.add(new RuleSet(rs));
         }
         this.ruleSets = Collections.unmodifiableList(rsets);
-        this.ruleApplicator = prepareApplicator();
     }
 
     public RuleSets(Collection<RuleSet> ruleSets) {
         this.ruleSets = Collections.unmodifiableList(new ArrayList<>(ruleSets));
-        this.ruleApplicator = prepareApplicator();
     }
 
     /**
@@ -53,7 +51,6 @@ public class RuleSets {
      */
     public RuleSets(RuleSet ruleSet) {
         this.ruleSets = Collections.singletonList(ruleSet);
-        this.ruleApplicator = prepareApplicator();
     }
 
     private RuleApplicator prepareApplicator() {
@@ -124,6 +121,13 @@ public class RuleSets {
      *            the RuleContext
      */
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
+        if (ruleApplicator == null) {
+            // initialize here instead of ctor, because some rules properties
+            // are set after creating the ruleset, and jaxen xpath queries
+            // initialize their XPath expressions when calling getRuleChainVisits()... fixme
+            this.ruleApplicator = prepareApplicator();
+        }
+
         ruleApplicator.index(acuList);
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.applies(ctx.getSourceCodeFile())) {
