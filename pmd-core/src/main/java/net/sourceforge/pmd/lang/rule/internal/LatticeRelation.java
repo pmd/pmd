@@ -121,13 +121,8 @@ class LatticeRelation<T, @NonNull U> {
     }
 
     private void addSuccessors(T key, LNode n) {
-        Set<T> seen = new HashSet<>();
         keyOrder.directSuccessors(key)
-                .forEachRemaining(s -> {
-                    if (seen.add(s)) { // only add distinct ones
-                        n.succ.add(this.getOrCreateNode(s));
-                    }
-                });
+                .forEachRemaining(s -> n.succ.add(this.getOrCreateNode(s)));
     }
 
     /**
@@ -211,17 +206,6 @@ class LatticeRelation<T, @NonNull U> {
             lst.get(i).idx = i;
         }
 
-        boolean[][] path = new boolean[n][n];
-
-        for (LNode k : lst) {
-            for (LNode t : k.succ) {
-                if (k.idx != t.idx) {
-                    // ignore self loop
-                    path[k.idx][t.idx] = true;
-                }
-            }
-        }
-
         // here path is an adjacency matrix
         // (ie path[i][j] means "j is a direct successor of i")
 
@@ -238,36 +222,34 @@ class LatticeRelation<T, @NonNull U> {
 
         // kept[i] means the node is not pruned
 
-        for (int j = 0; j < n; j++) {
-            if (!kept[j]) {
+        for (LNode jn : lst) {
+            final int j = jn.idx;
+            if (!kept[jn.idx]) {
                 // node j is pruned, so for all paths i -> j -> k,
                 // we must add a path i -> k, otherwise path is lost
 
                 // This works in one pass because nodes are toposorted
                 // Eg for i -> j -> k -> l, where both j and k are filtered out,
-                // this will first add i -> k, then i -> l
-                for (LNode kn : lst.get(j).succ) {
-                    int k = kn.idx;
-                    for (int i = 0; i < j; i++) {
-                        if (kept[i] && path[i][j]) {
-                            path[i][k] = true;
+                // this will first add i -> k, then i -> l, because i -> k already exists
+                for (LNode kn : jn.succ) {
+                    for (int i = 0; i < j; i++) { // find all i s.t. i -> j
+                        LNode in = lst.get(i);
+                        if (kept[i] && in.succ.contains(jn)) {
+                            in.succ.add(kn);
                         }
                     }
                 }
             }
         }
 
-
         // transitive reduction
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (kept[j] && path[i][j]) { // reduce only if j is kept
-                    for (int k = j + 1; k < n; k++) {
-                        if (path[j][k]) {
-                            // i -> j -> k
-                            // delete i -> k
-                            path[i][k] = false;
-                        }
+        for (LNode in : lst) {
+            for (LNode jn : in.succ) {
+                if (kept[jn.idx]) { // only if j is kept
+                    for (LNode kn : jn.succ) {
+                        // i -> j -> k
+                        // delete i -> k
+                        in.succ.remove(kn);
                     }
                 }
             }
@@ -275,23 +257,24 @@ class LatticeRelation<T, @NonNull U> {
 
         // assign predecessors to all nodes
         // this inverts the graph
-        for (int i = 0; i < n; i++) {
-            LNode inode = lst.get(i);
-            inode.succ.clear();
+        for (int i = n - 1; i >= 0; i--) { // notice: reversed
+            LNode in = lst.get(i);
+
+            in.succ.clear();
 
             if (!kept[i]) {
-                nodes.remove(inode.key);
+                nodes.remove(in.key);
                 continue;
             }
 
             for (int j = 0; j < i; j++) {
-                if (kept[j] && path[j][i]) {
+                LNode jn = lst.get(j);
+                if (kept[j] && jn.succ.contains(in)) {
                     // succ means "pred" now
-                    inode.succ.add(lst.get(j));
+                    in.succ.add(jn);
                 }
             }
         }
-
     }
 
 
@@ -388,7 +371,9 @@ class LatticeRelation<T, @NonNull U> {
                 return frozenVal;
             }
 
-            return reduceSuccessors(new HashSet<>());
+            U value = reduceSuccessors(new HashSet<>());
+            frozenVal = value;
+            return value;
         }
 
         private U reduceSuccessors(Set<LNode> seen) {
@@ -432,6 +417,7 @@ class LatticeRelation<T, @NonNull U> {
             topoMark = UNDEFINED_TOPOMARK;
             idx = -1;
             frozenVal = null;
+            // since "succ" means "pred" here, we need to readd everything
             succ.clear();
             addSuccessors(key, this);
         }
