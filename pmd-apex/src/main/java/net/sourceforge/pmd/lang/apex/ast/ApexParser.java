@@ -39,7 +39,7 @@ public class ApexParser {
         return visitor.getTopLevel();
     }
 
-    public ApexRootNode<Compilation> parse(final Reader reader) {
+    public ApexNode<Compilation> parse(final Reader reader) {
         try {
             final String sourceCode = IOUtils.toString(reader);
             final Compilation astRoot = parseApex(sourceCode);

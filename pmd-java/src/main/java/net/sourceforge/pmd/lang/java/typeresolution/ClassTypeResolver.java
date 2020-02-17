@@ -193,10 +193,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         pmdClassLoader = PMDASMClassLoader.getInstance(classLoader);
     }
 
-    public ClassLoader getPmdClassLoader() {
-        return pmdClassLoader;
-    }
-
     // FUTURE ASTCompilationUnit should not be a TypeNode. Clean this up
     // accordingly.
     @Override

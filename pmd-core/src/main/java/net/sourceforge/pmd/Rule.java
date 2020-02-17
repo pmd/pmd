@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.ClassRulechainVisits;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.StringRulechainVisits;
+import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
+import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector.ClassRulechainVisits;
+import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector.StringRulechainVisits;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
@@ -294,7 +294,7 @@ public interface Rule extends PropertySource {
      * Returns the object that selects the nodes to which this rule applies.
      * The selected nodes will be handed to {@link #apply(Node, RuleContext)}.
      */
-    TargetSelectionStrategy getTargetingStrategy();
+    RuleTargetSelector getTargetSelector();
 
 
     /**
@@ -307,7 +307,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Process the given node. The nodes that are fed to this method
-     * are the nodes selected by {@link #getTargetingStrategy()}.
+     * are the nodes selected by {@link #getTargetSelector()}.
      *
      * @param target Node on which to apply the rule
      * @param ctx    Rule context, handling violations
@@ -329,7 +329,7 @@ public interface Rule extends PropertySource {
     Rule deepCopy();
 
 
-    static TargetSelectionStrategy targetNodesNamed(Collection<String> names) {
+    static RuleTargetSelector targetNodesNamed(Collection<String> names) {
         if (names.isEmpty()) {
             throw new IllegalArgumentException("Cannot visit zero nodes");
         }
@@ -337,7 +337,7 @@ public interface Rule extends PropertySource {
     }
 
 
-    static TargetSelectionStrategy targetNodesWithType(Collection<Class<? extends Node>> types) {
+    static RuleTargetSelector targetNodesWithType(Collection<Class<? extends Node>> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot visit zero types");
         }
@@ -345,7 +345,7 @@ public interface Rule extends PropertySource {
     }
 
 
-    static TargetSelectionStrategy targetRootOnly() {
+    static RuleTargetSelector targetRootOnly() {
         return ClassRulechainVisits.ROOT_ONLY;
     }
 }

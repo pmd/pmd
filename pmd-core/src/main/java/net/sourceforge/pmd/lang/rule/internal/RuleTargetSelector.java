@@ -17,9 +17,9 @@ import net.sourceforge.pmd.lang.rule.internal.RuleApplicator.ApplicatorBuilder;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator.NodeIdx;
 
 /** A strategy for selecting nodes that will be targeted by a rule. */
-public abstract class TargetSelectionStrategy {
+public abstract class RuleTargetSelector {
 
-    TargetSelectionStrategy() {
+    RuleTargetSelector() {
         // package private
     }
 
@@ -29,7 +29,7 @@ public abstract class TargetSelectionStrategy {
     abstract Iterator<? extends Node> getVisitedNodes(NodeIdx index);
 
 
-    public static final class StringRulechainVisits extends TargetSelectionStrategy {
+    public static final class StringRulechainVisits extends RuleTargetSelector {
 
         private final Set<String> visits;
 
@@ -39,7 +39,6 @@ public abstract class TargetSelectionStrategy {
 
         @Override
         void prepare(ApplicatorBuilder builder) {
-            // nothing to do
             builder.registerXPathNames(visits);
         }
 
@@ -49,9 +48,9 @@ public abstract class TargetSelectionStrategy {
         }
     }
 
-    public static final class ClassRulechainVisits extends TargetSelectionStrategy {
+    public static final class ClassRulechainVisits extends RuleTargetSelector {
 
-        public static final TargetSelectionStrategy ROOT_ONLY = new ClassRulechainVisits(Collections.singleton(RootNode.class));
+        public static final RuleTargetSelector ROOT_ONLY = new ClassRulechainVisits(Collections.singleton(RootNode.class));
 
         private final Set<Class<? extends Node>> visits;
 

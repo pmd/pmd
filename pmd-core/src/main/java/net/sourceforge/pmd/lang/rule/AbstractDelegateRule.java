@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
+import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -236,8 +236,8 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public TargetSelectionStrategy getTargetingStrategy() {
-        return rule.getTargetingStrategy();
+    public RuleTargetSelector getTargetSelector() {
+        return rule.getTargetSelector();
     }
 
     @Override

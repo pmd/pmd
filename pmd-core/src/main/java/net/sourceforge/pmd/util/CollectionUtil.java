@@ -183,6 +183,7 @@ public final class CollectionUtil {
         return map;
     }
 
+
     /**
      * Consumes all the elements of the iterator and
      * returns a list containing them. The iterator is
@@ -358,7 +359,6 @@ public final class CollectionUtil {
         }
         return union;
     }
-
 
     /**
      * Returns a set containing the given elements. No guarantee is

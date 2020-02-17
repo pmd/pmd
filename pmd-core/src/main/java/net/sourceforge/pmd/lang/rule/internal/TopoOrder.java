@@ -9,18 +9,11 @@ import static net.sourceforge.pmd.internal.util.IteratorUtil.concat;
 import static net.sourceforge.pmd.internal.util.IteratorUtil.iterate;
 import static net.sourceforge.pmd.internal.util.IteratorUtil.singletonIterator;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 
 /**
- * Represents a partial order on a type {@code <T>}. This ordering
- * generates a directed acyclic graph on instances of {@code <T>}.
- *
- * <p>This violates the contract of {@link Comparator} (total ordering)
- * so doesn't extend that interface. It couldn't be used in
- * {@link Collections#sort(List, Comparator)} anyway.
+ * Represents a partial order on a type {@code <T>}. This is used to
+ * create {@link LatticeRelation}s.
  */
 interface TopoOrder<T> {
 

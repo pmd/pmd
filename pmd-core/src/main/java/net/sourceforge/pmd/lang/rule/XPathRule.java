@@ -23,8 +23,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.internal.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
@@ -73,7 +73,7 @@ public class XPathRule extends AbstractRule {
             .build();
 
     /**
-     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} {@link #getTargetingStrategy()}.
+     * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} {@link #getTargetSelector()}.
      */
     private XPathRuleQuery xpathRuleQuery;
 
@@ -215,7 +215,7 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
+    protected @NonNull RuleTargetSelector buildTargetingStrategy() {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
         }

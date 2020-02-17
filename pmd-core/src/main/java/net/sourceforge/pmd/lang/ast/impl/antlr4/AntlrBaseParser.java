@@ -39,7 +39,7 @@ public abstract class AntlrBaseParser<T extends org.antlr.v4.runtime.Parser> imp
         }
     }
 
-    protected abstract RootNode getRootNode(T parser);
+    protected abstract AntlrBaseRootNode getRootNode(T parser);
 
     protected abstract Lexer getLexer(Reader source) throws IOException;
 

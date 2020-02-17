@@ -64,7 +64,7 @@ public class RuleApplicator {
                 continue;
             }
 
-            Iterator<? extends Node> targets = rule.getTargetingStrategy().getVisitedNodes(idx);
+            Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
             while (targets.hasNext()) {
                 Node node = targets.next();
 
@@ -97,7 +97,7 @@ public class RuleApplicator {
     public static RuleApplicator build(Iterable<? extends Rule> rules) {
         ApplicatorBuilder builder = new ApplicatorBuilder();
         for (Rule it : rules) {
-            it.getTargetingStrategy().prepare(builder);
+            it.getTargetSelector().prepare(builder);
         }
         return builder.build();
     }

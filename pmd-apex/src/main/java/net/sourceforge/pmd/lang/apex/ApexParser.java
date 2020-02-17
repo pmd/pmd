@@ -8,8 +8,9 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * Adapter for the Apex jorje parser
@@ -23,7 +24,7 @@ public class ApexParser extends AbstractParser {
     }
 
     @Override
-    public RootNode parse(String fileName, Reader source) throws ParseException {
+    public Node parse(String fileName, Reader source) throws ParseException {
         return apexParser.parse(source);
     }
 

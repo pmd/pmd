@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -28,17 +24,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
 
 public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
 
     public BrokenNullCheckRule() {
         super(ASTIfStatement.class);
-    }
-
-    @Override
-    protected @NonNull TargetSelectionStrategy buildTargetingStrategy() {
-        return Rule.targetNodesWithType(setOf(ASTIfStatement.class));
     }
 
     @Override
