@@ -167,7 +167,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
             return "EOF";
         }
         for (Map.Entry<String, Integer> e : TOKENS.get().entrySet()) {
-            if (e.getValue() == identifier) {
+            if (e.getValue().intValue() == identifier) {
                 return e.getKey();
             }
         }
@@ -180,6 +180,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
             i = TOKENS.get().size() + 1;
             TOKENS.get().put(image, i);
         }
-        this.identifier = i;
+        this.identifier = i.intValue();
     }
 }

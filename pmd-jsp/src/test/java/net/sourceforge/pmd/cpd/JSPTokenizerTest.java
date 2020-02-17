@@ -21,22 +21,6 @@ public class JSPTokenizerTest {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(code));
         tokenizer.tokenize(sourceCode, tokenEntries);
 
-        /*
-        <%--
-BSD-style license; for more info see http://pmd.sourceforge.net/license.html
---%>
-
-<%
-String nodeContent = "<% %>";
-%>
-<%
-<![cdata[
-String nodeContent = "<% %>";
-]]>
-%>
-
-         */
-
         String[] expectedTokens = new String[] {
             "<%--",
             "\n"
