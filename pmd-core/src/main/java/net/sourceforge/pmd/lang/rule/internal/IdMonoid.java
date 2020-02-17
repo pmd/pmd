@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @param <U> Domain of the operation
  */
-interface SymMonoid<@NonNull U> extends BinaryOperator<U> {
+interface IdMonoid<@NonNull U> extends BinaryOperator<U> {
 
     /**
      * Combine two U, in a way consistent with {@link #zero()}.
@@ -29,7 +29,12 @@ interface SymMonoid<@NonNull U> extends BinaryOperator<U> {
      * <pre>{@code
      *   apply(U, V) == apply(V, U)
      * }</pre>
-     * The latter property explains the choice of name ("Sym").
+     * Lastly the operation must be idempotent, because dealing
+     * with diamonds in the lattice is tricky:
+     * <pre>{@code
+     *   apply(V, V) == lift(V)
+     * }</pre>
+     * The latter property explains the choice of name ("Id").
      */
     @Override
     U apply(U u, U u2);
@@ -43,6 +48,9 @@ interface SymMonoid<@NonNull U> extends BinaryOperator<U> {
      * Transform a value of type U before performing a reduction.
      * This is to allow several monoids for the same type to cooperate,
      * in case one needs a specific implementation.
+     * <pre>
+     *     lift(V) == apply(zero(), V)
+     * </pre>
      */
     default U lift(U u) {
         return apply(zero(), u);
@@ -51,15 +59,15 @@ interface SymMonoid<@NonNull U> extends BinaryOperator<U> {
 
     /** Apply produces a new set, the union of both arguments. */
     @SuppressWarnings("unchecked")
-    static <T> SymMonoid<Set<T>> forSet() {
-        return (SymMonoid<Set<T>>) MonoidImplUtils.PSET_MONOID;
+    static <T> IdMonoid<Set<T>> forSet() {
+        return (IdMonoid<Set<T>>) MonoidImplUtils.PSET_MONOID;
     }
 
 
     /** Accumulates the right argument into the left one (mutating it). */
     @SuppressWarnings("unchecked")
-    static <T> SymMonoid<Set<T>> forMutableSet() {
-        return (SymMonoid<Set<T>>) MonoidImplUtils.MSET_MONOID;
+    static <T> IdMonoid<Set<T>> forMutableSet() {
+        return (IdMonoid<Set<T>>) MonoidImplUtils.MSET_MONOID;
     }
 
 

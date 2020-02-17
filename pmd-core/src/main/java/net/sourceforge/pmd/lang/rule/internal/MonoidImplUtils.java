@@ -19,12 +19,12 @@ final class MonoidImplUtils {
         // utility class
     }
 
-    static final SymMonoid PSET_MONOID = psetMonoid();
-    static final SymMonoid MSET_MONOID = mutableSetMonoid();
+    static final IdMonoid PSET_MONOID = psetMonoid();
+    static final IdMonoid MSET_MONOID = mutableSetMonoid();
 
     @NonNull
-    private static <T> SymMonoid<Set<T>> psetMonoid() {
-        return new SymMonoid<Set<T>>() {
+    private static <T> IdMonoid<Set<T>> psetMonoid() {
+        return new IdMonoid<Set<T>>() {
             @Override
             public Set<T> apply(Set<T> l, Set<T> r) {
                 if (l instanceof PSet) {
@@ -49,8 +49,8 @@ final class MonoidImplUtils {
     }
 
     @NonNull
-    private static <T> SymMonoid<Set<T>> mutableSetMonoid() {
-        return new SymMonoid<Set<T>>() {
+    private static <T> IdMonoid<Set<T>> mutableSetMonoid() {
+        return new IdMonoid<Set<T>>() {
             @Override
             public Set<T> apply(Set<T> l, Set<T> r) {
                 l.addAll(r);

@@ -24,8 +24,8 @@ public class LatticeRelationTest {
     public void testCustomTopo() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            SymMonoid.forSet(),
-            SymMonoid.forMutableSet(),
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             PredicateUtil.always(),
             Objects::toString
@@ -51,8 +51,8 @@ public class LatticeRelationTest {
     public void testClearing() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            SymMonoid.forSet(),
-            SymMonoid.forMutableSet(),
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             PredicateUtil.always(),
             Objects::toString
@@ -90,8 +90,8 @@ public class LatticeRelationTest {
     public void testTopoFilter() {
 
         LatticeRelation<Set<Integer>, Set<String>> lattice = new LatticeRelation<>(
-            SymMonoid.forSet(),
-            SymMonoid.forMutableSet(),
+            IdMonoid.forSet(),
+            IdMonoid.forMutableSet(),
             LatticeRelationTest.setTopoOrder(),
             // filter out sets with size 2
             // this cuts out one level of the graph
@@ -129,6 +129,41 @@ public class LatticeRelationTest {
         lattice.freezeTopo();
 
         assertEquals(setOf("4", "435", "436"), lattice.get(setOf(4))); // value "43" has been pruned
+    }
+
+
+    @Test
+    public void testDiamond() {
+
+        LatticeRelation<Set<Integer>, Set<String>> lattice =
+            new LatticeRelation<>(
+                IdMonoid.forSet(),
+                IdMonoid.forMutableSet(),
+                LatticeRelationTest.setTopoOrder(),
+                PredicateUtil.always(),
+                Objects::toString
+            );
+
+        lattice.put(setOf(1, 2), setOf("12"));
+
+        lattice.freezeTopo();
+
+        // We have
+
+        //    {1,2}
+        //    /   \
+        //  {1}   {2}
+        //    \   /
+        //     { }
+
+        // Goal is to assert, that when we ask first for the value of { },
+        // the value of every node is correctly computed, even if they're
+        // reachable from several paths
+
+        assertEquals(setOf("12"), lattice.get(emptySet()));
+        assertEquals(setOf("12"), lattice.get(setOf(1)));
+        assertEquals(setOf("12"), lattice.get(setOf(2)));
+        assertEquals(setOf("12"), lattice.get(setOf(1, 2)));
     }
 
 

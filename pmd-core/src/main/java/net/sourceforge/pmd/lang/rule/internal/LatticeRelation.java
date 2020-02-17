@@ -26,7 +26,7 @@ import org.pcollections.PSet;
  * The internal representation is a directed acyclic graph of {@code <T>},
  * built according to a {@link TopoOrder}. The value {@code <U>} associated
  * to a node is the recursive combination of the values of all its children,
- * plus its own value, as defined by a {@link SymMonoid  Monoid&lt;U&gt;}.
+ * plus its own value, as defined by a {@link IdMonoid  Monoid&lt;U&gt;}.
  *
  * <p>An instance has two states:
  * <ul>
@@ -53,7 +53,7 @@ import org.pcollections.PSet;
  * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
  *            must implement a consistent {@link Object#equals(Object) equals} and
  *            {@link Object#hashCode() hashcode} and be immutable.
- * @param <U> Type of values, must have a conformant {@link SymMonoid}
+ * @param <U> Type of values, must have a conformant {@link IdMonoid}
  */
 class LatticeRelation<T, @NonNull U> {
 
@@ -63,8 +63,8 @@ class LatticeRelation<T, @NonNull U> {
     private static final int TMP_TOPOMARK = 1;
 
     // behavior parameters for this lattice
-    private final SymMonoid<U> combine;
-    private final SymMonoid<U> accumulate;
+    private final IdMonoid<U> combine;
+    private final IdMonoid<U> accumulate;
     private final Predicate<? super T> filter;
     private final TopoOrder<T> keyOrder;
     private final Function<? super T, String> keyToString;
@@ -95,8 +95,8 @@ class LatticeRelation<T, @NonNull U> {
      *                    filter are kept.
      * @param keyToString Strategy to render keys when dumping the lattice to a graph
      */
-    LatticeRelation(SymMonoid<U> combine,
-                    SymMonoid<U> accumulate,
+    LatticeRelation(IdMonoid<U> combine,
+                    IdMonoid<U> accumulate,
                     TopoOrder<T> keyOrder,
                     Predicate<? super T> filter,
                     Function<? super T, String> keyToString) {
@@ -144,7 +144,7 @@ class LatticeRelation<T, @NonNull U> {
     }
 
     /**
-     * Returns the computed value for the given key, or the {@link SymMonoid#zero() zero}
+     * Returns the computed value for the given key, or the {@link IdMonoid#zero() zero}
      * of the {@link #combine} monoid if the key is not recorded in this lattice.
      */
     @NonNull
@@ -270,7 +270,6 @@ class LatticeRelation<T, @NonNull U> {
             }
         }
 
-
         // assign predecessors to all nodes
         // this inverts the graph
         for (int i = 0; i < n; i++) {
@@ -374,38 +373,46 @@ class LatticeRelation<T, @NonNull U> {
         private @NonNull U properVal = accumulate.zero();
         /** Cached value */
         private @Nullable U frozenVal;
+        /** Transient state */
+        private boolean isFullyComputed = false;
 
         private LNode(@NonNull T key) {
             this.key = key;
         }
 
         U computeValue() {
-            if (frozenVal == null) {
-                frozenVal = computeValIfNotSeen(new HashSet<>());
-            }
-            return frozenVal;
-        }
-
-        private U computeValIfNotSeen(Set<LNode> seen) {
-            if (seen.add(this)) {
-                if (frozenVal == null) {
-                    frozenVal = reduceSuccessors(seen);
-                }
+            if (frozenVal != null) {
                 return frozenVal;
             }
-            // otherwise, already seen, return identity element
-            return combine.zero();
+
+            return reduceSuccessors(new HashSet<>());
         }
 
         private U reduceSuccessors(Set<LNode> seen) {
+            if (frozenVal != null) {
+                return frozenVal;
+            }
+
+            isFullyComputed = true;
+
             // we use the #combine monoid here, but properVal was made from #accumulate
             // so we lift the proper val to the representation of #combine
             U val = combine.lift(properVal);
 
-            for (LNode s : succ) {
-                U vs = s.computeValIfNotSeen(seen);
-                val = combine.apply(val, vs);
+            for (LNode child : succ) {
+                if (seen.add(child)) {
+                    U vs = child.reduceSuccessors(seen);
+                    val = combine.apply(val, vs);
+                    isFullyComputed &= child.isFullyComputed;
+                } else {
+                    isFullyComputed = false;
+                }
             }
+
+            if (isFullyComputed) {
+                this.frozenVal = val;
+            }
+
             return val;
         }
 
