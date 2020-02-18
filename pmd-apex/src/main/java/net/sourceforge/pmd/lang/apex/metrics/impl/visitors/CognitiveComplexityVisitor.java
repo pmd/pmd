@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.apex.metrics.impl.visitors;
 
+import apex.jorje.data.ast.BooleanOp;
+import apex.jorje.data.ast.PrefixOp;
 import net.sourceforge.pmd.lang.apex.ast.*;
 
 /**
@@ -9,6 +11,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public static class State {
         private int complexity = 0;
         private int nestingLevel = 0;
+        private BooleanOp currentBooleanOperation = null;
 
         public double getComplexity() {
             return complexity;
@@ -20,6 +23,16 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
 
         void nestingComplexity() {
             complexity += nestingLevel;
+        }
+
+        void booleanOperation(BooleanOp op) {
+            if (currentBooleanOperation != op) {
+                if (op != null) {
+                    structureComplexity();
+                }
+
+                currentBooleanOperation = op;
+            }
         }
 
         void increaseNestingLevel() {
@@ -132,5 +145,29 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         state.decreaseNestingLevel();
 
         return data;
+    }
+
+    @Override
+    public Object visit(ASTBooleanExpression node, Object data) {
+        State state = (State) data;
+
+        BooleanOp op = node.getNode().getOp();
+        if (op == BooleanOp.AND || op == BooleanOp.OR) {
+            state.booleanOperation(op);
+        }
+
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTPrefixExpression node, Object data) {
+        State state = (State) data;
+
+        PrefixOp op = node.getNode().getOp();
+        if (op == PrefixOp.NOT) {
+            state.booleanOperation(null);
+        }
+
+        return super.visit(node, data);
     }
 }
