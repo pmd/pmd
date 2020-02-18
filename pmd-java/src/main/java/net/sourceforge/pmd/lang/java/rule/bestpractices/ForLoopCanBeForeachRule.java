@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.forkJoin;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +133,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     private Optional<String> simpleForUpdateVarName(ASTForUpdate base) {
         return NodeStream.of(base)
                          .children(ASTStatementExpressionList.class)
-                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .filter(it -> it.getNumChildren() == 1)
                          .children(ASTStatementExpression.class)
                          .children()
                          .filter(
@@ -185,10 +187,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     private Optional<String> findIterableName(ASTExpression guardCondition, String itName) {
 
 
-        if (guardCondition.jjtGetNumChildren() > 0
-            && guardCondition.jjtGetChild(0) instanceof ASTRelationalExpression) {
+        if (guardCondition.getNumChildren() > 0
+            && guardCondition.getChild(0) instanceof ASTRelationalExpression) {
 
-            ASTRelationalExpression relationalExpression = (ASTRelationalExpression) guardCondition.jjtGetChild(0);
+            ASTRelationalExpression relationalExpression = (ASTRelationalExpression) guardCondition.getChild(0);
 
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
@@ -204,28 +206,28 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                     return Optional.empty();
                 }
 
-                return guardCondition.children(ASTRelationalExpression.class)
-                                     .forkJoin(
-                                         rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
-                                         rel -> NodeStream.of(rel)
-                                                          .filterMatching(Node::getImage, "<=")
-                                                          .children(ASTAdditiveExpression.class)
-                                                          .filter(expr ->
-                                                               expr.jjtGetNumChildren() == 2
-                                                                   && expr.getOperator().equals("-")
-                                                                   && expr.children(ASTPrimaryExpression.class)
-                                                                          .children(ASTPrimaryPrefix.class)
-                                                                          .children(ASTLiteral.class)
-                                                                          .filterMatching(Node::getImage, "1")
-                                                                          .nonEmpty()
-                                                   )
+                return forkJoin(
+                    guardCondition.children(ASTRelationalExpression.class),
+                    rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
+                    rel -> NodeStream.of(rel)
+                                     .filterMatching(Node::getImage, "<=")
+                                     .children(ASTAdditiveExpression.class)
+                                     .filter(expr ->
+                                                 expr.getNumChildren() == 2
+                                                     && expr.getOperator().equals("-")
+                                                     && expr.children(ASTPrimaryExpression.class)
+                                                            .children(ASTPrimaryPrefix.class)
+                                                            .children(ASTLiteral.class)
+                                                            .filterMatching(Node::getImage, "1")
+                                                            .nonEmpty()
                                      )
-                                     .children(ASTPrimaryExpression.class)
-                                     .children(ASTPrimaryPrefix.class)
-                                     .children(ASTName.class)
-                                     .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
-                                     .firstOpt()
-                                     .map(astName -> astName.getImage().split("\\.")[0]);
+                    )
+                    .children(ASTPrimaryExpression.class)
+                    .children(ASTPrimaryPrefix.class)
+                    .children(ASTName.class)
+                    .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
+                    .firstOpt()
+                    .map(astName -> astName.getImage().split("\\.")[0]);
 
             }
         }
@@ -287,7 +289,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             return suffix.descendants(ASTExpression.class)
                          .children(ASTPrimaryExpression.class)
-                         .filter(it -> it.jjtGetNumChildren() == 1)
+                         .filter(it -> it.getNumChildren() == 1)
                          .children(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
                          .filterMatching(Node::getImage, occ.getImage())
@@ -299,8 +301,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .filterMatching(Node::getImage, arrayName)
                          .nonEmpty()
 
-                && suffix.jjtGetParent()
-                         .jjtGetParent()
+                && suffix.getParent()
+                         .getParent()
                          .children(ASTAssignmentOperator.class)
                          .isEmpty();
         }
@@ -342,16 +344,16 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                 return false;
             }
 
-            Node prefix = suffix.jjtGetParent().jjtGetChild(0);
+            Node prefix = suffix.getParent().getChild(0);
 
-            if (!(prefix instanceof ASTPrimaryPrefix) || prefix.jjtGetNumChildren() != 1
-                || !(prefix.jjtGetChild(0) instanceof ASTName)) {
+            if (!(prefix instanceof ASTPrimaryPrefix) || prefix.getNumChildren() != 1
+                || !(prefix.getChild(0) instanceof ASTName)) {
                 // it's either not a primary prefix, doesn't have children (can happen with this./super.)
                 // or first child is not a name
                 return false;
             }
 
-            String callImage = prefix.jjtGetChild(0).getImage();
+            String callImage = prefix.getChild(0).getImage();
 
             return (listName + ".get").equals(callImage);
 

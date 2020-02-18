@@ -57,7 +57,6 @@ public class Foo {
           since="3.6"
           message="Avoid using java.lang.ThreadGroup; it is not thread safe"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidthreadgroup">
         <description>
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
@@ -118,7 +117,6 @@ public class ThrDeux {
     <rule name="DoNotUseThreads"
           language="java"
           since="4.1"
-          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="To be compliant to J2EE, a webapp should not use any thread."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#donotusethreads">
@@ -162,7 +160,6 @@ public class OtherThread implements Runnable {
           since="4.3"
           message="Don't call Thread.run() explicitly, use Thread.start()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#dontcallthreadrun">
         <description>
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
@@ -348,7 +345,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
                 <value>
 <![CDATA[
 //StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@ArgumentCount = '0']]
+[PrimarySuffix/Arguments[@Size = '0']]
 [
     PrimaryPrefix[
         ./Name[@Image='notify' or ends-with(@Image,'.notify')]

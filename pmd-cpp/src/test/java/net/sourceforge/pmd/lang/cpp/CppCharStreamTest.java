@@ -15,19 +15,19 @@ public class CppCharStreamTest {
 
     @Test
     public void testContinuationUnix() throws IOException {
-        CppCharStream stream = new CppCharStream(new StringReader("a\\\nb"));
+        CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\\nb"));
         assertStream(stream, "ab");
     }
 
     @Test
     public void testContinuationWindows() throws IOException {
-        CppCharStream stream = new CppCharStream(new StringReader("a\\\r\nb"));
+        CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\\r\nb"));
         assertStream(stream, "ab");
     }
 
     @Test
     public void testBackup() throws IOException {
-        CppCharStream stream = new CppCharStream(new StringReader("a\\b\\\rc"));
+        CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\b\\\rc"));
         assertStream(stream, "a\\b\\\rc");
     }
 

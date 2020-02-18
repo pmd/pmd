@@ -46,7 +46,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  *
  * <p>The error is when one uses the value assigned within a synchronized
  * section, outside of a synchronized section.</p>
- * 
+ *
  * <pre>
  * if (x == null) // is outside of synchronized section
  *   x = new | method();
@@ -95,8 +95,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        ASTType typeNode = (ASTType) node.getResultType().jjtGetChild(0);
-        if (typeNode.jjtGetNumChildren() == 0 || !(typeNode.jjtGetChild(0) instanceof ASTReferenceType)) {
+        ASTType typeNode = (ASTType) node.getResultType().getChild(0);
+        if (typeNode.getNumChildren() == 0 || !(typeNode.getChild(0) instanceof ASTReferenceType)) {
             return super.visit(node, data);
         }
 
@@ -108,7 +108,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
         List<ASTPrimaryExpression> pel = rs.findDescendantsOfType(ASTPrimaryExpression.class);
         ASTPrimaryExpression ape = pel.get(0);
-        Node lastChild = ape.jjtGetChild(ape.jjtGetNumChildren() - 1);
+        Node lastChild = ape.getChild(ape.getNumChildren() - 1);
         String returnVariableName = null;
         if (lastChild instanceof ASTPrimaryPrefix) {
             returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
@@ -137,12 +137,12 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                             List<ASTStatementExpression> sel = is2.findDescendantsOfType(ASTStatementExpression.class);
                             if (sel.size() == 1) {
                                 ASTStatementExpression se = sel.get(0);
-                                if (se.jjtGetNumChildren() == 3) {
+                                if (se.getNumChildren() == 3) {
                                     // primaryExpression, AssignmentOperator, Expression
-                                    if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
-                                        ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
+                                    if (se.getChild(0) instanceof ASTPrimaryExpression) {
+                                        ASTPrimaryExpression pe = (ASTPrimaryExpression) se.getChild(0);
                                         if (matchName(pe, returnVariableName)) {
-                                            if (se.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                                            if (se.getChild(1) instanceof ASTAssignmentOperator) {
                                                 addViolation(data, node);
                                             }
                                         }
@@ -173,14 +173,14 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         }
 
         // verify the value with which the local variable is initialized
-        if (initializer.jjtGetNumChildren() > 0 && initializer.jjtGetChild(0) instanceof ASTExpression
-                && initializer.jjtGetChild(0).jjtGetNumChildren() > 0
-                && initializer.jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimaryExpression
-                && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0
-                && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimaryPrefix
-                && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0
-                && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
-            ASTName name = (ASTName) initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        if (initializer.getNumChildren() > 0 && initializer.getChild(0) instanceof ASTExpression
+                && initializer.getChild(0).getNumChildren() > 0
+                && initializer.getChild(0).getChild(0) instanceof ASTPrimaryExpression
+                && initializer.getChild(0).getChild(0).getNumChildren() > 0
+                && initializer.getChild(0).getChild(0).getChild(0) instanceof ASTPrimaryPrefix
+                && initializer.getChild(0).getChild(0).getChild(0).getNumChildren() > 0
+                && initializer.getChild(0).getChild(0).getChild(0).getChild(0) instanceof ASTName) {
+            ASTName name = (ASTName) initializer.getChild(0).getChild(0).getChild(0).getChild(0);
             if (name == null || !volatileFields.contains(name.getImage())) {
                 return false;
             }
@@ -201,8 +201,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 continue;
             }
             if (expression instanceof ASTStatementExpression) {
-                if (expression.jjtGetNumChildren() > 2 && expression.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                    ASTName value = expression.jjtGetChild(2).getFirstDescendantOfType(ASTName.class);
+                if (expression.getNumChildren() > 2 && expression.getChild(1) instanceof ASTAssignmentOperator) {
+                    ASTName value = expression.getChild(2).getFirstDescendantOfType(ASTName.class);
                     if (value == null || !volatileFields.contains(value.getImage())) {
                         return false;
                     }
@@ -218,11 +218,11 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (finder.size() > 1) {
             ASTPrimaryExpression nullStmt = findNonVariableStmt(varname, finder.get(0), finder.get(1));
             if (nullStmt != null) {
-                if (nullStmt.jjtGetNumChildren() == 1 && nullStmt.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
-                    ASTPrimaryPrefix pp2 = (ASTPrimaryPrefix) nullStmt.jjtGetChild(0);
-                    if (pp2.jjtGetNumChildren() == 1 && pp2.jjtGetChild(0) instanceof ASTLiteral) {
-                        ASTLiteral lit = (ASTLiteral) pp2.jjtGetChild(0);
-                        if (lit.jjtGetNumChildren() == 1 && lit.jjtGetChild(0) instanceof ASTNullLiteral) {
+                if (nullStmt.getNumChildren() == 1 && nullStmt.getChild(0) instanceof ASTPrimaryPrefix) {
+                    ASTPrimaryPrefix pp2 = (ASTPrimaryPrefix) nullStmt.getChild(0);
+                    if (pp2.getNumChildren() == 1 && pp2.getChild(0) instanceof ASTLiteral) {
+                        ASTLiteral lit = (ASTLiteral) pp2.getChild(0);
+                        if (lit.getNumChildren() == 1 && lit.getChild(0) instanceof ASTNullLiteral) {
                             return true;
                         }
                     }
@@ -237,7 +237,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
      * Sort out if apeLeft or apeRight are variable with the provided
      * 'variableName'.
      * </p>
-     * 
+     *
      * @param variableName
      * @param apeLeft
      * @param apeRight
@@ -255,8 +255,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     }
 
     private boolean matchName(ASTPrimaryExpression ape, String name) {
-        if (ape.jjtGetNumChildren() == 1 && ape.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
-            ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ape.jjtGetChild(0);
+        if (ape.getNumChildren() == 1 && ape.getChild(0) instanceof ASTPrimaryPrefix) {
+            ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ape.getChild(0);
             String name2 = getNameFromPrimaryPrefix(pp);
             if (name2 != null && name2.equals(name)) {
                 return true;
@@ -266,8 +266,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     }
 
     private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
-        if (pp.jjtGetNumChildren() == 1 && pp.jjtGetChild(0) instanceof ASTName) {
-            return ((ASTName) pp.jjtGetChild(0)).getImage();
+        if (pp.getNumChildren() == 1 && pp.getChild(0) instanceof ASTName) {
+            return ((ASTName) pp.getChild(0)).getImage();
         }
         return null;
     }

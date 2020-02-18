@@ -22,6 +22,13 @@
                 </configuration>
             </plugin>
 
+
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -32,9 +39,10 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                                    <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="lang-name" value="Modelica" />
+                                    <property name="lang-terse-name" value="modelica" />
                                 </ant>
                             </target>
                         </configuration>
@@ -69,7 +77,16 @@
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>

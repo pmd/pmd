@@ -30,14 +30,14 @@ public class RuleTagChecker {
 
     private static final Pattern RULE_TAG = Pattern.compile("\\{%\\s*rule\\s+\"(.*?)\"\\s*");
     private static final Pattern RULE_REFERENCE = Pattern.compile("(\\w+)\\/(\\w+)\\/(\\w+)");
-    
+
     private final Path pagesDirectory;
     private final List<String> issues = new ArrayList<>();
     private final Map<Path, Set<String>> rulesCache = new HashMap<>();
 
     public RuleTagChecker(Path rootDirectory) {
         final Path pagesDirectory = rootDirectory.resolve("docs/pages");
-        
+
         if (!Files.isDirectory(pagesDirectory)) {
             LOG.severe("can't check rule tags, didn't find \"docs/pages\" directory at: " + pagesDirectory);
             System.exit(1);

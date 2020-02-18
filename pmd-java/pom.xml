@@ -52,17 +52,18 @@
                     <execution>
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
-                                </ant>
-                            </target>
-                        </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc-visitor+">
+                                    <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="lang-name" value="Java" />
+                                    <property name="lang-terse-name" value="java" />
+                                </ant>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -79,6 +80,17 @@
                         <configuration>
                             <sources>
                                 <source>${project.build.directory}/generated-sources/javacc</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-kotlin-test-sources</id>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/test/kotlin</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -143,18 +155,18 @@
             <artifactId>slf4j-api</artifactId>
             <scope>test</scope>
         </dependency>
-	   <dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-api</artifactId>
-		<version>2.12.1</version>
-		<scope>test</scope>
-	  </dependency>
-	  <dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.12.1</version>
-		<scope>test</scope>
-	  </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.12.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.12.1</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

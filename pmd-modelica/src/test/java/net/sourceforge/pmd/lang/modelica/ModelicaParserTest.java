@@ -4,21 +4,16 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 
 public class ModelicaParserTest {
     @Test
     public void testParsingGrapgical() {
-        ASTStoredDefinition node = ModelicaLoader.parse("ParserTestGraphical.mo");
-        Assert.assertNotNull(node);
+        ModelicaParsingHelper.DEFAULT.parseResource("ParserTestGraphical.mo");
     }
 
     @Test
     public void testParsingTextual() {
-        ASTStoredDefinition node = ModelicaLoader.parse("ParserTestTextual.mo");
-        Assert.assertNotNull(node);
+        ModelicaParsingHelper.DEFAULT.parseResource("ParserTestTextual.mo");
     }
 }

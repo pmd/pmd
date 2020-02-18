@@ -18,16 +18,18 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameters(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    public int getParameterCount() {
+    public int size() {
         final List<ASTFormalParameter> parameters = findChildrenOfType(ASTFormalParameter.class);
         return !parameters.isEmpty() && parameters.get(0).isExplicitReceiverParameter()
                ? parameters.size() - 1 : parameters.size();
+    }
+
+    /**
+     * @deprecated for removal. Use {@link #size()} instead.
+     */
+    @Deprecated
+    public int getParameterCount() {
+        return size();
     }
 
     @Override

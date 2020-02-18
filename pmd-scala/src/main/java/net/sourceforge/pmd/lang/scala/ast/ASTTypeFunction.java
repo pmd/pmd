@@ -13,7 +13,7 @@ public class ASTTypeFunction extends AbstractScalaNode<Type.Function> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

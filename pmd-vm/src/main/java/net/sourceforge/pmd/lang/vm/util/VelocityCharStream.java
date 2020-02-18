@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 /**
@@ -36,8 +36,10 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 /**
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (without unicode processing).
+ *
+ * @deprecated Will be removed, replaced with SimpleCharStream
  */
-
+@Deprecated
 public final class VelocityCharStream implements CharStream {
     public static final boolean STATIC_FLAG = false;
     int bufsize;
@@ -266,24 +268,6 @@ public final class VelocityCharStream implements CharStream {
         return c;
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public int getColumn() {
-        return bufcolumn[bufpos];
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    @Override
-    public int getLine() {
-        return bufline[bufpos];
-    }
-
     @Override
     public int getEndColumn() {
         return bufcolumn[bufpos];
@@ -392,16 +376,10 @@ public final class VelocityCharStream implements CharStream {
         return ret;
     }
 
-    @Override
-    public void Done() {
-        buffer = null;
-        bufline = null;
-        bufcolumn = null;
-    }
 
     /**
      * Method to adjust line and column numbers for the start of a token.<BR>
-     * 
+     *
      * @param newLine
      * @param newCol
      */

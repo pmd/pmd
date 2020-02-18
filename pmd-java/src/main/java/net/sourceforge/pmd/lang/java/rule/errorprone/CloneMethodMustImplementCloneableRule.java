@@ -46,14 +46,14 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
         }
 
         // From this point on, this is a best effort, the auxclasspath is incomplete.
-        
+
         // TODO : Should we really care about this?
         // Shouldn't the type resolver / symbol table report missing classes and the user
         // know results are dependent on running under proper arguments?
         final ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
         if (impl != null) {
-            for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-                final Node child = impl.jjtGetChild(ix);
+            for (int ix = 0; ix < impl.getNumChildren(); ix++) {
+                final Node child = impl.getChild(ix);
 
                 if (child.getClass() != ASTClassOrInterfaceType.class) {
                     continue;
@@ -70,8 +70,8 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
             }
         }
 
-        if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
-            final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
+        if (node.getNumChildren() != 0 && node.getChild(0) instanceof ASTExtendsList) {
+            final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.getChild(0).getChild(0);
             final Class<?> clazz = type.getType();
             if (clazz != null) {
                 return Cloneable.class.isAssignableFrom(clazz);
@@ -141,7 +141,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
     /**
      * Determines all the class/interface declarations inside this compilation
      * unit, which implement Cloneable
-     * 
+     *
      * @param currentClass
      *            the node of the class, that is currently analyzed (inside this
      *            compilation unit)

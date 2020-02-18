@@ -20,18 +20,12 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTMethodDeclarator(JavaParser p, int id) {
-        super(p, id);
-    }
-
     /**
      * @deprecated Use {@link ASTMethodDeclaration#getArity()}
      */
     @Deprecated
     public int getParameterCount() {
-        return getFirstChildOfType(ASTFormalParameters.class).getParameterCount();
+        return getFirstChildOfType(ASTFormalParameters.class).size();
     }
 
     /**

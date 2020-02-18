@@ -11,13 +11,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -84,15 +84,15 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         boolean result = suppresses(node, rule);
 
         if (!result && node instanceof ASTCompilationUnit) {
-            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = suppresses(node.jjtGetChild(i), rule);
+            for (int i = 0; !result && i < node.getNumChildren(); i++) {
+                result = suppresses(node.getChild(i), rule);
             }
         }
         if (!result) {
-            Node parent = node.jjtGetParent();
+            Node parent = node.getParent();
             while (!result && parent != null) {
                 result = suppresses(parent, rule);
-                parent = parent.jjtGetParent();
+                parent = parent.getParent();
             }
         }
         return result;
@@ -101,11 +101,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
     private void setClassNameFrom(JavaNode node) {
         String qualifiedName = null;
 
-        if (node.getScope() instanceof ClassScope) {
+        if (node instanceof ASTAnyTypeDeclaration && node.getScope() instanceof ClassScope) {
             qualifiedName = ((ClassScope) node.getScope()).getClassName();
         }
 
-        for (AbstractAnyTypeDeclaration parent : node.getParentsOfType(AbstractAnyTypeDeclaration.class)) {
+        for (ASTAnyTypeDeclaration parent : node.getParentsOfType(ASTAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
             if (qualifiedName == null) {
                 qualifiedName = clsName;
@@ -169,7 +169,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         } else if (node instanceof ASTLocalVariableDeclaration) {
             variableName = getVariableNames((ASTLocalVariableDeclaration) node);
         } else if (node instanceof ASTVariableDeclarator) {
-            variableName = node.jjtGetChild(0).getImage();
+            variableName = node.getChild(0).getImage();
         } else if (node instanceof ASTVariableDeclaratorId) {
             variableName = node.getImage();
         } else if (node instanceof ASTFormalParameter) {

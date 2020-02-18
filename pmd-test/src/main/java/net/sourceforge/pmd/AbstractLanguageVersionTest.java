@@ -136,12 +136,31 @@ public class AbstractLanguageVersionTest {
         }
     }
 
+    @Test
+    public void testVersionsAreDistinct() {
+        if (expected == null) {
+            return;
+        }
+
+        Language lang = expected.getLanguage();
+
+        int count = 0;
+        for (LanguageVersion lv : lang.getVersions()) {
+            if (lv.equals(expected)) {
+                count++;
+            }
+        }
+
+        assertEquals("Expected exactly one occurrence of " + expected
+                         + " in the language versions of its language", 1, count);
+    }
+
     private void assertRulesetsAndCategoriesProperties(ResourceLoader rl, Properties props)
             throws IOException, RuleSetNotFoundException {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
-        RuleSetFactory factory = new RuleSetFactory();
+        RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
 
         if (rulesetFilenames.trim().isEmpty()) {
             return;

@@ -62,9 +62,36 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public NodeStream<T> filter(Predicate<? super T> predicate) {
+    public NodeStream<T> filter(Predicate<? super @NonNull T> predicate) {
         return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.filter(predicate)));
     }
+
+    @Override
+    public <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
+        return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.isInstance(rClass)));
+    }
+
+    @Override
+    public DescendantNodeStream<Node> descendants() {
+        return flatMapDescendants(Node::descendants);
+    }
+
+    @Override
+    public DescendantNodeStream<Node> descendantsOrSelf() {
+        return flatMapDescendants(Node::descendantsOrSelf);
+    }
+
+    @Override
+    public <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
+        return flatMapDescendants(node -> node.descendants(rClass));
+    }
+
+
+    @NonNull
+    protected <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<T, DescendantNodeStream<R>> mapper) {
+        return new DescendantMapping<>(this, mapper);
+    }
+
 
     @Override
     public void forEach(Consumer<? super T> action) {
@@ -78,13 +105,13 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public NodeStream<T> drop(int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
         return n == 0 ? this : mapIter(iter -> IteratorUtil.drop(iter, n));
     }
 
     @Override
     public NodeStream<T> take(int maxSize) {
-        AssertionUtil.assertArgNonNegative(maxSize);
+        AssertionUtil.requireNonNegative("maxSize", maxSize);
         return maxSize == 0 ? NodeStream.empty() : mapIter(iter -> IteratorUtil.take(iter, maxSize));
     }
 
@@ -190,37 +217,19 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public NodeStream<T> cached() {
-        return new IteratorBasedNStream<T>() {
-
-            private List<T> cache;
-
-            @Override
-            public Iterator<T> iterator() {
-                return toList().iterator();
-            }
-
-            @Override
-            public int count() {
-                return toList().size();
-            }
-
-            @Override
-            public List<T> toList() {
-                if (cache == null) {
-                    cache = IteratorBasedNStream.this.toList();
-                }
-                return cache;
-            }
-
-            @Override
-            public String toString() {
-                return "CachedStream[" + IteratorBasedNStream.this + "]";
-            }
-        };
+        return StreamImpl.fromNonNullList(toList());
     }
 
-    private <R extends Node> IteratorMapping<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {
-        return new IteratorMapping<R>(fun);
+    protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {
+        return new IteratorMapping<>(fun);
+    }
+
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " ["
+            + toStream().map(Objects::toString).collect(Collectors.joining(", "))
+            + "]";
     }
 
     private class IteratorMapping<S extends Node> extends IteratorBasedNStream<S> {
@@ -239,8 +248,35 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         }
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [" + toStream().map(Objects::toString).collect(Collectors.joining(", ")) + "]";
+
+    private static class DescendantMapping<T extends Node, S extends Node> extends IteratorBasedNStream<S> implements DescendantNodeStream<S> {
+
+        private final Function<T, DescendantNodeStream<S>> fun;
+        private final TreeWalker walker;
+        private final IteratorBasedNStream<T> upstream;
+
+
+        private DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun, TreeWalker walker) {
+            this.fun = fun;
+            this.walker = walker;
+            this.upstream = upstream;
+        }
+
+        DescendantMapping(IteratorBasedNStream<T> upstream, Function<T, DescendantNodeStream<S>> fun) {
+            this(upstream, fun, TreeWalker.DEFAULT);
+        }
+
+        @Override
+        public Iterator<S> iterator() {
+            return IteratorUtil.flatMap(upstream.iterator(),
+                                        fun.andThen(walker::apply).andThen(NodeStream::iterator));
+        }
+
+        @Override
+        public DescendantNodeStream<S> crossFindBoundaries(boolean cross) {
+            return walker.isCrossFindBoundaries() == cross
+                   ? this
+                   : new DescendantMapping<>(upstream, fun, walker.crossFindBoundaries(cross));
+        }
     }
 }

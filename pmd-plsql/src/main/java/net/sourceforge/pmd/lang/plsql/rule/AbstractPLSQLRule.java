@@ -23,8 +23,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     public AbstractPLSQLRule() {
         super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-        // Enable Type Resolution on PLSQL Rules by default
-        super.setTypeResolution(true);
     }
 
     @Override
@@ -93,11 +91,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
 
     @Override
-    public final boolean dependsOn(AstProcessingStage<?> stage) {
+    public boolean dependsOn(AstProcessingStage<?> stage) {
         if (!(stage instanceof PlsqlProcessingStage)) {
             throw new IllegalArgumentException("Processing stage wasn't a " + PLSQLLanguageModule.NAME + " one: " + stage);
         }
-        return stage != PlsqlProcessingStage.DFA || isDfa();
+        return stage != PlsqlProcessingStage.DFA;
     }
 
 
@@ -106,7 +104,9 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      */
     @Override
     public Object visit(PLSQLNode node, Object data) {
-        node.childrenAccept(this, data);
+        for (PLSQLNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
         return null;
     }
 

@@ -26,6 +26,7 @@ import org.w3c.dom.NodeList;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
@@ -40,6 +41,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@InternalApi
+@Deprecated
 public class RuleFactory {
 
     private static final Logger LOG = Logger.getLogger(RuleFactory.class.getName());
@@ -57,7 +60,7 @@ public class RuleFactory {
     private static final String DESCRIPTION = "description";
     private static final String PROPERTY = "property";
     private static final String CLASS = "class";
-    
+
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
     private final ResourceLoader resourceLoader;
@@ -168,10 +171,6 @@ public class RuleFactory {
         builder.message(ruleElement.getAttribute(MESSAGE));
         builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
         builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
-        builder.usesDFA(hasAttributeSetTrue(ruleElement, "dfa"));
-        builder.usesTyperesolution(hasAttributeSetTrue(ruleElement, "typeResolution"));
-        // Disabled until it's safe
-        // builder.usesMultifile(hasAttributeSetTrue(ruleElement, "multifile"));
 
         Element propertiesElement = null;
 
@@ -337,7 +336,7 @@ public class RuleFactory {
             Attr a = (Attr) atts.item(i);
             values.put(PropertyDescriptorField.getConstant(a.getName()), a.getValue());
         }
-        
+
         if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
             NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
             if (children.getLength() == 1) {

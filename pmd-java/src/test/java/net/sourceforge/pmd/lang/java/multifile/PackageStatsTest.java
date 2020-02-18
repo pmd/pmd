@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.multifile;
 
-import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -23,21 +22,21 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
+import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 /**
  * Tests functionality of PackageStats
  *
  * @author Clément Fournier
  */
-public class PackageStatsTest {
+public class PackageStatsTest extends BaseNonParserTest {
 
     private PackageStats pack;
 
 
     @Before
     public void setUp() {
-        pack = PackageStats.INSTANCE;
-        pack.reset();
+        pack = new PackageStats();
     }
 
 
@@ -58,7 +57,7 @@ public class PackageStatsTest {
         final String TEST = "package org.foo; class Boo{ "
             + "public void foo(){}}";
 
-        ASTMethodOrConstructorDeclaration node = getOrderedNodes(ASTMethodDeclaration.class, TEST).get(0);
+        ASTMethodOrConstructorDeclaration node = java.getNodes(ASTMethodDeclaration.class, TEST).get(0);
 
         JavaOperationQualifiedName qname = node.getQualifiedName();
         JavaOperationSignature signature = JavaOperationSignature.buildFor(node);
@@ -76,7 +75,7 @@ public class PackageStatsTest {
         final String TEST = "package org.foo; class Boo{ "
             + "public String bar;}";
 
-        ASTFieldDeclaration node = getOrderedNodes(ASTFieldDeclaration.class, TEST).get(0);
+        ASTFieldDeclaration node = java.getNodes(ASTFieldDeclaration.class, TEST).get(0);
 
         JavaTypeQualifiedName qname = (JavaTypeQualifiedName) QualifiedNameFactory.ofString("org.foo.Boo");
         String fieldName = "bar";

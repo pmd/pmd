@@ -15,28 +15,24 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isAnonymousInnerClass();
-    }
-
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); i++) {
+            if (getChild(i) instanceof ASTAnnotation) {
+                ASTAnnotation a = (ASTAnnotation) getChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+
+    @Override
+    public boolean isFindBoundary() {
+        // TODO remove from java-grammar
+        return isAnonymousInnerClass();
     }
 
     @Override
@@ -52,10 +48,10 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclarat
 
 
     public boolean isAnonymousInnerClass() {
-        return jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression;
+        return getParent().getParent() instanceof ASTAllocationExpression;
     }
 
     public boolean isEnumChild() {
-        return jjtGetParent().jjtGetParent() instanceof ASTEnumConstant;
+        return getParent().getParent() instanceof ASTEnumConstant;
     }
 }

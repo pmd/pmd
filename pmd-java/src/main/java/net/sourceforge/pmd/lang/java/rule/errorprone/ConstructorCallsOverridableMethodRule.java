@@ -220,21 +220,21 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         public static MethodInvocation getMethod(ASTPrimaryExpression node) {
             MethodInvocation meth = null;
-            int i = node.jjtGetNumChildren();
+            int i = node.getNumChildren();
             if (i > 1) {
                 // should always be at least 2, probably can eliminate this check
                 // start at end which is guaranteed, work backwards
-                Node lastNode = node.jjtGetChild(i - 1);
+                Node lastNode = node.getChild(i - 1);
                 // could be ASTExpression for instance 'a[4] = 5';
-                if (lastNode.jjtGetNumChildren() == 1 && lastNode.jjtGetChild(0) instanceof ASTArguments) {
+                if (lastNode.getNumChildren() == 1 && lastNode.getChild(0) instanceof ASTArguments) {
                     // start putting method together
                     // System.out.println("Putting method together now");
                     List<String> varNames = new ArrayList<>();
                     // look in JLS for better name here
                     List<String> packagesAndClasses = new ArrayList<>();
                     String methodName = null;
-                    ASTArguments args = (ASTArguments) lastNode.jjtGetChild(0);
-                    int numOfArguments = args.getArgumentCount();
+                    ASTArguments args = (ASTArguments) lastNode.getChild(0);
+                    int numOfArguments = args.size();
                     List<String> argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(args);
                     boolean superFirst = false;
                     int thisIndex = -1;
@@ -252,7 +252,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         // ASTArguments)
                         // super is an ASTPrimaryPrefix with a non-null image
                         for (int x = 0; x < i - 1; x++) {
-                            Node child = node.jjtGetChild(x);
+                            Node child = node.getChild(x);
                             // check suffix type match
                             if (child instanceof ASTPrimarySuffix) {
                                 ASTPrimarySuffix child2 = (ASTPrimarySuffix) child;
@@ -260,7 +260,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 // getNameFromSuffix((ASTPrimarySuffix)child);
                                 // System.out.println("found name suffix of : "
                                 // + name);
-                                if (child2.getImage() == null && child2.jjtGetNumChildren() == 0) {
+                                if (child2.getImage() == null && child2.getNumChildren() == 0) {
                                     thisIndex = x;
                                     break;
                                 }
@@ -309,7 +309,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // all variables or method
                             // System.out.println("super first");
                             FIRSTNODE: {
-                                ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+                                ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.getChild(0);
                                 String name = child.getImage(); // special case
                                 if (i == 2) { // last named node = method name
                                     methodName = name;
@@ -321,7 +321,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             }
                             OTHERNODES: { // variables
                                 for (int x = 1; x < i - 1; x++) {
-                                    Node child = node.jjtGetChild(x);
+                                    Node child = node.getChild(x);
                                     ASTPrimarySuffix ps = (ASTPrimarySuffix) child;
                                     if (!ps.isArguments()) {
                                         String name = ((ASTPrimarySuffix) child).getImage();
@@ -339,7 +339,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // not super call
                             FIRSTNODE: {
                                 if (thisIndex == 1) { // qualifiers in node 0
-                                    ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+                                    ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.getChild(0);
                                     String toParse = getNameFromPrefix(child);
                                     // System.out.println("parsing for
                                     // class/package names in : " + toParse);
@@ -356,7 +356,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 // this is at 1, the node 0 contains qualifiers
                                 for (int x = thisIndex + 1; x < i - 1; x++) {
                                     // everything after this is var name or method name
-                                    ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
+                                    ASTPrimarySuffix child = (ASTPrimarySuffix) node.getChild(x);
                                     if (!child.isArguments()) {
                                         // skip the () of method calls
                                         String name = child.getImage();
@@ -378,7 +378,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         FIRSTNODE: {
                             // variable names are in the prefix + the
                             // first method call [a.b.c.x()]
-                            ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
+                            ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.getChild(0);
                             String toParse = getNameFromPrefix(child);
                             // System.out.println("parsing for var names in : "
                             // + toParse);
@@ -404,7 +404,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // other methods called in this statement
                             // are grabbed here
                             for (int x = 1; x < i - 1; x++) {
-                                ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
+                                ASTPrimarySuffix child = (ASTPrimarySuffix) node.getChild(x);
                                 if (!child.isArguments()) {
                                     String name = child.getImage();
                                     if (x == i - 2) {
@@ -455,7 +455,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
                 ASTArguments aa = l.get(0);
-                count = aa.getArgumentCount();
+                count = aa.size();
                 argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(aa);
             }
             name = eci.getImage();
@@ -949,8 +949,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * Adds all methods called on this instance from within this Node.
      */
     private static void addCalledMethodsOfNode(Node node, List<MethodInvocation> calledMethods, String className) {
-        List<ASTPrimaryExpression> expressions = new ArrayList<>();
-        node.findDescendantsOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
+        List<ASTPrimaryExpression> expressions = node.findDescendantsOfType(ASTPrimaryExpression.class,
+                !(node instanceof AccessNode));
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
@@ -971,8 +971,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      *         name to the actual method being called.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
-        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0).jjtGetNumChildren() > 0
-                && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
+        if (node.getNumChildren() > 0 && node.getChild(0).getNumChildren() > 0
+                && node.getChild(0).getChild(0) instanceof ASTLiteral) {
             return null;
         }
         MethodInvocation meth = MethodInvocation.getMethod(node);
@@ -1010,8 +1010,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private static String getNameFromPrefix(ASTPrimaryPrefix node) {
         String name = null;
         // should only be 1 child, if more I need more knowledge
-        if (node.jjtGetNumChildren() == 1) { // safety check
-            Node nnode = node.jjtGetChild(0);
+        if (node.getNumChildren() == 1) { // safety check
+            Node nnode = node.getChild(0);
             if (nnode instanceof ASTName) {
                 // just as easy as null check and it
                 // should be an ASTName anyway
@@ -1027,9 +1027,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
-                if (type.jjtGetChild(0) instanceof ASTPrimitiveType) {
-                    parameterTypes.add(type.jjtGetChild(0).getImage());
-                } else if (type.jjtGetChild(0) instanceof ASTReferenceType) {
+                if (type.getChild(0) instanceof ASTPrimitiveType) {
+                    parameterTypes.add(type.getChild(0).getImage());
+                } else if (type.getChild(0) instanceof ASTReferenceType) {
                     parameterTypes.add("ref");
                 } else {
                     parameterTypes.add("<unkown>");
@@ -1043,13 +1043,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         List<String> argumentTypes = new ArrayList<>();
         ASTArgumentList argumentList = args.getFirstChildOfType(ASTArgumentList.class);
         if (argumentList != null) {
-            for (int a = 0; a < argumentList.jjtGetNumChildren(); a++) {
-                Node expression = argumentList.jjtGetChild(a);
+            for (int a = 0; a < argumentList.getNumChildren(); a++) {
+                Node expression = argumentList.getChild(a);
                 ASTPrimaryPrefix arg = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 String type = "<unknown>";
-                if (arg != null && arg.jjtGetNumChildren() > 0) {
-                    if (arg.jjtGetChild(0) instanceof ASTLiteral) {
-                        ASTLiteral lit = (ASTLiteral) arg.jjtGetChild(0);
+                if (arg != null && arg.getNumChildren() > 0) {
+                    if (arg.getChild(0) instanceof ASTLiteral) {
+                        ASTLiteral lit = (ASTLiteral) arg.getChild(0);
                         if (lit.isCharLiteral()) {
                             type = "char";
                         } else if (lit.isFloatLiteral()) {
@@ -1058,15 +1058,15 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             type = "int";
                         } else if (lit.isStringLiteral()) {
                             type = "String";
-                        } else if (lit.jjtGetNumChildren() > 0 && lit.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                        } else if (lit.getNumChildren() > 0 && lit.getChild(0) instanceof ASTBooleanLiteral) {
                             type = "boolean";
                         } else if (lit.isDoubleLiteral()) {
                             type = "double";
                         } else if (lit.isLongLiteral()) {
                             type = "long";
                         }
-                    } else if (arg.jjtGetChild(0) instanceof ASTName) {
-                        // ASTName n = (ASTName)arg.jjtGetChild(0);
+                    } else if (arg.getChild(0) instanceof ASTName) {
+                        // ASTName n = (ASTName)arg.getChild(0);
                         type = "ref";
                     }
                 }

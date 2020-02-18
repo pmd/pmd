@@ -24,10 +24,6 @@ public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImp
         super(id);
     }
 
-    ASTMultipleDefinitionImportClause(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -38,8 +34,8 @@ public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImp
         super.jjtClose();
         importFrom = getFirstChildOfType(ASTName.class);
         ASTImportList importList = getFirstChildOfType(ASTImportList.class);
-        for (int i = 0; i < importList.jjtGetNumChildren(); ++i) {
-            ASTSimpleName namePart = (ASTSimpleName) importList.jjtGetChild(i);
+        for (int i = 0; i < importList.getNumChildren(); ++i) {
+            ASTSimpleName namePart = (ASTSimpleName) importList.getChild(i);
             importedNames.add(namePart.getImage());
         }
     }

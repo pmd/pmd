@@ -26,7 +26,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
     /**
      * Sets the possible options for the C++ tokenizer.
-     * 
+     *
      * @param properties
      *            the properties
      * @see #OPTION_SKIP_BLOCKS
@@ -65,7 +65,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
                     filtered.append(line);
                 }
                 // always add a new line to keep the line-numbering
-                filtered.append(PMD.EOL); 
+                filtered.append(PMD.EOL);
             }
             return filtered.toString();
         }

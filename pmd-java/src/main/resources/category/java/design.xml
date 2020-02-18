@@ -13,7 +13,6 @@ Rules that help you discover design issues.
           language="java"
           since="4.2"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
@@ -200,15 +199,15 @@ public void bar() {
         <description>
 <![CDATA[
 Avoid throwing NullPointerExceptions manually. These are confusing because most people will assume that the
-virtual machine threw it.  To avoid a method being called with a null parameter, you may consider 
-using an IllegalArgumentException instead, making it clearly seen as a programmer-initiated exception. 
+virtual machine threw it.  To avoid a method being called with a null parameter, you may consider
+using an IllegalArgumentException instead, making it clearly seen as a programmer-initiated exception.
 However, there are better ways to handle this:
 
 >*Effective Java, 3rd Edition, Item 72: Favor the use of standard exceptions*
 >
->Arguably, every erroneous method invocation boils down to an illegal argument or state, 
-but other exceptions are standardly used for certain kinds of illegal arguments and states. 
-If a caller passes null in some parameter for which null values are prohibited, convention dictates that 
+>Arguably, every erroneous method invocation boils down to an illegal argument or state,
+but other exceptions are standardly used for certain kinds of illegal arguments and states.
+If a caller passes null in some parameter for which null values are prohibited, convention dictates that
 NullPointerException be thrown rather than IllegalArgumentException.
 
 To implement that, you are encouraged to use `java.util.Objects.requireNonNull()`
@@ -219,7 +218,7 @@ Your parameter validation could thus look like the following:
 ```
 public class Foo {
     private String exampleValue;
-      
+
     void setExampleValue(String exampleValue) {
       // check, throw and assignment in a single standard call
       this.exampleValue = Objects.requireNonNull(exampleValue, "exampleValue must not be null!");
@@ -254,7 +253,6 @@ public class Foo {
           since="1.8"
           message="Avoid throwing raw exception types."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingrawexceptiontypes">
         <description>
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
@@ -295,7 +293,6 @@ public class Foo {
           language="java"
           message="A method or constructor should not explicitly declare unchecked exceptions in its ''throws'' clause"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
 A method or constructor should not explicitly declare unchecked exceptions in its
@@ -405,7 +402,7 @@ void bar() {
           class="net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#couplingbetweenobjects">
         <description>
-This rule counts the number of unique attributes, local variables, and return types within an object. 
+This rule counts the number of unique attributes, local variables, and return types within an object.
 A number higher than the specified threshold can indicate a high degree of coupling.
         </description>
         <priority>3</priority>
@@ -522,7 +519,6 @@ public class DataClass {
 
     <rule name="DoNotExtendJavaLangError"
           language="java"
-          typeResolution="true"
           since="4.0"
           message="Exceptions should not extend java.lang.Error"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -583,7 +579,7 @@ public void bar() {
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveclasslength">
         <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
+Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more manageable and ripe for reuse.
         </description>
@@ -615,8 +611,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveImportsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveimports">
         <description>
-A high number of imports can indicate a high degree of coupling within an object. This rule 
-counts the number of unique imports and reports a violation if the count is above the 
+A high number of imports can indicate a high degree of coupling within an object. This rule
+counts the number of unique imports and reports a violation if the count is above the
 user-specified threshold.
         </description>
         <priority>3</priority>
@@ -639,7 +635,7 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessivemethodlength">
         <description>
 When methods are excessively long this usually indicates that the method is doing more than its
-name/signature might suggest. They also become challenging for others to digest since excessive 
+name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
         </description>
@@ -672,7 +668,7 @@ public void addPerson(      // too many arguments liable to be mixed up
 
     . . . .
 }
- 
+
 public void addPerson(      // preferred approach
     Date birthdate, BodyMeasurements measurements, int ssn) {
 
@@ -827,7 +823,7 @@ public class Foo {
         // a constructor call, not a method call.
         D d = new D();
         // this method call is ok, because we have create the new instance of D locally.
-        d.doSomethingElse(); 
+        d.doSomethingElse();
     }
 }
 ]]>
@@ -877,7 +873,7 @@ public boolean bar(int a, int b) {
           class="net.sourceforge.pmd.lang.java.rule.design.LoosePackageCouplingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#loosepackagecoupling">
         <description>
-Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
+Avoid using classes from the configured package hierarchy outside of the package hierarchy,
 except when using one of the configured allowed classes.
         </description>
         <priority>3</priority>
@@ -997,7 +993,6 @@ public class Foo {
           since="1.2"
           message="A method/constructor should not explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsExceptionRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#signaturedeclarethrowsexception">
         <description>
 A method/constructor shouldn't explicitly throw the generic java.lang.Exception, since it
@@ -1073,7 +1068,6 @@ public class Foo {
           since="3.6"
           message="assertTrue(!expr) can be replaced by assertFalse(expr)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
         <description>
 Avoid negation in an assertTrue or assertFalse test.
@@ -1299,7 +1293,7 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
+possibly through grouping related fields in new objects.  For example, a class with individual
 city/state/zip fields could park them within a single Address field.
         </description>
         <priority>3</priority>

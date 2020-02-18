@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 
 /**
@@ -16,19 +15,13 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
  * </pre>
  */
-public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
+public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
 
 
     @InternalApi
     @Deprecated
     public ASTMethodDeclaration(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTMethodDeclaration(JavaParser p, int id) {
-        super(p, id);
     }
 
     @Override
@@ -54,7 +47,6 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
     }
 
     /** Returns the simple name of the method. */
-    @Override
     public String getName() {
         return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
     }
@@ -158,7 +150,7 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
      * (excluding any receiver parameter). A varargs parameter counts as one.
      */
     public int getArity() {
-        return getFormalParameters().getParameterCount();
+        return getFormalParameters().size();
     }
 
 

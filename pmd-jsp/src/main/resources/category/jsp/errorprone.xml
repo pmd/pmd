@@ -26,8 +26,8 @@ A missing 'meta' tag or page directive will trigger this rule, as well as a non-
 //CompilationUnit/Content[
 not(Element[@Name="meta"][
    Attribute[@Name="content"]/AttributeValue[contains(lower-case(@Image),"charset=utf-8")]
-]) 
-and 
+])
+and
     not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(lower-case(@Value),"charset=utf-8")])
 ]
 ]]>

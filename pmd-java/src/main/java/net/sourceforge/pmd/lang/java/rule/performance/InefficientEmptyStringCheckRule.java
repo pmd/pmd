@@ -47,8 +47,8 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
     public boolean isTargetMethod(JavaNameOccurrence occ) {
         if (occ.getNameForWhichThisIsAQualifier() != null
                 && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("trim") != -1) {
-            Node pExpression = occ.getLocation().jjtGetParent().jjtGetParent();
-            if (pExpression.jjtGetNumChildren() > 2 && "length".equals(pExpression.jjtGetChild(2).getImage())) {
+            Node pExpression = occ.getLocation().getParent().getParent();
+            if (pExpression.getNumChildren() > 2 && "length".equals(pExpression.getChild(2).getImage())) {
                 return true;
             }
         }
@@ -63,14 +63,14 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
 
-        if (node.jjtGetNumChildren() > 3) {
+        if (node.getNumChildren() > 3) {
             // Check last suffix
-            if (!"isEmpty".equals(node.jjtGetChild(node.jjtGetNumChildren() - 2).getImage())) {
+            if (!"isEmpty".equals(node.getChild(node.getNumChildren() - 2).getImage())) {
                 return data;
             }
 
-            Node prevCall = node.jjtGetChild(node.jjtGetNumChildren() - 4);
-            String target = prevCall.jjtGetNumChildren() > 0 ? prevCall.jjtGetChild(0).getImage() : prevCall.getImage();
+            Node prevCall = node.getChild(node.getNumChildren() - 4);
+            String target = prevCall.getNumChildren() > 0 ? prevCall.getChild(0).getImage() : prevCall.getImage();
             if (target != null && ("trim".equals(target) || target.endsWith(".trim"))) {
                 addViolation(data, node);
             }

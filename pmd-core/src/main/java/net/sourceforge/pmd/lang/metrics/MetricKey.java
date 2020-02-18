@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * Key identifying a metric. Such keys <i>must</i> implement the hashCode method. Enums are well fitted to serve as
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 5.8.0
  */
-public interface MetricKey<N extends Node> {
+public interface MetricKey<N extends Node> extends DataKey<MetricKey<N>, Double> {
 
     /**
      * Returns the name of the metric.

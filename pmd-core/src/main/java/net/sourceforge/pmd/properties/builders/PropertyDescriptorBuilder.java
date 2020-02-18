@@ -38,7 +38,7 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
         }
         this.name = name;
     }
-    
+
 
     /**
      * Specify the description of the property.

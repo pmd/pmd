@@ -31,13 +31,6 @@ public class ASTIfStatement extends AbstractJavaNode {
 
     @InternalApi
     @Deprecated
-    public ASTIfStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @InternalApi
-    @Deprecated
     public void setHasElse() {
         this.hasElse = true;
     }
@@ -54,9 +47,20 @@ public class ASTIfStatement extends AbstractJavaNode {
     /**
      * Returns the node that represents the guard of this conditional.
      * This may be any expression of type boolean.
+     *
+     * @deprecated Use {@link #getCondition()}
      */
+    @Deprecated
     public ASTExpression getGuardExpressionNode() {
-        return (ASTExpression) jjtGetChild(0);
+        return (ASTExpression) getChild(0);
+    }
+
+    /**
+     * Returns the node that represents the guard of this conditional.
+     * This may be any expression of type boolean.
+     */
+    public ASTExpression getCondition() {
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -65,7 +69,7 @@ public class ASTIfStatement extends AbstractJavaNode {
      * to true.
      */
     public ASTStatement getThenBranch() {
-        return (ASTStatement) jjtGetChild(1);
+        return (ASTStatement) getChild(1);
     }
 
 
@@ -73,7 +77,7 @@ public class ASTIfStatement extends AbstractJavaNode {
      * Returns the statement of the {@code else} clause, if any.
      */
     public ASTStatement getElseBranch() {
-        return hasElse() ? (ASTStatement) jjtGetChild(2) : null;
+        return hasElse() ? (ASTStatement) getChild(2) : null;
     }
 
 

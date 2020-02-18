@@ -26,12 +26,6 @@ public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTy
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeArguments(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -49,7 +43,7 @@ public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTy
      * actual type arguments are inferred.
      */
     public boolean isDiamond() {
-        return jjtGetNumChildren() == 0;
+        return getNumChildren() == 0;
     }
 
 

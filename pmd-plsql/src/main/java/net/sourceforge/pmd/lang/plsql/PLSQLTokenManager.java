@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.plsql;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
 
 /**
@@ -17,7 +17,7 @@ public class PLSQLTokenManager implements TokenManager {
     private final PLSQLParserTokenManager tokenManager;
 
     public PLSQLTokenManager(Reader source) {
-        tokenManager = new PLSQLParserTokenManager(new SimpleCharStream(source));
+        tokenManager = new PLSQLParserTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override

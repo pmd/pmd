@@ -8,13 +8,13 @@
     <name>PMD</name>
 
     <description>
-PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
+        PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
+        unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+        Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
 
-Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
+        Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
+        C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
+        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -92,8 +92,8 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
-        <checkstyle.version>3.0.0</checkstyle.version>
-        <pmd.plugin.version>3.12.0</pmd.plugin.version>
+        <checkstyle.version>3.1.0</checkstyle.version>
+        <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
@@ -104,9 +104,12 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>5</pmd.build-tools.version>
+        <pmd.build-tools.version>6-SNAPSHOT</pmd.build-tools.version>
 
-        <pmd-designer.version>6.19.0</pmd-designer.version>
+        <pmd-designer.version>6.21.0</pmd-designer.version>
+        <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
+        <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
+        <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
     </properties>
 
     <build>
@@ -299,7 +302,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                             <id>checkstyle-check</id>
                             <phase>verify</phase>
                             <goals>
-                              <goal>check</goal>
+                                <goal>check</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -307,7 +310,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>8.18</version>
+                            <version>8.29</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
@@ -364,12 +367,12 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.19.0</version>
+                            <version>6.21.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.19.0</version>
+                            <version>6.21.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -390,9 +393,9 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                     <version>1.6.8</version>
                 </plugin>
                 <plugin>
-                      <groupId>org.jacoco</groupId>
-                      <artifactId>jacoco-maven-plugin</artifactId>
-                      <version>0.8.5</version>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.5</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -618,9 +621,9 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                 </exclusions>
             </dependency>
             <dependency>
-              <groupId>com.beust</groupId>
-              <artifactId>jcommander</artifactId>
-              <version>1.72</version>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>1.72</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -916,16 +919,16 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
             <build>
                 <plugins>
                     <plugin>
-                      <groupId>org.jacoco</groupId>
-                      <artifactId>jacoco-maven-plugin</artifactId>
-                      <executions>
-                          <execution>
-                              <id>default-prepare-agent</id>
-                              <goals>
-                                  <goal>prepare-agent</goal>
-                              </goals>
-                          </execution>
-                      </executions>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.eluder.coveralls</groupId>
@@ -965,16 +968,16 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                 </pluginManagement>
                 <plugins>
                     <plugin>
-                      <groupId>org.jacoco</groupId>
-                      <artifactId>jacoco-maven-plugin</artifactId>
-                      <executions>
-                          <execution>
-                              <id>default-prepare-agent</id>
-                              <goals>
-                                  <goal>prepare-agent</goal>
-                              </goals>
-                          </execution>
-                      </executions>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

@@ -24,12 +24,6 @@ public class ASTCatchStatement extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTCatchStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -59,8 +53,19 @@ public class ASTCatchStatement extends AbstractJavaNode {
 
     /**
      * Returns the Block node of this catch branch.
+     *
+     * @deprecated Use {@link #getBody()}
      */
+    @Deprecated
     public ASTBlock getBlock() {
+        return getFirstChildOfType(ASTBlock.class);
+    }
+
+
+    /**
+     * Returns the body of this catch clause.
+     */
+    public ASTBlock getBody() {
         return getFirstChildOfType(ASTBlock.class);
     }
 

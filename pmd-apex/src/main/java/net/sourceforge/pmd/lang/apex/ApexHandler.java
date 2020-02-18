@@ -10,14 +10,11 @@ import java.util.List;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsComputer;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
-import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
@@ -27,11 +24,6 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
 
-
-    @Override
-    public VisitorStarter getMultifileFacade() {
-        return rootNode -> new ApexMultifileVisitorFacade().initializeWith((ApexNode<?>) rootNode);
-    }
 
     @Override
     public RuleViolationFactory getRuleViolationFactory() {
@@ -54,21 +46,24 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
         return myMetricsProvider;
     }
 
-
     private static class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
 
         @SuppressWarnings("unchecked")
         ApexMetricsProvider() {
             // a wild double cast
-            super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class, ApexMetricsComputer.getInstance());
+            super((Class<ASTUserClassOrInterface<?>>) (Object) ASTUserClassOrInterface.class, ASTMethod.class);
         }
-
 
         @Override
         public List<ApexClassMetricKey> getAvailableTypeMetrics() {
             return Arrays.asList(ApexClassMetricKey.values());
         }
 
+
+        @Override
+        protected List<ASTMethod> findOps(ASTUserClassOrInterface<?> astUserClassOrInterface) {
+            return ApexMetrics.findOps(astUserClassOrInterface);
+        }
 
         @Override
         public List<ApexOperationMetricKey> getAvailableOperationMetrics() {

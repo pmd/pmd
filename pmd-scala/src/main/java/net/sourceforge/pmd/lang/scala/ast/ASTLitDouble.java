@@ -13,7 +13,7 @@ public class ASTLitDouble extends AbstractScalaNode<Lit.Double> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

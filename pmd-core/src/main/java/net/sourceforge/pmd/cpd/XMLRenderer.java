@@ -96,7 +96,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         }
         return writer.toString();
     }
-    
+
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
         Document doc = createDocument();
@@ -117,9 +117,18 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         Mark mark;
         for (Iterator<Mark> iterator = match.iterator(); iterator.hasNext();) {
             mark = iterator.next();
-            Element file = doc.createElement("file");
+            final Element file = doc.createElement("file");
             file.setAttribute("line", String.valueOf(mark.getBeginLine()));
             file.setAttribute("path", mark.getFilename());
+            file.setAttribute("endline", String.valueOf(mark.getEndLine()));
+            final int beginCol = mark.getBeginColumn();
+            final int endCol = mark.getEndColumn();
+            if (beginCol != -1) {
+                file.setAttribute("column", String.valueOf(beginCol));
+            }
+            if (endCol != -1) {
+                file.setAttribute("endcolumn", String.valueOf(endCol));
+            }
             duplication.appendChild(file);
         }
         return duplication;

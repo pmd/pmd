@@ -13,7 +13,7 @@ public class ASTPatTyped extends AbstractScalaNode<Pat.Typed> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

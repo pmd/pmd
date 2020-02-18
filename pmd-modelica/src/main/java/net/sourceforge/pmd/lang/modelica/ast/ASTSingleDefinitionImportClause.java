@@ -18,10 +18,6 @@ public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClaus
         super(id);
     }
 
-    ASTSingleDefinitionImportClause(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -32,7 +28,7 @@ public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClaus
         super.jjtClose();
 
         importWhat = getFirstChildOfType(ASTName.class);
-        importedName = importWhat.jjtGetChild(importWhat.jjtGetNumChildren() - 1).getImage();
+        importedName = importWhat.getChild(importWhat.getNumChildren() - 1).getImage();
     }
 
     @Override

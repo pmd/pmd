@@ -33,7 +33,7 @@ class AncestorOrSelfIterator implements Iterator<@NonNull Node> {
         if (n == null) {
             throw new NoSuchElementException();
         }
-        next = n.jjtGetParent();
+        next = n.getParent();
         return n;
     }
 }

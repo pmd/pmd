@@ -26,6 +26,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.docs.MockedFileWriter.FileEntry;
 
 public class RuleDocGeneratorTest {
@@ -76,7 +77,7 @@ public class RuleDocGeneratorTest {
     public void testSingleRuleset() throws RuleSetNotFoundException, IOException {
         RuleDocGenerator generator = new RuleDocGenerator(writer, root);
 
-        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
         RuleSet ruleset = rsf.createRuleSet("rulesets/ruledoctest/sample.xml");
 
         generator.generate(Arrays.asList(ruleset).iterator(),

@@ -27,13 +27,6 @@ public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTMarkerAnnotation(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -51,13 +44,13 @@ public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
      * eg {@code java.lang.Override} or {@code Override}.
      */
     public String getAnnotationName() {
-        return jjtGetChild(0).getImage();
+        return getChild(0).getImage();
     }
 
 
     @Override
-    public ASTAnnotation jjtGetParent() {
-        return (ASTAnnotation) super.jjtGetParent();
+    public ASTAnnotation getParent() {
+        return (ASTAnnotation) super.getParent();
     }
 
 

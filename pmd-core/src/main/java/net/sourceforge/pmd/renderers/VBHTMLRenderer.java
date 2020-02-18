@@ -105,7 +105,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
             sb.append("</table>");
             writer.write(sb.toString());
         }
-        
+
         if (!configErrors.isEmpty()) {
             sb.setLength(0);
             sb.append("<table border=\"0\" width=\"80%\">");

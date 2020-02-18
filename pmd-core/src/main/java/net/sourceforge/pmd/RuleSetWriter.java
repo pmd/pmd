@@ -186,14 +186,14 @@ public class RuleSetWriter {
                 List<String> examples = ruleReference.getOverriddenExamples();
 
                 return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated,
-                        name, null, ref, message, externalInfoUrl, null, null, null, null, description, priority,
+                        name, null, ref, message, externalInfoUrl, null, description, priority,
                         propertyDescriptors, propertiesByPropertyDescriptor, examples);
             }
         } else {
             return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(),
                     rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
                     rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-                    rule.getRuleClass(), rule.isDfa(), rule.isTypeResolution(), rule.isMultifile(),
+                    rule.getRuleClass(),
                     rule.getDescription(),
                     rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
                     rule.getExamples());
@@ -208,8 +208,7 @@ public class RuleSetWriter {
 
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
             LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
-            String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
-            Boolean multifile, // NOPMD: TODO multifile
+            String message, String externalInfoUrl, String clazz,
             String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
             Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
         Element ruleElement = createRuleElement();
@@ -230,9 +229,6 @@ public class RuleSetWriter {
         setIfNonNull(message, ruleElement, "message");
         setIfNonNull(clazz, ruleElement, "class");
         setIfNonNull(externalInfoUrl, ruleElement, "externalInfoUrl");
-        setIfNonNull(dfa, ruleElement, "dfa");
-        setIfNonNull(typeResolution, ruleElement, "typeResolution");
-        //TODO multifile: setIfNonNull(multifile, ruleElement, "multifile");
 
         if (description != null) {
             Element descriptionElement = createDescriptionElement(description);

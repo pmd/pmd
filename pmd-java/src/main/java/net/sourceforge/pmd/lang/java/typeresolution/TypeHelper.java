@@ -6,6 +6,11 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import org.apache.commons.lang3.ClassUtils;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
@@ -19,7 +24,7 @@ public final class TypeHelper {
      * Checks whether the resolved type of the given {@link TypeNode} n is of the type
      * given by the clazzName. If the clazzName is on the auxclasspath, then also subclasses
      * are considered.
-     * 
+     *
      * <p>If clazzName is not on the auxclasspath (so it can't be resolved), then a string
      * comparison of the class names are performed. This might result in comparing only
      * the simple name of the classes.
@@ -35,7 +40,45 @@ public final class TypeHelper {
             return isA(n, clazz);
         }
 
-        return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
+        return fallbackIsA(n, clazzName);
+    }
+
+    private static boolean fallbackIsA(TypeNode n, String clazzName) {
+        if (clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage())) {
+            return true;
+        }
+
+        if (n instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) n).getSuperClassTypeNode();
+            if (superClass != null) {
+                return isA(superClass, clazzName);
+            }
+
+            for (ASTClassOrInterfaceType itf : ((ASTClassOrInterfaceDeclaration) n).getSuperInterfacesTypeNodes()) {
+                if (isA(itf, clazzName)) {
+                    return true;
+                }
+            }
+        } else if (n instanceof ASTEnumDeclaration) {
+
+            ASTImplementsList implemented = n.getFirstChildOfType(ASTImplementsList.class);
+            if (implemented != null) {
+                for (ASTClassOrInterfaceType itf : implemented) {
+                    if (isA(itf, clazzName)) {
+                        return true;
+                    }
+                }
+            }
+
+            return "java.lang.Enum".equals(clazzName)
+                // supertypes of Enum
+                || "java.lang.Comparable".equals(clazzName)
+                || "java.io.Serializable".equals(clazzName);
+        } else if (n instanceof ASTAnnotationTypeDeclaration) {
+            return "java.lang.annotation.Annotation".equals(clazzName);
+        }
+
+        return false;
     }
 
     /**
@@ -55,7 +98,7 @@ public final class TypeHelper {
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     private static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
         if (n.getType() != null) {
             return loadClass(n.getType().getClassLoader(), clazzName);
@@ -82,7 +125,7 @@ public final class TypeHelper {
             // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
             // if it was a NoClassDefFoundError. TODO : Report it?
         }
-        
+
         return null;
     }
 
@@ -103,14 +146,14 @@ public final class TypeHelper {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public static boolean isExactlyNone(TypedNameDeclaration vnd, Class<?>... clazzes) {
         return !isExactlyAny(vnd, clazzes);
     }
-    
+
     /**
      * @deprecated use {@link #isExactlyAny(TypedNameDeclaration, Class...)}
      */
@@ -137,8 +180,10 @@ public final class TypeHelper {
 
     public static boolean subclasses(TypeNode n, Class<?> clazz) {
         Class<?> type = n.getType();
-        if (type == null || clazz == null) {
+        if (clazz == null) {
             return false; // If in auxclasspath, both should be resolvable, or are not the same
+        } else if (type == null) {
+            return fallbackIsA(n, clazz.getName());
         }
 
         return clazz.isAssignableFrom(type);

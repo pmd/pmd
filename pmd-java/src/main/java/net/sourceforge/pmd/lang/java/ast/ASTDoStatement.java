@@ -26,19 +26,23 @@ public class ASTDoStatement extends AbstractJavaNode {
     }
 
 
-    @InternalApi
+    /**
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
+     *
+     * @deprecated Use {@link #getCondition()}
+     */
     @Deprecated
-    public ASTDoStatement(JavaParser p, int id) {
-        super(p, id);
+    public ASTExpression getGuardExpressionNode() {
+        return getCondition();
     }
-
 
     /**
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
-    public ASTExpression getGuardExpressionNode() {
-        return (ASTExpression) jjtGetChild(1);
+    public ASTExpression getCondition() {
+        return (ASTExpression) getChild(1);
     }
 
 
@@ -47,7 +51,7 @@ public class ASTDoStatement extends AbstractJavaNode {
      * evaluates to true.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(0);
+        return (ASTStatement) getChild(0);
     }
 
 

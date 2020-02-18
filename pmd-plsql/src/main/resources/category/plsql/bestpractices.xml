@@ -17,7 +17,7 @@ Rules which enforce generally accepted best practices.
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_bestpractices.html#tomkytesdespair">
         <description>
-"WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR 
+"WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR
         </description>
         <priority>3</priority>
         <properties>

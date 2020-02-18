@@ -13,7 +13,7 @@ public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

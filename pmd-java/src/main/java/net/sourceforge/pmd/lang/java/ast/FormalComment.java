@@ -10,13 +10,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 public class FormalComment extends Comment {
 
     private static final Pattern JAVADOC_TAG = Pattern.compile("@([A-Za-z0-9]+)");
 
-    public FormalComment(Token t) {
+    public FormalComment(JavaccToken t) {
         super(t);
 
         findJavadocs();

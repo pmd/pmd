@@ -33,13 +33,6 @@ final class PackageStats implements ProjectMirror {
 
 
     /**
-     * Default constructor.
-     */
-    private PackageStats() {
-    }
-
-
-    /**
      * Resets the entire data structure.
      */
     /* default */ void reset() {

@@ -10,7 +10,15 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
- * Common interface for calling tree-building parsers or source files.
+ * Produces an AST from a source file. Instances of this interface must
+ * be stateless (which makes them trivially threadsafe).
+ *
+ * TODO
+ *  - Ideally ParserOptions would be an argument to ::parse
+ *  - ::parse would also take some more parameters, eg an error collector
+ *  - The reader + filename would be a TextDocument
+ *  - Remove TokenManager from here. Only JavaCC implementations support that,
+ *    and it's barely used.
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */

@@ -18,12 +18,6 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAllocationExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -43,9 +37,9 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
      * returns {@code null}.
      */
     public boolean isAnonymousClass() {
-        if (jjtGetNumChildren() > 1) {
+        if (getNumChildren() > 1) {
             // check the last child
-            return jjtGetChild(jjtGetNumChildren() - 1) instanceof ASTClassOrInterfaceBody;
+            return getChild(getNumChildren() - 1) instanceof ASTClassOrInterfaceBody;
         }
         return false;
     }

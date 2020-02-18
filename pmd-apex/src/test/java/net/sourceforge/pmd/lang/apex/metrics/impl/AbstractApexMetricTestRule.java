@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -134,7 +135,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
         }
 
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            int classValue = (int) ApexMetrics.get(classKey, node, metricOptions);
+            int classValue = (int) MetricsUtil.computeMetric(classKey, node, metricOptions);
 
             String valueReport = String.valueOf(classValue);
 
@@ -153,7 +154,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
     @Override
     public Object visit(ASTMethod node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            int methodValue = (int) ApexMetrics.get(opKey, node, metricOptions);
+            int methodValue = (int) MetricsUtil.computeMetric(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue});
             }

@@ -204,6 +204,16 @@ echo "$NEW_RELEASE_NOTES"
 echo
 echo
 echo
+tweet="PMD ${RELEASE_VERSION} released: https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION} #PMD"
+tweet="${tweet// /%20}"
+tweet="${tweet//:/%3A}"
+tweet="${tweet//#/%23}"
+tweet="${tweet//\//%2F}"
+tweet="${tweet//$'\r'//}"
+tweet="${tweet//$'\n'//%0A}"
+echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
+echo "        <https://twitter.com/intent/tweet?text=$tweet>"
+echo
 echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"

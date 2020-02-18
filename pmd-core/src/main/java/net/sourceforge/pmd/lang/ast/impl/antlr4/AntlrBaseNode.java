@@ -4,21 +4,15 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import java.util.stream.Stream;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
-public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
+public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
 
-    // TODO: what should we do with parent? how do we handle data flows in this scenario? it's ok to ignore
-    // TODO: our parent data flow in case we don't have one?
-    // protected Node parent;
-
-    private DataFlowNode dataFlowNode;
-    private Object userData;
+    private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
     /**
      * Constructor required by {@link ParserRuleContext}
@@ -39,10 +33,17 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
         super(parent, invokingStateNumber);
     }
 
+    /**
+     * TODO @NoAttribute (port swift rules)
+     */
     @Override
-    public Node jjtGetParent() {
-        return (Node) parent; // TODO: review if all parents are Nodes
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    public String getText() {
+        return super.getText();
     }
+
+
+    // FIXME these coordinates are not accurate
 
     @Override
     public int getBeginLine() {
@@ -65,46 +66,33 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     }
 
     @Override
-    public DataFlowNode getDataFlowNode() {
-        return dataFlowNode;
-    }
-
-    @Override
-    public void setDataFlowNode(final DataFlowNode dataFlowNode) {
-        this.dataFlowNode = dataFlowNode;
-    }
-
-    @Override
     public Object getUserData() {
+        return userData.get(AbstractNode.LEGACY_USER_DATA);
+    }
+
+    @Override
+    public void setUserData(Object userData) {
+        this.userData.set(AbstractNode.LEGACY_USER_DATA, userData);
+    }
+
+    @Override
+    public DataMap<DataKey<?, ?>> getUserMap() {
         return userData;
     }
 
     @Override
-    public void setUserData(final Object userData) {
-        this.userData = userData;
+    public AntlrNode getChild(int i) {
+        return (AntlrNode) super.getChild(i);
     }
 
     @Override
-    public Node jjtGetChild(final int index) {
-        try {
-            return (Node) childrenStream().skip(index).findFirst().orElse(null);
-        } catch (final ClassCastException e) {
-            throw new IllegalArgumentException("Accessing invalid Antlr node", e);
-        }
+    public AntlrBaseNode getParent() {
+        return (AntlrBaseNode) super.getParent();
     }
 
     @Override
-    public String getImage() {
-        return null;
-    }
-
-    @Override
-    public int jjtGetNumChildren() {
-        return (int) childrenStream().count();
-    }
-
-    private Stream<Node> childrenStream() {
-        return children == null ? Stream.empty() : children.stream().filter(e -> e instanceof Node).map(e -> (Node) e);
+    public int getNumChildren() {
+        return getChildCount();
     }
 
     // TODO: should we make it abstract due to the comment in AbstractNode ?

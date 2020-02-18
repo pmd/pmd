@@ -43,7 +43,7 @@ public final class DummyTreeUtil {
 
         Node current = root;
         for (int i : pathIndices) {
-            current = current.jjtGetChild(i);
+            current = current.getChild(i);
         }
 
         return (DummyNode) current;
@@ -76,8 +76,8 @@ public final class DummyTreeUtil {
     private static void assignPathImage(Node node, String curPath) {
         node.setImage(curPath);
 
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            assignPathImage(node.jjtGetChild(i), curPath + i);
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            assignPathImage(node.getChild(i), curPath + i);
         }
     }
 

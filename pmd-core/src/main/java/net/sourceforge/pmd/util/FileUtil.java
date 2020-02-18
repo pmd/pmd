@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.util;
 
+import static net.sourceforge.pmd.internal.util.PredicateUtil.toFileFilter;
+import static net.sourceforge.pmd.internal.util.PredicateUtil.toFilenameFilter;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -11,10 +14,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -27,10 +30,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.datasource.ZipDataSource;
-import net.sourceforge.pmd.util.filter.AndFilter;
-import net.sourceforge.pmd.util.filter.Filter;
-import net.sourceforge.pmd.util.filter.Filters;
-import net.sourceforge.pmd.util.filter.OrFilter;
 
 /**
  * This is a utility class for working with Files.
@@ -129,11 +128,14 @@ public final class FileUtil {
         } else {
             // Match files, or directories which are not excluded.
             // FUTURE Make the excluded directories be some configurable option
-            Filter<File> filter = new OrFilter<>(Filters.toFileFilter(filenameFilter),
-                    new AndFilter<>(Filters.getDirectoryFilter(), Filters.toNormalizedFileFilter(
-                            Filters.buildRegexFilterExcludeOverInclude(null, Collections.singletonList("SCCS")))));
+            Predicate<File> filter =
+                toFileFilter(filenameFilter)
+                    // TODO what's this SCCS directory?
+                    .or(f -> f.isDirectory() && !"SCCS".equals(f.getName()));
+
+
             FileFinder finder = new FileFinder();
-            List<File> files = finder.findFilesFrom(file, Filters.toFilenameFilter(filter), true);
+            List<File> files = finder.findFilesFrom(file, toFilenameFilter(filter), true);
             for (File f : files) {
                 dataSources.add(new FileDataSource(f));
             }

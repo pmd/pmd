@@ -41,8 +41,9 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private static final Set<Class<?>> CONSIDERED_RETURN_TYPES
             = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class,
                     Long.TYPE, Character.TYPE, Float.TYPE));
+
     private static final Set<String> FILTERED_OUT_NAMES
-            = new HashSet<>(Arrays.asList("toString", "getClass", "getXPathNodeName", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
+        = new HashSet<>(Arrays.asList("toString", "getNumChildren", "getIndexInParent", "getParent", "getClass", "getRuleIndex", "getXPathNodeName", "altNumber", "toStringTree", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
 
     /* Iteration variables */
     private final Iterator<MethodWrapper> iterator;
@@ -77,10 +78,13 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         String methodName = method.getName();
 
         return !methodName.startsWith("jjt")
-                && !FILTERED_OUT_NAMES.contains(methodName)
-                && method.getParameterTypes().length == 0
-                && isConsideredReturnType(method)
-                && !isIgnored(nodeClass, method);
+            && !FILTERED_OUT_NAMES.contains(methodName)
+            && method.getParameterTypes().length == 0
+            && isConsideredReturnType(method)
+            // filter out methods declared in supertypes like the
+            // Antlr ones, unless they're opted-in
+            && Node.class.isAssignableFrom(method.getDeclaringClass())
+            && !isIgnored(nodeClass, method);
     }
 
     private boolean isConsideredReturnType(Method method) {
@@ -184,6 +188,9 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             }
             if (n.startsWith("uses")) {
                 return n.substring("uses".length());
+            }
+            if ("size".equals(n)) {
+                return "Size";
             }
 
             return n;

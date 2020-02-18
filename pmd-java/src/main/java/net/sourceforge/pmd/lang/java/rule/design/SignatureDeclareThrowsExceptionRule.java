@@ -120,7 +120,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         }
 
         // Ignore overridden methods, the issue should be marked on the method definition
-        final List<ASTAnnotation> methodAnnotations = methodDeclaration.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        final List<ASTAnnotation> methodAnnotations = methodDeclaration.getParent().findChildrenOfType(ASTAnnotation.class);
         for (final ASTAnnotation annotation : methodAnnotations) {
             final ASTName annotationName = annotation.getFirstDescendantOfType(ASTName.class);
             if (annotationName.hasImageEqualTo("Override") || annotationName.hasImageEqualTo("java.lang.Override")) {
@@ -203,7 +203,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
      * @return true if parent node is either a method or constructor declaration
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {
-        Node parent = exception.jjtGetParent().jjtGetParent();
+        Node parent = exception.getParent().getParent();
         return parent instanceof ASTMethodDeclaration || parent instanceof ASTConstructorDeclaration;
     }
 

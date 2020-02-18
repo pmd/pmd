@@ -40,7 +40,7 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 /**
  * Helper methods
- * 
+ *
  * @author sergey.gorbaty
  *
  */
@@ -73,9 +73,9 @@ public final class Helper {
 
     /**
      * Finds DML operations in a given node descendants' path
-     * 
+     *
      * @param node
-     * 
+     *
      * @return true if found DML operations in node descendants
      */
     public static boolean foundAnyDML(final ApexNode<?> node) {
@@ -165,7 +165,7 @@ public final class Helper {
                 .append(n.getFieldInfo().getName());
         return sb.toString();
     }
-    
+
     public static String getFQVariableName(final ASTFieldDeclaration variable) {
         StringBuilder sb = new StringBuilder()
                 .append(variable.getNode().getDefiningType().getApexName()).append(":")

@@ -18,12 +18,6 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         super(i);
     }
 
-    @Deprecated
-    @InternalApi
-    public AbstractJavaAccessNode(JavaParser parser, int i) {
-        super(parser, i);
-    }
-
     @Override
     public int getModifiers() {
         return this.modifiers;

@@ -64,11 +64,6 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
     }
 
     @Override
-    public void setUsesTypeResolution() {
-        // No Type resolution for Velocity rules?
-    }
-
-    @Override
     public void apply(final List<? extends Node> nodes, final RuleContext ctx) {
         visitAll(nodes, ctx);
     }
@@ -82,7 +77,9 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
 
     @Override
     public Object visit(final VmNode node, final Object data) {
-        node.childrenAccept(this, data);
+        for (VmNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
         return null;
     }
 

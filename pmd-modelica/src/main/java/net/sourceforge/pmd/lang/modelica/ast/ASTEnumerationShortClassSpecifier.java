@@ -9,10 +9,6 @@ public final class ASTEnumerationShortClassSpecifier extends AbstractModelicaCla
         super(id);
     }
 
-    ASTEnumerationShortClassSpecifier(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

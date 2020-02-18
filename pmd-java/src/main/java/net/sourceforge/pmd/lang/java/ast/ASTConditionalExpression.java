@@ -31,12 +31,6 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTConditionalExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * @deprecated To be removed in 7.0.0
@@ -62,9 +56,20 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
     /**
      * Returns the node that represents the guard of this conditional.
      * That is the expression before the '?'.
+     *
+     * @deprecated Use {@link #getCondition()}
      */
+    @Deprecated
     public Node getGuardExpressionNode() {
-        return jjtGetChild(0);
+        return getChild(0);
+    }
+
+    /**
+     * Returns the node that represents the guard of this conditional.
+     * That is the expression before the '?'.
+     */
+    public Node getCondition() {
+        return getChild(0);
     }
 
 
@@ -73,7 +78,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * if the guard evaluates to true.
      */
     public ASTExpression getTrueAlternative() {
-        return (ASTExpression) jjtGetChild(1);
+        return (ASTExpression) getChild(1);
     }
 
 
@@ -82,7 +87,7 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
      * if the guard evaluates to false.
      */
     public Node getFalseAlternative() {
-        return jjtGetChild(2);
+        return getChild(2);
     }
 
 

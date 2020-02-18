@@ -129,7 +129,7 @@ public class DocumentNavigator extends DefaultNavigator {
     @Override
     public Object getParentNode(Object arg0) {
         if (arg0 instanceof Node) {
-            return ((Node) arg0).jjtGetParent();
+            return ((Node) arg0).getParent();
         }
         if (arg0 instanceof Attribute) {
             return ((Attribute) arg0).getParent();
@@ -222,7 +222,7 @@ public class DocumentNavigator extends DefaultNavigator {
         if (isAttribute(contextNode)) {
             return new SingleObjectIterator(((Attribute) contextNode).getParent());
         }
-        Node parent = ((Node) contextNode).jjtGetParent();
+        Node parent = ((Node) contextNode).getParent();
         if (parent != null) {
             return new SingleObjectIterator(parent);
         } else {
@@ -291,7 +291,7 @@ public class DocumentNavigator extends DefaultNavigator {
                 } else {
                     Node sibling = getNextSibling(node);
                     if (sibling == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return sibling;
                     }
@@ -308,7 +308,7 @@ public class DocumentNavigator extends DefaultNavigator {
                         n = getNextSibling(node);
                     }
                     if (n == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return n;
                     }
@@ -334,7 +334,7 @@ public class DocumentNavigator extends DefaultNavigator {
                 } else {
                     Node sibling = getPreviousSibling(node);
                     if (sibling == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return sibling;
                     }
@@ -351,7 +351,7 @@ public class DocumentNavigator extends DefaultNavigator {
                         n = getPreviousSibling(node);
                     }
                     if (n == null) {
-                        return getFirstNode(node.jjtGetParent());
+                        return getFirstNode(node.getParent());
                     } else {
                         return n;
                     }

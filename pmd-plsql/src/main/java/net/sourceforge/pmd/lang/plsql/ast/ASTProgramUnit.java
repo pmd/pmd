@@ -7,9 +7,7 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
-
-public class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject, DFAGraphMethod {
+public class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject {
     public ASTProgramUnit(int id) {
         super(id);
     }
@@ -38,7 +36,6 @@ public class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode,
         return null;
     }
 
-    @Override
     public String getName() {
         return getMethodName();
     }
@@ -51,7 +48,7 @@ public class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode,
     @Override
     public String getObjectName() {
         // This _IS_ a schema-level Program Unit
-        if (null == this.jjtGetParent()) {
+        if (null == this.getParent()) {
             return this.getImage();
         } else {
             return this.getImage();

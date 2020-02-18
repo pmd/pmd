@@ -35,11 +35,11 @@ public class MethodFirstPhase {
     }
 
     void stringVarargs(String... s) {
-        
+
     }
 
     void classVarargs(Class<?>... c) {
-        
+
     }
 
     Exception subtype(short a, int b, String c) {
@@ -49,7 +49,7 @@ public class MethodFirstPhase {
     <T extends CharSequence> int subtype(T a, int b, String c) {
         return 0;
     }
-    
+
     int subtype(Long a, int b, String c) {
         return 0;
     }

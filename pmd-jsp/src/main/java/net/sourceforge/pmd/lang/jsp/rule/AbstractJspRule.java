@@ -44,11 +44,6 @@ public abstract class AbstractJspRule extends AbstractRule implements JspParserV
     }
 
     @Override
-    public void setUsesTypeResolution() {
-        // No Type resolution for JSP rules?
-    }
-
-    @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         visitAll(nodes, ctx);
     }
@@ -68,7 +63,9 @@ public abstract class AbstractJspRule extends AbstractRule implements JspParserV
 
     @Override
     public Object visit(JspNode node, Object data) {
-        node.childrenAccept(this, data);
+        for (JspNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
         return null;
     }
 

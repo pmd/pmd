@@ -60,22 +60,31 @@ public class RuleSetFactory {
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
 
+    /**
+     * @deprecated Use {@link RulesetsFactoryUtils#defaultFactory()}
+     */
+    @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory() {
         this(new ResourceLoader(), RulePriority.LOW, false, true);
     }
 
     /**
-     * @deprecated Use {@link #RuleSetFactory(ResourceLoader, RulePriority, boolean, boolean)} with
-     * {@link ResourceLoader} instead of a {@link ClassLoader}.
+     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
+     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
      */
     @Deprecated // to be removed with PMD 7.0.0.
     public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility) {
+                          final boolean warnDeprecated, final boolean enableCompatibility) {
         this(new ResourceLoader(classLoader), minimumPriority, warnDeprecated, enableCompatibility);
     }
 
+    /**
+     * @deprecated Use {@link RulesetsFactoryUtils#createFactory(ClassLoader, RulePriority, boolean, boolean)}
+     *     or {@link RulesetsFactoryUtils#createFactory(RulePriority, boolean, boolean)}
+     */
+    @Deprecated // to be hidden with PMD 7.0.0.
     public RuleSetFactory(final ResourceLoader resourceLoader, final RulePriority minimumPriority,
-            final boolean warnDeprecated, final boolean enableCompatibility) {
+                          final boolean warnDeprecated, final boolean enableCompatibility) {
         this.resourceLoader = resourceLoader;
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
@@ -445,21 +454,21 @@ public class RuleSetFactory {
             // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented
             // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
             dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            
+
             // If you can't completely disable DTDs, then at least do the following:
             // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
             // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
-            // JDK7+ - http://xml.org/sax/features/external-general-entities    
+            // JDK7+ - http://xml.org/sax/features/external-general-entities
             dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            
+
             // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-parameter-entities
             // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities
-            // JDK7+ - http://xml.org/sax/features/external-parameter-entities    
+            // JDK7+ - http://xml.org/sax/features/external-parameter-entities
             dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            
+
             // Disable external DTDs as well
             dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            
+
             // and these as well, per Timothy Morgan's 2014 paper: "XML Schema, DTD, and Entity Attacks"
             dbf.setXIncludeAware(false);
             dbf.setExpandEntityReferences(false);
@@ -467,7 +476,7 @@ public class RuleSetFactory {
             // an unsupported feature... too bad, but won't fail execution due to this
             LOG.log(Level.WARNING, "Ignored unsupported XML Parser Feature for parsing rulesets", e);
         }
-        
+
         return dbf.newDocumentBuilder();
     }
 

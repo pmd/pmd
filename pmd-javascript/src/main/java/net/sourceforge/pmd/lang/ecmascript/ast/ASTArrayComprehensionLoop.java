@@ -21,10 +21,10 @@ public class ASTArrayComprehensionLoop extends AbstractEcmascriptNode<ArrayCompr
     }
 
     public EcmascriptNode<?> getIterator() {
-        return (EcmascriptNode<?>) jjtGetChild(0);
+        return (EcmascriptNode<?>) getChild(0);
     }
 
     public EcmascriptNode<?> getIteratedObject() {
-        return (EcmascriptNode<?>) jjtGetChild(1);
+        return (EcmascriptNode<?>) getChild(1);
     }
 }

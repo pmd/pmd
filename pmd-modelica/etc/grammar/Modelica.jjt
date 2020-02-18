@@ -39,23 +39,24 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
-  TRACK_TOKENS = true;
+  TRACK_TOKENS = false;
+  SUPPORT_CLASS_VISIBILITY_PUBLIC=false;
   NODE_PACKAGE="net.sourceforge.pmd.lang.modelica.ast";
 
   UNICODE_INPUT = true;
 }
 
-PARSER_BEGIN(ModelicaParser)
+PARSER_BEGIN(ModelicaParserImpl)
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class ModelicaParser {
+class ModelicaParserImpl {
 
 }
 
-PARSER_END(ModelicaParser)
+PARSER_END(ModelicaParserImpl)
 
 TOKEN: {
   <BOM: "\uFEFF" >
@@ -334,7 +335,7 @@ void LanguageSpecification():
 }
 {
     t = <STRING>
-    { jjtThis.setImage(t.image); }
+    { jjtThis.setImage(t.getImage()); }
 }
 
 void ExternalFunctionCall(): {}
@@ -837,7 +838,7 @@ void NumberLiteral():
 }
 {
     t = <UNSIGNED_NUMBER>
-    { jjtThis.setImage(t.image); }
+    { jjtThis.setImage(t.getImage()); }
 }
 
 void StringLiteral():
@@ -846,7 +847,7 @@ void StringLiteral():
 }
 {
     t = <STRING>
-    { jjtThis.setImage(t.image); }
+    { jjtThis.setImage(t.getImage()); }
 }
 
 void Name(): {}
@@ -865,7 +866,7 @@ void SimpleName():
 }
 {
     t = <IDENT>
-    { jjtThis.setImage(t.image); }
+    { jjtThis.setImage(t.getImage()); }
 }
 
 void SubscriptedName(): {}

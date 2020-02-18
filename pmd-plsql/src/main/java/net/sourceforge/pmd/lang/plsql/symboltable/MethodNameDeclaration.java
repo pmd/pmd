@@ -25,7 +25,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     /**
      * Treat a TimingPointSection within a Compound Trigger like a packaged
      * FUNCTION or PROCEDURE. SRT
-     * 
+     *
      * @param node
      */
     public MethodNameDeclaration(ASTTriggerTimingPointSection node) {
@@ -38,7 +38,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     /**
      * PL/SQL does not currently allow varargs outside the STANDARD package.
-     * 
+     *
      * @return false
      */
     public boolean isVarargs() {
@@ -51,11 +51,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public String getParameterDisplaySignature() {
         StringBuilder sb = new StringBuilder("(");
-        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
+        ASTFormalParameters params = (ASTFormalParameters) node.getChild(0);
         // TODO - this can be optimized - add [0] then ,[n] in a loop.
         // no need to trim at the end
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
+            ASTFormalParameter p = (ASTFormalParameter) params.getChild(i);
             sb.append(p.getTypeNode().getTypeImage());
             // if (p.isVarargs()) {
             // sb.append("...");
@@ -91,22 +91,22 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
         // compare parameter types
         // SRT ASTFormalParameters myParams = (ASTFormalParameters)
-        // node.jjtGetChild(0);
+        // node.getChild(0);
         // SRT ASTFormalParameters otherParams = (ASTFormalParameters)
-        // other.node.jjtGetChild(0);
+        // other.node.getChild(0);
         ASTFormalParameters myParams = node.getFirstDescendantOfType(ASTFormalParameters.class);
         ASTFormalParameters otherParams = other.node.getFirstDescendantOfType(ASTFormalParameters.class);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
+            ASTFormalParameter myParam = (ASTFormalParameter) myParams.getChild(i);
+            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.getChild(i);
 
             // Compare vararg
             // if (myParam.isVarargs() != otherParam.isVarargs()) {
             // return false;
             // }
 
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
-            Node otherTypeNode = otherParam.getTypeNode().jjtGetChild(0);
+            Node myTypeNode = myParam.getTypeNode().getChild(0);
+            Node otherTypeNode = otherParam.getTypeNode().getChild(0);
 
             // compare primitive vs reference type
             if (myTypeNode.getClass() != otherTypeNode.getClass()) {
@@ -123,8 +123,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             // myTypeImg = myTypeNode.getImage();
             // otherTypeImg = otherTypeNode.getImage();
             // } else {
-            myTypeImg = ((AbstractPLSQLNode) myTypeNode.jjtGetChild(0)).getImage();
-            otherTypeImg = ((AbstractPLSQLNode) otherTypeNode.jjtGetChild(0)).getImage();
+            myTypeImg = ((AbstractPLSQLNode) myTypeNode.getChild(0)).getImage();
+            otherTypeImg = ((AbstractPLSQLNode) otherTypeNode.getChild(0)).getImage();
             // }
 
             if (!myTypeImg.equals(otherTypeImg)) {

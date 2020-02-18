@@ -30,12 +30,6 @@ public class ASTShiftExpression extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTShiftExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

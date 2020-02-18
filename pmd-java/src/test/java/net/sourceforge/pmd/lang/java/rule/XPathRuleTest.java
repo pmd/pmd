@@ -21,15 +21,14 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
@@ -122,7 +121,7 @@ public class XPathRuleTest extends RuleTst {
     /**
      * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
      * in some cases in xpath 2.0
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -132,9 +131,7 @@ public class XPathRuleTest extends RuleTst {
                 + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
                 + "    }\n" + "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
-        Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
-        ASTCompilationUnit cu = (ASTCompilationUnit) parser.parse("test", new StringReader(SUFFIX));
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SUFFIX);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
@@ -167,7 +164,7 @@ public class XPathRuleTest extends RuleTst {
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -176,9 +173,7 @@ public class XPathRuleTest extends RuleTst {
         final String SOURCE = "public class dummy {\n" + "  public String toString() {\n"
                 + "    String test = \"bad example\";\n" + "    test = \"a\";\n" + "    return test;\n" + "  }\n" + "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
-        ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();
-        Parser parser = language.getLanguageVersionHandler().getParser(parserOptions);
-        ASTCompilationUnit cu = (ASTCompilationUnit) parser.parse("test", new StringReader(SOURCE));
+        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SOURCE);
         RuleContext ruleContext = new RuleContext();
         ruleContext.setLanguageVersion(language);
 
@@ -211,7 +206,7 @@ public class XPathRuleTest extends RuleTst {
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File("n/a"));
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
+        RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(r);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;
     }

@@ -14,17 +14,23 @@ public class ASTArguments extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTArguments(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    public int getArgumentCount() {
-        if (this.jjtGetNumChildren() == 0) {
+    /**
+     * Gets the number of arguments.
+     * @return
+     */
+    public int size() {
+        if (this.getNumChildren() == 0) {
             return 0;
         }
-        return this.jjtGetChild(0).jjtGetNumChildren();
+        return ((ASTArgumentList) this.getChild(0)).size();
+    }
+
+    /**
+     * @deprecated for removal. Use {@link #size()} or {@link ASTArgumentList#size()} instead.
+     */
+    @Deprecated
+    public int getArgumentCount() {
+        return size();
     }
 
     @Override

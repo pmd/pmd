@@ -18,10 +18,6 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
         super(id);
     }
 
-    ASTComponentReference(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     void markAbsolute() {
         absolute = true;
     }
@@ -68,9 +64,9 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
     public void jjtClose() {
         super.jjtClose();
 
-        nameComponentsWithoutSubscripts = new String[jjtGetNumChildren()];
+        nameComponentsWithoutSubscripts = new String[getNumChildren()];
         for (int i = 0; i < nameComponentsWithoutSubscripts.length; ++i) {
-            String name = jjtGetChild(i).getFirstChildOfType(ASTSimpleName.class).getImage();
+            String name = getChild(i).getFirstChildOfType(ASTSimpleName.class).getImage();
             nameComponentsWithoutSubscripts[i] = name;
         }
     }

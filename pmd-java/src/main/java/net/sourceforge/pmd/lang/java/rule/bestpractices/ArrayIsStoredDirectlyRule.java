@@ -95,7 +95,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         for (ASTBlockStatement b : bs) {
             if (b.hasDescendantOfType(ASTAssignmentOperator.class)) {
                 final ASTStatementExpression se = b.getFirstDescendantOfType(ASTStatementExpression.class);
-                if (se == null || !(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
+                if (se == null || !(se.getChild(0) instanceof ASTPrimaryExpression)) {
                     continue;
                 }
                 String assignedVar = getExpressionVarName(se);
@@ -103,7 +103,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     continue;
                 }
 
-                ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
+                ASTPrimaryExpression pe = (ASTPrimaryExpression) se.getChild(0);
                 Node n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (n == null) {
                     n = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
@@ -116,10 +116,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     // need to build out the PMD internal framework more
                     // to support simply queries like "isAssignedTo()" or
                     // something
-                    if (se.jjtGetNumChildren() < 3) {
+                    if (se.getNumChildren() < 3) {
                         continue;
                     }
-                    ASTExpression e = (ASTExpression) se.jjtGetChild(2);
+                    ASTExpression e = (ASTExpression) se.getChild(2);
                     if (e.hasDescendantOfType(ASTEqualityExpression.class)) {
                         continue;
                     }

@@ -29,13 +29,6 @@ public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTInstanceOfExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -52,7 +45,7 @@ public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
      * Gets the type against which the expression is tested.
      */
     public ASTType getTypeNode() {
-        return (ASTType) jjtGetChild(1);
+        return (ASTType) getChild(1);
     }
 
 }

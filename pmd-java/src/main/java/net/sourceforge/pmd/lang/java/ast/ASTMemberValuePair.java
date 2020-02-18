@@ -24,13 +24,6 @@ public class ASTMemberValuePair extends AbstractJavaNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTMemberValuePair(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Returns the name of the member set by this pair.
      */
@@ -43,13 +36,13 @@ public class ASTMemberValuePair extends AbstractJavaNode {
      * Returns the value of the member set by this pair.
      */
     public ASTMemberValue getMemberValue() {
-        return (ASTMemberValue) jjtGetChild(0);
+        return (ASTMemberValue) getChild(0);
     }
 
 
     @Override
-    public ASTMemberValuePairs jjtGetParent() {
-        return (ASTMemberValuePairs) super.jjtGetParent();
+    public ASTMemberValuePairs getParent() {
+        return (ASTMemberValuePairs) super.getParent();
     }
 
 

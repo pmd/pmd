@@ -12,11 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -43,8 +40,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRule {
-    private static final Logger LOG = Logger.getLogger(InvalidLogMessageFormatRule.class.getName());
-
     private static final Map<String, Set<String>> LOGGERS;
 
     static {
@@ -91,16 +86,20 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         }
 
         // find the arguments
-        final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
-                .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
+        final List<ASTExpression> argumentList = new ArrayList<>(parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
+                .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class));
+
+        // ignore the first argument if it is a known non-string value, e.g. a slf4j-Marker
+        if (argumentList.get(0).getType() != null && !argumentList.get(0).getType().equals(String.class)) {
+            argumentList.remove(0);
+        }
 
         // remove the message parameter
         final ASTExpression messageParam = argumentList.remove(0);
         final int expectedArguments = expectedArguments(messageParam);
 
-        if (expectedArguments == 0) {
-            // ignore if we are not expecting arguments to format the message
-            // or if we couldn't analyze the message parameter
+        if (expectedArguments == -1) {
+            // ignore if we couldn't analyze the message parameter
             return data;
         }
 
@@ -159,9 +158,30 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
         int lastIndex = params.size() - 1;
         ASTPrimaryExpression last = params.get(lastIndex).getFirstDescendantOfType(ASTPrimaryExpression.class);
 
-        if (isNewThrowable(last) || hasTypeThrowable(last) || isReferencingThrowable(last)) {
+        if (isNewThrowable(last) || hasTypeThrowable(last) || isReferencingThrowable(last) || isLambdaParameter(last)) {
             params.remove(lastIndex);
         }
+    }
+
+    private boolean isLambdaParameter(ASTPrimaryExpression last) {
+        String varName = null;
+        ASTPrimaryPrefix prefix = last.getFirstChildOfType(ASTPrimaryPrefix.class);
+        if (prefix != null) {
+            ASTName name = prefix.getFirstChildOfType(ASTName.class);
+            if (name != null) {
+                varName = name.getImage();
+            }
+        }
+        for (NameDeclaration decl : prefix.getScope().getDeclarations().keySet()) {
+            if (decl.getName().equals(varName)) {
+                if (decl.getNode().getParent() instanceof ASTLambdaExpression) {
+                    // If the last parameter is a lambda parameter, then we also ignore it - regardless of the type.
+                    // This is actually a workaround, since type resolution doesn't resolve the types of lambda parameters.
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private String getExpectedMessage(final List<ASTExpression> params, final int expectedArguments) {
@@ -170,8 +190,8 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
     }
 
     private int expectedArguments(final ASTExpression node) {
-        int count = 0;
-        // look if the logger have a literal message
+        int count = -1;
+        // look if the logger has a literal message
         if (node.getFirstDescendantOfType(ASTLiteral.class) != null) {
             count = countPlaceholders(node);
         } else if (node.getFirstDescendantOfType(ASTName.class) != null) {
@@ -183,7 +203,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 count = getAmountOfExpectedArguments(variableName, localVariables);
             }
 
-            if (count == 0) {
+            if (count == -1) {
                 // look if the message is defined in a field
                 final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfAnyType(ASTClassOrInterfaceBody.class, ASTEnumBody.class)
                         .findDescendantsOfType(ASTFieldDeclaration.class);
@@ -213,26 +233,32 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 }
             }
         }
-        return 0;
+        return -1;
     }
 
     private int countPlaceholders(final ASTExpression node) {
-        // zero means, no placeholders, or we could not analyze the message parameter
-        int result = 0;
+        List<ASTLiteral> literals = getStringLiterals(node);
+        if (literals.isEmpty()) {
+            // -1 we could not analyze the message parameter
+            return -1;
+        }
 
-        try {
-            List<Node> literals = node
-                    .findChildNodesWithXPath(
-                            "AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true']"
-                                    + "|PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true']");
-            // if there are multiple literals, we just assume, they are concatenated
-            // together...
-            for (Node stringLiteral : literals) {
-                result += StringUtils.countMatches(stringLiteral.getImage(), "{}");
-            }
-        } catch (JaxenException e) {
-            LOG.log(Level.FINE, "Could not determine literals", e);
+        // if there are multiple literals, we just assume, they are concatenated
+        // together...
+        int result = 0;
+        for (ASTLiteral stringLiteral : literals) {
+            result += StringUtils.countMatches(stringLiteral.getImage(), "{}");
         }
         return result;
+    }
+
+    private List<ASTLiteral> getStringLiterals(final Node node) {
+        List<ASTLiteral> stringLiterals = new ArrayList<>();
+        for (ASTLiteral literal : node.findDescendantsOfType(ASTLiteral.class)) {
+            if (literal.isStringLiteral()) {
+                stringLiterals.add(literal);
+            }
+        }
+        return stringLiterals;
     }
 }

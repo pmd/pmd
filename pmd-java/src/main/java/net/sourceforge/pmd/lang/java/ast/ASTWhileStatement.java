@@ -25,19 +25,23 @@ public class ASTWhileStatement extends AbstractJavaNode {
     }
 
 
-    @InternalApi
+    /**
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
+     *
+     * @deprecated Use {@link #getCondition()}
+     */
     @Deprecated
-    public ASTWhileStatement(JavaParser p, int id) {
-        super(p, id);
+    public ASTExpression getGuardExpressionNode() {
+        return (ASTExpression) getChild(0);
     }
-
 
     /**
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
-    public ASTExpression getGuardExpressionNode() {
-        return (ASTExpression) jjtGetChild(0);
+    public ASTExpression getCondition() {
+        return (ASTExpression) getChild(0);
     }
 
 
@@ -46,7 +50,7 @@ public class ASTWhileStatement extends AbstractJavaNode {
      * evaluates to true.
      */
     public ASTStatement getBody() {
-        return (ASTStatement) jjtGetChild(1);
+        return (ASTStatement) getChild(1);
     }
 
 

@@ -77,7 +77,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
         @Override
         public Object visit(ASTSwitchLabel switchLabel, Object data) {
-            if (switchLabel.jjtGetParent() == root) {
+            if (switchLabel.getParent() == root) {
                 labels++;
             }
             return super.visit(switchLabel, data);

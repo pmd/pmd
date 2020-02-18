@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @see <a href="https://openjdk.java.net/jeps/325">JEP 325: Switch Expressions (Preview)</a>
  */
 public class MultipleCaseLabels {

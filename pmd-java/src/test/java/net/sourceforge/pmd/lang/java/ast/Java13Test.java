@@ -4,37 +4,31 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java13Test {
-    private static String loadSource(String name) {
-        try {
-            return IOUtils.toString(Java13Test.class.getResourceAsStream("jdkversiontests/java13/" + name),
-                                    StandardCharsets.UTF_8)
-                .replaceAll("\\R", "\n"); // normalize line separators to \n
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
+
+    private final JavaParsingHelper java12 =
+        JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("12")
+                                         .withResourceContext(Java13Test.class, "jdkversiontests/java13/");
+
+    private final JavaParsingHelper java13p = java12.withDefaultVersion("13-preview");
+
 
     @Test
     public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("SwitchExpressions.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java13p.parseResource("SwitchExpressions.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(4, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertEquals(4, switchExpression.getNumChildren());
+        Assert.assertTrue(switchExpression.getChild(0) instanceof ASTExpression);
         Assert.assertEquals(3, switchExpression.findChildrenOfType(ASTSwitchLabeledRule.class).size());
         Assert.assertEquals(1, switchExpression.findChildrenOfType(ASTSwitchLabeledBlock.class).size());
         Assert.assertEquals(1, switchExpression.findDescendantsOfType(ASTYieldStatement.class).size());
@@ -44,18 +38,16 @@ public class Java13Test {
 
     @Test
     public void testSwitchExpressionsYield() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("SwitchExpressionsYield.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java13p.parseResource("SwitchExpressionsYield.java");
 
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertEquals(11, switchExpression.getNumChildren());
+        Assert.assertTrue(switchExpression.getChild(0) instanceof ASTExpression);
         Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabel.class).size());
 
         ASTYieldStatement yieldStatement = switchExpression.getFirstDescendantOfType(ASTYieldStatement.class);
         Assert.assertEquals("SwitchExpressionsBreak.SIX", yieldStatement.getImage());
-        Assert.assertTrue(yieldStatement.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertTrue(yieldStatement.getChild(0) instanceof ASTExpression);
 
         ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class)
                 .get(1);
@@ -67,13 +59,12 @@ public class Java13Test {
 
     @Test(expected = ParseException.class)
     public void testSwitchExpressionsBeforeJava13() {
-        ParserTstUtil.parseAndTypeResolveJava("12", loadSource("SwitchExpressions.java"));
+        java12.parseResource("SwitchExpressions.java");
     }
 
     @Test
     public void testTextBlocks() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview", loadSource("TextBlocks.java"));
-        Assert.assertNotNull(compilationUnit);
+        ASTCompilationUnit compilationUnit = java13p.parseResource("TextBlocks.java");
         List<ASTLiteral> literals = compilationUnit.findDescendantsOfType(ASTLiteral.class);
         Assert.assertEquals(10, literals.size());
         for (int i = 0; i < 8; i++) {
@@ -94,7 +85,7 @@ public class Java13Test {
 
     @Test(expected = ParseException.class)
     public void testTextBlocksBeforeJava13() {
-        ParserTstUtil.parseAndTypeResolveJava("12", loadSource("TextBlocks.java"));
+        java12.parseResource("TextBlocks.java");
     }
 
 }

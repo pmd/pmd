@@ -13,7 +13,7 @@ public class ASTTypeMethod extends AbstractScalaNode<Type.Method> {
 
     /**
      * Create the AST node for this Scala node.
-     * 
+     *
      * @param scalaNode
      *            the underlying Scala node
      */

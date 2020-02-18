@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -28,6 +29,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@InternalApi
+@Deprecated
 public class RuleBuilder {
 
     private List<PropertyDescriptor<?>> definedProperties = new ArrayList<>();
@@ -44,9 +47,6 @@ public class RuleBuilder {
     private List<String> examples = new ArrayList<>(1);
     private RulePriority priority;
     private boolean isDeprecated;
-    private boolean isUsesDfa;
-    private boolean isUsesMultifile;
-    private boolean isUsesTyperesolution;
 
     /**
      * @deprecated Use {@link #RuleBuilder(String, ResourceLoader, String, String)} with the
@@ -63,18 +63,6 @@ public class RuleBuilder {
         this.resourceLoader = resourceLoader;
         language(language);
         className(clazz);
-    }
-
-    public void usesDFA(boolean usesDFA) {
-        isUsesDfa = usesDFA;
-    }
-
-    public void usesMultifile(boolean usesMultifile) {
-        isUsesMultifile = usesMultifile;
-    }
-
-    public void usesTyperesolution(boolean usesTyperesolution) {
-        isUsesTyperesolution = usesTyperesolution;
     }
 
     private void language(String languageName) {
@@ -211,16 +199,6 @@ public class RuleBuilder {
 
         for (String example : examples) {
             rule.addExample(example);
-        }
-
-        if (isUsesDfa) {
-            rule.setDfa(isUsesDfa);
-        }
-        if (isUsesMultifile) {
-            rule.setMultifile(isUsesMultifile);
-        }
-        if (isUsesTyperesolution) {
-            rule.setTypeResolution(isUsesTyperesolution);
         }
 
         for (PropertyDescriptor<?> descriptor : definedProperties) {

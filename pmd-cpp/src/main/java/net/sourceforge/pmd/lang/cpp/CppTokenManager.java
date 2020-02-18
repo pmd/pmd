@@ -17,12 +17,12 @@ public class CppTokenManager implements TokenManager {
 
     /**
      * Creates a new C++ Token Manager from the given source code.
-     * 
+     *
      * @param source
      *            the source code
      */
     public CppTokenManager(Reader source) {
-        tokenManager = new CppParserTokenManager(new CppCharStream(source));
+        tokenManager = new CppParserTokenManager(CppCharStream.newCppCharStream(source));
     }
 
     @Override

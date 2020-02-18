@@ -15,17 +15,11 @@ public class ASTTypeDeclaration extends AbstractJavaTypeNode implements CanSuppr
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
+        for (int i = 0; i < getNumChildren(); i++) {
+            if (getChild(i) instanceof ASTAnnotation) {
+                ASTAnnotation a = (ASTAnnotation) getChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }

@@ -16,12 +16,6 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTExplicitConstructorInvocation(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -35,10 +29,10 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
 
 
     public int getArgumentCount() {
-        if (this.jjtGetNumChildren() == 1) {
-            return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();
+        if (this.getNumChildren() == 1) {
+            return ((ASTArguments) this.getChild(0)).size();
         } else {
-            return ((ASTArguments) this.jjtGetChild(1)).getArgumentCount();
+            return ((ASTArguments) this.getChild(1)).size();
         }
     }
 

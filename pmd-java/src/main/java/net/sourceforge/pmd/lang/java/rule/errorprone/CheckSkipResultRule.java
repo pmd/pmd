@@ -34,13 +34,13 @@ public class CheckSkipResultRule extends AbstractJavaRule {
                 if (loc != null) {
                     ASTPrimaryExpression exp = loc.getFirstParentOfType(ASTPrimaryExpression.class);
                     while (exp != null) {
-                        if (exp.jjtGetParent() instanceof ASTStatementExpression) {
+                        if (exp.getParent() instanceof ASTStatementExpression) {
                             // if exp is in a bare statement,
                             // the returned value is not used
                             addViolation(data, occ.getLocation());
                             break;
-                        } else if (exp.jjtGetParent() instanceof ASTExpression
-                                && exp.jjtGetParent().jjtGetParent() instanceof ASTPrimaryPrefix) {
+                        } else if (exp.getParent() instanceof ASTExpression
+                                && exp.getParent().getParent() instanceof ASTPrimaryPrefix) {
                             // if exp is enclosed in a pair of parenthesis
                             // let's have a look at the enclosing expression
                             // we'll see if it's in a bare statement

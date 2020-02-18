@@ -11,11 +11,10 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -32,8 +31,8 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     @Deprecated
     private static final PropertyDescriptor<Double> MINIMUM_DESCRIPTOR
-            = PropertyFactory.doubleProperty("minimum").desc("Deprecated! Minimum reporting threshold")
-                             .require(positive()).defaultValue(200d).build();
+        = PropertyFactory.doubleProperty("minimum").desc("Deprecated! Minimum reporting threshold")
+                         .require(positive()).defaultValue(200d).build();
 
 
     private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
@@ -72,10 +71,14 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        int npath = (int) JavaMetrics.get(JavaOperationMetricKey.NPATH, (MethodLikeNode) node);
+        if (!JavaOperationMetricKey.NPATH.supports(node)) {
+            return data;
+        }
+
+        int npath = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NPATH, node);
         if (npath >= reportLevel) {
-            addViolation(data, node, new String[]{node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                  PrettyPrintingUtil.displaySignature(node), "" + npath, });
+            addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                                                   PrettyPrintingUtil.displaySignature(node), "" + npath, });
         }
 
         return data;

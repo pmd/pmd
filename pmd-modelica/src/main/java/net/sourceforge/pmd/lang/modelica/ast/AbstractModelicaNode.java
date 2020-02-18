@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
 
 /**
@@ -17,17 +16,12 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  *
  * @see ModelicaNode for public API.
  */
-abstract class AbstractModelicaNode extends AbstractNode implements Node, ModelicaNode {
-    private ModelicaParser parser;
+abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> implements ModelicaNode {
+
     private ModelicaScope ownScope;
 
     AbstractModelicaNode(int id) {
         super(id);
-    }
-
-    AbstractModelicaNode(ModelicaParser parser, int id) {
-        super(id);
-        this.parser = parser;
     }
 
     @Override
@@ -36,36 +30,6 @@ abstract class AbstractModelicaNode extends AbstractNode implements Node, Modeli
     @Override
     public String getXPathNodeName() {
         return getClass().getSimpleName().substring(3);
-    }
-
-    @Override
-    public ModelicaNode jjtGetParent() {
-        return (ModelicaNode) super.jjtGetParent();
-    }
-
-    @Override
-    public ModelicaNode jjtGetChild(int index) {
-        return (ModelicaNode) super.jjtGetChild(index);
-    }
-
-    @Override
-    public void jjtOpen() {
-        if (beginLine == -1 && parser.token.next != null) {
-            beginLine = parser.token.next.beginLine;
-            beginColumn = parser.token.next.beginColumn;
-        }
-    }
-
-    @Override
-    public void jjtClose() {
-        if (beginLine == -1 && (children == null || children.length == 0)) {
-            beginColumn = parser.token.beginColumn;
-        }
-        if (beginLine == -1) {
-            beginLine = parser.token.beginLine;
-        }
-        endLine = parser.token.endLine;
-        endColumn = parser.token.endColumn;
     }
 
     @Override

@@ -10,9 +10,9 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.modelica.ModelicaTokenManager;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaParser;
-import net.sourceforge.pmd.lang.modelica.ast.Token;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenKinds;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenManager;
 
 
 public class ModelicaTokenizer extends JavaCCTokenizer {
@@ -35,28 +35,28 @@ public class ModelicaTokenizer extends JavaCCTokenizer {
             super(tokenManager);
         }
 
-        private void skipWithinAndImport(Token currentToken) {
+        private void skipWithinAndImport(JavaccToken currentToken) {
             final int type = currentToken.kind;
-            if (type == ModelicaParser.IMPORT || type == ModelicaParser.WITHIN) {
+            if (type == ModelicaTokenKinds.IMPORT || type == ModelicaTokenKinds.WITHIN) {
                 discardingWithinAndImport = true;
-            } else if (discardingWithinAndImport && type == ModelicaParser.SC) {
+            } else if (discardingWithinAndImport && type == ModelicaTokenKinds.SC) {
                 discardingWithinAndImport = false;
             }
         }
 
-        private void skipAnnotation(Token currentToken) {
+        private void skipAnnotation(JavaccToken currentToken) {
             final int type = currentToken.kind;
-            if (type == ModelicaParser.ANNOTATION) {
+            if (type == ModelicaTokenKinds.ANNOTATION) {
                 discardingAnnotation = true;
-            } else if (discardingAnnotation && type == ModelicaParser.SC) {
+            } else if (discardingAnnotation && type == ModelicaTokenKinds.SC) {
                 discardingAnnotation = false;
             }
         }
 
         @Override
         protected void analyzeToken(GenericToken currentToken) {
-            skipWithinAndImport((Token) currentToken);
-            skipAnnotation((Token) currentToken);
+            skipWithinAndImport((JavaccToken) currentToken);
+            skipAnnotation((JavaccToken) currentToken);
         }
 
         @Override

@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 public class SingleLineComment extends Comment {
 
-    public SingleLineComment(Token t) {
+    public SingleLineComment(JavaccToken t) {
         super(t);
     }
 

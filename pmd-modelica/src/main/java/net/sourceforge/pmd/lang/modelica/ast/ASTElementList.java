@@ -11,10 +11,6 @@ public class ASTElementList extends AbstractModelicaNode {
         super(id);
     }
 
-    ASTElementList(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }

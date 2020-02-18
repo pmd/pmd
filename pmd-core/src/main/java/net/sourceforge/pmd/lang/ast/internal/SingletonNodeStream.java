@@ -92,13 +92,13 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
 
     @Override
     public NodeStream<T> drop(int n) {
-        AssertionUtil.assertArgNonNegative(n);
+        AssertionUtil.requireNonNegative("n", n);
         return n == 0 ? this : NodeStream.empty();
     }
 
     @Override
     public NodeStream<T> take(int maxSize) {
-        AssertionUtil.assertArgNonNegative(maxSize);
+        AssertionUtil.requireNonNegative("maxSize", maxSize);
         return maxSize >= 1 ? this : NodeStream.empty();
     }
 
@@ -160,7 +160,7 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
 
     @Override
     public NodeStream<Node> parents() {
-        return NodeStream.of(node.jjtGetParent());
+        return NodeStream.of(node.getParent());
     }
 
     @Override
@@ -179,17 +179,17 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     }
 
     @Override
-    public NodeStream<Node> descendants() {
+    public DescendantNodeStream<Node> descendants() {
         return StreamImpl.descendants(node);
     }
 
     @Override
-    public <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+    public <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
         return StreamImpl.descendants(node, rClass);
     }
 
     @Override
-    public NodeStream<Node> descendantsOrSelf() {
+    public DescendantNodeStream<Node> descendantsOrSelf() {
         return StreamImpl.descendantsOrSelf(node);
     }
 

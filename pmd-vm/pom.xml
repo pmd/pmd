@@ -40,7 +40,7 @@
                             <target>
                                 <ant antfile="src/main/ant/alljavacc.xml">
                                     <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
+                                    <property name="javacc.jar" value="${javacc.jar}" />
                                 </ant>
                             </target>
                         </configuration>
@@ -104,6 +104,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -117,7 +117,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(XMLRenderer.ENCODING, "ISO-8859-1");
         verifyXmlEscaping(renderer, "&#x1041c;");
     }
-    
+
     public String getHeader() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL
                 + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"" + PMD.EOL

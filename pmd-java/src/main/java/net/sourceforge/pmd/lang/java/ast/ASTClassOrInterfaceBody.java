@@ -24,12 +24,6 @@ public class ASTClassOrInterfaceBody extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBody(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -43,10 +37,10 @@ public class ASTClassOrInterfaceBody extends AbstractJavaNode {
 
 
     public boolean isAnonymousInnerClass() {
-        return jjtGetParent() instanceof ASTAllocationExpression;
+        return getParent() instanceof ASTAllocationExpression;
     }
 
     public boolean isEnumChild() {
-        return jjtGetParent() instanceof ASTEnumConstant;
+        return getParent() instanceof ASTEnumConstant;
     }
 }

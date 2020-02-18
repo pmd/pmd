@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertSame;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -59,6 +63,10 @@ public class NodeStreamBlanketTest<T extends Node> {
                 )
         )
     );
+
+    @Rule
+    public ExpectedException expect = ExpectedException.none();
+
     private final NodeStream<T> stream;
 
     public NodeStreamBlanketTest(NodeStream<T> stream) {
@@ -136,6 +144,31 @@ public class NodeStreamBlanketTest<T extends Node> {
     }
 
     @Test
+    public void testGet() {
+        for (int i = 0; i < 100; i++) {
+            assertSame("stream.get(i) == stream.drop(i).first()", stream.get(i), stream.drop(i).first());
+        }
+    }
+
+    @Test
+    public void testGetNegative() {
+        expect.expect(IllegalArgumentException.class);
+        stream.get(-1);
+    }
+
+    @Test
+    public void testDropNegative() {
+        expect.expect(IllegalArgumentException.class);
+        stream.drop(-1);
+    }
+
+    @Test
+    public void testTakeNegative() {
+        expect.expect(IllegalArgumentException.class);
+        stream.take(-1);
+    }
+
+    @Test
     public void testEmpty() {
         assertEquivalence(
             stream,
@@ -206,9 +239,7 @@ public class NodeStreamBlanketTest<T extends Node> {
 
     @SafeVarargs
     private static <T> void assertImplication(T input, Prop<? super T> precond, Prop<? super T>... properties) {
-        if (!precond.test(input)) {
-            return;
-        }
+        Assume.assumeTrue(precond.test(input));
 
         for (Prop<? super T> prop2 : properties) {
             Assert.assertTrue(

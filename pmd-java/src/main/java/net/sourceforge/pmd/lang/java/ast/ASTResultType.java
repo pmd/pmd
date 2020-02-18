@@ -14,18 +14,12 @@ public class ASTResultType extends AbstractJavaNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTResultType(JavaParser p, int id) {
-        super(p, id);
-    }
-
     public boolean returnsArray() {
-        return !isVoid() && ((ASTType) jjtGetChild(0)).isArray();
+        return !isVoid() && ((ASTType) getChild(0)).isArray();
     }
 
     public boolean isVoid() {
-        return jjtGetNumChildren() == 0;
+        return getNumChildren() == 0;
     }
 
     @Override

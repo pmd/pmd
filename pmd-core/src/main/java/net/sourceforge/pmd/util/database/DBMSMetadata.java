@@ -488,7 +488,7 @@ public class DBMSMetadata {
                         sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
                         sourceCodeObjects.getString("PROCEDURE_NAME")));
-    
+
                 sourceObjectsList.add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
                         sourceCodeObjects.getString("PROCEDURE_NAME"), null));
@@ -538,7 +538,7 @@ public class DBMSMetadata {
                         sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
                         sourceCodeObjects.getString("PROCEDURE_NAME")));
-    
+
                 sourceObjectsList
                         .add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                                 sourceCodeObjects.getString("PROCEDURE_TYPE"),

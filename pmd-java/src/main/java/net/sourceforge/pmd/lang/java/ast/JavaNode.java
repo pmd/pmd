@@ -5,7 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.TextAvailableNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -13,7 +18,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode {
+public interface JavaNode extends ScopedNode, TextAvailableNode {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
@@ -34,7 +39,11 @@ public interface JavaNode extends ScopedNode {
      *
      * @param visitor Visitor to dispatch
      * @param data    Visit data
+     *
+     * @deprecated This method is not useful, the logic for combining
+     *     children values should be present on the visitor, not the node
      */
+    @Deprecated
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
 
@@ -61,8 +70,30 @@ public interface JavaNode extends ScopedNode {
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
 
+    @Override
+    JavaNode getChild(int index);
+
+
+    @Override
+    JavaNode getParent();
+
+
+    @Override
+    NodeStream<? extends JavaNode> children();
+
+
     @InternalApi
     @Deprecated
     void setScope(Scope scope);
+
+
+    JavaccToken jjtGetFirstToken();
+
+
+    JavaccToken jjtGetLastToken();
+
+
+    @Override
+    @NonNull ASTCompilationUnit getRoot();
 
 }

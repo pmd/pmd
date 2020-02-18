@@ -36,12 +36,6 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTImportDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * @deprecated Will be made private with 7.0.0
@@ -94,7 +88,7 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
      */
     @Deprecated
     public ASTName getImportedNameNode() {
-        return (ASTName) jjtGetChild(0);
+        return (ASTName) getChild(0);
     }
 
 
@@ -103,7 +97,7 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
      * the final dot and asterisk.
      */
     public String getImportedName() {
-        return jjtGetChild(0).getImage();
+        return getChild(0).getImage();
     }
 
 

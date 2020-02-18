@@ -15,13 +15,6 @@ public class ASTLambdaExpression extends AbstractMethodLikeNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTLambdaExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
     public boolean isFindBoundary() {
         return true;

@@ -18,12 +18,6 @@ public class ASTBooleanLiteral extends AbstractJavaTypeNode {
 
     @InternalApi
     @Deprecated
-    public ASTBooleanLiteral(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @InternalApi
-    @Deprecated
     public void setTrue() {
         isTrue = true;
     }

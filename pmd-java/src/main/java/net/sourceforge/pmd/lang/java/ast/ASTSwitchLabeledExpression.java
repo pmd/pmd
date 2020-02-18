@@ -15,22 +15,21 @@ public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTS
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    ASTSwitchLabeledExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+    @Override
     public void jjtClose() {
         super.jjtClose();
-        if (jjtGetNumChildren() > 0) {
-            AbstractNode firstChild = (AbstractNode) jjtGetChild(0);
+        if (getNumChildren() > 0) {
+            AbstractNode firstChild = (AbstractNode) getChild(0);
             jjtSetFirstToken(firstChild.jjtGetFirstToken());
         }
     }

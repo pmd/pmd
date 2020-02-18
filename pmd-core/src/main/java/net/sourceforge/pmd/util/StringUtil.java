@@ -30,6 +30,114 @@ public final class StringUtil {
     private StringUtil() {
     }
 
+
+    /**
+     * Returns the (1-based) line number of the character at the given index.
+     * Line terminators (\r, \n) are assumed to be on the line they *end*
+     * and not on the following line. The method also accepts that the given
+     * offset be the length of the string (in which case there's no targeted character),
+     * to get the line number of a character that would be inserted at
+     * the end of the string.
+     *
+     * <pre>
+     *
+     *     lineNumberAt("a\nb", 0)  = 1
+     *     lineNumberAt("a\nb", 1)  = 1
+     *     lineNumberAt("a\nb", 2)  = 2
+     *     lineNumberAt("a\nb", 3)  = 2  // charAt(3) doesn't exist though
+     *     lineNumberAt("a\nb", 4)  = -1
+     *
+     *     lineNumberAt("", 0) = 1
+     *     lineNumberAt("", _) = -1
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence of the targeted character.
+     *                        May be the length of the sequence.
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the line number
+     */
+    public static int lineNumberAt(CharSequence charSeq, int offsetInclusive) {
+        int len = charSeq.length();
+
+        if (offsetInclusive > len || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int l = 1;
+        for (int curOffset = 0; curOffset < offsetInclusive; curOffset++) {
+            // if we end up outside the string, then the line is undefined
+            if (curOffset >= len) {
+                return -1;
+            }
+
+            char c = charSeq.charAt(curOffset);
+            if (c == '\n') {
+                l++;
+            } else if (c == '\r') {
+                if (curOffset + 1 < len && charSeq.charAt(curOffset + 1) == '\n') {
+                    if (curOffset == offsetInclusive - 1) {
+                        // the CR is assumed to be on the same line as the LF
+                        return l;
+                    }
+                    curOffset++; // SUPPRESS CHECKSTYLE jump to after the \n
+                }
+                l++;
+            }
+        }
+        return l;
+    }
+
+    /**
+     * Returns the (1-based) column number of the character at the given index.
+     * Line terminators are by convention taken to be part of the line they end,
+     * and not the new line they start. Each character has width 1 (including {@code \t}).
+     * The method also accepts that the given offset be the length of the
+     * string (in which case there's no targeted character), to get the column
+     * number of a character that would be inserted at the end of the string.
+     *
+     * <pre>
+     *
+     *     columnNumberAt("a\nb", 0)  = 1
+     *     columnNumberAt("a\nb", 1)  = 2
+     *     columnNumberAt("a\nb", 2)  = 1
+     *     columnNumberAt("a\nb", 3)  = 2   // charAt(3) doesn't exist though
+     *     columnNumberAt("a\nb", 4)  = -1
+     *
+     *     columnNumberAt("a\r\n", 2)  = 3
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the column number
+     */
+    public static int columnNumberAt(CharSequence charSeq, final int offsetInclusive) {
+        if (offsetInclusive == charSeq.length()) {
+            return charSeq.length() == 0 ? 1 : 1 + columnNumberAt(charSeq, offsetInclusive - 1);
+        } else if (offsetInclusive > charSeq.length() || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int col = 0;
+        char next = 0;
+        for (int i = offsetInclusive; i >= 0; i--) {
+            char c = charSeq.charAt(i);
+
+            if (offsetInclusive != i) {
+                if (c == '\n' || c == '\r' && next != '\n') {
+                    return col;
+                }
+            }
+
+            col++;
+            next = c;
+        }
+        return col;
+    }
+
     /**
      * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
      *
@@ -53,10 +161,8 @@ public final class StringUtil {
      * Return whether the non-null text arg starts with any of the prefix
      * values.
      *
-     * @param text
-     * @param prefixes
-     *
      * @return boolean
+     *
      * @deprecated {@link StringUtils#startsWithAny(CharSequence, CharSequence...)}
      */
     @Deprecated
@@ -74,9 +180,6 @@ public final class StringUtil {
 
     /**
      * Returns whether the non-null text arg matches any of the test values.
-     *
-     * @param text
-     * @param tests
      *
      * @return boolean
      */
@@ -96,9 +199,6 @@ public final class StringUtil {
      * Checks for the existence of any of the listed prefixes on the non-null
      * text and removes them.
      *
-     * @param text
-     * @param prefixes
-     *
      * @return String
      */
     public static String withoutPrefixes(String text, String... prefixes) {
@@ -117,6 +217,7 @@ public final class StringUtil {
      * @param value String
      *
      * @return boolean
+     *
      * @deprecated {@link StringUtils#isNotBlank(CharSequence)}
      */
     @Deprecated
@@ -133,6 +234,7 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
+     *
      * @deprecated {@link StringUtils#isBlank(CharSequence)}
      */
     @Deprecated
@@ -147,6 +249,7 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return True if the argument is null or the empty string
+     *
      * @deprecated {@link StringUtils#isEmpty(CharSequence)}
      */
     @Deprecated
@@ -158,9 +261,6 @@ public final class StringUtil {
     /**
      * Returns true if both strings are effectively null or whitespace, returns
      * false otherwise if they have actual text that differs.
-     *
-     * @param a
-     * @param b
      *
      * @return boolean
      */
@@ -184,6 +284,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     *
      * @deprecated {@link StringUtils#replace(String, String, String)}
      */
     @Deprecated
@@ -207,11 +308,8 @@ public final class StringUtil {
     }
 
     /**
-     * @param buf
-     * @param src
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
-     *
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
@@ -249,8 +347,6 @@ public final class StringUtil {
     /**
      * Replace some whitespace characters so they are visually apparent.
      *
-     * @param o
-     *
      * @return String
      */
     public static String escapeWhitespace(Object o) {
@@ -271,6 +367,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     *
      * @deprecated {@link StringUtils#replace(String, String, String)} or {@link StringUtils#replaceChars(String, char, char)}
      */
     @Deprecated
@@ -304,6 +401,7 @@ public final class StringUtil {
      * @param delimiter char
      *
      * @return String[]
+     *
      * @deprecated {@link StringUtils#split(String, char)}
      */
     @Deprecated
@@ -352,6 +450,7 @@ public final class StringUtil {
      * @param separator char
      *
      * @return String[]
+     *
      * @deprecated {@link StringUtils#split(String, String)}
      */
     @Deprecated
@@ -386,6 +485,7 @@ public final class StringUtil {
      * @param sb        StringBuffer
      * @param iter      Iterator
      * @param separator String
+     *
      * @deprecated {@link StringUtils#join(Iterator, String)}
      */
     @Deprecated
@@ -411,6 +511,7 @@ public final class StringUtil {
      * @param sb        StringBuilder
      * @param items     Object[]
      * @param separator String
+     *
      * @deprecated {@link StringUtils#join(Iterable, String)}
      */
     @Deprecated
@@ -497,9 +598,6 @@ public final class StringUtil {
      * Trims off the leading characters off the strings up to the trimDepth
      * specified. Returns the same strings if trimDepth = 0
      *
-     * @param strings
-     * @param trimDepth
-     *
      * @return String[]
      */
     public static String[] trimStartOn(String[] strings, int trimDepth) {
@@ -523,6 +621,7 @@ public final class StringUtil {
      * @param length The desired minimum length of the resulting padded String
      *
      * @return The resulting left padded String
+     *
      * @deprecated {@link StringUtils#leftPad(String, int)}
      */
     @Deprecated
@@ -659,4 +758,51 @@ public final class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * Replaces unprintable characters by their escaped (or unicode escaped)
+     * equivalents in the given string
+     */
+    public static String escapeJava(String str) {
+        StringBuilder retval = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            final char ch = str.charAt(i);
+            switch (ch) {
+            case 0:
+                break;
+            case '\b':
+                retval.append("\\b");
+                break;
+            case '\t':
+                retval.append("\\t");
+                break;
+            case '\n':
+                retval.append("\\n");
+                break;
+            case '\f':
+                retval.append("\\f");
+                break;
+            case '\r':
+                retval.append("\\r");
+                break;
+            case '\"':
+                retval.append("\\\"");
+                break;
+            case '\'':
+                retval.append("\\'");
+                break;
+            case '\\':
+                retval.append("\\\\");
+                break;
+            default:
+                if (ch < 0x20 || ch > 0x7e) {
+                    String s = "0000" + Integer.toString(ch, 16);
+                    retval.append("\\u").append(s.substring(s.length() - 4));
+                } else {
+                    retval.append(ch);
+                }
+                break;
+            }
+        }
+        return retval.toString();
+    }
 }

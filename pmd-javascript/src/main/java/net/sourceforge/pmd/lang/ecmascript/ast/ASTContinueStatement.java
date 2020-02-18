@@ -25,6 +25,6 @@ public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStateme
     }
 
     public ASTName getLabel() {
-        return (ASTName) jjtGetChild(0);
+        return (ASTName) getChild(0);
     }
 }
