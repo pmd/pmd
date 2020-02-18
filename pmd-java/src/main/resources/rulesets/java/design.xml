@@ -54,7 +54,6 @@ are suggested.
 
     <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" deprecated="true" />
     <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton" deprecated="true" />
-    <!--    <rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter" deprecated="true" />-->
     <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify" deprecated="true" />
 
     <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" deprecated="true" />
