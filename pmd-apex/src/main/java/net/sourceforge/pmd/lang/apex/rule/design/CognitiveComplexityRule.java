@@ -1,4 +1,12 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.apex.rule.design;
+
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
+import java.util.Stack;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -11,10 +19,6 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-
-import java.util.Stack;
-
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 public class CognitiveComplexityRule extends AbstractApexRule {
 
@@ -64,10 +68,12 @@ public class CognitiveComplexityRule extends AbstractApexRule {
             if (classCognitive >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
                 int classHighest = (int) ApexMetrics.get(ApexOperationMetricKey.COGNITIVE, node, ResultOption.HIGHEST);
 
-                String[] messageParams = {"class",
-                        node.getImage(),
-                        " total",
-                        classCognitive + " (highest " + classHighest + ")", };
+                String[] messageParams = {
+                    "class",
+                    node.getImage(),
+                    " total",
+                    classCognitive + " (highest " + classHighest + ")",
+                };
 
                 addViolation(data, node, messageParams);
             }
@@ -86,10 +92,12 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                         : node.getImage().equals(classNames.peek()) ? "constructor"
                         : "method";
 
-                addViolation(data, node, new String[] {opType,
-                        node.getQualifiedName().getOperation(),
-                        "",
-                        "" + cognitive, });
+                addViolation(data, node, new String[] {
+                    opType,
+                    node.getQualifiedName().getOperation(),
+                    "",
+                    "" + cognitive,
+                });
             }
         }
 

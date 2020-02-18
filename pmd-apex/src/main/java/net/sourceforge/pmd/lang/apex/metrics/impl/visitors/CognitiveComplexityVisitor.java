@@ -1,8 +1,28 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.apex.metrics.impl.visitors;
+
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTPrefixExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 
 import apex.jorje.data.ast.BooleanOp;
 import apex.jorje.data.ast.PrefixOp;
-import net.sourceforge.pmd.lang.apex.ast.*;
 
 /**
  * @author Gwilym Kuiper
