@@ -338,4 +338,25 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Recursion bumps complexity value</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              Integer foo(Integer n) {
+                if (n == 0 || n == 1) { // +2
+                  return 1;
+                }
+
+                return n * foo(n - 1); // +1
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>

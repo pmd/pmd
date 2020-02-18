@@ -11,7 +11,9 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public static class State {
         private int complexity = 0;
         private int nestingLevel = 0;
+
         private BooleanOp currentBooleanOperation = null;
+        private String methodName = null;
 
         public double getComplexity() {
             return complexity;
@@ -43,6 +45,16 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
 
         void decreaseNestingLevel() {
             nestingLevel--;
+        }
+
+        void methodCall(String methodCalledName) {
+            if (methodCalledName.equals(methodName)) {
+                structureComplexity();
+            }
+        }
+
+        void setMethodName(String name) {
+            methodName = name;
         }
     }
 
@@ -184,5 +196,19 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         }
 
         return data;
+    }
+
+    @Override
+    public Object visit(ASTMethod node, Object data) {
+        State state = (State) data;
+        state.setMethodName(node.getNode().getMethodInfo().getCanonicalName());
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTMethodCallExpression node, Object data) {
+        State state = (State) data;
+        state.methodCall(node.getNode().getMethodName());
+        return super.visit(node, data);
     }
 }
