@@ -271,4 +271,23 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Ternary operators cause nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              Integer foo(Integer n) {
+                return n < 0 ?          // +1
+                  -1 : n > 0 ?          // +2
+                  1 : 0;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
