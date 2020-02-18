@@ -145,4 +145,28 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Continue statements increase complexity</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer[] myInts = new Integer[] {1, 2, 3};
+                for (Integer i : myInts) {         // +1
+                  if (i == 3) {                    // +2
+                    continue;                      // +1
+                  }
+                }
+
+                return "done";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>

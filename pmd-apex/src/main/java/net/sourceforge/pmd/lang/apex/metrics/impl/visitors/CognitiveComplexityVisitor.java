@@ -73,4 +73,12 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
 
         return data;
     }
+
+    @Override
+    public Object visit(ASTContinueStatement node, Object data) {
+        State state = (State) data;
+
+        state.structureComplexity();
+        return super.visit(node, data);
+    }
 }
