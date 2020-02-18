@@ -7,8 +7,22 @@ import net.sourceforge.pmd.lang.apex.ast.*;
  */
 public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public static class State {
+        private int complexity = 0;
+
         public double getComplexity() {
-            return 0.0;
+            return complexity;
         }
+
+        void increaseComplexity() {
+            complexity += 1;
+        }
+    }
+
+    @Override
+    public Object visit(ASTIfBlockStatement node, Object data) {
+        State state = (State) data;
+        state.increaseComplexity();
+        super.visit(node, data);
+        return data;
     }
 }
