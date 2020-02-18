@@ -219,4 +219,31 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Only the catch statement increases nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {
+                try {
+                  Merchandise__c m = new Merchandise__c();
+                  insert m;
+                  if (someCondition()) {                           // +1
+                    return;
+                  }
+                } catch(DmlException e) {                          // +1
+                  if (someCondition()) {                           // +2
+                    return;
+                  }
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>

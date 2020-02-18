@@ -100,4 +100,15 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
 
         return data;
     }
+
+    @Override
+    public Object visit(ASTCatchBlockStatement node, Object data) {
+        State state = (State) data;
+
+        state.increaseNestingLevel();
+        super.visit(node, data);
+        state.decreaseNestingLevel();
+
+        return data;
+    }
 }
