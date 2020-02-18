@@ -246,4 +246,29 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Do-while loops cause nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 5.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {
+                Integer n = 0;
+                do {                            // +1
+                  if (n == 3) {                 // +2
+                    System.debug("n is 3");
+                  } else {                      // +2
+                    System.debug("n is not 3");
+                  }
+                  n++;
+                } while (n < 100);
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
