@@ -170,4 +170,19 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
 
         return super.visit(node, data);
     }
+
+    @Override
+    public Object visit(ASTBlockStatement node, Object data) {
+        State state = (State) data;
+
+        for (ApexNode<?> child : node.children()) {
+            child.jjtAccept(this, data);
+
+            // This needs to happen because the current 'run' of boolean operations is terminated
+            // once we finish a statement.
+            state.booleanOperation(null);
+        }
+
+        return data;
+    }
 }

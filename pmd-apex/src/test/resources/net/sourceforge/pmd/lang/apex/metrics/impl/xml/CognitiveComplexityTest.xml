@@ -293,13 +293,14 @@
 
     <test-code>
         <description>Boolean operators</description>
-        <expected-problems>5</expected-problems>
+        <expected-problems>6</expected-problems>
         <expected-messages>
             <message>'c__Foo#a(Integer)' has value 1.</message>
             <message>'c__Foo#b(Integer)' has value 1.</message>
             <message>'c__Foo#c(Integer)' has value 1.</message>
             <message>'c__Foo#d(Boolean,Boolean,Boolean,Boolean,Boolean,Boolean)' has value 3.</message>
             <message>'c__Foo#e(Boolean,Boolean,Boolean)' has value 2.</message>
+            <message>'c__Foo#f()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -327,6 +328,11 @@
                 return a
                     &&                        // +1
                     !(b && c);                // +1
+              }
+
+              Boolean f() {
+                Boolean a = true && false;    // +1
+                return a && true;             // +1
               }
             }
             ]]>
