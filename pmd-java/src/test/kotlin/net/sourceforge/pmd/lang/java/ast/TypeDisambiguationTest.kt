@@ -3,6 +3,8 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 
 /**
@@ -28,7 +30,7 @@ class TypeDisambiguationTest : ParserTestSpec({
             it::getSimpleName shouldBe "Inner"
             it::getImage shouldBe "Inner"
             it::getAmbiguousLhs shouldBe null
-            it::getLhsType shouldBe classType("Foo")
+            it::getQualifier shouldBe classType("Foo")
         }
     }
 
@@ -36,7 +38,7 @@ class TypeDisambiguationTest : ParserTestSpec({
     parserTest("Failures") {
         val logger = enableProcessing()
 
-        parser.parse("""
+        val acu = parser.parse("""
             package com;
             class Foo {
                Foo.Bar f1;
@@ -44,9 +46,30 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         """)
 
-        val (node, args) = logger.warnings[SemanticChecksLogger.CANNOT_RESOLVE_MEMBER]!![0]
-        args.map { it.toString() } shouldBe listOf("Bar", "com.Foo", "an unresolved type")
-        node.shouldBeA<ASTClassOrInterfaceType> {  }
+        val (foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+        val (fooBar) = acu.descendants(ASTClassOrInterfaceType::class.java).toList()
+
+
+        doTest("Unresolved inner type should produce a warning") {
+            val (node, args) = logger.warnings[SemanticChecksLogger.CANNOT_RESOLVE_MEMBER]!![0]
+            args.map { it.toString() } shouldBe listOf("Bar", "com.Foo", "an unresolved type")
+            node.shouldBeA<ASTClassOrInterfaceType> { }
+        }
+
+        doTest("Unresolved inner type should have a symbol anyway") {
+            fooBar.shouldMatchN {
+                classType("Bar") {
+                    classType("Foo") {
+                        it::getReferencedSym shouldBe foo.symbol
+                    }
+
+                    it.referencedSym.shouldBeA<JClassSymbol> {
+                        it::isUnresolved shouldBe true
+                        it::getSimpleName shouldBe "Bar"
+                    }
+                }
+            }
+        }
     }
 
 
@@ -57,7 +80,7 @@ class TypeDisambiguationTest : ParserTestSpec({
             "javasymbols.testdata.Statics" should parseAs {
                 classType("Statics") {
                     it::getImage shouldBe "javasymbols.testdata.Statics"
-                    it::getLhsType shouldBe null
+                    it::getQualifier shouldBe null
                     it::getAmbiguousLhs shouldBe null
                 }
             }
@@ -65,9 +88,9 @@ class TypeDisambiguationTest : ParserTestSpec({
             "javasymbols.testdata.Statics.PublicStatic" should parseAs {
                 classType("PublicStatic") {
 
-                    it::getLhsType shouldBe classType("Statics") {
+                    it::getQualifier shouldBe classType("Statics") {
                         it::getImage shouldBe "javasymbols.testdata.Statics"
-                        it::getLhsType shouldBe null
+                        it::getQualifier shouldBe null
                         it::getAmbiguousLhs shouldBe null
                     }
                 }

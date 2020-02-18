@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.UnresolvedSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
@@ -65,6 +66,13 @@ public final class JavaAstProcessor {
         return makeUnresolvedReference(canonicalName, 0);
     }
 
+    public JClassSymbol makeUnresolvedReference(JTypeDeclSymbol outer, String innerSimpleName) {
+        if (outer instanceof JClassSymbol) {
+            return makeUnresolvedReference(((JClassSymbol) outer).getCanonicalName() + '.' + innerSimpleName);
+        }
+        return makeUnresolvedReference(innerSimpleName); // child of a type variable does not exist
+    }
+
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
         return unresolvedSymFactory.makeUnresolvedReference(canonicalName, typeArity);
     }
@@ -99,7 +107,7 @@ public final class JavaAstProcessor {
         this.symResolver = SymbolResolver.layer(new AstSymbolResolver(acu), this.symResolver);
 
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
-        bench("AST disambiguation", () -> AstDisambiguationPass.traverse(this, acu));
+        bench("AST disambiguation", () -> AstDisambiguationPass.disambig1(this, acu));
 
     }
 

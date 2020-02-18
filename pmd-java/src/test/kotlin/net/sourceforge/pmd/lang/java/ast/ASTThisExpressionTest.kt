@@ -31,7 +31,7 @@ class ASTThisExpressionTest : ParserTestSpec({
                     child {
                         it::getImage shouldBe "ASTThisExpression"
                         it::getTypeArguments shouldBe null
-                        it::getLhsType shouldBe null
+                        it::getQualifier shouldBe null
 
                         it::getAmbiguousLhs shouldBe child {
                             it::getName shouldBe "net.sourceforge.pmd.lang.java.ast"

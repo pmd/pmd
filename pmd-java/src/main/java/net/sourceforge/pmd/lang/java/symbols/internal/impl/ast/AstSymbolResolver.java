@@ -28,7 +28,7 @@ public final class AstSymbolResolver implements SymbolResolver {
 
     public AstSymbolResolver(ASTCompilationUnit compilationUnit) {
         String packageName = compilationUnit.getPackageName();
-        List<ASTAnyTypeDeclaration> typeDecls = compilationUnit.getTypeDeclarations();
+        List<ASTAnyTypeDeclaration> typeDecls = compilationUnit.getTypeDeclarations().toList();
         knownTopLevelClasses = new HashMap<>(typeDecls.size());
         for (ASTAnyTypeDeclaration typeDecl : typeDecls) {
             String name = packageName.isEmpty() ? typeDecl.getSimpleName()

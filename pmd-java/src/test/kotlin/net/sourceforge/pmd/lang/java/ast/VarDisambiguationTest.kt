@@ -50,6 +50,7 @@ class VarDisambiguationTest : ParserTestSpec({
         doTest("With disambig") {
             val acu = parser.withProcessing(true).parse(code)
             val (m1, m2, m3, m4, m5) = acu.descendants(ASTMethodCall::class.java).toList()
+
             m1.qualifier!!.shouldMatchN {
                 fieldAccess("inField") {
                     typeExpr {

@@ -23,7 +23,12 @@ public interface SemanticChecksLogger {
     /**
      * Warning, classpath is misconfigured (or not configured).
      */
-    String CANNOT_FIND_CLASSPATH_SYMBOL = "Cannot resolve symbol {0}";
+    String CANNOT_RESOLVE_SYMBOL = "Cannot resolve symbol {0}";
+
+    /**
+     * Should be an error
+     */
+    String MALFORMED_GENERIC_TYPE = "Maformed generic type: expected {0} type arguments, got {1}";
 
     /**
      * An ambiguous name is completely ambiguous. We don't have info

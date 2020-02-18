@@ -21,7 +21,35 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbol {
 
-
+    /**
+     * Returns true if this class is a symbolic reference to an unresolved
+     * class. In that case no information about the symbol are known except
+     * its name, and the accessors of this class return default values.
+     *
+     * <p>This kind of symbol is introduced to allow for some best-effort
+     * symbolic resolution. For example in:
+     * <pre>{@code
+     * import org.Bar;
+     *
+     * Bar foo = new Bar();
+     * }</pre>
+     * and supposing {@code org.Bar} is not on the classpath. The type
+     * of {@code foo} is {@code Bar}, which we can qualify to {@code org.Bar} thanks to the
+     * import (via symbol tables, and without even querying the classpath).
+     * Even though we don't know what members {@code org.Bar} has, a
+     * test for {@code typeIs("org.Bar")} would succeed with certainty,
+     * so it makes sense to preserve the name information and not give
+     * up too early.
+     *
+     * <p>Note that unresolved types are always created from an unresolved
+     * <i>canonical name</i>, so they can't be just <i>any</i> type. For example,
+     * they can't be array types, nor local classes (since those are lexically
+     * scoped, so always resolvable), nor anonymous classes (can only be referenced
+     * on their declaration site), type variables, etc.
+     */
+    default boolean isUnresolved() {
+        return false;
+    }
 
 
     /**

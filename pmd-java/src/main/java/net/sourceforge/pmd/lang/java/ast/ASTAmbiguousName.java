@@ -128,7 +128,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     /**
      * Called by the parser if this ambiguous name was expected to be
      * a type name. Then we simply promote it to an {@link ASTClassOrInterfaceType}
-     * with the appropriate {@link ASTClassOrInterfaceType#getAmbiguousLhs()}.
+     * with the appropriate LHS.
      *
      * @return the node which will replace this node in the tree
      */
