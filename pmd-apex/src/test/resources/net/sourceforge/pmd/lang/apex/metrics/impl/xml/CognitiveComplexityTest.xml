@@ -48,4 +48,31 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Non nested if statements don't incur a penalty</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n > 0) {           // +1
+                  return "positive";
+                }
+
+                if (n == 0) {          // +1
+                  return "zero";
+                }
+
+                if (n < 0) {           // +1
+                  return "negative";
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
