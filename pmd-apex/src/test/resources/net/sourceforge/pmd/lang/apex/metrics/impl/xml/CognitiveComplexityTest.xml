@@ -121,4 +121,28 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Foreach loops increment nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer[] myInts = new Integer[] {1, 2, 3};
+                for (Integer i : myInts) {         // +1
+                  if (i == 3) {                    // +2
+                    return "three";
+                  }
+                }
+
+                return "done";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
