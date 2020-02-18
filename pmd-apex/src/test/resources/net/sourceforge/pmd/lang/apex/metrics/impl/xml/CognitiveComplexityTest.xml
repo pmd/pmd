@@ -23,4 +23,29 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Nested if statements bump complexity level</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return "one";
+                  }
+
+                  return "positive";
+                }
+
+                return "negative or 0";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
