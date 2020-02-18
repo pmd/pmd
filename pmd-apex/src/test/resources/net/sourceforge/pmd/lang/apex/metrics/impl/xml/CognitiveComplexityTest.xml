@@ -193,4 +193,30 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>While statements increase nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer i = 1;
+                Integer n = 0;
+                while (n < 100) {  // +1
+                  i = i * n;
+                  if (i > 1000) {  // +2
+                    return "big";
+                  }
+                }
+
+                return "small";
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
