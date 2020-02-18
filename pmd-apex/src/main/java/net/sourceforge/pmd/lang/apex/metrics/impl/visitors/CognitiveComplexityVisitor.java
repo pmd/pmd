@@ -32,14 +32,22 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTIfBlockStatement node, Object data) {
+    public Object visit(ASTIfElseBlockStatement node, Object data) {
         State state = (State) data;
-        state.structureComplexity();
-        state.nestingComplexity();
 
-        state.increaseNestingLevel();
-        super.visit(node, data);
-        state.decreaseNestingLevel();
+        boolean hasElseStatement = node.getNode().hasElseStatement();
+        for (ApexNode<?> child : node.children()) {
+            // If we don't have an else statement, we get an empty block statement which we shouldn't count
+            if (!hasElseStatement && child instanceof ASTBlockStatement) {
+                break;
+            }
+
+            state.structureComplexity();
+            state.nestingComplexity();
+            state.increaseNestingLevel();
+            super.visit(child, data);
+            state.decreaseNestingLevel();
+        }
 
         return data;
     }
