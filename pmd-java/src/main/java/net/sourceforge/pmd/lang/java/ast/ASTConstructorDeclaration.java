@@ -33,11 +33,6 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
     }
 
     @Override
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.CONSTRUCTOR;
-    }
-
-    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

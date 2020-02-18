@@ -29,13 +29,10 @@ final class AstImplUtil {
 
 
     static void bumpParenDepth(ASTExpression expression) {
-        if (expression instanceof AbstractJavaExpr) {
-            ((AbstractJavaExpr) expression).bumpParenDepth();
-        } else if (expression instanceof ASTLambdaExpression) {
-            ((ASTLambdaExpression) expression).bumpParenDepth();
-        } else {
-            throw new IllegalStateException(expression.getClass() + " doesn't have parenDepth attribute!");
-        }
+        assert expression instanceof AbstractJavaExpr
+            : expression.getClass() + " doesn't have parenDepth attribute!";
+
+        ((AbstractJavaExpr) expression).bumpParenDepth();
     }
 
 }
