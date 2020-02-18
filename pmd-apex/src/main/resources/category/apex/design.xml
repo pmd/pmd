@@ -86,6 +86,63 @@ public class Complicated {
         </example>
     </rule>
 
+    <rule name="CognitiveComplexity"
+          message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
+          since="6.0.0"
+          class="net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#cognitivecomplexity">
+        <description>
+            TODO
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class ExampleClass {
+    // Cognitive complexity of 1, cyclomatic complexity of 5
+    public String SimpleMethod(int number) {
+        switch on number {       // +1
+            when 1 {
+                return "one";
+            }
+            when 2 {
+                return "two";
+            }
+            when 3 {
+                return "three";
+            }
+            when 4 {
+                return "a few";
+            }
+            when else {
+                return "lots";
+            }
+        }
+    }
+
+    // Cognitive complexity of 9, cyclomatic complexity of 5
+    public Integer ComplicatedMethod(Integer n) {
+        Integer total = 0;
+        for (Integer candidatePrime = 0; candidatePrime < n; i++) {   // +1
+            Boolean isPrime = true;
+            for (Integer i = 2; i * i < candidatePrime; j++) {        // +2
+                if (candidatePrime % i == 0) {                        // +3
+                    isPrime = false;
+                    break;                                            // +1
+                }
+            }
+
+            if (isPrime) {                                            // +2
+                total += candidatePrime;
+            }
+        }
+
+        return total;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ExcessiveClassLength"
           since="5.5.0"
           message="Avoid really long classes."
