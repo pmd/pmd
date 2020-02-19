@@ -26,14 +26,14 @@ public class CognitiveComplexityRule extends AbstractApexRule {
             = PropertyFactory.intProperty("classReportLevel")
             .desc("Total class cognitive complexity reporting threshold")
             .require(positive())
-            .defaultValue(40)
+            .defaultValue(50)
             .build();
 
     private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR
             = PropertyFactory.intProperty("methodReportLevel")
             .desc("Cognitive complexity reporting threshold")
             .require(positive())
-            .defaultValue(10)
+            .defaultValue(15)
             .build();
 
     private Stack<String> classNames = new Stack<>();
