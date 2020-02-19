@@ -2506,7 +2506,7 @@ versions, please let us know [on our Issue Tracker](https://github.com/pmd/pmd/i
 
 #### Deprecated Rules
 
-*   The Java rule [AbstractNaming](pmd_rules_java_codestyle.html#abstractnaming) (`java-codestyle`) is deprecated
+*   The Java rule AbstractNaming (`java-codestyle`) is deprecated
     in favour of [ClassNamingConventions](pmd_rules_java_codestyle.html#classnamingconventions).
     See [Naming rules enhancements](#naming-rules-enhancements).
 

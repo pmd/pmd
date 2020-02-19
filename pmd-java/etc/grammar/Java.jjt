@@ -912,9 +912,9 @@ void EnumBody():
 {}
 {
    "{"
-   [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
-	[ "," ]
-   [ ";" ( ClassOrInterfaceBodyDeclaration() )* ]
+    [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
+    [ "," { jjtThis.setTrailingComma(); } ]
+    [ ";" { jjtThis.setSeparatorSemi(); } ( ClassOrInterfaceBodyDeclaration() )* ]
    "}"
 }
 
