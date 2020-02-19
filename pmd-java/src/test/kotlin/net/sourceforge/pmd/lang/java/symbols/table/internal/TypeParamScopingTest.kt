@@ -247,4 +247,50 @@ class TypeParamScopingTest : ParserTestSpec({
     }
 
 
+    parserTest("Type parameters shadow member types") {
+
+        val acu = parser.withProcessing().parse("""
+
+            package myTest;
+
+            class Scratch<T> {
+                void m(T t) {} // the type param
+                class T {
+                    void m(T t) {} // the class
+                }
+            }
+        """)
+
+        val (fooClass, innerTClass) =
+                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
+
+        val (insideFoo, insideT) =
+                acu.descendants(ASTFormalParameter::class.java).toList()
+
+        doTest("Inside Foo: T is Foo#T") {
+
+            insideFoo.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
+                result::getSimpleName shouldBe "T"
+                result::getDeclaringSymbol shouldBe fooClass.symbol
+
+                contributor.shouldBeA<ASTTypeParameter> {
+                    it::getSymbol shouldBe result
+                }
+            }
+        }
+
+        doTest("Inside Foo.T: T is Foo.T") {
+
+            insideT.symbolTable.shouldResolveTypeTo<JClassSymbol>("T") {
+                result::getSimpleName shouldBe "T"
+                result shouldBe innerTClass.symbol
+
+                contributor.shouldBeA<ASTAnyTypeDeclaration> {
+                    it::getSymbol shouldBe result
+                }
+            }
+        }
+    }
+
+
 })

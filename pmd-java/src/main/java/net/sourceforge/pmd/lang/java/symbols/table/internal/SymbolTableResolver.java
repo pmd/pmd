@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
@@ -81,13 +83,17 @@ public final class SymbolTableResolver {
      * @return 1 if the table was pushed, 0 if not
      */
     private <T> int pushOnStack(TableLinker<T> tableLinker, T data) {
-        JSymbolTable parent = peekStack();
-        AbstractSymbolTable created = tableLinker.createAndLink(parent, myResolveHelper, data);
-        if (created.isPrunable()) {
-            return 0; // and don't set the stack top
+        AbstractSymbolTable created = tableLinker.createAndLink(peekStack(), myResolveHelper, data);
+        return pushOnStack(created) ? 1 : 0;
+    }
+
+    private boolean pushOnStack(AbstractSymbolTable table) {
+        assert table.getParent() == peekStack() : "Wrong parent";
+        if (table.isPrunable()) {
+            return false; // and don't set the stack top
         }
-        this.myStackTop = created;
-        return 1;
+        this.myStackTop = table;
+        return true;
     }
 
     private JSymbolTable popStack() {
@@ -156,11 +162,26 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = 0;
+            pushed += pushOnStack(SelfTypeSymTable::new, node); // override type params of enclosing type
+
+            if (pushOnStack(TypeParamOwnerSymTable::new, node) > 0) {
+                // there are type parameters: the extends/implements/type parameter section know about them
+
+                NodeStream<? extends JavaNode> notBody = node.children().drop(1).filterNot(it -> it instanceof ASTTypeBody);
+                for (JavaNode it : notBody) {
+                    setTopSymbolTable(it);
+                }
+
+                popStack();
+            }
+
+            // the following is just for the body
+
             pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
             pushed += pushOnStack(MemberTypeSymTable::new, node); // declared classes
-            pushed += pushOnStack(TypeParamOwnerSymTable::new, node); // shadow inherited stuff
+            pushed += pushOnStack(TypeParamOwnerSymTable::new, node); // shadow type names of the former 2
 
-            setTopSymbolTableAndRecurse(node);
+            setTopSymbolTableAndRecurse(node.getBody());
 
             popStack(pushed);
         }

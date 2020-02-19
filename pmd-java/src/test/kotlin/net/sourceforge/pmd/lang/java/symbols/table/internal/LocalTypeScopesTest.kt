@@ -83,7 +83,7 @@ class LocalScopesTest : ParserTestSpec({
 
             import somewhere.Inner;
 
-            class Foo {
+            class Foo extends Inner { // somewhere.Inner
                 Foo foo;
 
                 class Inner {
@@ -95,6 +95,9 @@ class LocalScopesTest : ParserTestSpec({
                 Inner i;
             }
         """)
+
+        val (foo, inner, other) =
+                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
 
         val (insideFoo, insideInner, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).toList()
@@ -115,6 +118,14 @@ class LocalScopesTest : ParserTestSpec({
                 contributor.shouldBeA<ASTClassOrInterfaceDeclaration> {
                     it::getSymbol shouldBe result
                 }
+            }
+        }
+
+        doTest("Inside extends clause: Inner is the import") {
+
+            foo.superClassTypeNode.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
+                result::getCanonicalName shouldBe "somewhere.Inner"
+                contributor.shouldBeA<ASTImportDeclaration> {}
             }
         }
 
