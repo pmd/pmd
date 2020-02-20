@@ -399,6 +399,25 @@ public class DirectSubclass extends BaseClass {
     </test-code>
 
     <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct different package, same visibility</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod.other;
+
+import net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod.BaseClass;
+
+public class DirectSubclassInOtherPackage extends BaseClass {
+
+
+    @Override
+    protected void doBase() {
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - transitive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -407,7 +426,7 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 public class TransitiveSubclass extends OtherSubclass {
 
     @Override
-    protected void doBase() {
+    public void doBase() {
         super.doBase();
     }
 }

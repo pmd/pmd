@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -23,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -49,9 +52,15 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             .desc("Ignore annotations")
             .build();
 
+    private String packageName;
 
     public UselessOverridingMethodRule() {
         definePropertyDescriptor(IGNORE_ANNOTATIONS_DESCRIPTOR);
+    }
+
+    @Override
+    public void start(RuleContext ctx) {
+        packageName = "";
     }
 
     @Override
@@ -84,6 +93,12 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             }
         }
         return false;
+    }
+
+    @Override
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        packageName = node.getPackageNameImage();
+        return super.visit(node, data);
     }
 
     @Override
@@ -229,7 +244,6 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         }
 
         String overriddenMethodName = node.getName();
-        int overriddenModifiers = node.getModifiers();
 
         List<Class<?>> typeArguments = new ArrayList<>();
         for (ASTFormalParameter parameter : node.getFormalParameters()) {
@@ -256,7 +270,26 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             }
             superType = superType.getSuperclass();
         }
-        return declaredMethod != null && overriddenModifiers != declaredMethod.getModifiers();
+
+        return declaredMethod != null && isElevatingAccessModifier(node, declaredMethod);
+    }
+
+    private boolean isElevatingAccessModifier(ASTMethodDeclaration overridingMethod, Method superMethod) {
+        String superPackageName = null;
+        Package p = superMethod.getDeclaringClass().getPackage();
+        if (p != null) {
+            superPackageName = p.getName();
+        }
+        // Note: can't simply compare superMethod.getModifiers() with overridingMethod.getModifiers()
+        // since AccessNode#PROTECTED != Modifier#PROTECTED.
+        boolean elevatingFromProtected = Modifier.isProtected(superMethod.getModifiers())
+                && !overridingMethod.isProtected();
+        boolean elevatingFromPackagePrivate = superMethod.getModifiers() == 0 && overridingMethod.getModifiers() != 0;
+        boolean elevatingIntoDifferentPackage = !packageName.equals(superPackageName);
+
+        return elevatingFromProtected
+                || elevatingFromPackagePrivate
+                || elevatingIntoDifferentPackage;
     }
 
     /**
