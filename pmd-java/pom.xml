@@ -38,6 +38,12 @@
                     </delimiters>
                 </configuration>
             </plugin>
+            
+            <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>4.0.0</version>
+      </plugin>
 
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
