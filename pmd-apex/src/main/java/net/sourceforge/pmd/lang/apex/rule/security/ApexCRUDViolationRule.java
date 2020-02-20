@@ -339,7 +339,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isWithSecurityEnforced(final AbstractApexNode<?> node){
         if(node instanceof ASTSoqlExpression){
-            return ((ASTSoqlExpression) node).getQuery().contains("WITH SECURITY_ENFORCED");
+            String pattern = ".*\\bWITH SECURITY_ENFORCED\\b.*";
+            return ((ASTSoqlExpression) node).getQuery().matches(pattern);
         }
         return false;
     }
