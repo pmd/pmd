@@ -9,7 +9,7 @@
         <description>class names should not start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class foo {};
+public class foo {}
 		]]></code>
     </test-code>
     
@@ -17,7 +17,7 @@ public class foo {};
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooBar {};
+public class FooBar {}
 		]]></code>
     </test-code>
 

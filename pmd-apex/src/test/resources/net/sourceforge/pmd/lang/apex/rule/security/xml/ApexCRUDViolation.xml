@@ -607,7 +607,8 @@ public class Foo {
 	} 
 	
 	public void doChecks() {
-		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
+		if (!Contact.sObjectType.getDescribe().isCreateable()
+		&& !Contact.sObjectType.getDescribe().isUpdateable()) {
 			throw new NoAccessException();
 		}
 	}
@@ -626,7 +627,7 @@ public class Foo {
 	} 
 	
 	public void doChecks() {
-		anotherLevelHere("yolo");
+		anotherLevelHere('yolo');
 	}
 	
 	private void anotherLevelHere(String s) {

@@ -111,7 +111,7 @@
           public Test() {
             if (a == 1) {
               if (b == 2) {
-                System.out.println("b");
+                System.out.println('b');
               } else if (b == 1) {
               }
             } else {
@@ -222,7 +222,7 @@
               k++;
             } catch (IOException ioe) {
               ioe.printStackTrace();
-              throw new Exception("surprise", ioe);
+              throw new Exception('surprise', ioe);
             } catch (Exception e) {
               // do nothing
             }
@@ -233,7 +233,7 @@
               k++;
             } catch (IOException ioe) {
               ioe.printStackTrace();
-              throw new Exception("surprise", ioe);
+              throw new Exception('surprise', ioe);
             } catch (Exception e) {
               // do nothing
             }

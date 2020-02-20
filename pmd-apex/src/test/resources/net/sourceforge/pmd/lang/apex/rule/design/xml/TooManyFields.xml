@@ -63,33 +63,12 @@ public class Foo {
 	Integer a5; 
 	Integer a6; 
 	public class Bar {
-		Integer a7; 
-		Integer a8; 
-		Integer a9; 
-		Integer a10; 
-		Integer a11; 
-		Integer a12; 
-	}
-}
-		]]></code>
-    </test-code>
-    
-    <test-code>
-        <description>outer class, inner interface, both OK</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	Integer a1; 
-	Integer a2; 
-	Integer a3; 
-	Integer a4; 
-	Integer a5; 
-	interface Bar {
-		static Integer a6; 
-		static Integer a7; 
-		static Integer a8; 
-		static Integer a9; 
-		static Integer a10; 
+		Integer a7;
+		Integer a8;
+		Integer a9;
+		Integer a10;
+		Integer a11;
+		Integer a12;
 	}
 }
 		]]></code>
@@ -119,34 +98,22 @@ public class Foo {
 		Integer b16; 
 	}
 	public class Bar2 {
-		Integer b1; 
-		Integer b2; 
-		Integer b3; 
-		Integer b4; 
-		Integer b5; 
-		Integer b6; 
-		Integer b7; 
-		Integer b8; 
-		Integer b9; 
-		Integer b10; 
-		Integer b11; 
-		Integer b12; 
-		Integer b13; 
-		Integer b14; 
-		Integer b15; 
-		Integer b16; 
-	}
-}
-		]]></code>
-    </test-code>
-    
-    <test-code>
-        <description>anonymous class with a field</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	public class Bar1 {
-		Object foo = new Object() {public Integer x;}; 
+		Integer b1;
+		Integer b2;
+		Integer b3;
+		Integer b4;
+		Integer b5;
+		Integer b6;
+		Integer b7;
+		Integer b8;
+		Integer b9;
+		Integer b10;
+		Integer b11;
+		Integer b12;
+		Integer b13;
+		Integer b14;
+		Integer b15;
+		Integer b16;
 	}
 }
 		]]></code>
