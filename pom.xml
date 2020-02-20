@@ -1015,4 +1015,10 @@
         <module>pmd-doc</module>
         <module>pmd-lang-test</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+        </dependency>
+    </dependencies>
 </project>
