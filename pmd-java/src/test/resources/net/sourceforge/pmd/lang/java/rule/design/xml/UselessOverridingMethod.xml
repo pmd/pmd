@@ -229,42 +229,35 @@ public class Foo extends Bar {
      ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>False +: Overriding method merely calls super (see bug 1415525)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import nu.xom.Serializer;
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
-private static class ExposingSerializer extends Serializer {
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
-    ExposingSerializer(OutputStream out, String encoding)
-    throws UnsupportedEncodingException {
+import org.w3c.dom.Node;
+
+class ExposingSerializer extends Serializer {
+
+
+    ExposingSerializer(OutputStream out, String encoding) throws UnsupportedEncodingException {
         super(out, encoding);
     }
 
-  /**
-   * Overriding in order to change the access modifier from
-   * protected to public - so: not only merely calling super.
-   *
-   * Method signature in super class:
-   * protected void writeChild(nu.xom.Node arg0) throws java.io.IOException;
-   *
-   * See: https://sourceforge.net/tracker/?func=detail&aid=1415525&group_id=56262&atid=479921
-   */
+
+    /**
+     * Overriding in order to change the access modifier from protected to public - so: not only merely calling super.
+     *
+     * <p>Method signature in super class: protected void writeChild(nu.xom.Node arg0) throws java.io.IOException;
+     *
+     * <p>See: https://sourceforge.net/tracker/?func=detail&aid=1415525&group_id=56262&atid=479921
+     */
     public void writeChild(Node node) throws IOException {
         super.writeChild(node);
-    }
-
-    public void exposedWriteRaw(String text) throws IOException {
-        writeRaw(text);
-    }
-
-    public void exposedWriteEscaped(String text) throws IOException {
-        writeEscaped(text);
-    }
-
-    public void exposedWriteAttributeValue(String text) throws IOException {
-        writeAttributeValue(text);
     }
 }
      ]]></code>
@@ -363,5 +356,77 @@ public class AnonymousClassConstructor {
     }
 }
      ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSubclass extends BaseClass {
+
+
+    @Override
+    public void doBase() {
+        super.doBase();
+    }
+
+
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct but changing arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSubclass extends BaseClass {
+
+
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo.toString());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - transitive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class TransitiveSubclass extends OtherSubclass {
+
+    @Override
+    protected void doBase() {
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSubclass2 extends DirectSubclass {
+    @Override
+    public void doBase() { // it's already public in DirectSubclass
+        super.doBase();
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

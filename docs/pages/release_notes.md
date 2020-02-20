@@ -34,6 +34,8 @@ the suppressions with a `NOPMD` comment. See [Suppressing warnings](pmd_userdocs
     *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
 *   java-bestpractices
     *   [#2277](https://github.com/pmd/pmd/issues/2277): \[java] FP in UnusedImports for ambiguous static on-demand imports
+*   java-design
+    *   [#911](https://github.com/pmd/pmd/issues/911): \[java] UselessOverridingMethod false positive when elevating access modifier
 *   java-errorprone
     *   [#2250](https://github.com/pmd/pmd/issues/2250): \[java] InvalidLogMessageFormat flags logging calls using a slf4j-Marker
     *   [#2255](https://github.com/pmd/pmd/issues/2255): \[java] InvalidLogMessageFormat false-positive for a lambda argument

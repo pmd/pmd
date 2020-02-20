@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,9 +192,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             }
         }
 
-        if (arguments.getNumChildren() == 0) {
-            addViolation(data, node, getMessage());
-        } else {
+        if (arguments.size() > 0) {
             ASTArgumentList argumentList = (ASTArgumentList) arguments.getChild(0);
             for (int i = 0; i < argumentList.getNumChildren(); i++) {
                 Node expressionChild = argumentList.getChild(i).getChild(0);
@@ -226,12 +225,54 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
                     // The arguments are not simply passed through
                     return super.visit(node, data);
                 }
-
             }
-            // All arguments are passed through directly
-            addViolation(data, node, getMessage());
         }
+
+        if (modifiersChanged(node)) {
+            return super.visit(node, data);
+        }
+
+        // All arguments are passed through directly or there were no arguments
+        addViolation(data, node, getMessage());
+
         return super.visit(node, data);
+    }
+
+    private boolean modifiersChanged(ASTMethodDeclaration node) {
+        Class<?> type = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getType();
+        if (type == null) {
+            return false;
+        }
+
+        String overriddenMethodName = node.getName();
+        int overriddenModifiers = node.getModifiers();
+
+        List<Class<?>> typeArguments = new ArrayList<>();
+        for (ASTFormalParameter parameter : node.getFormalParameters()) {
+            Class<?> parameterType = parameter.getType();
+            if (parameterType != null) {
+                typeArguments.add(parameterType);
+            }
+        }
+
+        // did we have for each parameter the type?
+        if (typeArguments.size() != node.getFormalParameters().size()) {
+            return false;
+        }
+
+        // search method with same name up the hierarchy
+        Class<?>[] typeArgumentArray = typeArguments.toArray(new Class<?>[0]);
+        Class<?> superType = type.getSuperclass();
+        Method declaredMethod = null;
+        while (superType != null && declaredMethod == null) {
+            try {
+                declaredMethod = superType.getDeclaredMethod(overriddenMethodName, typeArgumentArray);
+            } catch (NoSuchMethodException | SecurityException e) {
+                declaredMethod = null;
+            }
+            superType = superType.getSuperclass();
+        }
+        return declaredMethod != null && overriddenModifiers != declaredMethod.getModifiers();
     }
 
     public <T> List<T> findFirstDegreeChildrenOfType(Node n, Class<T> targetType) {
