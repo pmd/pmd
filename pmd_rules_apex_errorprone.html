@@ -1462,7 +1462,7 @@ using DML in constructors is not a security problem, but crashes the application
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">trigger</span> <span class="nc">AccountTrigger</span> <span class="n">on</span> <span class="nf">Account</span> <span class="o">(</span><span class="n">before</span> <span class="n">insert</span><span class="o">,</span> <span class="n">before</span> <span class="n">update</span><span class="o">)</span> <span class="o">{</span>
    <span class="nc">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="nc">Trigger</span><span class="o">.</span><span class="na">new</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span> <span class="c1">//Bad: Accessing the trigger array directly is not recommended.</span>
 
-   <span class="n">foreach</span> <span class="o">(</span> <span class="nc">Account</span> <span class="n">a</span> <span class="o">:</span> <span class="nc">Trigger</span><span class="o">.</span><span class="na">new</span> <span class="o">){</span>
+   <span class="k">for</span> <span class="o">(</span> <span class="nc">Account</span> <span class="n">a</span> <span class="o">:</span> <span class="nc">Trigger</span><span class="o">.</span><span class="na">new</span> <span class="o">){</span>
         <span class="c1">//Good: Iterate through the trigger.new array instead.</span>
    <span class="o">}</span>
 <span class="o">}</span>
@@ -2019,7 +2019,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 17, 2020 <br />
+ Site last generated: Feb 20, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
