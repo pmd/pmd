@@ -11,8 +11,10 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 
 /**
  * Routines to share logic for equality, respecting the contract of
@@ -157,6 +159,18 @@ public final class SymbolEquality {
         }
     };
 
+    private static final EqAndHash<Object> IDENTITY = new EqAndHash<Object>() {
+        @Override
+        public int hash(Object t1) {
+            return System.identityHashCode(t1);
+        }
+
+        @Override
+        public boolean equals(Object t1, Object t2) {
+            return t1 == t2;
+        }
+    };
+
     /**
      * Strategy to perform equals/hashcode for a type T. There are libraries
      * for that, whatever.
@@ -168,7 +182,64 @@ public final class SymbolEquality {
 
         public abstract boolean equals(T t1, Object t2);
 
+    }
 
+    public static <T extends JElementSymbol> boolean equals(T e1, Object e2) {
+        @SuppressWarnings("unchecked")
+        EqAndHash<T> eqAndHash = (EqAndHash<T>) e1.acceptVisitor(EqAndHashVisitor.INSTANCE, null);
+        return eqAndHash.equals(e1, e2);
+    }
+
+    public static <T extends JElementSymbol> int hash(T e1) {
+        @SuppressWarnings("unchecked")
+        EqAndHash<T> eqAndHash = (EqAndHash<T>) e1.acceptVisitor(EqAndHashVisitor.INSTANCE, null);
+        return eqAndHash.hash(e1);
+    }
+
+
+    private static final class EqAndHashVisitor implements SymbolVisitor<EqAndHash<?>, Void> {
+
+        static final EqAndHashVisitor INSTANCE = new EqAndHashVisitor();
+
+        @Override
+        public EqAndHash<?> visitSymbol(JElementSymbol sym, Void aVoid) {
+            throw new IllegalStateException("Unknown symbol " + sym.getClass());
+        }
+
+        @Override
+        public EqAndHash<?> visitClass(JClassSymbol sym, Void param) {
+            return CLASS;
+        }
+
+        @Override
+        public EqAndHash<?> visitTypeParam(JTypeParameterSymbol sym, Void param) {
+            return TYPE_PARAM;
+        }
+
+        @Override
+        public EqAndHash<?> visitCtor(JConstructorSymbol sym, Void param) {
+            return CONSTRUCTOR;
+        }
+
+        @Override
+        public EqAndHash<?> visitMethod(JMethodSymbol sym, Void param) {
+            return METHOD;
+        }
+
+        @Override
+        public EqAndHash<?> visitField(JFieldSymbol sym, Void param) {
+            return FIELD;
+        }
+
+        @Override
+        public EqAndHash<?> visitLocal(JLocalVariableSymbol sym, Void param) {
+            return IDENTITY;
+        }
+
+        @Override
+        public EqAndHash<?> visitFormal(JFormalParamSymbol sym, Void param) {
+            return FORMAL_PARAM;
+        }
     }
 
 

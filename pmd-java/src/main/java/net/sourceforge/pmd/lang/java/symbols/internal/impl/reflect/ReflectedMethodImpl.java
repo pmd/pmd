@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 
 class ReflectedMethodImpl extends AbstractReflectedExecutableSymbol<Method> implements JMethodSymbol {
@@ -24,14 +23,4 @@ class ReflectedMethodImpl extends AbstractReflectedExecutableSymbol<Method> impl
         return reflected.getName();
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.METHOD.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.METHOD.hash(this);
-    }
 }

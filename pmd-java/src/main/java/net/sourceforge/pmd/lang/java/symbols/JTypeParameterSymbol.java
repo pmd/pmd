@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.symbols;
 import java.lang.reflect.Modifier;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 
@@ -42,11 +41,16 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
         return getDeclaringSymbol().getModifiers() | Modifier.ABSTRACT | Modifier.FINAL;
     }
 
-
     @Override
-    @Nullable
+    @NonNull
     default JClassSymbol getEnclosingClass() {
         JTypeParameterOwnerSymbol ownerSymbol = getDeclaringSymbol();
         return ownerSymbol instanceof JClassSymbol ? (JClassSymbol) ownerSymbol : ownerSymbol.getEnclosingClass();
+    }
+
+
+    @Override
+    default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
+        return visitor.visitTypeParam(this, param);
     }
 }

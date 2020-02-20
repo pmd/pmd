@@ -52,6 +52,9 @@ abstract class AbstractReflectedExecutableSymbol<T extends Executable> extends A
     public final List<JFormalParamSymbol> getFormalParameters() {
         if (params == null) {
             this.params = Arrays.stream(reflected.getParameters())
+                                // implicit parameters are filtered out
+                                // this affects eg params of enum constructors
+                                .filter(it -> !it.isImplicit())
                                 .map(p -> new ReflectedMethodParamImpl(this, p))
                                 .collect(Collectors.toList());
         }

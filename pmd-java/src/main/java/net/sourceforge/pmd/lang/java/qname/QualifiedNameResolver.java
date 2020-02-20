@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.qname;
 
 import static net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -18,19 +20,29 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 
 
 /**
  * Populates {@link JavaQualifiableNode} instances with their qualified names.
+ *
+ * <p>In fact, populates symbols on declaration nodes.
+ * TODO in the near future we'll get rid of qualified names, and can
+ * reuse this class just to build symbols (moving it to symbols.impl.ast).
  *
  * @author Clément Fournier
  * @since 6.1.0
@@ -64,6 +76,9 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     private final Stack<MutableInt> anonymousCounters = new Stack<>();
 
     private final Stack<JavaTypeQualifiedName> innermostEnclosingTypeName = new Stack<>();
+
+    private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
+    private final AstSymFactory symFactory;
 
     /**
      * Package list of the current file.
@@ -102,16 +117,16 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      */
     private ClassLoader classLoader;
 
+    public QualifiedNameResolver(AstSymFactory symFactory, ClassLoader classLoader) {
+        this.symFactory = symFactory;
+        this.classLoader = classLoader;
+    }
+
     /**
-     * Initialises the visitor and starts it.
-     *
-     * @param classLoader The classloader that will be used by type qualified names
-     *                    to load their type.
-     * @param rootNode    The root hierarchy
+     * Traverse the compilation unit.
      */
-    public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
-        this.classLoader = PMDASMClassLoader.getInstance(classLoader);
-        rootNode.jjtAccept(this, null);
+    public void traverse(ASTCompilationUnit root) {
+        root.jjtAccept(this, null);
     }
 
 
@@ -193,6 +208,23 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         return getLongestPackagePrefix(acc.substring(0, acc.lastIndexOf('.')), i - 1);
     }
 
+    @Override
+    public Object visit(ASTVariableDeclaratorId node, Object data) {
+
+        if (isTrueLocalVar(node)) {
+            symFactory.setLocalVarSymbol(node);
+        } else {
+            // in the other cases, building the method/ctor/class symbols already set the symbols
+            assert node.getSymbol() != null : "Symbol was null for " + node;
+        }
+
+        return super.visit(node, data);
+    }
+
+    private boolean isTrueLocalVar(ASTVariableDeclaratorId node) {
+        return !(node.isField() || node.isEnumConstant() || node.getParent() instanceof ASTFormalParameter);
+    }
+
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
@@ -203,26 +235,13 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
         updateClassContext(node.getSimpleName(), localIndex);
 
-        InternalApiBridge.setQname(node, contextClassQName());
-
-        super.visit(node, data);
-
-        // go back to previous context
-        rollbackClassContext();
-
-        return data;
+        return recurseOnClass(node);
     }
-
 
     @Override
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {
-
         updateContextForAnonymousClass();
-        InternalApiBridge.setQname(node, contextClassQName());
-        super.visit(node, data);
-        rollbackClassContext();
-
-        return data;
+        return recurseOnClass(node);
     }
 
 
@@ -230,7 +249,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTMethodDeclaration node, Object data) {
         String opname = getOperationName(node.getName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
         InternalApiBridge.setQname(node, contextOperationQName(opname, false));
-        return super.visit(node, data);
+        return recurseOnExecutable(node);
     }
 
 
@@ -238,7 +257,31 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTConstructorDeclaration node, Object data) {
         String opname = getOperationName(classNames.head(), node.getFirstDescendantOfType(ASTFormalParameters.class));
         InternalApiBridge.setQname(node, contextOperationQName(opname, false));
-        return super.visit(node, data);
+        return recurseOnExecutable(node);
+    }
+
+
+    public Object recurseOnExecutable(ASTMethodOrConstructorDeclaration node) {
+        JExecutableSymbol sym = node.getSymbol();
+        enclosingSymbols.addLast(sym);
+
+        super.visit(node, null);
+
+        enclosingSymbols.removeLast();
+        return null;
+    }
+
+    public Object recurseOnClass(ASTAnyTypeDeclaration node) {
+        InternalApiBridge.setQname(node, contextClassQName());
+
+        JClassSymbol sym = symFactory.setClassSymbol(enclosingSymbols.peekLast(), node);
+        enclosingSymbols.addLast(sym);
+
+        super.visit(node, null);
+
+        rollbackClassContext();
+        enclosingSymbols.removeLast();
+        return null;
     }
 
 

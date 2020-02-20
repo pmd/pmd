@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
@@ -61,6 +62,7 @@ public final class SymbolTableResolver {
             : "Unbalanced stack push/pop! Top is " + myStackTop;
     }
 
+
     /**
      * Create a new symbol table using {@link TableLinker#createAndLink(JSymbolTable, SymbolTableHelper, Object)},
      * linking it to the top of the stack as its parent.
@@ -98,7 +100,6 @@ public final class SymbolTableResolver {
         return this.myStackTop;
     }
 
-
     @FunctionalInterface
     private interface TableLinker<T> {
 
@@ -120,6 +121,10 @@ public final class SymbolTableResolver {
         // The parameter on the visit methods is unnecessary
         // TODO introduce another visitor with `void visit(Node);` signature
 
+        @Override
+        public void visit(ASTModifierList node, Void data) {
+            // do nothing
+        }
 
         @Override
         public void visit(ASTCompilationUnit node, Void data) {
@@ -129,7 +134,7 @@ public final class SymbolTableResolver {
             int pushed = 0;
             pushed += pushOnStack(ImportOnDemandSymbolTable::new, isImportOnDemand.get(true));
             pushed += pushOnStack(JavaLangSymbolTable::new, node);
-            pushed += pushOnStack(SamePackageSymbolTable::new, node.getPackageDeclaration());
+            pushed += pushOnStack(SamePackageSymbolTable::new, node);
             pushed += pushOnStack(SingleImportSymbolTable::new, isImportOnDemand.get(false));
             // types declared inside the compilation unit
             // pushed += pushOnStack(MemberTypeSymTable::new, node);
@@ -140,8 +145,12 @@ public final class SymbolTableResolver {
         }
 
 
-        private void setTopSymbolTableAndRecurse(JavaNode node) {
+        private void setTopSymbolTable(JavaNode node) {
             InternalApiBridge.setSymbolTable(node, peekStack());
+        }
+
+        private void setTopSymbolTableAndRecurse(JavaNode node) {
+            setTopSymbolTable(node);
 
             for (JavaNode child : node.children()) {
                 child.jjtAccept(this, null);

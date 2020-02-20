@@ -67,7 +67,7 @@ public interface JElementSymbol {
      *
      * @param o Comparand
      *
-     * @return True if the other is a symbol of the same type and
+     * @return True if the other is a symbol for the same program element
      */
     @Override
     boolean equals(Object o);
@@ -80,4 +80,11 @@ public interface JElementSymbol {
     // We should be able to create a type definition from a java.lang.reflect.Type,
     // paying attention to type variables of enclosing methods and types.
     // We should also be able to do so from an ASTType, with support from a JSymbolTable.
+
+
+    /**
+     * Dispatch to the appropriate visit method of the visitor and returns its result.
+     */
+    <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param);
+
 }

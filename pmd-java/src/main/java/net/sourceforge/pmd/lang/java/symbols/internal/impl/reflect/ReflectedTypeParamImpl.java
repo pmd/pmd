@@ -11,7 +11,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 @SuppressWarnings("PMD")
 // yeah this looks weird for now
@@ -47,13 +46,4 @@ class ReflectedTypeParamImpl implements JTypeParameterSymbol {
         return name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.TYPE_PARAM.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.TYPE_PARAM.hash(this);
-    }
 }

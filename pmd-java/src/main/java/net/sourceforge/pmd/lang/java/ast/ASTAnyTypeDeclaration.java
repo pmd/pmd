@@ -9,11 +9,13 @@ import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
 /**
@@ -27,11 +29,15 @@ public interface ASTAnyTypeDeclaration
             TypeParamOwnerNode,
             FinalizableNode {
 
+    @Override
+    @NonNull
+    JClassSymbol getSymbol();
+
     /**
-     * Returns the simple name of this type declaration. Returns null
-     * if this is an anonymous class declaration.
+     * Returns the simple name of this type declaration. Returns the
+     * empty string if this is an anonymous class declaration.
      */
-    @Nullable
+    @NonNull
     default String getSimpleName() {
         return getImage();
     }
@@ -49,8 +55,56 @@ public interface ASTAnyTypeDeclaration
      * Returns the binary name of this type declaration. This
      * is like {@link Class#getName()}.
      */
-    // @NotNull
+    @NonNull
     String getBinaryName();
+
+
+    /**
+     * Returns the canonical name of this class, if it exists.
+     * Otherwise returns null. This is like {@link Class#getCanonicalName()}.
+     *
+     * <p>A canonical name exists if all enclosing types have a
+     * canonical name, and this is neither a local class nor an
+     * anonymous class. For example:
+     *
+     * <pre>{@code
+     * package p;
+     *
+     * public class A { // p.A
+     *     class M { // p.A.M
+     *         {
+     *             class Local { // null, local class
+     *                class M2 {} // null, member of a local class
+     *             }
+     *
+     *             new Local() { // null, anonymous class
+     *                class M2 {} // null, member of an anonymous class
+     *             };
+     *         }
+     *     }
+     *
+     * }
+     * }</pre>
+     *
+     *
+     * So non-local/anonymous classes declared
+     * somewhere in a local/anonymous class also have no loc
+     */
+    @Nullable
+    default String getCanonicalName() {
+        if (isAnonymous() || isLocal()) {
+            return null;
+        }
+
+        ASTAnyTypeDeclaration encl = getEnclosingType();
+        if (encl == null) {
+            return getBinaryName(); // toplevel
+        }
+
+        String enclCanon = encl.getCanonicalName();
+        return enclCanon == null ? null : enclCanon + '.' + getSimpleName();
+    }
+
 
     /**
      * Returns true if this is an abstract type. Interfaces and annotations

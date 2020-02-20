@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -22,11 +25,12 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.Cl
  */
 final class SamePackageSymbolTable extends AbstractSymbolTable {
 
-    private final @Nullable ASTPackageDeclaration packageDeclaration;
+    private final @NonNull JavaNode contributor;
 
-    SamePackageSymbolTable(JSymbolTable parent, SymbolTableHelper helper, @Nullable ASTPackageDeclaration packageDeclaration) {
+    SamePackageSymbolTable(JSymbolTable parent, SymbolTableHelper helper, ASTCompilationUnit acu) {
         super(parent, helper);
-        this.packageDeclaration = packageDeclaration;
+        ASTPackageDeclaration pdecl = acu.getPackageDeclaration();
+        this.contributor = pdecl == null ? acu : pdecl;
     }
 
 
@@ -38,6 +42,6 @@ final class SamePackageSymbolTable extends AbstractSymbolTable {
         // or if the type was never in this package in the first place
         JClassSymbol jClassSymbol = loadClassIgnoreFailure(helper.prependPackageName(simpleName));
         return jClassSymbol == null ? null
-                                    : new ClassResolveResult(jClassSymbol, this, packageDeclaration);
+                                    : new ClassResolveResult(jClassSymbol, this, contributor);
     }
 }

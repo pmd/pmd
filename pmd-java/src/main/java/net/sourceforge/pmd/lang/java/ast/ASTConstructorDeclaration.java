@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
  * {@linkplain ASTEnumDeclaration enum} declaration.
@@ -21,7 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
+public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration<JConstructorSymbol> {
 
     ASTConstructorDeclaration(int id) {
         super(id);

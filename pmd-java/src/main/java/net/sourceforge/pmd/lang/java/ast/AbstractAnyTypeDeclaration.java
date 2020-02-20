@@ -5,13 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 /**
  * Abstract class for type declarations nodes.
  */
-abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
+abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
     private JavaTypeQualifiedName qualifiedName;
 
@@ -44,6 +45,5 @@ abstract class AbstractAnyTypeDeclaration extends AbstractJavaTypeNode implement
         this.qualifiedName = qualifiedName;
         setTypeDefinition(JavaTypeDefinition.forClass(qualifiedName.getType()));
     }
-
 }
 

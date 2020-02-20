@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
  * expression}
@@ -23,6 +25,11 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
         super(id);
     }
 
+
+    @Override
+    public @NonNull String getSimpleName() {
+        return "";
+    }
 
     @Override
     public boolean isFindBoundary() {

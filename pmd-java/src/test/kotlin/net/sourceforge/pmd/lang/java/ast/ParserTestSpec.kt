@@ -125,6 +125,13 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
 
         inner class VersionedTestCtx(private val context: TestContext, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
 
+
+            fun doTest(name: String, assertions: VersionedTestCtx.() -> Unit) {
+                containedParserTestImpl(context, name, javaVersion = javaVersion) {
+                    assertions()
+                }
+            }
+
             infix fun String.should(matcher: Assertions<String>) {
                 containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
                     this@should kotlintestShould matcher
