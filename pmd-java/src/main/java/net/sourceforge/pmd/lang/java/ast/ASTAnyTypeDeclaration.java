@@ -60,7 +60,7 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
-     * Returns the canonical name of this class, it it exists.
+     * Returns the canonical name of this class, if it exists.
      * Otherwise returns null. This is like {@link Class#getCanonicalName()}.
      *
      * <p>A canonical name exists if all enclosing types have a
