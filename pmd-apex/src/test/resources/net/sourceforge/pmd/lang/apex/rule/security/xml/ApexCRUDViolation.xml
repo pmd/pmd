@@ -289,11 +289,23 @@ public class Foo {
 
 	<test-code>
 		<description>Accepts Closure SECURITY ENFORCED 3 </description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
 	public Contact foo(String tempID) {
 		Contact c = [SELECT Name FROM Contact WHERE Id=: tempID WItH SECURITY_ENFORCED];
+		return c;
+	}
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED Failed </description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Contact foo(String tempID) {
+		Contact c = [SELECT Name FROM Contact WHERE Id=: tempID SECURITY_ENFORCED];
 		return c;
 	}
 } ]]></code>
