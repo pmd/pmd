@@ -136,6 +136,6 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
      * @return <code>true</code> if a lombok annotation has been found
      */
     protected boolean hasLombokAnnotation(Annotatable node) {
-        return node.isAnyAnnotationPresent(LOMBOK_ANNOTATIONS);
+        return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
     }
 }

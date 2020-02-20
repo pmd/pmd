@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
@@ -399,7 +400,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                     it::getResultType shouldBe voidResult()
 
                     it::getFormalParameters shouldBe formalsList(0) {
-                        it::toList shouldBe emptyList()
+                        it.toList() shouldBe emptyList()
 
                         it::getReceiverParameter shouldBe child {
                             classType("Foo") {
@@ -434,7 +435,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                             }
                         }
 
-                        it::toList shouldBe listOf(
+                        it.toList() shouldBe listOf(
                                 child {
                                     localVarModifiers { }
                                     primitiveType(PrimitiveType.INT)

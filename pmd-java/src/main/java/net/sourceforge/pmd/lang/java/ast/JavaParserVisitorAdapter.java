@@ -25,24 +25,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
-    public Object visit(ASTAnnotation node, Object data) {
-        return visit((JavaNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTMarkerAnnotation node, Object data) {
-        return visit((ASTAnnotation) node, data);
-    }
-
-    @Override
-    public Object visit(ASTSingleMemberAnnotation node, Object data) {
-        return visit((ASTAnnotation) node, data);
-    }
-
-    @Override
-    public Object visit(ASTNormalAnnotation node, Object data) {
-        return visit((ASTAnnotation) node, data);
-    }
 
     public Object visit(ASTType node, Object data) {
         return visit((JavaNode) node, data);

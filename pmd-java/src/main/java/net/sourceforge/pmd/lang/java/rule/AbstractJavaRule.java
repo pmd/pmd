@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -106,9 +105,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     // FIXME those are not in sync with JavaParserVisitorAdapter
     // See #1786
 
-    public Object visit(ASTAnnotation node, Object data) {
-        return JavaParserVisitor.super.visit(node, data);
-    }
 
     public Object visit(ASTExpression node, Object data) {
         return JavaParserVisitor.super.visit(node, data);

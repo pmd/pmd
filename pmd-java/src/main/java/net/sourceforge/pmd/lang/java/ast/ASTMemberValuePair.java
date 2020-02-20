@@ -5,38 +5,54 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a single member-value pair in a {@linkplain ASTNormalAnnotation NormalAnnotation}.
+ * Represents a single pair of member name to value in an annotation.
+ * This node also represents the shorthand syntax, see {@link #isShorthand()}.
  *
  * <pre class="grammar">
  *
- * MemberValuePair ::=  &lt;IDENTIFIER&gt; "=" {@linkplain ASTMemberValue MemberValue}
+ * MemberValuePair ::= &lt;IDENTIFIER&gt; "=" {@linkplain ASTMemberValue MemberValue}
+ *
+ * ValueShorthand  ::= {@linkplain ASTMemberValue MemberValue}
  *
  * </pre>
  */
 public final class ASTMemberValuePair extends AbstractJavaNode {
+
+    private boolean isShorthand;
+
     ASTMemberValuePair(int id) {
         super(id);
     }
 
     /**
      * Returns the name of the member set by this pair.
+     * This returns {@code "value"} if this is a shorthand declaration.
      */
-    public String getMemberName() {
+    public String getName() {
         return getImage();
     }
 
+    /**
+     * Returns true if this is a shorthand for the {@code value} attribute.
+     * For example, {@code @A("v")} has exactly the same structure as
+     * {@code @A(value = "v")}, except this attribute returns true for
+     * the first one only.
+     */
+    public boolean isShorthand() {
+        return isShorthand;
+    }
 
     /**
      * Returns the value of the member set by this pair.
      */
-    public ASTMemberValue getMemberValue() {
+    public ASTMemberValue getValue() {
         return (ASTMemberValue) getChild(0);
     }
 
 
     @Override
-    public ASTNormalAnnotation getParent() {
-        return (ASTNormalAnnotation) super.getParent();
+    public ASTAnnotationMemberList getParent() {
+        return (ASTAnnotationMemberList) super.getParent();
     }
 
 
@@ -49,5 +65,9 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+    void setShorthand() {
+        this.isShorthand = true;
     }
 }

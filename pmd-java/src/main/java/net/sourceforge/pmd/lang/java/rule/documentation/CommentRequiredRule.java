@@ -19,9 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
@@ -178,13 +176,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     private boolean isAnnotatedOverride(ASTMethodDeclaration decl) {
-        List<ASTMarkerAnnotation> annotations = decl.getParent().findDescendantsOfType(ASTMarkerAnnotation.class);
-        for (ASTMarkerAnnotation ann : annotations) { // TODO consider making a method to get the annotations of a method
-            if (ann.getFirstChildOfType(ASTName.class).getImage().equals("Override")) {
-                return true;
-            }
-        }
-        return false;
+        return decl.isAnnotationPresent(Override.class);
     }
 
 

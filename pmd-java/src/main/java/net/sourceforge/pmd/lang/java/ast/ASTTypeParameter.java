@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -30,11 +28,6 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
 
     ASTTypeParameter(int id) {
         super(id);
-    }
-
-    @Override
-    public List<ASTAnnotation> getDeclaredAnnotations() {
-        return children(ASTAnnotation.class).toList();
     }
 
     /**
