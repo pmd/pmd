@@ -4,26 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.ClassResolveResult;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.VarResolveResult;
 
 
 /**
@@ -143,26 +136,5 @@ abstract class AbstractSymbolTable implements JSymbolTable {
         // TODO would be better to conside the three channels separate.
         //  That way local scopes with no class declaration skip directly to type declaration scope
         return false;
-    }
-
-    @NonNull
-    protected Collector<ASTAnyTypeDeclaration, ?, Map<String, ResolveResult<JTypeDeclSymbol>>> typeDeclCollector() {
-        return Collectors.toMap(ASTAnyTypeDeclaration::getSimpleName, this::makeResult);
-    }
-
-    @NonNull
-    protected ClassResolveResult makeResult(ASTAnyTypeDeclaration it) {
-        return new ClassResolveResult(it.getSymbol(), this, it);
-    }
-
-
-    @NonNull
-    protected Collector<@NonNull ASTVariableDeclaratorId, ?, Map<String, ResolveResult<JVariableSymbol>>> varIdCollector() {
-        return Collectors.toMap(ASTVariableDeclaratorId::getVariableName, this::makeResult);
-    }
-
-    @NonNull
-    protected ResolveResultImpl<JVariableSymbol> makeResult(@NonNull ASTVariableDeclaratorId it) {
-        return new VarResolveResult(it.getSymbol(), this, it);
     }
 }

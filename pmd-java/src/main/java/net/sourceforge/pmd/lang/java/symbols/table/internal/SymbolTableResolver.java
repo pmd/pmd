@@ -5,6 +5,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.TypeOnlySymTable.localClassesOf;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.TypeOnlySymTable.nestedClassesOf;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.formalsOf;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.resourceIds;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfBlock;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfInit;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -153,7 +160,7 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(SamePackageSymbolTable::new, node);
             pushed += pushOnStack(SingleImportSymbolTable::new, isImportOnDemand.get(false));
             // types declared inside the compilation unit
-            pushed += pushOnStack(TypeOnlySymTable::forFile, node);
+            pushed += pushOnStack(TypeOnlySymTable::new, node.getTypeDeclarations());
 
             // All of the header symbol tables belong to the CompilationUnit
             setTopSymbolTableAndRecurse(node);
@@ -166,9 +173,9 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = 0;
-            pushed += pushOnStack(TypeOnlySymTable::forSelfType, node); // override type params of enclosing type
+            pushed += pushOnStack(TypeOnlySymTable::new, node); // pushes its own name, overrides type params of enclosing type
 
-            if (pushOnStack(TypeParamOwnerSymTable::new, node) > 0) {
+            if (pushOnStack(TypeOnlySymTable::new, node.getTypeParameters()) > 0) {
                 // there are type parameters: the extends/implements/type parameter section know about them
 
                 NodeStream<? extends JavaNode> notBody = node.children().drop(1).filterNot(it -> it instanceof ASTTypeBody);
@@ -182,8 +189,8 @@ public final class SymbolTableResolver {
             // the following is just for the body
 
             pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
-            pushed += pushOnStack(TypeOnlySymTable::forNestedClasses, node); // declared classes
-            pushed += pushOnStack(TypeParamOwnerSymTable::new, node); // shadow type names of the former 2
+            pushed += pushOnStack(TypeOnlySymTable::new, nestedClassesOf(node)); // declared classes
+            pushed += pushOnStack(TypeOnlySymTable::new, node.getTypeParameters()); // shadow type names of the former 2
 
             setTopSymbolTableAndRecurse(node.getBody());
 
@@ -195,8 +202,8 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = 0;
-            pushed += pushOnStack(TypeParamOwnerSymTable::new, node);
-            pushed += pushOnStack(FormalParamsSymTable::new, node);
+            pushed += pushOnStack(TypeOnlySymTable::new, node.getTypeParameters());
+            pushed += pushOnStack(VarOnlySymTable::new, formalsOf(node));
 
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
@@ -204,28 +211,30 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTLambdaExpression node, Void data) {
-            int pushed = pushOnStack(FormalParamsSymTable::new, node);
+            int pushed = pushOnStack(VarOnlySymTable::new, formalsOf(node));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
 
         @Override
         public void visit(ASTBlock node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
+            int pushed = 0;
+            pushed += pushOnStack(VarOnlySymTable::new, varsOfBlock(node));
+            pushed += pushOnStack(TypeOnlySymTable::new, localClassesOf(node));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
 
         @Override
         public void visit(ASTForeachStatement node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
+            int pushed = pushOnStack(VarOnlySymTable::new, node.getVarId());
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
 
         @Override
         public void visit(ASTForStatement node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
+            int pushed = pushOnStack(VarOnlySymTable::new, varsOfInit(node));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
@@ -235,7 +244,7 @@ public final class SymbolTableResolver {
 
             ASTResourceList resources = node.getResources();
             if (resources != null) {
-                int pushed = pushOnStack(LocalSymTable::new, resources);
+                int pushed = pushOnStack(VarOnlySymTable::new, resourceIds(resources));
 
                 setTopSymbolTableAndRecurse(resources);
 
@@ -254,7 +263,7 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTCatchClause node, Void data) {
-            int pushed = pushOnStack(LocalSymTable::new, node);
+            int pushed = pushOnStack(VarOnlySymTable::new, node.getParameter().getVarId());
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }

@@ -163,8 +163,8 @@ class TypeParamScopingTest : ParserTestSpec({
             package myTest;
 
             class Foo<X, T> {
-            
-                @ /*Foo#*/ T // type params are not in scope in modifier list 
+
+                @ /*Foo#*/ T // type params are not in scope in modifier list
                 <T extends /*Foo#*/ X> void foo(T pt, X px) {
                     T vt;
                     X vx;

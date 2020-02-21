@@ -18,23 +18,23 @@ class VarScopingTest : ParserTestSpec({
     parserTest("Shadowing of variables") {
 
         val acu = parser.withProcessing().parse("""
-            
-            // TODO test with static import, currently there are no "unresolved field" symbols 
+
+            // TODO test with static import, currently there are no "unresolved field" symbols
 
             class Outer extends Sup {
                 private T f;
-                
+
                 {
                     f.foo(); // outerField
-                    
+
                     for (T f : someList) {
                        f.foo(); // foreachParam
                     }
                 }
-                
+
                 void method(T f) {
                     f.foo(); // methodParam
-                    
+
                     {
                         T f;
                         f.foo(); // localInBlock
@@ -43,7 +43,7 @@ class VarScopingTest : ParserTestSpec({
 
                 class Inner {
                     T f;
-                    
+
                     {
                         f.foo(); // innerField
                     }
@@ -102,7 +102,7 @@ class VarScopingTest : ParserTestSpec({
 
         val acu = parser.withProcessing().parse("""
 
-            // TODO test with static import, currently there are no "unresolved field" symbols 
+            // TODO test with static import, currently there are no "unresolved field" symbols
 
             class Outer extends Sup {
                 private Reader r; // outerField
