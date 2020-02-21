@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class ASTBlock extends AbstractVmNode {
+public final class ASTBlock extends AbstractVmNode {
 
     ASTBlock(int id) {
         super(id);
