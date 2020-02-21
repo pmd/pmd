@@ -12,10 +12,10 @@ public class ApexParserTestBase {
 
 
     protected ApexNode<Compilation> parse(String code) {
-        return (ApexNode<Compilation>) apex.parse(code);
+        return apex.parse(code);
     }
 
     protected ApexNode<Compilation> parseResource(String code) {
-        return (ApexNode<Compilation>) apex.parseResource(code);
+        return apex.parseResource(code);
     }
 }

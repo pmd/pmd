@@ -15,7 +15,16 @@ Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated 
 C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
 Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
 
-## Source and Documentation
+## Support
+
+*   How do I? -- Ask a question on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd).
+*   I got this error, why? -- Ask a question on [StackOverflow](https://stackoverflow.com/questions/tagged/pmd).
+*   I got this error and I'm sure it's a bug -- file an [issue](https://github.com/pmd/pmd/issues).
+*   I have an idea/request/question -- file an [issue](https://github.com/pmd/pmd/issues).
+*   I have a quick question -- ask on our [Gitter chat](https://gitter.im/pmd/pmd).
+*   Where's your documentation? -- <https://pmd.github.io/latest/>
+
+## Source
 
 Our latest source of PMD can be found on [GitHub](https://github.com/pmd/pmd). Fork us!
 
@@ -26,6 +35,6 @@ The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd
 Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
 developer documentation.
 
-## News and Website
+## Website
 
-More information can be found on our [Website](https://pmd.github.io) and on [SourceForge](https://sourceforge.net/projects/pmd/).
+More information can be found on our [Website](https://pmd.github.io).
