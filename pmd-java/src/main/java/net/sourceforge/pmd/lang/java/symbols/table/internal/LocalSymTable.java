@@ -15,6 +15,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -70,6 +73,26 @@ final class LocalSymTable extends AbstractSymbolTable {
                               .filterIs(ASTLocalVariableDeclaration.class)
                               .flatMap(ASTLocalVariableDeclaration::getVarIds)
                               .collect(varIdCollector());
+    }
+
+    /** For try-with-resources. Used for the resource section + the try block, not the catch blocks. */
+    LocalSymTable(JSymbolTable parent,
+                  SymbolTableHelper helper,
+                  ASTTryStatement node) {
+        super(parent, helper);
+        assert node != null : "null for statement?";
+
+        localClasses = Collections.emptyMap();
+        ASTResourceList resources = node.getResources();
+        if (resources == null) {
+            localVars = Collections.emptyMap();
+        } else {
+            localVars = resources.toStream()
+                                 .map(ASTResource::asLocalVariableDeclaration)
+                                 .flatMap(ASTLocalVariableDeclaration::getVarIds)
+                                 .collect(varIdCollector());
+        }
+
     }
 
     @Override
