@@ -15,17 +15,4 @@ package net.sourceforge.pmd.lang.java.ast;
 public interface ASTAnyTypeBodyDeclaration extends JavaNode {
 
 
-    /**
-     * Returns the child of this declaration,
-     * which can be cast to a more specific node
-     * type using #getKind() as a cue.
-     *
-     * <p>Returns null if this is an empty declaration,
-     * that is, a single semicolon.
-     */
-    default JavaNode getDeclarationNode() {
-        return this;
-    }
-
-
 }
