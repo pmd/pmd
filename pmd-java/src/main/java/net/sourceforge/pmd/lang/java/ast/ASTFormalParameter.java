@@ -24,8 +24,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTFormalParameter extends AbstractJavaTypeNode
+public final class ASTFormalParameter extends AbstractJavaNode
     implements FinalizableNode,
+               TypeNode,
                Annotatable,
                VariableIdOwner {
 
@@ -40,6 +41,13 @@ public final class ASTFormalParameter extends AbstractJavaTypeNode
         return Visibility.V_LOCAL;
     }
 
+
+    /**
+     * Returns the list of formal parameters containing this param.
+     */
+    public ASTFormalParameters getOwnerList() {
+        return (ASTFormalParameters) jjtGetParent();
+    }
 
     /**
      * Returns true if this node is a varargs parameter. Then, the type
@@ -89,33 +97,9 @@ public final class ASTFormalParameter extends AbstractJavaTypeNode
     }
 
 
-    /**
-     * Returns the type of this formal parameter. That type
-     * is exactly that of the variable declarator id,
-     * which means that the declarator id's type takes into
-     * account whether this parameter is varargs or not.
-     */
-    @Override
-    public Class<?> getType() {
-        return getVarId().getType();
-    }
-
-
     @Override
     public JavaTypeDefinition getTypeDefinition() {
         return getVarId().getTypeDefinition();
-    }
-
-
-    /**
-     * Noop, the type of this node is defined by the type
-     * of the declarator id.
-     */
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition type) {
-        // see javadoc
     }
 
 }

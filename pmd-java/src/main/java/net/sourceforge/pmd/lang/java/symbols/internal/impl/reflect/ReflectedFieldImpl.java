@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 class ReflectedFieldImpl extends AbstractReflectedSymbol implements JFieldSymbol {
 
@@ -44,14 +43,4 @@ class ReflectedFieldImpl extends AbstractReflectedSymbol implements JFieldSymbol
         return myField.getModifiers();
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.FIELD.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.FIELD.hash(this);
-    }
 }

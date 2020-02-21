@@ -485,8 +485,14 @@ fun TreeNodeWrapper<Node, *>.ambiguousName(image: String, contents: NodeSpec<AST
 
 fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: ValuedNodeSpec<ASTMemberValuePair, ASTMemberValue>) =
         child<ASTMemberValuePair> {
-            it::getMemberName shouldBe name
-            it::getMemberValue shouldBe contents()
+            it::getName shouldBe name
+            it::getValue shouldBe contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.shorthandMemberValue(contents: ValuedNodeSpec<ASTMemberValuePair, ASTMemberValue>) =
+        memberValuePair("value") {
+            it::isShorthand shouldBe true
+            contents()
         }
 
 

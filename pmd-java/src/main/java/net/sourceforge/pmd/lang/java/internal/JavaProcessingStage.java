@@ -23,17 +23,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
-import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 
 
 /**
@@ -55,7 +54,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
             /*
                 PASSES:
 
-                - qname resolution, TODO setting symbols on declarations
+                - qname resolution, setting symbols on declarations
                   - now AST symbols are only partially initialized, their type-related methods will fail
                 - symbol table resolution
                   - AST symbols are now functional
@@ -65,11 +64,12 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
 
             ASTCompilationUnit acu = (ASTCompilationUnit) rootNode;
 
+            AstSymFactory astSymFactory = new AstSymFactory();
             ClassLoader classLoader = PMDASMClassLoader.getInstance(configuration.getTypeResolutionClassLoader());
 
             // Qualified name resolver now resolves also symbols for type declarations
             bench("Qualified name resolution",
-                () -> new QualifiedNameResolver().initializeWith(classLoader, acu));
+                () -> new QualifiedNameResolver(astSymFactory, configuration.getTypeResolutionClassLoader()).traverse(acu));
 
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 
@@ -93,6 +93,7 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     SYMBOL_RESOLUTION("Symbol table") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
+            // kept for compatibility with existing tests
             new SymbolFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
@@ -103,7 +104,8 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     TYPE_RESOLUTION("Type resolution", JAVA_PROCESSING) {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
+            // removed because of incompatibilities with current AST
+            //            new TypeResolutionFacade().initializeWith(configuration.getTypeResolutionClassLoader(), (ASTCompilationUnit) rootNode);
         }
     },
 
@@ -113,7 +115,8 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
     DFA("Data flow analysis") {
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
+            // removed because of incompatibilities with current AST
+            // new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
         }
     },
 

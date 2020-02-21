@@ -6,10 +6,15 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+
 /**
  * @author Clément Fournier
  */
-public interface TypeParamOwnerNode extends JavaNode {
+public interface TypeParamOwnerNode extends SymbolDeclaratorNode {
+
+    @Override
+    JTypeParameterOwnerSymbol getSymbol();
 
     /**
      * Returns the type parameter declaration of this node, or null if

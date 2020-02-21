@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -19,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -31,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -175,20 +174,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        if (!ignoreAnnotations) {
-            ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getParent();
-            for (int i = 0; i < parent.getNumChildren(); i++) {
-                Node n = parent.getChild(i);
-                if (n instanceof ASTAnnotation) {
-                    if (n.getChild(0) instanceof ASTMarkerAnnotation) {
-                        // @Override is ignored
-                        if ("Override".equals(((ASTName) n.getChild(0).getChild(0)).getImage())) {
-                            continue;
-                        }
-                    }
-                    return super.visit(node, data);
-                }
-            }
+        if (!ignoreAnnotations && node.getDeclaredAnnotations().any(it -> !TypeHelper.isExactlyA(it, Override.class.getName()))) {
+            return super.visit(node, data);
         }
 
         if (arguments.getNumChildren() == 0) {

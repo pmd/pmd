@@ -44,7 +44,7 @@ public class ApexParserTest extends ApexParserTestBase {
     private String testCodeForLineNumbers =
               "public class SimpleClass {\n" // line 1
             + "    public void method1() {\n" // line 2
-            + "        System.out.println(\"abc\");\n" // line 3
+            + "        System.out.println('abc');\n" // line 3
             + "        // this is a comment\n" // line 4
             + "    }\n" // line 5
             + "}\n"; // line 6

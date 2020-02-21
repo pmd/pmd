@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 
 /**
@@ -35,7 +36,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
+public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration<JMethodSymbol> {
 
 
     @InternalApi

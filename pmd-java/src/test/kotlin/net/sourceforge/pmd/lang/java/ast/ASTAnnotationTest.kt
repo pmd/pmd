@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_3
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 
 /**
  * @author Clément Fournier
@@ -30,16 +30,20 @@ class ASTAnnotationTest : ParserTestSpec({
         inContext(AnnotationParsingCtx) {
 
             "@F" should parseAs {
-                child<ASTMarkerAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "F"
                     it::getSimpleName shouldBe "F"
+
+                    it::getMemberList shouldBe null
                 }
             }
 
             "@java.lang.Override" should parseAs {
-                child<ASTMarkerAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "java.lang.Override"
                     it::getSimpleName shouldBe "Override"
+
+                    it::getMemberList shouldBe null
                 }
             }
         }
@@ -51,45 +55,63 @@ class ASTAnnotationTest : ParserTestSpec({
         inContext(AnnotationParsingCtx) {
 
             "@F(\"ohio\")" should parseAs {
-                child<ASTSingleMemberAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "F"
                     it::getSimpleName shouldBe "F"
 
-                    it::getMemberValue shouldBe stringLit("\"ohio\"")
+                    it::getMemberList shouldBe child {
+                        shorthandMemberValue {
+                            stringLit("\"ohio\"")
+                        }
+                    }
                 }
             }
 
             "@org.F({java.lang.Math.PI})" should parseAs {
-                child<ASTSingleMemberAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
-                    it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
-                        child<ASTFieldAccess> {
-                            it::getFieldName shouldBe "PI"
-                            ambiguousName("java.lang.Math")
+                    it::getMemberList shouldBe child {
+                        shorthandMemberValue {
+                            child<ASTMemberValueArrayInitializer> {
+                                child<ASTFieldAccess> {
+                                    it::getFieldName shouldBe "PI"
+                                    ambiguousName("java.lang.Math")
+                                }
+                            }
                         }
                     }
                 }
             }
 
             "@org.F({@Aha, @Oh})" should parseAs {
-                child<ASTSingleMemberAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
-                    it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
-                        annotation("Aha")
-                        annotation("Oh")
+
+                    it::getMemberList shouldBe child {
+                        shorthandMemberValue {
+                            child<ASTMemberValueArrayInitializer> {
+                                annotation("Aha")
+                                annotation("Oh")
+                            }
+                        }
                     }
                 }
             }
             "@org.F(@Oh)" should parseAs {
-                child<ASTSingleMemberAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
-                    it::getMemberValue shouldBe annotation("Oh")
+
+                    it::getMemberList shouldBe child {
+                        shorthandMemberValue {
+                            annotation("Oh")
+                        }
+                    }
                 }
             }
         }
@@ -101,44 +123,37 @@ class ASTAnnotationTest : ParserTestSpec({
         inContext(AnnotationParsingCtx) {
 
             "@F(a=\"ohio\")" should parseAs {
-                child<ASTNormalAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "F"
                     it::getSimpleName shouldBe "F"
 
-                    memberValuePair("a") {
-                        stringLit("\"ohio\"")
+
+                    it::getMemberList shouldBe child {
+                        memberValuePair("a") {
+                            stringLit("\"ohio\"")
+                        }
                     }
                 }
             }
 
             "@org.F(a={java.lang.Math.PI}, b=2)" should parseAs {
-                child<ASTNormalAnnotation> {
+                child<ASTAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
                     it::getSimpleName shouldBe "F"
 
-                    memberValuePair("a") {
-                        child<ASTMemberValueArrayInitializer> {
-                            child<ASTFieldAccess> {
-                                it::getFieldName shouldBe "PI"
-                                ambiguousName("java.lang.Math")
+
+                    it::getMemberList shouldBe child {
+                        memberValuePair("a") {
+                            child<ASTMemberValueArrayInitializer> {
+                                fieldAccess("PI") {
+                                    ambiguousName("java.lang.Math")
+                                }
                             }
                         }
-                    }
 
-                    memberValuePair("b") {
-                        number()
-                    }
-                }
-            }
-
-            "@org.F({@Aha, @Oh})" should parseAs {
-                child<ASTSingleMemberAnnotation> {
-                    it::getAnnotationName shouldBe "org.F"
-                    it::getSimpleName shouldBe "F"
-
-                    it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
-                        annotation("Aha")
-                        annotation("Oh")
+                        memberValuePair("b") {
+                            number()
+                        }
                     }
                 }
             }
@@ -146,28 +161,45 @@ class ASTAnnotationTest : ParserTestSpec({
 
             """
     @TestAnnotation({@SuppressWarnings({}),
-                     @SuppressWarnings({"Beware the ides of March.",}),
+                     @SuppressWarnings(value = {"Beware the ides of March.",}),
                      @SuppressWarnings({"Look both ways", "Before Crossing",}), })
             """ should parseAs {
 
-                child<ASTSingleMemberAnnotation> {
+                child<ASTAnnotation> {
 
-                    it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
-                        child<ASTSingleMemberAnnotation> {
+                    it::getMemberList shouldBe child {
 
-                            it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {}
-                        }
-                        child<ASTSingleMemberAnnotation> {
+                        shorthandMemberValue {
 
-                            it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
-                                stringLit("\"Beware the ides of March.\"")
-                            }
-                        }
-                        child<ASTSingleMemberAnnotation> {
+                            child<ASTMemberValueArrayInitializer> {
+                                annotation {
 
-                            it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
-                                stringLit("\"Look both ways\"")
-                                stringLit("\"Before Crossing\"")
+                                    it::getMemberList shouldBe child {
+                                        shorthandMemberValue {
+                                            child<ASTMemberValueArrayInitializer> {}
+                                        }
+                                    }
+                                }
+                                annotation {
+                                    it::getMemberList shouldBe child {
+                                        memberValuePair("value") {
+                                            it::isShorthand shouldBe false
+                                            child<ASTMemberValueArrayInitializer> {
+                                                stringLit("\"Beware the ides of March.\"")
+                                            }
+                                        }
+                                    }
+                                }
+                                annotation {
+                                    it::getMemberList shouldBe child {
+                                        shorthandMemberValue {
+                                            child<ASTMemberValueArrayInitializer> {
+                                                stringLit("\"Look both ways\"")
+                                                stringLit("\"Before Crossing\"")
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

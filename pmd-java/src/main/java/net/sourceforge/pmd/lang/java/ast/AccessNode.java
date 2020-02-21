@@ -6,10 +6,11 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.STRICTFP;
 
-import java.util.List;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A node that owns a {@linkplain ASTModifierList modifier list}.
@@ -31,10 +32,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface AccessNode extends Annotatable {
 
-
     @Override
-    default List<ASTAnnotation> getDeclaredAnnotations() {
-        return getModifiers().children(ASTAnnotation.class).toList();
+    default NodeStream<ASTAnnotation> getDeclaredAnnotations() {
+        return getModifiers().children(ASTAnnotation.class);
     }
 
 

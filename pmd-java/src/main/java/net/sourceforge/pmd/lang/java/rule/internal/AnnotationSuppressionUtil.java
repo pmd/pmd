@@ -100,12 +100,7 @@ final class AnnotationSuppressionUtil {
     }
 
     private static boolean hasSuppressWarningsAnnotationFor(final Annotatable node, Rule rule) {
-        for (ASTAnnotation a : node.getDeclaredAnnotations()) {
-            if (annotationSuppresses(a, rule)) {
-                return true;
-            }
-        }
-        return false;
+        return node.getDeclaredAnnotations().any(it -> annotationSuppresses(it, rule));
     }
 
 

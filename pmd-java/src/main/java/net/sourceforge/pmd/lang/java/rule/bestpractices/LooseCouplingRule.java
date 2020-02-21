@@ -5,14 +5,12 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -44,17 +42,8 @@ public class LooseCouplingRule extends AbstractJavaRule {
         return data;
     }
 
-    private boolean methodHasOverride(Node node) {
-        ASTClassOrInterfaceBodyDeclaration method = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        if (method != null && method.getNumChildren() > 0 && method.getChild(0) instanceof ASTAnnotation) {
-            ASTMarkerAnnotation marker = method.getFirstDescendantOfType(ASTMarkerAnnotation.class);
-            if (marker != null && marker.getFirstChildOfType(ASTName.class) != null) {
-                ASTName name = marker.getFirstChildOfType(ASTName.class);
-                if (name.getType() == Override.class) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean methodHasOverride(JavaNode node) {
+        ASTMethodDeclaration method = node.ancestors(ASTMethodDeclaration.class).first();
+        return method != null && method.isAnnotationPresent(Override.class);
     }
 }

@@ -5,6 +5,30 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect;
 
 
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOOLEAN_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_BOOLEAN_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_BYTE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_CHAR_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_DOUBLE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_FLOAT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_INT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_LONG_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_SHORT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BOXED_VOID_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.BYTE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.CHAR_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.CLONEABLE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.DOUBLE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.ENUM_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.FLOAT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.INT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.ITERABLE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.LONG_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.OBJECT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.SERIALIZABLE_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.SHORT_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.STRING_SYM;
+import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals.VOID_SYM;
 import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectedClassImpl.createOuterClass;
 import static net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectedClassImpl.createWithEnclosing;
 
@@ -30,7 +54,6 @@ public final class ReflectionSymFactory implements SymbolFactory<Class<?>> {
      * {@link SymbolFactory} creates reflected symbols.
      */
     private static Map<Class<?>, JClassSymbol> commonSymbols;
-
 
     @Override
     @Nullable

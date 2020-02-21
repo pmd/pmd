@@ -18,8 +18,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolFactory;
 
 final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> implements JClassSymbol {
 
@@ -107,7 +105,7 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
         if (superInterfaces == null) {
-            superInterfaces = myClass.isArray() ? SymbolFactory.ARRAY_SUPER_INTERFACES
+            superInterfaces = myClass.isArray() ? ReflectSymInternals.ARRAY_SUPER_INTERFACES
                                                 : Arrays.stream(myClass.getInterfaces()).map(symFactory::getClassSymbol).collect(toList());
         }
         return superInterfaces;
@@ -203,22 +201,6 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
         }
         return declaredFields;
     }
-
-    @Override
-    public String toString() {
-        return getBinaryName();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.CLASS.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.CLASS.hash(this);
-    }
-
 
     static ReflectedClassImpl createWithEnclosing(ReflectionSymFactory symbolFactory,
                                                   @Nullable JClassSymbol enclosing,

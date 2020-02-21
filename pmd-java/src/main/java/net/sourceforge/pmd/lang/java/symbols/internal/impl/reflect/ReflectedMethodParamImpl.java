@@ -9,7 +9,6 @@ import java.lang.reflect.Parameter;
 
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.SymbolEquality;
 
 final class ReflectedMethodParamImpl extends AbstractReflectedSymbol implements JFormalParamSymbol {
 
@@ -38,13 +37,4 @@ final class ReflectedMethodParamImpl extends AbstractReflectedSymbol implements 
         return reflected.getName();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return SymbolEquality.FORMAL_PARAM.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return SymbolEquality.FORMAL_PARAM.hash(this);
-    }
 }

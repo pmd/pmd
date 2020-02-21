@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 
@@ -52,7 +53,7 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
                             }
                         }
 
-                        it::toList shouldBe listOf(
+                        it.toList() shouldBe listOf(
                                 child {
                                     localVarModifiers { }
                                     primitiveType(PrimitiveType.INT)
