@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.Va
 abstract class AbstractSymbolTable implements JSymbolTable {
 
     /** Additional info about the context. */
-    final SymbolTableHelper helper;
+    protected final SymbolTableHelper helper;
     private final JSymbolTable parent;
 
     AbstractSymbolTable(JSymbolTable parent, SymbolTableHelper helper) {
@@ -135,14 +135,6 @@ abstract class AbstractSymbolTable implements JSymbolTable {
         return helper.loadClassOrFail(canonicalName);
     }
 
-    @NonNull
-    protected Collector<ASTAnyTypeDeclaration, ?, Map<String, ResolveResult<JTypeDeclSymbol>>> typeDeclCollector() {
-        return Collectors.toMap(
-            ASTAnyTypeDeclaration::getSimpleName,
-            it -> new ClassResolveResult(it.getSymbol(), this, it)
-        );
-    }
-
     /**
      * Returns true if this table doesn't contain any information, and
      * can be eliminated from the stack entirely.
@@ -152,6 +144,17 @@ abstract class AbstractSymbolTable implements JSymbolTable {
         //  That way local scopes with no class declaration skip directly to type declaration scope
         return false;
     }
+
+    @NonNull
+    protected Collector<ASTAnyTypeDeclaration, ?, Map<String, ResolveResult<JTypeDeclSymbol>>> typeDeclCollector() {
+        return Collectors.toMap(ASTAnyTypeDeclaration::getSimpleName, this::makeResult);
+    }
+
+    @NonNull
+    protected ClassResolveResult makeResult(ASTAnyTypeDeclaration it) {
+        return new ClassResolveResult(it.getSymbol(), this, it);
+    }
+
 
     @NonNull
     protected Collector<@NonNull ASTVariableDeclaratorId, ?, Map<String, ResolveResult<JVariableSymbol>>> varIdCollector() {

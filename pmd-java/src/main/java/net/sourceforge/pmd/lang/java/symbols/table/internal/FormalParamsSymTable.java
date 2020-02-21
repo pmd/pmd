@@ -28,7 +28,6 @@ final class FormalParamsSymTable extends AbstractSymbolTable {
                          ASTMethodOrConstructorDeclaration node) {
 
         super(parent, helper);
-        assert node != null : "Null block?";
 
         formals = node.getFormalParameters()
                       .children(ASTFormalParameter.class)
@@ -41,7 +40,6 @@ final class FormalParamsSymTable extends AbstractSymbolTable {
                          ASTLambdaExpression node) {
 
         super(parent, helper);
-        assert node != null : "Null block?";
 
         formals = node.getParameters()
                       .children(ASTLambdaParameter.class)

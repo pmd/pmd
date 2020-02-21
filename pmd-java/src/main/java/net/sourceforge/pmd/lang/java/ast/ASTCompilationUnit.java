@@ -7,12 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
@@ -68,9 +68,8 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
      * This may be empty if this a package-info.java, or a modular
      * compilation unit.
      */
-    public List<ASTAnyTypeDeclaration> getTypeDeclarations() {
-        List<ASTTypeDeclaration> tds = findChildrenOfType(ASTTypeDeclaration.class);
-        return tds.stream().map(it -> (ASTAnyTypeDeclaration) it.getFirstChild()).collect(Collectors.toList());
+    public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
+        return children(ASTTypeDeclaration.class).children(ASTAnyTypeDeclaration.class);
     }
 
 

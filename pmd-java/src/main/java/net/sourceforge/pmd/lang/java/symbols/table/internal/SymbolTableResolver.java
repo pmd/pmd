@@ -149,7 +149,7 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(SamePackageSymbolTable::new, node);
             pushed += pushOnStack(SingleImportSymbolTable::new, isImportOnDemand.get(false));
             // types declared inside the compilation unit
-            pushed += pushOnStack(MemberTypeSymTable::new, node);
+            pushed += pushOnStack(TypeOnlySymTable::forFile, node);
 
             // All of the header symbol tables belong to the CompilationUnit
             setTopSymbolTableAndRecurse(node);
@@ -162,7 +162,7 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = 0;
-            pushed += pushOnStack(SelfTypeSymTable::new, node); // override type params of enclosing type
+            pushed += pushOnStack(TypeOnlySymTable::forSelfType, node); // override type params of enclosing type
 
             if (pushOnStack(TypeParamOwnerSymTable::new, node) > 0) {
                 // there are type parameters: the extends/implements/type parameter section know about them
@@ -178,7 +178,7 @@ public final class SymbolTableResolver {
             // the following is just for the body
 
             pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
-            pushed += pushOnStack(MemberTypeSymTable::new, node); // declared classes
+            pushed += pushOnStack(TypeOnlySymTable::forNestedClasses, node); // declared classes
             pushed += pushOnStack(TypeParamOwnerSymTable::new, node); // shadow type names of the former 2
 
             setTopSymbolTableAndRecurse(node.getBody());

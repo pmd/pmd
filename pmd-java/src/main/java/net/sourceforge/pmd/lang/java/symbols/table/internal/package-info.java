@@ -23,7 +23,7 @@
  *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable}: Top-level types from the same package, which are implicitly imported
  *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable}: Types imported by single-type-imports, and static methods and
  *          fields imported by a single-static-import.
- *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.MemberTypeSymTable}: Types declared in the compilation unit
+ *      <li>{@link net.sourceforge.pmd.lang.java.symbols.table.internal.TypeOnlySymTable}: Types declared in the compilation unit
  * </ul>
  * These dominate the whole compilation unit and thus are all linked to the {@link net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit}.
  *

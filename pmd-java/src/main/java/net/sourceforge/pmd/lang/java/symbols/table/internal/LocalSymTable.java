@@ -29,6 +29,25 @@ final class LocalSymTable extends AbstractSymbolTable {
     private final Map<String, ResolveResult<JTypeDeclSymbol>> localClasses;
     private final Map<String, ResolveResult<JVariableSymbol>> localVars;
 
+    // TODO should report CT error when self-reference detected (in initializer)
+    LocalSymTable(JSymbolTable parent,
+                  SymbolTableHelper helper,
+                  ASTBlock node) {
+
+        super(parent, helper);
+        assert node != null : "Null block?";
+
+        localVars = node.children(ASTLocalVariableDeclaration.class)
+                        .flatMap(ASTLocalVariableDeclaration::getVarIds)
+                        .collect(varIdCollector());
+
+        localClasses = node.children(ASTLocalClassStatement.class)
+                           .map(ASTLocalClassStatement::getDeclaration)
+                           .collect(typeDeclCollector());
+    }
+
+    // for both of those, the containing block gets its own independent table
+
     LocalSymTable(JSymbolTable parent,
                   SymbolTableHelper helper,
                   ASTForeachStatement node) {
@@ -52,24 +71,6 @@ final class LocalSymTable extends AbstractSymbolTable {
                               .flatMap(ASTLocalVariableDeclaration::getVarIds)
                               .collect(varIdCollector());
     }
-
-    // TODO should report CT error when self-reference detected (in initializer)
-    LocalSymTable(JSymbolTable parent,
-                  SymbolTableHelper helper,
-                  ASTBlock node) {
-
-        super(parent, helper);
-        assert node != null : "Null block?";
-
-        localVars = node.children(ASTLocalVariableDeclaration.class)
-                        .flatMap(ASTLocalVariableDeclaration::getVarIds)
-                        .collect(varIdCollector());
-
-        localClasses = node.children(ASTLocalClassStatement.class)
-                           .map(ASTLocalClassStatement::getDeclaration)
-                           .collect(typeDeclCollector());
-    }
-
 
     @Override
     protected @Nullable ResolveResult<JTypeDeclSymbol> resolveTypeNameImpl(String simpleName) {
