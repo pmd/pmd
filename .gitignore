@@ -4,6 +4,7 @@ bin/
 .classpath
 .checkstyle
 .pmd
+.pmdruleset.xml
 .ruleset
 .settings/
 *.iml
