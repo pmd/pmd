@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -19,6 +21,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -200,8 +204,7 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTLambdaExpression node, Void data) {
-            int pushed = 0;
-            pushed += pushOnStack(FormalParamsSymTable::new, node);
+            int pushed = pushOnStack(FormalParamsSymTable::new, node);
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
@@ -209,7 +212,6 @@ public final class SymbolTableResolver {
         @Override
         public void visit(ASTBlock node, Void data) {
             int pushed = pushOnStack(LocalSymTable::new, node);
-
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
@@ -217,7 +219,6 @@ public final class SymbolTableResolver {
         @Override
         public void visit(ASTForeachStatement node, Void data) {
             int pushed = pushOnStack(LocalSymTable::new, node);
-
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
@@ -225,7 +226,35 @@ public final class SymbolTableResolver {
         @Override
         public void visit(ASTForStatement node, Void data) {
             int pushed = pushOnStack(LocalSymTable::new, node);
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
 
+        @Override
+        public void visit(ASTTryStatement node, Void data) {
+
+            ASTResourceList resources = node.getResources();
+            if (resources != null) {
+                int pushed = pushOnStack(LocalSymTable::new, resources);
+
+                setTopSymbolTableAndRecurse(resources);
+
+                ASTBlock body = node.getBody();
+                body.jjtAccept(this, data);
+
+                popStack(pushed); // pop resources table before visiting catch & finally
+
+                for (Node child : body.asStream().followingSiblings()) {
+                    ((JavaNode) child).jjtAccept(this, data);
+                }
+            } else {
+                super.visit(node, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTCatchClause node, Void data) {
+            int pushed = pushOnStack(LocalSymTable::new, node);
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
