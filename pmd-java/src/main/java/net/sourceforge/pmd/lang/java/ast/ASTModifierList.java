@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-
 /**
  * List of modifiers of a declaration.
  *
@@ -227,11 +225,7 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         @Override
         public void visit(ASTAnonymousClassDeclaration node, Set<JModifier> effective) {
-            JavaNode enclosing = NodeStream.filterIsAny(node.ancestors(),
-                                                        ASTAnyTypeDeclaration.class,
-                                                        ASTEnumConstant.class,
-                                                        ASTAnyTypeBodyDeclaration.class)
-                                           .first();
+            ASTBodyDeclaration enclosing = node.ancestors(ASTBodyDeclaration.class).first();
 
             assert enclosing != null && !(enclosing instanceof ASTAnyTypeDeclaration)
                 : "Weird position for an anonymous class " + enclosing;
@@ -239,9 +233,8 @@ public final class ASTModifierList extends AbstractJavaNode {
             if (enclosing instanceof ASTEnumConstant) {
                 effective.add(STATIC);
             } else {
-                JavaNode decl = ((ASTAnyTypeBodyDeclaration) enclosing).getDeclarationNode();
-                if (decl instanceof AccessNode && ((AccessNode) decl).hasModifiers(STATIC)
-                    || decl instanceof ASTInitializer && ((ASTInitializer) decl).isStatic()) {
+                if (enclosing instanceof AccessNode && ((AccessNode) enclosing).hasModifiers(STATIC)
+                    || enclosing instanceof ASTInitializer && ((ASTInitializer) enclosing).isStatic()) {
                     effective.add(STATIC);
                 }
             }

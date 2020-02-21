@@ -11,15 +11,14 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -59,9 +58,7 @@ final class AstClassSym
             node.getEnumConstants().forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
         }
 
-        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-
-            JavaNode dnode = decl.getDeclarationNode();
+        for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
             if (dnode instanceof ASTAnyTypeDeclaration) {
                 myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
