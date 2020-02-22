@@ -14,10 +14,10 @@
             class Foo {
               string foo(integer n) {
                 if (n == 1) {
-                  return "one";
+                  return 'one';
                 }
 
-                return "not one";
+                return 'not one';
               }
             }
             ]]>
@@ -36,13 +36,13 @@
               string foo(integer n) {
                 if (n > 0) {           // +1
                   if (n == 1) {        // +2
-                    return "one";
+                    return 'one';
                   }
 
-                  return "positive";
+                  return 'positive';
                 }
 
-                return "negative or 0";
+                return 'negative or 0';
               }
             }
             ]]>
@@ -60,15 +60,15 @@
             class Foo {
               string foo(integer n) {
                 if (n > 0) {           // +1
-                  return "positive";
+                  return 'positive';
                 }
 
                 if (n == 0) {          // +1
-                  return "zero";
+                  return 'zero';
                 }
 
                 if (n < 0) {           // +1
-                  return "negative";
+                  return 'negative';
                 }
               }
             }
@@ -87,11 +87,11 @@
             class Foo {
               string foo(integer n) {
                 if (n > 0) {           // +1
-                  return "positive";
+                  return 'positive';
                 } else if (n < 0) {    // +1
-                  return "negative";
+                  return 'negative';
                 } else {               // +1
-                  return "zero";
+                  return 'zero';
                 }
               }
             }
@@ -111,11 +111,11 @@
               string foo() {
                 for (integer i = 0; i < 10; i++) { // +1
                   if (i == 3) {                    // +2
-                    return "three";
+                    return 'three';
                   }
                 }
 
-                return "done";
+                return 'done';
               }
             }
             ]]>
@@ -135,11 +135,11 @@
                 Integer[] myInts = new Integer[] {1, 2, 3};
                 for (Integer i : myInts) {         // +1
                   if (i == 3) {                    // +2
-                    return "three";
+                    return 'three';
                   }
                 }
 
-                return "done";
+                return 'done';
               }
             }
             ]]>
@@ -163,7 +163,7 @@
                   }
                 }
 
-                return "done";
+                return 'done';
               }
             }
             ]]>
@@ -187,7 +187,7 @@
                   }
                 }
 
-                return "done";
+                return 'done';
               }
             }
             ]]>
@@ -209,11 +209,11 @@
                 while (n < 100) {  // +1
                   i = i * n;
                   if (i > 1000) {  // +2
-                    return "big";
+                    return 'big';
                   }
                 }
 
-                return "small";
+                return 'small';
               }
             }
             ]]>
@@ -260,9 +260,9 @@
                 Integer n = 0;
                 do {                            // +1
                   if (n == 3) {                 // +2
-                    System.debug("n is 3");
+                    System.debug('n is 3');
                   } else {                      // +2
-                    System.debug("n is not 3");
+                    System.debug('n is not 3');
                   }
                   n++;
                 } while (n < 100);
