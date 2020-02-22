@@ -105,6 +105,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
 
    <!-- PERFORMANCE -->
    <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
