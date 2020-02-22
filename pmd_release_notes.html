@@ -1379,10 +1379,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.21.0">PMD Designer Changelog</a>.</p>
 
-<h3 id="apex-suppressions">Apex Suppressions</h3>
+<h4 id="apex-suppressions">Apex Suppressions</h4>
 
 <p>In addition to suppressing violation with the <code class="highlighter-rouge">@SuppressWarnings</code> annotation, Apex now also supports
 the suppressions with a <code class="highlighter-rouge">NOPMD</code> comment. See <a href="pmd_userdocs_suppressing_warnings.html">Suppressing warnings</a>.</p>
+
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The Rule <a href="pmd_rules_apex_design.html#cognitivecomplexity"><code class="highlighter-rouge">CognitiveComplexity</code></a> (<code class="highlighter-rouge">apex-design</code>) finds methods and classes
+that are highly complex and therefore difficult to read and more costly to maintain. In contrast
+to cyclomatic complexity, this rule uses “Cognitive Complexity”, which is a measure of how
+difficult it is for humans to read and understand a method.</li>
+</ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
@@ -1390,6 +1399,11 @@ the suppressions with a <code class="highlighter-rouge">NOPMD</code> comment. Se
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1087">#1087</a>: [apex] Support suppression via //NOPMD</li>
+    </ul>
+  </li>
+  <li>apex-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2162">#2162</a>: [apex] Cognitive Complexity rule</li>
     </ul>
   </li>
   <li>doc
@@ -1512,7 +1526,7 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
   </li>
   <li>pmd-apex
     <ul>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetrics.html#"><code>ApexMetrics</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sourceforge/pmd/lang/java/metrics/JavaMetricsComputer.html#"><code>JavaMetricsComputer</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.22.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetrics.html#"><code>ApexMetrics</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.22.0/net/sourceforge/pmd/lang/apex/metrics/ApexMetricsComputer.html#"><code>ApexMetricsComputer</code></a></li>
     </ul>
   </li>
 </ul>
@@ -1526,6 +1540,7 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
   <li><a href="https://github.com/pmd/pmd/pull/2276">#2276</a>: [java] AppendCharacterWithCharRule ignore literals in expressions - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2278">#2278</a>: [java] fix UnusedImports rule for ambiguous static on-demand imports - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2279">#2279</a>: [apex] Add support for suppressing violations using the // NOPMD comment - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2297">#2297</a>: [apex] Cognitive complexity metrics - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
 </ul>
 
 
@@ -1544,7 +1559,7 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 21, 2020 <br />
+ Site last generated: Feb 22, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

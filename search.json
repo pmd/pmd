@@ -2676,6 +2676,15 @@
 ,
 
 {
+"title": "CognitiveComplexity (Apex, Design)",
+"tags": "",
+"keywords": "CognitiveComplexity",
+"url": "pmd_rules_apex_design.html#cognitivecomplexity",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
 "title": "ExcessiveClassLength (Apex, Design)",
 "tags": "",
 "keywords": "ExcessiveClassLength",
