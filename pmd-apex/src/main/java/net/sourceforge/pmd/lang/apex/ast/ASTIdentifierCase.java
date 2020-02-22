@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.WhenCases.IdentifierCase;
 
-public class ASTIdentifierCase extends AbstractApexNode<IdentifierCase> {
+public final class ASTIdentifierCase extends AbstractApexNode<IdentifierCase> {
 
 
     ASTIdentifierCase(IdentifierCase node) {

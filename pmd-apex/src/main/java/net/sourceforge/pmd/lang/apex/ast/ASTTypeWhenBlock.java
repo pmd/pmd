@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 
 import apex.jorje.semantic.ast.statement.TypeWhenBlock;
 
-public class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
+public final class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
 
 
     ASTTypeWhenBlock(TypeWhenBlock node) {

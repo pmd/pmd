@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.EmptyReferenceExpression;
 
-public class ASTEmptyReferenceExpression extends AbstractApexNode<EmptyReferenceExpression> {
+public final class ASTEmptyReferenceExpression extends AbstractApexNode<EmptyReferenceExpression> {
 
 
     ASTEmptyReferenceExpression(EmptyReferenceExpression node) {

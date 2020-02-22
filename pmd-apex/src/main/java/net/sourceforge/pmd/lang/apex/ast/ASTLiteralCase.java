@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.WhenCases.LiteralCase;
 
-public class ASTLiteralCase extends AbstractApexNode<LiteralCase> {
+public final class ASTLiteralCase extends AbstractApexNode<LiteralCase> {
 
 
     ASTLiteralCase(LiteralCase node) {
