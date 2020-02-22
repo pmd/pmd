@@ -203,4 +203,6 @@ public interface ApexParserVisitor {
     Object visit(ASTLiteralCase node, Object data);
 
     Object visit(ASTIdentifierCase node, Object data);
+
+    Object visit(ASTEmptyReferenceExpression node, Object data);
 }

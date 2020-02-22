@@ -40,6 +40,7 @@ import apex.jorje.semantic.ast.expression.BindExpressions;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
 import apex.jorje.semantic.ast.expression.CastExpression;
 import apex.jorje.semantic.ast.expression.ClassRefExpression;
+import apex.jorje.semantic.ast.expression.EmptyReferenceExpression;
 import apex.jorje.semantic.ast.expression.Expression;
 import apex.jorje.semantic.ast.expression.IllegalStoreExpression;
 import apex.jorje.semantic.ast.expression.InstanceOfExpression;
@@ -221,6 +222,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(ValueWhenBlock.class, ASTValueWhenBlock.class);
         register(LiteralCase.class, ASTLiteralCase.class);
         register(IdentifierCase.class, ASTIdentifierCase.class);
+        register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
     }
 
     private static <T extends AstNode> void register(Class<T> nodeType,
@@ -847,6 +849,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     @Override
     public boolean visit(IdentifierCase node, AdditionalPassScope scope) {
+        return visit(node);
+    }
+
+    @Override
+    public boolean visit(EmptyReferenceExpression node, AdditionalPassScope scope) {
         return visit(node);
     }
 }

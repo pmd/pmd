@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTElseWhenBlock;
+import net.sourceforge.pmd.lang.apex.ast.ASTEmptyReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -638,6 +639,11 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public Object visit(ASTLiteralCase node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTEmptyReferenceExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 }

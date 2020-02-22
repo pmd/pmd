@@ -498,4 +498,9 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
     public Object visit(ASTLiteralCase node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
+
+    @Override
+    public Object visit(ASTEmptyReferenceExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
 }
