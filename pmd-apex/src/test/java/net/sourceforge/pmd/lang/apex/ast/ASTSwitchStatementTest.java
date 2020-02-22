@@ -31,6 +31,10 @@ public class ASTSwitchStatementTest extends ApexParserTestBase {
 
         Assert.assertTrue(switchStatements.get(2).getChild(0) instanceof ASTVariableExpression);
         Assert.assertEquals(2, switchStatements.get(2).findChildrenOfType(ASTTypeWhenBlock.class).size());
+        Assert.assertEquals("Account", switchStatements.get(2).findChildrenOfType(ASTTypeWhenBlock.class)
+                .get(0).getType());
+        Assert.assertEquals("a", switchStatements.get(2).findChildrenOfType(ASTTypeWhenBlock.class)
+                .get(0).getName());
         Assert.assertEquals(1, switchStatements.get(2).findChildrenOfType(ASTValueWhenBlock.class).size());
         Assert.assertEquals(1, switchStatements.get(2).findChildrenOfType(ASTElseWhenBlock.class).size());
 

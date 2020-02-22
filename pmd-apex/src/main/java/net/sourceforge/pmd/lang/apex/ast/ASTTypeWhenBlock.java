@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.lang.reflect.Field;
+
 import apex.jorje.semantic.ast.statement.TypeWhenBlock;
 
 public class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
@@ -13,6 +15,20 @@ public class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
         super(node);
     }
 
+    public String getType() {
+        return String.valueOf(node.getTypeRef());
+    }
+
+    public String getName() {
+        // unfortunately the name is not exposed...
+        try {
+            Field nameField = TypeWhenBlock.class.getDeclaredField("name");
+            nameField.setAccessible(true);
+            return String.valueOf(nameField.get(node));
+        } catch (SecurityException | ReflectiveOperationException e) {
+            return null;
+        }
+    }
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
