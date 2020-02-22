@@ -19,15 +19,24 @@ This is a {{ site.pmd.release_type }} release.
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.21.0).
 
-### Apex Suppressions
+#### Apex Suppressions
 
 In addition to suppressing violation with the `@SuppressWarnings` annotation, Apex now also supports
 the suppressions with a `NOPMD` comment. See [Suppressing warnings](pmd_userdocs_suppressing_warnings.html).
+
+#### New Rules
+
+*   The Rule {% rule "apex/design/CognitiveComplexity" %} (`apex-design`) finds methods and classes
+    that are highly complex and therefore difficult to read and more costly to maintain. In contrast
+    to cyclomatic complexity, this rule uses "Cognitive Complexity", which is a measure of how
+    difficult it is for humans to read and understand a method.
 
 ### Fixed Issues
 
 *   apex
     *   [#1087](https://github.com/pmd/pmd/issues/1087): \[apex] Support suppression via //NOPMD
+*   apex-design
+    *   [#2162](https://github.com/pmd/pmd/issues/2162): \[apex] Cognitive Complexity rule
 *   doc
     *   [#2274](https://github.com/pmd/pmd/issues/2274): \[doc] Java API documentation for PMD
 *   java
@@ -125,6 +134,7 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 *   [#2276](https://github.com/pmd/pmd/pull/2276): \[java] AppendCharacterWithCharRule ignore literals in expressions - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#2278](https://github.com/pmd/pmd/pull/2278): \[java] fix UnusedImports rule for ambiguous static on-demand imports - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#2279](https://github.com/pmd/pmd/pull/2279): \[apex] Add support for suppressing violations using the // NOPMD comment - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2297](https://github.com/pmd/pmd/pull/2297): \[apex] Cognitive complexity metrics - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 
 {% endtocmaker %}
 
