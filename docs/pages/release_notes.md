@@ -123,7 +123,7 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
   * {% jdoc !!java::lang.java.ast.ASTFormalParameters#getParameterCount() %}.
     Use {% jdoc java::lang.java.ast.ASTFormalParameters#size() %} instead.
 * pmd-apex
-  * {% jdoc java::lang.apex.metrics.ApexMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+  * {% jdoc apex::lang.apex.metrics.ApexMetrics %}, {% jdoc apex::lang.apex.metrics.ApexMetricsComputer %}
 
 
 ### External Contributions
