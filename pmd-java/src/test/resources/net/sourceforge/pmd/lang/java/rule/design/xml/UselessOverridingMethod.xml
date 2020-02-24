@@ -182,7 +182,7 @@ public class Foo extends Bar {
     </test-code>
 
     <test-code>
-        <description>adding synchronized is OK</description>
+        <description>adding synchronized is OK, see sf-bug #423</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends Bar {
@@ -443,6 +443,23 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 public class DirectSubclass2 extends DirectSubclass {
     @Override
     public void doBase() { // it's already public in DirectSubclass
+        super.doBase();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Make sure, overriding to add synchronized is Ok, see sf-bug #423</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class DirectSynchronizingSubclass extends BaseClass {
+
+    @Override
+    protected synchronized void doBase() {
+        // overriding for synchronized
         super.doBase();
     }
 }
