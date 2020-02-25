@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -22,6 +19,7 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.rule.internal.GraphUtils.DotColor;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -241,44 +239,16 @@ class LatticeRelation<K, @NonNull V> {
     public String toString() {
         // generates a DOT representation of the lattice
         // Visualize eg at http://webgraphviz.com/
-        StringBuilder sb = new StringBuilder("strict digraph {\n");
-        Map<LNode, String> ids = new HashMap<>();
-        Set<LNode> nodes = allNodes();
-        int i = 0;
-        for (LNode node : nodes) {
-            String id = "n" + i++;
-            ids.put(node, id);
-            String color = node.getClass() == QueryNode.class ? "green" : "black";
-            sb.append(id).append(" [ shape=box, color=").append(color).append(", label=\"")
-              .append(escapeDotString(node.describe()))
-              .append("\" ];\n");
-        }
-
-        List<String> edges = new ArrayList<>();
-
-        for (LNode node : allNodes()) {
-            // edges
-            String id = ids.get(node);
-            for (LNode succ : node.succ) {
-                String succId = ids.get(succ);
-                edges.add(id + " -> " + succId + ";\n");
-            }
-        }
-
-        edges.sort(Comparator.naturalOrder()); // for reproducibility in tests
-        edges.forEach(sb::append);
-
-        return sb.append('}').toString();
+        return GraphUtils.toDot(
+            allNodes(),
+            n->n.succ,
+            n-> n.getClass() == QueryNode.class ? DotColor.GREEN: DotColor.BLACK,
+            LNode::describe
+        );
     }
 
     private Set<LNode> allNodes() {
         return CollectionUtil.union(qNodes.values(), leaves.values());
-    }
-
-    @NonNull
-    public String escapeDotString(String string) {
-        return string.replaceAll("\\R", "\\\n")
-                     .replaceAll("\"", "\\\"");
     }
 
     private enum State {
