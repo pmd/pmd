@@ -276,7 +276,7 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>Accepts Closure SECURITY ENFORCED 2 </description>
+		<description>Accepts Closure SECURITY ENFORCED in a List </description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -288,7 +288,7 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>Accepts Closure SECURITY ENFORCED 3 </description>
+		<description>Accepts Closure SECURITY ENFORCED with Case Insensitivity </description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -311,7 +311,29 @@ public class Foo {
 } ]]></code>
 	</test-code>
 
+	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED Not Secured </description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Contact foo() {
+		Contact c = [SELECT Name FROM Contact WHERE Id=: 'WITH SECURITY_ENFORCED'];
+		return c;
+	}
+} ]]></code>
+	</test-code>
 
+	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED Secured </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Contact foo(String tempID) {
+		Contact c = [SELECT Name FROM Contact WHERE Name = 'WITH SECURITY_ENFORCED' WITH SECURITY_ENFORCED];
+		return c;
+	}
+} ]]></code>
+	</test-code>
 
 	<test-code>
 		<description>Proper accessibility CRUD,FLS </description>

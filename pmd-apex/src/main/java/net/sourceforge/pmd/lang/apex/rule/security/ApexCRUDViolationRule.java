@@ -339,8 +339,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isWithSecurityEnforced(final AbstractApexNode<?> node){
         if(node instanceof ASTSoqlExpression){
-            String pattern = ".*\\b[Ww][Ii][Tt][Hh] [Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]_[Ee][Nn][Ff][Oo][Rr][Cc][Ee][Dd]\\b.*";
-            return ((ASTSoqlExpression) node).getQuery().matches(pattern);
+            String pattern = "(?i).*[^']\\s*WITH SECURITY_ENFORCED\\s*[^']*";
+            String query = ((ASTSoqlExpression) node).getQuery();
+            return query.matches(pattern);
         }
         return false;
     }
@@ -515,7 +516,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
          if (!typeToDMLOperationMapping.containsKey(typeCheck)) {
              if (!isProperESAPICheckForDML(typeCheck, crudMethod))  {
                  if(!isWithSecurityEnforced(node)) {
-
                      addViolation(data, node);
                  }
             }
