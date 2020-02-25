@@ -300,18 +300,6 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>Accepts Closure SECURITY ENFORCED Failed </description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public Contact foo(String tempID) {
-		Contact c = [SELECT Name FROM Contact WHERE Id=: tempID SECURITY_ENFORCED];
-		return c;
-	}
-} ]]></code>
-	</test-code>
-
-	<test-code>
 		<description>Accepts Closure SECURITY ENFORCED Not Secured </description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -328,7 +316,7 @@ public class Foo {
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
-	public Contact foo(String tempID) {
+	public Contact foo() {
 		Contact c = [SELECT Name FROM Contact WHERE Name = 'WITH SECURITY_ENFORCED' WITH SECURITY_ENFORCED];
 		return c;
 	}
