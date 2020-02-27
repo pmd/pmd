@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd.token.internal;
 
+import static net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
+
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -11,8 +13,6 @@ import java.util.LinkedList;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-
-import com.google.common.collect.AbstractIterator;
 
 /**
  * A generic filter for PMD token managers that allows to use comments
@@ -136,21 +136,22 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
             }
 
             @Override
-            protected T computeNext() {
+            protected void computeNext() {
                 assert index >= 0;
                 if (startToken != currentToken) { // NOPMD - intentional check for reference equality
                     throw new ConcurrentModificationException("Using iterator after next token has been requested.");
                 }
                 if (index < unprocessedTokens.size()) {
-                    return unprocessedTokens.get(index++);
+                    setNext(unprocessedTokens.get(index++));
                 } else {
                     final T nextToken = (T) tokenManager.getNextToken();
                     if (shouldStopProcessing(nextToken)) {
-                        return endOfData();
+                        done();
+                        return;
                     }
                     index++;
                     unprocessedTokens.add(nextToken);
-                    return nextToken;
+                    setNext(nextToken);
                 }
             }
 

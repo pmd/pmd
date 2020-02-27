@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -16,8 +18,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-
-import com.google.common.collect.ImmutableList;
 
 public class BaseTokenFilterTest {
 
@@ -67,7 +67,7 @@ public class BaseTokenFilterTest {
 
     class StringTokenManager implements TokenManager {
 
-        Iterator<String> iterator = ImmutableList.of("a", "b", "c").iterator();
+        Iterator<String> iterator = Collections.unmodifiableList(Arrays.asList("a", "b", "c")).iterator();
 
         @Override
         public Object getNextToken() {
