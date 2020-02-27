@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -239,6 +240,15 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return isLambdaParamWithNoType() || isLocalVariableTypeInferred() || isLambdaTypeInferred();
     }
 
+    /**
+     * Returns true if this is a binding variable in a
+     * {@linkplain ASTPattern pattern}.
+     */
+    @Experimental
+    public boolean isPatternBinding() {
+        return getParent() instanceof ASTPattern;
+    }
+
 
     private boolean isLocalVariableTypeInferred() {
         if (isResourceDeclaration()) {
@@ -288,6 +298,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;
+        } else if (getParent() instanceof ASTTypeTestPattern) {
+            return ((ASTTypeTestPattern) getParent()).getTypeNode();
         } else {
             Node n = getParent().getParent();
             if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
