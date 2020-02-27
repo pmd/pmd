@@ -5,13 +5,19 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 public class ASTLiteral extends AbstractJavaTypeNode {
 
+    private static final String TEXTBLOCK_DELIMITER = "\"\"\"";
     private boolean isInt;
     private boolean isFloat;
     private boolean isChar;
@@ -252,6 +258,100 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public boolean isTextBlock() {
-        return isString && getImage().startsWith("\"\"\"");
+        return isString && getImage().startsWith(TEXTBLOCK_DELIMITER);
+    }
+
+    /**
+     * Returns the content of the text block after normalizing line endings to LF,
+     * removing incidental white space surrounding the text block and interpreting
+     * escape sequences.
+     */
+    @Experimental
+    public String getTextBlockContent() {
+        if (!isTextBlock()) {
+            throw new IllegalArgumentException("This is not a text block");
+        }
+
+        int start = determineContentStart(getImage());
+        String content = getImage().substring(start, getImage().length() - TEXTBLOCK_DELIMITER.length());
+        // normalize line endings to LF
+        content = content.replaceAll("\r\n|\r", "\n");
+
+        int prefixLength = Integer.MAX_VALUE;
+        List<String> lines = Arrays.asList(content.split("\\n"));
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            // compute common prefix
+            if (!StringUtils.isAllBlank(line) || i == lines.size() - 1) {
+                prefixLength = Math.min(prefixLength, countLeadingWhitespace(line));
+            }
+        }
+        if (prefixLength == Integer.MAX_VALUE) {
+            // common prefix not found
+            prefixLength = 0;
+        }
+        StringBuilder sb = new StringBuilder(content.length());
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            // remove common whitespace prefix
+            if (!StringUtils.isAllBlank(line) && line.length() >= prefixLength) {
+                line = line.substring(prefixLength);
+            }
+            line = removeTrailingWhitespace(line);
+            sb.append(line);
+
+            boolean isLastLine = i == lines.size() - 1;
+            boolean isFirstLine = i == 0;
+            if (!isLastLine || !isFirstLine && !StringUtils.isAllBlank(line)) {
+                sb.append('\n');
+            }
+        }
+        String result = sb.toString();
+
+        // interpret escape sequences "\NL" "n","t","b","r","f", "s", "\"", "\'"
+        result = result
+                    .replaceAll("\\\\\n", "")
+                    .replaceAll("\\\\n", "\n")
+                    .replaceAll("\\\\t", "\t")
+                    .replaceAll("\\\\b", "\b")
+                    .replaceAll("\\\\r", "\r")
+                    .replaceAll("\\\\f", "\f")
+                    .replaceAll("\\\\s", " ")
+                    .replaceAll("\\\\\"", "\"")
+                    .replaceAll("\\\\'", "'");
+        return result;
+    }
+
+    private static int determineContentStart(String s) {
+        int start = TEXTBLOCK_DELIMITER.length(); // this is the opening delimiter
+        boolean lineTerminator = false;
+        // the content begins after at the first character after the line terminator
+        // of the opening delimiter
+        while (start < s.length() && Character.isWhitespace(s.charAt(start))) {
+            if (s.charAt(start) == '\r' || s.charAt(start) == '\n') {
+                lineTerminator = true;
+            } else if (lineTerminator) {
+                // first character after the line terminator
+                break;
+            }
+            start++;
+        }
+        return start;
+    }
+
+    private static int countLeadingWhitespace(String s) {
+        int count = 0;
+        while (count < s.length() && Character.isWhitespace(s.charAt(count))) {
+            count++;
+        }
+        return count;
+    }
+
+    private static String removeTrailingWhitespace(String s) {
+        int endIndexIncluding = s.length() - 1;
+        while (endIndexIncluding >= 0 && Character.isWhitespace(s.charAt(endIndexIncluding))) {
+            endIndexIncluding--;
+        }
+        return s.substring(0, endIndexIncluding + 1);
     }
 }

@@ -453,8 +453,14 @@ public class JavaParser {
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion != 13 || !preview) {
-      throwParseException("Text block literals are only supported with Java 13 Preview");
+    if (jdkVersion != 13 && jdkVersion != 14 || !preview) {
+      throwParseException("Text block literals are only supported with Java 13 Preview or Java 14 Preview");
+    }
+  }
+
+  private void checkForNewStringSpaceEscape(String s) {
+    if ((jdkVersion != 14 || !preview) && s.contains("\\s")) {
+      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview");
     }
   }
 
@@ -688,7 +694,7 @@ TOKEN :
   >
 | < #STRING_ESCAPE:
       "\\"
-      ( ["n","t","b","r","f","\\","'","\""]
+      ( ["n","t","b","r","f", "s", "\\","'","\""]
       // octal escapes
       | ["0"-"7"] ( ["0"-"7"] )?
       | ["0"-"3"] ["0"-"7"] ["0"-"7"]
@@ -705,7 +711,7 @@ TOKEN :
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
+        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
      "\"\"\""
   >
 }
@@ -1636,8 +1642,8 @@ void Literal() :
 | t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
-| t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
-| t=<TEXT_BLOCK_LITERAL> { checkForTextBlockLiteral(); jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
+| t=<STRING_LITERAL> {jjtThis.setImage(t.image); checkForNewStringSpaceEscape(t.image); jjtThis.setStringLiteral(); }
+| t=<TEXT_BLOCK_LITERAL> { checkForTextBlockLiteral(); checkForNewStringSpaceEscape(t.image); jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
 | BooleanLiteral()
 | NullLiteral()
 }

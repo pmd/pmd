@@ -13,6 +13,9 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
+/**
+ * Tests new java14 standard features.
+ */
 public class Java14Test {
     private final JavaParsingHelper java14 =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("14")
