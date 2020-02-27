@@ -459,7 +459,7 @@ public class JavaParser {
   }
 
   private void checkForNewStringSpaceEscape(String s) {
-    if ((jdkVersion != 14 || !preview) && s.contains("\\s")) {
+    if ((jdkVersion != 14 || !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
       throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview");
     }
   }
