@@ -58,6 +58,7 @@ PMD finds some violations. Therefore the `check` goal is used:
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.8</version>
         <configuration>
             <failOnViolation>true</failOnViolation> <!-- this is actually true by default, but can be disabled -->
             <printFailingErrors>true</printFailingErrors>
