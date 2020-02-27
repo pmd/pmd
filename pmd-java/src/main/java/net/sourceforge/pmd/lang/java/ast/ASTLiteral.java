@@ -269,7 +269,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     @Experimental
     public String getTextBlockContent() {
         if (!isTextBlock()) {
-            throw new IllegalArgumentException("This is not a text block");
+            return getImage();
         }
 
         int start = determineContentStart(getImage());
