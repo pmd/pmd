@@ -1,4 +1,7 @@
 /**
+ * Switch Expressions are now a standard feature of Java 14.
+ * Andreas Dangel 02/2020
+ *====================================================================
  * Add support for the yield statement introduced as a preview language
  * feature with Java 13. See JEP 354.
  * Add support for text block literals introduces as a preview language
@@ -422,6 +425,10 @@ public class JavaParser {
       return jdkVersion >= 14 || jdkVersion >= 12 && preview;
   }
 
+  private boolean isJava13PreviewOr14() {
+      return jdkVersion >= 14 || jdkVersion >= 13 && preview;
+  }
+
   private void checkForSwitchRules() {
     if (!switchExprAllowed()) {
       throwParseException("Switch rules in switch statements are only supported with Java 12 or 13 Preview, or Java >= 14");
@@ -440,8 +447,8 @@ public class JavaParser {
   }
 
   private void checkForYieldStatement() {
-    if (jdkVersion != 13 || !preview) {
-      throwParseException("Yield statements are only supported with Java 13 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Yield statements are only supported with Java 13 Preview or Java >= 14");
     }
   }
 
