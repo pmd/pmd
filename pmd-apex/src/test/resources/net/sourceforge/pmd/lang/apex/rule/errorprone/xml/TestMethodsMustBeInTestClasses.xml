@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+   <test-code>
+      <description>Class without @IsTest, method with @IsTest</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>1</expected-linenumbers>
+      <code><![CDATA[
+private class TestClass {
+    @IsTest static void myTest() {
+        // Code here
+    }
+}
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>Class without @IsTest, method with testMethod</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>1</expected-linenumbers>
+      <code><![CDATA[
+private class TestClass {
+    static testMethod void myTest() {
+        // Code here
+    }
+}
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>Class with @IsTest, method with @IsTest</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+@IsTest
+private class TestClass {
+    @IsTest static void myTest() {
+        // Code here
+    }
+}
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>Class with @IsTest, method with testMethod</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+@IsTest
+private class TestClass {
+    static testMethod void myTest() {
+        // Code here
+    }
+}
+        ]]></code>
+   </test-code>
+
+</test-data>
