@@ -418,8 +418,8 @@ public class JavaParser {
     }
   }
   private void checkForMultipleCaseLabels() {
-    if (!switchExprAllowed()) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 12 or 13 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 13 Preview, or Java >= 14");
     }
   }
   /**
@@ -432,28 +432,18 @@ public class JavaParser {
    */
   private boolean inSwitchLabel = false;
 
-  private boolean switchExprAllowed() {
-      return jdkVersion >= 14 || jdkVersion >= 12 && preview;
-  }
-
   private boolean isJava13PreviewOr14() {
       return jdkVersion >= 14 || jdkVersion >= 13 && preview;
   }
 
   private void checkForSwitchRules() {
-    if (!switchExprAllowed()) {
-      throwParseException("Switch rules in switch statements are only supported with Java 12 or 13 Preview, or Java >= 14");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Switch rules in switch statements are only supported with Java 13 Preview, or Java >= 14");
     }
   }
   private void checkForSwitchExpression() {
-    if (!switchExprAllowed()) {
-      throwParseException("Switch expressions are only supported with Java 12 or 13 Preview, or Java >= 14");
-    }
-  }
-
-  private void checkForBreakExpression() {
-    if (jdkVersion != 12 || !preview) {
-      throwParseException("Expressions in break statements are only supported with Java 12 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Switch expressions are only supported with Java 13 Preview, or Java >= 14");
     }
   }
 
@@ -2031,7 +2021,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() {checkForBreakExpression();} ] ";"
+  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
 }
 
 void ContinueStatement() :

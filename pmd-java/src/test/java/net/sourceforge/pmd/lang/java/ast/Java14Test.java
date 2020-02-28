@@ -78,4 +78,68 @@ public class Java14Test {
 
         Assert.assertEquals(String.class, switchExpressions.get(3).getType());
     }
+
+    @Test
+    public void multipleCaseLabels() {
+        multipleCaseLabels(java13p);
+        multipleCaseLabels(java14);
+        multipleCaseLabels(java14p);
+    }
+
+    private void multipleCaseLabels(JavaParsingHelper parser) {
+        ASTCompilationUnit compilationUnit = parser.parseResource("MultipleCaseLabels.java");
+        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
+        Assert.assertTrue(switchStatement.getChild(0) instanceof ASTExpression);
+        Assert.assertTrue(switchStatement.getChild(1) instanceof ASTSwitchLabel);
+        ASTSwitchLabel switchLabel = switchStatement.getFirstChildOfType(ASTSwitchLabel.class);
+        Assert.assertEquals(3, switchLabel.findChildrenOfType(ASTExpression.class).size());
+    }
+
+    @Test
+    public void switchRules() {
+        switchRules(java13p);
+        switchRules(java14);
+        switchRules(java14p);
+    }
+
+    private void switchRules(JavaParsingHelper parser) {
+        ASTCompilationUnit compilationUnit = parser.parseResource("SwitchRules.java");
+        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
+        Assert.assertTrue(switchStatement.getChild(0) instanceof ASTExpression);
+        Assert.assertTrue(switchStatement.getChild(1) instanceof ASTSwitchLabeledExpression);
+        ASTSwitchLabeledExpression switchLabeledExpression = (ASTSwitchLabeledExpression) switchStatement.getChild(1);
+        Assert.assertEquals(2, switchLabeledExpression.getNumChildren());
+        Assert.assertTrue(switchLabeledExpression.getChild(0) instanceof ASTSwitchLabel);
+        Assert.assertTrue(switchLabeledExpression.getChild(1) instanceof ASTExpression);
+
+        ASTSwitchLabeledBlock switchLabeledBlock = (ASTSwitchLabeledBlock) switchStatement.getChild(4);
+        Assert.assertEquals(2, switchLabeledBlock.getNumChildren());
+        Assert.assertTrue(switchLabeledBlock.getChild(0) instanceof ASTSwitchLabel);
+        Assert.assertTrue(switchLabeledBlock.getChild(1) instanceof ASTBlock);
+
+        ASTSwitchLabeledThrowStatement switchLabeledThrowStatement = (ASTSwitchLabeledThrowStatement) switchStatement.getChild(5);
+        Assert.assertEquals(2, switchLabeledThrowStatement.getNumChildren());
+        Assert.assertTrue(switchLabeledThrowStatement.getChild(0) instanceof ASTSwitchLabel);
+        Assert.assertTrue(switchLabeledThrowStatement.getChild(1) instanceof ASTThrowStatement);
+    }
+
+    @Test
+    public void simpleSwitchExpressions() {
+        simpleSwitchExpressions(java13p);
+        simpleSwitchExpressions(java14);
+        simpleSwitchExpressions(java14p);
+    }
+
+    private void simpleSwitchExpressions(JavaParsingHelper parser) {
+        ASTCompilationUnit compilationUnit = parser.parseResource("SimpleSwitchExpressions.java");
+        ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
+        Assert.assertEquals(6, switchExpression.getNumChildren());
+        Assert.assertTrue(switchExpression.getChild(0) instanceof ASTExpression);
+        Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabeledRule.class).size());
+
+        ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(1);
+        ASTVariableDeclarator localVarDecl = localVar.getFirstChildOfType(ASTVariableDeclarator.class);
+        Assert.assertEquals(Integer.TYPE, localVarDecl.getType());
+        Assert.assertEquals(Integer.TYPE, switchExpression.getType());
+    }
 }
