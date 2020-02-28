@@ -134,6 +134,7 @@ public class Java14PreviewTest {
         List<ASTRecordConstructorDeclaration> rangeConstructors = range.findDescendantsOfType(ASTRecordConstructorDeclaration.class);
         Assert.assertEquals(1, rangeConstructors.size());
         Assert.assertEquals("Range", rangeConstructors.get(0).getImage());
+        Assert.assertTrue(rangeConstructors.get(0).getChild(0) instanceof ASTAnnotation);
         Assert.assertEquals(2, range.getDeclarations().size());
 
         ASTRecordDeclaration varRec = recordDecls.get(3);
