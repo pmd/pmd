@@ -263,6 +263,16 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
+        if (node.isPatternBinding()) {
+            // Don't consider type test patterns here. It could bind to a name
+            // that is already in the scope (e.g. field names).
+            // type tests patterns are tricky to implement
+            // and given it's a preview feature, and the sym table will be replaced
+            // for 7.0, it's not useful to support them.
+            // See https://cr.openjdk.java.net/~briangoetz/amber/pattern-semantics.html#scoping-of-pattern-variables
+            return super.visit(node, data);
+        }
+
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
         node.getScope().addDeclaration(decl);
         node.setNameDeclaration(decl);

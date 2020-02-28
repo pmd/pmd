@@ -68,4 +68,23 @@ public class Java14PreviewTest {
     public void stringEscapeSequenceShouldFail() {
         java14.parse("class Foo { String s =\"a\\sb\"; }");
     }
+
+    @Test
+    public void patternMatchingInstanceof() {
+        ASTCompilationUnit compilationUnit = java14p.parseResource("PatternMatchingInstanceof.java");
+        List<ASTInstanceOfExpression> instanceOfExpressions = compilationUnit.findDescendantsOfType(ASTInstanceOfExpression.class);
+        Assert.assertEquals(4, instanceOfExpressions.size());
+        for (ASTInstanceOfExpression expr : instanceOfExpressions) {
+            Assert.assertTrue(expr.getChild(1) instanceof ASTTypeTestPattern);
+            ASTVariableDeclaratorId variable = expr.getChild(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
+            Assert.assertEquals(String.class, variable.getType());
+            Assert.assertEquals("s", variable.getVariableName());
+            Assert.assertTrue(variable.isPatternBinding());
+        }
+    }
+
+    @Test(expected = ParseException.class)
+    public void patternMatchingInstanceofBeforeJava14PreviewShouldFail() {
+        java14.parseResource("PatternMatchingInstanceof.java");
+    }
 }
