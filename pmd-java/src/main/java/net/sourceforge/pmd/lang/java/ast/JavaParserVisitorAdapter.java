@@ -642,7 +642,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
     @Experimental
-    public Object visit(ASTRecordComponents node, Object data) {
+    public Object visit(ASTRecordComponentList node, Object data) {
         return visit((JavaNode) node, data);
     }
 

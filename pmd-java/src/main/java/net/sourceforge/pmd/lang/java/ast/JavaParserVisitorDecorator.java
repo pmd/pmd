@@ -774,7 +774,7 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     @Override
     @Experimental
-    public Object visit(ASTRecordComponents node, Object data) {
+    public Object visit(ASTRecordComponentList node, Object data) {
         return visitor.visit(node, data);
     }
 

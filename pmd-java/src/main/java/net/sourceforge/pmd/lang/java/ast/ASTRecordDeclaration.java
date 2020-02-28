@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * RecordDeclaration ::= "record"
  *                       &lt;IDENTIFIER&gt;
  *                       {@linkplain ASTTypeParameters TypeParameters}?
- *                       "(" {@linkplain ASTRecordComponents RecordComponents} ")"
+ *                       {@linkplain ASTRecordComponentList RecordComponents}
  *                       {@linkplain ASTImplementsList ImplementsList}?
  *                       {@linkplain ASTRecordBody RecordBody}
  *

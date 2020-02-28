@@ -12,17 +12,18 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordComponents ::= {@linkplain ASTRecordComponent RecordComponent} ( "," {@linkplain ASTRecordComponent RecordComponent} )*
+ * RecordComponentList ::= "("       {@linkplain ASTRecordComponent RecordComponent}
+ *                             ( "," {@linkplain ASTRecordComponent RecordComponent} )* ")"
  *
  * </pre>
  */
 @Experimental
-public class ASTRecordComponents extends AbstractJavaNode {
-    ASTRecordComponents(int id) {
+public class ASTRecordComponentList extends AbstractJavaNode {
+    ASTRecordComponentList(int id) {
         super(id);
     }
 
-    ASTRecordComponents(JavaParser p, int id) {
+    ASTRecordComponentList(JavaParser p, int id) {
         super(p, id);
     }
 

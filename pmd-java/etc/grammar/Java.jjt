@@ -1131,15 +1131,15 @@ void RecordDeclaration(int modifiers):
   }
   t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
   [ TypeParameters() ]
-  "(" RecordComponents() ")"
+  RecordComponentList()
   [ ImplementsList() ]
   RecordBody()
 }
 
-void RecordComponents() :
+void RecordComponentList() :
 {}
 {
-   RecordComponent() ("," RecordComponent())*
+  "(" RecordComponent() ("," RecordComponent())* ")"
 }
 
 void RecordComponent():

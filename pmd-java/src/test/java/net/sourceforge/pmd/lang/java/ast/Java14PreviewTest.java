@@ -96,7 +96,7 @@ public class Java14PreviewTest {
         ASTCompilationUnit compilationUnit = java14p.parseResource("Point.java");
         ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
         Assert.assertEquals("Point", recordDecl.getImage());
-        List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponents.class)
+        List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
                 .findChildrenOfType(ASTRecordComponent.class);
         Assert.assertEquals(2, components.size());
         Assert.assertEquals("x", components.get(0).getImage());
