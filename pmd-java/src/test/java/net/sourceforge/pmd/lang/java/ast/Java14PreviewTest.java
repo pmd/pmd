@@ -90,4 +90,33 @@ public class Java14PreviewTest {
     public void patternMatchingInstanceofBeforeJava14PreviewShouldFail() {
         java14.parseResource("PatternMatchingInstanceof.java");
     }
+
+    @Test
+    public void recordPoint() {
+        ASTCompilationUnit compilationUnit = java14p.parseResource("Point.java");
+        ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
+        Assert.assertEquals("Point", recordDecl.getImage());
+        List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponents.class)
+                .findChildrenOfType(ASTRecordComponent.class);
+        Assert.assertEquals(2, components.size());
+        Assert.assertEquals("x", components.get(0).getImage());
+        Assert.assertEquals("y", components.get(1).getImage());
+    }
+
+    @Test(expected = ParseException.class)
+    public void recordPointBeforeJava14PreviewShouldFail() {
+        java14.parseResource("Point.java");
+    }
+
+    @Test
+    public void innerRecords() {
+        ASTCompilationUnit compilationUnit = java14p.parseResource("Records.java");
+        List<ASTRecordDeclaration> recordDecls = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class);
+        Assert.assertEquals(2, recordDecls.size());
+    }
+
+    @Test(expected = ParseException.class)
+    public void recordIsARestrictedIdentifier() {
+        java14p.parse("public class record {}");
+    }
 }

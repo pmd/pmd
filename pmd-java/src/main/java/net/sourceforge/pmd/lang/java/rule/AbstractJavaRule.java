@@ -96,6 +96,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRSIGNEDSHIFT;
 import net.sourceforge.pmd.lang.java.ast.ASTRUNSIGNEDSHIFT;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordBody;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponents;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -840,6 +846,42 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     @Override
     @Experimental
     public Object visit(ASTTypeTestPattern node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponents node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponent node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordBody node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordBodyDeclaration node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordConstructorDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

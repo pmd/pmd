@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
- * Groups enum, class, annotation and interface declarations.
+ * Groups class, enum, record, annotation and interface declarations.
  *
  * @author Clément Fournier
  */

@@ -1,5 +1,9 @@
 /**
- * Add support for pattern matching for instance of introduced as
+ * Add support for record types introduced as a preview language
+ * feature with Java 14. See JEP 359.
+ * Andreas Dangel 02/2020
+ *====================================================================
+ * Add support for pattern matching for instance of introduced
  * as a preview language feature with Java 14. See JEP 305.
  * Clément Fournier 02/2020
  *====================================================================
@@ -409,6 +413,9 @@ public class JavaParser {
     if (jdkVersion >= 10 && "var".equals(image)) {
       throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
     }
+    if (jdkVersion >= 14 && preview && "record".equals(image)) {
+      throwParseException("With JDK 14 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
+    }
   }
   private void checkForMultipleCaseLabels() {
     if (!switchExprAllowed()) {
@@ -465,6 +472,12 @@ public class JavaParser {
   private void checkForNewStringSpaceEscape(String s) {
     if ((jdkVersion != 14 || !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
       throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview");
+    }
+  }
+
+  private void checkForRecordType() {
+    if (jdkVersion != 14 || !preview) {
+      throwParseException("Records are only supported with Java 14 Preview");
     }
   }
 
@@ -1024,6 +1037,8 @@ void TypeDeclaration():
      LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
    |
      AnnotationTypeDeclaration(modifiers)
+   |
+     LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
   )
 }
 
@@ -1102,6 +1117,66 @@ void EnumConstant():
   t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ Arguments() ] [ ClassOrInterfaceBody() ]
 }
 
+void RecordDeclaration(int modifiers):
+{
+    Token t;
+    jjtThis.setModifiers(modifiers);
+    checkForRecordType();
+}
+{
+  t = <IDENTIFIER> {
+    if (!"record".equals(t.image)) {
+      throw new ParseException("ERROR: expecting record");
+    }
+  }
+  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
+  [ TypeParameters() ]
+  "(" RecordComponents() ")"
+  [ ImplementsList() ]
+  RecordBody()
+}
+
+void RecordComponents() :
+{}
+{
+   RecordComponent() ("," RecordComponent())*
+}
+
+void RecordComponent():
+{}
+{
+  (TypeAnnotation())* Type() <IDENTIFIER> { jjtThis.setImage(token.image); }
+}
+
+void RecordBody():
+{}
+{
+  "{"
+    ( RecordBodyDeclaration() )*
+  "}"
+}
+
+void RecordBodyDeclaration():
+{}
+{
+  LOOKAHEAD(4) RecordConstructorDeclaration()
+  |
+  ClassOrInterfaceBodyDeclaration()
+}
+
+void RecordConstructorDeclaration():
+{
+  int modifiers;
+}
+{
+  (TypeAnnotation())*
+  modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
+  [TypeParameters()]
+  Name()
+  [ "throws" NameList() ]
+  [ "{" ( BlockStatement() )* "}" ]
+}
+
 void TypeParameters():
 {}
 {
@@ -1135,6 +1210,7 @@ void ClassOrInterfaceBodyDeclaration():
 |  modifiers = Modifiers()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
+    | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
