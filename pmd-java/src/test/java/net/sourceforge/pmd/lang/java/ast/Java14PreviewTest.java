@@ -80,6 +80,7 @@ public class Java14PreviewTest {
             Assert.assertEquals(String.class, variable.getType());
             Assert.assertEquals("s", variable.getVariableName());
             Assert.assertTrue(variable.isPatternBinding());
+            Assert.assertTrue(variable.isFinal());
         }
     }
 

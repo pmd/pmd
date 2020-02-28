@@ -175,6 +175,9 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
             return true;
         } else if (isLambdaParamWithNoType()) {
             return false;
+        } else if (isPatternBinding()) {
+            // implicitly like final, assignment of a pattern binding is not allowed
+            return true;
         }
 
         if (getParent() instanceof ASTFormalParameter) {
