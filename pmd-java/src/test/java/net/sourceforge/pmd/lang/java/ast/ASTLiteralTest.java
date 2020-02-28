@@ -261,5 +261,7 @@ public class ASTLiteralTest extends BaseParserTest {
                         + "\r\n"
                         + "test\r\n"
                         + "\"\"\""));
+        assertEquals("text block with backslash escape", "\\test\n",
+                ASTLiteral.determineTextBlockContent("\"\"\"\n                \\\\test\n                \"\"\""));
     }
 }

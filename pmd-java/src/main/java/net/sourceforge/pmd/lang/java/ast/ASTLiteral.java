@@ -311,20 +311,62 @@ public class ASTLiteral extends AbstractJavaTypeNode {
                 sb.append('\n');
             }
         }
-        String result = sb.toString();
 
-        // interpret escape sequences "\<LF>" (line continuation), "n","t","b","r","f", "s", "\"", "\'"
-        result = result
-                    .replaceAll("\\\\\n", "")
-                    .replaceAll("\\\\n", "\n")
-                    .replaceAll("\\\\t", "\t")
-                    .replaceAll("\\\\b", "\b")
-                    .replaceAll("\\\\r", "\r")
-                    .replaceAll("\\\\f", "\f")
-                    .replaceAll("\\\\s", " ")
-                    .replaceAll("\\\\\"", "\"")
-                    .replaceAll("\\\\'", "'");
-        return result;
+        interpretEscapeSequences(sb);
+        return sb.toString();
+    }
+
+    private static void interpretEscapeSequences(StringBuilder sb) {
+        // interpret escape sequences "\<LF>" (line continuation), "n","t","b","r","f", "s", "\"", "\'", "\\"
+        for (int i = 0; i < sb.length(); i++) {
+            char c = sb.charAt(i);
+            if (c == '\\' && i < sb.length() - 1) {
+                char cnext = sb.charAt(i + 1);
+                switch (cnext) {
+                case '\n':
+                    // line continuation
+                    sb.delete(i, i + 2);
+                    break;
+                case '\\':
+                    sb.deleteCharAt(i);
+                    break;
+                case 'n':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '\n');
+                    break;
+                case 't':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '\t');
+                    break;
+                case 'b':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '\b');
+                    break;
+                case 'r':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '\r');
+                    break;
+                case 'f':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '\f');
+                    break;
+                case 's':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, ' ');
+                    break;
+                case '"':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '"');
+                    break;
+                case '\'':
+                    sb.deleteCharAt(i);
+                    sb.setCharAt(i, '\'');
+                    break;
+                default:
+                    // unknown escape - do nothing - it stays
+                }
+            }
+        }
     }
 
     private static int determineContentStart(String s) {

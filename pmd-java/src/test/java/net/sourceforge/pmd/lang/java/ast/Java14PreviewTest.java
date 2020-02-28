@@ -29,11 +29,13 @@ public class Java14PreviewTest {
     public void textBlocks() {
         ASTCompilationUnit compilationUnit = java14p.parseResource("TextBlocks.java");
         List<ASTLiteral> literals = compilationUnit.findDescendantsOfType(ASTLiteral.class);
-        Assert.assertEquals(19, literals.size());
+        Assert.assertEquals(22, literals.size());
         Assert.assertFalse(literals.get(2).isTextBlock());
         Assert.assertFalse(literals.get(12).isTextBlock());
         Assert.assertFalse(literals.get(17).isTextBlock());
         Assert.assertFalse(literals.get(18).isTextBlock());
+        Assert.assertFalse(literals.get(20).isTextBlock());
+        Assert.assertFalse(literals.get(21).isTextBlock());
 
         List<ASTLiteral> textBlocks = new ArrayList<>();
         for (ASTLiteral literal : literals) {
@@ -41,7 +43,7 @@ public class Java14PreviewTest {
                 textBlocks.add(literal);
             }
         }
-        Assert.assertEquals(15, textBlocks.size());
+        Assert.assertEquals(16, textBlocks.size());
         Assert.assertEquals("\"\"\"\n"
                                 + "                      <html>   \n"
                                 + "                          <body>\n"

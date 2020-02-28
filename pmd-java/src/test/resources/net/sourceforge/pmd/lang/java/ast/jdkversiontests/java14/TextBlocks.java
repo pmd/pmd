@@ -103,5 +103,11 @@ public class TextBlocks {
 test
 """;
         System.out.println(emptyLine.replaceAll("\n", "<LF>"));
+
+        // backslash escapes
+        String bs = """
+                \\test
+                """;
+        System.out.println(bs.replaceAll("\n", "<LF>"));
     }
 }
