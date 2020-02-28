@@ -1172,7 +1172,7 @@ void RecordConstructorDeclaration():
   (TypeAnnotation())*
   modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
   [TypeParameters()]
-  Name()
+  <IDENTIFIER> { jjtThis.setImage(token.image); }
   [ "throws" NameList() ]
   "{" ( BlockStatement() )* "}"
 }

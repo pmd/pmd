@@ -15,7 +15,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * RecordConstructorDeclaration ::=  ({@linkplain ASTTypeAnnotation TypeAnnotation})*
  *                                   {@linkplain ASTModifiers Modifiers}
  *                                   {@linkplain ASTTypeParameters TypeParameters}?
- *                                   {@linkplain ASTName Name}
+ *                                   &lt;IDENTIFIER&gt;
  *                                   ( "throws" {@linkplain ASTNameList NameList} )?
  *                                   "{" ( {@linkplain ASTBlockStatement ASTBlockStatement} )* "}"
  *
