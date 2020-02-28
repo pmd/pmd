@@ -39,7 +39,12 @@ public class Records {
 
     public record ArrayRec(int x[]) {}
 
-    public record EmptyRec() {
+    public record EmptyRec<Type>() {
         public void foo() { }
+        public Type bar() { return null; }
+        public static void baz() {
+            EmptyRec<String> r = new EmptyRec<>();
+            System.out.println(r);
+        }
     }
 }
