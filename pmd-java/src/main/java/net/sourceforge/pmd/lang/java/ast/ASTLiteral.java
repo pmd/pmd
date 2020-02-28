@@ -265,17 +265,22 @@ public class ASTLiteral extends AbstractJavaTypeNode {
      * Returns the content of the text block after normalizing line endings to LF,
      * removing incidental white space surrounding the text block and interpreting
      * escape sequences.
+     *
+     * <p>Note: This is a Java 14 Preview Feature.
      */
     @Experimental
     public String getTextBlockContent() {
         if (!isTextBlock()) {
             return getImage();
         }
+        return determineTextBlockContent(getImage());
+    }
 
-        int start = determineContentStart(getImage());
-        String content = getImage().substring(start, getImage().length() - TEXTBLOCK_DELIMITER.length());
+    static String determineTextBlockContent(String image) {
         // normalize line endings to LF
-        content = content.replaceAll("\r\n|\r", "\n");
+        String content = image.replaceAll("\r\n|\r", "\n");
+        int start = determineContentStart(content);
+        content = content.substring(start, content.length() - TEXTBLOCK_DELIMITER.length());
 
         int prefixLength = Integer.MAX_VALUE;
         List<String> lines = Arrays.asList(content.split("\\n"));
@@ -308,7 +313,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         }
         String result = sb.toString();
 
-        // interpret escape sequences "\NL" "n","t","b","r","f", "s", "\"", "\'"
+        // interpret escape sequences "\<LF>" (line continuation), "n","t","b","r","f", "s", "\"", "\'"
         result = result
                     .replaceAll("\\\\\n", "")
                     .replaceAll("\\\\n", "\n")
@@ -324,15 +329,11 @@ public class ASTLiteral extends AbstractJavaTypeNode {
 
     private static int determineContentStart(String s) {
         int start = TEXTBLOCK_DELIMITER.length(); // this is the opening delimiter
-        boolean lineTerminator = false;
         // the content begins after at the first character after the line terminator
         // of the opening delimiter
         while (start < s.length() && Character.isWhitespace(s.charAt(start))) {
-            if (s.charAt(start) == '\r' || s.charAt(start) == '\n') {
-                lineTerminator = true;
-            } else if (lineTerminator) {
-                // first character after the line terminator
-                break;
+            if (s.charAt(start) == '\n') {
+                return start + 1;
             }
             start++;
         }

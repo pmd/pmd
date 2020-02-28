@@ -96,5 +96,12 @@ public class TextBlocks {
                         blue \s
                         """;
         System.out.println(colors);
+
+        // empty new line as first content
+        String emptyLine = """
+
+test
+""";
+        System.out.println(emptyLine.replaceAll("\n", "<LF>"));
     }
 }
