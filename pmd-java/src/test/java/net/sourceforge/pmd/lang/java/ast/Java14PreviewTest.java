@@ -120,6 +120,7 @@ public class Java14PreviewTest {
         Assert.assertTrue(complex.isNested());
         Assert.assertEquals(0, complex.getRecordComponents().get(0).findChildrenOfType(ASTAnnotation.class).size());
         Assert.assertEquals(1, complex.getRecordComponents().get(1).findChildrenOfType(ASTAnnotation.class).size());
+        Assert.assertTrue(complex.getChild(1).getChild(0).getChild(1) instanceof ASTConstructorDeclaration);
 
         ASTRecordDeclaration nested = recordDecls.get(1);
         Assert.assertEquals("Nested", nested.getName());

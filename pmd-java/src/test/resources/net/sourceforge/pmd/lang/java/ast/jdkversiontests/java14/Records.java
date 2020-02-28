@@ -7,15 +7,26 @@ import java.lang.annotation.ElementType;
 public class Records {
 
     @Target(ElementType.TYPE_USE)
-    @interface Nullable {
-    }
+    @interface Nullable { }
+
+    @Target({ElementType.CONSTRUCTOR, ElementType.PARAMETER})
+    @interface MyAnnotation { }
 
     public record MyComplex(int real, @Deprecated int imaginary) {
+        // explicit declaration of a canonical constructor
+        @MyAnnotation
+        public MyComplex(@MyAnnotation int real, int imaginary) {
+            if (real > 100) throw new IllegalArgumentException("too big");
+            this.real = real;
+            this.imaginary = imaginary;
+        }
         public record Nested(int a) {};
     }
 
 
     public record Range(int lo, int hi) {
+        // compact record constructor
+        @MyAnnotation
         public Range {
           if (lo > hi)  /* referring here to the implicit constructor parameters */
             throw new IllegalArgumentException(String.format("(%d,%d)", lo, hi));

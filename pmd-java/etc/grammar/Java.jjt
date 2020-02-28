@@ -1162,9 +1162,9 @@ void RecordBody():
 void RecordBodyDeclaration() #void :
 {}
 {
-  LOOKAHEAD(4) RecordConstructorDeclaration()
+  LOOKAHEAD(ClassOrInterfaceBodyDeclaration()) ClassOrInterfaceBodyDeclaration()
   |
-  ClassOrInterfaceBodyDeclaration()
+  RecordConstructorDeclaration()
 }
 
 void RecordConstructorDeclaration():
@@ -1176,7 +1176,6 @@ void RecordConstructorDeclaration():
   modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
   [TypeParameters()]
   <IDENTIFIER> { jjtThis.setImage(token.image); }
-  [ "throws" NameList() ]
   "{" ( BlockStatement() )* "}"
 }
 
