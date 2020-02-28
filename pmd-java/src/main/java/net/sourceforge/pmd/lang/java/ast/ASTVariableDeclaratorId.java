@@ -303,6 +303,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
             return null;
         } else if (getParent() instanceof ASTTypeTestPattern) {
             return ((ASTTypeTestPattern) getParent()).getTypeNode();
+        } else if (getParent() instanceof ASTRecordComponent) {
+            return ((ASTRecordComponent) getParent()).getTypeNode();
         } else {
             Node n = getParent().getParent();
             if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {

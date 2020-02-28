@@ -57,4 +57,8 @@ public class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     public boolean isFindBoundary() {
         return isNested();
     }
+
+    public List<ASTRecordComponent> getRecordComponents() {
+        return getFirstChildOfType(ASTRecordComponentList.class).findChildrenOfType(ASTRecordComponent.class);
+    }
 }

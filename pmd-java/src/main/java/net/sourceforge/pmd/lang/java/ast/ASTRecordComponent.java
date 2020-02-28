@@ -12,14 +12,17 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordComponent ::= ({@linkplain ASTTypeAnnotation TypeAnnotation})*
+ * RecordComponent ::= ({@linkplain ASTAnnotation Annotation})*
  *                     {@linkplain ASTType Type}
- *                     &lt;IDENTIFIER&gt;
+ *                     ( ({@linkplain ASTAnnotation Annotation})* "..." )?
+ *                     {@linkplain ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
  */
 @Experimental
 public class ASTRecordComponent extends AbstractJavaNode {
+    private boolean varargs;
+
     ASTRecordComponent(int id) {
         super(id);
     }
@@ -31,5 +34,21 @@ public class ASTRecordComponent extends AbstractJavaNode {
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public boolean isVarargs() {
+        return varargs;
+    }
+
+    void setVarargs() {
+        varargs = true;
+    }
+
+    public ASTType getTypeNode() {
+        return getFirstChildOfType(ASTType.class);
+    }
+
+    public ASTVariableDeclaratorId getVariableDeclaratorId() {
+        return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 }

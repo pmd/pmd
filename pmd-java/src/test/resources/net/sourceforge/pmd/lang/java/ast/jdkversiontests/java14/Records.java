@@ -15,4 +15,10 @@ public class Records {
             throw new IllegalArgumentException(String.format("(%d,%d)", lo, hi));
         }
     }
+
+    public record VarRec(int ... x) {};
+
+    public record ArrayRec(int x[]) {};
+
+    public record EmptyRec() {};
 }

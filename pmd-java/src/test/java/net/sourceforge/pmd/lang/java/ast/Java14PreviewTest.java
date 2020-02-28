@@ -99,8 +99,8 @@ public class Java14PreviewTest {
         List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
                 .findChildrenOfType(ASTRecordComponent.class);
         Assert.assertEquals(2, components.size());
-        Assert.assertEquals("x", components.get(0).getImage());
-        Assert.assertEquals("y", components.get(1).getImage());
+        Assert.assertEquals("x", components.get(0).getVariableDeclaratorId().getImage());
+        Assert.assertEquals("y", components.get(1).getVariableDeclaratorId().getImage());
     }
 
     @Test(expected = ParseException.class)
@@ -112,7 +112,28 @@ public class Java14PreviewTest {
     public void innerRecords() {
         ASTCompilationUnit compilationUnit = java14p.parseResource("Records.java");
         List<ASTRecordDeclaration> recordDecls = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class);
-        Assert.assertEquals(2, recordDecls.size());
+        Assert.assertEquals(5, recordDecls.size());
+
+        ASTRecordDeclaration range = recordDecls.get(1);
+        Assert.assertEquals("Range", range.getImage());
+        Assert.assertEquals(2, range.getRecordComponents().size());
+        List<ASTRecordConstructorDeclaration> rangeConstructors = range.findDescendantsOfType(ASTRecordConstructorDeclaration.class);
+        Assert.assertEquals(1, rangeConstructors.size());
+        Assert.assertEquals("Range", rangeConstructors.get(0).getImage());
+
+        ASTRecordDeclaration varRec = recordDecls.get(2);
+        Assert.assertEquals("VarRec", varRec.getImage());
+        Assert.assertEquals("x", varRec.getRecordComponents().get(0).getVariableDeclaratorId().getImage());
+        Assert.assertTrue(varRec.getRecordComponents().get(0).isVarargs());
+
+        ASTRecordDeclaration arrayRec = recordDecls.get(3);
+        Assert.assertEquals("ArrayRec", arrayRec.getImage());
+        Assert.assertEquals("x", arrayRec.getRecordComponents().get(0).getVariableDeclaratorId().getImage());
+        Assert.assertTrue(arrayRec.getRecordComponents().get(0).getVariableDeclaratorId().hasArrayType());
+
+        ASTRecordDeclaration emptyRec = recordDecls.get(4);
+        Assert.assertEquals("EmptyRec", emptyRec.getImage());
+        Assert.assertEquals(0, emptyRec.getRecordComponents().size());
     }
 
     @Test(expected = ParseException.class)

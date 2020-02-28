@@ -1139,13 +1139,16 @@ void RecordDeclaration(int modifiers):
 void RecordComponentList() :
 {}
 {
-  "(" RecordComponent() ("," RecordComponent())* ")"
+  "(" [ RecordComponent() ("," RecordComponent())* ] ")"
 }
 
 void RecordComponent():
 {}
 {
-  (TypeAnnotation())* Type() <IDENTIFIER> { jjtThis.setImage(token.image); }
+  (Annotation())*
+  Type()
+  [ (Annotation())* "..." {jjtThis.setVarargs();} ]
+  VariableDeclaratorId()
 }
 
 void RecordBody():

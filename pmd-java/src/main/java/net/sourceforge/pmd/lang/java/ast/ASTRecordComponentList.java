@@ -12,8 +12,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordComponentList ::= "("       {@linkplain ASTRecordComponent RecordComponent}
- *                             ( "," {@linkplain ASTRecordComponent RecordComponent} )* ")"
+ * RecordComponentList ::= "(" ( {@linkplain ASTRecordComponent RecordComponent} ( "," {@linkplain ASTRecordComponent RecordComponent} )* )? ")"
  *
  * </pre>
  */
