@@ -96,6 +96,7 @@ public class Java14PreviewTest {
         ASTCompilationUnit compilationUnit = java14p.parseResource("Point.java");
         ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
         Assert.assertEquals("Point", recordDecl.getImage());
+        Assert.assertFalse(recordDecl.isNested());
         List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
                 .findChildrenOfType(ASTRecordComponent.class);
         Assert.assertEquals(2, components.size());
@@ -111,27 +112,35 @@ public class Java14PreviewTest {
     @Test
     public void innerRecords() {
         ASTCompilationUnit compilationUnit = java14p.parseResource("Records.java");
-        List<ASTRecordDeclaration> recordDecls = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class);
-        Assert.assertEquals(5, recordDecls.size());
+        List<ASTRecordDeclaration> recordDecls = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class, true);
+        Assert.assertEquals(6, recordDecls.size());
 
-        ASTRecordDeclaration range = recordDecls.get(1);
+        ASTRecordDeclaration complex = recordDecls.get(0);
+        Assert.assertEquals("MyComplex", complex.getImage());
+        Assert.assertTrue(complex.isNested());
+
+        ASTRecordDeclaration nested = recordDecls.get(1);
+        Assert.assertEquals("Nested", nested.getImage());
+        Assert.assertTrue(nested.isNested());
+
+        ASTRecordDeclaration range = recordDecls.get(2);
         Assert.assertEquals("Range", range.getImage());
         Assert.assertEquals(2, range.getRecordComponents().size());
         List<ASTRecordConstructorDeclaration> rangeConstructors = range.findDescendantsOfType(ASTRecordConstructorDeclaration.class);
         Assert.assertEquals(1, rangeConstructors.size());
         Assert.assertEquals("Range", rangeConstructors.get(0).getImage());
 
-        ASTRecordDeclaration varRec = recordDecls.get(2);
+        ASTRecordDeclaration varRec = recordDecls.get(3);
         Assert.assertEquals("VarRec", varRec.getImage());
         Assert.assertEquals("x", varRec.getRecordComponents().get(0).getVariableDeclaratorId().getImage());
         Assert.assertTrue(varRec.getRecordComponents().get(0).isVarargs());
 
-        ASTRecordDeclaration arrayRec = recordDecls.get(3);
+        ASTRecordDeclaration arrayRec = recordDecls.get(4);
         Assert.assertEquals("ArrayRec", arrayRec.getImage());
         Assert.assertEquals("x", arrayRec.getRecordComponents().get(0).getVariableDeclaratorId().getImage());
         Assert.assertTrue(arrayRec.getRecordComponents().get(0).getVariableDeclaratorId().hasArrayType());
 
-        ASTRecordDeclaration emptyRec = recordDecls.get(4);
+        ASTRecordDeclaration emptyRec = recordDecls.get(5);
         Assert.assertEquals("EmptyRec", emptyRec.getImage());
         Assert.assertEquals(0, emptyRec.getRecordComponents().size());
     }
