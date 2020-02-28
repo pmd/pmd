@@ -101,7 +101,7 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      */
     @Deprecated
     enum TypeKind {
-        CLASS, INTERFACE, ENUM, ANNOTATION;
+        CLASS, INTERFACE, ENUM, ANNOTATION, RECORD;
 
 
         public String getPrintableName() {

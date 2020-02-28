@@ -20,7 +20,7 @@ public class Records {
             this.real = real;
             this.imaginary = imaginary;
         }
-        public record Nested(int a) {};
+        public record Nested(int a) {}
     }
 
 
@@ -31,11 +31,15 @@ public class Records {
           if (lo > hi)  /* referring here to the implicit constructor parameters */
             throw new IllegalArgumentException(String.format("(%d,%d)", lo, hi));
         }
+
+        public void foo() { }
     }
 
     public record VarRec(@Nullable @Deprecated String @Nullable ... x) {}
 
     public record ArrayRec(int x[]) {}
 
-    public record EmptyRec() {}
+    public record EmptyRec() {
+        public void foo() { }
+    }
 }

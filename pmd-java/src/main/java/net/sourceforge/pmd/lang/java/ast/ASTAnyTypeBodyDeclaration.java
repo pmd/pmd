@@ -58,7 +58,9 @@ public interface ASTAnyTypeBodyDeclaration extends JavaNode {
         /** See {@link ASTAnnotationTypeDeclaration}. */
         ANNOTATION,
         /** No child, {@link #getDeclarationNode()} will return null. */
-        EMPTY
+        EMPTY,
+        /** See {@link ASTRecordConstructorDeclaration}. */
+        RECORD_CONSTRUCTOR
     }
 
 }

@@ -44,13 +44,12 @@ public class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
 
     @Override
     public TypeKind getTypeKind() {
-        return null;
+        return TypeKind.RECORD;
     }
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        // TODO Auto-generated method stub
-        return null;
+        return getFirstChildOfType(ASTRecordBody.class).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 
     @Override
