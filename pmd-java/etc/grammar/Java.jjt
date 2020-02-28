@@ -1147,7 +1147,7 @@ void RecordComponent():
 {
   (Annotation())*
   Type()
-  [ (Annotation())* "..." {jjtThis.setVarargs();} ]
+  [ "..." {jjtThis.setVarargs();} ]
   VariableDeclaratorId()
 }
 

@@ -118,6 +118,8 @@ public class Java14PreviewTest {
         ASTRecordDeclaration complex = recordDecls.get(0);
         Assert.assertEquals("MyComplex", complex.getImage());
         Assert.assertTrue(complex.isNested());
+        Assert.assertEquals(0, complex.getRecordComponents().get(0).findChildrenOfType(ASTAnnotation.class).size());
+        Assert.assertEquals(1, complex.getRecordComponents().get(1).findChildrenOfType(ASTAnnotation.class).size());
 
         ASTRecordDeclaration nested = recordDecls.get(1);
         Assert.assertEquals("Nested", nested.getImage());
@@ -134,6 +136,8 @@ public class Java14PreviewTest {
         Assert.assertEquals("VarRec", varRec.getImage());
         Assert.assertEquals("x", varRec.getRecordComponents().get(0).getVariableDeclaratorId().getImage());
         Assert.assertTrue(varRec.getRecordComponents().get(0).isVarargs());
+        Assert.assertEquals(2, varRec.getRecordComponents().get(0).findChildrenOfType(ASTAnnotation.class).size());
+        Assert.assertEquals(1, varRec.getRecordComponents().get(0).getTypeNode().findDescendantsOfType(ASTAnnotation.class).size());
 
         ASTRecordDeclaration arrayRec = recordDecls.get(4);
         Assert.assertEquals("ArrayRec", arrayRec.getImage());

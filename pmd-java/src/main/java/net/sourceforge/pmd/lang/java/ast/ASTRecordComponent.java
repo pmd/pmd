@@ -14,7 +14,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * RecordComponent ::= ({@linkplain ASTAnnotation Annotation})*
  *                     {@linkplain ASTType Type}
- *                     ( ({@linkplain ASTAnnotation Annotation})* "..." )?
+ *                     ( "..." )?
  *                     {@linkplain ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
