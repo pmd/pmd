@@ -1,4 +1,8 @@
 /**
+ * Add support for pattern matching for instance of introduced as
+ * as a preview language feature with Java 14. See JEP 305.
+ * Clément Fournier 02/2020
+ *====================================================================
  * Switch Expressions are now a standard feature of Java 14.
  * Andreas Dangel 02/2020
  *====================================================================
