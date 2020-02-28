@@ -8,7 +8,25 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ * A record declaration is a special data class type (JDK 14 preview feature).
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
+ *
+ * <pre class="grammar">
+ *
+ * RecordDeclaration ::= "record"
+ *                       &lt;IDENTIFIER&gt;
+ *                       {@linkplain ASTTypeParameters TypeParameters}?
+ *                       "(" {@linkplain ASTRecordComponents RecordComponents} ")"
+ *                       {@linkplain ASTImplementsList ImplementsList}?
+ *                       {@linkplain ASTRecordBody RecordBody}
+ *
+ * </pre>
+ *
+ * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
+ */
 @Experimental
 public class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     ASTRecordDeclaration(int id) {
@@ -33,5 +51,10 @@ public class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public boolean isFindBoundary() {
+        return isNested();
     }
 }

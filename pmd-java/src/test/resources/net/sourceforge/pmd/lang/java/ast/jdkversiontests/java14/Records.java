@@ -5,6 +5,7 @@ public class Records {
 
 
     public record MyComplex(int real, int imaginary) {
+        public record Nested(int a) {};
     };
 
 

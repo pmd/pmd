@@ -16,7 +16,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <p>See https://openjdk.java.net/jeps/305, https://openjdk.java.net/jeps/8235186
  *
- * <pre>
+ * <pre class="grammar">
  *
  * Pattern ::= {@link ASTTypeTestPattern TypeTestPattern}
  *

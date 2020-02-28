@@ -1174,7 +1174,7 @@ void RecordConstructorDeclaration():
   [TypeParameters()]
   Name()
   [ "throws" NameList() ]
-  [ "{" ( BlockStatement() )* "}" ]
+  "{" ( BlockStatement() )* "}"
 }
 
 void TypeParameters():

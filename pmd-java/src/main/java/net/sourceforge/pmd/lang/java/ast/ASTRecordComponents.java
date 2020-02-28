@@ -7,6 +7,15 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
+/**
+ * Defines the state description of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
+ *
+ * <pre class="grammar">
+ *
+ * RecordComponents ::= {@linkplain ASTRecordComponent RecordComponent} ( "," {@linkplain ASTRecordComponent RecordComponent} )*
+ *
+ * </pre>
+ */
 @Experimental
 public class ASTRecordComponents extends AbstractJavaNode {
     ASTRecordComponents(int id) {
