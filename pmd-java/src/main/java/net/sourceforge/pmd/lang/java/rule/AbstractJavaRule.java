@@ -97,7 +97,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRSIGNEDSHIFT;
 import net.sourceforge.pmd.lang.java.ast.ASTRUNSIGNEDSHIFT;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordBody;
-import net.sourceforge.pmd.lang.java.ast.ASTRecordBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
@@ -870,12 +869,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     @Override
     @Experimental
     public Object visit(ASTRecordBody node, Object data) {
-        return visit((JavaNode) node, data);
-    }
-
-    @Override
-    @Experimental
-    public Object visit(ASTRecordBodyDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
 

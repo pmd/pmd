@@ -34,7 +34,7 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     public final boolean isNested() {
         return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
             || getParent() instanceof ASTAnnotationTypeMemberDeclaration
-            || getParent() instanceof ASTRecordBodyDeclaration;
+            || getParent() instanceof ASTRecordBody;
     }
 
     @Override

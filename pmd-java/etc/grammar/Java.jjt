@@ -1159,7 +1159,7 @@ void RecordBody():
   "}"
 }
 
-void RecordBodyDeclaration():
+void RecordBodyDeclaration() #void :
 {}
 {
   LOOKAHEAD(4) RecordConstructorDeclaration()
