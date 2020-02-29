@@ -468,4 +468,39 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
     public Object visit(ASTFormalComment node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
+
+    @Override
+    public Object visit(ASTSwitchStatement node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTElseWhenBlock node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTTypeWhenBlock node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTValueWhenBlock node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTIdentifierCase node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTLiteralCase node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTEmptyReferenceExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
 }

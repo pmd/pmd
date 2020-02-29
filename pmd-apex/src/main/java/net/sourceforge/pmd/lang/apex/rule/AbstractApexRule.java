@@ -36,6 +36,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTElseWhenBlock;
+import net.sourceforge.pmd.lang.apex.ast.ASTEmptyReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -44,12 +46,14 @@ import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
+import net.sourceforge.pmd.lang.apex.ast.ASTIdentifierCase;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIllegalStoreExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTJavaMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTJavaVariableExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTLiteralCase;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMapEntryNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -84,18 +88,21 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatementExecuted;
 import net.sourceforge.pmd.lang.apex.ast.ASTSuperMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSuperVariableExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThisMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThisVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTriggerVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTTypeWhenBlock;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassMethods;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserExceptionMethods;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
+import net.sourceforge.pmd.lang.apex.ast.ASTValueWhenBlock;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
@@ -602,6 +609,41 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public Object visit(ASTFormalComment node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchStatement node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTElseWhenBlock node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTTypeWhenBlock node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTValueWhenBlock node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTIdentifierCase node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTLiteralCase node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTEmptyReferenceExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 }

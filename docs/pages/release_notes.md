@@ -35,6 +35,7 @@ the suppressions with a `NOPMD` comment. See [Suppressing warnings](pmd_userdocs
 
 *   apex
     *   [#1087](https://github.com/pmd/pmd/issues/1087): \[apex] Support suppression via //NOPMD
+    *   [#2306](https://github.com/pmd/pmd/issues/2306): \[apex] Switch statements are not parsed/supported
 *   apex-design
     *   [#2162](https://github.com/pmd/pmd/issues/2162): \[apex] Cognitive Complexity rule
 *   doc
