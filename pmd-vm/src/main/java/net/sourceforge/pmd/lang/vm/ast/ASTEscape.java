@@ -49,6 +49,14 @@ public class ASTEscape extends AbstractVmNode {
         super(p, id);
     }
 
+    void setValue(String value) {
+        this.val = value;
+    }
+
+    public String getValue() {
+        return val;
+    }
+
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);

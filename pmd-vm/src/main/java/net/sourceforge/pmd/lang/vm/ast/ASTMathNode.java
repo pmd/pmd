@@ -36,6 +36,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Nathan Bubna
  * @version $Id: ASTMathNode.java 517553 2007-03-13 06:09:58Z wglass $
  */
+@InternalApi
+@Deprecated
 public abstract class ASTMathNode extends AbstractVmNode {
     protected boolean strictMode = false;
 
