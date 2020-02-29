@@ -2288,7 +2288,7 @@ public class MyClass {
     <rule name="MisplacedNullCheck"
           language="java"
           since="3.5"
-          message="The null check here is misplaced; if the variable is null there will be a NullPointerException"
+          message="The null check here is misplaced; if the variable ''{0}'' is null there will be a NullPointerException"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#misplacednullcheck">
         <description>
@@ -2297,26 +2297,33 @@ Either the check is useless (the variable will never be "null") or it is incorre
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Expression
-    /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
-    /descendant::PrimaryExpression/PrimaryPrefix
-    /Name[starts-with(@Image,
-        concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
-            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-            /PrimaryExpression/PrimaryPrefix
-            /Name[count(../../PrimarySuffix)=0]/@Image,".")
-        )
-     ]
-     [count(ancestor::ConditionalAndExpression/EqualityExpression
-            [@Image='!=']
-            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-            [starts-with(following-sibling::*/PrimaryExpression/PrimaryPrefix/Name/@Image,
-                concat(./PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-      ) = 0
-     ]
+//ConditionalAndExpression
+  /EqualityExpression
+    [@Image = '!=']
+    (: one side is null :)
+    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+    (: other side checks for the variable used somewhere in the first child of conditional and expression :)
+    [some $var in preceding-sibling::PrimaryExpression//Name
+      [not(ancestor::ConditionalOrExpression/EqualityExpression[@Image = '=='])]
+      /@Image
+      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+  /PrimaryExpression/PrimaryPrefix/Name
+|
+//ConditionalOrExpression
+  /EqualityExpression
+    [@Image = '==']
+    (: one side is null :)
+    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+    (: other side checks for the variable used somewhere in the first child of conditional or expression :)
+    [some $var in preceding-sibling::PrimaryExpression//Name
+      [not(ancestor::ConditionalAndExpression/EqualityExpression[@Image = '!='])]
+      /@Image
+      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+  /PrimaryExpression/PrimaryPrefix/Name
 ]]>
                 </value>
             </property>
@@ -2325,8 +2332,10 @@ Either the check is useless (the variable will never be "null") or it is incorre
 <![CDATA[
 public class Foo {
     void bar() {
-        if (a.equals(baz) && a != null) {}
-        }
+        if (a.equals(baz) && a != null) {} // a could be null, misplaced null check
+        
+        if (a != null && a.equals(baz)) {} // correct null check
+    }
 }
 ]]>
         </example>
@@ -2334,7 +2343,9 @@ public class Foo {
 <![CDATA[
 public class Foo {
     void bar() {
-        if (a.equals(baz) || a == null) {}
+        if (a.equals(baz) || a == null) {} // a could be null, misplaced null check
+        
+        if (a == null || a.equals(baz)) {} // correct null check
     }
 }
 ]]>
