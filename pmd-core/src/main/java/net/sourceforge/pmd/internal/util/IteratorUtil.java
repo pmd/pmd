@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -87,5 +88,60 @@ public final class IteratorUtil {
                 };
             }
         };
+    }
+
+    public abstract static class AbstractIterator<T> implements Iterator<T> {
+
+        private State state = State.NOT_READY;
+        private T next = null;
+
+
+        @Override
+        public boolean hasNext() {
+            switch (state) {
+            case DONE:
+                return false;
+            case READY:
+                return true;
+            default:
+                state = null;
+                computeNext();
+                if (state == null) {
+                    throw new IllegalStateException("Should have called done or setNext");
+                }
+                return state == State.READY;
+            }
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            state = State.NOT_READY;
+            return next;
+        }
+
+        protected final void setNext(T t) {
+            next = t;
+            state = State.READY;
+        }
+
+        protected final void done() {
+            state = State.DONE;
+        }
+
+        protected abstract void computeNext();
+
+        enum State {
+            READY, NOT_READY, DONE
+        }
+
+        @Deprecated
+        @Override
+        public final void remove() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 }
