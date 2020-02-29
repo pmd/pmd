@@ -113,7 +113,7 @@ public class Java14PreviewTest {
     public void innerRecords() {
         ASTCompilationUnit compilationUnit = java14p.parseResource("Records.java");
         List<ASTRecordDeclaration> recordDecls = compilationUnit.findDescendantsOfType(ASTRecordDeclaration.class, true);
-        Assert.assertEquals(6, recordDecls.size());
+        Assert.assertEquals(7, recordDecls.size());
 
         ASTRecordDeclaration complex = recordDecls.get(0);
         Assert.assertEquals("MyComplex", complex.getName());
@@ -152,6 +152,11 @@ public class Java14PreviewTest {
         ASTRecordDeclaration emptyRec = recordDecls.get(5);
         Assert.assertEquals("EmptyRec", emptyRec.getName());
         Assert.assertEquals(0, emptyRec.getRecordComponents().size());
+
+        ASTRecordDeclaration personRec = recordDecls.get(6);
+        Assert.assertEquals("PersonRecord", personRec.getName());
+        ASTImplementsList impl = personRec.getFirstChildOfType(ASTImplementsList.class);
+        Assert.assertEquals(2, impl.findChildrenOfType(ASTClassOrInterfaceType.class).size());
     }
 
     @Test(expected = ParseException.class)

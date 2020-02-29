@@ -47,4 +47,12 @@ public class Records {
             System.out.println(r);
         }
     }
+
+    // see https://www.javaspecialists.eu/archive/Issue276.html
+    public interface Person {
+        String firstName();
+        String lastName();
+    }
+    public record PersonRecord(String firstName, String lastName)
+        implements Person, java.io.Serializable { }
 }
