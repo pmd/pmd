@@ -20,7 +20,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  */
 @Experimental
-public class ASTRecordBody extends AbstractJavaNode {
+public final class ASTRecordBody extends AbstractJavaNode {
     ASTRecordBody(int id) {
         super(id);
     }

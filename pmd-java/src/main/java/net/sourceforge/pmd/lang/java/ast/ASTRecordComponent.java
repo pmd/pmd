@@ -20,7 +20,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 @Experimental
-public class ASTRecordComponent extends AbstractJavaNode {
+public final class ASTRecordComponent extends AbstractJavaNode {
     private boolean varargs;
 
     ASTRecordComponent(int id) {

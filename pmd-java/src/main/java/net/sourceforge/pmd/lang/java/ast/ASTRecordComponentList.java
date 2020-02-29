@@ -17,7 +17,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 @Experimental
-public class ASTRecordComponentList extends AbstractJavaNode {
+public final class ASTRecordComponentList extends AbstractJavaNode {
     ASTRecordComponentList(int id) {
         super(id);
     }

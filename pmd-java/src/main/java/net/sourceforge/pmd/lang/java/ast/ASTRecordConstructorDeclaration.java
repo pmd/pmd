@@ -23,7 +23,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  */
 @Experimental
-public class ASTRecordConstructorDeclaration extends AbstractJavaAccessNode implements ASTAnyTypeBodyDeclaration {
+public final class ASTRecordConstructorDeclaration extends AbstractJavaAccessNode implements ASTAnyTypeBodyDeclaration {
     ASTRecordConstructorDeclaration(int id) {
         super(id);
     }

@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
  */
 @Experimental
-public class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     ASTRecordDeclaration(int id) {
         super(id);
     }
