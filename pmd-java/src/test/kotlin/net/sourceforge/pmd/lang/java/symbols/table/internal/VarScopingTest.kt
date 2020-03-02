@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -17,7 +18,7 @@ class VarScopingTest : ParserTestSpec({
 
     parserTest("Shadowing of variables") {
 
-        val acu = parser.withProcessing().parse("""
+        val acu = parser.parse("""
 
             // TODO test with static import, currently there are no "unresolved field" symbols
 
@@ -64,10 +65,11 @@ class VarScopingTest : ParserTestSpec({
         doTest("Inside outer initializer: f is outerField") {
             inInitializer.symbolTable.shouldResolveVarTo<JFieldSymbol>("f") {
                 this::getContributor shouldBe outerClass
-                result::getSimpleName shouldBe "f"
-                result::getModifiers shouldBe Modifier.PRIVATE
-
-                this::getResult shouldBe outerField.symbol
+                this.result.shouldBeA<JFieldSymbol> {
+                    it::getSimpleName shouldBe "f"
+                    it::getModifiers shouldBe Modifier.PRIVATE
+                    it shouldBe outerField.symbol
+                }
             }
         }
 
@@ -90,9 +92,9 @@ class VarScopingTest : ParserTestSpec({
         doTest("Inside inner class: f is inner field") {
             inInnerClass.symbolTable.shouldResolveVarTo<JFieldSymbol>("f") {
                 this::getContributor shouldBe innerClass
-                result::getModifiers shouldBe 0
-
-                this::getResult shouldBe innerField.symbol
+            }.also {
+                it::getModifiers shouldBe 0
+                it shouldBe innerField.symbol
             }
         }
     }
@@ -160,6 +162,54 @@ class VarScopingTest : ParserTestSpec({
 
         doTest("Inside resource declaration: r is the resource of the same resource list") {
             inResource shouldResolveToLocal reader2
+        }
+    }
+
+    parserTest("Switch statement") {
+
+        val acu = parser.withProcessing().parse("""
+
+            // TODO test with static import, currently there are no "unresolved field" symbols
+
+            class Outer extends Sup {
+                private int i; // outerField
+
+                {
+                    switch (i) { // fAccess
+                    case 4:
+                        int i = 0; // ivar
+                        return i + 1; // iAccess
+                    case 3:
+                        int k = 0; // kvar
+                        return i + 1; // iAccess2
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val (outerField, ivar) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val (fAccess, iAccess, iAccess2) =
+                acu.descendants(ASTVariableAccess::class.java).toList()
+
+        infix fun JavaNode.shouldResolveToField(fieldId: ASTVariableDeclaratorId): JFieldSymbol =
+                symbolTable.shouldResolveVarTo(fieldId.variableName) {
+                    this::getResult shouldBe fieldId.symbol
+                }
+
+        doTest("Inside tested expr: vars are not in scope") {
+            fAccess shouldResolveToField outerField
+        }
+
+        doTest("Inside label: var is in scope") {
+            iAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside fallthrough: var is in scope") {
+            // this is suprising but legal, the var is just not definitely
+            // assigned at the point of use
+            iAccess2 shouldResolveToLocal ivar
         }
     }
 })

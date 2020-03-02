@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -73,6 +75,14 @@ final class VarOnlySymTable extends AbstractSymbolTable {
 
     static NodeStream<ASTVariableDeclaratorId> varsOfBlock(ASTBlock node) {
         return node.children(ASTLocalVariableDeclaration.class)
+                   .flatMap(ASTLocalVariableDeclaration::getVarIds);
+    }
+
+    static NodeStream<ASTVariableDeclaratorId> varsOfSwitchBlock(ASTSwitchLike node) {
+        return node.getBranches()
+                   .filterIs(ASTSwitchFallthroughBranch.class)
+                   .flatMap(ASTSwitchFallthroughBranch::getStatements)
+                   .filterIs(ASTLocalVariableDeclaration.class)
                    .flatMap(ASTLocalVariableDeclaration::getVarIds);
     }
 

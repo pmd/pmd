@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTab
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.resourceIds;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfBlock;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfInit;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfSwitchBlock;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -240,6 +244,30 @@ public final class SymbolTableResolver {
         }
 
         @Override
+        public void visit(ASTSwitchStatement node, Void data) {
+            visitSwitch(node);
+        }
+
+        @Override
+        public void visit(ASTSwitchExpression node, Void data) {
+            visitSwitch(node);
+        }
+
+        private void visitSwitch(ASTSwitchLike node) {
+            setTopSymbolTable(node);
+            visitSubtree(node.getTestedExpression());
+
+            // since there's no node for the block we have to set children individually
+            int pushed = pushOnStack(VarOnlySymTable::new, varsOfSwitchBlock(node));
+
+            for (JavaNode notExpr : node.children().drop(1)) {
+                setTopSymbolTableAndRecurse(notExpr);
+            }
+
+            popStack(pushed);
+        }
+
+        @Override
         public void visit(ASTTryStatement node, Void data) {
 
             ASTResourceList resources = node.getResources();
@@ -274,7 +302,10 @@ public final class SymbolTableResolver {
 
         private void setTopSymbolTableAndRecurse(JavaNode node) {
             setTopSymbolTable(node);
+            visitSubtree(node);
+        }
 
+        private void visitSubtree(JavaNode node) {
             for (JavaNode child : node.children()) {
                 child.jjtAccept(this, null);
             }
