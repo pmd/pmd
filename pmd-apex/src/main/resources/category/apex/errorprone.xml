@@ -328,4 +328,68 @@ public class MyClass {
 ]]>
         </example>
     </rule>
+
+    <rule name="TestMethodsMustBeInTestClasses"
+          since="6.22.0"
+          message="Test methods must be in test classes"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
+       <description>
+          Test methods marked as a testMethod or annotated with @IsTest,
+          but not residing in a test class should be moved to a proper
+          class or have the @IsTest annotation added to the class.
+
+          Support for tests inside functional classes was removed in Spring-13 (API Version 27.0),
+          making classes that violate this rule fail compile-time. This rule is mostly usable when
+          dealing with legacy code.
+       </description>
+       <priority>3</priority>
+       <properties>
+          <property name="version" value="2.0"/>
+          <property name="xpath">
+             <value>
+    <![CDATA[
+    //UserClass[
+      not(./ModifierNode/Annotation[lower-case(@Image) = 'istest']) and
+      (
+        (./Method/ModifierNode/Annotation[lower-case(@Image) = 'istest']) or
+        (./Method/ModifierNode[@Test = true()])
+      )
+    ]
+
+    ]]>
+             </value>
+          </property>
+       </properties>
+       <example>
+           <![CDATA[// Violating
+private class TestClass {
+  @IsTest static void myTest() {
+    // Code here
+  }
+}
+
+private class TestClass {
+  static testMethod void myTest() {
+    // Code here
+  }
+}
+
+// Compliant
+@IsTest
+private class TestClass {
+  @IsTest static void myTest() {
+    // Code here
+  }
+}
+
+@IsTest
+private class TestClass {
+  static testMethod void myTest() {
+    // Code here
+  }
+}
+]]>
+       </example>
+    </rule>
 </ruleset>

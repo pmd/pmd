@@ -43,7 +43,7 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     }
 
     /** Returns the list of record components. */
-    public ASTRecordComponentList getRecordComponents() {
+    public ASTRecordComponentList getComponentList() {
         return getFirstChildOfType(ASTRecordComponentList.class);
     }
 }

@@ -44,4 +44,7 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaNode impl
         return this;
     }
 
+    public ASTBlock getBody() {
+        return getFirstChildOfType(ASTBlock.class);
+    }
 }
