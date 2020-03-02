@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -91,8 +92,15 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return children(ASTArrayDimensions.class).first();
     }
 
+    @NonNull
     @Override
     public ASTModifierList getModifiers() {
+        if (isPatternBinding()) {
+            JavaNode firstChild = getFirstChild();
+            assert firstChild != null : "Binding variable has no modifiers!";
+            return (ASTModifierList) firstChild;
+        }
+
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
     }

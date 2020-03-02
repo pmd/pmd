@@ -329,7 +329,7 @@ class JavaParserImpl {
 
         emptyMods.setDeclaredModifiers(Collections.emptySet());
 
-        JavaccToken tok = getToken(1);
+        JavaccToken tok = JavaccToken.implicitBefore(getToken(1));
         emptyMods.jjtSetFirstToken(tok);
         emptyMods.jjtSetLastToken(tok);
 
@@ -1022,6 +1022,12 @@ void VariableDeclaratorId() :
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
 }
 
+void BindingVarId() #VariableDeclaratorId:
+{ pushEmptyModifierList(); }
+{
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+}
+
 void VariableIdWithDims() #VariableDeclaratorId :
 {}
 {
@@ -1500,7 +1506,7 @@ void InstanceOfExpression() #void:
   RelationalExpression() [
     LOOKAHEAD(1)
     ("instanceof"
-        AnnotatedRefType() [ VariableDeclaratorId() #TypeTestPattern(2) ]
+        AnnotatedRefType() [ BindingVarId() #TypeTestPattern(2) ]
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
             AbstractJavaNode top = jjtree.popNode();

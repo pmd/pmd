@@ -111,8 +111,9 @@ public final class ASTModifierList extends AbstractJavaNode {
         return effectiveModifiers;
     }
 
-    public JavaNode getOwner() {
-        return getParent(); // TODO
+    /** Returns the node owning this modifier list. */
+    public AccessNode getOwner() {
+        return (AccessNode) getParent(); // TODO
     }
 
     /**
@@ -210,13 +211,20 @@ public final class ASTModifierList extends AbstractJavaNode {
         }
 
         @Override
+        public void visit(ASTVariableDeclaratorId node, Set<JModifier> effective) {
+            // resources are implicitly final
+            if (node.isPatternBinding()) {
+                effective.add(FINAL);
+            }
+        }
+
+        @Override
         public void visit(ASTLocalVariableDeclaration node, Set<JModifier> effective) {
             // resources are implicitly final
             if (node.getParent() instanceof ASTResource) {
                 effective.add(FINAL);
             }
         }
-
 
         @Override
         public void visit(ASTEnumConstant node, Set<JModifier> effective) {

@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J14__PREVIEW
 import java.io.IOException
@@ -28,7 +29,11 @@ class ASTPatternTest : ParserTestSpec({
                     child<ASTPatternExpression> {
                         it::getPattern shouldBe child<ASTTypeTestPattern> {
                             it::getTypeNode shouldBe classType("Class")
-                            it::getVarId shouldBe variableId("c")
+                            it::getVarId shouldBe variableId("c") {
+                                it::getModifiers shouldBe modifiers {  } // dummy modifier list
+                                it.hasExplicitModifiers(JModifier.FINAL) shouldBe false
+                                it.hasModifiers(JModifier.FINAL) shouldBe true
+                            }
                         }
                     }
                 }
