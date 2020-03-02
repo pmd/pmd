@@ -9,5 +9,6 @@ This ruleset contains links to rules that are new in PMD v6.22.0
   </description>
 
     <rule ref="category/apex/design.xml/CognitiveComplexity"/>
+    <rule ref="category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"/>
 
 </ruleset>
