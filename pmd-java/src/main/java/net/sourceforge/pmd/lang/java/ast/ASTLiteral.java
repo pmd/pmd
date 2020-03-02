@@ -318,6 +318,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
 
     private static void interpretEscapeSequences(StringBuilder sb) {
         // interpret escape sequences "\<LF>" (line continuation), "n","t","b","r","f", "s", "\"", "\'", "\\"
+        // we need to interpret everything in one pass, so regex replacement is inappropriate
         for (int i = 0; i < sb.length(); i++) {
             char c = sb.charAt(i);
             if (c == '\\' && i < sb.length() - 1) {
