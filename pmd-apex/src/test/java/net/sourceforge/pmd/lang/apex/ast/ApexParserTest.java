@@ -179,7 +179,7 @@ public class ApexParserTest extends ApexParserTestBase {
         Assert.assertNotNull(rootNode);
 
         int count = visitPosition(rootNode, 0);
-        Assert.assertEquals(427, count);
+        Assert.assertEquals(487, count);
     }
 
     private int visitPosition(Node node, int count) {

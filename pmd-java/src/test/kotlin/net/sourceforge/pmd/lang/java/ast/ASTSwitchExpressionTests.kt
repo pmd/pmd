@@ -7,10 +7,9 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J12__PREVIEW
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J13__PREVIEW
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 
@@ -19,8 +18,10 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
  */
 class ASTSwitchExpressionTests : ParserTestSpec({
 
+    val switchVersions = listOf(J13__PREVIEW, J14, J14__PREVIEW)
+    val notSwitchVersions = JavaVersion.except(switchVersions)
 
-    parserTest("No switch expr before j12 preview", javaVersions = !J12__PREVIEW) {
+    parserTest("No switch expr before j13 preview", javaVersions = notSwitchVersions) {
         inContext(ExpressionParsingCtx) {
 
 
@@ -40,22 +41,8 @@ class ASTSwitchExpressionTests : ParserTestSpec({
 
     }
 
-    parserTest("No yield stmt before j13 preview", javaVersions = !J13__PREVIEW) {
-        inContext(ExpressionParsingCtx) {
 
-            """
-            switch (day) {
-                default             -> {
-                    yield result * 4;
-                }
-            }
-        """ shouldNot parse()
-        }
-
-    }
-
-
-    parserTest("Simple switch expressions", javaVersions = listOf(J13__PREVIEW)) {
+    parserTest("Simple switch expressions", javaVersions = switchVersions) {
 
 
         inContext(ExpressionParsingCtx) {
@@ -117,7 +104,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
 
 
 
-    parserTest("Non-trivial labels", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
+    parserTest("Non-trivial labels", javaVersions = switchVersions) {
         inContext(ExpressionParsingCtx) {
 
 
@@ -150,7 +137,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         }
     }
 
-    parserTest("Switch expr precedence", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
+    parserTest("Switch expr precedence", javaVersions = switchVersions) {
 
 
         inContext(ExpressionParsingCtx) {
@@ -184,7 +171,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     }
 
 
-    parserTest("Nested switch expressions", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
+    parserTest("Nested switch expressions", javaVersions = switchVersions) {
 
         inContext(ExpressionParsingCtx) {
 
@@ -244,7 +231,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     }
 
 
-    parserTest("Non-fallthrough nested in fallthrough", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
+    parserTest("Non-fallthrough nested in fallthrough", javaVersions = switchVersions) {
 
         inContext(StatementParsingCtx) {
 
@@ -300,7 +287,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     }
 
 
-    parserTest("Switch statement with non-fallthrough labels", javaVersions = listOf(J12__PREVIEW, J13__PREVIEW)) {
+    parserTest("Switch statement with non-fallthrough labels", javaVersions = switchVersions) {
 
         inContext(StatementParsingCtx) {
             """

@@ -19,16 +19,9 @@ public class Java13Test {
 
     private final JavaParsingHelper java12 =
         JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("12")
-                                         .withResourceContext(Java13Test.class, "jdkversiontests/java13/");
+                                         .withResourceContext(getClass(), "jdkversiontests/java13/");
 
     private final JavaParsingHelper java13p = java12.withDefaultVersion("13-preview");
-
-
-
-    @Test(expected = ParseException.class)
-    public void testSwitchExpressionsBeforeJava13() {
-        java12.parseResource("SwitchExpressions.java");
-    }
 
     @Test
     public void testTextBlocks() {

@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -90,8 +92,15 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return children(ASTArrayDimensions.class).first();
     }
 
+    @NonNull
     @Override
     public ASTModifierList getModifiers() {
+        if (isPatternBinding()) {
+            JavaNode firstChild = getFirstChild();
+            assert firstChild != null : "Binding variable has no modifiers!";
+            return (ASTModifierList) firstChild;
+        }
+
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
     }
@@ -183,6 +192,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
             return true;
         } else if (getParent() instanceof ASTLambdaParameter) {
             return ((ASTLambdaParameter) getParent()).isFinal();
+        } else if (isPatternBinding()) {
+            // implicitly like final, assignment of a pattern binding is not allowed
+            return true;
         }
 
         if (getParent() instanceof ASTFormalParameter) {
@@ -223,6 +235,15 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     public boolean isTypeInferred() {
         return isLocalVariableTypeInferred() || isLambdaTypeInferred();
+    }
+
+    /**
+     * Returns true if this is a binding variable in a
+     * {@linkplain ASTPattern pattern}.
+     */
+    @Experimental
+    public boolean isPatternBinding() {
+        return getParent() instanceof ASTPattern;
     }
 
 
@@ -291,6 +312,10 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;
+        } else if (getParent() instanceof ASTTypeTestPattern) {
+            return ((ASTTypeTestPattern) getParent()).getTypeNode();
+        } else if (getParent() instanceof ASTRecordComponent) {
+            return ((ASTRecordComponent) getParent()).getTypeNode();
         } else {
             Node n = parent.getParent();
             if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
