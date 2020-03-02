@@ -98,7 +98,7 @@ public class Java14PreviewTest {
         Assert.assertEquals("Point", recordDecl.getImage());
         Assert.assertFalse(recordDecl.isNested());
         List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
-                .findChildrenOfType(ASTRecordComponent.class);
+                                                        .findChildrenOfType(ASTRecordComponent.class);
         Assert.assertEquals(2, components.size());
         Assert.assertEquals("x", components.get(0).getVariableDeclaratorId().getImage());
         Assert.assertEquals("y", components.get(1).getVariableDeclaratorId().getImage());
@@ -107,6 +107,13 @@ public class Java14PreviewTest {
     @Test(expected = ParseException.class)
     public void recordPointBeforeJava14PreviewShouldFail() {
         java14.parseResource("Point.java");
+    }
+
+    @Test(expected = ParseException.class)
+    public void recordCtorWithThrowsShouldFail() {
+        java14p.parse("  record R {"
+                          + "   R throws IOException {}"
+                          + "  }");
     }
 
     @Test

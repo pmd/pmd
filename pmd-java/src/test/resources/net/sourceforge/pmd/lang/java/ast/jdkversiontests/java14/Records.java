@@ -57,8 +57,5 @@ public class Records {
     public record PersonRecord(String firstName, String lastName)
         implements Person, java.io.Serializable {
 
-        PersonRecord throws IOException { // compact ctor with throws list
-            throw new IOException();
-        }
     }
 }
