@@ -3,17 +3,27 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.NodeSpec
+import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.shouldMatchNode
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 
 /**
  * Represents the different Java language versions.
  */
 enum class JavaVersion : Comparable<JavaVersion> {
-    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11, J12, J12__PREVIEW, J13, J13__PREVIEW;
+    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11,
+    J12,
+    J13, J13__PREVIEW,
+    J14, J14__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
+
+    val parser: JavaParsingHelper = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion(pmdName)
+
+    operator fun not(): List<JavaVersion> = values().toList() - this
 
     /**
      * Overloads the range operator, e.g. (`J9..J11`).

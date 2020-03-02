@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Represents class and interface declarations. This is a {@linkplain Node#isFindBoundary() find boundary}
  * for tree traversal methods.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ClassOrInterfaceDeclaration ::= ( "class" | "interface" )
  *                                 &lt;IDENTIFIER&gt;

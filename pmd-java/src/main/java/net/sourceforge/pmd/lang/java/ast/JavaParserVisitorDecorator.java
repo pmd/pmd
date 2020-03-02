@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -756,6 +757,42 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     @Override
     public Object visit(ASTYieldStatement node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTTypeTestPattern node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponentList node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponent node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordBody node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordConstructorDeclaration node, Object data) {
         return visitor.visit(node, data);
     }
 }

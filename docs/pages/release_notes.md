@@ -14,6 +14,29 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Java 14 Support
+
+This release of PMD brings support for Java 14. PMD can parse [Switch Expressions](https://openjdk.java.net/jeps/361),
+which have been promoted to be a standard language feature of Java.
+
+PMD also parses [Text Blocks](https://openjdk.java.net/jeps/368) as String literals, which is still a preview
+language feature in Java 14.
+
+The new [Pattern Matching for instanceof](https://openjdk.java.net/jeps/305) can be used as well as
+[Records](https://openjdk.java.net/jeps/359).
+
+Note: The Text Blocks, Pattern Matching for instanceof and Records are all preview language features of OpenJDK 14
+and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you'll need to enable it via the environment
+variable `PMD_JAVA_OPTS` and select the new language version `14-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 14-preview ...
+
+Note: Support for the extended break statement introduced in Java 12 as a preview language feature
+has been removed from PMD with this version. The version "12-preview" is no longer available.
+
+
 #### Updated PMD Designer
 
 This PMD release ships a new version of the pmd-designer.
@@ -49,6 +72,7 @@ should give more accurate results and especially fixes the problems with the usi
 *   doc
     *   [#2274](https://github.com/pmd/pmd/issues/2274): \[doc] Java API documentation for PMD
 *   java
+    *   [#2159](https://github.com/pmd/pmd/issues/2159): \[java] Prepare for JDK 14
     *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
 *   java-bestpractices
     *   [#2277](https://github.com/pmd/pmd/issues/2277): \[java] FP in UnusedImports for ambiguous static on-demand imports

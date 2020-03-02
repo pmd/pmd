@@ -1,4 +1,15 @@
 /**
+ * Add support for record types introduced as a preview language
+ * feature with Java 14. See JEP 359.
+ * Andreas Dangel 02/2020
+ *====================================================================
+ * Add support for pattern matching for instance of introduced
+ * as a preview language feature with Java 14. See JEP 305.
+ * Clément Fournier 02/2020
+ *====================================================================
+ * Switch Expressions are now a standard feature of Java 14.
+ * Andreas Dangel 02/2020
+ *====================================================================
  * Add support for the yield statement introduced as a preview language
  * feature with Java 13. See JEP 354.
  * Add support for text block literals introduces as a preview language
@@ -205,7 +216,7 @@ options {
   STATIC = false;
   USER_CHAR_STREAM = true;
   JDK_VERSION = "1.5";
-  
+
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
@@ -294,25 +305,25 @@ public class JavaParser {
       throwParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
     }
   }
-  
+
   private void checkForBadNumericalLiteralslUsage(Token token) {
     if (jdkVersion < 7) {
       if (token.image.contains("_")) {
         throwParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
       }
-      	
+
       if (token.image.startsWith("0b") || token.image.startsWith("0B")) {
-        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");	
+        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");
       }
     }
   }
-  
+
   private void checkForBadDiamondUsage() {
   	if (jdkVersion < 7) {
       throwParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
   	}
   }
-  
+
   private void checkForBadTryWithResourcesUsage() {
   	if (jdkVersion < 7) {
       throwParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
@@ -355,6 +366,13 @@ public class JavaParser {
       throwParseException("Cannot use explicit receiver parameters when running in JDK inferior to 1.8 mode!");
     }
   }
+
+  private void checkforBadInstanceOfPattern() {
+    if (jdkVersion != 14 || !preview) {
+      throwParseException("Cannot use type test patterns in instanceof when running in JDK other than 14-preview");
+    }
+  }
+
   private void checkForBadAnonymousDiamondUsage() {
     if (jdkVersion < 9) {
       ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
@@ -395,10 +413,13 @@ public class JavaParser {
     if (jdkVersion >= 10 && "var".equals(image)) {
       throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
     }
+    if (jdkVersion >= 14 && preview && "record".equals(image)) {
+      throwParseException("With JDK 14 Preview, 'record' is a restricted identifier and cannot be used for type declarations!");
+    }
   }
   private void checkForMultipleCaseLabels() {
-    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 12 or 13 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 13 Preview, or Java >= 14");
     }
   }
   /**
@@ -410,32 +431,43 @@ public class JavaParser {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
+
+  private boolean isJava13PreviewOr14() {
+      return jdkVersion >= 14 || jdkVersion >= 13 && preview;
+  }
+
   private void checkForSwitchRules() {
-    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
-      throwParseException("Switch rules in switch statements are only supported with Java 12 or 13 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Switch rules in switch statements are only supported with Java 13 Preview, or Java >= 14");
     }
   }
   private void checkForSwitchExpression() {
-    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
-      throwParseException("Switch expressions are only supported with Java 12 or 13 Preview");
-    }
-  }
-
-  private void checkForBreakExpression() {
-    if (jdkVersion != 12 || !preview) {
-      throwParseException("Expressions in break statements are only supported with Java 12 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Switch expressions are only supported with Java 13 Preview, or Java >= 14");
     }
   }
 
   private void checkForYieldStatement() {
-    if (jdkVersion != 13 || !preview) {
-      throwParseException("Yield statements are only supported with Java 13 Preview");
+    if (!isJava13PreviewOr14()) {
+      throwParseException("Yield statements are only supported with Java 13 Preview or Java >= 14");
     }
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion != 13 || !preview) {
-      throwParseException("Text block literals are only supported with Java 13 Preview");
+    if (jdkVersion != 13 && jdkVersion != 14 || !preview) {
+      throwParseException("Text block literals are only supported with Java 13 Preview or Java 14 Preview");
+    }
+  }
+
+  private void checkForNewStringSpaceEscape(String s) {
+    if ((jdkVersion != 14 || !preview) && s.contains("\\s") && !s.contains("\\\\s")) {
+      throwParseException("The escape sequence \"\\s\" is only supported with Java 14 Preview");
+    }
+  }
+
+  private void checkForRecordType() {
+    if (jdkVersion != 14 || !preview) {
+      throwParseException("Records are only supported with Java 14 Preview");
     }
   }
 
@@ -447,7 +479,7 @@ public class JavaParser {
     if (jdkVersion <= 3) {
       return false;
     }
-    
+
     return getToken(1).image.equals("assert");
   }
 
@@ -669,7 +701,7 @@ TOKEN :
   >
 | < #STRING_ESCAPE:
       "\\"
-      ( ["n","t","b","r","f","\\","'","\""]
+      ( ["n","t","b","r","f", "s", "\\","'","\""]
       // octal escapes
       | ["0"-"7"] ( ["0"-"7"] )?
       | ["0"-"3"] ["0"-"7"] ["0"-"7"]
@@ -686,7 +718,7 @@ TOKEN :
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
+        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
      "\"\"\""
   >
 }
@@ -995,6 +1027,8 @@ void TypeDeclaration():
      LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
    |
      AnnotationTypeDeclaration(modifiers)
+   |
+     LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
   )
 }
 
@@ -1073,6 +1107,74 @@ void EnumConstant():
   t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ Arguments() ] [ ClassOrInterfaceBody() ]
 }
 
+void RecordDeclaration(int modifiers):
+{
+    Token t;
+    jjtThis.setModifiers(modifiers);
+    checkForRecordType();
+}
+{
+  t = <IDENTIFIER> {
+    if (!"record".equals(t.image)) {
+      throw new ParseException("ERROR: expecting record");
+    }
+  }
+  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
+  [ TypeParameters() ]
+  RecordComponentList()
+  [ ImplementsList() ]
+  RecordBody()
+}
+
+void RecordComponentList() :
+{}
+{
+  "(" [ RecordComponent() ("," RecordComponent())* ] ")"
+}
+
+void RecordComponent():
+{}
+{
+  (Annotation())*
+  Type()
+  [ "..." {jjtThis.setVarargs();} ]
+  VariableDeclaratorId()
+}
+
+void RecordBody():
+{}
+{
+  "{"
+    ( RecordBodyDeclaration() )*
+  "}"
+}
+
+void RecordBodyDeclaration() #void :
+{}
+{
+  LOOKAHEAD(RecordCtorLookahead()) RecordConstructorDeclaration()
+  |
+  ClassOrInterfaceBodyDeclaration()
+}
+
+private void RecordCtorLookahead() #void:
+{}
+{
+    Modifiers() [ TypeParameters() ] <IDENTIFIER> ("throws" |  "{")
+}
+
+void RecordConstructorDeclaration():
+{
+  int modifiers;
+}
+{
+  modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
+  [TypeParameters()]
+  <IDENTIFIER> { jjtThis.setImage(token.image); }
+  [ "throws" NameList() ]
+  "{" ( BlockStatement() )* "}"
+}
+
 void TypeParameters():
 {}
 {
@@ -1106,6 +1208,7 @@ void ClassOrInterfaceBodyDeclaration():
 |  modifiers = Modifiers()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
+    | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
@@ -1429,7 +1532,7 @@ void EqualityExpression() #EqualityExpression(>1):
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() ]
+  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ] ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):
@@ -1447,7 +1550,7 @@ void RelationalExpression() #RelationalExpression(>1):
 void ShiftExpression() #ShiftExpression(>1):
 {}
 {
-  AdditiveExpression() 
+  AdditiveExpression()
    ( LOOKAHEAD(2)
     ( "<<" { jjtThis.setImage("<<");}
      | RSIGNEDSHIFT() { jjtThis.setImage(">>"); }
@@ -1617,8 +1720,8 @@ void Literal() :
 | t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
-| t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
-| t=<TEXT_BLOCK_LITERAL> { checkForTextBlockLiteral(); jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
+| t=<STRING_LITERAL> {jjtThis.setImage(t.image); checkForNewStringSpaceEscape(t.image); jjtThis.setStringLiteral(); }
+| t=<TEXT_BLOCK_LITERAL> { checkForTextBlockLiteral(); checkForNewStringSpaceEscape(t.image); jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
 | BooleanLiteral()
 | NullLiteral()
 }
@@ -1717,7 +1820,7 @@ void Block() :
 {Token t;}
 {
       "{"
-       
+
       ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
 }
 
@@ -1925,7 +2028,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() {checkForBreakExpression();} ] ";"
+  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
 }
 
 void ContinueStatement() :
@@ -1971,7 +2074,7 @@ void ResourceSpecification() :
 	"("
 	Resources()
 	(LOOKAHEAD(2) ";")?
-	")"	
+	")"
 }
 
 void Resources() :

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
@@ -623,6 +625,42 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
     public Object visit(ASTYieldStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTTypeTestPattern node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponentList node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponent node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordBody node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordConstructorDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

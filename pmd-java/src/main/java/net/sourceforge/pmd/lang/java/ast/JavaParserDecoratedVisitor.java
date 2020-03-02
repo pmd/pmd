@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * External wrapper for a visitor decorator. This one drives the AST visit, delegating to the base controlless visitor
  * given in the constructor. Add decorators using the {@link #decorateWith(JavaParserVisitorDecorator)}.
@@ -895,6 +897,48 @@ public class JavaParserDecoratedVisitor implements JavaParserVisitor {
 
     @Override
     public Object visit(ASTYieldStatement node, Object data) {
+        visitor.visit(node, data);
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTTypeTestPattern node, Object data) {
+        visitor.visit(node, data);
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        visitor.visit(node, data);
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponentList node, Object data) {
+        visitor.visit(node, data);
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordComponent node, Object data) {
+        visitor.visit(node, data);
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordBody node, Object data) {
+        visitor.visit(node, data);
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    @Experimental
+    public Object visit(ASTRecordConstructorDeclaration node, Object data) {
         visitor.visit(node, data);
         return visit((JavaNode) node, data);
     }

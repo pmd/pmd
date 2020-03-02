@@ -16,7 +16,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- * InstanceOfExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} "instanceof" {@linkplain ASTType Type}
+ * InstanceOfExpression ::= {@linkplain ASTShiftExpression ShiftExpression} "instanceof" ({@linkplain ASTType Type} | {@link ASTPattern Pattern})
  *
  * </pre>
  */
@@ -46,7 +46,9 @@ public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
      * Gets the type against which the expression is tested.
      */
     public ASTType getTypeNode() {
-        return (ASTType) getChild(1);
+        JavaNode child = getChild(1);
+        return child instanceof ASTType ? (ASTType) child
+                                        : ((ASTTypeTestPattern) child).getTypeNode();
     }
 
 }

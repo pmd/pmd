@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
- * Groups enum, class, annotation and interface declarations.
+ * Groups class, enum, record, annotation and interface declarations.
  *
  * @author Clément Fournier
  */
@@ -101,7 +101,7 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      */
     @Deprecated
     enum TypeKind {
-        CLASS, INTERFACE, ENUM, ANNOTATION;
+        CLASS, INTERFACE, ENUM, ANNOTATION, RECORD;
 
 
         public String getPrintableName() {
