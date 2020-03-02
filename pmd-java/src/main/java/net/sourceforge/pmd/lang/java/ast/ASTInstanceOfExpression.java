@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * InstanceOfExpression ::= {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTTypeExpression TypeExpression}
+ * InstanceOfExpression ::= {@linkplain ASTExpression Expression} "instanceof" ({@linkplain ASTTypeExpression TypeExpression} | {@link ASTPattern Pattern})
  *
  * </pre>
  *

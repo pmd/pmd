@@ -358,7 +358,7 @@ public final class IteratorUtil {
         };
     }
 
-    private abstract static class AbstractIterator<T> implements Iterator<T> {
+    public abstract static class AbstractIterator<T> implements Iterator<T> {
 
         private State state = State.NOT_READY;
         private T next = null;
@@ -403,6 +403,12 @@ public final class IteratorUtil {
 
         enum State {
             READY, NOT_READY, DONE
+        }
+
+        @Deprecated
+        @Override
+        public final void remove() {
+            throw new UnsupportedOperationException();
         }
 
     }

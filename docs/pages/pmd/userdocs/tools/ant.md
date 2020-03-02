@@ -222,8 +222,10 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="1.10"/> <!-- alias for 10 -->
     <sourceLanguage name="java" version="11"/>
     <sourceLanguage name="java" version="12"/>
-    <sourceLanguage name="java" version="13"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="13"/>
     <sourceLanguage name="java" version="13-preview"/>
+    <sourceLanguage name="java" version="14"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="14-preview"/>
     <sourceLanguage name="jsp" version=""/>
     <sourceLanguage name="modelica" version=""/>
     <sourceLanguage name="pom" version=""/>

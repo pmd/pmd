@@ -191,4 +191,18 @@ public interface ApexParserVisitor {
     Object visit(ASTVariableExpression node, Object data);
 
     Object visit(ASTWhileLoopStatement node, Object data);
+
+    Object visit(ASTSwitchStatement node, Object data);
+
+    Object visit(ASTElseWhenBlock node, Object data);
+
+    Object visit(ASTTypeWhenBlock node, Object data);
+
+    Object visit(ASTValueWhenBlock node, Object data);
+
+    Object visit(ASTLiteralCase node, Object data);
+
+    Object visit(ASTIdentifierCase node, Object data);
+
+    Object visit(ASTEmptyReferenceExpression node, Object data);
 }

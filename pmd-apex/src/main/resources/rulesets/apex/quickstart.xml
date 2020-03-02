@@ -63,6 +63,7 @@
    <rule ref="category/apex/design.xml/CyclomaticComplexity">
       <priority>3</priority>
    </rule>
+   <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
 
    <!-- PERFORMANCE -->
    <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">

@@ -1,30 +1,14 @@
 /**
- * Make Resources #void, rename ResourceSpecification to ResourceList,
- * put a LocalVariableDeclaration node inside Resource.
- * Merge different increment/decrement expressions.
- * Clément Fournier 07/2019
+ * Add support for record types introduced as a preview language
+ * feature with Java 14. See JEP 359.
+ * Andreas Dangel 02/2020
  *====================================================================
- * Nest annotations inside the node they apply to. The node TypeBound is
- * removed. Allow type annotations on InstanceofExpression, MethodReference
- * and bounds of an IntersectionType.
- * Clément Fournier 06/2019
+ * Add support for pattern matching for instance of introduced
+ * as a preview language feature with Java 14. See JEP 305.
+ * Clément Fournier 02/2020
  *====================================================================
- * Change expression, type and annotation grammar to remove unnecessary nodes,
- * eliminate some inconsistencies, and most importantly have an expressive tree
- * for primary expressions. Expressions and types now appear to be left-recursive.
- * This also introduces AmbiguousName, which are pushed only in syntactically
- * ambiguous contexts: https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-6.5.1
- *
- * Those are the first grammar changes for 7.0.0.
- * Refs:
- *   #1661 [java] About operator nodes
- *   #1367 [java] Parsing error on annotated subclass
- *   #1150 [java] ClassOrInterfaceType AST improvements
- *   #1019 [java] Breaking Java Grammar changes for PMD 7.0.0
- *   #997  [java] Java8 parsing corner case with annotated array types
- *   #910  [java] AST inconsistency between primitive and reference type arrays
- *   #497  [java] RFC: new layer of abstraction atop PrimaryExpressions
- * Clément Fournier 04/2019
+ * Switch Expressions are now a standard feature of Java 14.
+ * Andreas Dangel 02/2020
  *====================================================================
  * Add support for the yield statement introduced as a preview language
  * feature with Java 13. See JEP 354.
@@ -230,7 +214,6 @@ options {
   UNICODE_INPUT=true;
   CACHE_TOKENS = true;
   STATIC = false;
-
   MULTI = true;
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
@@ -561,12 +544,12 @@ TOKEN :
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
+        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
      "\"\"\""
   >
 | < #STRING_ESCAPE:
         "\\"
-        ( ["n","t","b","r","f","\\","'","\""]
+        ( ["n","t","b","r","f","s","\\","'","\""]
         // octal escapes
         | ["0"-"7"] ( ["0"-"7"] )?
         | ["0"-"3"] ["0"-"7"] ["0"-"7"]
@@ -861,10 +844,10 @@ void TypeDeclaration():
   ModifierList()
   (
      ClassOrInterfaceDeclaration()
-   |
-     LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
-   |
-     AnnotationTypeDeclaration()
+   | AnnotationTypeDeclaration()
+   | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+   | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
+
   )
 }
 
@@ -924,6 +907,67 @@ void EnumConstant():
   ModAnnotationList() VariableDeclaratorId() [ ArgumentList() ] [ AnonymousClassDeclaration() ]
 }
 
+void RecordDeclaration():
+{
+    JavaccToken t;
+}
+{
+  t = <IDENTIFIER> {
+    if (!"record".equals(t.image)) {
+      throw new ParseException("ERROR: expecting record");
+    }
+  }
+  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+  [ TypeParameters() ]
+  RecordComponentList()
+  [ ImplementsList() ]
+  RecordBody()
+}
+
+void RecordComponentList() :
+{}
+{
+  "(" [ RecordComponent() ("," RecordComponent())* ] ")"
+}
+
+void RecordComponent():
+{}
+{
+  ModAnnotationList()
+  FormalParamType()
+  VariableIdWithDims()
+}
+
+void RecordBody():
+{}
+{
+  "{"
+    ( RecordBodyDeclaration() )*
+  "}"
+}
+
+void RecordBodyDeclaration() #void :
+{}
+{
+  LOOKAHEAD(RecordCtorLookahead()) ModifierList() RecordConstructorDeclaration()
+  |
+  ClassOrInterfaceBodyDeclaration()
+}
+
+private void RecordCtorLookahead() #void:
+{}
+{
+    ModifierList() [ TypeParameters() ] <IDENTIFIER> ("throws" |  "{")
+}
+
+void RecordConstructorDeclaration():
+{}
+{
+  [TypeParameters()]
+  <IDENTIFIER> { jjtThis.setImage(token.image); }
+  Block()
+}
+
 void TypeParameters():
 {}
 {
@@ -949,6 +993,7 @@ void ClassOrInterfaceBodyDeclaration():
 |  ModifierList()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration()
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration()
+    | LOOKAHEAD({isKeyword("record")}) RecordDeclaration()
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration()
     | LOOKAHEAD( Type() <IDENTIFIER> (AnnotationList() "[" "]")* ( "," | "=" | ";" ) )  FieldDeclaration()
     | LOOKAHEAD(2) MethodDeclaration()
@@ -1455,8 +1500,18 @@ void InstanceOfExpression() #void:
   RelationalExpression() [
     LOOKAHEAD(1)
     ("instanceof"
-        AnnotatedRefType() #TypeExpression
-        {jjtThis.setOp(BinaryOp.INSTANCEOF);}
+        AnnotatedRefType() [ VariableDeclaratorId() #TypeTestPattern(2) ]
+        {
+            jjtThis.setOp(BinaryOp.INSTANCEOF);
+            AbstractJavaNode top = jjtree.popNode();
+            if (top instanceof ASTPattern) {
+               top = new ASTPatternExpression((ASTPattern) top);
+            } else {
+               top = new ASTTypeExpression((ASTType) top);
+            }
+            jjtree.pushNode(top);
+        }
+        {}
     ) #InfixExpression(2)
   ]
 }
@@ -2162,17 +2217,13 @@ void ForUpdate() :
 void BreakStatement() :
 {}
 {
-  "break"
-  [ LOOKAHEAD(<IDENTIFIER> ";") <IDENTIFIER> { setLastTokenImage(jjtThis); }
-  | Expression()
-  ]
-  ";"
+  "break" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
 }
 
 void ContinueStatement() :
 {}
 {
-  "continue" [ <IDENTIFIER>   { setLastTokenImage(jjtThis); } ] ";"
+  "continue" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
 }
 
 void ReturnStatement() :
@@ -2465,8 +2516,7 @@ String VoidName() #void:
 // normally by jjtree, but rather by the disambiguation
 // hooks spread across the parser
 //noinspection UnusedProduction
-void VariableAccess():
-{}
-{
-   <IDENTIFIER>
-}
+void VariableAccess(): {} { <IDENTIFIER> }
+// those are created manually
+void TypeExpression(): {} { <IDENTIFIER> }
+void PatternExpression(): {} { <IDENTIFIER> }

@@ -31,6 +31,13 @@ public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
 
+
+    @Override
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         return visit((JavaNode) node, data);

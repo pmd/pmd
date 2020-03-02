@@ -19,4 +19,9 @@
           class="net.sourceforge.pmd.lang.apex.metrics.impl.WmcTestRule">
     </rule>
 
+    <rule name="CognitiveComplexityTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.apex.metrics.impl.CognitiveComplexityTestRule">
+    </rule>
+
 </ruleset>

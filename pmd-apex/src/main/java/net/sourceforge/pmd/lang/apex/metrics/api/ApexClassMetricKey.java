@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.metrics.api;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
+import net.sourceforge.pmd.lang.apex.metrics.impl.ClassCognitiveComplexityMetric;
 import net.sourceforge.pmd.lang.apex.metrics.impl.WmcMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
@@ -12,6 +13,7 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
  * @author Clément Fournier
  */
 public enum ApexClassMetricKey implements MetricKey<ASTUserClassOrInterface<?>> {
+    COGNITIVE(new ClassCognitiveComplexityMetric()),
     WMC(new WmcMetric());
 
 

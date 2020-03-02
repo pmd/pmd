@@ -11,11 +11,10 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * TypeBody ::= {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
  *            | {@link ASTEnumBody EnumBody}
- *            | {@link ASTAnnotationTypeBody}
+ *            | {@link ASTRecordBody RecordBody}
+ *            | {@link ASTAnnotationTypeBody AnnotationTypeBody}
  *
  * </pre>
- *
- * @author Clément Fournier
  */
 public interface ASTTypeBody extends JavaNode {
 }

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 
 /**
  * @author Clément Fournier
@@ -70,6 +71,8 @@ public final class PrettyPrintingUtil {
             return "annotation";
         } else if (decl instanceof ASTEnumDeclaration) {
             return "enum";
+        } else if (decl instanceof ASTRecordDeclaration) {
+            return "record";
         }
         return "class";
     }

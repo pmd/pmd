@@ -120,7 +120,7 @@ $delim
     }
 
 
-    parserTest("Text block literal on non-JDK13 preview", javaVersions = !J13__PREVIEW) {
+    parserTest("Text block literal on non-JDK13 preview", javaVersions = JavaVersion.except(J13__PREVIEW, J14__PREVIEW)) {
 
         val delim = "\"\"\""
 
