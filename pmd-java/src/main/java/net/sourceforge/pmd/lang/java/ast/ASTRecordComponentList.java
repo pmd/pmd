@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
@@ -17,7 +19,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 @Experimental
-public final class ASTRecordComponentList extends AbstractJavaNode {
+public final class ASTRecordComponentList extends AbstractJavaNode implements Iterable<ASTRecordComponent> {
     ASTRecordComponentList(int id) {
         super(id);
     }
@@ -29,5 +31,14 @@ public final class ASTRecordComponentList extends AbstractJavaNode {
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public int size() {
+        return getNumChildren();
+    }
+
+    @Override
+    public Iterator<ASTRecordComponent> iterator() {
+        return new NodeChildrenIterator<>(this, ASTRecordComponent.class);
     }
 }

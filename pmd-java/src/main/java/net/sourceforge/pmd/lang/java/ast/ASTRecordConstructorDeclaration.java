@@ -12,12 +12,11 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordConstructorDeclaration ::=  ({@linkplain ASTTypeAnnotation TypeAnnotation})*
- *                                   {@linkplain ASTModifiers Modifiers}
+ * RecordConstructorDeclaration ::=  ({@linkplain ASTAnnotation Annotation})*
+ *                                   RecordModifiers
  *                                   {@linkplain ASTTypeParameters TypeParameters}?
  *                                   &lt;IDENTIFIER&gt;
- *                                   ( "throws" {@linkplain ASTNameList NameList} )?
- *                                   "{" ( {@linkplain ASTBlockStatement ASTBlockStatement} )* "}"
+ *                                   {@link ASTBlock Block}
  *
  * </pre>
  *
@@ -45,5 +44,9 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaAccessNod
     @Override
     public DeclarationKind getKind() {
         return DeclarationKind.RECORD_CONSTRUCTOR;
+    }
+
+    public ASTBlock getBody() {
+        return getFirstChildOfType(ASTBlock.class);
     }
 }

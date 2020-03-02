@@ -20,7 +20,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 @Experimental
-public final class ASTRecordComponent extends AbstractJavaNode {
+public final class ASTRecordComponent extends AbstractJavaAnnotatableNode {
     private boolean varargs;
 
     ASTRecordComponent(int id) {
@@ -48,7 +48,7 @@ public final class ASTRecordComponent extends AbstractJavaNode {
         return getFirstChildOfType(ASTType.class);
     }
 
-    public ASTVariableDeclaratorId getVariableDeclaratorId() {
+    public ASTVariableDeclaratorId getVarId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 }
