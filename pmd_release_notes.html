@@ -1416,10 +1416,18 @@ should give more accurate results and especially fixes the problems with the usi
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The Rule <a href="pmd_rules_apex_design.html#cognitivecomplexity"><code class="highlighter-rouge">CognitiveComplexity</code></a> (<code class="highlighter-rouge">apex-design</code>) finds methods and classes
+  <li>
+    <p>The Rule <a href="pmd_rules_apex_design.html#cognitivecomplexity"><code class="highlighter-rouge">CognitiveComplexity</code></a> (<code class="highlighter-rouge">apex-design</code>) finds methods and classes
 that are highly complex and therefore difficult to read and more costly to maintain. In contrast
 to cyclomatic complexity, this rule uses “Cognitive Complexity”, which is a measure of how
-difficult it is for humans to read and understand a method.</li>
+difficult it is for humans to read and understand a method.</p>
+  </li>
+  <li>
+    <p>The Rule <a href="pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses"><code class="highlighter-rouge">TestMethodsMustBeInTestClasses</code></a> (<code class="highlighter-rouge">apex-errorprone</code>) finds test methods
+that are not residing in a test class. The test methods should be moved to a proper test class.
+Support for tests inside functional classes was removed in Spring-13 (API Version 27.0), making classes
+that violate this rule fail compile-time. This rule is however useful when dealing with legacy code.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1434,6 +1442,11 @@ difficult it is for humans to read and understand a method.</li>
   <li>apex-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2162">#2162</a>: [apex] Cognitive Complexity rule</li>
+    </ul>
+  </li>
+  <li>apex-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/639">#639</a>: [apex] Test methods should not be in classes other than test classes</li>
     </ul>
   </li>
   <li>cs
@@ -1584,6 +1597,8 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
   <li><a href="https://github.com/pmd/pmd/pull/2279">#2279</a>: [apex] Add support for suppressing violations using the // NOPMD comment - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2280">#2280</a>: [cs] CPD: Replace C# tokenizer by an Antlr-based one - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2297">#2297</a>: [apex] Cognitive complexity metrics - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2317">#2317</a>: [apex] New Rule - Test Methods Must Be In Test Classes - <a href="https://github.com/noerremark">Brian Nørremark</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2321">#2321</a>: [apex] Support switch statements correctly in Cognitive Complexity - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
 </ul>
 
 

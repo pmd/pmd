@@ -4136,6 +4136,15 @@
 "url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
+,
+
+{
+"title": "TestMethodsMustBeInTestClasses (Apex, Error Prone)",
+"tags": "",
+"keywords": "TestMethodsMustBeInTestClasses",
+"url": "pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
 
 
 

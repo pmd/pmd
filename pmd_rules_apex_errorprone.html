@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, AvoidNonExistentAnnotations">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, MethodWithSameNameAsEnclosingClass, AvoidNonExistentAnnotations, TestMethodsMustBeInTestClasses">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2001,6 +2001,98 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 
 <p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="testmethodsmustbeintestclasses">TestMethodsMustBeInTestClasses</h2>
+
+<p><strong>Since:</strong> PMD 6.22.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Test methods marked as a testMethod or annotated with @IsTest,
+but not residing in a test class should be moved to a proper
+class or have the @IsTest annotation added to the class.</p>
+
+<p>Support for tests inside functional classes was removed in Spring-13 (API Version 27.0),
+making classes that violate this rule fail compile-time. This rule is mostly usable when
+dealing with legacy code.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">UserClass</span><span class="p">[</span><span class="w">
+      </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ModifierNode</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'istest'</span><span class="p">])</span><span class="w"> </span><span class="ow">and</span><span class="w">
+      </span><span class="p">(</span><span class="w">
+        </span><span class="p">(.</span><span class="o">/</span><span class="nt">Method</span><span class="o">/</span><span class="nt">ModifierNode</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'istest'</span><span class="p">])</span><span class="w"> </span><span class="ow">or</span><span class="w">
+        </span><span class="p">(.</span><span class="o">/</span><span class="nt">Method</span><span class="o">/</span><span class="nt">ModifierNode</span><span class="p">[</span><span class="na">@Test</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()])</span><span class="w">
+      </span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Violating</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">TestClass</span> <span class="o">{</span>
+  <span class="nd">@IsTest</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">myTest</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// Code here</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">TestClass</span> <span class="o">{</span>
+  <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">myTest</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// Code here</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Compliant</span>
+<span class="nd">@IsTest</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">TestClass</span> <span class="o">{</span>
+  <span class="nd">@IsTest</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">myTest</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// Code here</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@IsTest</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">TestClass</span> <span class="o">{</span>
+  <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">myTest</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// Code here</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 
