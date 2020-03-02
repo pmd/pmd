@@ -12,8 +12,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordConstructorDeclaration ::=  ({@linkplain ASTTypeAnnotation TypeAnnotation})*
- *                                   {@linkplain ASTModifiers Modifiers}
+ * RecordConstructorDeclaration ::=  ({@linkplain ASTAnnotation TypeAnnotation})*
+ *                                   {@linkplain ASTModifierList Modifiers}
  *                                   {@linkplain ASTTypeParameters TypeParameters}?
  *                                   &lt;IDENTIFIER&gt;
  *                                   ( "throws" {@linkplain ASTNameList NameList} )?
@@ -28,13 +28,14 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaAccessNod
         super(id);
     }
 
-    ASTRecordConstructorDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
     }
 
     @Override

@@ -876,7 +876,6 @@ void RecordDeclaration(int modifiers):
 {
     Token t;
     jjtThis.setModifiers(modifiers);
-    checkForRecordType();
 }
 {
   t = <IDENTIFIER> {
@@ -884,7 +883,7 @@ void RecordDeclaration(int modifiers):
       throw new ParseException("ERROR: expecting record");
     }
   }
-  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
+  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
   [ TypeParameters() ]
   RecordComponentList()
   [ ImplementsList() ]
@@ -1286,7 +1285,7 @@ void EqualityExpression() #EqualityExpression(>1):
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ] ]
+  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ VariableDeclaratorId() #TypeTestPattern(2) ] ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):

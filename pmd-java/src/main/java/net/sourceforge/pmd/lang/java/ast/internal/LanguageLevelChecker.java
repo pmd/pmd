@@ -55,7 +55,7 @@ import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
  */
 public class LanguageLevelChecker<T> {
 
-    private static final Pattern SPACE_ESCAPE_PATTERN = Pattern.compile("(?!\\\\)\\\\s");
+    private static final Pattern SPACE_ESCAPE_PATTERN = Pattern.compile("(?<!\\\\)\\\\s");
 
     private final int jdkVersion;
     private final boolean preview;
@@ -121,8 +121,7 @@ public class LanguageLevelChecker<T> {
         /** \s */
         SPACE_STRING_ESCAPES(14, 14, false),
         RECORD_DECLARATIONS(14, 14, false),
-        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 14, false),
-        ;
+        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 14, false);
 
 
         private final int minPreviewVersion;
@@ -148,7 +147,7 @@ public class LanguageLevelChecker<T> {
 
             String message = StringUtils.capitalize(displayNameLower(name()));
             if (canBePreview) {
-                message += " is a only a preview feature on JDK " + jdk;
+                message += " is a preview feature of JDK " + jdk;
             } else if (wasStandardized) {
                 message = message + " was only standardized in Java " + (maxPreviewVersion + 1);
             } else if (minPreviewVersion == maxPreviewVersion) {
@@ -166,8 +165,7 @@ public class LanguageLevelChecker<T> {
         ENUM_AS_AN_IDENTIFIER(5, "enum"),
         UNDERSCORE_AS_AN_IDENTIFIER(9, "_"),
         VAR_AS_A_TYPE_NAME(10, "var"),
-        RECORD_AS_A_TYPE_NAME(14, "record") // TODO
-        ;
+        RECORD_AS_A_TYPE_NAME(14, "record");
 
         private final int maxJdkVersion;
         private final String reserved;
@@ -280,7 +278,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTYieldStatement node, T data) {
-            check(node, PreviewFeature.RECORD_DECLARATIONS, data);
+            check(node, PreviewFeature.YIELD_STATEMENTS, data);
             visitChildren(node, data);
         }
 

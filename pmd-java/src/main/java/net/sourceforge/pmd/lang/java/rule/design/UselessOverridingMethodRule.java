@@ -292,11 +292,4 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
                 || elevatingIntoDifferentPackage;
     }
 
-    /**
-     * @deprecated this method will be removed. Just use {@link Node#findChildrenOfType(Class)} directly.
-     */
-    @Deprecated
-    public <T> List<T> findFirstDegreeChaildrenOfType(Node n, Class<T> targetType) {
-        return n.findChildrenOfType(targetType);
-    }
 }

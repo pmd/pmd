@@ -24,16 +24,16 @@ public final class ASTTypeTestPattern extends AbstractJavaNode implements ASTPat
         super(id);
     }
 
-    ASTTypeTestPattern(JavaParser p, int id) {
-        super(p, id);
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
 
     /**
      * Gets the type against which the expression is tested.

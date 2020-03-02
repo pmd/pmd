@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J14__PREVIEW
 import java.io.IOException
@@ -8,8 +9,10 @@ class ASTPatternTest : ParserTestSpec({
 
     parserTest("Test patterns only available on JDK 14 (preview)", javaVersions = !J14__PREVIEW) {
 
-        expectParseException("Cannot use type test patterns in instanceof when running in JDK other than 14-preview") {
-            parseAstExpression("obj instanceof Class c")
+        inContext(ExpressionParsingCtx) {
+            "obj instanceof Class c" should throwParseException {
+                it.message.shouldContain("Type test patterns in instanceof is a preview feature of JDK 14, you should select your language version accordingly")
+            }
         }
 
     }
