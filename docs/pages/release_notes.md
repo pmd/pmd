@@ -60,6 +60,11 @@ should give more accurate results and especially fixes the problems with the usi
     to cyclomatic complexity, this rule uses "Cognitive Complexity", which is a measure of how
     difficult it is for humans to read and understand a method.
 
+*   The Rule {% rule "apex/errorprone/TestMethodsMustBeInTestClasses" %} (`apex-errorprone`) finds test methods
+    that are not residing in a test class. The test methods should be moved to a proper test class.
+    Support for tests inside functional classes was removed in Spring-13 (API Version 27.0), making classes
+    that violate this rule fail compile-time. This rule is however useful when dealing with legacy code.
+
 ### Fixed Issues
 
 *   apex
@@ -67,6 +72,8 @@ should give more accurate results and especially fixes the problems with the usi
     *   [#2306](https://github.com/pmd/pmd/issues/2306): \[apex] Switch statements are not parsed/supported
 *   apex-design
     *   [#2162](https://github.com/pmd/pmd/issues/2162): \[apex] Cognitive Complexity rule
+*   apex-errorprone
+    *   [#639](https://github.com/pmd/pmd/issues/639): \[apex] Test methods should not be in classes other than test classes
 *   cs
     *   [#2139](https://github.com/pmd/pmd/issues/2139): \[cs] CPD doesn't understand alternate using statement syntax with C# 8.0
 *   doc
@@ -172,6 +179,8 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 *   [#2279](https://github.com/pmd/pmd/pull/2279): \[apex] Add support for suppressing violations using the // NOPMD comment - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2280](https://github.com/pmd/pmd/pull/2280): \[cs] CPD: Replace C# tokenizer by an Antlr-based one - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2297](https://github.com/pmd/pmd/pull/2297): \[apex] Cognitive complexity metrics - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2317](https://github.com/pmd/pmd/pull/2317): \[apex] New Rule - Test Methods Must Be In Test Classes - [Brian Nørremark](https://github.com/noerremark)
+*   [#2321](https://github.com/pmd/pmd/pull/2321): \[apex] Support switch statements correctly in Cognitive Complexity - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 
 {% endtocmaker %}
 

@@ -359,4 +359,35 @@
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo(Integer n) {
+                switch on n {                       // +1
+                  when 1 {
+                    System.debug('when block 1');
+                  }
+                  when 2, 3, 4, 5 {
+                    if (n <= 3) {                   // +2
+                      System.debug('n <= 3');
+                    }
+
+                    System.debug('when block 2');
+                  }
+                  when else {
+                    System.debug('default');
+                  }
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
