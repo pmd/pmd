@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTPrefixExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -230,5 +231,16 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         State state = (State) data;
         state.methodCall(node.getNode().getMethodName());
         return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchStatement node, Object data) {
+        State state = (State) data;
+
+        state.increaseNestingLevel();
+        super.visit(node, data);
+        state.decreaseNestingLevel();
+
+        return state;
     }
 }

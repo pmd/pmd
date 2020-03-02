@@ -935,7 +935,7 @@ void RecordConstructorDeclaration():
   modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
   [TypeParameters()]
   <IDENTIFIER> { jjtThis.setImage(token.image); }
-  "{" ( BlockStatement() )* "}"
+  Block()
 }
 
 void TypeParameters():

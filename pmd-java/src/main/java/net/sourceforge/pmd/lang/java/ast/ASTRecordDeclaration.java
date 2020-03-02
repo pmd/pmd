@@ -58,11 +58,7 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return isNested();
     }
 
-    public List<ASTRecordComponent> getRecordComponents() {
-        return getFirstChildOfType(ASTRecordComponentList.class).findChildrenOfType(ASTRecordComponent.class);
-    }
-
-    public String getName() {
-        return getImage();
+    public ASTRecordComponentList getComponentList() {
+        return getFirstChildOfType(ASTRecordComponentList.class);
     }
 }
