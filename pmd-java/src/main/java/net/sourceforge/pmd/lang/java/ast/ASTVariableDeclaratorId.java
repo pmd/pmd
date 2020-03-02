@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -192,6 +193,16 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     public boolean isTypeInferred() {
         return getTypeNode() == null;
     }
+
+    /**
+     * Returns true if this is a binding variable in a
+     * {@linkplain ASTPattern pattern}.
+     */
+    @Experimental
+    public boolean isPatternBinding() {
+        return getParent() instanceof ASTPattern;
+    }
+
 
     /**
      * Returns the initializer of the variable, or null if it doesn't exist.

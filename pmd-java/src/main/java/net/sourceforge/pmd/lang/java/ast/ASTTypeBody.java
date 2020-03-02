@@ -13,11 +13,10 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * TypeBody ::= {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
  *            | {@link ASTEnumBody EnumBody}
- *            | {@link ASTAnnotationTypeBody}
+ *            | {@link ASTRecordBody RecordBody}
+ *            | {@link ASTAnnotationTypeBody AnnotationTypeBody}
  *
  * </pre>
- *
- * @author Clément Fournier
  */
 public interface ASTTypeBody extends JavaNode {
 

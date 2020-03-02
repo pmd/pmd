@@ -20,6 +20,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "CycloTest");
         addRule(RULESET, "WmcTest");
+        addRule(RULESET, "CognitiveComplexityTest");
     }
 
 }

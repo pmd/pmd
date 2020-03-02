@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
 /**
- * Groups enum, class, annotation and interface declarations under a common
+ * Groups class, enum, record, annotation and interface declarations under a common
  * supertype.
  */
 public interface ASTAnyTypeDeclaration
