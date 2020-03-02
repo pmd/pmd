@@ -1,4 +1,15 @@
 /**
+ * Add support for record types introduced as a preview language
+ * feature with Java 14. See JEP 359.
+ * Andreas Dangel 02/2020
+ *====================================================================
+ * Add support for pattern matching for instance of introduced
+ * as a preview language feature with Java 14. See JEP 305.
+ * Clément Fournier 02/2020
+ *====================================================================
+ * Switch Expressions are now a standard feature of Java 14.
+ * Andreas Dangel 02/2020
+ *====================================================================
  * Add support for the yield statement introduced as a preview language
  * feature with Java 13. See JEP 354.
  * Add support for text block literals introduces as a preview language
@@ -203,7 +214,6 @@ options {
   UNICODE_INPUT=true;
   CACHE_TOKENS = true;
   STATIC = false;
-
   MULTI = true;
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
@@ -480,7 +490,7 @@ TOKEN :
   >
 | < #STRING_ESCAPE:
       "\\"
-      ( ["n","t","b","r","f","\\","'","\""]
+      ( ["n","t","b","r","f", "s", "\\","'","\""]
       // octal escapes
       | ["0"-"7"] ( ["0"-"7"] )?
       | ["0"-"3"] ["0"-"7"] ["0"-"7"]
@@ -497,7 +507,7 @@ TOKEN :
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
+        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
      "\"\"\""
   >
 }
@@ -794,6 +804,8 @@ void TypeDeclaration():
      LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
    |
      AnnotationTypeDeclaration(modifiers)
+   |
+     LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
   )
 }
 
@@ -860,6 +872,74 @@ void EnumConstant():
   t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ Arguments() ] [ ClassOrInterfaceBody() ]
 }
 
+void RecordDeclaration(int modifiers):
+{
+    Token t;
+    jjtThis.setModifiers(modifiers);
+    checkForRecordType();
+}
+{
+  t = <IDENTIFIER> {
+    if (!"record".equals(t.image)) {
+      throw new ParseException("ERROR: expecting record");
+    }
+  }
+  t=<IDENTIFIER> {checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image);}
+  [ TypeParameters() ]
+  RecordComponentList()
+  [ ImplementsList() ]
+  RecordBody()
+}
+
+void RecordComponentList() :
+{}
+{
+  "(" [ RecordComponent() ("," RecordComponent())* ] ")"
+}
+
+void RecordComponent():
+{}
+{
+  (Annotation())*
+  Type()
+  [ "..." {jjtThis.setVarargs();} ]
+  VariableDeclaratorId()
+}
+
+void RecordBody():
+{}
+{
+  "{"
+    ( RecordBodyDeclaration() )*
+  "}"
+}
+
+void RecordBodyDeclaration() #void :
+{}
+{
+  LOOKAHEAD(RecordCtorLookahead()) RecordConstructorDeclaration()
+  |
+  ClassOrInterfaceBodyDeclaration()
+}
+
+private void RecordCtorLookahead() #void:
+{}
+{
+    Modifiers() [ TypeParameters() ] <IDENTIFIER> ("throws" |  "{")
+}
+
+void RecordConstructorDeclaration():
+{
+  int modifiers;
+}
+{
+  modifiers = Modifiers() { jjtThis.setModifiers(modifiers); }
+  [TypeParameters()]
+  <IDENTIFIER> { jjtThis.setImage(token.image); }
+  [ "throws" NameList() ]
+  "{" ( BlockStatement() )* "}"
+}
+
 void TypeParameters():
 {}
 {
@@ -893,6 +973,7 @@ void ClassOrInterfaceBodyDeclaration():
 |  modifiers = Modifiers()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
+    | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
@@ -1205,7 +1286,7 @@ void EqualityExpression() #EqualityExpression(>1):
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() ]
+  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypeTestPattern(2) ] ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):
@@ -1696,7 +1777,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() ] ";"
+  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
 }
 
 void ContinueStatement() :
