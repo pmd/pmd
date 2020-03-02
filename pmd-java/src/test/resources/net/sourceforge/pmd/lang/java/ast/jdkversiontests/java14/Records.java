@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
@@ -54,5 +55,10 @@ public class Records {
         String lastName();
     }
     public record PersonRecord(String firstName, String lastName)
-        implements Person, java.io.Serializable { }
+        implements Person, java.io.Serializable {
+
+        PersonRecord throws IOException { // compact ctor with throws list
+            throw new IOException();
+        }
+    }
 }
