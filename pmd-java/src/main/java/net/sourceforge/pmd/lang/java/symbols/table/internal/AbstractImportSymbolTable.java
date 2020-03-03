@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -39,9 +38,9 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ResolveResultImpl.Va
  */
 abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
-    final Map<String, ResolveResult<JTypeDeclSymbol>> importedTypes = new HashMap<>();
-    final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
-    final Map<String, ResolveResult<JVariableSymbol>> importedStaticFields = new HashMap<>();
+    private final Map<String, ResolveResult<JTypeDeclSymbol>> importedTypes = new HashMap<>();
+    private final Map<String, ResolveResult<JVariableSymbol>> importedStaticFields = new HashMap<>();
+    private Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
 
     /**
      * Constructor with the parent table and the auxclasspath classloader.
@@ -59,12 +58,13 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
         return importedTypes.get(simpleName);
     }
 
-
     @Override
-    protected Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName) {
-        return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList()).stream();
+    protected @Nullable List<JMethodSymbol> getCachedMethodResults(String simpleName) {
+        // import tables don't need to override resolveMethodNameHere,
+        // they shadow their parentage (which are only other import tables,
+        // or SamePackageSymTable, which only tracks types)
+        return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList());
     }
-
 
     @Override
     protected @Nullable ResolveResult<JVariableSymbol> resolveValueNameImpl(String simpleName) {
@@ -85,6 +85,12 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
         importedStaticMethods.computeIfAbsent(sym.getSimpleName(), k -> new ArrayList<>()).add(sym);
     }
 
+    protected void completeInit() {
+        for (String key : this.importedStaticMethods.keySet()) {
+            importedStaticMethods.computeIfPresent(key, (k, l) -> Collections.unmodifiableList(l));
+        }
+    }
+
 
     /**
      * Returns true if the given element can be imported in the current file
@@ -97,7 +103,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
      * In an ACU in another package, the name is accessible only inside classes that inherit
      * from the declaring class. But inheriting from a class makes its static members
      * accessible via simple name too. So this will actually be picked up by some other symbol table
-     * when in the subclass. Usages outside of the subclass would have made the compilation failed.
+     * when in the subclass. Usages outside of the subclass would have made the compilation fail.
      */
     protected boolean canBeImported(JAccessibleElementSymbol member) {
         int modifiers = member.getModifiers();

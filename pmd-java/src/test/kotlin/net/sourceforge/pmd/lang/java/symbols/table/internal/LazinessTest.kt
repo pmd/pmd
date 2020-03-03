@@ -1,17 +1,18 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.Statics
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
+import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
-import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 /**
@@ -45,34 +46,33 @@ class LazinessTest : FunSpec({
         }
     }
 
+    val staticsClass = classSym(Statics::class.java)!!
+
 
     test("Test resolveValueName doesn't query parents if not needed") {
         lazinessTest(::MyValueTable, { t, n -> t.resolveValueName(n)!!.result }) {
-            classSym(Statics::class.java)!!.getDeclaredField("PUBLIC_FIELD")
+            staticsClass.getDeclaredField("PUBLIC_FIELD")
         }
     }
-
-
-    test("Test resolveMethodName doesn't trigger evaluation of parent streams") {
-        lazinessTest<JMethodSymbol>(::MyMethodTable, { t, n -> t.resolveMethodName(n).findFirst().get() }) {
-            classSym(Statics::class.java)!!.getDeclaredMethods("publicMethod")[0]
-        }
-    }
-
 
     test("Test resolveMethodName evaluates parent streams if needed") {
 
         val dummyResolveHelper = testResolveHelper("")
 
         val top: JSymbolTable = MyMethodTable(EmptySymbolTable.getInstance(), dummyResolveHelper) {
-            classSym(Statics::class.java)!!.getDeclaredMethods("publicMethod")[0]
+            staticsClass.getDeclaredMethods("publicMethod")[1]
         }
 
-        val bottom: JSymbolTable = MyMethodTable(top, dummyResolveHelper) {
+        val mid: JSymbolTable = MyMethodTable(top, dummyResolveHelper) {
+            staticsClass.getDeclaredMethods("publicMethod")[0]
+        }
+
+        val bottom: JSymbolTable = MyMethodTable(mid, dummyResolveHelper) {
             null
         }
 
-        bottom.resolveMethodName("publicMethod").findFirst()::isPresent shouldBe true
+        bottom.resolveMethodName("publicMethod").shouldHaveSize(2)
+        bottom.resolveMethodName("publicMethod") shouldBe staticsClass.getDeclaredMethods("publicMethod")
     }
 
 })
@@ -103,7 +103,10 @@ private class MyValueTable(
 private class MyMethodTable(parent: JSymbolTable, helper: SymbolTableHelper,
                             private val methodSymbolGetter: () -> JMethodSymbol?) : AbstractSymbolTable(parent, helper) {
 
-    override fun resolveMethodNameImpl(simpleName: String): Stream<JMethodSymbol>? =
-            methodSymbolGetter()?.let { Stream.of(it) } ?: Stream.empty()
+    override fun getCachedMethodResults(simpleName: String): List<JMethodSymbol>? =
+            null
+
+    override fun resolveMethodNamesHere(simpleName: String): List<JMethodSymbol> =
+            listOfNotNull(methodSymbolGetter()).toMutableList()
 
 }

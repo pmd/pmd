@@ -81,6 +81,8 @@ final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
                 importedPackagesAndTypes.put(anImport.getPackageName(), anImport);
             }
         }
+
+        completeInit();
     }
 
 

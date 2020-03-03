@@ -49,8 +49,8 @@ final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                     continue;
                 }
 
-                for (JMethodSymbol jMethodSymbol : containerClass.getDeclaredMethods(simpleName)) {
-                    if (Modifier.isStatic(jMethodSymbol.getModifiers()) && canBeImported(jMethodSymbol)) {
+                for (JMethodSymbol jMethodSymbol : containerClass.getDeclaredMethods()) {
+                    if (jMethodSymbol.getSimpleName().equals(simpleName) && Modifier.isStatic(jMethodSymbol.getModifiers()) && canBeImported(jMethodSymbol)) {
                         importMethod(anImport, jMethodSymbol);
                     }
                 }
@@ -78,6 +78,8 @@ final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                 importType(anImport, helper.findSymbolCannotFail(name));
             }
         }
+
+        completeInit();
     }
 
 

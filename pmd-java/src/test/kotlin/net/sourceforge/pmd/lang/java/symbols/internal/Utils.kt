@@ -120,3 +120,7 @@ object PrimitiveSymGen : Gen<JClassSymbol> {
 
     override fun random() = emptySequence<JClassSymbol>()
 }
+
+
+fun JClassSymbol.getDeclaredMethods(name: String) =
+        declaredMethods.filter { it.simpleName == name }

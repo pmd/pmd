@@ -7,21 +7,21 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.matchers.collections.containExactly
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.ast.test.shouldHaveSize
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
+import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
-import kotlin.streams.toList
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -172,7 +172,7 @@ class HeaderScopesTest : ParserTestSpec({
             it.resolveMethodName("packageMethod").shouldHaveSize(0)
             it.resolveMethodName("privateMethod").shouldHaveSize(0)
             it.resolveMethodName("protectedMethod").shouldHaveSize(0)
-            it.resolveMethodName("publicMethod").shouldHaveSize(1)
+            it.resolveMethodName("publicMethod").shouldHaveSize(2)
             it.resolveMethodName("publicMethod2").shouldHaveSize(1)
 
             it.resolveTypeName("PublicStatic") shouldNotBe null
@@ -194,7 +194,7 @@ class HeaderScopesTest : ParserTestSpec({
             it.resolveValueName("PUBLIC_FIELD") shouldNotBe null
             it.resolveValueName("publicField").shouldFail()
 
-            it.resolveMethodName("publicMethod").shouldHaveSize(1)
+            it.resolveMethodName("publicMethod").shouldHaveSize(2)
             it.resolveMethodName("publicInstanceMethod").shouldHaveSize(0)
 
             it.resolveTypeName("PublicStatic") shouldNotBe null

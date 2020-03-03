@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -54,46 +55,68 @@ abstract class AbstractSymbolTable implements JSymbolTable {
     }
 
 
-    @Nullable
     @Override
-    public final ResolveResult<JVariableSymbol> resolveValueName(String simpleName) {
+    public final @Nullable ResolveResult<JVariableSymbol> resolveValueName(String simpleName) {
         @Nullable ResolveResult<JVariableSymbol> result = resolveValueNameImpl(simpleName);
         return result != null ? result : parent.resolveValueName(simpleName);
     }
 
 
     @Override
-    public final Stream<JMethodSymbol> resolveMethodName(String simpleName) {
-        // This allows the stream contributed by the parent to be resolved lazily,
-        // ie not evaluated unless the stream contributed by this table runs out of values,
-        // a behaviour that Stream.concat can't provide
-
-        return Stream.<Supplier<Stream<JMethodSymbol>>>of(
-            () -> resolveMethodNameImpl(simpleName),
-            () -> parent.resolveMethodName(simpleName)
-        ).flatMap(Supplier::get);
+    public final List<JMethodSymbol> resolveMethodName(String simpleName) {
+        // the default implementation always returns the parent results
+        // if the table has methods itself, it needs to override this
+        List<JMethodSymbol> result = getCachedMethodResults(simpleName);
+        if (result != null) {
+            return result;
+        }
+        // Otherwise, create the list from the union
+        List<JMethodSymbol> localResult = resolveMethodNamesHere(simpleName);
+        List<JMethodSymbol> parentResult = parent.resolveMethodName(simpleName); // recurse on parent
+        if (localResult.isEmpty()) {
+            result = parentResult; // parent result is already unmodifiable
+        } else {
+            result = localResult;
+            result.addAll(parentResult);
+            result = Collections.unmodifiableList(result);
+        }
+        cacheMethodResult(simpleName, result);
+        return result;
     }
 
-
-    /** Finds the matching methods among the declarations tracked by this table without asking the parent. */
-    protected Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName) {
-        return Stream.empty();
+    /**
+     * Finds the matching methods among the declarations tracked by this
+     * table *without asking the parent*. Returns a mutable list.
+     *
+     * <p>This method is only called if {@link #getCachedMethodResults(String)}
+     * returns a null result. For that reason, that method must be overridden
+     * if this one is to be used.
+     */
+    protected /*Mutable*/List<JMethodSymbol> resolveMethodNamesHere(String simpleName) {
+        // dead code if getCachedMethodResults is not overridden
+        return new ArrayList<>();
     }
 
-    // We could internally avoid using Optional to reduce the number of created optionals as an optimisation
+    @Nullable
+    protected List<JMethodSymbol> getCachedMethodResults(String simpleName) {
+        return parent.resolveMethodName(simpleName); // this table is empty
+    }
 
+    protected void cacheMethodResult(String simpleName, List<JMethodSymbol> sigs) {
+        // do nothing, dead code if getCachedMethodResults is not overridden
+    }
 
     /**
      * Finds a type name among the declarations tracked by this table without asking the parent.
      */
     protected @Nullable ResolveResult<JTypeDeclSymbol> resolveTypeNameImpl(String simpleName) {
-        return ResolveResultImpl.failed();
+        return null;
     }
 
 
     /** Finds a value among the declarations tracked by this table without asking the parent. */
     protected @Nullable ResolveResult<JVariableSymbol> resolveValueNameImpl(String simpleName) {
-        return ResolveResultImpl.failed();
+        return null;
     }
 
 
