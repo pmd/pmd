@@ -72,4 +72,9 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
     @NonNull
     String getSimpleName();
 
+
+    default boolean isInterface() {
+        return false;
+    }
+
 }

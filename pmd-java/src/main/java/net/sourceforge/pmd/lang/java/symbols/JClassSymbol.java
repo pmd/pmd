@@ -166,8 +166,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isPrimitive();
 
-    boolean isInterface();
-
     boolean isEnum();
 
     boolean isAnnotation();
