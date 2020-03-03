@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -174,9 +175,22 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
-
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();
+    }
+
+
+    /**
+     * Returns the toplevel class containing this class. If this is a
+     * toplevel class, returns this.
+     */
+    @NonNull
+    default JClassSymbol getNestRoot() {
+        JClassSymbol e = this;
+        while (e.getEnclosingClass() != null) {
+            e = e.getEnclosingClass();
+        }
+        return e;
     }
 
 

@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -52,14 +53,20 @@ public interface SymbolResolver {
     }
 
 
+    /**
+     * Produce a symbol resolver that asks the given resolvers in order.
+     *
+     * @param first  First resolver
+     * @param others Rest of the resolvers
+     */
     static SymbolResolver layer(SymbolResolver first, SymbolResolver... others) {
         assert first != null : "Null first table";
         assert others != null : "Null array";
+        assert !ArrayUtils.contains(others, null) : "Null component";
 
-        List<SymbolResolver> stack = new ArrayList<>(others.length + 1);
-        stack.add(first);
-        Collections.addAll(stack, others);
         return new SymbolResolver() {
+            private final List<SymbolResolver> stack = listOf(first, others);
+
             @Override
             public @Nullable JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName) {
                 for (SymbolResolver resolver : stack) {

@@ -269,7 +269,7 @@ public final class IteratorUtil {
 
     /**
      * Returns an iterator that applies a stepping function to the previous
-     * value yielded. Iterattion stops on the first null value returned by
+     * value yielded. Iteration stops on the first null value returned by
      * the stepper.
      *
      * @param seed    First value. If null then the iterator is empty
