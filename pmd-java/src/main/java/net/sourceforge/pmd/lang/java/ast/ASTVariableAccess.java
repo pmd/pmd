@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-
 /**
  * A reference to an unqualified variable. {@linkplain ASTAmbiguousName Ambiguous names} are promoted
  * to this status in the syntactic contexts, where we know they're definitely variable references.
@@ -25,16 +23,6 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssi
     ASTVariableAccess(ASTAmbiguousName name) {
         super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
         setImage(name.getImage());
-    }
-
-    ASTVariableAccess(JavaccToken identifier) {
-        super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
-
-        TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
-
-        setImage(identifier.getImage());
-        jjtSetFirstToken(identifier);
-        jjtSetLastToken(identifier);
     }
 
 

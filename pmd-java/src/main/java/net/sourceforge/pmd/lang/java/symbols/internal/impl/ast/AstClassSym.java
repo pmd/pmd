@@ -11,14 +11,10 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -32,7 +28,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class AstClassSym
@@ -78,7 +73,7 @@ final class AstClassSym
             }
         }
 
-        if (myCtors.isEmpty() && isClass() && !isAnonymousClass()) {
+        if (myCtors.isEmpty() && isClass()) {
             myCtors.add(ImplicitMemberSymbols.defaultCtor(this));
         }
 
@@ -150,37 +145,25 @@ final class AstClassSym
         return declaredFields;
     }
 
+
     @Override
     public @Nullable JClassSymbol getSuperclass() {
         if (isEnum()) {
             return ReflectSymInternals.ENUM_SYM;
         } else if (node instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
-            return sup == null? ReflectSymInternals.OBJECT_SYM
-                              : (JClassSymbol) sup.getReferencedSym();
-
-        } else if (node instanceof ASTAnonymousClassDeclaration) {
-
-            if (node.getParent() instanceof ASTEnumConstant) {
-
-                return node.getEnclosingType().getSymbol();
-
-            } else if (node.getParent() instanceof ASTConstructorCall) {
-
-                JTypeDeclSymbol sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getReferencedSym();
-
-                return sym instanceof JClassSymbol && !sym.isInterface()
-                       ? (JClassSymbol) sym
-                       : ReflectSymInternals.OBJECT_SYM;
-
-            }
+            // This is TODO, needs symbol table
         }
         return null;
     }
 
+    // those casts only succeed if the program compiles, it relies on
+    // the fact that only classes can be super interfaces, ie not String[]
+    // or some type var
+
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        return CollectionUtil.map(node.getSuperInterfaces(), n -> (JClassSymbol) n.getReferencedSym());
+        // TODO needs symbol table
+        return Collections.emptyList();
     }
 
     @Override

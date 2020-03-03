@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 
 // @formatter:off
 /**
@@ -21,18 +22,12 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
  * <pre class="grammar">
  *
  * ClassOrInterfaceType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
- *                        | ClassOrInterfaceType "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName}) "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
- *
- * @implNote
- * The parser may produce an AmbiguousName for the qualifier.
- * This is systematically removed by the disambiguation phase.
  */
 // @formatter:on
 public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
-
-    private JTypeDeclSymbol symbol;
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
@@ -53,30 +48,11 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         this.setImage(simpleName);
     }
 
-    ASTClassOrInterfaceType(ASTClassOrInterfaceType lhs, String image, JavaccToken firstToken, JavaccToken identifier) {
-        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.setImage(image);
-        if (lhs != null) {
-            this.jjtAddChild(lhs, 0);
-        }
-        this.jjtSetFirstToken(firstToken);
-        this.jjtSetLastToken(identifier);
-    }
-
 
     ASTClassOrInterfaceType(int id) {
         super(id);
     }
 
-
-    void setSymbol(JTypeDeclSymbol symbol) {
-        this.symbol = symbol;
-    }
-
-    public JTypeDeclSymbol getReferencedSym() {
-        // this is a crutch for now, can be replaced with getTypeDefinition later
-        return symbol;
-    }
 
     /**
      * Gets the owner type of this type if it's not ambiguous. This is a
@@ -85,8 +61,18 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      * @return A type, or null if this is a base type
      */
     @Nullable
-    public ASTClassOrInterfaceType getQualifier() {
+    public ASTClassOrInterfaceType getLhsType() {
         return getFirstChildOfType(ASTClassOrInterfaceType.class);
+    }
+
+
+    /**
+     * Returns the left-hand side is an ambiguous name that has not been reclassified.
+     * The ambiguous name can be a package or type name.
+     */
+    @Nullable
+    public ASTAmbiguousName getAmbiguousLhs() {
+        return getFirstChildOfType(ASTAmbiguousName.class);
     }
 
     /**
@@ -113,7 +99,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      * Returns the simple name of this type.
      */
     public String getSimpleName() {
-        return AstImplUtil.getLastSegment(getImage(), '.');
+        return getImage();
     }
 
     /**
@@ -123,7 +109,10 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     @Override
     @Experimental
     public String getTypeImage() {
-        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".") + getImage();
+        Supplier<String> ambiguousName =
+            () -> Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("");
+
+        return Optional.ofNullable(getLhsType()).map(s -> s.getTypeImage() + ".").orElseGet(ambiguousName) + getImage();
     }
 
     /**

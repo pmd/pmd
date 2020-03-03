@@ -128,7 +128,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     /**
      * Called by the parser if this ambiguous name was expected to be
      * a type name. Then we simply promote it to an {@link ASTClassOrInterfaceType}
-     * with the appropriate LHS.
+     * with the appropriate {@link ASTClassOrInterfaceType#getAmbiguousLhs()}.
      *
      * @return the node which will replace this node in the tree
      */
@@ -187,18 +187,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         return res;
     }
 
-    /**
-     * Delete this name from the children of the parent. The image of
-     * this name is prepended to the image of the parent.
-     */
-    void deleteInParentPrependImage(char delim) {
-        AbstractJavaNode parent = (AbstractJavaNode) getParent();
-        String image = parent.getImage();
-        parent.setImage(getName() + delim + image);
-
-        parent.jjtSetFirstToken(this.jjtGetFirstToken());
-        parent.removeChildAtIndex(this.getIndexInParent());
-    }
 
     /**
      * A specialized version of {@link #shrinkOneSegment(Function, BiFunction)}

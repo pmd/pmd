@@ -132,7 +132,7 @@ abstract class AbstractSymbolTable implements JSymbolTable {
     final JClassSymbol loadClassReportFailure(ASTImportDeclaration anImport, String fqcn) {
         JClassSymbol loaded = helper.loadClassOrFail(fqcn);
         if (loaded == null) {
-            helper.getLogger().warning(anImport, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, fqcn);
+            helper.getLogger().warning(anImport, SemanticChecksLogger.CANNOT_FIND_CLASSPATH_SYMBOL, fqcn);
         }
 
         return loaded;

@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -51,6 +50,35 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
 
     /**
+     * Returns true if this class is a symbolic reference to an unresolved
+     * class. In that case no information about the symbol are known except
+     * its name, and the accessors of this class return default values.
+     *
+     * <p>This kind of symbol is introduced to allow for some best-effort
+     * symbolic resolution. For example in:
+     * <pre>{@code
+     * import org.Bar;
+     *
+     * Bar foo = new Bar();
+     * }</pre>
+     * and supposing {@code org.Bar} is not on the classpath. The type
+     * of {@code foo} is {@code Bar}, which we can qualify to {@code org.Bar} thanks to the
+     * import (via symbol tables, and without even querying the classpath).
+     * Even though we don't know what members {@code org.Bar} has, a
+     * test for {@code typeIs("org.Bar")} would succeed with certainty,
+     * so it makes sense to preserve the name information and not give
+     * up too early.
+     *
+     * <p>Note that unresolved types are always created from an unresolved
+     * <i>canonical name</i>, so they can't be just <i>any</i> type. For example,
+     * they can't be array types, nor local classes (since those are lexically
+     * scoped, so always resolvable), nor anonymous classes (can only be referenced
+     * on their declaration site), etc.
+     */
+    boolean isUnresolved();
+
+
+    /**
      * Returns the method or constructor this symbol is declared in, if
      * it represents a {@linkplain #isLocalClass() local class declaration}.
      *
@@ -78,11 +106,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     List<JClassSymbol> getDeclaredClasses();
 
 
-<<<<<<< Updated upstream
-    /** Returns a class with the given name accessed defined in this class. */
-=======
     /** Returns a class with the given name defined in this class. */
->>>>>>> Stashed changes
     @Nullable
     default JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
@@ -171,6 +195,8 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isPrimitive();
 
+    boolean isInterface();
+
     boolean isEnum();
 
     boolean isAnnotation();
@@ -179,22 +205,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
+
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();
-    }
-
-
-    /**
-     * Returns the toplevel class containing this class. If this is a
-     * toplevel class, returns this.
-     */
-    @NonNull
-    default JClassSymbol getNestRoot() {
-        JClassSymbol e = this;
-        while (e.getEnclosingClass() != null) {
-            e = e.getEnclosingClass();
-        }
-        return e;
     }
 
 

@@ -5,12 +5,10 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
  * PRIVATE FOR NOW, find out what is useful to move to the interface
@@ -106,13 +104,5 @@ final class TokenUtils {
         }
 
         return target;
-    }
-
-    public static void expectKind(JavaccToken token, int kind) {
-        assert token.kind == kind : "Expected " + token.getDocument().describeKind(kind) + ", got " + token;
-    }
-
-    public static Iterator<JavaccToken> tokenRange(JavaNode node) {
-        return JavaccToken.range(node.jjtGetFirstToken(), node.jjtGetLastToken());
     }
 }

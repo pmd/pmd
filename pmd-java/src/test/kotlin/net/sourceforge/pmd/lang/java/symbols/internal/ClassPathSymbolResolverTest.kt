@@ -36,5 +36,4 @@ class ClassPathSymbolResolverTest : FunSpec({
                 .shouldBe(classSym(SomeInnerClasses.Inner::class.java))
     }
 
-
 })

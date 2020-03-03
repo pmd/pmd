@@ -268,31 +268,6 @@ public final class IteratorUtil {
     }
 
     /**
-     * Returns an iterator that applies a stepping function to the previous
-     * value yielded. Iteration stops on the first null value returned by
-     * the stepper.
-     *
-     * @param seed    First value. If null then the iterator is empty
-     * @param stepper Step function
-     * @param <T>     Type of values
-     */
-    public static <T> Iterator<@NonNull T> generate(@Nullable T seed, Function<? super @NonNull T, ? extends @Nullable T> stepper) {
-        return new AbstractIterator<T>() {
-            T next = seed;
-
-            @Override
-            protected void computeNext() {
-                if (next == null) {
-                    done();
-                    return;
-                }
-                setNext(next);
-                next = stepper.apply(next);
-            }
-        };
-    }
-
-    /**
      * Returns whether some element match the predicate. If empty then {@code false}
      * is returned.
      */
