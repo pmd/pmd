@@ -1640,8 +1640,9 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.getImage())}) "(" Expression() <AS> Datatype() ")"
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
+      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ] [ ID() ] ( "," SqlExpression() [ <AS> ]  [ ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.getImage())}) XMLElement()
+      | LOOKAHEAD({"XMLROOT".equalsIgnoreCase(token.getImage())}) "(" Expression() "," KEYWORD("VERSION") (LOOKAHEAD(2) ( <NO> "VALUE") | Expression() )  [ "," KEYWORD("STANDALONE")  ( <YES> | <NO> )] [ "VALUE" ]  ")"
       | Arguments()
     )
 
@@ -3240,14 +3241,22 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) #UnaryExpression(>1) :
 ASTExtractExpression ExtractExpression() :
 {}
 {
+    LOOKAHEAD(4)
     <EXTRACT> "("
         ( <MONTH> | <YEAR> | <DAY> |<HOUR> | <MINUTE> | <SECOND>
         | <TIMEZONE_HOUR> | <TIMEZONE_MINUTE>
         | <TIMEZONE_REGION> | <TIMEZONE_ABBR> )
     <FROM>
-        (LOOKAHEAD(2) FunctionCall()
-        |LOOKAHEAD(2) DateTimeLiteral()
-        |LOOKAHEAD(1) Name() ) ")"
+            (
+            LOOKAHEAD(FunctionCall()) FunctionCall()
+            |
+            LOOKAHEAD(DateTimeLiteral()) DateTimeLiteral()
+            |
+            LOOKAHEAD(Name()) Name()
+            ) ")"
+        { return jjtThis ; }
+    |
+    LOOKAHEAD(3)  <EXTRACT> "(" Argument() "," Expression() ["," SchemaName() ] ")"
     { return jjtThis ; }
 }
 
