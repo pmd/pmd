@@ -264,9 +264,9 @@ ASTInput Input(String sourcecode) : {}
 	 | LOOKAHEAD(6) Global()
      | (LOOKAHEAD(6) DDLCommand())+
 	 | LOOKAHEAD(2) SqlPlusCommand()
-	 | UpdateStatement()
-	 | DeleteStatement()
-	 | InsertStatement()
+	 | UpdateStatement() [";"]
+	 | DeleteStatement() [";"]
+	 | InsertStatement() [";"]
 	 | SelectStatement() [";"]
 	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) ReadPastNextOccurrence(";") //Ignore SQL statements in scripts
 	 )
@@ -473,8 +473,6 @@ ASTDeclarativeUnit DeclarativeUnit()  :
 		ProgramUnit()  |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
-		LOOKAHEAD(2)
-		CursorSpecification() |
 		CursorBody() |
 		CollectionDeclaration() |
 		//ProgramUnit()
@@ -1064,12 +1062,10 @@ void Skip2NextTokenOccurrence(int target) :
   Token specToken = null ;
   while (nextToken.kind!=target
 	 && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
-	 && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
-        )
+	 && nextToken.kind!=EOF) //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
   {
     /*
 	Check if the target appears as a SpecialToken
-
 
 	nextToken.specialToken points to the _LAST_ of any SpecialTokens before the current normal Token.
 
@@ -1083,19 +1079,13 @@ void Skip2NextTokenOccurrence(int target) :
     */
     specToken = nextToken.specialToken;
     if (null!= specToken)
-    {
-	//Walk backwards through the list looking for this Token as a Special Token
-        while (specToken != null && specToken.kind != target)
-	{
-		specToken = specToken.specialToken;
-	}
+      //Walk backwards through the list looking for this Token as a Special Token
+      while (specToken != null && specToken.kind != target)
+        specToken = specToken.specialToken;
 
 	//We have found the target as a SpecialToken - break out of normal Token search
-        if (null != specToken && specToken.kind == target)
-	{
-		break;
-        }
-    }
+    if (null != specToken && specToken.kind == target)
+      break;
 
     nextToken = getNextToken();
     nextToken = getToken(1);
@@ -2874,36 +2864,11 @@ ASTCursorUnit CursorUnit()  :
     { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-ASTCursorSpecification CursorSpecification()  : {}
-{
-	CursorUnit()
-      { return jjtThis ; }
-}
-
 ASTCursorBody CursorBody()  : {}
 {
 	CursorUnit()
-//	<IS> /*<SQL_STATEMENT>*/
       { return jjtThis ; }
 }
-
-
-
-// ============================================================================
-// E X P R E S S I O N S
-// ============================================================================
-
-/*
-String expression() :
-{}
-{
-	"test"
-	{ return ""; }
-}
-*/
-
-
-
 
 ASTExpression Expression() :
 {
@@ -3885,11 +3850,9 @@ ASTComment Comment()  :
     (<COLUMN> [LOOKAHEAD(ID()"."ID()"."ID()) ID()"."] ID() "." ID())
   )
   <IS> StringLiteral()
-  ";"
+  (";" | "/")
   { return jjtThis ; }
 }
-
-
 
 ASTTypeMethod TypeMethod()  :
 {
@@ -4426,8 +4389,6 @@ ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 		SubTypeDefinition() |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
-		LOOKAHEAD(2)
-		CursorSpecification() |
 		CursorBody() |
 		CollectionDeclaration() |
 		ProgramUnit()

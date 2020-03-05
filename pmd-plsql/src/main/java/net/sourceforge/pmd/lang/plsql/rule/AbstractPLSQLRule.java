@@ -53,7 +53,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCrossOuterApplyClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCursorBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCursorForLoopStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCursorSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCursorUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDDLCommand;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDDLEvent;
@@ -654,11 +653,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public Object visit(ASTCursorUnit node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTCursorSpecification node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 
