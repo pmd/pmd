@@ -1358,7 +1358,11 @@ ASTGroupingExpressionList GroupingExpressionList() :
 ASTWhereClause WhereClause() :
 {}
 {
+    (
+    LOOKAHEAD(3) <WHERE> <CURRENT> <OF> Expression()
+    |
     <WHERE> Condition()
+    )
     { return jjtThis; }
 }
 

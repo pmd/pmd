@@ -92,6 +92,7 @@ should give more accurate results and especially fixes the problems with the usi
 *   java-performance
     *   [#2275](https://github.com/pmd/pmd/issues/2275): \[java] AppendCharacterWithChar flags literals in an expression
 *   plsql
+    *   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF
     *   [#2328](https://github.com/pmd/pmd/issues/2328): \[plsql] Support XMLROOT
 
 ### API Changes
@@ -184,6 +185,7 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 *   [#2317](https://github.com/pmd/pmd/pull/2317): \[apex] New Rule - Test Methods Must Be In Test Classes - [Brian Nørremark](https://github.com/noerremark)
 *   [#2321](https://github.com/pmd/pmd/pull/2321): \[apex] Support switch statements correctly in Cognitive Complexity - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2326](https://github.com/pmd/pmd/pull/2326): \[plsql] Added XML functions to parser: extract(xml), xml_root and fixed xml_forest - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF added - [Piotr Szymanski](https://github.com/szyman23)
 
 {% endtocmaker %}
 
