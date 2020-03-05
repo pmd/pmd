@@ -26,6 +26,7 @@ public final class ASTExtractExpression extends AbstractPLSQLNode {
     }
 
 
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
