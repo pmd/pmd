@@ -6,7 +6,7 @@ declare
     from   student
     where  sid in (select sid
                    from   take
-                   where  cid = ’cs145’)
+                   where  cid = 'cs145')
     for    update;
 
 begin
