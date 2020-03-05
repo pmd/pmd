@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -19,6 +20,8 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Victor Bucutea
  *
  */
+@Deprecated
+@InternalApi
 public class OpenTagRegister {
 
     private List<ASTElement> tagList = new ArrayList<>();
