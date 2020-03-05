@@ -8,7 +8,13 @@ SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks')
    "Number of Docks"
    FROM warehouses
    WHERE warehouse_spec IS NOT NULL;
-   
+
+SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks', 'xmlns:a="http://warehouse/1" xmlns:b="http://warehouse/2"')
+   "Number of Docks"
+   FROM warehouses
+   WHERE warehouse_spec IS NOT NULL;
+
+
 SELECT XMLELEMENT("Emp", 
    XMLFOREST(e.employee_id, e.last_name, e.salary))
    "Emp Element"

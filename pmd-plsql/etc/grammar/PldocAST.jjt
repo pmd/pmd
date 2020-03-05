@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for XMLROOT, improve ExtractExpression to support xml
+ *
+ * Piotr Szymanski 03/2020
+ *====================================================================
  * Add basic support for with clause in select statements
  *
  * Andreas Dangel 09/2019
@@ -3241,7 +3245,16 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) #UnaryExpression(>1) :
 ASTExtractExpression ExtractExpression() :
 {}
 {
-    LOOKAHEAD(4)
+    LOOKAHEAD(4) ExtractDatetime() { return jjtThis ; }
+    |
+    LOOKAHEAD(3) ExtractXml(jjtThis) { return jjtThis ; }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/EXTRACT-datetime.html#GUID-36E52BF8-945D-437D-9A3C-6860CABD210E
+ */
+void ExtractDatetime() #void : {}
+{
     <EXTRACT> "("
         ( <MONTH> | <YEAR> | <DAY> |<HOUR> | <MINUTE> | <SECOND>
         | <TIMEZONE_HOUR> | <TIMEZONE_MINUTE>
@@ -3254,10 +3267,17 @@ ASTExtractExpression ExtractExpression() :
             |
             LOOKAHEAD(Name()) Name()
             ) ")"
-        { return jjtThis ; }
-    |
-    LOOKAHEAD(3)  <EXTRACT> "(" Argument() "," Expression() ["," SchemaName() ] ")"
-    { return jjtThis ; }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/EXTRACT-XML.html#GUID-593295AA-4F46-4D75-B8DC-E7BCEDB1D4D7
+ */
+void ExtractXml(ASTExtractExpression extractExpr) #void :
+{
+    extractExpr.setXml();
+}
+{
+    <EXTRACT> "(" Argument() "," StringLiteral() ["," StringLiteral() ] ")"
 }
 
 ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus(>1) :
