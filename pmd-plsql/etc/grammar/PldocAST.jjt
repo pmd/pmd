@@ -1161,7 +1161,7 @@ ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 {}
 {
-	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
+	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
 	Skip2NextTerminator(initiator,terminator)
 	{
           return jjtThis ;
@@ -2220,7 +2220,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
        UpdateStatement() ";" |
        DeleteStatement() ";" |
        InsertStatement() ";" |
-	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"]
+	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"]
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
 	| IfStatement()  ";"
@@ -2237,7 +2237,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| OpenStatement()  ";"
 	| FetchStatement()  ";"
 	| Block()  ";"
-	| EmbeddedSqlStatement()  ";"
+	| LOOKAHEAD(2) EmbeddedSqlStatement()
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules
         | InlinePragma() ";"
@@ -2660,9 +2660,7 @@ ASTFetchStatement FetchStatement()  :
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
-   <EXECUTE> <IMMEDIATE> Expression() // StringLiteral() /* <STRING_LITERAL> */
-	//SRT 20110429 | <EXECUTE> <IMMEDIATE> StringExpression()  [<USING> Expression() ("," Expression())*] ";"
-	//SRT 20121126 | <EXECUTE> <IMMEDIATE> StringExpression()
+   <EXECUTE> <IMMEDIATE> (StringLiteral() | Expression())
 	[ <INTO> Name() ("," Name())* ]
 	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
