@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for XMLROOT, improve ExtractExpression to support xml
+ *
+ * Piotr Szymanski 03/2020
+ *====================================================================
  * Add basic support for with clause in select statements
  *
  * Andreas Dangel 09/2019
@@ -1622,6 +1626,10 @@ ASTOuterJoinExpression OuterJoinExpression() :
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Functions.html#GUID-D079EFD3-C683-441F-977E-2C9503089982
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
  *
+ * XML Functions:
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLROOT.html#GUID-5BD300E2-7138-436D-87AF-21658840CF9D
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLFOREST.html#GUID-68E5C67E-CE97-4BF8-B7FF-2365E062C363
+ *
  * A function reference/name might be:
  * function_name
  * package.function_name
@@ -1642,6 +1650,10 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.getImage())}) XMLElement()
+      | LOOKAHEAD({"XMLROOT".equalsIgnoreCase(token.getImage())})
+             "(" Expression() "," KEYWORD("VERSION") (<NO> KEYWORD("VALUE") | Expression() )
+                 [ "," KEYWORD("STANDALONE")  ( <YES> | <NO> [ LOOKAHEAD({isKeyword("VALUE")}) KEYWORD("VALUE") ] ) ]
+              ")"
       | Arguments()
     )
 
@@ -1727,7 +1739,7 @@ ASTXMLPassingClause XMLPassingClause() :
 {}
 {
     KEYWORD("PASSING")
-    [ <BY> "VALUE" ]
+    [ <BY> KEYWORD("VALUE") ]
     ( SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] )
     ( "," SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] )*
     { return jjtThis; }
@@ -2480,7 +2492,7 @@ ASTUpdateSetClause UpdateSetClause() :
     (
         LOOKAHEAD(1) <ROW> "=" Name()
     |
-        "VALUE" "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
+        LOOKAHEAD({isKeyword("VALUE")}) KEYWORD("VALUE") "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
     |
       (
         (
@@ -3240,15 +3252,39 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) #UnaryExpression(>1) :
 ASTExtractExpression ExtractExpression() :
 {}
 {
+    LOOKAHEAD(4) ExtractDatetime() { return jjtThis ; }
+    |
+    LOOKAHEAD(3) ExtractXml(jjtThis) { return jjtThis ; }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/EXTRACT-datetime.html#GUID-36E52BF8-945D-437D-9A3C-6860CABD210E
+ */
+void ExtractDatetime() #void : {}
+{
     <EXTRACT> "("
         ( <MONTH> | <YEAR> | <DAY> |<HOUR> | <MINUTE> | <SECOND>
         | <TIMEZONE_HOUR> | <TIMEZONE_MINUTE>
         | <TIMEZONE_REGION> | <TIMEZONE_ABBR> )
     <FROM>
-        (LOOKAHEAD(2) FunctionCall()
-        |LOOKAHEAD(2) DateTimeLiteral()
-        |LOOKAHEAD(1) Name() ) ")"
-    { return jjtThis ; }
+            (
+            LOOKAHEAD(FunctionCall()) FunctionCall()
+            |
+            LOOKAHEAD(DateTimeLiteral()) DateTimeLiteral()
+            |
+            LOOKAHEAD(Name()) Name()
+            ) ")"
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/EXTRACT-XML.html#GUID-593295AA-4F46-4D75-B8DC-E7BCEDB1D4D7
+ */
+void ExtractXml(ASTExtractExpression extractExpr) #void :
+{
+    extractExpr.setXml();
+}
+{
+    <EXTRACT> "(" Argument() "," StringLiteral() ["," StringLiteral() ] ")"
 }
 
 ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus(>1) :
@@ -5251,7 +5287,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
 "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
-"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
+"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
  | <A>

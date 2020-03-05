@@ -47,6 +47,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTComparisonCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTCompoundCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTDatatype.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTExtractExpression.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTFormalParameter.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTIfStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTInnerCrossJoinClause.java" />
