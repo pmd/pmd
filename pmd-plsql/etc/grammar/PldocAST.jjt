@@ -1626,6 +1626,10 @@ ASTOuterJoinExpression OuterJoinExpression() :
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Functions.html#GUID-D079EFD3-C683-441F-977E-2C9503089982
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
  *
+ * XML Functions:
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLROOT.html#GUID-5BD300E2-7138-436D-87AF-21658840CF9D
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLFOREST.html#GUID-68E5C67E-CE97-4BF8-B7FF-2365E062C363
+ *
  * A function reference/name might be:
  * function_name
  * package.function_name
@@ -1644,9 +1648,12 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.getImage())}) "(" Expression() <AS> Datatype() ")"
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ] [ ID() ] ( "," SqlExpression() [ <AS> ]  [ ID() ] )* ")"
+      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.getImage())}) XMLElement()
-      | LOOKAHEAD({"XMLROOT".equalsIgnoreCase(token.getImage())}) "(" Expression() "," KEYWORD("VERSION") (LOOKAHEAD(2) ( <NO> "VALUE") | Expression() )  [ "," KEYWORD("STANDALONE")  ( <YES> | <NO> )] [ "VALUE" ]  ")"
+      | LOOKAHEAD({"XMLROOT".equalsIgnoreCase(token.getImage())})
+             "(" Expression() "," KEYWORD("VERSION") (<NO> KEYWORD("VALUE") | Expression() )
+                 [ "," KEYWORD("STANDALONE")  ( <YES> | <NO> [ LOOKAHEAD({isKeyword("VALUE")}) KEYWORD("VALUE") ] ) ]
+              ")"
       | Arguments()
     )
 
@@ -1732,7 +1739,7 @@ ASTXMLPassingClause XMLPassingClause() :
 {}
 {
     KEYWORD("PASSING")
-    [ <BY> "VALUE" ]
+    [ <BY> KEYWORD("VALUE") ]
     ( SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] )
     ( "," SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] )*
     { return jjtThis; }
@@ -2485,7 +2492,7 @@ ASTUpdateSetClause UpdateSetClause() :
     (
         LOOKAHEAD(1) <ROW> "=" Name()
     |
-        "VALUE" "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
+        LOOKAHEAD({isKeyword("VALUE")}) KEYWORD("VALUE") "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
     |
       (
         (
@@ -5280,7 +5287,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
 "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
-"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
+"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
  | <A>
