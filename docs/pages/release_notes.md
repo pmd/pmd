@@ -129,14 +129,16 @@ The following usages are now deprecated **in the VM AST** (with other languages 
 *   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
     and will be hidden in version 7.0.0. You should not couple your code to them.
     *   In the meantime you should use interfaces like {% jdoc vm::lang.vm.ast.VmNode %} or
-        {% jdoc core::ast.Node %}, or the other published interfaces in this package,
+        {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
         to refer to nodes generically.
     *   Concrete node classes will **be made final** with 7.0.0.
 *   Setters found in any node class or interface. **Rules should consider the AST immutable**.
     We will make those setters package private with 7.0.0.
-*   The package {% jdoc_package vm::lang.vm.directice %} as well as the classes
+*   The package {% jdoc_package vm::lang.vm.directive %} as well as the classes
     {% jdoc vm::lang.vm.util.DirectiveMapper %} and {% jdoc vm::lang.vm.util.LogUtil %} are deprecated
     for removal. They were only used internally during parsing.
+*   The class {% jdoc vm::lang.vm.VmParser %} is deprecated and should not be used directly.
+    Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
 
 Please look at {% jdoc_package vm::lang.vm.ast %} to find out the full list of deprecations.
 

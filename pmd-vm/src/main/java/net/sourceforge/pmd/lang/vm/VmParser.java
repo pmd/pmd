@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
@@ -18,7 +19,11 @@ import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
 
 /**
  * Adapter for the VmParser.
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@Deprecated
+@InternalApi
 public class VmParser extends AbstractParser {
 
     public VmParser(final ParserOptions parserOptions) {
