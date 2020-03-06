@@ -92,7 +92,8 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
-        <checkstyle.version>3.1.0</checkstyle.version>
+        <checkstyle.version>8.30</checkstyle.version>
+        <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
@@ -291,7 +292,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyle.version}</version>
+                    <version>${checkstyle.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>checkstyle-check</id>
@@ -305,7 +306,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>8.29</version>
+                            <version>${checkstyle.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
@@ -526,7 +527,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle.version}</version>
+                <version>${checkstyle.plugin.version}</version>
                 <!-- configuration is in plugin management section -->
                 <reportSets>
                     <reportSet>
