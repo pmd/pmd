@@ -268,9 +268,9 @@ ASTInput Input(String sourcecode) : {}
 	 | LOOKAHEAD(6) Global()
      | (LOOKAHEAD(6) DDLCommand())+
 	 | LOOKAHEAD(2) SqlPlusCommand()
-	 | UpdateStatement()
-	 | DeleteStatement()
-	 | InsertStatement()
+	 | UpdateStatement() [";"]
+	 | DeleteStatement() [";"]
+	 | InsertStatement() [";"]
 	 | SelectStatement() [";"]
 	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) ReadPastNextOccurrence(";") //Ignore SQL statements in scripts
 	 )
@@ -477,9 +477,7 @@ ASTDeclarativeUnit DeclarativeUnit()  :
 		ProgramUnit()  |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
-		LOOKAHEAD(2)
 		CursorSpecification() |
-		CursorBody() |
 		CollectionDeclaration() |
 		//ProgramUnit()
 		//|TypeMethod()
@@ -1059,54 +1057,48 @@ void SkipPastNextOccurrence(String target) :
 	{ return; }
 }
 
-/*
- Read Tokens up to but not including the target Token.kind.
-*/
+/**
+ * Read Tokens up to but not including the target Token.kind.
+ */
 void Skip2NextTokenOccurrence(int target) :
 {
-  Token nextToken = getToken(1);
-  Token specToken = null ;
-  while (nextToken.kind!=target
-	 && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
-	 && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
-        )
-  {
-    /*
-	Check if the target appears as a SpecialToken
-
-
-	nextToken.specialToken points to the _LAST_ of any SpecialTokens before the current normal Token.
-
-	It is the head of a doubly-linked list:
-
-	The ${specialToken}.specialToken field POINTS BACKWARDS TOWARDS the FIRST occurring SpecialToken
-	The ${specialToken}.next field POINTS FORWARDS to to the LAST occurring SpecialToken
-
-	This means that if the program is interested in a specific SpecialToken, it must examine the linked list for every Token which has nexToken.specialToken != null.
-
-    */
-    specToken = nextToken.specialToken;
-    if (null!= specToken)
+    Token nextToken = getToken(1);
+    Token specToken = null ;
+    while (nextToken.kind!=target
+        && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
+        && nextToken.kind!=EOF) //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
     {
-	//Walk backwards through the list looking for this Token as a Special Token
-        while (specToken != null && specToken.kind != target)
-	{
-		specToken = specToken.specialToken;
-	}
-
-	//We have found the target as a SpecialToken - break out of normal Token search
-        if (null != specToken && specToken.kind == target)
-	{
-		break;
+        /*
+         * Check if the target appears as a SpecialToken
+         *
+         * nextToken.specialToken points to the _LAST_ of any SpecialTokens before the current normal Token.
+         *
+         * It is the head of a doubly-linked list:
+         *
+         * The ${specialToken}.specialToken field POINTS BACKWARDS TOWARDS the FIRST occurring SpecialToken
+         * The ${specialToken}.next field POINTS FORWARDS to to the LAST occurring SpecialToken
+         *
+         * This means that if the program is interested in a specific SpecialToken, it must examine the linked list for every Token which has nexToken.specialToken != null.
+         */
+        specToken = nextToken.specialToken;
+        if (null!= specToken) {
+            //Walk backwards through the list looking for this Token as a Special Token
+            while (specToken != null && specToken.kind != target) {
+                specToken = specToken.specialToken;
+            }
         }
-    }
 
-    nextToken = getNextToken();
-    nextToken = getToken(1);
-  }
+        //We have found the target as a SpecialToken - break out of normal Token search
+        if (null != specToken && specToken.kind == target) {
+            break;
+        }
+
+        nextToken = getNextToken();
+        nextToken = getToken(1);
+    }
 }
 {
-	{ return; }
+    { return; }
 }
 
 /*
@@ -2890,36 +2882,15 @@ ASTCursorUnit CursorUnit()  :
     { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-ASTCursorSpecification CursorSpecification()  : {}
+/**
+ * This is in plsql actually called <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/explicit-cursor-declaration-and-definition.html#GUID-38C5DBA3-9DEC-4AF2-9B5E-7B721D11A77C">CursorDeclaration</a>
+ * or <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/explicit-cursor-declaration-and-definition.html#GUID-38C5DBA3-9DEC-4AF2-9B5E-7B721D11A77C">CursorDefinition</a>.
+ */
+ASTCursorSpecification CursorSpecification() : {}
 {
-	CursorUnit()
-      { return jjtThis ; }
+    CursorUnit()
+    { return jjtThis ; }
 }
-
-ASTCursorBody CursorBody()  : {}
-{
-	CursorUnit()
-//	<IS> /*<SQL_STATEMENT>*/
-      { return jjtThis ; }
-}
-
-
-
-// ============================================================================
-// E X P R E S S I O N S
-// ============================================================================
-
-/*
-String expression() :
-{}
-{
-	"test"
-	{ return ""; }
-}
-*/
-
-
-
 
 ASTExpression Expression() :
 {
@@ -3925,11 +3896,9 @@ ASTComment Comment()  :
     (<COLUMN> [LOOKAHEAD(ID()"."ID()"."ID()) ID()"."] ID() "." ID())
   )
   <IS> StringLiteral()
-  ";"
+  (";" | "/")
   { return jjtThis ; }
 }
-
-
 
 ASTTypeMethod TypeMethod()  :
 {
@@ -4466,9 +4435,7 @@ ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 		SubTypeDefinition() |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
-		LOOKAHEAD(2)
 		CursorSpecification() |
-		CursorBody() |
 		CollectionDeclaration() |
 		ProgramUnit()
 	)*

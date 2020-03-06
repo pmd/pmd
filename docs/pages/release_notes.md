@@ -171,6 +171,10 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 * pmd-apex
   * {% jdoc apex::lang.apex.metrics.ApexMetrics %}, {% jdoc apex::lang.apex.metrics.ApexMetricsComputer %}
 
+#### PLSQL AST
+
+The production and node `ASTCursorBody` was unnecessary, not used and has been removed. Cursors have been already
+parsed as `ASTCursorSpecification`.
 
 ### External Contributions
 
@@ -186,6 +190,7 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 *   [#2321](https://github.com/pmd/pmd/pull/2321): \[apex] Support switch statements correctly in Cognitive Complexity - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2326](https://github.com/pmd/pmd/pull/2326): \[plsql] Added XML functions to parser: extract(xml), xml_root and fixed xml_forest - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF added - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2331](https://github.com/pmd/pmd/pull/2331): \[plsql] Fix in Comment statement - [Piotr Szymanski](https://github.com/szyman23)
 
 {% endtocmaker %}
 
