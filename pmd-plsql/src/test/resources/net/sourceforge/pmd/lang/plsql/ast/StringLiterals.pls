@@ -23,10 +23,10 @@ declare
   qliteral1f clob := Nq'[a"b"c]';
   qliteral1g clob := nQ'[ab']cd]';
 
-  qliteral1 clob := q'!name LIKE '%DBMS_%%'!';
-  qliteral2 clob := Q'{SELECT * FROM employees WHERE last_name = 'Smith';}';
-  qliteral1a clob := q'! test !';
-  qliteral2a clob := q'{
+  qliteral2a clob := q'!name LIKE '%DBMS_%%'!';
+  qliteral2b clob := Q'{SELECT * FROM employees WHERE last_name = 'Smith';}';
+  qliteral2c clob := q'! test !';
+  qliteral2d clob := q'{
     also multiple
     lines
   }';
