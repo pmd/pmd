@@ -1491,6 +1491,8 @@ that violate this rule fail compile-time. This rule is however useful when deali
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/2327">#2327</a>: [plsql] Parsing of WHERE CURRENT OF</li>
       <li><a href="https://github.com/pmd/pmd/issues/2328">#2328</a>: [plsql] Support XMLROOT</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2331">#2331</a>: [plsql] Fix in Comment statement</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2332">#2332</a>: [plsql] Fixed Execute Immediate statement parsing</li>
     </ul>
   </li>
 </ul>
@@ -1592,6 +1594,11 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
   </li>
 </ul>
 
+<h4 id="plsql-ast">PLSQL AST</h4>
+
+<p>The production and node <code class="highlighter-rouge">ASTCursorBody</code> was unnecessary, not used and has been removed. Cursors have been already
+parsed as <code class="highlighter-rouge">ASTCursorSpecification</code>.</p>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1607,6 +1614,8 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
   <li><a href="https://github.com/pmd/pmd/pull/2321">#2321</a>: [apex] Support switch statements correctly in Cognitive Complexity - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2326">#2326</a>: [plsql] Added XML functions to parser: extract(xml), xml_root and fixed xml_forest - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2327">#2327</a>: [plsql] Parsing of WHERE CURRENT OF added - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2331">#2331</a>: [plsql] Fix in Comment statement - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2332">#2332</a>: [plsql] Fixed Execute Immediate statement parsing - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
 </ul>
 
 
@@ -1625,7 +1634,7 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 5, 2020 <br />
+ Site last generated: Mar 6, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
