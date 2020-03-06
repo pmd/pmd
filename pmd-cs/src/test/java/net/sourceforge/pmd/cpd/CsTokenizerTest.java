@@ -117,6 +117,14 @@ public class CsTokenizerTest {
     }
 
     @Test
+    public void testDoNotIgnoreUsingDirectives() {
+        tokenizer.setIgnoreUsings(false);
+        tokenizer.tokenize(toSourceCode("using System.Text;\n"), tokens);
+        assertEquals(6, tokens.size());
+        assertEquals("using", tokens.getTokens().get(0).toString());
+    }
+
+    @Test
     public void testIgnoreUsingDirectives() {
         tokenizer.setIgnoreUsings(true);
         tokenizer.tokenize(toSourceCode("using System.Text;\n"), tokens);
