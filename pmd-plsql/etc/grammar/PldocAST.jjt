@@ -473,7 +473,7 @@ ASTDeclarativeUnit DeclarativeUnit()  :
 		ProgramUnit()  |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
-		CursorBody() |
+		CursorSpecification() |
 		CollectionDeclaration() |
 		//ProgramUnit()
 		//|TypeMethod()
@@ -2870,10 +2870,10 @@ ASTCursorUnit CursorUnit()  :
  * This is in plsql actually called <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/explicit-cursor-declaration-and-definition.html#GUID-38C5DBA3-9DEC-4AF2-9B5E-7B721D11A77C">CursorDeclaration</a>
  * or <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/explicit-cursor-declaration-and-definition.html#GUID-38C5DBA3-9DEC-4AF2-9B5E-7B721D11A77C">CursorDefinition</a>.
  */
-ASTCursorBody CursorBody()  : {}
+ASTCursorSpecification CursorSpecification() : {}
 {
-	CursorUnit()
-      { return jjtThis ; }
+    CursorUnit()
+    { return jjtThis ; }
 }
 
 ASTExpression Expression() :
@@ -4395,7 +4395,7 @@ ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 		SubTypeDefinition() |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
-		CursorBody() |
+		CursorSpecification() |
 		CollectionDeclaration() |
 		ProgramUnit()
 	)*

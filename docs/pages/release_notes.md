@@ -168,6 +168,10 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 * pmd-apex
   * {% jdoc apex::lang.apex.metrics.ApexMetrics %}, {% jdoc apex::lang.apex.metrics.ApexMetricsComputer %}
 
+#### PLSQL AST
+
+The production and node `ASTCursorBody` was unnecessary, not used and has been removed. Cursors have been already
+parsed as `ASTCursorSpecification`.
 
 ### External Contributions
 
