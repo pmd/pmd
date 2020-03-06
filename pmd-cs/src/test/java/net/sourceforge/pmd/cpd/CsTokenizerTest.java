@@ -126,6 +126,17 @@ public class CsTokenizerTest {
     }
 
     @Test
+    public void testStatementsAfterUsingDirectivesAreNotIgnored() {
+        tokenizer.setIgnoreUsings(true);
+        tokenizer.tokenize(toSourceCode(
+                "using System;\n"
+                        + "public class MyClass {\n"
+                        + "}\n"),
+                tokens);
+        assertEquals(6, tokens.size());
+    }
+
+    @Test
     public void testUsingStatementsAreNotIgnored() {
         tokenizer.setIgnoreUsings(true);
         tokenizer.tokenize(toSourceCode(

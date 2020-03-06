@@ -41,9 +41,9 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
         currentToken = null;
         if (!unprocessedTokens.isEmpty()) {
             currentToken = unprocessedTokens.poll();
-            return currentToken;
+        } else {
+            currentToken = (T) tokenManager.getNextToken();
         }
-        currentToken = (T) tokenManager.getNextToken();
         while (!shouldStopProcessing(currentToken)) {
             analyzeToken(currentToken);
             analyzeTokens(currentToken, remainingTokens);
@@ -53,7 +53,11 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
                 return currentToken;
             }
 
-            currentToken = (T) tokenManager.getNextToken();
+            if (!unprocessedTokens.isEmpty()) {
+                currentToken = unprocessedTokens.poll();
+            } else {
+                currentToken = (T) tokenManager.getNextToken();
+            }
         }
 
         return null;
