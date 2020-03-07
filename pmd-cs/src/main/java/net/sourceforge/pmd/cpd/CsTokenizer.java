@@ -77,12 +77,14 @@ public class CsTokenizer extends AntlrTokenizer {
         }
 
         private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
-            final int type = currentToken.getType();
-            if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
-                discardingUsings = true;
-            } else if (type == CSharpLexer.SEMICOLON && discardingUsings) {
-                discardingUsings = false;
-                discardCurrent = true;
+            if (ignoreUsings) {
+                final int type = currentToken.getType();
+                if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
+                    discardingUsings = true;
+                } else if (type == CSharpLexer.SEMICOLON && discardingUsings) {
+                    discardingUsings = false;
+                    discardCurrent = true;
+                }
             }
         }
 
