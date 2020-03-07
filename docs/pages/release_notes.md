@@ -96,6 +96,7 @@ should give more accurate results and especially fixes the problems with the usi
     *   [#2328](https://github.com/pmd/pmd/issues/2328): \[plsql] Support XMLROOT
     *   [#2331](https://github.com/pmd/pmd/pull/2331): \[plsql] Fix in Comment statement
     *   [#2332](https://github.com/pmd/pmd/pull/2332): \[plsql] Fixed Execute Immediate statement parsing
+    *   [#2340](https://github.com/pmd/pmd/pull/2340): \[plsql] Fixed parsing / as divide or execute
 
 ### API Changes
 
@@ -194,6 +195,7 @@ parsed as `ASTCursorSpecification`.
 *   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF added - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2331](https://github.com/pmd/pmd/pull/2331): \[plsql] Fix in Comment statement - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2332](https://github.com/pmd/pmd/pull/2332): \[plsql] Fixed Execute Immediate statement parsing - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2340](https://github.com/pmd/pmd/pull/2340): \[plsql] fix for parsing / as divide or execute - [Piotr Szymanski](https://github.com/szyman23)
 
 {% endtocmaker %}
 
