@@ -852,6 +852,9 @@
         <pluginRepository>
             <id>jcenter</id>
             <name>JCenter</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
             <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
