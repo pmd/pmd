@@ -3191,7 +3191,7 @@ ASTMultiplicativeExpression MultiplicativeExpression() #MultiplicativeExpression
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
  (
   (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
-  ( LOOKAHEAD(2)
+  ( LOOKAHEAD("**" | "*" | "/" | <MOD> , {getToken(1).specialToken == null || getToken(1).specialToken.kind != EOL})
     ( ("**"  ) { sb.append(" ** "); } //Exponentiation
     | ("*"  ) { sb.append(" * "); }
     | ("/"  ) { sb.append(" / "); }
