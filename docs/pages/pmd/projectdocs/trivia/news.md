@@ -9,7 +9,9 @@ author: Tom Copeland <tom@infoether.org>
 
 ### Salesforce / Apex Language Module
 
-* July 2019 - [Apex PMD | Static code analysis - Apex Hours](https://youtu.be/34PxAHtAavU)
+*   March 2020 - [Helping Salesforce developers create readable and maintainable Apex code](https://gearset.com/blog/helping-sf-developers-create-readable-and-maintainable-apex-code)
+
+*   July 2019 - [Apex PMD | Static code analysis - Apex Hours](https://youtu.be/34PxAHtAavU)
 
 *   June 2019 - [Pluralsight](https://www.pluralsight.com/authors/don-robins) Course about leveraging PMD usage for Salesforce by [Robert Sösemann](https://github.com/rsoesemann) (Apex Language Module Contributor) [Play by Play: Automated Code Analysis in Salesforce - a Tools Deep-Dive](https://www.pluralsight.com/courses/play-by-play-automated-code-analysis-in-salesforce)
 
