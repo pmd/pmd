@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 
 /**
  * Tests new java14 preview features.
@@ -130,6 +131,10 @@ public class Java14PreviewTest {
         Assert.assertEquals(2, complex.getDeclarations().size());
         Assert.assertTrue(complex.getDeclarations().get(0).getChild(1) instanceof ASTConstructorDeclaration);
         Assert.assertTrue(complex.getDeclarations().get(1).getChild(0) instanceof ASTRecordDeclaration);
+        Assert.assertTrue(complex.getParent() instanceof ASTClassOrInterfaceBodyDeclaration);
+        ASTClassOrInterfaceBodyDeclaration complexParent = complex.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        Assert.assertEquals(DeclarationKind.RECORD, complexParent.getKind());
+        Assert.assertSame(complex, complexParent.getDeclarationNode());
 
         ASTRecordDeclaration nested = recordDecls.get(1);
         Assert.assertEquals("Nested", nested.getSimpleName());
