@@ -103,6 +103,9 @@ public class Java14PreviewTest {
         Assert.assertEquals(2, components.size());
         Assert.assertEquals("x", components.get(0).getVarId().getImage());
         Assert.assertEquals("y", components.get(1).getVarId().getImage());
+        Assert.assertNull(components.get(0).getVarId().getNameDeclaration().getAccessNodeParent());
+        Assert.assertEquals(Integer.TYPE, components.get(0).getVarId().getNameDeclaration().getType());
+        Assert.assertEquals("int", components.get(0).getVarId().getNameDeclaration().getTypeImage());
     }
 
     @Test(expected = ParseException.class)
