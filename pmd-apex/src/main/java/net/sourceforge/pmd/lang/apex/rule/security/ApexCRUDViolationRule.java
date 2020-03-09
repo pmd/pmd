@@ -91,6 +91,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
+    private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?i).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
+
     public ApexCRUDViolationRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
@@ -338,12 +340,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isWithSecurityEnforced(final AbstractApexNode<?> node) {
-        if (node instanceof ASTSoqlExpression) {
-            String pattern = "(?i).*[^']\\s*WITH SECURITY_ENFORCED\\s*[^']*";
-            String query = ((ASTSoqlExpression) node).getQuery();
-            return query.matches(pattern);
-        }
-        return false;
+//        if (node instanceof ASTSoqlExpression) {
+//            String pattern = "(?i).*[^']\\s*WITH SECURITY_ENFORCED\\s*[^']*";
+//            String query = ((ASTSoqlExpression) node).getQuery();
+//            return query.matches(pattern);
+//        }
+//        return false;
+          if (node instanceof ASTSoqlExpression) {
+            return WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+          }
+          return false;
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
