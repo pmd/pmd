@@ -105,6 +105,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             ASTMethodDeclaration enclosingMethod = occNode.getFirstParentOfType(ASTMethodDeclaration.class);
             if (enclosingMethod == null || !mnd.getNode().getParent().equals(enclosingMethod)) {
                 callsFromOutsideMethod++;
+                break;
             }
         }
         return callsFromOutsideMethod == 0;
