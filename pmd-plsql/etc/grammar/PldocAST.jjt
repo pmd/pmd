@@ -607,14 +607,22 @@ ASTFormalParameter FormalParameter()  :
    (
 	simpleNode = ID()
 	// the order of outer "|" is important !
-	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>|(<IN> <OUT>)) (LOOKAHEAD(2) <NOCOPY>  )? ) | <IN> ) )?
+    (LOOKAHEAD (2) (<IN>) FormalParameterMode())?
+    (LOOKAHEAD (2) (<OUT>) FormalParameterMode())?
+    (LOOKAHEAD (3) (<NOCOPY>) FormalParameterMode())?
 	("..."    | Datatype())
 	( (":" "="|<_DEFAULT>) Expression() )?
    )
    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
-
+ASTFormalParameterMode FormalParameterMode():
+{
+ PLSQLNode simpleNode = null ;
+}
+{
+   { jjtThis.setImage(token.image) ; return jjtThis; }
+}
 
 ASTMethodDeclaration MethodDeclaration() :
 {}
@@ -1157,7 +1165,7 @@ ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 {}
 {
-	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
+    (<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>{jjtThis.setUserData("COMMIT"); }|<ROLLBACK>{jjtThis.setUserData("ROLLBACK"); }|<SAVEPOINT>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
 	Skip2NextTerminator(initiator,terminator)
 	{
           return jjtThis ;
@@ -2658,9 +2666,9 @@ ASTOpenStatement OpenStatement()  :
 ASTFetchStatement FetchStatement()  :
 {}
 {
-	 <FETCH> QualifiedName() [<BULK> <COLLECT>]
+	 <FETCH> QualifiedName() [<BULK> <COLLECT> {jjtThis.setUserData("BULK COLLECT"); }]
 	  //MMUE 04/08/2005 <INTO> (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()) ("," (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()))* ";"
-	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()]
+	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression(){jjtThis.setUserData("BULK COLLECT LIMIT");}]
 	//
       { return jjtThis ; }
 }

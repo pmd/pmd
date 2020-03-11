@@ -89,6 +89,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTForIndex;
 import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTForUpdateClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameterMode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFromClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFunctionCall;
@@ -388,6 +389,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public Object visit(ASTFormalParameter node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTFormalParameterMode node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 
