@@ -224,6 +224,7 @@ parsed as `ASTCursorSpecification`.
 *   [#2340](https://github.com/pmd/pmd/pull/2340): \[plsql] fix for parsing / as divide or execute - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2342](https://github.com/pmd/pmd/pull/2342): \[xml] Update property used in example - [Piotrek Żygieło](https://github.com/pzygielo)
 *   [#2344](https://github.com/pmd/pmd/pull/2344): \[doc] Update ruleset examples for ant - [Piotrek Żygieło](https://github.com/pzygielo)
+*   [#2343](https://github.com/pmd/pmd/pull/2343): \[ci] Disable checking for snapshots in jcenter - [Piotrek Żygieło](https://github.com/pzygielo)
 
 {% endtocmaker %}
 
