@@ -53,6 +53,15 @@ The C# tokenizer is now based on an antlr grammar instead of a manual written to
 should give more accurate results and especially fixes the problems with the using statement syntax
 (see [#2139](https://github.com/pmd/pmd/issues/2139)).
 
+#### XPath Rules
+
+See the new documentation about [Writing XPath Rules](pmd_userdocs_extending_writing_xpath_rules.html).
+
+*Note:* As of PMD version 6.22.0, XPath versions 1.0 and the 1.0 compatibility mode are **deprecated**.
+XPath 2.0 is superior in many ways, for example for its support for type checking, sequence values,
+or quantified expressions. For a detailed but approachable review of the features of XPath 2.0 and above,
+see the [Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions).
+
 #### New Rules
 
 *   The Rule {% rule "apex/design/CognitiveComplexity" %} (`apex-design`) finds methods and classes
