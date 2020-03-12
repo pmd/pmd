@@ -180,7 +180,7 @@ automatically and the latest language version is used.
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd shortFilenames="true">
             <ruleset>rulesets/java/quickstart.xml</ruleset>
-            <ruleset>java-basic</ruleset>
+            <ruleset>config/my-ruleset.xml</ruleset>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>
             </fileset>
@@ -261,7 +261,7 @@ Then, after the end of the PMD task, do this:
 Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache
 
     <target name="pmd">
-        <pmd rulesetfiles="java-imports" cacheLocation="build/pmd/pmd.cache">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml" cacheLocation="build/pmd/pmd.cache">
             <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
@@ -274,7 +274,7 @@ Running one ruleset to produce a HTML report (and printing the report to the con
 Running multiple rulesets to produce an XML report with the same analysis cache
 
     <target name="pmd">
-        <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode" cacheLocation="build/pmd/pmd.cache">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml,config/my-ruleset.xml" cacheLocation="build/pmd/pmd.cache">
             <formatter type="xml" toFile="c:\pmd_report.xml"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
@@ -297,7 +297,7 @@ need to be configured when defining the task:
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
 
     <target name="pmd">
-        <pmd rulesetfiles="category/java/design.xml">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml">
             <formatter type="com.mycompany.MyRenderer" toFile="foo.html"/>
             <fileset dir="/path/to/java/src">
                 <include name="**/*.java"/>
@@ -370,11 +370,13 @@ You can run pmd then with `ant pmd`.
 
     pmd:
           [pmd] Using the normal ClassLoader
-          [pmd] Using these rulesets: rulesets/java/imports.xml
-          [pmd] Using rule DontImportJavaLang
-          [pmd] Using rule UnusedImports
-          [pmd] Using rule ImportFromSamePackage
-          [pmd] Using rule DuplicateImports
+          [pmd] Using these rulesets: rulesets/java/quickstart.xml
+          [pmd] Using rule AvoidMessageDigestField
+          [pmd] Using rule AvoidStringBufferField
+          [pmd] Using rule AvoidUsingHardCodedIP
+          [pmd] Using rule CheckResultSet
+          [pmd] Using rule ConstantsInInterface
+          ...
           [pmd] Processing file /usr/local/java/src/java/lang/ref/Finalizer.java
           [pmd] Processing file /usr/local/java/src/java/lang/ref/FinalReference.java
           [pmd] Processing file /usr/local/java/src/java/lang/ref/PhantomReference.java
@@ -394,7 +396,7 @@ An HTML report with the "linkPrefix" and "linePrefix" properties:
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="java-basic" shortFilenames="true">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml" shortFilenames="true">
             <formatter type="html" toFile="pmd_report.html">
                 <param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/>
                 <param name="linePrefix" value="L"/>
