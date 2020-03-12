@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -35,7 +33,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTAddNode.java 712887 2008-11-11 00:27:50Z nbubna $
  */
-public class ASTAddNode extends ASTMathNode {
+public final class ASTAddNode extends ASTMathNode {
     ASTAddNode(int id) {
         super(id);
     }

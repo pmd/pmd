@@ -1,11 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -41,7 +36,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTMethod.java 720228 2008-11-24 16:58:33Z nbubna $
  */
-public class ASTMethod extends AbstractVmNode {
+public final class ASTMethod extends AbstractVmNode {
 
     ASTMethod(int id) {
         super(id);
@@ -50,80 +45,6 @@ public class ASTMethod extends AbstractVmNode {
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * Internal class used as key for method cache. Combines ASTMethod fields
-     * with array of parameter classes. Has public access (and complete
-     * constructor) for unit test purposes.
-     *
-     * @since 1.5
-     * @deprecated for removal in PMD 7.0.0 - it's not used anywhere
-     */
-    @Deprecated
-    public static class MethodCacheKey {
-        private final String methodName;
-
-        private final Class<?>[] params;
-
-        public MethodCacheKey(final String methodName, final Class<?>[] params) {
-            /**
-             * Should never be initialized with nulls, but to be safe we refuse
-             * to accept them.
-             */
-            this.methodName = (methodName != null) ? methodName : StringUtils.EMPTY;
-            this.params = (params != null) ? params : ArrayUtils.EMPTY_CLASS_ARRAY;
-        }
-
-        /**
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public boolean equals(final Object o) {
-            /**
-             * note we skip the null test for methodName and params due to the
-             * earlier test in the constructor
-             */
-            if (o instanceof MethodCacheKey) {
-                final MethodCacheKey other = (MethodCacheKey) o;
-                if (params.length == other.params.length && methodName.equals(other.methodName)) {
-                    for (int i = 0; i < params.length; ++i) {
-                        if (params[i] == null) {
-                            if (params[i] != other.params[i]) {
-                                return false;
-                            }
-                        } else if (!params[i].equals(other.params[i])) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public int hashCode() {
-            int result = 17;
-
-            /**
-             * note we skip the null test for methodName and params due to the
-             * earlier test in the constructor
-             */
-            for (int i = 0; i < params.length; ++i) {
-                final Class<?> param = params[i];
-                if (param != null) {
-                    result = result * 37 + param.hashCode();
-                }
-            }
-
-            result = result * 37 + methodName.hashCode();
-
-            return result;
-        }
     }
 
     /**

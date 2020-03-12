@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,12 +29,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTEscape.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public class ASTEscape extends AbstractVmNode {
+public final class ASTEscape extends AbstractVmNode {
 
     /** Used by the parser */
-    @InternalApi
-    @Deprecated
-    public String val;
+    private String val;
 
 
     ASTEscape(int id) {

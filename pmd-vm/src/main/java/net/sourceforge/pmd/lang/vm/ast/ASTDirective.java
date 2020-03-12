@@ -1,10 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -37,7 +33,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:kav@kav.dk">Kasper Nielsen</a>
  * @version $Id: ASTDirective.java 724825 2008-12-09 18:56:06Z nbubna $
  */
-public class ASTDirective extends AbstractVmNode {
+public final class ASTDirective extends AbstractVmNode {
 
     private String directiveName = "";
 
@@ -56,9 +52,7 @@ public class ASTDirective extends AbstractVmNode {
      * dig it out of the token stream and gives the parse the change to
      * override.
      */
-    @InternalApi
-    @Deprecated
-    public void setDirectiveName(final String str) {
+    void setDirectiveName(final String str) {
         directiveName = str;
     }
 
@@ -69,16 +63,6 @@ public class ASTDirective extends AbstractVmNode {
      */
     public String getDirectiveName() {
         return directiveName;
-    }
-
-    /**
-     * @since 1.5
-     */
-    @Deprecated
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).appendSuper(super.toString()).append("directiveName", getDirectiveName())
-                .toString();
     }
 
 }

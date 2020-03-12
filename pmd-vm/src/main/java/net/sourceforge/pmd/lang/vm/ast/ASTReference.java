@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,31 +32,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:kjohnson@transparent.com">Kent Johnson</a>
  * @version $Id: ASTReference.java 806597 2009-08-21 15:21:44Z nbubna $
  */
-public class ASTReference extends AbstractVmNode {
+public final class ASTReference extends AbstractVmNode {
     private String rootString;
 
     private String literal = null;
-
-    /**
-     * Indicates if we are running in strict reference mode.
-     *
-     * @deprecated for removal with PMD 7.0.0
-     */
-    @Deprecated
-    public boolean strictRef = false;
-
-    /**
-     * Indicates if toString() should be called during condition evaluation just
-     * to ensure it does not return null. Check is unnecessary if all toString()
-     * implementations are known to have non-null return values. Disabling the
-     * check will give a performance improval since toString() may be a complex
-     * operation on large objects.
-     *
-     * @deprecated for removal with PMD 7.0.0
-     */
-    @Deprecated
-    public boolean toStringNullCheck = true;
-
 
     ASTReference(int id) {
         super(id);
@@ -89,9 +66,7 @@ public class ASTReference extends AbstractVmNode {
      * @param literal
      *            String to render to when null
      */
-    @InternalApi
-    @Deprecated
-    public void setLiteral(final String literal) {
+    void setLiteral(final String literal) {
         /*
          * do only once
          */

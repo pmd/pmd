@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with this
@@ -27,7 +25,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @version $Id: ASTStringLiteral.java 705297 2008-10-16 17:59:24Z nbubna $
  */
-public class ASTStringLiteral extends AbstractVmNode {
+public final class ASTStringLiteral extends AbstractVmNode {
 
     ASTStringLiteral(int id) {
         super(id);
