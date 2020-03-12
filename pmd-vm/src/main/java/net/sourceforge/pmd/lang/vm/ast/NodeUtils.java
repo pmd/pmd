@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import org.apache.commons.lang3.text.StrBuilder;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /*
@@ -35,7 +33,7 @@ final class NodeUtils {
     private NodeUtils() { }
 
     /**
-     * Collect all the <SPECIAL_TOKEN>s that are carried along with a token.
+     * Collect all the &lt;SPECIAL_TOKEN&gt;s that are carried along with a token.
      * Special tokens do not participate in parsing but can still trigger
      * certain lexical actions. In some cases you may want to retrieve these
      * special tokens, this is simply a way to extract them.
@@ -44,8 +42,8 @@ final class NodeUtils {
      *            the Token
      * @return StrBuilder with the special tokens.
      */
-    private static StrBuilder getSpecialText(final JavaccToken t) {
-        final StrBuilder sb = new StrBuilder();
+    private static StringBuilder getSpecialText(final JavaccToken t) {
+        final StringBuilder sb = new StringBuilder();
 
         JavaccToken tmpToken = t.getPreviousComment();
 
@@ -56,7 +54,8 @@ final class NodeUtils {
         while (tmpToken != null) {
             final String st = tmpToken.getImage();
 
-            for (int i = 0; i < st.length(); i++) {
+            int i = 0;
+            while (i < st.length()) {
                 final char c = st.charAt(i);
 
                 if (c == '#' || c == '$') {
@@ -102,6 +101,7 @@ final class NodeUtils {
                         i = j;
                     }
                 }
+                i++;
             }
 
             tmpToken = tmpToken.next;
@@ -122,7 +122,7 @@ final class NodeUtils {
         } else if (t.getPreviousComment() == null || t.getPreviousComment().getImage().startsWith("##")) {
             return t.getImage();
         } else {
-            final StrBuilder special = getSpecialText(t);
+            final StringBuilder special = getSpecialText(t);
             if (special.length() > 0) {
                 return special.append(t.getImage()).toString();
             }
