@@ -24,6 +24,8 @@ import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 
 /**
@@ -449,7 +451,9 @@ public interface Node {
      * #setUserData(Object)}.
      *
      * @return The user data set on this node.
+     * @deprecated Use {@link #getUserMap()}
      */
+    @Deprecated
     Object getUserData();
 
     /**
@@ -464,7 +468,9 @@ public interface Node {
      * quite useful.
      *
      * @param userData The data to set on this node.
+     * @deprecated Use {@link #getUserMap()}
      */
+    @Deprecated
     void setUserData(Object userData);
 
 
@@ -494,6 +500,14 @@ public interface Node {
         throw new UnsupportedOperationException();
     }
 
+
+    /**
+     * Returns a data map used to store additional information on this node.
+     * This replaces the legacy {@link #getUserData()}/{@link #setUserData(Object)}.
+     *
+     * @return The user data map of this node
+     */
+    DataMap<DataKey<?, ?>> getUserMap();
 
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}

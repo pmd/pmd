@@ -30,7 +30,9 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: NodeUtils.java 687386 2008-08-20 16:57:07Z nbubna $
+ * @deprecated for removal with PMD 7.0.0
  */
+@Deprecated
 public final class NodeUtils {
     private NodeUtils() { }
 

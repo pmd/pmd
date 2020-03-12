@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file

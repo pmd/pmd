@@ -24,9 +24,6 @@ import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -117,8 +114,6 @@ public abstract class AbstractPMDProcessor {
         configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
         final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
-        resetMetrics();
-
         for (final DataSource dataSource : files) {
             // this is the real, canonical and absolute filename (not shortened)
             String realFileName = dataSource.getNiceFileName(false, null);
@@ -136,15 +131,6 @@ public abstract class AbstractPMDProcessor {
         // the analysis is finished
         for (DataSource dataSource : files) {
             IOUtils.closeQuietly(dataSource);
-        }
-    }
-
-    private void resetMetrics() {
-        for (Language language : LanguageRegistry.getLanguages()) {
-            LanguageMetricsProvider<?, ?> languageMetricsProvider = language.getDefaultVersion().getLanguageVersionHandler().getLanguageMetricsProvider();
-            if (languageMetricsProvider != null) {
-                languageMetricsProvider.initialize();
-            }
         }
     }
 

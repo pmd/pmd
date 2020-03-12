@@ -27,7 +27,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  *
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: VelocimacroProxy.java 898032 2010-01-11 19:51:03Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class VelocimacroProxy extends Directive {
     private String macroName;
     private int numMacroArgs = 0;

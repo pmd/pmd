@@ -1192,7 +1192,7 @@ should be annotated with @Test and @Ignore.
 [not(Annotation)]
 [MethodDeclaration[(@Public = true() or @PackagePrivate = true()) and @Static = false() and
         ResultType[@Void = true()] and
-        MethodDeclarator/FormalParameters[@ParameterCount = 0]
+        MethodDeclarator/FormalParameters[@Size = 0]
     ]
 ]
 ]]></value>
@@ -2221,45 +2221,6 @@ public class Foo extends TestCase {
         </example>
     </rule>
 
-    <rule name="LoggerIsNotStaticFinal"
-          language="java"
-          since="2.0"
-          message="The Logger variable declaration does not contain the static and final modifiers"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"
-          deprecated="true">
-        <description>
-In most cases, the Logger reference can be declared as static and final.
-
-This rule is deprecated and will be removed with PMD 7.0.0.
-The rule is replaced by {% rule java/errorprone/ProperLogger %}.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//VariableDeclarator
- [parent::FieldDeclaration]
- [../Type/ReferenceType
-  /ClassOrInterfaceType[@Image='Logger']
-   and
-  (..[@Final='false'] or ..[@Static = 'false'] ) ]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo{
-    Logger log = Logger.getLogger(Foo.class.getName());                 // not recommended
-
-    static final Logger log = Logger.getLogger(Foo.class.getName());    // preferred approach
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="MethodWithSameNameAsEnclosingClass"
           since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
@@ -2284,7 +2245,7 @@ public class MyClass {
     <rule name="MisplacedNullCheck"
           language="java"
           since="3.5"
-          message="The null check here is misplaced; if the variable is null there will be a NullPointerException"
+          message="The null check here is misplaced; if the variable ''{0}'' is null there will be a NullPointerException"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#misplacednullcheck">
         <description>
@@ -2293,26 +2254,33 @@ Either the check is useless (the variable will never be "null") or it is incorre
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Expression
-    /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
-    /descendant::PrimaryExpression/PrimaryPrefix
-    /Name[starts-with(@Image,
-        concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
-            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-            /PrimaryExpression/PrimaryPrefix
-            /Name[count(../../PrimarySuffix)=0]/@Image,".")
-        )
-     ]
-     [count(ancestor::ConditionalAndExpression/EqualityExpression
-            [@Image='!=']
-            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-            [starts-with(following-sibling::*/PrimaryExpression/PrimaryPrefix/Name/@Image,
-                concat(./PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-      ) = 0
-     ]
+//ConditionalAndExpression
+  /EqualityExpression
+    [@Image = '!=']
+    (: one side is null :)
+    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+    (: other side checks for the variable used somewhere in the first child of conditional and expression :)
+    [some $var in preceding-sibling::PrimaryExpression//Name
+      [not(ancestor::ConditionalOrExpression/EqualityExpression[@Image = '=='])]
+      /@Image
+      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+  /PrimaryExpression/PrimaryPrefix/Name
+|
+//ConditionalOrExpression
+  /EqualityExpression
+    [@Image = '==']
+    (: one side is null :)
+    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+    (: other side checks for the variable used somewhere in the first child of conditional or expression :)
+    [some $var in preceding-sibling::PrimaryExpression//Name
+      [not(ancestor::ConditionalAndExpression/EqualityExpression[@Image = '!='])]
+      /@Image
+      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+  /PrimaryExpression/PrimaryPrefix/Name
 ]]>
                 </value>
             </property>
@@ -2321,8 +2289,10 @@ Either the check is useless (the variable will never be "null") or it is incorre
 <![CDATA[
 public class Foo {
     void bar() {
-        if (a.equals(baz) && a != null) {}
-        }
+        if (a.equals(baz) && a != null) {} // a could be null, misplaced null check
+        
+        if (a != null && a.equals(baz)) {} // correct null check
+    }
 }
 ]]>
         </example>
@@ -2330,7 +2300,9 @@ public class Foo {
 <![CDATA[
 public class Foo {
     void bar() {
-        if (a.equals(baz) || a == null) {}
+        if (a.equals(baz) || a == null) {} // a could be null, misplaced null check
+        
+        if (a == null || a.equals(baz)) {} // correct null check
     }
 }
 ]]>
@@ -2848,7 +2820,7 @@ formatting is used.
 <![CDATA[
 //AllocationExpression
  [ClassOrInterfaceType[@Image='SimpleDateFormat']]
- [Arguments[@ArgumentCount=1]]
+ [Arguments[@Size=1]]
 ]]>
                     </value>
                 </property>
@@ -3359,7 +3331,7 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [Type//ClassOrInterfaceType[@Image='Log']]
 /VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
-[PrimarySuffix/Arguments[@ArgumentCount='1']]
+[PrimarySuffix/Arguments[@Size='1']]
 [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
 ]]>
                 </value>
@@ -3475,13 +3447,13 @@ class Test {
 [
 PrimaryPrefix
 [Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
 
 or
 
 PrimarySuffix
 [ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@Size=0]]
 ]
 [not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
 ]]>

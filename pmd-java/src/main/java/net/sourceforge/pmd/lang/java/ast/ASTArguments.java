@@ -14,11 +14,23 @@ public class ASTArguments extends AbstractJavaNode {
         super(id);
     }
 
-    public int getArgumentCount() {
+    /**
+     * Gets the number of arguments.
+     * @return
+     */
+    public int size() {
         if (this.getNumChildren() == 0) {
             return 0;
         }
-        return this.getChild(0).getNumChildren();
+        return ((ASTArgumentList) this.getChild(0)).size();
+    }
+
+    /**
+     * @deprecated for removal. Use {@link #size()} or {@link ASTArgumentList#size()} instead.
+     */
+    @Deprecated
+    public int getArgumentCount() {
+        return size();
     }
 
     @Override

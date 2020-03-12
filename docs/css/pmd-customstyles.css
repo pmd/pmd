@@ -52,3 +52,35 @@ details[open] summary {
     background-color: #347DBE;
     color: white;
 }
+
+
+.hiddenRow {
+    padding: 0 !important;
+}
+
+.xpath-fun-doc .fun-name {
+    font-weight: bold;
+}
+
+.xpath-fun-doc .fun-details-header {
+    font-family: monospace;
+    font-size: larger;
+}
+
+.xpath-fun-doc .fun-ns {
+    color: darkgray;
+}
+
+.xpath-fun-doc span.param-name {
+    font-weight: normal;
+
+}
+
+.xpath-fun-doc span.param-type {
+    font-weight: lighter;
+    font-style: italic;
+    color: darkgray;
+}
+.xpath-fun-doc .code-examples dt {
+    font-weight: normal;
+}

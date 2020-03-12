@@ -42,8 +42,8 @@ global class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 global class Foo {
-	global interface Bar { {
-	
+	global interface Bar {
+
 	}
 }
 		]]></code>

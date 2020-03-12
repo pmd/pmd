@@ -1037,7 +1037,7 @@ void Escape() :
 {
    ( LOOKAHEAD(2)  <DOUBLE_ESCAPE> { count++; } )+
     {
-        jjtThis.val = StringUtils.repeat("\\", count);
+        jjtThis.setValue(StringUtils.repeat("\\", count));
     }
 }
 

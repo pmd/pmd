@@ -10,7 +10,6 @@ The Style Ruleset contains rules regarding preferred usage of names and identifi
 
     <rule ref="category/apex/codestyle.xml/ClassNamingConventions" deprecated="true" />
     <rule ref="category/apex/codestyle.xml/MethodNamingConventions" deprecated="true" />
-    <rule ref="category/apex/codestyle.xml/VariableNamingConventions" deprecated="true" />
 
     <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" deprecated="true" />
     <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" deprecated="true" />

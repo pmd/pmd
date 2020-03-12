@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 
 public interface VmNode extends TextAvailableNode {
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      */
     Object jjtAccept(VmParserVisitor visitor, Object data);
 

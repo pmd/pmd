@@ -47,7 +47,7 @@ public class InsecureCryptoIvRule extends AbstractJavaRule {
             Node firstArgument = null;
 
             ASTArguments arguments = node.getFirstChildOfType(ASTArguments.class);
-            if (arguments.getArgumentCount() > 0) {
+            if (arguments.size() > 0) {
                 firstArgument = arguments.getFirstChildOfType(ASTArgumentList.class).getChild(0);
             }
 

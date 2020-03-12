@@ -66,7 +66,7 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
      * (excluding any receiver parameter). A varargs parameter counts as one.
      */
     public int getArity() {
-        return getFormalParameters().getParameterCount();
+        return getFormalParameters().size();
     }
 
     //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration

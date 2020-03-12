@@ -20,6 +20,10 @@ import net.sourceforge.pmd.lang.vm.directive.Macro;
 import net.sourceforge.pmd.lang.vm.directive.Parse;
 import net.sourceforge.pmd.lang.vm.directive.Stop;
 
+/**
+ * @deprecated for removal in PMD 7.0.0
+ */
+@Deprecated
 public final class DirectiveMapper {
     private DirectiveMapper() { }
 

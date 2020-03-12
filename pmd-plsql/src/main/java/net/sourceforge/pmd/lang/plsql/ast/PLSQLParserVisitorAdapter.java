@@ -342,16 +342,6 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     }
 
     @Override
-    public Object visit(ASTCursorSpecification node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTCursorBody node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
     public Object visit(ASTExpression node, Object data) {
         return visit((PLSQLNode) node, data);
     }
@@ -1119,6 +1109,11 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
 
     @Override
     public Object visit(ASTWithClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTCursorSpecification node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 }

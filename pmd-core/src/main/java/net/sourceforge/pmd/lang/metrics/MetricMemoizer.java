@@ -14,7 +14,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated See package description
  */
+@Deprecated
 public interface MetricMemoizer<N extends Node> {
 
 

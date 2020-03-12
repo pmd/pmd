@@ -20,6 +20,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * under the License.
  */
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
@@ -43,6 +44,8 @@ abstract class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNo
     }
 
     /*
+     * @deprecated will be removed with PMD 7. Was only needed for {@link #dump(String, boolean, Writer)}.
+    @Deprecated
      * see org.apache.velocity.runtime.parser.node.Node#literal()
      */
     public String literal() {
