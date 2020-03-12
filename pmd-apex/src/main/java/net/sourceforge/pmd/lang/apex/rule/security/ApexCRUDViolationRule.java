@@ -340,16 +340,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isWithSecurityEnforced(final AbstractApexNode<?> node) {
-//        if (node instanceof ASTSoqlExpression) {
-//            String pattern = "(?i).*[^']\\s*WITH SECURITY_ENFORCED\\s*[^']*";
-//            String query = ((ASTSoqlExpression) node).getQuery();
-//            return query.matches(pattern);
-//        }
-//        return false;
-          if (node instanceof ASTSoqlExpression) {
-            return WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
-          }
-          return false;
+        if (node instanceof ASTSoqlExpression) {
+            boolean temp = WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+            return temp;//WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        }
+        return false;
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
@@ -517,13 +512,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     }
 
+
     private void validateCRUDCheckPresent(final AbstractApexNode<?> node, final Object data, final String crudMethod,
             final String typeCheck) {
-        if (!typeToDMLOperationMapping.containsKey(typeCheck)) {
-            if (!isProperESAPICheckForDML(typeCheck, crudMethod)) {
-                if (!isWithSecurityEnforced(node)) {
-                    addViolation(data, node);
-                }
+        boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
+        boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod);
+        boolean noSecurityEnforced = !isWithSecurityEnforced(node);
+        if (missingKey) {
+            //if condition returns true, add violation, otherwise return.
+            if (isImproperDMLCheck && noSecurityEnforced) {
+                addViolation(data, node);
             }
         } else {
             boolean properChecksHappened = false;
