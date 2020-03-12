@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -76,6 +77,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         return getTypeNode() instanceof ASTReferenceType;
     }
 
+
     public AccessNode getAccessNodeParent() {
         if (node.getParent() instanceof ASTFormalParameter) {
             return (ASTFormalParameter) node.getParent();
@@ -85,6 +87,8 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
             return (ASTEnumConstant) node.getParent();
         } else if (node.getParent() instanceof ASTCatchParameter) {
             return (AccessNode) node.getParent();
+        } else if (node.getParent() instanceof ASTRecordComponent) {
+            return null;
         }
         return (AccessNode) node.getParent().getParent();
     }

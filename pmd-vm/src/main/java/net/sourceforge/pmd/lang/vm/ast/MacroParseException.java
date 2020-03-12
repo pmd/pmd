@@ -30,7 +30,9 @@ import net.sourceforge.pmd.lang.vm.util.LogUtil;
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id: MacroParseException.java 735709 2009-01-19 14:30:03Z byron $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class MacroParseException extends ParseException {
     private final String templateName;
 

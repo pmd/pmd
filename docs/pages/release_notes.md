@@ -96,6 +96,13 @@ should give more accurate results and especially fixes the problems with the usi
     *   [#2255](https://github.com/pmd/pmd/issues/2255): \[java] InvalidLogMessageFormat false-positive for a lambda argument
 *   java-performance
     *   [#2275](https://github.com/pmd/pmd/issues/2275): \[java] AppendCharacterWithChar flags literals in an expression
+*   plsql
+    *   [#2325](https://github.com/pmd/pmd/issues/2325): \[plsql] NullPointerException while running parsing test for CREATE TRIGGER
+    *   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF
+    *   [#2328](https://github.com/pmd/pmd/issues/2328): \[plsql] Support XMLROOT
+    *   [#2331](https://github.com/pmd/pmd/pull/2331): \[plsql] Fix in Comment statement
+    *   [#2332](https://github.com/pmd/pmd/pull/2332): \[plsql] Fixed Execute Immediate statement parsing
+    *   [#2340](https://github.com/pmd/pmd/pull/2340): \[plsql] Fixed parsing / as divide or execute
 
 ### API Changes
 
@@ -173,6 +180,59 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 * pmd-apex
   * {% jdoc apex::lang.apex.metrics.ApexMetrics %}, {% jdoc apex::lang.apex.metrics.ApexMetricsComputer %}
 
+##### In ASTs (JSP)
+
+As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated **in the JSP AST** (with other languages to come):
+
+*   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
+    marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
+    which for rules, means that they never need to instantiate node themselves.
+    Those constructors will be made package private with 7.0.0.
+*   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
+    and will be hidden in version 7.0.0. You should not couple your code to them.
+    *   In the meantime you should use interfaces like {% jdoc jsp::lang.jsp.ast.JspNode %} or
+        {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
+        to refer to nodes generically.
+    *   Concrete node classes will **be made final** with 7.0.0.
+*   Setters found in any node class or interface. **Rules should consider the AST immutable**.
+    We will make those setters package private with 7.0.0.
+*   The class {% jdoc jsp::lang.jsp.JspParser %} is deprecated and should not be used directly.
+    Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
+
+Please look at {% jdoc_package jsp::lang.jsp.ast %} to find out the full list of deprecations.
+
+##### In ASTs (Velocity)
+
+As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated **in the VM AST** (with other languages to come):
+
+*   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
+    marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
+    which for rules, means that they never need to instantiate node themselves.
+    Those constructors will be made package private with 7.0.0.
+*   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
+    and will be hidden in version 7.0.0. You should not couple your code to them.
+    *   In the meantime you should use interfaces like {% jdoc vm::lang.vm.ast.VmNode %} or
+        {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
+        to refer to nodes generically.
+    *   Concrete node classes will **be made final** with 7.0.0.
+*   Setters found in any node class or interface. **Rules should consider the AST immutable**.
+    We will make those setters package private with 7.0.0.
+*   The package {% jdoc_package vm::lang.vm.directive %} as well as the classes
+    {% jdoc vm::lang.vm.util.DirectiveMapper %} and {% jdoc vm::lang.vm.util.LogUtil %} are deprecated
+    for removal. They were only used internally during parsing.
+*   The class {% jdoc vm::lang.vm.VmParser %} is deprecated and should not be used directly.
+    Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
+
+Please look at {% jdoc_package vm::lang.vm.ast %} to find out the full list of deprecations.
+
+#### PLSQL AST
+
+The production and node `ASTCursorBody` was unnecessary, not used and has been removed. Cursors have been already
+parsed as `ASTCursorSpecification`.
 
 ### External Contributions
 
@@ -186,6 +246,16 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 *   [#2297](https://github.com/pmd/pmd/pull/2297): \[apex] Cognitive complexity metrics - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2317](https://github.com/pmd/pmd/pull/2317): \[apex] New Rule - Test Methods Must Be In Test Classes - [Brian Nørremark](https://github.com/noerremark)
 *   [#2321](https://github.com/pmd/pmd/pull/2321): \[apex] Support switch statements correctly in Cognitive Complexity - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2326](https://github.com/pmd/pmd/pull/2326): \[plsql] Added XML functions to parser: extract(xml), xml_root and fixed xml_forest - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF added - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2331](https://github.com/pmd/pmd/pull/2331): \[plsql] Fix in Comment statement - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2332](https://github.com/pmd/pmd/pull/2332): \[plsql] Fixed Execute Immediate statement parsing - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2338](https://github.com/pmd/pmd/pull/2338): \[cs] CPD: fixes in filtering of using directives - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2339](https://github.com/pmd/pmd/pull/2339): \[cs] CPD: Fixed CPD --ignore-usings option - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#2340](https://github.com/pmd/pmd/pull/2340): \[plsql] fix for parsing / as divide or execute - [Piotr Szymanski](https://github.com/szyman23)
+*   [#2342](https://github.com/pmd/pmd/pull/2342): \[xml] Update property used in example - [Piotrek Żygieło](https://github.com/pzygielo)
+*   [#2344](https://github.com/pmd/pmd/pull/2344): \[doc] Update ruleset examples for ant - [Piotrek Żygieło](https://github.com/pzygielo)
+*   [#2343](https://github.com/pmd/pmd/pull/2343): \[ci] Disable checking for snapshots in jcenter - [Piotrek Żygieło](https://github.com/pzygielo)
 
 {% endtocmaker %}
 

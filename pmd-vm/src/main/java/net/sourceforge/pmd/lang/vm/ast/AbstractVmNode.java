@@ -25,12 +25,15 @@ import java.io.Writer;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
 /**
  *
  */
+@InternalApi
+@Deprecated
 public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode {
 
     /** */
@@ -128,7 +131,9 @@ public class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode
     /**
      * @param prefix
      * @return String representation of this node.
+     * @deprecated will be removed with PMD 7. Was only needed for {@link #dump(String, boolean, Writer)}.
      */
+    @Deprecated
     public String toString(final String prefix) {
         return prefix + toString();
     }

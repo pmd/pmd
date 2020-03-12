@@ -4,6 +4,8 @@ package net.sourceforge.pmd.lang.vm.ast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,17 +42,14 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id: ASTMethod.java 720228 2008-11-24 16:58:33Z nbubna $
  */
 public class ASTMethod extends AbstractVmNode {
-    /**
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTMethod(final int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTMethod(final VmParser p, final int id) {
         super(p, id);
     }
@@ -66,7 +65,9 @@ public class ASTMethod extends AbstractVmNode {
      * constructor) for unit test purposes.
      *
      * @since 1.5
+     * @deprecated for removal in PMD 7.0.0 - it's not used anywhere
      */
+    @Deprecated
     public static class MethodCacheKey {
         private final String methodName;
 

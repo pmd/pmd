@@ -67,6 +67,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
 
+    /**
+     * Note: this might be <code>null</code> in certain cases.
+     */
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }
