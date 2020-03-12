@@ -153,9 +153,10 @@ configure multiple formatters.
        <dt>encoding</dt>
        <dd>Specifies the encoding to be used in the generated report (only honored when used with `toFile`). When rendering `toConsole` PMD will automatically detect the terminal's encoding and use it, unless the output is being redirected / piped, in which case `file.encoding` is used. See example below.</dd>
        <dt>linkPrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html">this</a>). See example below. Note, this only works with
+       <a href="https://maven.apache.org/jxr/maven-jxr-plugin/index.html">maven-jxr-plugin</a>.</dd>
        <dt>linePrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html#L375">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html#L375">this</a>). See example below. Note, this only works with <a href="https://maven.apache.org/jxr/maven-jxr-plugin/index.html">maven-jxr-plugin</a>.</dd>
        </dl>
    </td>
 </tr>
