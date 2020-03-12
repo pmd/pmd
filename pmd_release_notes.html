@@ -1624,6 +1624,37 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sou
 
 <p>Please look at <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.22.0/net/sourceforge/pmd/lang/jsp/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.jsp.ast</code></a> to find out the full list of deprecations.</p>
 
+<h5 id="in-asts-velocity">In ASTs (Velocity)</h5>
+
+<p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated <strong>in the VM AST</strong> (with other languages to come):</p>
+
+<ul>
+  <li>Manual instantiation of nodes. <strong>Constructors of node classes are deprecated</strong> and
+marked <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/annotation/InternalApi.html#"><code>InternalApi</code></a>. Nodes should only be obtained from the parser,
+which for rules, means that they never need to instantiate node themselves.
+Those constructors will be made package private with 7.0.0.</li>
+  <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
+and will be hidden in version 7.0.0. You should not couple your code to them.
+    <ul>
+      <li>In the meantime you should use interfaces like <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.22.0/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>VmNode</code></a> or
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
+to refer to nodes generically.</li>
+      <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
+    </ul>
+  </li>
+  <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
+We will make those setters package private with 7.0.0.</li>
+  <li>The package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.22.0/net/sourceforge/pmd/lang/vm/directive/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.directive</code></a> as well as the classes
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.22.0/net/sourceforge/pmd/lang/vm/util/DirectiveMapper.html#"><code>DirectiveMapper</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.22.0/net/sourceforge/pmd/lang/vm/util/LogUtil.html#"><code>LogUtil</code></a> are deprecated
+for removal. They were only used internally during parsing.</li>
+  <li>The class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.22.0/net/sourceforge/pmd/lang/vm/VmParser.html#"><code>VmParser</code></a> is deprecated and should not be used directly.
+Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getParser(ParserOptions)"><code>LanguageVersionHandler#getParser</code></a> instead.</li>
+</ul>
+
+<p>Please look at <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.22.0/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a> to find out the full list of deprecations.</p>
+
 <h4 id="plsql-ast">PLSQL AST</h4>
 
 <p>The production and node <code class="highlighter-rouge">ASTCursorBody</code> was unnecessary, not used and has been removed. Cursors have been already
@@ -1651,6 +1682,7 @@ parsed as <code class="highlighter-rouge">ASTCursorSpecification</code>.</p>
   <li><a href="https://github.com/pmd/pmd/pull/2340">#2340</a>: [plsql] fix for parsing / as divide or execute - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2342">#2342</a>: [xml] Update property used in example - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2344">#2344</a>: [doc] Update ruleset examples for ant - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2343">#2343</a>: [ci] Disable checking for snapshots in jcenter - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
 </ul>
 
 
