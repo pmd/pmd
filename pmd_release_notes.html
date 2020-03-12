@@ -1489,6 +1489,7 @@ that violate this rule fail compile-time. This rule is however useful when deali
   </li>
   <li>plsql
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2325">#2325</a>: [plsql] NullPointerException while running parsing test for CREATE TRIGGER</li>
       <li><a href="https://github.com/pmd/pmd/pull/2327">#2327</a>: [plsql] Parsing of WHERE CURRENT OF</li>
       <li><a href="https://github.com/pmd/pmd/issues/2328">#2328</a>: [plsql] Support XMLROOT</li>
       <li><a href="https://github.com/pmd/pmd/pull/2331">#2331</a>: [plsql] Fix in Comment statement</li>
@@ -1595,6 +1596,34 @@ Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.22.0/net/sou
   </li>
 </ul>
 
+<h5 id="in-asts-jsp">In ASTs (JSP)</h5>
+
+<p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated <strong>in the JSP AST</strong> (with other languages to come):</p>
+
+<ul>
+  <li>Manual instantiation of nodes. <strong>Constructors of node classes are deprecated</strong> and
+marked <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/annotation/InternalApi.html#"><code>InternalApi</code></a>. Nodes should only be obtained from the parser,
+which for rules, means that they never need to instantiate node themselves.
+Those constructors will be made package private with 7.0.0.</li>
+  <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
+and will be hidden in version 7.0.0. You should not couple your code to them.
+    <ul>
+      <li>In the meantime you should use interfaces like <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.22.0/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> or
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
+to refer to nodes generically.</li>
+      <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
+    </ul>
+  </li>
+  <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
+We will make those setters package private with 7.0.0.</li>
+  <li>The class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.22.0/net/sourceforge/pmd/lang/jsp/JspParser.html#"><code>JspParser</code></a> is deprecated and should not be used directly.
+Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.22.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getParser(ParserOptions)"><code>LanguageVersionHandler#getParser</code></a> instead.</li>
+</ul>
+
+<p>Please look at <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.22.0/net/sourceforge/pmd/lang/jsp/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.jsp.ast</code></a> to find out the full list of deprecations.</p>
+
 <h4 id="plsql-ast">PLSQL AST</h4>
 
 <p>The production and node <code class="highlighter-rouge">ASTCursorBody</code> was unnecessary, not used and has been removed. Cursors have been already
@@ -1620,6 +1649,8 @@ parsed as <code class="highlighter-rouge">ASTCursorSpecification</code>.</p>
   <li><a href="https://github.com/pmd/pmd/pull/2338">#2338</a>: [cs] CPD: fixes in filtering of using directives - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2339">#2339</a>: [cs] CPD: Fixed CPD –ignore-usings option - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2340">#2340</a>: [plsql] fix for parsing / as divide or execute - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2342">#2342</a>: [xml] Update property used in example - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2344">#2344</a>: [doc] Update ruleset examples for ant - <a href="https://github.com/pzygielo">Piotrek Żygieło</a></li>
 </ul>
 
 
@@ -1638,7 +1669,7 @@ parsed as <code class="highlighter-rouge">ASTCursorSpecification</code>.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 7, 2020 <br />
+ Site last generated: Mar 12, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
