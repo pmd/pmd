@@ -73,6 +73,136 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.22.0
+
+##### Deprecated APIs
+
+###### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+* {% jdoc java::lang.java.JavaLanguageHandler %}
+* {% jdoc java::lang.java.JavaLanguageParser %}
+* {% jdoc java::lang.java.JavaDataFlowHandler %}
+* Implementations of {% jdoc core::lang.rule.RuleViolationFactory %} in each
+  language module, eg {% jdoc java::lang.java.rule.JavaRuleViolationFactory %}.
+  See javadoc of {% jdoc core::lang.rule.RuleViolationFactory %}.
+* Implementations of {% jdoc core::RuleViolation %} in each language module,
+  eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
+  {% jdoc core::RuleViolation %}.
+
+* {% jdoc core::rules.RuleFactory %}
+* {% jdoc core::rules.RuleBuilder %}
+* Constructors of {% jdoc core::RuleSetFactory %}, use factory methods from {% jdoc core::RulesetsFactoryUtils %} instead
+* {% jdoc core::RulesetsFactoryUtils#getRulesetFactory(core::PMDConfiguration, core::util.ResourceLoader) %}
+
+* {% jdoc apex::lang.apex.ast.AbstractApexNode %}
+* {% jdoc apex::lang.apex.ast.AbstractApexNodeBase %}, and the related `visit`
+methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementations.
+ Use {% jdoc apex::lang.apex.ast.ApexNode %} instead, now considers comments too.
+
+###### For removal
+
+* pmd-core
+  * {% jdoc core::lang.dfa.DFAGraphRule %} and its implementations
+  * {% jdoc core::lang.dfa.DFAGraphMethod %}
+  * Many methods on the {% jdoc core::lang.ast.Node %} interface
+  and {% jdoc core::lang.ast.AbstractNode %} base class. See their javadoc for details.
+  * {% jdoc !!core::lang.ast.Node#isFindBoundary() %} is deprecated for XPath queries.
+  * Many APIs of {% jdoc_package core::lang.metrics %}, though most of them were internal and
+  probably not used directly outside of PMD. Use {% jdoc core::lang.metrics.MetricsUtil %} as
+  a replacement for the language-specific façades too.
+  * {% jdoc core::lang.ast.QualifiableNode %}, {% jdoc core::lang.ast.QualifiedName %}
+* pmd-java
+  * {% jdoc java::lang.java.AbstractJavaParser %}
+  * {% jdoc java::lang.java.AbstractJavaHandler %}
+  * [`ASTAnyTypeDeclaration.TypeKind`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.21.0/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.TypeKind.html)
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getKind() %}
+  * {% jdoc java::lang.java.ast.JavaQualifiedName %}
+  * {% jdoc !!java::lang.java.ast.ASTCatchStatement#getBlock() %}
+  * {% jdoc !!java::lang.java.ast.ASTCompilationUnit#declarationsAreInDefaultPackage() %}
+  * {% jdoc java::lang.java.ast.JavaQualifiableNode %}
+    * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getQualifiedName() %}
+    * {% jdoc !!java::lang.java.ast.ASTMethodOrConstructorDeclaration#getQualifiedName() %}
+    * {% jdoc !!java::lang.java.ast.ASTLambdaExpression#getQualifiedName() %}
+  * {% jdoc_package java::lang.java.qname %} and its contents
+  * {% jdoc java::lang.java.ast.MethodLikeNode %}
+    * Its methods will also be removed from its implementations,
+      {% jdoc java::lang.java.ast.ASTMethodOrConstructorDeclaration %},
+      {% jdoc java::lang.java.ast.ASTLambdaExpression %}.
+  * {% jdoc !!java::lang.java.ast.ASTAnyTypeDeclaration#getImage() %} will be removed. Please use `getSimpleName()`
+    instead. This affects {% jdoc !!java::lang.java.ast.ASTAnnotationTypeDeclaration#getImage() %},
+    {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getImage() %}, and
+    {% jdoc !!java::lang.java.ast.ASTEnumDeclaration#getImage() %}.
+  * Several methods of {% jdoc java::lang.java.ast.ASTTryStatement %}, replacements with other names
+    have been added. This includes the XPath attribute `@Finally`, replace it with a test for `child::FinallyStatement`.
+  * Several methods named `getGuardExpressionNode` are replaced with `getCondition`. This affects the
+    following nodes: WhileStatement, DoStatement, ForStatement, IfStatement, AssertStatement, ConditionalExpression.
+  * {% jdoc java::lang.java.ast.ASTYieldStatement %} will not implement {% jdoc java::lang.java.ast.TypeNode %}
+    anymore come 7.0.0. Test the type of the expression nested within it.
+  * {% jdoc java::lang.java.metrics.JavaMetrics %}, {% jdoc java::lang.java.metrics.JavaMetricsComputer %}
+  * {% jdoc !!java::lang.java.ast.ASTArguments#getArgumentCount() %}.
+    Use {% jdoc java::lang.java.ast.ASTArguments#size() %} instead.
+  * {% jdoc !!java::lang.java.ast.ASTFormalParameters#getParameterCount() %}.
+    Use {% jdoc java::lang.java.ast.ASTFormalParameters#size() %} instead.
+* pmd-apex
+  * {% jdoc apex::lang.apex.metrics.ApexMetrics %}, {% jdoc apex::lang.apex.metrics.ApexMetricsComputer %}
+
+###### In ASTs (JSP)
+
+As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated **in the JSP AST** (with other languages to come):
+
+*   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
+    marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
+    which for rules, means that they never need to instantiate node themselves.
+    Those constructors will be made package private with 7.0.0.
+*   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
+    and will be hidden in version 7.0.0. You should not couple your code to them.
+    *   In the meantime you should use interfaces like {% jdoc jsp::lang.jsp.ast.JspNode %} or
+        {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
+        to refer to nodes generically.
+    *   Concrete node classes will **be made final** with 7.0.0.
+*   Setters found in any node class or interface. **Rules should consider the AST immutable**.
+    We will make those setters package private with 7.0.0.
+*   The class {% jdoc jsp::lang.jsp.JspParser %} is deprecated and should not be used directly.
+    Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
+
+Please look at {% jdoc_package jsp::lang.jsp.ast %} to find out the full list of deprecations.
+
+###### In ASTs (Velocity)
+
+As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated **in the VM AST** (with other languages to come):
+
+*   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
+    marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
+    which for rules, means that they never need to instantiate node themselves.
+    Those constructors will be made package private with 7.0.0.
+*   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
+    and will be hidden in version 7.0.0. You should not couple your code to them.
+    *   In the meantime you should use interfaces like {% jdoc vm::lang.vm.ast.VmNode %} or
+        {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
+        to refer to nodes generically.
+    *   Concrete node classes will **be made final** with 7.0.0.
+*   Setters found in any node class or interface. **Rules should consider the AST immutable**.
+    We will make those setters package private with 7.0.0.
+*   The package {% jdoc_package vm::lang.vm.directive %} as well as the classes
+    {% jdoc vm::lang.vm.util.DirectiveMapper %} and {% jdoc vm::lang.vm.util.LogUtil %} are deprecated
+    for removal. They were only used internally during parsing.
+*   The class {% jdoc vm::lang.vm.VmParser %} is deprecated and should not be used directly.
+    Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
+
+Please look at {% jdoc_package vm::lang.vm.ast %} to find out the full list of deprecations.
+
+##### PLSQL AST
+
+The production and node `ASTCursorBody` was unnecessary, not used and has been removed. Cursors have been already
+parsed as `ASTCursorSpecification`.
+
 #### 6.21.0
 
 ##### Deprecated APIs
