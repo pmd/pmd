@@ -26,7 +26,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:wyla@removethis.sci.fi">Jarkko Viinamaki</a>
  * @author Nathan Bubna
  * @version $Id$
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Break extends Directive {
 
     /**

@@ -92,7 +92,8 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
-        <checkstyle.version>3.1.0</checkstyle.version>
+        <checkstyle.version>8.30</checkstyle.version>
+        <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
@@ -104,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>6-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>6</pmd.build-tools.version>
 
         <pmd-designer.version>6.21.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -296,7 +297,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyle.version}</version>
+                    <version>${checkstyle.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>checkstyle-check</id>
@@ -310,7 +311,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>8.29</version>
+                            <version>${checkstyle.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
@@ -531,7 +532,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle.version}</version>
+                <version>${checkstyle.plugin.version}</version>
                 <!-- configuration is in plugin management section -->
                 <reportSets>
                     <reportSet>
@@ -811,6 +812,18 @@
 
     <repositories>
         <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>sonatype-nexus-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -821,14 +834,6 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -836,6 +841,7 @@
             <name>Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
             <releases>
+                <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
@@ -854,8 +860,16 @@
             </snapshots>
         </pluginRepository>
         <pluginRepository>
+            <!-- needed for dokka-maven-plugin in pmd-lang-test -->
             <id>jcenter</id>
             <name>JCenter</name>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
             <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>

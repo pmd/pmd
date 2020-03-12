@@ -31,7 +31,9 @@ import net.sourceforge.pmd.lang.vm.directive.Directive;
  * @author <a href="mailto:nbubna@apache.org">Nathan Bubna</a>
  * @version $Id: Log.java 724825 2008-12-09 18:56:06Z nbubna $
  * @since 1.5
+ * @deprecated for removal with PMD 7.0.0
  */
+@Deprecated
 public final class LogUtil {
     private LogUtil() { }
 

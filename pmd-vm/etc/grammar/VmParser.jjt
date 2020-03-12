@@ -1247,10 +1247,12 @@ void Escape() : {}
             control = true;
         }
 
-        jjtThis.val = "";
+        String value = "";
 
-        for( int i = 0; i < count; i++)
-            jjtThis.val += ( control ? "\\" : "\\\\");
+        for( int i = 0; i < count; i++) {
+            value += ( control ? "\\" : "\\\\");
+        }
+        jjtThis.setValue(value);
     }
 
 }

@@ -59,6 +59,9 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     }
 
 
+    /**
+     * Note: this might be <code>null</code> in certain cases.
+     */
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }

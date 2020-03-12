@@ -85,4 +85,9 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
     public void testParentheses() {
         plsql.parseResource("WhereClauseParens.pls");
     }
+
+    @Test
+    public void testCurrentOf() {
+        plsql.parseResource("WhereCurrentOf.pls");
+    }
 }
