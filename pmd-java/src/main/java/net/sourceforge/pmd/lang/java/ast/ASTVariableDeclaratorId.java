@@ -58,6 +58,9 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return visitor.visit(this, data);
     }
 
+    /**
+     * Note: this might be <code>null</code> in certain cases.
+     */
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }
