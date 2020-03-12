@@ -28,7 +28,7 @@ package net.sourceforge.pmd.lang.vm.directive;
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @version $Id: Literal.java 746438 2009-02-21 05:41:24Z nbubna $
- * @deprecated Use the #[[unparsed content]]# syntax instead.
+ * @deprecated Use the #[[unparsed content]]# syntax instead. Deprecated for removal in PMD 7.0.0
  */
 @Deprecated
 public class Literal extends Directive {

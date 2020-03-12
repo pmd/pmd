@@ -8,13 +8,13 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 public interface VmNode extends Node {
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      */
     Object jjtAccept(VmParserVisitor visitor, Object data);
 
 
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      *
      * @deprecated This method is not useful, the logic for combining
      *     children values should be present on the visitor, not the node

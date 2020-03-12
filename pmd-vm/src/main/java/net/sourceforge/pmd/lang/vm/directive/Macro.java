@@ -33,7 +33,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id: Macro.java 746438 2009-02-21 05:41:24Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Macro extends Directive {
     /**
      * Return name of this directive.

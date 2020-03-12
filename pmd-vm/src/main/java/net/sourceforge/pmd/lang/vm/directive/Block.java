@@ -29,7 +29,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:wyla@removethis.sci.fi">Jarkko Viinamaki</a>
  * @since 1.7
  * @version $Id: Block.java 686842 2008-08-18 18:29:31Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public abstract class Block extends Directive {
     protected String key;
 

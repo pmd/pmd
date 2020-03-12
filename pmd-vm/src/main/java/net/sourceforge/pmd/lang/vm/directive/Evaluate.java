@@ -26,7 +26,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:wglass@apache.org">Will Glass-Husain</a>
  * @version $Id: Evaluate.java 898032 2010-01-11 19:51:03Z nbubna $
  * @since 1.6
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Evaluate extends Directive {
 
     /**
