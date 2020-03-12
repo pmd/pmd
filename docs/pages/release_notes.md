@@ -223,6 +223,7 @@ parsed as `ASTCursorSpecification`.
 *   [#2339](https://github.com/pmd/pmd/pull/2339): \[cs] CPD: Fixed CPD --ignore-usings option - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2340](https://github.com/pmd/pmd/pull/2340): \[plsql] fix for parsing / as divide or execute - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2342](https://github.com/pmd/pmd/pull/2342): \[xml] Update property used in example - [Piotrek Żygieło](https://github.com/pzygielo)
+*   [#2344](https://github.com/pmd/pmd/pull/2344): \[doc] Update ruleset examples for ant - [Piotrek Żygieło](https://github.com/pzygielo)
 
 {% endtocmaker %}
 
