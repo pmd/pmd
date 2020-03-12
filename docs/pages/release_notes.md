@@ -92,6 +92,7 @@ should give more accurate results and especially fixes the problems with the usi
 *   java-performance
     *   [#2275](https://github.com/pmd/pmd/issues/2275): \[java] AppendCharacterWithChar flags literals in an expression
 *   plsql
+    *   [#2325](https://github.com/pmd/pmd/issues/2325): \[plsql] NullPointerException while running parsing test for CREATE TRIGGER
     *   [#2327](https://github.com/pmd/pmd/pull/2327): \[plsql] Parsing of WHERE CURRENT OF
     *   [#2328](https://github.com/pmd/pmd/issues/2328): \[plsql] Support XMLROOT
     *   [#2331](https://github.com/pmd/pmd/pull/2331): \[plsql] Fix in Comment statement
