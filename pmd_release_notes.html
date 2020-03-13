@@ -1378,6 +1378,18 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-apis">Deprecated APIs</h4>
+
+<h5 id="internal-api">Internal API</h5>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.23.0/net/sourceforge/pmd/lang/vm/VmTokenManager.html#"><code>VmTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.23.0/net/sourceforge/pmd/lang/java/JavaTokenManager.html#"><code>JavaTokenManager</code></a></li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 
@@ -1396,7 +1408,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 12, 2020 <br />
+ Site last generated: Mar 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
