@@ -45,11 +45,11 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
         NONE, PARTIAL, FULL
     }
 
-    // Mapping from Node name to applicable XPath queries
     private InitializationStatus initializationStatus = InitializationStatus.NONE;
-    private Map<String, List<XPath>> nodeNameToXPaths;
+    // Mapping from Node name to applicable XPath queries
+    Map<String, List<XPath>> nodeNameToXPaths;
 
-    private static final String AST_ROOT = "_AST_ROOT_";
+    static final String AST_ROOT = "_AST_ROOT_";
 
     @Override
     public boolean isSupportedVersion(String version) {
