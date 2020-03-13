@@ -23,7 +23,7 @@ package net.sourceforge.pmd.lang.vm.ast;
 /**
  * This class is responsible for handling the references in VTL ($foo).
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
@@ -47,7 +47,7 @@ public final class ASTReference extends AbstractVmNode {
     }
 
     /**
-     * Returns the 'root string', the reference key
+     * Returns the 'root string', the reference key.
      *
      * @return the root string.
      */
@@ -61,7 +61,7 @@ public final class ASTReference extends AbstractVmNode {
      * literal of the calling arg to make it work nicely when calling arg is
      * null. It seems a bit much, but does keep things consistant.
      *
-     * Note, you can only set the literal once...
+     * <p>Note, you can only set the literal once...
      *
      * @param literal
      *            String to render to when null

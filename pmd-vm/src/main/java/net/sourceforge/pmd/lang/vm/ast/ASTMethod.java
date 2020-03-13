@@ -23,13 +23,12 @@ package net.sourceforge.pmd.lang.vm.ast;
 /**
  * ASTMethod.java
  *
- * Method support for references : $foo.method()
+ * <p>Method support for references : $foo.method()
  *
- * NOTE :
- *
+ * <p>NOTE :
  * introspection is now done at render time.
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>

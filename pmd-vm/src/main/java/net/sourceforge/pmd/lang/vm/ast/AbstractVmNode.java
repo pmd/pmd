@@ -48,7 +48,7 @@ abstract class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNo
     public String literal() {
         // if we have only one string, just return it and avoid
         // buffer allocation. VELOCITY-606
-        if (getFirstToken() != null && firstToken.equals(getLastToken())) {
+        if (getFirstToken() != null && getFirstToken().equals(getLastToken())) {
             return NodeUtils.tokenLiteral(getFirstToken());
         }
 

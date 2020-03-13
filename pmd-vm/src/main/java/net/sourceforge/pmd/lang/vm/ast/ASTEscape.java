@@ -23,7 +23,7 @@ package net.sourceforge.pmd.lang.vm.ast;
 /**
  * This class is responsible for handling Escapes in VTL.
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
@@ -31,7 +31,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  */
 public final class ASTEscape extends AbstractVmNode {
 
-    /** Used by the parser */
+    /** Used by the parser. */
     private String val;
 
 

@@ -27,9 +27,9 @@ import java.util.Set;
 /**
  * This class is responsible for handling the pluggable directives in VTL.
  *
- * For example : #foreach()
+ * <p>For example : #foreach()
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
