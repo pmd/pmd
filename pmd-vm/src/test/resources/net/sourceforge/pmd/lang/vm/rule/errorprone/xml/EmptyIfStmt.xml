@@ -4,9 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-Bad example #1
-     ]]></description>
+        <description>Bad example #1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -17,13 +15,11 @@ Bad example #1
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Bad example #2
-     ]]></description>
+        <description>Bad example #2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -32,13 +28,11 @@ Bad example #2
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Bad example #3
-     ]]></description>
+        <description>Bad example #3</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -47,34 +41,30 @@ Bad example #3
     #elseif ($c2)
         
     #else
-    	bbbb
+        bbbb
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Bad example #4
-     ]]></description>
+        <description>Bad example #4</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
     #if($c1)
         aaaa
     #elseif ($c2)#else
-    	bbbb
+        bbbb
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Bad example #5
-     ]]></description>
+        <description>Bad example #5</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -83,13 +73,11 @@ Bad example #5
     #else#end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Bad example #6
-     ]]></description>
+        <description>Bad example #6</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -100,13 +88,11 @@ Bad example #6
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Good example #1
-     ]]></description>
+        <description>Good example #1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -117,13 +103,11 @@ Good example #1
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Good example #2
-     ]]></description>
+        <description>Good example #2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -134,13 +118,11 @@ Good example #2
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Good example #2
-     ]]></description>
+        <description>Good example #2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 #macro( mymacro $v1 )
@@ -151,6 +133,6 @@ Good example #2
     #end
 #end
      ]]></code>
-    <source-type>vm</source-type>
+        <source-type>vm</source-type>
     </test-code>
 </test-data>

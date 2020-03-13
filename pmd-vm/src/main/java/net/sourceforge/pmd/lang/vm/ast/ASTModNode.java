@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,10 +21,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
  */
 
 /**
- * Handles modulus division<br>
- * <br>
+ * Handles modulus division
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -34,19 +31,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTModNode.java 691048 2008-09-01 20:26:11Z nbubna $
  */
-public class ASTModNode extends ASTMathNode {
+public final class ASTModNode extends ASTMathNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTModNode(final int id) {
+    ASTModNode(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTModNode(final VmParser p, final int id) {
-        super(p, id);
-    }
 
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.vm;
+package net.sourceforge.pmd.lang.vm.ast;
 
 import java.io.Reader;
 
@@ -11,8 +11,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
-import net.sourceforge.pmd.lang.vm.ast.VmParserTokenManager;
-import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 /**
  *
@@ -23,10 +22,10 @@ import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
 @InternalApi
 public class VmTokenManager implements TokenManager {
 
-    private final VmParserTokenManager vmParserTokenManager;
+    private final VmParserImplTokenManager vmParserTokenManager;
 
     public VmTokenManager(final Reader source) {
-        vmParserTokenManager = new VmParserTokenManager(new VelocityCharStream(source, 1, 1));
+        vmParserTokenManager = new VmParserImplTokenManager(CharStreamFactory.javaCharStream(source));
     }
 
     @Override

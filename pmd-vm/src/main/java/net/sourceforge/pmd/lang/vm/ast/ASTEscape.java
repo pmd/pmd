@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,28 +23,20 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * This class is responsible for handling Escapes in VTL.
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTEscape.java 517553 2007-03-13 06:09:58Z wglass $
  */
-public class ASTEscape extends AbstractVmNode {
-    /** Used by the parser */
-    @InternalApi
-    @Deprecated
-    public String val;
+public final class ASTEscape extends AbstractVmNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTEscape(final int id) {
+    /** Used by the parser. */
+    private String val;
+
+
+    ASTEscape(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTEscape(final VmParser p, final int id) {
-        super(p, id);
     }
 
     void setValue(String value) {

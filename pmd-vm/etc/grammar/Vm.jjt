@@ -23,67 +23,17 @@
  */
 options
 {
-    /** The default package for this parser kit
-    NODE_PACKAGE="org.apache.velocity.runtime.parser";
-    */
-  NODE_PACKAGE="net.sourceforge.pmd.lang.vm.ast";
-  NODE_CLASS = "net.sourceforge.pmd.lang.vm.ast.AbstractVmNode";
+    MULTI = true;
+    VISITOR = true;
+    IGNORE_CASE = true;
 
-    /** A source file will  be generated for each non-terminal */
-    MULTI=true;
-
-    /**
-     * Each node will have access to the parser, I did this so
-     * some global information can be shared via the parser. I
-     * think this will come in handly keeping track of
-     * context, and being able to push changes back into
-     * the context when nodes make modifications to the
-     * context by setting properties, variables and
-     * what not.
-     */
-    NODE_USES_PARSER=true;
-
-    /**
-     * The parser must be non-static in order for the
-     * above option to work, otherwise the parser value
-     * is passed in as null, which isn't all the useful ;)
-     */
-    STATIC=false;
-
-    /**
-     * Enables the use of a visitor that each of nodes
-     * will accept. This way we can separate the logic
-     * of node processing in a visitor and out of the
-     * nodes themselves. If processing changes then
-     * the nothing has to change in the node code.
-     */
-    VISITOR=true;
-
-    /**
-     * Declare that we are accepting unicode input and
-     * that we are using a custom character stream class
-     * Note that the char stream class is really a slightly
-     * modified ASCII_CharStream, as it appears we are safe
-     * because we only deal with pre-encoding-converted
-     * Readers rather than raw input streams.
-     */
-    UNICODE_INPUT=true;
-    USER_CHAR_STREAM=true;
-
-    /**
-     *  for debugging purposes.  Keep false
-     */
+    /** for debugging purposes.  Keep false */
     DEBUG_PARSER=false;
     DEBUG_TOKEN_MANAGER=false;
 
-    /**
-    	Copied from JSP parser
-    */
-    FORCE_LA_CHECK = false;
-    IGNORE_CASE = true;
 }
 
-PARSER_BEGIN(VmParser)
+PARSER_BEGIN(VmParserImpl)
 package net.sourceforge.pmd.lang.vm.ast;
 
 import java.io.IOException;
@@ -93,10 +43,12 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.vm.directive.Directive;
-import net.sourceforge.pmd.lang.vm.util.VelocityCharStream;
-import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 
 /**
  * This class is responsible for parsing a Velocity
@@ -112,102 +64,8 @@ import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id$
 */
-public class VmParser
+public class VmParserImpl
 {
-    /**
-     * Keep track of defined macros, used for escape processing
-     */
-    private Map macroNames = new HashMap();
-
-    /**
-     * Name of current template we are parsing.  Passed to us in parse()
-     */
-    public String currentTemplateName = "";
-
-    /**
-     * Set to true if the property
-     * RuntimeConstants.RUNTIME_REFERENCES_STRICT_ESCAPE is set to true
-     */
-    public boolean strictEscape = false;
-
-    /**
-     *  This method gets a Directive from the directives Hashtable
-     */
-    public Directive getDirective(String directive)
-    {
-        return DirectiveMapper.getDirective(directive);
-    }
-
-    /**
-     *  This method finds out of the directive exists in the directives Map.
-     */
-    public boolean isDirective(String directive)
-    {
-        return DirectiveMapper.getDirective(directive) != null;
-    }
-
-
-    /**
-     * Produces a processed output for an escaped control or
-     * pluggable directive
-     */
-    private String escapedDirective( String strImage )
-    {
-        int iLast = strImage.lastIndexOf("\\");
-
-        String strDirective = strImage.substring(iLast + 1);
-
-//        return ( strImage.substring(0,iLast/2) + strDirective);
-
-        boolean bRecognizedDirective = false;
-
-        // we don't have to call substring method all the time in this method
-        String dirTag = strDirective.substring(1);
-        if (dirTag.charAt(0) == '{')
-        {
-            dirTag = dirTag.substring(1, dirTag.length() - 1);
-        }
-
-        /*
-         *  If this is a predefined derective or if we detect
-         *  a macro definition (this is aproximate at best) then
-         *  we absorb the forward slash.  If in strict reference
-         *  mode then we always absord the forward slash regardless
-         *  if the derective is defined or not.
-         */
-
-        if (strictEscape
-             || isDirective(dirTag)
-             || macroNames.containsKey(dirTag)
-             || !DirectiveMapper.isDirective(dirTag)) //rsvc.isVelocimacro(dirTag, currentTemplateName))
-        {
-            bRecognizedDirective = true;
-        }
-        else
-        {
-
-            if ( dirTag.equals("if")
-                || dirTag.equals("end")
-                || dirTag.equals("set")
-                || dirTag.equals("else")
-                || dirTag.equals("elseif")
-            )
-            {
-                bRecognizedDirective = true;
-            }
-        }
-
-        /*
-         *  if so, make the proper prefix string (let the escapes do their thing..)
-         *  otherwise, just return what it is..
-         */
-
-        if (bRecognizedDirective)
-            return ( strImage.substring(0,iLast/2) + strDirective);
-        else
-            return ( strImage );
-    }
-
     /**
      * Check whether there is a left parenthesis with leading optional
      * whitespaces. This method is used in the semantic look ahead of
@@ -251,44 +109,9 @@ public class VmParser
         }
         return false;
     }
-
-    /**
-     * We use this method in a lookahead to determine if we are in a macro
-     * default value assignment.  The standard lookahead is not smart enough.
-     * here we look for the equals after the reference.
-     */
-    private boolean isAssignment()
-    {
-       // Basically if the last character read was not '$' then false
-       if (token_source.curLexState != REFERENCE) return false;
-
-       char c = ' ';
-       int backup = 0;
-       try
-       {
-           // Read through any white space
-           while(Character.isWhitespace(c))
-           {
-                c = token_source.input_stream.readChar();
-                backup++;
-           }
-
-           // This is what we are ultimately looking for
-           if (c != '=') return false;
-       }
-       catch (IOException e)
-       {
-       }
-       finally
-       {
-           token_source.input_stream.backup(backup);
-       }
-
-       return true;
-    }
 }
 
-PARSER_END(VmParser)
+PARSER_END(VmParserImpl)
 
 TOKEN_MGR_DECLS:
 {
@@ -1000,7 +823,7 @@ TOKEN:
          */
         if (matchedToken.getImage().endsWith("..")) {
             input_stream.backup(2);
-            matchedToken.image = matchedToken.getImage().substring(0,matchedToken.getImage().length()-2);
+            matchedToken = matchedToken.replaceImage(input_stream);
         }
 
         /*
@@ -1092,7 +915,7 @@ TOKEN :
          * looks like a ref.ident
          */
 
-        matchedToken.image = ".";
+        matchedToken = matchedToken.replaceImage(input_stream);
 
         if ( debugPrint )
             System.out.print("DOT : switching to " + REFMODIFIER);
@@ -1155,7 +978,7 @@ SPECIAL_TOKEN :
  * which implements the ParserVisitor interface
  * which is generated automatically by JavaCC
  */
-ASTprocess process() : {}
+ASTTemplate Template() : {}
 {
    ( Statement() )* <EOF>
    { return jjtThis; }
@@ -1188,17 +1011,7 @@ void Statement() #void : {}
  */
 void EscapedDirective() : {}
 {
-    {
-        Token t = null;
-    }
-
-    t = <ESCAPE_DIRECTIVE>
-    {
-        /*
-         *  churn and burn..
-         */
-        t.image = escapedDirective( t.getImage() );
-    }
+    <ESCAPE_DIRECTIVE>
 }
 
 /**
@@ -1208,53 +1021,13 @@ void EscapedDirective() : {}
  *  case, we want to suck in the #&lt;directive&gt; and here we don't.  We just want
  *  the escapes to render correctly
  */
-void Escape() : {}
+void Escape() :
+{ int count = 0; }
 {
+   ( LOOKAHEAD(2)  <DOUBLE_ESCAPE> { count++; } )+
     {
-        Token t = null;
-        int count = 0;
-        boolean control = false;
+        jjtThis.setValue(StringUtils.repeat("\\", count));
     }
-
-   ( LOOKAHEAD(2)  t = <DOUBLE_ESCAPE>
-    {
-        count++;
-    }
-   )+
-    {
-        /*
-         * first, check to see if we have a control directive
-         */
-        switch(t.next.kind ) {
-        	case FOREACH_DIRECTIVE :
-            case IF_DIRECTIVE :
-            case ELSE_DIRECTIVE :
-            case ELSEIF_DIRECTIVE :
-            case END :
-                control = true;
-                break;
-        }
-
-        /*
-         * if that failed, lets lookahead to see if we matched a PD or a VM
-         */
-        String nTag = t.next.getImage().substring(1);
-        if (strictEscape
-            || isDirective(nTag)
-            || macroNames.containsKey(nTag)
-            || !DirectiveMapper.isDirective(nTag)) //rsvc.isVelocimacro(nTag, currentTemplateName)
-        {
-            control = true;
-        }
-
-        String value = "";
-
-        for( int i = 0; i < count; i++) {
-            value += ( control ? "\\" : "\\\\");
-        }
-        jjtThis.setValue(value);
-    }
-
 }
 
 void Comment() : {}
@@ -1308,52 +1081,21 @@ void Word() : {}
 /**
  *   Supports the arguments for the Pluggable Directives
  */
-int DirectiveArg() #void : {}
+void DirectiveArg() #void : {}
 {
     Reference()
-    {
-        return VmParserTreeConstants.JJTREFERENCE;
-    }
 |   Word()
-    {
-        return VmParserTreeConstants.JJTWORD;
-    }
 |   StringLiteral()
-    {
-        return VmParserTreeConstants.JJTSTRINGLITERAL;
-    }
-
 |   IntegerLiteral()
-    {
-        return VmParserTreeConstants.JJTINTEGERLITERAL;
-    }
     /*
      * Need to put this before the floating point expansion
      */
 |   LOOKAHEAD(  <LBRACKET> [<WHITESPACE>] ( Reference() | IntegerLiteral())     [<WHITESPACE>] <DOUBLEDOT> ) IntegerRange()
-    {
-        return VmParserTreeConstants.JJTINTEGERRANGE;
-    }
 |   FloatingPointLiteral()
-    {
-        return VmParserTreeConstants.JJTFLOATINGPOINTLITERAL;
-    }
 |   Map()
-    {
-        return VmParserTreeConstants.JJTMAP;
-    }
 |   ObjectArray()
-    {
-        return VmParserTreeConstants.JJTOBJECTARRAY;
-    }
 |   True()
-    {
-        return VmParserTreeConstants.JJTTRUE;
-    }
 |   False()
-    {
-        return VmParserTreeConstants.JJTFALSE;
-    }
 }
 
 
@@ -1363,11 +1105,8 @@ int DirectiveArg() #void : {}
  */
 VmNode Directive() :
 {
-    Token t = null;
-    int argType;
+    JavaccToken t = null;
     int argPos = 0;
-    Directive d;
-    int directiveType;
     boolean isVM = false;
     boolean doItNow = false;
 }
@@ -1380,7 +1119,7 @@ VmNode Directive() :
     ((t = <WORD>) | (t = <BRACKETED_WORD>))
     {
         String directiveName;
-        if (t.kind == VmParserConstants.BRACKETED_WORD)
+        if (t.kind == VmTokenKinds.BRACKETED_WORD)
         {
             directiveName = t.getImage().substring(2, t.getImage().length() - 1);
         }
@@ -1388,8 +1127,6 @@ VmNode Directive() :
         {
             directiveName = t.getImage().substring(1);
         }
-
-        d = getDirective(directiveName);
 
         /*
          *  Velocimacro support : if the directive is macro directive
@@ -1406,35 +1143,11 @@ VmNode Directive() :
          * set the directive name from here.  No reason for the thing to know
          * about parser tokens
          */
-
         jjtThis.setDirectiveName(directiveName);
-
-        if ( d == null)
-        {
-            if( directiveName.startsWith("@") )
-            {
-                // block macro call of type: #@foobar($arg1 $arg2) astBody #end
-                directiveType = Directive.BLOCK;
-            }
-            else
-            {
-                /*
-                 *  if null, then not a real directive, but maybe a Velocimacro
-                 */
-                isVM = !DirectiveMapper.isDirective(directiveName); //rsvc.isVelocimacro(directiveName, currentTemplateName);
-
-                directiveType = Directive.LINE;
-            }
-        }
-        else
-        {
-            directiveType = d.getType();
-        }
 
         /*
          *  now, switch us out of PRE_DIRECTIVE
          */
-
         token_source.SwitchTo(DIRECTIVE);
 
         argPos = 0;
@@ -1448,26 +1161,27 @@ VmNode Directive() :
     /*
      *  if this is indeed a token, match the #foo ( arg ) pattern
      */
-    (([<WHITESPACE>] <LPAREN>) ( LOOKAHEAD(2) [<WHITESPACE>] [<COMMA> [<WHITESPACE>]]
+    [<WHITESPACE>] <LPAREN> ( LOOKAHEAD(2) [<WHITESPACE>] [<COMMA> [<WHITESPACE>]]
 
-            argType = DirectiveArg()
+            DirectiveArg()
             {
-                if (argType == VmParserTreeConstants.JJTWORD)
+                if (jjtree.peekNode() instanceof ASTWord)
                 {
                     if (doItNow && argPos == 0)
                     {
                         /* if #macro and it's the 0th arg, ok */
                     }
-                    else if (isVM)
+                    else if (!jjtThis.isDirective())
                     {
-                        throw new MacroParseException("Invalid arg #"
-                        + argPos + " in VM " + t.getImage(), currentTemplateName, t);
+                        // not a real directive, but maybe a Velocimacro
+                        throw new ParseException("Invalid arg #"
+                        + argPos + " in VM " + t.getImage(), t);
                     }
-                                          /* if #foreach and it's the 2nd arg, ok */
-                    else if (d != null && (!directiveName.equals("foreach") || argPos != 1))
+                    /* if #foreach and it's the 2nd arg, ok */
+                    else if (jjtThis.isDirective() && (!"foreach".equals(jjtThis.getDirectiveName()) || argPos != 1))
                     {
-                        throw new MacroParseException("Invalid arg #"
-                        + argPos + " in directive " + t.getImage(), currentTemplateName, t);
+                        throw new ParseException("Invalid arg #"
+                        + argPos + " in directive " + t.getImage(), t);
                     }
                     else
                     {
@@ -1481,19 +1195,19 @@ VmNode Directive() :
                     {
                         /* if a VM and it's the 0th arg, not ok */
 
-                        throw new MacroParseException("Invalid first arg"
+                        throw new ParseException("Invalid first arg"
                         + " in #macro() directive - must be a"
-                        + " word token (no \' or \" surrounding)", currentTemplateName, t);
+                        + " word token (no ' or double quote surrounding)", t);
                     }
                 }
 
                 argPos++;
             }
 
-    )* [<WHITESPACE>] <RPAREN>)
+    )* [<WHITESPACE>] <RPAREN>
     {
 
-        if (directiveType  == Directive.LINE)
+        if (jjtThis.isLine())
         {
             return jjtThis;
         }
@@ -1504,8 +1218,7 @@ VmNode Directive() :
 	{
             // VELOCITY-667 We get here if we have a "#macro" construct
 	    // without parenthesis which is a parse error
-            throw new MacroParseException("A macro declaration requires at least a name argument"
-              , currentTemplateName, t);
+            throw new ParseException("A macro declaration requires at least a name argument", t);
 	}
 
         /**
@@ -1522,34 +1235,7 @@ VmNode Directive() :
 
     ( Statement() )* #Block
     <END>
-    {
-        /*
-         *  VM : if we are processing a #macro directive, we need to
-         *     process the block.  In truth, I can just register the name
-         *     and do the work later when init-ing.  That would work
-         *     as long as things were always defined before use.  This way
-         *     we don't have to worry about forward references and such...
-         */
-
-        if (doItNow)
-        {
-            // Add the macro name so that we can peform escape processing
-            // on defined macros
-            String macroName = ((AbstractVmNode)jjtThis.jjtGetChild(0)).getFirstToken().getImage();
-            macroNames.put(macroName, macroName);
-        }
-/*
-        if (d != null)
-        {
-            d.checkArgs(argtypes, t, currentTemplateName);
-        }
-*/
-        /*
-         *  VM : end
-         */
-
-        return jjtThis;
-    }
+    { return jjtThis; }
 }
 
 /**

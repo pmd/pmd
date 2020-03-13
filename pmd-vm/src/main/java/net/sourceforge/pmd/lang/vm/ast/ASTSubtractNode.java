@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -35,18 +33,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTSubtractNode.java 691048 2008-09-01 20:26:11Z nbubna $
  */
-public class ASTSubtractNode extends ASTMathNode {
-    @InternalApi
-    @Deprecated
-    public ASTSubtractNode(final int id) {
+public final class ASTSubtractNode extends ASTMathNode {
+
+    ASTSubtractNode(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTSubtractNode(final VmParser p, final int id) {
-        super(p, id);
-    }
 
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {

@@ -1,8 +1,6 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,10 +21,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
  */
 
 /**
- * Handles multiplication<br>
- * <br>
+ * Handles multiplication
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -35,19 +32,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id: ASTMulNode.java 691048 2008-09-01 20:26:11Z nbubna $
  */
-public class ASTMulNode extends ASTMathNode {
+public final class ASTMulNode extends ASTMathNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTMulNode(final int id) {
+    ASTMulNode(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTMulNode(final VmParser p, final int id) {
-        super(p, id);
-    }
 
     @Override
     public Object jjtAccept(VmParserVisitor visitor, Object data) {
