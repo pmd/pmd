@@ -46,8 +46,6 @@ import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathStaticContext;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.type.Type;
-import net.sf.saxon.type.TypeHierarchy;
 import net.sf.saxon.value.AtomicValue;
 import net.sf.saxon.value.BigIntegerValue;
 import net.sf.saxon.value.BooleanValue;
@@ -283,7 +281,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
      */
     private void analyzeXPathForRuleChain(final XPathEvaluator xpathEvaluator) {
         Configuration config = xpathEvaluator.getConfiguration();
-        TypeHierarchy th = new TypeHierarchy(config);
         boolean useRuleChain = true;
         final Deque<Expression> pending = new ArrayDeque<>();
         pending.push(xpathExpression.getInternalExpression());
@@ -308,46 +305,45 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
                 PathExpression path = (PathExpression) node;
                 // Path expression e.g. "//A[condition()]/B...". First step would be "//A[condition()]"
                 Expression firstStep = path.getFirstStep();
-                if (firstStep.getItemType(th).getPrimitiveType() == Type.ELEMENT) {
-                    if (firstStep instanceof FilterExpression) {
-                        FilterExpression filterExpression = (FilterExpression) firstStep;
-                        if (filterExpression.getBaseExpression() instanceof PathExpression) {
-                            PathExpression root = (PathExpression) filterExpression.getBaseExpression();
-                            if (root.getStartExpression() instanceof RootExpression && root.getStepExpression() instanceof AxisExpression) {
-                                AxisExpression axis = (AxisExpression) root.getStepExpression();
-                                String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                                AxisExpression a = new AxisExpression(Axis.SELF, null);
-                                FilterExpression newfilter = new FilterExpression(a, filterExpression.getFilter());
-                                PathExpression p = new PathExpression(newfilter, path.getRemainingSteps());
-                                addExpressionForNode(nodeName, p);
-                                valid = true;
-                            }
+                if (firstStep instanceof FilterExpression) {
+                    FilterExpression filterExpression = (FilterExpression) firstStep;
+                    if (filterExpression.getBaseExpression() instanceof PathExpression) {
+                        PathExpression root = (PathExpression) filterExpression.getBaseExpression();
+                        if (root.getStartExpression() instanceof RootExpression && root.getStepExpression() instanceof AxisExpression) {
+                            AxisExpression axis = (AxisExpression) root.getStepExpression();
+                            String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
+                            AxisExpression start = new AxisExpression(Axis.SELF, null);
+                            FilterExpression newfilter = new FilterExpression(start, filterExpression.getFilter());
+                            PathExpression p = new PathExpression(newfilter, path.getRemainingSteps());
+                            addExpressionForNode(nodeName, p);
+                            valid = true;
                         }
                     }
-                } else if (firstStep.getItemType(th).getPrimitiveType() == Type.DOCUMENT) {
+                } else if (firstStep instanceof RootExpression && path.getStepExpression() instanceof AxisExpression) {
                     // Path expression without filter, e.g. "//A"
-                    if (firstStep instanceof RootExpression && path.getRemainingSteps() instanceof AxisExpression) {
-                        AxisExpression axis = (AxisExpression) path.getStepExpression();
-                        String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                        AxisExpression a = new AxisExpression(Axis.SELF, null);
-                        addExpressionForNode(nodeName, a);
-                        valid = true;
+                    AxisExpression axis = (AxisExpression) path.getStepExpression();
+                    String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
+                    AxisExpression start = new AxisExpression(Axis.SELF, null);
+                    addExpressionForNode(nodeName, start);
+                    valid = true;
+                } else if (firstStep instanceof RootExpression && path.getRemainingSteps() instanceof PathExpression) {
+                    PathExpression secondPath = (PathExpression) path.getRemainingSteps();
+                    if (secondPath.getFirstStep() instanceof AxisExpression && secondPath.getRemainingSteps() instanceof FilterExpression) {
+                        AxisExpression axis = (AxisExpression) secondPath.getFirstStep();
+                        FilterExpression filter = (FilterExpression) secondPath.getRemainingSteps();
+                        if (axis.getNodeTest() == null && filter.getBaseExpression() instanceof AxisExpression) {
+                            axis = (AxisExpression) filter.getBaseExpression();
+                            String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
+                            AxisExpression start = new AxisExpression(Axis.SELF, null);
+                            FilterExpression newFilter = new FilterExpression(start, filter.getFilter());
+                            addExpressionForNode(nodeName, newFilter);
+                            valid = true;
+                        }
                     }
                 }
             } else if (node instanceof FilterExpression) {
-                // FilterExpression e.g. "//A[condition()]"
-                FilterExpression filterExpression = (FilterExpression) node;
-                if (filterExpression.getBaseExpression() instanceof PathExpression) {
-                    PathExpression root = (PathExpression) filterExpression.getBaseExpression();
-                    if (root.getStartExpression() instanceof RootExpression && root.getStepExpression() instanceof AxisExpression) {
-                        AxisExpression axis = (AxisExpression) root.getStepExpression();
-                        String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                        AxisExpression a = new AxisExpression(Axis.SELF, null);
-                        FilterExpression newfilter = new FilterExpression(a, filterExpression.getFilter());
-                        addExpressionForNode(nodeName, newfilter);
-                        valid = true;
-                    }
-                }
+                // FilterExpression e.g. "//A[condition()]" or "//A[cond1()][cond2()]...
+                valid = convertFilterChain(config, node);
             }
 
             if (!valid) {
@@ -367,6 +363,64 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
         // always add fallback expression
         addExpressionForNode(AST_ROOT, xpathExpression.getInternalExpression());
+    }
+
+    private boolean convertFilterChain(Configuration config, final Expression node) {
+        Deque<FilterExpression> filterChain = new ArrayDeque<>();
+        Expression current = node;
+        while (current instanceof FilterExpression) {
+            filterChain.push((FilterExpression) current);
+            current = ((FilterExpression) current).getBaseExpression();
+        }
+        if (current instanceof PathExpression) {
+            PathExpression root = (PathExpression) current;
+            if (root.getStartExpression() instanceof RootExpression && root.getStepExpression() instanceof AxisExpression) {
+                AxisExpression axis = (AxisExpression) root.getStepExpression();
+                String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
+                AxisExpression start = new AxisExpression(Axis.SELF, null);
+
+                FilterExpression oldFilter = filterChain.pop();
+                FilterExpression newfilter = new FilterExpression(start, oldFilter.getFilter());
+                while (!filterChain.isEmpty()) {
+                    oldFilter = filterChain.pop();
+                    newfilter = new FilterExpression(newfilter, oldFilter.getFilter());
+                }
+                addExpressionForNode(nodeName, newfilter);
+                return true;
+            } else if (root.getStartExpression() instanceof PathExpression) {
+                Deque<PathExpression> pathChain = new ArrayDeque<>();
+                Expression currentPath = root;
+                while (currentPath instanceof PathExpression) {
+                    pathChain.push((PathExpression) currentPath);
+                    currentPath = ((PathExpression) currentPath).getStartExpression();
+                }
+                if (currentPath instanceof RootExpression && pathChain.peekFirst().getStepExpression() instanceof AxisExpression) {
+                    AxisExpression axis = (AxisExpression) pathChain.pop().getStepExpression();
+                    if (axis.getNodeTest() == null) {
+                        return false;
+                    }
+                    String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
+
+                    AxisExpression start = new AxisExpression(Axis.SELF, null);
+                    PathExpression oldPath = pathChain.pop();
+                    PathExpression newPath = new PathExpression(start, oldPath.getStepExpression());
+                    while (!pathChain.isEmpty()) {
+                        oldPath = pathChain.pop();
+                        newPath = new PathExpression(newPath, oldPath.getStepExpression());
+                    }
+
+                    if (filterChain.isEmpty()) {
+                        addExpressionForNode(nodeName, newPath);
+                        return true;
+                    } else if (filterChain.size() == 1) {
+                        FilterExpression newFilter = new FilterExpression(newPath, filterChain.pop().getFilter());
+                        addExpressionForNode(nodeName, newFilter);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
