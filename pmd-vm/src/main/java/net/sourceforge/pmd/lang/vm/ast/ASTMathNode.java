@@ -1,7 +1,4 @@
-
 package net.sourceforge.pmd.lang.vm.ast;
-
-import net.sourceforge.pmd.annotation.InternalApi;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,10 +20,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
  */
 
 /**
- * Helps handle math<br>
- * <br>
+ * Helps handle math
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
@@ -36,21 +32,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Nathan Bubna
  * @version $Id: ASTMathNode.java 517553 2007-03-13 06:09:58Z wglass $
  */
-@InternalApi
-@Deprecated
-public abstract class ASTMathNode extends AbstractVmNode {
-    protected boolean strictMode = false;
+abstract class ASTMathNode extends AbstractVmNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTMathNode(final int id) {
+    ASTMathNode(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTMathNode(final VmParser p, final int id) {
-        super(p, id);
     }
 
     @Override

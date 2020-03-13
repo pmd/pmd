@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTElseStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTText;
-import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
+import net.sourceforge.pmd.lang.vm.ast.VmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
 
 public class CollapsibleIfStatementsRule extends AbstractVmRule {
@@ -32,7 +32,7 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
         return super.visit(node, data);
     }
 
-    private void handleIfElseIf(final AbstractVmNode node, final Object data) {
+    private void handleIfElseIf(final VmNode node, final Object data) {
         if (node.getFirstChildOfType(ASTElseStatement.class) == null
                 && node.getFirstChildOfType(ASTElseIfStatement.class) == null) {
             final ASTBlock ifBlock = node.getFirstChildOfType(ASTBlock.class);

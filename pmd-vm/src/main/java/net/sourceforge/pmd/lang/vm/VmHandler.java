@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.vm;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.vm.ast.VmParser;
 
 /**
  * Implementation of LanguageVersionHandler for the VM parser.
