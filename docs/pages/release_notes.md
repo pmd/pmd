@@ -27,6 +27,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 *   {% jdoc vm::lang.vm.VmTokenManager %}
 *   {% jdoc java::lang.java.JavaTokenManager %}
+*   {% jdoc python::lang.python.PythonTokenManager %}
 
 ### External Contributions
 
