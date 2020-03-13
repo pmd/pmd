@@ -48,8 +48,6 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.vm.directive.Directive;
-import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 
 
 /**
@@ -68,15 +66,6 @@ import net.sourceforge.pmd.lang.vm.util.DirectiveMapper;
 */
 public class VmParserImpl
 {
-
-    /**
-     *  This method gets a Directive from the directives Hashtable
-     */
-    public Directive getDirective(String directive)
-    {
-        return DirectiveMapper.getDirective(directive);
-    }
-
     /**
      * Check whether there is a left parenthesis with leading optional
      * whitespaces. This method is used in the semantic look ahead of
@@ -1118,8 +1107,6 @@ VmNode Directive() :
 {
     JavaccToken t = null;
     int argPos = 0;
-    Directive d;
-    int directiveType;
     boolean isVM = false;
     boolean doItNow = false;
 }
@@ -1141,8 +1128,6 @@ VmNode Directive() :
             directiveName = t.getImage().substring(1);
         }
 
-        d = getDirective(directiveName);
-
         /*
          *  Velocimacro support : if the directive is macro directive
          *   then set the flag so after the block parsing, we add the VM
@@ -1158,35 +1143,11 @@ VmNode Directive() :
          * set the directive name from here.  No reason for the thing to know
          * about parser tokens
          */
-
         jjtThis.setDirectiveName(directiveName);
-
-        if ( d == null)
-        {
-            if( directiveName.startsWith("@") )
-            {
-                // block macro call of type: #@foobar($arg1 $arg2) astBody #end
-                directiveType = Directive.BLOCK;
-            }
-            else
-            {
-                /*
-                 *  if null, then not a real directive, but maybe a Velocimacro
-                 */
-                isVM = !DirectiveMapper.isDirective(directiveName); //rsvc.isVelocimacro(directiveName, currentTemplateName);
-
-                directiveType = Directive.LINE;
-            }
-        }
-        else
-        {
-            directiveType = d.getType();
-        }
 
         /*
          *  now, switch us out of PRE_DIRECTIVE
          */
-
         token_source.SwitchTo(DIRECTIVE);
 
         argPos = 0;
@@ -1210,13 +1171,14 @@ VmNode Directive() :
                     {
                         /* if #macro and it's the 0th arg, ok */
                     }
-                    else if (isVM)
+                    else if (!jjtThis.isDirective())
                     {
+                        // not a real directive, but maybe a Velocimacro
                         throw new ParseException("Invalid arg #"
                         + argPos + " in VM " + t.getImage(), t);
                     }
-                                          /* if #foreach and it's the 2nd arg, ok */
-                    else if (d != null && (!directiveName.equals("foreach") || argPos != 1))
+                    /* if #foreach and it's the 2nd arg, ok */
+                    else if (jjtThis.isDirective() && (!"foreach".equals(jjtThis.getDirectiveName()) || argPos != 1))
                     {
                         throw new ParseException("Invalid arg #"
                         + argPos + " in directive " + t.getImage(), t);
@@ -1245,7 +1207,7 @@ VmNode Directive() :
     )* [<WHITESPACE>] <RPAREN>
     {
 
-        if (directiveType  == Directive.LINE)
+        if (jjtThis.isLine())
         {
             return jjtThis;
         }

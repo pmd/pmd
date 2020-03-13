@@ -1,6 +1,10 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -35,6 +39,32 @@ package net.sourceforge.pmd.lang.vm.ast;
  */
 public final class ASTDirective extends AbstractVmNode {
 
+    private static final Set<String> DIRECTIVE_NAMES;
+    private static final Set<String> BLOCK_DIRECTIVES;
+    private static final Set<String> LINE_DIRECTIVES;
+
+    static {
+        Set<String> blocks = new HashSet<>();
+        blocks.add("define");
+        blocks.add("foreach");
+        blocks.add("literal");
+        blocks.add("macro");
+
+        Set<String> lines = new HashSet<>();
+        lines.add("break");
+        lines.add("evaluate");
+        lines.add("include");
+        lines.add("parse");
+        lines.add("stop");
+
+        Set<String> directives = new HashSet<>();
+        directives.addAll(blocks);
+        directives.addAll(lines);
+        DIRECTIVE_NAMES = Collections.unmodifiableSet(directives);
+        BLOCK_DIRECTIVES = Collections.unmodifiableSet(blocks);
+        LINE_DIRECTIVES = Collections.unmodifiableSet(lines);
+    }
+
     private String directiveName = "";
 
 
@@ -65,4 +95,22 @@ public final class ASTDirective extends AbstractVmNode {
         return directiveName;
     }
 
+    boolean isDirective() {
+        assert directiveName != null; // directive name must be set before
+        return DIRECTIVE_NAMES.contains(directiveName);
+    }
+
+    // block macro call of type: #@foobar($arg1 $arg2) astBody #end
+    boolean isBlock() {
+        assert directiveName != null; // directive name must be set before
+        return directiveName.startsWith("@")
+                || BLOCK_DIRECTIVES.contains(directiveName);
+    }
+
+    boolean isLine() {
+        assert directiveName != null; // directive name must be set before
+        return LINE_DIRECTIVES.contains(directiveName)
+                // not a real directive, but maybe a Velocimacro
+                || !isDirective();
+    }
 }
