@@ -26,6 +26,7 @@ Those APIs are not intended to be used by clients, and will be hidden or removed
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
 *   {% jdoc vm::lang.vm.VmTokenManager %}
+*   {% jdoc java::lang.java.JavaTokenManager %}
 
 ### External Contributions
 
