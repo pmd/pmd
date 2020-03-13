@@ -115,7 +115,7 @@ final class NodeUtils {
      * @param t
      * @return A node literal.
      */
-    public static String tokenLiteral(final JavaccToken t) {
+    static String tokenLiteral(final JavaccToken t) {
         // Look at kind of token and return "" when it's a multiline comment
         if (t.kind == VmTokenKinds.MULTI_LINE_COMMENT) {
             return "";
