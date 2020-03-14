@@ -21,6 +21,8 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 
 ### Fixed Issues
 
+*   apex
+    *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
 *   java
     *   [#2268](https://github.com/pmd/pmd/issues/2268): \[java] Improve TypeHelper resilience
 *   java-errorprone
@@ -41,6 +43,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 *   [#2253](https://github.com/pmd/pmd/pull/2253): \[modelica] Remove duplicated dependencies - [Piotrek Żygieło](https://github.com/pzygielo)
 *   [#2256](https://github.com/pmd/pmd/pull/2256): \[doc] Corrected XML attributes in release notes - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#2276](https://github.com/pmd/pmd/pull/2276): \[java] AppendCharacterWithCharRule ignore literals in expressions - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#2312](https://github.com/pmd/pmd/pull/2312): \[apex] Update ApexCRUDViolation Rule - [Joshua S Arquilevich](https://github.com/jarquile)
 
 {% endtocmaker %}
 
