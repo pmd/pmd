@@ -31,5 +31,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 ### External Contributions
 
+*   [#2353](https://github.com/pmd/pmd/pull/2353): \[plsql] xmlforest with optional AS - [Piotr Szymanski](https://github.com/szyman23)
+
 {% endtocmaker %}
 
