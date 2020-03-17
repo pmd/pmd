@@ -1,33 +1,28 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.cpp;
+package net.sourceforge.pmd.lang.cpp.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.cpp.ast.CppParserTokenManager;
 
 /**
  * C++ Token Manager implementation.
- *
- * @deprecated This is internal API
  */
-@Deprecated
 @InternalApi
-public class CppTokenManager implements TokenManager {
-    private final CppParserTokenManager tokenManager;
+public final class CppTokenManager implements TokenManager {
+    private final CppParserImplTokenManager tokenManager;
 
     /**
      * Creates a new C++ Token Manager from the given source code.
      *
-     * @param source
-     *            the source code
+     * @param source the source code
      */
     public CppTokenManager(Reader source) {
-        tokenManager = new CppParserTokenManager(CppCharStream.newCppCharStream(source));
+        tokenManager = new CppParserImplTokenManager(CppCharStream.newCppCharStream(source));
     }
 
     @Override
@@ -37,6 +32,6 @@ public class CppTokenManager implements TokenManager {
 
     @Override
     public void setFileName(String fileName) {
-        CppParserTokenManager.setFileName(fileName);
+        CppParserImplTokenManager.setFileName(fileName);
     }
 }

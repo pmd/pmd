@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.cpp;
+package net.sourceforge.pmd.lang.cpp.ast;
 
 import static org.junit.Assert.assertEquals;
 
