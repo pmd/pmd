@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
@@ -25,7 +24,6 @@ import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -128,7 +126,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             int classWmc = (int) MetricsUtil.computeMetric(JavaClassMetricKey.WMC, node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
-                int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);
+                int classHighest = (int) MetricsUtil.computeStatistics(JavaOperationMetricKey.CYCLO, node.getOperations(), cycloOptions).getMax();
 
                 String[] messageParams = {PrettyPrintingUtil.kindName(node),
                                           node.getSimpleName(),

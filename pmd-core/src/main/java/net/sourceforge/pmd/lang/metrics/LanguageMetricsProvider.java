@@ -10,7 +10,6 @@ import java.util.Map;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
 
 
 /**
@@ -29,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  * @since 6.11.0
  */
 @Experimental
-public interface LanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> {
+public interface LanguageMetricsProvider<T extends Node, O extends Node> {
 
     /**
      * Returns a list of all supported type metric keys
@@ -57,27 +56,6 @@ public interface LanguageMetricsProvider<T extends QualifiableNode, O extends Qu
      * type, otherwise returns null.
      */
     O asOperationNode(Node anyNode);
-
-
-    /**
-     * Like {@link MetricsComputer#computeForType(MetricKey, QualifiableNode, boolean, MetricOptions, MetricMemoizer)},
-     * but performs no memoisation.
-     */
-    double computeForType(MetricKey<T> key, T node, MetricOptions options);
-
-
-    /**
-     * Like {@link MetricsComputer#computeForOperation(MetricKey, QualifiableNode, boolean, MetricOptions, MetricMemoizer)}
-     * but performs no memoisation.
-     */
-    double computeForOperation(MetricKey<O> key, O node, MetricOptions options);
-
-
-    /**
-     * Like {@link MetricsComputer#computeWithResultOption(MetricKey, QualifiableNode, boolean, MetricOptions, ResultOption, ProjectMemoizer)}
-     * but performs no memoisation.
-     */
-    double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption option);
 
 
     /**

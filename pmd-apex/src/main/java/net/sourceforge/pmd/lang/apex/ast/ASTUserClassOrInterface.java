@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 import apex.jorje.semantic.ast.AstNode;
 
 /**
@@ -17,6 +21,15 @@ public interface ASTUserClassOrInterface<T extends AstNode> extends ApexQualifia
      * @return The type kind of this declaration.
      */
     TypeKind getTypeKind();
+
+
+    /**
+     * Returns the (non-synthetic) methods defined in this type.
+     */
+    @NonNull
+    default NodeStream<ASTMethod> getMethods() {
+        return children(ASTMethod.class).filterNot(it -> it.getImage().matches("(<clinit>|<init>|clone)"));
+    }
 
 
     /**

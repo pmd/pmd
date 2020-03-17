@@ -33,47 +33,40 @@ public final class MetricsUtil {
         return true;
     }
 
-    public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, ResultOption resultOption) {
-        return computeAggregate(key, ops, MetricOptions.emptyOptions(), resultOption);
+
+    /**
+     * Computes statistics for the results of a metric over a sequence of nodes.
+     *
+     * @param key The metric to compute
+     * @param ops List of nodes for which to compute the metric
+     *
+     * @return Statistics for the value of the metric over all the nodes
+     */
+    public static <O extends Node> DoubleSummaryStatistics computeStatistics(MetricKey<? super O> key, Iterable<? extends O> ops) {
+        return computeStatistics(key, ops, MetricOptions.emptyOptions());
     }
 
     /**
-     * Computes an aggregate result for a metric, identified with a {@link ResultOption}.
+     * Computes statistics for the results of a metric over a sequence of nodes.
      *
-     * @param key          The metric to compute
-     * @param ops          List of nodes for which to aggregate the metric
-     * @param options      The options of the metric
-     * @param resultOption The type of aggregation to perform
+     * @param key     The metric to compute
+     * @param ops     List of nodes for which to compute the metric
+     * @param options The options of the metric
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
+     * @return Statistics for the value of the metric over all the nodes
      */
-    public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, MetricOptions options, ResultOption resultOption) {
+    public static <O extends Node> DoubleSummaryStatistics computeStatistics(MetricKey<? super O> key,
+                                                                             Iterable<? extends O> ops,
+                                                                             MetricOptions options) {
 
 
         Objects.requireNonNull(key, NULL_KEY_MESSAGE);
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(ops, NULL_NODE_MESSAGE);
-        Objects.requireNonNull(resultOption, "The result option must not be null");
 
-
-        DoubleSummaryStatistics stats =
-            StreamSupport.stream(ops.spliterator(), false)
-                         .filter(key::supports)
-                         .collect(Collectors.summarizingDouble(op -> computeMetric(key, op, options)));
-
-        // note these operations coalesce Double.NaN
-        // (if any value is NaN, the result is NaN)
-        switch (resultOption) {
-        case SUM:
-            return stats.getSum();
-        case HIGHEST:
-            double max = stats.getMax();
-            return max == Double.NEGATIVE_INFINITY ? 0 : max;
-        case AVERAGE:
-            return stats.getAverage();
-        default:
-            throw new IllegalArgumentException("Unknown result option " + resultOption);
-        }
+        return StreamSupport.stream(ops.spliterator(), false)
+                            .filter(key::supports)
+                            .collect(Collectors.summarizingDouble(op -> computeMetric(key, op, options)));
     }
 
     /**

@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
@@ -92,11 +91,6 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
         JavaMetricsProvider() {
             super(ASTAnyTypeDeclaration.class, MethodLikeNode.class);
-        }
-
-        @Override
-        protected List<MethodLikeNode> findOps(ASTAnyTypeDeclaration astAnyTypeDeclaration) {
-            return JavaMetrics.findOps(astAnyTypeDeclaration);
         }
 
         @Override

@@ -10,8 +10,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.ast.QualifiedName;
-
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
 
@@ -20,7 +18,7 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
  *
  * @author Clément Fournier
  */
-public final class ApexQualifiedName implements QualifiedName {
+public final class ApexQualifiedName {
 
 
     private final String nameSpace;
@@ -55,13 +53,21 @@ public final class ApexQualifiedName implements QualifiedName {
     }
 
 
-    @Override
+    /**
+     * Returns true if the resource addressed by this qualified name is a class.
+     *
+     * @return true if the resource addressed by this qualified name is a class.
+     */
     public boolean isClass() {
         return operation == null;
     }
 
 
-    @Override
+    /**
+     * Returns true if the resource addressed by this qualified name is an operation.
+     *
+     * @return true if the resource addressed by this qualified name is an operation.
+     */
     public boolean isOperation() {
         return operation != null;
     }
@@ -85,7 +91,12 @@ public final class ApexQualifiedName implements QualifiedName {
     }
 
 
-    @Override
+    /**
+     * Returns the qualified name of the class the resource is located in. If this instance addresses a class, returns
+     * this instance.
+     *
+     * @return The qualified name of the class
+     */
     public ApexQualifiedName getClassName() {
         if (isClass()) {
             return this;

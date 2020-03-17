@@ -10,14 +10,12 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -140,7 +138,10 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
             String valueReport = String.valueOf(classValue);
 
             if (opKey != null) {
-                int highest = (int) ApexMetrics.get(opKey, node, metricOptions, ResultOption.HIGHEST);
+                int highest = (int) MetricsUtil.computeStatistics(opKey, node.getMethods(), metricOptions).getMax();
+                if (highest == Double.NEGATIVE_INFINITY) {
+                    highest = 0;
+                }
                 valueReport += " highest " + highest;
             }
             if (classValue >= reportLevel) {

@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
@@ -31,8 +30,8 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
  */
 public class ProjectMemoizerTest extends BaseNonParserTest {
 
-    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
-    private MetricKey<MethodLikeNode> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKey.of("null", new RandomClassMetric());
+    private MetricKey<MethodLikeNode> opMetricKey = MetricKey.of("null", new RandomOperationMetric());
 
 
     @Test

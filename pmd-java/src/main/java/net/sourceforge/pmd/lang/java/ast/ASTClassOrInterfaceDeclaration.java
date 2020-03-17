@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 

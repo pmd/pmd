@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
-
 /**
  * @author Clément Fournier
  */
-public interface ApexQualifiableNode extends QualifiableNode {
+public interface ApexQualifiableNode {
 
-    @Override
     ApexQualifiedName getQualifiedName();
 }

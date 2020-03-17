@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
@@ -59,11 +58,6 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
             return Arrays.asList(ApexClassMetricKey.values());
         }
 
-
-        @Override
-        protected List<ASTMethod> findOps(ASTUserClassOrInterface<?> astUserClassOrInterface) {
-            return ApexMetrics.findOps(astUserClassOrInterface);
-        }
 
         @Override
         public List<ApexOperationMetricKey> getAvailableOperationMetrics() {
