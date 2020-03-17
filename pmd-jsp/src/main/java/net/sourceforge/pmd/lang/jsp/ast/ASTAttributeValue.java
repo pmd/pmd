@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public class ASTAttributeValue extends AbstractJspNode {
+public final class ASTAttributeValue extends AbstractJspNode {
+
     ASTAttributeValue(int id) {
         super(id);
     }

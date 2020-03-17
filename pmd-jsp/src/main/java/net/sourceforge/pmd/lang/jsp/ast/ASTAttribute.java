@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAttribute extends AbstractJspNode {
+public final class ASTAttribute extends AbstractJspNode {
 
     private String name;
 

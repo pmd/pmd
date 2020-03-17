@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTCompilationUnit extends AbstractJspNode implements RootNode {
+public final class ASTCompilationUnit extends AbstractJspNode implements RootNode {
+
     ASTCompilationUnit(int id) {
         super(id);
     }

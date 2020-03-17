@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public class ASTCommentTag extends AbstractJspNode {
+public final class ASTCommentTag extends AbstractJspNode {
+
     ASTCommentTag(int id) {
         super(id);
     }

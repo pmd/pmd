@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTJspDirectiveAttribute extends AbstractJspNode {
+public final class ASTJspDirectiveAttribute extends AbstractJspNode {
 
     private String name;
     private String value;

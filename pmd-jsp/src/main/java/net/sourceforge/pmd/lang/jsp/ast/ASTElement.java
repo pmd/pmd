@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTElement extends AbstractJspNode {
+public final class ASTElement extends AbstractJspNode {
 
     /**
      * Name of the element-tag. Cannot be null.

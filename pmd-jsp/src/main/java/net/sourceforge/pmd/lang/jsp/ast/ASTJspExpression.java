@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public class ASTJspExpression extends AbstractJspNode {
+public final class ASTJspExpression extends AbstractJspNode {
+
     ASTJspExpression(int id) {
         super(id);
     }
+
     @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

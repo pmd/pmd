@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTJspDocument extends AbstractJspNode {
 
-public class ASTJspDocument extends AbstractJspNode {
     ASTJspDocument(int id) {
         super(id);
     }

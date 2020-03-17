@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTDoctypeExternalId extends AbstractJspNode {
+public final class ASTDoctypeExternalId extends AbstractJspNode {
 
     /**
      * URI of the external entity. Cannot be null.
