@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS 7.5</a>
  */
-public final class ASTImportDeclaration extends AbstractJavaNode {
+public final class ASTImportDeclaration extends AbstractJavaNode implements ASTTopLevelDeclaration {
 
     private boolean isImportOnDemand;
     private boolean isStatic;

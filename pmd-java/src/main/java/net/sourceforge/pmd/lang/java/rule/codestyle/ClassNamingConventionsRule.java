@@ -7,15 +7,14 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -65,12 +64,11 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         // A class without declarations shouldn't be reported
         boolean hasAny = false;
 
-        for (ASTAnyTypeBodyDeclaration decl : classNode.getDeclarations()) {
-            JavaNode declNode = decl.getDeclarationNode();
+        for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
             if (declNode instanceof ASTFieldDeclaration
                 || declNode instanceof ASTMethodDeclaration) {
 
-                hasAny = isNonPrivate(decl) && !isMainMethod(decl);
+                hasAny = isNonPrivate(declNode) && !isMainMethod(declNode);
                 if (!((AccessNode) declNode).isStatic()) {
                     return false;
                 }
@@ -85,17 +83,17 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return hasAny;
     }
 
-    private boolean isNonPrivate(ASTAnyTypeBodyDeclaration decl) {
-        return !((AccessNode) decl.getDeclarationNode()).isPrivate();
+    private boolean isNonPrivate(ASTBodyDeclaration decl) {
+        return !((AccessNode) decl).isPrivate();
     }
 
 
-    private boolean isMainMethod(ASTAnyTypeBodyDeclaration bodyDeclaration) {
-        if (!(bodyDeclaration.getDeclarationNode() instanceof ASTMethodDeclaration)) {
+    private boolean isMainMethod(ASTBodyDeclaration bodyDeclaration) {
+        if (!(bodyDeclaration instanceof ASTMethodDeclaration)) {
             return false;
         }
 
-        ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration.getDeclarationNode();
+        ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration;
 
         return decl.isStatic()
                 && "main".equals(decl.getName())

@@ -1,9 +1,13 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+@Deprecated
+@InternalApi
 public abstract class AbstractSelectStatement extends AbstractPLSQLNode {
 
     private boolean distinct;

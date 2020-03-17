@@ -444,6 +444,12 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return null;
     }
 
+
+    @Deprecated
+    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
+        return null;
+    }
+
     @Deprecated
     public Object visit(ASTStatementExpression node, Object data) {
         return null;

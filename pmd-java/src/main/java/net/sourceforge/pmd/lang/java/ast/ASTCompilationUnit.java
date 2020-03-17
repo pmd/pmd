@@ -69,7 +69,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
      * compilation unit.
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
-        return children(ASTTypeDeclaration.class).children(ASTAnyTypeDeclaration.class);
+        return children(ASTAnyTypeDeclaration.class);
     }
 
 

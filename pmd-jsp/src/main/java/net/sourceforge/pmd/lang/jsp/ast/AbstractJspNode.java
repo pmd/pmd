@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
+@InternalApi
+@Deprecated
 public class AbstractJspNode extends AbstractJjtreeNode<JspNode> implements JspNode {
 
     protected JspParser parser;

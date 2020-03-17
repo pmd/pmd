@@ -92,7 +92,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
      */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!targetTypename().equals(node.getNameDeclaration().getTypeImage())) {
+        if (node.getNameDeclaration() == null || !targetTypename().equals(node.getNameDeclaration().getTypeImage())) {
             return data;
         }
 

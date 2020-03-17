@@ -13,7 +13,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class PythonTokenizerTest extends AbstractTokenizerTest {
@@ -40,13 +39,13 @@ public class PythonTokenizerTest extends AbstractTokenizerTest {
 
     @Test
     public void testIgnoreBetweenSpecialComments() throws IOException {
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("import logging" + PMD.EOL
-                + "# CPD-OFF" + PMD.EOL
-                + "logger = logging.getLogger('django.request')" + PMD.EOL
-                + "class BaseHandler(object):" + PMD.EOL
-                + "    def __init__(self):" + PMD.EOL
-                + "        self._request_middleware = None" + PMD.EOL
-                + "        # CPD-ON" + PMD.EOL
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("import logging\n"
+                + "# CPD-OFF\n"
+                + "logger = logging.getLogger('django.request')\n"
+                + "class BaseHandler(object):\n"
+                + "    def __init__(self):\n"
+                + "        self._request_middleware = None\n"
+                + "        # CPD-ON\n"
         ));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens);
@@ -56,9 +55,9 @@ public class PythonTokenizerTest extends AbstractTokenizerTest {
 
     @Test
     public void testBackticks() throws IOException {
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("test = 'hello'" + PMD.EOL
-                + "quoted = `test`" + PMD.EOL
-                + "print quoted" + PMD.EOL
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("test = 'hello'\n"
+                + "quoted = `test`\n"
+                + "print quoted\n"
         ));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens); // should not result in parse error

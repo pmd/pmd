@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
+ * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
  *
  * </pre>
  */
@@ -31,12 +31,4 @@ public final class ASTClassOrInterfaceBody extends AbstractJavaNode implements A
         visitor.visit(this, data);
     }
 
-
-    public boolean isAnonymousInnerClass() {
-        return getParent() instanceof ASTAllocationExpression;
-    }
-
-    public boolean isEnumChild() {
-        return getParent() instanceof ASTEnumConstant;
-    }
 }

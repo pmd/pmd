@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
-import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
@@ -117,16 +116,6 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             // removed because of incompatibilities with current AST
             // new DataFlowFacade().initializeWith(new JavaDataFlowHandler(), (ASTCompilationUnit) rootNode);
-        }
-    },
-
-    /**
-     * Multi file analysis.
-     */
-    MULTIFILE("Multifile analysis") {
-        @Override
-        public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
-            new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
         }
     };
 

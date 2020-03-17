@@ -27,6 +27,8 @@ public interface ASTAnyTypeDeclaration
             JavaQualifiableNode,
             AccessNode,
             TypeParamOwnerNode,
+            ASTBodyDeclaration,
+            ASTTopLevelDeclaration,
             FinalizableNode {
 
     @Override
@@ -130,8 +132,8 @@ public interface ASTAnyTypeDeclaration
      *
      * @return The member declarations declared in this type declaration
      */
-    default NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getBody().children(ASTAnyTypeBodyDeclaration.class);
+    default NodeStream<ASTBodyDeclaration> getDeclarations() {
+        return getBody().getDeclarations();
     }
 
 
@@ -154,7 +156,7 @@ public interface ASTAnyTypeDeclaration
      * class or annotation.
      */
     default boolean isNested() {
-        return getParent() instanceof ASTAnyTypeBodyDeclaration;
+        return getParent() instanceof ASTTypeBody;
     }
 
 
@@ -174,7 +176,7 @@ public interface ASTAnyTypeDeclaration
      * Returns true if this type is declared at the top-level of a file.
      */
     default boolean isTopLevel() {
-        return getParent() instanceof ASTTypeDeclaration;
+        return getParent() instanceof ASTCompilationUnit;
     }
 
 

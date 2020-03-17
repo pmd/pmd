@@ -13,18 +13,18 @@ options {
   USER_CHAR_STREAM=true;
 }
 
-PARSER_BEGIN(PythonParser)
+PARSER_BEGIN(PythonParserImpl)
 
 package net.sourceforge.pmd.lang.python.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class PythonParser {
+public class PythonParserImpl {
 
 }
 
-PARSER_END(PythonParser)
+PARSER_END(PythonParserImpl)
 
 SKIP :
 {
@@ -175,110 +175,49 @@ MORE : /* Strings */
 |   < (["r", "R"])? "\"\"\"" > :  IN_STRING23
 }
 
-<IN_STRING11> TOKEN : { <SINGLE_STRING: "'"> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_STRING21> TOKEN : { <SINGLE_STRING2: "\""> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_STRING13> TOKEN : { <TRIPLE_STRING: "'''"> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_STRING23> TOKEN : { <TRIPLE_STRING2: "\"\"\""> {
-    matchedToken.image = image.toString(); } : DEFAULT}
+<IN_STRING11> TOKEN : { <SINGLE_STRING: "'">        : DEFAULT}
+<IN_STRING21> TOKEN : { <SINGLE_STRING2: "\"">      : DEFAULT}
+<IN_STRING13> TOKEN : { <TRIPLE_STRING: "'''">      : DEFAULT}
+<IN_STRING23> TOKEN : { <TRIPLE_STRING2: "\"\"\"">  : DEFAULT}
 
-<IN_BSTRING11> TOKEN : { <SINGLE_BSTRING: "'"> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_BSTRING21> TOKEN : { <SINGLE_BSTRING2: "\""> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_BSTRING13> TOKEN : { <TRIPLE_BSTRING: "'''"> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_BSTRING23> TOKEN : { <TRIPLE_BSTRING2: "\"\"\""> {
-    matchedToken.image = image.toString(); } : DEFAULT}
+<IN_BSTRING11> TOKEN : { <SINGLE_BSTRING: "'">      : DEFAULT}
+<IN_BSTRING21> TOKEN : { <SINGLE_BSTRING2: "\"">    : DEFAULT}
+<IN_BSTRING13> TOKEN : { <TRIPLE_BSTRING: "'''">    : DEFAULT}
+<IN_BSTRING23> TOKEN : { <TRIPLE_BSTRING2: "\"\"\"">: DEFAULT}
 
-<IN_USTRING11> TOKEN : { <SINGLE_USTRING: "'"> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_USTRING21> TOKEN : { <SINGLE_USTRING2: "\""> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_USTRING13> TOKEN : { <TRIPLE_USTRING: "'''"> {
-    matchedToken.image = image.toString(); } : DEFAULT}
-<IN_USTRING23> TOKEN : { <TRIPLE_USTRING2: "\"\"\""> {
-    matchedToken.image = image.toString(); } : DEFAULT}
+<IN_USTRING11> TOKEN : { <SINGLE_USTRING: "'">      : DEFAULT}
+<IN_USTRING21> TOKEN : { <SINGLE_USTRING2: "\"">    : DEFAULT}
+<IN_USTRING13> TOKEN : { <TRIPLE_USTRING: "'''">    : DEFAULT}
+<IN_USTRING23> TOKEN : { <TRIPLE_USTRING2: "\"\"\"">: DEFAULT}
 
-<IN_STRING11> MORE:
-{
-    <"\\\r\n">           { image.setLength(image.length()-3); } : IN_STRING1NLC
-|   <("\\" ("\n"|"\r"))> { image.setLength(image.length()-2); } : IN_STRING1NLC
+
+<IN_STRING11, IN_USTRING11, IN_BSTRING11> MORE: {
+     "\\'"
+}
+<IN_STRING21, IN_USTRING21, IN_BSTRING21> MORE: {
+    "\\\""
 }
 
-<IN_STRING21> MORE:
+<IN_STRING11, IN_STRING21,
+ IN_USTRING11, IN_USTRING21,
+ IN_BSTRING11, IN_BSTRING21> MORE:
 {
-    <"\\\r\n">           { image.setLength(image.length()-3); } : IN_STRING2NLC
-|   <("\\" ("\n"|"\r"))> { image.setLength(image.length()-2); } : IN_STRING2NLC
+    // escaping a newline ignores it, this is handled by the token document
+    "\\\r\n" | "\\\n" | "\\\r"
+    | "\\\\"
+    | < ~["\n","\r"] >
 }
 
-<IN_USTRING11> MORE:
-{
-    <"\\\r\n">           { image.setLength(image.length()-3); } : IN_USTRING1NLC
-|   <("\\" ("\n"|"\r"))> { image.setLength(image.length()-2); } : IN_USTRING1NLC
-}
-
-<IN_USTRING21> MORE:
-{
-    <"\\\r\n">           { image.setLength(image.length()-3); } : IN_USTRING2NLC
-|   <("\\" ("\n"|"\r"))> { image.setLength(image.length()-2); } : IN_USTRING2NLC
-}
-
-<IN_BSTRING11> MORE:
-{
-    <"\\\r\n">           { image.setLength(image.length()-3); } : IN_BSTRING1NLC
-|   <("\\" ("\n"|"\r"))> { image.setLength(image.length()-2); } : IN_BSTRING1NLC
-}
-
-<IN_BSTRING21> MORE:
-{
-    <"\\\r\n">           { image.setLength(image.length()-3); } : IN_BSTRING2NLC
-|   <("\\" ("\n"|"\r"))> { image.setLength(image.length()-2); } : IN_BSTRING2NLC
-}
-
-<IN_STRING1NLC> MORE:
-{
- <""> : IN_STRING11
-}
-
-<IN_STRING2NLC> MORE:
-{
- <""> : IN_STRING21
-}
-
-<IN_USTRING1NLC> MORE:
-{
- <""> : IN_USTRING11
-}
-
-<IN_USTRING2NLC> MORE:
-{
- <""> : IN_USTRING21
-}
-
-<IN_BSTRING1NLC> MORE:
-{
- <""> : IN_BSTRING11
-}
-
-<IN_BSTRING2NLC> MORE:
-{
- <""> : IN_BSTRING21
-}
-
-<IN_STRING11, IN_USTRING11, IN_BSTRING11> MORE: { <("\\" ("\\"|"'")) | ~["\n","\r"]> }
-<IN_STRING21, IN_USTRING21, IN_BSTRING21> MORE: { <("\\" ("\\"|"\"")) | ~["\n","\r"]> }
+// NLs are normalized in triple-quoted strings
 <IN_STRING13, IN_STRING23, IN_USTRING13, IN_USTRING23, IN_BSTRING13, IN_BSTRING23> MORE:
 {
-    <"\r\n"> {
+    "\r\n" {
         int l = image.length();
         image.setLength(l-1);
         image.setCharAt(l-2, '\n');
     }
-|   <"\n">
-|   <"\r"> { image.setCharAt(image.length()-1, '\n'); }
-|   <~["\n","\r"]>
-|   <"\\" ~["\n","\r"]>
+|   "\n"
+|   "\r" { image.setCharAt(image.length()-1, '\n'); }
+|   < ~["\n","\r"] >
+|   < "\\" ~["\n","\r"] >
 }

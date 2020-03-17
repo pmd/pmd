@@ -94,9 +94,8 @@ To specify a ruleset, simply edit the previous configuration:
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
                     <rulesets>
-                        <ruleset>/rulesets/java/braces.xml</ruleset>
-                        <ruleset>/rulesets/java/naming.xml</ruleset>
-                        <ruleset>d:\rulesets\strings.xml</ruleset>
+                        <ruleset>/rulesets/java/quickstart.xml</ruleset>
+                        <ruleset>d:\rulesets\my-ruleset.xml</ruleset>
                         <ruleset>http://localhost/design.xml</ruleset>
                     </rulesets>
                 </configuration>

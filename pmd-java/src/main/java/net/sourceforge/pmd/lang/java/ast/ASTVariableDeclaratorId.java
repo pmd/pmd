@@ -67,6 +67,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
 
+    /**
+     * Note: this might be <code>null</code> in certain cases.
+     */
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }
@@ -179,41 +182,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return getImage();
     }
 
-
-    /**
-     * Returns true if the variable declared by this node is declared final.
-     * Doesn't account for the "effectively-final" nuance. Resource
-     * declarations are implicitly final.
-     */
-    @Override
-    public boolean isFinal() {
-        if (isResourceDeclaration()) {
-            // this is implicit even if "final" is not explicitly declared.
-            return true;
-        } else if (getParent() instanceof ASTLambdaParameter) {
-            return ((ASTLambdaParameter) getParent()).isFinal();
-        } else if (isPatternBinding()) {
-            // implicitly like final, assignment of a pattern binding is not allowed
-            return true;
-        }
-
-        if (getParent() instanceof ASTFormalParameter) {
-            // This accounts for exception parameters too for now
-            return ((ASTFormalParameter) getParent()).isFinal();
-        }
-
-        Node grandpa = getNthParent(2);
-
-        if (grandpa instanceof ASTLocalVariableDeclaration) {
-            return ((ASTLocalVariableDeclaration) grandpa).isFinal();
-        } else if (grandpa instanceof ASTFieldDeclaration) {
-            return ((ASTFieldDeclaration) grandpa).isFinal();
-        }
-
-        throw new IllegalStateException("All cases should be handled");
-    }
-
-
     /**
      * Returns true if this declarator id declares a resource in a try-with-resources statement.
      */
@@ -234,7 +202,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
-        return isLocalVariableTypeInferred() || isLambdaTypeInferred();
+        return getTypeNode() == null;
     }
 
     /**
@@ -244,23 +212,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     @Experimental
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
-    }
-
-
-    private boolean isLocalVariableTypeInferred() {
-        if (isResourceDeclaration()) {
-            // covers "var" in try-with-resources
-            return getParent().getFirstChildOfType(ASTType.class) == null;
-        } else if (getNthParent(2) instanceof ASTLocalVariableDeclaration) {
-            // covers "var" as local variables and in for statements
-            return getNthParent(2).getFirstChildOfType(ASTType.class) == null;
-        }
-
-        return false;
-    }
-
-    private boolean isLambdaTypeInferred() {
-        return getParent() instanceof ASTLambdaParameter && ((ASTLambdaParameter) getParent()).isTypeInferred();
     }
 
 
@@ -300,29 +251,8 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     @Nullable
     public ASTType getTypeNode() {
-        Node parent = getParent();
-        if (parent instanceof ASTFormalParameter) {
-            // ASTResource is a subclass of ASTFormal parameter for now but this will change
-            // and this will need to be corrected here, see #998
-            return ((ASTFormalParameter) parent).getTypeNode();
-        } else if (parent instanceof ASTCatchParameter) {
-            return ((ASTCatchParameter) parent).getTypeNode();
-        } else if (parent instanceof ASTLambdaParameter) {
-            return ((ASTLambdaParameter) parent).getTypeNode();
-        } else if (isTypeInferred()) {
-            // lambda expression with lax types. The type is inferred...
-            return null;
-        } else if (getParent() instanceof ASTTypeTestPattern) {
-            return ((ASTTypeTestPattern) getParent()).getTypeNode();
-        } else if (getParent() instanceof ASTRecordComponent) {
-            return ((ASTRecordComponent) getParent()).getTypeNode();
-        } else {
-            Node n = parent.getParent();
-            if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
-                return n.getFirstChildOfType(ASTType.class);
-            }
-        }
-        return null;
+        AccessNode parent = getModifierOwnerParent();
+        return parent.children(ASTType.class).first();
     }
 
     // @formatter:off

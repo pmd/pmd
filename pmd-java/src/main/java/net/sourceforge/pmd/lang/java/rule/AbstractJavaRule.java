@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
@@ -230,4 +231,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return null;
     }
 
+    @Deprecated
+    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
+        return null;
+    }
 }

@@ -23,7 +23,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 @Experimental
-public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTAnyTypeBodyDeclaration {
+public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration {
 
     ASTRecordConstructorDeclaration(int id) {
         super(id);
@@ -37,11 +37,6 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaNode impl
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-    @Override
-    public ASTRecordConstructorDeclaration getDeclarationNode() {
-        return this;
     }
 
     public ASTBlock getBody() {

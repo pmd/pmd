@@ -82,6 +82,10 @@ public class Java14PreviewTest {
         Assert.assertEquals(2, components.size());
         Assert.assertEquals("x", components.get(0).getVarId().getImage());
         Assert.assertEquals("y", components.get(1).getVarId().getImage());
+        Assert.assertNull(components.get(0).getVarId().getNameDeclaration().getAccessNodeParent());
+        // TODO: type resolution for record components
+        // Assert.assertEquals(Integer.TYPE, components.get(0).getVarId().getNameDeclaration().getType());
+        Assert.assertEquals("int", components.get(0).getVarId().getNameDeclaration().getTypeImage());
     }
 
     @Test(expected = ParseException.class)
@@ -108,8 +112,8 @@ public class Java14PreviewTest {
         Assert.assertEquals(0, getComponent(complex, 0).getDeclaredAnnotations().count());
         Assert.assertEquals(1, getComponent(complex, 1).getDeclaredAnnotations().count());
         Assert.assertEquals(2, complex.getDeclarations().count());
-        Assert.assertTrue(complex.getDeclarations().get(0).getDeclarationNode() instanceof ASTConstructorDeclaration);
-        Assert.assertTrue(complex.getDeclarations().get(1).getDeclarationNode() instanceof ASTRecordDeclaration);
+        Assert.assertTrue(complex.getDeclarations().get(0) instanceof ASTConstructorDeclaration);
+        Assert.assertTrue(complex.getDeclarations().get(1) instanceof ASTRecordDeclaration);
 
         ASTRecordDeclaration nested = recordDecls.get(1);
         Assert.assertEquals("Nested", nested.getSimpleName());

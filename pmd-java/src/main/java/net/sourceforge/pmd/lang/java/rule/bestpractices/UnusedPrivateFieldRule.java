@@ -10,14 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -87,15 +86,8 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         return false;
     }
 
-    private boolean usedInOuter(NameDeclaration decl, JavaNode body) {
-        List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = body
-                .findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        List<ASTEnumConstant> enumConstants = body.findChildrenOfType(ASTEnumConstant.class);
-        List<JavaNode> nodes = new ArrayList<>();
-        nodes.addAll(classOrInterfaceBodyDeclarations);
-        nodes.addAll(enumConstants);
-
-        for (JavaNode node : nodes) {
+    private boolean usedInOuter(NameDeclaration decl, ASTTypeBody body) {
+        for (JavaNode node : body.getDeclarations()) {
             for (ASTPrimarySuffix primarySuffix : node.findDescendantsOfType(ASTPrimarySuffix.class, true)) {
                 if (decl.getImage().equals(primarySuffix.getImage())) {
                     return true; // No violation

@@ -838,7 +838,7 @@ void ModifierList():
 /*
  * Declaration syntax follows.
  */
-void TypeDeclaration():
+void TypeDeclaration() #void:
 {}
 {
   ModifierList()
@@ -987,7 +987,7 @@ void ClassOrInterfaceBody():
   "{" ( ClassOrInterfaceBodyDeclaration() )* "}"
 }
 
-void ClassOrInterfaceBodyDeclaration():
+void ClassOrInterfaceBodyDeclaration() #void:
 {}
 { LOOKAHEAD(["static"] "{" ) Initializer()
 |  ModifierList()
@@ -2411,7 +2411,7 @@ void AnnotationTypeBody():
   "{" ( AnnotationTypeMemberDeclaration() )* "}"
 }
 
-void AnnotationTypeMemberDeclaration():
+void AnnotationTypeMemberDeclaration() #void:
 {}
 {
  ModifierList()

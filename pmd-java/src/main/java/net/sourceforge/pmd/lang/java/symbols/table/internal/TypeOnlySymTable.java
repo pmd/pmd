@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -82,9 +81,7 @@ final class TypeOnlySymTable extends AbstractSymbolTable {
     }
 
     static NodeStream<ASTAnyTypeDeclaration> nestedClassesOf(ASTAnyTypeDeclaration node) {
-        return node.getDeclarations()
-                   .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
-                   .filterIs(ASTAnyTypeDeclaration.class);
+        return node.getDeclarations().filterIs(ASTAnyTypeDeclaration.class);
     }
 
     static NodeStream<ASTAnyTypeDeclaration> localClassesOf(ASTBlock node) {

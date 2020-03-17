@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -13,6 +12,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -67,14 +67,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                                                                                 : node.getEnclosingType();
 
         if (enclosing == null) {
-            List<ASTAnyTypeDeclaration> tds = node.getRoot().getTypeDeclarations().toList();
-
-            enclosing = tds.stream()
-                           .filter(AccessNode::isPublic)
-                           .findFirst()
-                           .orElseGet(
-                               () -> tds.isEmpty() ? null : tds.get(0)
-                           );
+            NodeStream<ASTAnyTypeDeclaration> tds = node.getRoot().getTypeDeclarations();
+            enclosing = tds.first(AccessNode::isPublic);
+            if (enclosing == null) {
+                enclosing = tds.first();
+            }
         }
 
         if (enclosing == null) {
