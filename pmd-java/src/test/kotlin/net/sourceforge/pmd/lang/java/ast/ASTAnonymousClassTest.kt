@@ -46,7 +46,7 @@ class ASTAnonymousClassTest : ParserTestSpec({
                             val anon = it
 
                             child<ASTClassOrInterfaceBody> {
-                                child<ASTClassOrInterfaceBodyDeclaration>(ignoreChildren = true) {
+                                child<ASTMethodDeclaration>(ignoreChildren = true) {
                                     it::getEnclosingType shouldBe anon
                                 }
                             }

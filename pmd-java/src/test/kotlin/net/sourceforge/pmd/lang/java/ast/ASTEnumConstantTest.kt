@@ -114,9 +114,7 @@ class ASTEnumConstantTest : ParserTestSpec({
                     enumBody {
                         it::hasTrailingComma shouldBe false
                         it::hasSeparatorSemi shouldBe true
-                        child<ASTClassOrInterfaceBodyDeclaration> {
-                            child<ASTEmptyDeclaration> {}
-                        }
+                        child<ASTEmptyDeclaration> {}
                     }
                 }
             }

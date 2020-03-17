@@ -31,6 +31,7 @@ public interface ASTMethodOrConstructorDeclaration
     extends MethodLikeNode,
             AccessNode,
             SignedNode<ASTMethodOrConstructorDeclaration>,
+            ASTBodyDeclaration,
             TypeParamOwnerNode {
 
 

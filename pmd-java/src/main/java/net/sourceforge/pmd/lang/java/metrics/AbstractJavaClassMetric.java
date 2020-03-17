@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -107,10 +106,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
 
 
     private <T extends Node> List<T> getDeclarationsOfType(ASTAnyTypeDeclaration node, Class<T> tClass) {
-        return node.getDeclarations()
-                   .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
-                   .filterIs(tClass)
-                   .toList();
+        return node.getDeclarations().filterIs(tClass).toList();
     }
 
 

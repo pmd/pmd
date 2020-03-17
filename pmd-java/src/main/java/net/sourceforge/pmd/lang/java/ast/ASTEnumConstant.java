@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class ASTEnumConstant extends AbstractJavaNode
     implements Annotatable,
                AccessNode,
+               ASTBodyDeclaration,
                InternalInterfaces.VariableIdOwner {
 
     ASTEnumConstant(int id) {

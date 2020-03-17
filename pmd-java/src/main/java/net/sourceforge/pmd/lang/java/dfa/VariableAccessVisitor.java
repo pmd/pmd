@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -40,9 +39,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     public void compute(ASTMethodDeclaration node) {
-        if (node.getParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
-            this.computeNow(node);
-        }
+        this.computeNow(node);
     }
 
     public void compute(ASTConstructorDeclaration node) {

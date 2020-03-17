@@ -15,7 +15,6 @@ public final class ASTAnnotationTypeBody extends AbstractJavaNode implements AST
         return visitor.visit(this, data);
     }
 
-
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
