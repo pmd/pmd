@@ -274,11 +274,11 @@ public class Foo {
 	<test-code>
 		<description>Integer is safe in query</description>
 		<expected-problems>0</expected-problems>
-		<code><![CDATA[		
+		<code><![CDATA[
 public class Foo {
-	public void test1(String objName, String limit) {
-		Integer nLimit = Integer.valueOf(limit);
-		List<SObject> res = Database.query('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);	
+	public void test1(String objName, String lim) { // "limit" is a kw
+		Integer nLimit = Integer.valueOf(lim);
+		List<SObject> res = Database.query('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);
 	}
 }
 		]]></code>
@@ -316,10 +316,10 @@ public class Foo {
 			isn't
 		</description>
 		<expected-problems>1</expected-problems>
-		<code><![CDATA[		
+		<code><![CDATA[
 public class Foo {
 	public void test1(String name) {
-		List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases');	
+		List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases'));
 	}
 }
 		]]></code>

@@ -21,8 +21,6 @@ They are held here to allow people to include them as they see fit within their 
     <rule ref="category/java/errorprone.xml/SuspiciousOctalEscape" deprecated="true" />
 
     <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" deprecated="true" />
-    <rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" deprecated="true" />
-    <rule ref="category/java/codestyle.xml/AvoidPrefixingMethodParameters" deprecated="true" />
     <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode" deprecated="true" />
     <rule ref="category/java/codestyle.xml/CallSuperInConstructor" deprecated="true" />
     <rule ref="category/java/codestyle.xml/DefaultPackage" deprecated="true" />

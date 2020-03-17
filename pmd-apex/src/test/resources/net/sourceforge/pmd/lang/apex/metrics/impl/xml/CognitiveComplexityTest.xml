@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>If statements have complexity 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n == 1) {
+                  return 'one';
+                }
+
+                return 'not one';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Nested if statements bump complexity level</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2
+                    return 'one';
+                  }
+
+                  return 'positive';
+                }
+
+                return 'negative or 0';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Non nested if statements don't incur a penalty</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n > 0) {           // +1
+                  return 'positive';
+                }
+
+                if (n == 0) {          // +1
+                  return 'zero';
+                }
+
+                if (n < 0) {           // +1
+                  return 'negative';
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Else-if blocks count as non-nested</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n > 0) {           // +1
+                  return 'positive';
+                } else if (n < 0) {    // +1
+                  return 'negative';
+                } else {               // +1
+                  return 'zero';
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>For loops increment nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                for (integer i = 0; i < 10; i++) { // +1
+                  if (i == 3) {                    // +2
+                    return 'three';
+                  }
+                }
+
+                return 'done';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Foreach loops increment nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer[] myInts = new Integer[] {1, 2, 3};
+                for (Integer i : myInts) {         // +1
+                  if (i == 3) {                    // +2
+                    return 'three';
+                  }
+                }
+
+                return 'done';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Continue statements increase complexity</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer[] myInts = new Integer[] {1, 2, 3};
+                for (Integer i : myInts) {         // +1
+                  if (i == 3) {                    // +2
+                    continue;                      // +1
+                  }
+                }
+
+                return 'done';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Break statements increase complexity</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer[] myInts = new Integer[] {1, 2, 3};
+                for (Integer i : myInts) {         // +1
+                  if (i == 3) {                    // +2
+                    break;                      // +1
+                  }
+                }
+
+                return 'done';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>While statements increase nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo() {
+                Integer i = 1;
+                Integer n = 0;
+                while (n < 100) {  // +1
+                  i = i * n;
+                  if (i > 1000) {  // +2
+                    return 'big';
+                  }
+                }
+
+                return 'small';
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Only the catch statement increases nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {
+                try {
+                  Merchandise__c m = new Merchandise__c();
+                  insert m;
+                  if (someCondition()) {                           // +1
+                    return;
+                  }
+                } catch(DmlException e) {                          // +1
+                  if (someCondition()) {                           // +2
+                    return;
+                  }
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Do-while loops cause nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo()' has value 5.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {
+                Integer n = 0;
+                do {                            // +1
+                  if (n == 3) {                 // +2
+                    System.debug('n is 3');
+                  } else {                      // +2
+                    System.debug('n is not 3');
+                  }
+                  n++;
+                } while (n < 100);
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Ternary operators cause nesting</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              Integer foo(Integer n) {
+                return n < 0 ?          // +1
+                  -1 : n > 0 ?          // +2
+                  1 : 0;
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Boolean operators</description>
+        <expected-problems>6</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#a(Integer)' has value 1.</message>
+            <message>'c__Foo#b(Integer)' has value 1.</message>
+            <message>'c__Foo#c(Integer)' has value 1.</message>
+            <message>'c__Foo#d(Boolean,Boolean,Boolean,Boolean,Boolean,Boolean)' has value 3.</message>
+            <message>'c__Foo#e(Boolean,Boolean,Boolean)' has value 2.</message>
+            <message>'c__Foo#f()' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              Boolean a(Integer n) {
+                return n > 0 && n > 1;          // +1
+              }
+
+              Boolean b(Integer n) {
+                return n > 0 && n > 1 && n > 2; // +1
+              }
+
+              Boolean c(Integer n) {
+                return n > 0 || n < 0;          // +1
+              }
+
+              Boolean d(Boolean a, Boolean b, Boolean c, Boolean d, Boolean e, Boolean f) {
+                return (a
+                    && b && c)                 // +1
+                    || (d || e)                // +1
+                    && f;                      // +1
+              }
+
+              Boolean e(Boolean a, Boolean b, Boolean c) {
+                return a
+                    &&                        // +1
+                    !(b && c);                // +1
+              }
+
+              Boolean f() {
+                Boolean a = true && false;    // +1
+                return a && true;             // +1
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Recursion bumps complexity value</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              Integer foo(Integer n) {
+                if (n == 0 || n == 1) { // +2
+                  return 1;
+                }
+
+                return n * foo(n - 1); // +1
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo(Integer n) {
+                switch on n {                       // +1
+                  when 1 {
+                    System.debug('when block 1');
+                  }
+                  when 2, 3, 4, 5 {
+                    if (n <= 3) {                   // +2
+                      System.debug('n <= 3');
+                    }
+
+                    System.debug('when block 2');
+                  }
+                  when else {
+                    System.debug('default');
+                  }
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+</test-data>

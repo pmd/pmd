@@ -63,6 +63,7 @@
    <rule ref="category/apex/design.xml/CyclomaticComplexity">
       <priority>3</priority>
    </rule>
+   <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
 
    <!-- PERFORMANCE -->
    <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
@@ -123,6 +124,7 @@
    </rule>
 <!--    <rule ref="category/apex/bestpractices.xml/ApexAssertionsShouldIncludeMessage"/> -->
 <!--    <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation"/> -->
+<!--    <rule ref="category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"/> -->
 
    <!-- SECURITY -->
    <rule ref="category/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">

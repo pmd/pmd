@@ -15,21 +15,15 @@ The Naming Ruleset contains rules regarding preferred usage of names and identif
     <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName" deprecated="true" />
 
-    <rule ref="category/java/codestyle.xml/AbstractNaming" deprecated="true" />
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns" deprecated="true" />
     <rule ref="category/java/codestyle.xml/BooleanGetMethodName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ClassNamingConventions" deprecated="true" />
     <rule ref="category/java/codestyle.xml/GenericsNaming" deprecated="true" />
     <rule ref="category/java/codestyle.xml/LongVariable" deprecated="true" />
     <rule ref="category/java/codestyle.xml/MethodNamingConventions" deprecated="true" />
-    <rule ref="category/java/codestyle.xml/MIsLeadingVariableName" name="MisleadingVariableName" deprecated="true" /> <!-- also renamed -->
-    <!-- providing also the new name, since RuleSetFactoryCompatibility will change existing rulesets to use the new rulename -->
-    <rule ref="category/java/codestyle.xml/MIsLeadingVariableName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/NoPackage" deprecated="true" />
     <rule ref="category/java/codestyle.xml/PackageCase" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ShortClassName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ShortMethodName" deprecated="true" />
     <rule ref="category/java/codestyle.xml/ShortVariable" deprecated="true" />
-    <rule ref="category/java/codestyle.xml/SuspiciousConstantFieldName" deprecated="true" />
-    <rule ref="category/java/codestyle.xml/VariableNamingConventions" deprecated="true" />
 </ruleset>

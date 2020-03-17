@@ -14,7 +14,7 @@ public class Foo {
     @isTest
     static void methodATest() {
         System.debug('I am a bad debug!'); // not good
-        System.debug(LoggingLevel.WARN, 'I am a good warning.') // good
+        System.debug(LoggingLevel.WARN, 'I am a good warning.'); // good
     }
 }
 		]]></code>
@@ -44,7 +44,7 @@ public class Foo {
 public class Foo {
     @isTest
     static void methodATest() {
-        System.debug(LoggingLevel.DEBUG, 'I am a good debug.') // good
+        System.debug(LoggingLevel.DEBUG, 'I am a good debug.'); // good
     }
 }
         ]]></code>

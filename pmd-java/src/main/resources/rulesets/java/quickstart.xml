@@ -80,7 +80,6 @@
     <!-- OTHER -->
     <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" /> -->
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
-    <!-- <rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" /> -->
     <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
     <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
     <!-- <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode"/>-->
@@ -103,7 +102,6 @@
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" /> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn" /> -->
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
-    <!-- <rule ref="category/java/codestyle.xml/SuspiciousConstantFieldName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
@@ -274,7 +272,7 @@
     <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop"/>
     <rule ref="category/java/errorprone.xml/EmptySwitchStatements"/>
     <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock"/>
-    <rule ref="category/java/errorprone.xml/EmptyTryBlock"/> 
+    <rule ref="category/java/errorprone.xml/EmptyTryBlock"/>
     <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/>
 
 

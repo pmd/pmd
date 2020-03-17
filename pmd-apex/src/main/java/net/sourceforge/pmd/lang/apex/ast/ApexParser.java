@@ -52,7 +52,7 @@ public class ApexParser {
             ApexRootNode<Compilation> treeRoot = (ApexRootNode) treeBuilder.build(astRoot);
             treeRoot.setNoPmdComments(treeBuilder.getSuppressMap());
             return treeRoot;
-        } catch (IOException e) {
+        } catch (IOException | apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }
     }

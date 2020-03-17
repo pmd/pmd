@@ -20,7 +20,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     }
 
     @Parameters
-    public static Collection data() {
+    public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "1.3",
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.3"), },
@@ -48,6 +48,10 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
                                         LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("13"), },
             { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "13-preview",
                                             LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("13-preview"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "14",
+                                                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("14"), },
+            { JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, "14-preview",
+                                                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("14-preview"), },
 
             // this one won't be found: case sensitive!
             { "JAVA", "JAVA", "1.7", null, }, });

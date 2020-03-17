@@ -209,7 +209,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (currentLookup.peek() == null) {
+        if (currentLookup.isEmpty() || currentLookup.peek() == null) {
             return super.visit(node, data);
         }
 

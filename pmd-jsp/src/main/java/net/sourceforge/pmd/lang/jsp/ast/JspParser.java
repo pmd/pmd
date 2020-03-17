@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
@@ -16,7 +18,11 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 /**
  * Adapter for the JspParser.
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@InternalApi
+@Deprecated
 public class JspParser extends AbstractParser {
 
     public JspParser(ParserOptions parserOptions) {

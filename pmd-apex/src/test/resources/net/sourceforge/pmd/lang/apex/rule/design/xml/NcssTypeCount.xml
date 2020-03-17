@@ -119,7 +119,7 @@ public class SomeClass {
      * Comment
      */
     public void doSomething() {
-        System.debug("hello world");
+        System.debug('hello world');
     }
 
     /** Field comment */
