@@ -1393,10 +1393,64 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
+<h5 id="in-asts">In ASTs</h5>
+
+<p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated in the <strong>Visualforce</strong> and <strong>PLSQL</strong> ASTs:</p>
+
+<ul>
+  <li>Manual instantiation of nodes. <strong>Constructors of node classes are deprecated</strong> and
+marked <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/annotation/InternalApi.html#"><code>InternalApi</code></a>. Nodes should only be obtained from the parser,
+which for rules, means that they never need to instantiate node themselves.
+Those constructors will be made package private with 7.0.0.</li>
+  <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
+and will be hidden in version 7.0.0. You should not couple your code to them.
+    <ul>
+      <li>In the meantime you should use interfaces like <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.23.0/net/sourceforge/pmd/lang/vf/ast/VfNode.html#"><code>VfNode</code></a> or
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
+to refer to nodes generically.</li>
+      <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
+    </ul>
+  </li>
+  <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
+We will make those setters package private with 7.0.0.</li>
+  <li>The implementation classes of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/Parser.html#"><code>Parser</code></a> (eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.23.0/net/sourceforge/pmd/lang/vf/VfParser.html#"><code>VfParser</code></a>) are deprecated and should not be used directly.
+Use <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getParser(ParserOptions)"><code>LanguageVersionHandler#getParser</code></a> instead.</li>
+  <li>The implementation classes of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/TokenManager.html#"><code>TokenManager</code></a> (eg <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.23.0/net/sourceforge/pmd/lang/vf/VfTokenManager.html#"><code>VfTokenManager</code></a>) are deprecated and should not be used outside of our implementation.
+<strong>This also affects CPD-only modules</strong>.</li>
+</ul>
+
+<p>These deprecations are added to the following language modules in this release.
+Please look at the package documentation to find out the full list of deprecations.</p>
+<ul>
+  <li>Visualforce: <strong><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.23.0/net/sourceforge/pmd/lang/vf/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vf.ast</code></a></strong></li>
+  <li>PL/SQL: <strong><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-plsql/6.23.0/net/sourceforge/pmd/lang/plsql/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.plsql.ast</code></a></strong></li>
+</ul>
+
+<p>These deprecations have already been rolled out in a previous version for the
+following languages:</p>
+<ul>
+  <li>Java: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.23.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a></li>
+  <li>Java Server Pages: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.23.0/net/sourceforge/pmd/lang/jsp/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.jsp.ast</code></a></li>
+  <li>Velocity Template Language: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.23.0/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a></li>
+</ul>
+
+<p>Outside of these packages, these changes also concern the following TokenManager
+implementations, and their corresponding Parser if it exists (in the same package):</p>
+
 <ul>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.23.0/net/sourceforge/pmd/lang/vm/VmTokenManager.html#"><code>VmTokenManager</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.23.0/net/sourceforge/pmd/lang/java/JavaTokenManager.html#"><code>JavaTokenManager</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.23.0/net/sourceforge/pmd/lang/python/PythonTokenManager.html#"><code>PythonTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.23.0/net/sourceforge/pmd/lang/vf/VfTokenManager.html#"><code>VfTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-plsql/6.23.0/net/sourceforge/pmd/lang/plsql/PLSQLTokenManager.html#"><code>PLSQLTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.23.0/net/sourceforge/pmd/lang/jsp/JspTokenManager.html#"><code>JspTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-modelica/6.23.0/net/sourceforge/pmd/lang/modelica/ModelicaTokenManager.html#"><code>ModelicaTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.23.0/net/sourceforge/pmd/lang/cpp/CppTokenManager.html#"><code>CppTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-javascript/6.23.0/net/sourceforge/pmd/lang/ecmascript5/Ecmascript5TokenManager.html#"><code>Ecmascript5TokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.23.0/net/sourceforge/pmd/lang/matlab/MatlabTokenManager.html#"><code>MatlabTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.23.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCTokenManager.html#"><code>ObjectiveCTokenManager</code></a></li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
