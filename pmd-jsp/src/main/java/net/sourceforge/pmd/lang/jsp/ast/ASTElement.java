@@ -59,9 +59,7 @@ public final class ASTElement extends AbstractJspNode {
         return name;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -73,15 +71,11 @@ public final class ASTElement extends AbstractJspNode {
         return unclosed;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setUnclosed(boolean unclosed) {
+    void setUnclosed(boolean unclosed) {
         this.unclosed = unclosed;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setEmpty(boolean empty) {
+    void setEmpty(boolean empty) {
         this.empty = empty;
     }
 

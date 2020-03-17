@@ -30,9 +30,7 @@ public final class ASTDoctypeExternalId extends AbstractJspNode {
         return uri;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setUri(String uri) {
+    void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -44,9 +42,7 @@ public final class ASTDoctypeExternalId extends AbstractJspNode {
         return null == publicId ? "" : publicId;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setPublicId(String publicId) {
+    void setPublicId(String publicId) {
         this.publicId = publicId;
     }
 

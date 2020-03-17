@@ -21,9 +21,7 @@ public final class ASTJspDirective extends AbstractJspNode {
         return name;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
