@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTAttributeValue extends AbstractVfNode {
+public final class ASTAttributeValue extends AbstractVfNode {
+
     ASTAttributeValue(int id) {
         super(id);
     }

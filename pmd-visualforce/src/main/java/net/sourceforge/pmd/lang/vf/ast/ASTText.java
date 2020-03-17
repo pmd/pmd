@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTText extends AbstractVfNode {
+public final class ASTText extends AbstractVfNode {
 
     ASTText(int id) {
         super(id);

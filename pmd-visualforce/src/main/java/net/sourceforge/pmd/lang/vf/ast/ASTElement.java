@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTElement extends AbstractVfNode {
+public final class ASTElement extends AbstractVfNode {
 
     /**
      * Name of the element-tag. Cannot be null.

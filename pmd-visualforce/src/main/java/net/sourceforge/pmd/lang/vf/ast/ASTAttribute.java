@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAttribute extends AbstractVfNode {
+public final class ASTAttribute extends AbstractVfNode {
 
     private String name;
 

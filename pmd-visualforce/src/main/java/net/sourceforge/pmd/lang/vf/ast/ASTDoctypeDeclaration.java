@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTDoctypeDeclaration extends AbstractVfNode {
+public final class ASTDoctypeDeclaration extends AbstractVfNode {
 
     /**
      * Name of the document type. Cannot be null.

@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTDotExpression extends AbstractVfNode {
+public final class ASTDotExpression extends AbstractVfNode {
+
     ASTDotExpression(int id) {
         super(id);
     }

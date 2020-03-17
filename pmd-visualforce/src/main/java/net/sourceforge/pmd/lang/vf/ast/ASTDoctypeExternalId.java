@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTDoctypeExternalId extends AbstractVfNode {
+public final class ASTDoctypeExternalId extends AbstractVfNode {
 
     /**
      * URI of the external entity. Cannot be null.

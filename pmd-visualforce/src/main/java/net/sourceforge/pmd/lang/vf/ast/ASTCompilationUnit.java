@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTCompilationUnit extends AbstractVfNode implements RootNode {
+public final class ASTCompilationUnit extends AbstractVfNode implements RootNode {
+
     ASTCompilationUnit(int id) {
         super(id);
     }

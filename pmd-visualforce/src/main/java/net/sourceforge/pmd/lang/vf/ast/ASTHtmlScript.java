@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public class ASTHtmlScript extends AbstractVfNode {
+public final class ASTHtmlScript extends AbstractVfNode {
+
     ASTHtmlScript(int id) {
         super(id);
     }
