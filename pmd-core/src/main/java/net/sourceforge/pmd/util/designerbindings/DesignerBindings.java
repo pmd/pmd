@@ -12,8 +12,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
-import com.sun.istack.internal.Nullable;
-
 /**
  * Gathers some services to customise how language implementations bind
  * to the designer.
@@ -41,7 +39,6 @@ public interface DesignerBindings {
      * <p>Order of the collection is unimportant, it's sorted using
      * {@link AdditionalInfo#getAlphaSortKey()}.
      */
-    @Nullable
     Collection<AdditionalInfo> getAdditionalInfo(Node node);
 
 
@@ -57,6 +54,10 @@ public interface DesignerBindings {
         public AdditionalInfo(String alphaKey, String display) {
             this.alphaKey = alphaKey;
             this.display = display;
+        }
+
+        public AdditionalInfo(String display) {
+            this(display, display);
         }
 
         /**
@@ -96,7 +97,7 @@ public interface DesignerBindings {
      *
      * <p>This method is meant to break the designer's dependency on {@link Node#getImage()}.
      */
-    @Nullable
+    //    @Nullable
     Attribute getMainAttribute(Node node);
 
 
@@ -112,7 +113,7 @@ public interface DesignerBindings {
      * in the treeview and other relevant places. Returns null if no icon
      * is applicable.
      */
-    @Nullable
+    //    @Nullable
     TreeIconId getIcon(Node node);
 
 
@@ -125,7 +126,7 @@ public interface DesignerBindings {
         METHOD,
         CONSTRUCTOR,
         FIELD,
-        LOCAL_VAR
+        VARIABLE
     }
 
 

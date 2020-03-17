@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
+import net.sourceforge.pmd.lang.java.internal.JavaDesignerBindings;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
@@ -34,6 +35,7 @@ import net.sourceforge.pmd.lang.java.xpath.TypeIsFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
@@ -151,6 +153,10 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
         };
     }
 
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return JavaDesignerBindings.INSTANCE;
+    }
 
     @Override
     public DFAGraphRule getDFAGraphRule() {
