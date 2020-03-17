@@ -48,7 +48,7 @@ The following usages are now deprecated in the **Visualforce** and **PLSQL** AST
     We will make those setters package private with 7.0.0.
 *   The implementation classes of {% jdoc core::lang.Parser %} (eg {% jdoc visualforce::lang.vf.VfParser %}) are deprecated and should not be used directly.
     Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
-*   The implementation classes of {% jdoc core::lang.ast.TokenManager %} (eg {% jdoc visualforce::lang.vf.VfTokenManager %}) are deprecated and should not be used outside of our implementation.
+*   The implementation classes of {% jdoc core::lang.TokenManager %} (eg {% jdoc visualforce::lang.vf.VfTokenManager %}) are deprecated and should not be used outside of our implementation.
     **This also affects CPD-only modules**.
 
 These deprecations are added to the following language modules in this release.
