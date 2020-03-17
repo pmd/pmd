@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTAstRoot;
-import net.sourceforge.pmd.lang.ecmascript5.Ecmascript5TokenManager;
+import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenManager;
 
 /**
  * Adapter for the EcmascriptParser.
