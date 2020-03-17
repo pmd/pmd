@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -91,7 +92,15 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0) instanceof ASTReferenceType;
     }
 
+    private boolean isRecordComponent() {
+        return node.getParent() instanceof ASTRecordComponent;
+    }
+
     public AccessNode getAccessNodeParent() {
+        if (isRecordComponent()) {
+            return null;
+        }
+
         if (node.getParent() instanceof ASTFormalParameter || node.getParent() instanceof ASTLambdaExpression) {
             return (AccessNode) node.getParent();
         }
@@ -103,6 +112,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     private TypeNode getTypeNode() {
+        if (isRecordComponent()) {
+            return (TypeNode) node.getParent().getFirstChildOfType(ASTType.class).getChild(0);
+        }
         if (isPrimitiveType()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).getChild(0);
         }

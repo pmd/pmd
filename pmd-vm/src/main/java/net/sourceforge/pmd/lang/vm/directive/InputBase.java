@@ -26,7 +26,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  *
  * @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
  * @since 1.4
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public abstract class InputBase extends Directive {
     /**
      * Return name of this directive.

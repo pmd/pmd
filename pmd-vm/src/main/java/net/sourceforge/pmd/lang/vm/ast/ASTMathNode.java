@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,13 +36,19 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author Nathan Bubna
  * @version $Id: ASTMathNode.java 517553 2007-03-13 06:09:58Z wglass $
  */
+@InternalApi
+@Deprecated
 public abstract class ASTMathNode extends AbstractVmNode {
     protected boolean strictMode = false;
 
+    @InternalApi
+    @Deprecated
     public ASTMathNode(final int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTMathNode(final VmParser p, final int id) {
         super(p, id);
     }

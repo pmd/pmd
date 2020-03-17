@@ -18,7 +18,8 @@ public class StringToStringRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isExactlyAny(node.getNameDeclaration(), String.class)
+        if (node.getNameDeclaration() == null
+            || !TypeHelper.isExactlyAny(node.getNameDeclaration(), String.class)
                 && !TypeHelper.isExactlyAny(node.getNameDeclaration(), String[].class)) {
             return data;
         }
