@@ -28,13 +28,6 @@ This is a {{ site.pmd.release_type }} release.
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
-*   {% jdoc vm::lang.vm.VmTokenManager %}
-*   {% jdoc java::lang.java.JavaTokenManager %}
-*   {% jdoc python::lang.python.PythonTokenManager %}
-*   {% jdoc vf::lang.vf.VfTokenManager %}
-*   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
-
-
 ##### In ASTs
 
 As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
