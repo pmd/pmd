@@ -3,6 +3,8 @@ package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with this
@@ -28,17 +30,14 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @version $Id: ASTStringLiteral.java 705297 2008-10-16 17:59:24Z nbubna $
  */
 public class ASTStringLiteral extends AbstractVmNode {
-    /**
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTStringLiteral(final int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTStringLiteral(final VmParser p, final int id) {
         super(p, id);
     }
@@ -50,7 +49,10 @@ public class ASTStringLiteral extends AbstractVmNode {
      * that the line and column position reported reflects the error position
      * within the template and not just relative to the error position within
      * the string literal.
+     * 
+     * @deprecated for removal with PMD 7.0.0
      */
+    @Deprecated
     public void adjTokenLineNums(final AbstractVmNode node) {
         Token tok = node.getFirstToken();
         // Test against null is probably not neccessary, but just being safe
@@ -74,7 +76,10 @@ public class ASTStringLiteral extends AbstractVmNode {
 
     /**
      * @since 1.6
+     * @deprecated for removal with PMD 7.0.0
      */
+    @InternalApi
+    @Deprecated
     public static String unescape(final String string) {
         int u = string.indexOf("\\u");
         if (u < 0) {

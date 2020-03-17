@@ -45,7 +45,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
     @Override
     public VisitorStarter getSymbolFacade(ClassLoader classLoader) {
-        return VisitorStarter.DUMMY;
+        return getSymbolFacade();
     }
 
     @Override

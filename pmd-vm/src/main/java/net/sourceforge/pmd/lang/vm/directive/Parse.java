@@ -41,7 +41,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:Christoph.Reck@dlr.de">Christoph Reck</a>
  * @version $Id: Parse.java 928253 2010-03-27 19:39:04Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Parse extends InputBase {
 
     /**

@@ -19,4 +19,9 @@ public class ExecuteImmediateTest extends AbstractPLSQLParserTst {
     public void parseExecuteImmediate1047b() {
         plsql.parseResource("ExecuteImmediate1047b.pls");
     }
+
+    @Test
+    public void parseExecuteImmediateString() {
+        plsql.parseResource("ExecuteImmediateString.pls");
+    }
 }

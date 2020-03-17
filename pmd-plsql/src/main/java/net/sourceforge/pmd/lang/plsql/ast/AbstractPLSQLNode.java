@@ -143,8 +143,3 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
         this.scope = scope;
     }
 }
-
-/*
- * JavaCC - OriginalChecksum=3f651517d5069f856891d89230562ac4 (do not edit this
- * line)
- */

@@ -196,4 +196,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Avoid NPE for pattern matching instanceof</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    private String s = "other string";
+
+    public void test() {
+        Object obj = "abc";
+        if (obj instanceof String s) {
+            System.out.println("a) obj == s: " + (obj == s)); // true
+        }
+    }
+}
+        ]]></code>
+        <source-type>java 14-preview</source-type>
+    </test-code>
 </test-data>

@@ -99,7 +99,7 @@ SELECT XMLQuery('declare default element namespace
   FROM DUAL;
 
 SELECT XMLELEMENT("Emp", 
-   XMLFOREST(e.employee_id AS foo, e.last_name, e.salary))
+   XMLFOREST(e.employee_id AS foo, e.last_name last_name, e.salary))
    "Emp Element"
    FROM employees e WHERE employee_id = 204;
 

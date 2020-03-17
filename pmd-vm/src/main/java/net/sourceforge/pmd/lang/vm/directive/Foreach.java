@@ -28,7 +28,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author Daniel Rall
  * @version $Id: Foreach.java 945927 2010-05-18 22:21:41Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Foreach extends Directive {
     /**
      * Return name of this directive.

@@ -58,6 +58,7 @@ public class CsTokenizer extends AntlrTokenizer {
         private final boolean ignoreUsings;
         private boolean discardingUsings = false;
         private boolean discardingNL = false;
+        private boolean discardCurrent = false;
 
         CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings) {
             super(tokenManager);
@@ -71,15 +72,19 @@ public class CsTokenizer extends AntlrTokenizer {
 
         @Override
         protected void analyzeTokens(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+            discardCurrent = false;
             skipUsingDirectives(currentToken, remainingTokens);
         }
 
         private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
-            final int type = currentToken.getType();
-            if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
-                discardingUsings = true;
-            } else if (type == CSharpLexer.SEMICOLON) {
-                discardingUsings = false;
+            if (ignoreUsings) {
+                final int type = currentToken.getType();
+                if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
+                    discardingUsings = true;
+                } else if (type == CSharpLexer.SEMICOLON && discardingUsings) {
+                    discardingUsings = false;
+                    discardCurrent = true;
+                }
             }
         }
 
@@ -147,7 +152,7 @@ public class CsTokenizer extends AntlrTokenizer {
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingUsings || discardingNL;
+            return discardingUsings || discardingNL || discardCurrent;
         }
     }
 }

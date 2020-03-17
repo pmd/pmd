@@ -17,9 +17,9 @@ public class MultipleDDLStatementsTest extends AbstractPLSQLParserTst {
     public void parseDDLCommands() throws Exception {
         ASTInput input = plsql.parseResource("DDLCommands.sql");
         List<ASTDDLCommand> ddlcommands = input.findDescendantsOfType(ASTDDLCommand.class);
-        Assert.assertEquals(4, ddlcommands.size());
+        Assert.assertEquals(6, ddlcommands.size());
         List<ASTComment> comments = input.findDescendantsOfType(ASTComment.class);
-        Assert.assertEquals(3, comments.size());
+        Assert.assertEquals(5, comments.size());
         Assert.assertEquals("'abbreviated job title'", comments.get(0).getFirstChildOfType(ASTStringLiteral.class).getImage());
     }
 }

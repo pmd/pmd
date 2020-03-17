@@ -90,7 +90,7 @@ By far the most common problem is the use of &#x24;{project.version} in a BOM or
   ...
   <dependency>
     ...
-    <version>${project.dependency}</version>
+    <version>${project.version}</version>
   </dependency>
 </project>
 ]]>
