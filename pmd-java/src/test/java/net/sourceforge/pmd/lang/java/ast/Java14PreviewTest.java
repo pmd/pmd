@@ -112,8 +112,8 @@ public class Java14PreviewTest {
         Assert.assertEquals(0, getComponent(complex, 0).getDeclaredAnnotations().count());
         Assert.assertEquals(1, getComponent(complex, 1).getDeclaredAnnotations().count());
         Assert.assertEquals(2, complex.getDeclarations().count());
-        Assert.assertTrue(complex.getDeclarations().get(0).getDeclarationNode() instanceof ASTConstructorDeclaration);
-        Assert.assertTrue(complex.getDeclarations().get(1).getDeclarationNode() instanceof ASTRecordDeclaration);
+        Assert.assertTrue(complex.getDeclarations().get(0) instanceof ASTConstructorDeclaration);
+        Assert.assertTrue(complex.getDeclarations().get(1) instanceof ASTRecordDeclaration);
 
         ASTRecordDeclaration nested = recordDecls.get(1);
         Assert.assertEquals("Nested", nested.getSimpleName());

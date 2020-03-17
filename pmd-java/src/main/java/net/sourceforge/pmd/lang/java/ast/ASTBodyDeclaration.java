@@ -14,6 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * BodyDeclaration ::= {@link ASTAnyTypeDeclaration AnyTypeDeclaration}
  *                   | {@link ASTMethodDeclaration MethodDeclaration}
  *                   | {@link ASTConstructorDeclaration ConstructorDeclaration}
+ *                   | {@link ASTRecordConstructorDeclaration RecordConstructorDeclaration}
  *                   | {@link ASTInitializer Initializer}
  *                   | {@link ASTFieldDeclaration FieldDeclaration}
  *                   | {@link ASTEnumConstant EnumConstant}

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements ASTAnyTypeBodyDeclaration {
+public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements JavaNode {
 
     ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);
