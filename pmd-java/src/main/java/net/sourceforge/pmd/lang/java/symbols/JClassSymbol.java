@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -107,7 +106,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     List<JClassSymbol> getDeclaredClasses();
 
 
-    /** Returns a field with the given name accessed defined in this class. */
+    /** Returns a class with the given name accessed defined in this class. */
     @Nullable
     default JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
@@ -169,13 +168,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
         return null;
     }
-
-
-    /** Returns all methods with the given name declared in this class. */
-    default List<JMethodSymbol> getDeclaredMethods(String name) {
-        return getDeclaredMethods().stream().filter(it -> it.getSimpleName().equals(name)).collect(Collectors.toList());
-    }
-
 
     /**
      * Returns the superclass symbol if it exists. Returns null if this

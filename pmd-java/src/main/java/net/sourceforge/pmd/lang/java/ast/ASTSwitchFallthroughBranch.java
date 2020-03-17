@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A fallthrough switch branch. This contains exactly one label, and zero
@@ -54,8 +54,8 @@ public final class ASTSwitchFallthroughBranch extends AbstractJavaNode
     /**
      * Returns the list of statements dominated by the labels. This list is possibly empty.
      */
-    public List<ASTStatement> getStatements() {
-        return findChildrenOfType(ASTStatement.class);
+    public NodeStream<ASTStatement> getStatements() {
+        return children(ASTStatement.class);
     }
 
 }

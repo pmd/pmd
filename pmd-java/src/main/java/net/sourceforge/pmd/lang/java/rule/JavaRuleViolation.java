@@ -67,7 +67,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                                                                                 : node.getEnclosingType();
 
         if (enclosing == null) {
-
             NodeStream<ASTAnyTypeDeclaration> tds = node.getRoot().getTypeDeclarations();
             enclosing = tds.first(AccessNode::isPublic);
             if (enclosing == null) {

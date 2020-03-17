@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -82,17 +82,11 @@ public interface JSymbolTable {
      * on an implicit receiver in the scope of this symbol table. The returned methods may
      * have different arity and parameter types.
      *
-     * <p>Possibly, looking up a method may involve exploring all the
-     * supertypes of the implicit receiver (and the enclosing classes
-     * and their supertypes, for inner/anonymous classes). Since this
-     * might be costly, the method returns a lazy stream that should be
-     * filtered down to exactly what you want.
-     *
      * @param simpleName Simple name of the method
      *
-     * @return A stream yielding all methods with the given name accessible and applicable to the
-     *     implicit receiver in the scope of this symbol table.
+     * @return A list of all methods with the given name accessible to
+     *     the implicit receiver in the scope of this symbol table
      */
-    Stream<JMethodSymbol> resolveMethodName(String simpleName);
+    List<JMethodSymbol> resolveMethodName(String simpleName);
 
 }

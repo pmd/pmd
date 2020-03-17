@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import java.util.stream.Stream;
+import java.util.Collections;
+import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -49,8 +50,8 @@ final class EmptySymbolTable implements JSymbolTable {
 
 
     @Override
-    public Stream<JMethodSymbol> resolveMethodName(String simpleName) {
-        return Stream.empty();
+    public List<JMethodSymbol> resolveMethodName(String simpleName) {
+        return Collections.emptyList();
     }
 
 

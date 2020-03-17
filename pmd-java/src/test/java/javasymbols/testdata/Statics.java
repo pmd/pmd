@@ -37,6 +37,10 @@ public class Statics {
 
     }
 
+    public static void publicMethod(int i) {
+
+    }
+
 
     public static void publicMethod2() {
 
