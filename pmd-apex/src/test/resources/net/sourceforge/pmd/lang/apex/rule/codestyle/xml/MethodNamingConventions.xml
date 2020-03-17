@@ -34,18 +34,18 @@ public class Foo {
 }
 		]]></code>
     </test-code>
-    
+
     <test-code>
-        <description>#1343 MethodNamingConventions for overrided methods</description>
+        <description>#1343 MethodNamingConventions for overriden methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MethodNamingConventions implements SomeInterface {
-    @Override
-    public void _foo() {}
+    public override void _foo() {}
 }
         ]]></code>
     </test-code>
-    
+
+
     <test-code>
         <description>#25 Method rules should ignore Property Getter/Setter</description>
         <expected-problems>0</expected-problems>
@@ -84,7 +84,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void testMethod test_barFoo() {}
+    testmethod void test_barFoo() {}
 }
 		]]></code>
     </test-code>
@@ -107,7 +107,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     @isTest
-    public static void testMethod() { }
+    public static void testMethod1() { } // "testmethod" is a keyword in apex
     public static void staticMethod() { }
     public void instanceMethod() { }
 }

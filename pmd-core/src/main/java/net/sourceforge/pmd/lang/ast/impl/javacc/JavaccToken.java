@@ -196,6 +196,18 @@ public class JavaccToken implements GenericToken, Comparable<JavaccToken> {
         );
     }
 
+    public JavaccToken withImage(String image) {
+        return new JavaccToken(
+            this.kind,
+            image,
+            this.startInclusive,
+            this.endExclusive,
+            this.document
+        );
+    }
+
+
+
     /**
      * Returns a new token with the given kind, and all other parameters
      * identical to this one.

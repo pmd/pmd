@@ -20,9 +20,9 @@ trigger AccountTrigger on Account (before insert, before update) {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 trigger AccountTrigger on Account (before insert, before update) {
-   foreach ( Account a : Trigger.new ){   
+   for ( Account a : Trigger.new ){
         //Good: Iterate through the trigger.new array instead.
-        system.debug(a);
+        System.debug(a);
    }
 }
 		]]></code>
@@ -40,5 +40,5 @@ class NotATrigger {
 
 		]]></code>
     </test-code>
-    
+
 </test-data>

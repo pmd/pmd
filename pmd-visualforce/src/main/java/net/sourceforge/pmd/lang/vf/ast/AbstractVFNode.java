@@ -1,12 +1,15 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.vf.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
+@Deprecated
+@InternalApi
 public class AbstractVFNode extends AbstractJjtreeNode<VfNode> implements VfNode {
 
     protected VfParser parser;

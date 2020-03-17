@@ -23,7 +23,7 @@ package net.sourceforge.pmd.lang.vm.ast;
 /**
  * This class is responsible for handling the references in VTL ($foo).
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
@@ -32,38 +32,13 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:kjohnson@transparent.com">Kent Johnson</a>
  * @version $Id: ASTReference.java 806597 2009-08-21 15:21:44Z nbubna $
  */
-public class ASTReference extends AbstractVmNode {
+public final class ASTReference extends AbstractVmNode {
     private String rootString;
 
     private String literal = null;
 
-    /**
-     * Indicates if we are running in strict reference mode.
-     */
-    public boolean strictRef = false;
-
-    /**
-     * Indicates if toString() should be called during condition evaluation just
-     * to ensure it does not return null. Check is unnecessary if all toString()
-     * implementations are known to have non-null return values. Disabling the
-     * check will give a performance improval since toString() may be a complex
-     * operation on large objects.
-     */
-    public boolean toStringNullCheck = true;
-
-    /**
-     * @param id
-     */
-    public ASTReference(final int id) {
+    ASTReference(int id) {
         super(id);
-    }
-
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTReference(final VmParser p, final int id) {
-        super(p, id);
     }
 
     @Override
@@ -72,7 +47,7 @@ public class ASTReference extends AbstractVmNode {
     }
 
     /**
-     * Returns the 'root string', the reference key
+     * Returns the 'root string', the reference key.
      *
      * @return the root string.
      */
@@ -86,12 +61,12 @@ public class ASTReference extends AbstractVmNode {
      * literal of the calling arg to make it work nicely when calling arg is
      * null. It seems a bit much, but does keep things consistant.
      *
-     * Note, you can only set the literal once...
+     * <p>Note, you can only set the literal once...
      *
      * @param literal
      *            String to render to when null
      */
-    public void setLiteral(final String literal) {
+    void setLiteral(final String literal) {
         /*
          * do only once
          */

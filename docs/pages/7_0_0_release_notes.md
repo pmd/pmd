@@ -40,6 +40,26 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
 * {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
 
+#### Removed Rules
+
+The following previously deprecated rules have been finally removed:
+
+*   AbstractNaming (java-codestyle)
+*   AvoidFinalLocalVariable (java-codestyle)
+*   AvoidPrefixingMethodParameters (java-codestyle)
+*   ForLoopsMustUseBraces (java-codestyle)
+*   IfElseStmtsMustUseBraces (java-codestyle)
+*   IfStmtsMustUseBraces (java-codestyle)
+*   LoggerIsNotStaticFinal (java-errorprone)
+*   MIsLeadingVariableName (java-codestyle)
+*   ModifiedCyclomaticComplexity (java-design)
+*   StdCyclomaticComplexity (java-design)
+*   SuspiciousConstantFieldName (java-codestyle)
+*   UnsynchronizedStaticDateFormatter (java-multithreading)
+*   VariableNamingConventions (apex-codestyle)
+*   VariableNamingConventions (java-codestyle)
+*   WhileLoopsMustUseBraces (java-codestyle)
+
 ### Fixed Issues
 
 ### API Changes

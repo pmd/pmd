@@ -53,6 +53,8 @@ public abstract class BaseLanguageModule implements Language {
         }
 
         if (isDefault) {
+            assert defaultVersion == null
+                : "Default version already set to " + defaultVersion + ", cannot set it to " + languageVersion;
             defaultVersion = languageVersion;
         }
     }
@@ -112,6 +114,7 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public LanguageVersion getDefaultVersion() {
+        assert defaultVersion != null : "Null default version for language " + this;
         return defaultVersion;
     }
 

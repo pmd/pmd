@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.java.ast.internal;
 
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -27,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
@@ -38,6 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -50,6 +54,8 @@ import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
  * @param <T> Type of object accumulating violations
  */
 public class LanguageLevelChecker<T> {
+
+    private static final Pattern SPACE_ESCAPE_PATTERN = Pattern.compile("(?<!\\\\)\\\\s");
 
     private final int jdkVersion;
     private final boolean preview;
@@ -77,13 +83,13 @@ public class LanguageLevelChecker<T> {
         reportingStrategy.done(accumulator);
     }
 
-    private boolean check(Node node, LanguageFeature message, T acc) {
-        if (message.isAvailable(this.jdkVersion, this.preview)) {
-            return true;
+    private boolean check(Node node, LanguageFeature feature, T acc) {
+        String message = feature.errorMessage(this.jdkVersion, this.preview);
+        if (message != null) {
+            reportingStrategy.report(node, message, acc);
+            return false;
         }
-
-        reportingStrategy.report(node, message.whenUnavailableMessage(), acc);
-        return false;
+        return true;
     }
 
     private static String displayNameLower(String name) {
@@ -101,37 +107,55 @@ public class LanguageLevelChecker<T> {
     }
 
 
-    /** Those are hacked just for the preview features. */
+    /** Those are just for the preview features. */
     private enum PreviewFeature implements LanguageFeature {
-        BREAK__WITH__VALUE_STATEMENTS(12, false),
+        BREAK__WITH__VALUE_STATEMENTS(12, 12, false),
 
-        COMPOSITE_CASE_LABEL(12, true),
-        SWITCH_EXPRESSIONS(12, true),
-        SWITCH_RULES(12, true),
+        COMPOSITE_CASE_LABEL(12, 13, true),
+        SWITCH_EXPRESSIONS(12, 13, true),
+        SWITCH_RULES(12, 13, true),
 
-        TEXT_BLOCK_LITERALS(13, false),
-        YIELD_STATEMENTS(13, false);
+        TEXT_BLOCK_LITERALS(13, 14, false),
+        YIELD_STATEMENTS(13, 13, true),
+
+        /** \s */
+        SPACE_STRING_ESCAPES(14, 14, false),
+        RECORD_DECLARATIONS(14, 14, false),
+        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 14, false);
 
 
-        private final int minJdkVersion;
-        private final boolean alsoAbove;
+        private final int minPreviewVersion;
+        private final int maxPreviewVersion;
+        private final boolean wasStandardized;
 
-        PreviewFeature(int minJdkVersion, boolean alsoAbove) {
-            this.minJdkVersion = minJdkVersion;
-            this.alsoAbove = alsoAbove;
+        PreviewFeature(int minPreviewVersion, int maxPreviewVersion, boolean wasStandardized) {
+            this.minPreviewVersion = minPreviewVersion;
+            this.maxPreviewVersion = maxPreviewVersion;
+            this.wasStandardized = wasStandardized;
         }
 
-        @Override
-        public boolean isAvailable(int jdk, boolean preview) {
-            return preview && (jdk == minJdkVersion || alsoAbove && jdk > minJdkVersion);
-        }
-
 
         @Override
-        public String whenUnavailableMessage() {
-            return StringUtils.capitalize(displayNameLower(name()))
-                + " is a feature of JDK >= " + "Java " + minJdkVersion + " preview"
-                + ", you should select your language version accordingly";
+        public String errorMessage(int jdk, boolean preview) {
+            boolean isStandard = wasStandardized && jdk > maxPreviewVersion;
+            boolean canBePreview = jdk >= minPreviewVersion && jdk <= maxPreviewVersion;
+            boolean isPreview = preview && canBePreview;
+
+            if (isStandard || isPreview) {
+                return null;
+            }
+
+            String message = StringUtils.capitalize(displayNameLower(name()));
+            if (canBePreview) {
+                message += " is a preview feature of JDK " + jdk;
+            } else if (wasStandardized) {
+                message = message + " was only standardized in Java " + (maxPreviewVersion + 1);
+            } else if (minPreviewVersion == maxPreviewVersion) {
+                message += " is a preview feature of JDK " + minPreviewVersion;
+            } else {
+                message += " is a preview feature of JDKs " + minPreviewVersion + " to " + maxPreviewVersion;
+            }
+            return message + ", you should select your language version accordingly";
         }
     }
 
@@ -140,7 +164,8 @@ public class LanguageLevelChecker<T> {
         ASSERT_AS_AN_IDENTIFIER(4, "assert"),
         ENUM_AS_AN_IDENTIFIER(5, "enum"),
         UNDERSCORE_AS_AN_IDENTIFIER(9, "_"),
-        VAR_AS_A_TYPE_NAME(10, "var");
+        VAR_AS_A_TYPE_NAME(10, "var"),
+        RECORD_AS_A_TYPE_NAME(14, "record");
 
         private final int maxJdkVersion;
         private final String reserved;
@@ -151,12 +176,10 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public boolean isAvailable(int jdk, boolean preview) {
-            return jdk < this.maxJdkVersion;
-        }
-
-        @Override
-        public String whenUnavailableMessage() {
+        public String errorMessage(int jdk, boolean preview) {
+            if (jdk < this.maxJdkVersion) {
+                return null;
+            }
             String s = displayNameLower(name());
             String usageType = s.substring(s.indexOf(' ') + 1); // eg "as an identifier"
             return "Since " + LanguageLevelChecker.versionDisplayName(maxJdkVersion) + ", '" + reserved + "'"
@@ -203,13 +226,10 @@ public class LanguageLevelChecker<T> {
 
 
         @Override
-        public boolean isAvailable(int jdk, boolean preview) {
-            return jdk >= this.minJdkLevel;
-        }
-
-
-        @Override
-        public String whenUnavailableMessage() {
+        public String errorMessage(int jdk, boolean preview) {
+            if (jdk >= this.minJdkLevel) {
+                return null;
+            }
             return StringUtils.capitalize(displayNameLower(name()))
                 + " are a feature of " + versionDisplayName(minJdkLevel)
                 + ", you should select your language version accordingly";
@@ -219,10 +239,8 @@ public class LanguageLevelChecker<T> {
 
     interface LanguageFeature {
 
-        boolean isAvailable(int jdk, boolean preview);
-
-
-        String whenUnavailableMessage();
+        @Nullable
+        String errorMessage(int jdk, boolean preview);
     }
 
     private class CheckVisitor extends SideEffectingVisitorAdapter<T> {
@@ -240,10 +258,11 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTLiteral node, T data) {
-            if (jdkVersion != 13 || !preview) {
-                if (node.isTextBlock()) {
-                    check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
-                }
+            if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
+                check(node, PreviewFeature.SPACE_STRING_ESCAPES, data);
+            }
+            if (node.isTextBlock()) {
+                check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
             }
             visitChildren(node, data);
         }
@@ -274,6 +293,12 @@ public class LanguageLevelChecker<T> {
         @Override
         public void visit(ASTSwitchExpression node, T data) {
             check(node, PreviewFeature.SWITCH_EXPRESSIONS, data);
+            visitChildren(node, data);
+        }
+
+        @Override
+        public void visit(ASTRecordDeclaration node, T data) {
+            check(node, PreviewFeature.RECORD_DECLARATIONS, data);
             visitChildren(node, data);
         }
 
@@ -354,6 +379,7 @@ public class LanguageLevelChecker<T> {
             super.visit(node, data);
         }
 
+
         //        @Override
         //        public void visit(ASTNumericLiteral node, T data) {
         //            int base = node.getBase();
@@ -396,6 +422,12 @@ public class LanguageLevelChecker<T> {
         @Override
         public void visit(ASTAssertStatement node, T data) {
             check(node, RegularLanguageFeature.ASSERT_STATEMENTS, data);
+            visitChildren(node, data);
+        }
+
+        @Override
+        public void visit(ASTTypeTestPattern node, T data) {
+            check(node, PreviewFeature.TYPE_TEST_PATTERNS_IN_INSTANCEOF, data);
             visitChildren(node, data);
         }
 
@@ -483,10 +515,13 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTAnyTypeDeclaration node, T data) {
-            if ("var".equals(node.getSimpleName())) {
+            String simpleName = node.getSimpleName();
+            if ("var".equals(simpleName)) {
                 check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);
+            } else if ("record".equals(simpleName)) {
+                check(node, ReservedIdentifiers.RECORD_AS_A_TYPE_NAME, data);
             }
-            checkIdent(node, node.getSimpleName(), data);
+            checkIdent(node, simpleName, data);
             visitChildren(node, data);
         }
 

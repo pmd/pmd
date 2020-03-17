@@ -60,6 +60,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         Node nameNode = node.getTypeNameNode();
         if (nameNode == null || nameNode instanceof ASTPrimitiveType
+                || node.getNameDeclaration() == null
                 || !appliesToClassName(node.getNameDeclaration().getTypeImage())) {
             return data;
         }

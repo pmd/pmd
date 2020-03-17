@@ -1,7 +1,9 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -25,9 +27,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * This class is responsible for handling the pluggable directives in VTL.
  *
- * For example : #foreach()
+ * <p>For example : #foreach()
  *
- * Please look at the Parser.jjt file which is what controls the generation of
+ * <p>Please look at the Parser.jjt file which is what controls the generation of
  * this class.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
@@ -35,22 +37,39 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author <a href="mailto:kav@kav.dk">Kasper Nielsen</a>
  * @version $Id: ASTDirective.java 724825 2008-12-09 18:56:06Z nbubna $
  */
-public class ASTDirective extends AbstractVmNode {
-    private String directiveName = "";
+public final class ASTDirective extends AbstractVmNode {
 
-    /**
-     * @param id
-     */
-    public ASTDirective(final int id) {
-        super(id);
+    private static final Set<String> DIRECTIVE_NAMES;
+    private static final Set<String> BLOCK_DIRECTIVES;
+    private static final Set<String> LINE_DIRECTIVES;
+
+    static {
+        Set<String> blocks = new HashSet<>();
+        blocks.add("define");
+        blocks.add("foreach");
+        blocks.add("literal");
+        blocks.add("macro");
+
+        Set<String> lines = new HashSet<>();
+        lines.add("break");
+        lines.add("evaluate");
+        lines.add("include");
+        lines.add("parse");
+        lines.add("stop");
+
+        Set<String> directives = new HashSet<>();
+        directives.addAll(blocks);
+        directives.addAll(lines);
+        DIRECTIVE_NAMES = Collections.unmodifiableSet(directives);
+        BLOCK_DIRECTIVES = Collections.unmodifiableSet(blocks);
+        LINE_DIRECTIVES = Collections.unmodifiableSet(lines);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
-    public ASTDirective(final VmParser p, final int id) {
-        super(p, id);
+    private String directiveName = "";
+
+
+    ASTDirective(int id) {
+        super(id);
     }
 
     @Override
@@ -62,10 +81,8 @@ public class ASTDirective extends AbstractVmNode {
      * Sets the directive name. Used by the parser. This keeps us from having to
      * dig it out of the token stream and gives the parse the change to
      * override.
-     *
-     * @param str
      */
-    public void setDirectiveName(final String str) {
+    void setDirectiveName(final String str) {
         directiveName = str;
     }
 
@@ -78,14 +95,22 @@ public class ASTDirective extends AbstractVmNode {
         return directiveName;
     }
 
-    /**
-     * @since 1.5
-     */
-    @Deprecated
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).appendSuper(super.toString()).append("directiveName", getDirectiveName())
-                .toString();
+    boolean isDirective() {
+        assert directiveName != null; // directive name must be set before
+        return DIRECTIVE_NAMES.contains(directiveName);
     }
 
+    // block macro call of type: #@foobar($arg1 $arg2) astBody #end
+    boolean isBlock() {
+        assert directiveName != null; // directive name must be set before
+        return directiveName.startsWith("@")
+                || BLOCK_DIRECTIVES.contains(directiveName);
+    }
+
+    boolean isLine() {
+        assert directiveName != null; // directive name must be set before
+        return LINE_DIRECTIVES.contains(directiveName)
+                // not a real directive, but maybe a Velocimacro
+                || !isDirective();
+    }
 }
