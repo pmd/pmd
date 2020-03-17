@@ -125,6 +125,7 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
             <fileset dir="${target}/net/sourceforge/pmd/lang/jsp/ast">
                 <exclude name="AST*.java" />
                 <exclude name="ParseException.java" />
+                <exclude name="*ParserVisitor.java"/>
             </fileset>
         </replaceregexp>
 

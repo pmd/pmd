@@ -145,6 +145,7 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
             <substitution expression="@Deprecated @net.sourceforge.pmd.annotation.InternalApi \0" />
             <fileset dir="${target}/net/sourceforge/pmd/lang/java/ast">
                 <exclude name="AST*.java" />
+                <exclude name="*ParserVisitor.java"/>
             </fileset>
         </replaceregexp>
 
