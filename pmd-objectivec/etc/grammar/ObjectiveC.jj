@@ -15,7 +15,7 @@ options {
   STATIC=false;
 }
 
-PARSER_BEGIN(ObjectiveCParser)
+PARSER_BEGIN(ObjectiveCParserImpl)
 package net.sourceforge.pmd.lang.objectivec.ast;
 
 import java.io.*;
@@ -33,152 +33,9 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
  * Paul Taykalo - vertical tab (\v) and alert (\a) characters are added
  */
 
-public class ObjectiveCParser
-{
+public class ObjectiveCParserImpl {}
 
-   // Simple logging flag
-   private static final boolean verbose = false;
-
-   // HashSet for omitted test cases
-   private static final Set omissions = new HashSet();
-
-   static {
-       /* Foundation */
-       omissions.add("Foundation.h");
-       /* AppKit */
-       omissions.add("AppKit.h");                          /* All #import's */
-       omissions.add("AppKitDefines.h");                   /* All preprocessor */
-       omissions.add("NSSpellServer.h");
-       omissions.add("NSNibDeclarations.h");
-       /* CoreData */
-       omissions.add("CoreData.h");                        /* All #import's */
-       /* CoreFoundation */
-       omissions.add("CoreFoundation.h");                  /* All #import's */
-       /* CoreLocation */
-       omissions.add("CoreLocation.h");                    /* All #import's */
-       /* Quartz Core */
-       omissions.add("CoreAnimation.h");                   /* All #import's */
-       omissions.add("CoreImage.h");                       /* All #import's */
-       omissions.add("CoreVideo.h");                       /* All #import's */
-       omissions.add("CVBase.h");                          /* All #import's */
-       omissions.add("CVBuffer.h");                        /* All #import's */
-       omissions.add("CVDisplayLink.h");                   /* All #import's */
-       omissions.add("CVHostTime.h");                      /* All #import's */
-       omissions.add("CVImageBuffer.h");                   /* All #import's */
-       omissions.add("CVOpenGLBuffer.h");                  /* All #import's */
-       omissions.add("CVOpenGLBufferPool.h");              /* All #import's */
-       omissions.add("CVOpenGLTexture.h");                 /* All #import's */
-       omissions.add("CVOpenGLTextureCache.h");            /* All #import's */
-       omissions.add("CVPixelBuffer.h");                   /* All #import's */
-       omissions.add("CVPixelBufferPool.h");               /* All #import's */
-       omissions.add("CVPixelFormatDescription.h");        /* All #import's */
-       omissions.add("CVReturn.h");                        /* All #import's */
-       omissions.add("QuartzCore.h");                      /* All #import's */
-       /* WebKit */
-       omissions.add("DOM.h");                             /* All #import's */
-       omissions.add("DOMCore.h");                         /* All #import's */
-       omissions.add("DOMEvents.h");                       /* All #import's */
-       omissions.add("DOMHTML.h");                         /* All #import's */
-       omissions.add("DOMRanges.h");                       /* All #import's */
-       omissions.add("DOMStylesheets.h");                  /* All #import's */
-       omissions.add("DOMTraversal.h");                    /* All #import's */
-       omissions.add("DOMViews.h");                        /* All #import's */
-       omissions.add("DOMXPath.h");                        /* All #import's */
-       omissions.add("WebKit.h");                          /* All #import's */
-       /* Preference Panes */
-       omissions.add("PreferencePanes.h");                 /* All #import's */
-   }
-
-   // HashSet for storing typedef types
-   private static Set types = new HashSet();
-
-   // Stack for determining when the parser
-   // is parsing a typedef definition.
-   private static Stack typedefParsingStack = new Stack();
-
-   // Returns true if the given string is
-   // a typedef type.
-   private static boolean isType(String type){
-      return types.contains(type);
-   }
-
-   // Returns true if the given string is
-   // in the test case omission list
-   private static boolean isOmitted(String fileName) {
-       return omissions.contains(fileName);
-   }
-
-   // Add a typedef type to those already defined
-   private static void addType(String type){
-      types.add(type);
-   }
-
-   // Prints out all the types used in parsing the c source
-   private static void printTypes(){
-     for (Iterator i = types.iterator(); i.hasNext();) {
-       System.out.println(i.next());
-     }
-   }
-
-   public ObjectiveCParser(String fileName)
-   {
-      this(System.in);
-      try { ReInit(new FileInputStream(new File(fileName))); }
-      catch(Exception e) { e.printStackTrace(); }
-   }
-
-  public static void main(String args[]) {
-    ObjectiveCParser parser = null;
-    String ps = System.getProperty("path.separator");
-
-    // Hack to include type "special types"
-      types.add("__signed__");
-    types.add("__const");
-    types.add("__inline__");
-    types.add("__signed");
-
-    if (args.length == 0) {
-      System.out.println("ObjectiveC 2.0 Parser Version 1.0:  Reading from standard input . . .");
-      parser = new ObjectiveCParser(System.in);
-    } else if (args.length == 1) {
-    if (new File(args[0]).isDirectory()) {
-      String[] files = new File(args[0]).list();
-      for (int i=0;i<files.length;i++)
-          if (!isOmitted(files[i]))
-           processFile(new StringBuffer(args[0]).append(File.separator).append(files[i]).toString());
-    }
-    else processFile(args[0]);
-    } else {
-      System.out.println("ObjectiveC 2.0 Parser Version 1.0:  Usage is one of:");
-      System.out.println("         java ObjectiveCParser < inputfile");
-      System.out.println("OR");
-      System.out.println("         java ObjectiveCParser inputfile");
-      return;
-    }
-  }
-
-  private static void processFile(String fileName) {
-      ObjectiveCParser parser = null;
-
-      System.out.println("ObjectiveC 2.0 Parser Version 1.0:  Reading from file " + fileName + " . . .");
-      try {
-        parser = new ObjectiveCParser(new java.io.FileInputStream(fileName));
-      } catch (java.io.FileNotFoundException e) {
-        System.out.println("ObjectiveC 2.0 Parser Version 1.0:  File " + fileName + " not found.");
-        return;
-      }
-      try {
-        parser.TranslationUnit();
-        System.out.println("ObjectiveC 2.0 Parser Version 1.0:  ObjectiveC program parsed successfully.");
-      } catch (ParseException e) {
-        System.out.println(e.getMessage());
-        System.out.println("ObjectiveC 2.0 Parser Version 1.0:  Encountered errors during parse.");
-      }
-  }
-
-}
-
-PARSER_END(ObjectiveCParser)
+PARSER_END(ObjectiveCParserImpl)
 
 SKIP : {
  " "

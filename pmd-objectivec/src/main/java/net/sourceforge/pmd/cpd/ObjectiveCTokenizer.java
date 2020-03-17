@@ -8,7 +8,7 @@ import java.io.StringReader;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.objectivec.ObjectiveCTokenManager;
+import net.sourceforge.pmd.lang.objectivec.ast.ObjectiveCTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**

@@ -1,25 +1,25 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.objectivec;
+package net.sourceforge.pmd.lang.objectivec.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.objectivec.ast.ObjectiveCParserTokenManager;
 
 /**
  * Objective-C Token Manager implementation.
- *
- * @deprecated This is internal API
  */
-@Deprecated
 @InternalApi
-public class ObjectiveCTokenManager implements TokenManager {
-    private final ObjectiveCParserTokenManager tokenManager;
+public final class ObjectiveCTokenManager implements TokenManager {
+    private final ObjectiveCParserImplTokenManager tokenManager;
 
     /**
      * Creates a new Objective-C Token Manager from the given source code.
@@ -28,7 +28,7 @@ public class ObjectiveCTokenManager implements TokenManager {
      *            the source code
      */
     public ObjectiveCTokenManager(Reader source) {
-        tokenManager = new ObjectiveCParserTokenManager(CharStreamFactory.simpleCharStream(source));
+        tokenManager = new ObjectiveCParserImplTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override
@@ -38,6 +38,6 @@ public class ObjectiveCTokenManager implements TokenManager {
 
     @Override
     public void setFileName(String fileName) {
-        ObjectiveCParserTokenManager.setFileName(fileName);
+        ObjectiveCParserImplTokenManager.setFileName(fileName);
     }
 }
