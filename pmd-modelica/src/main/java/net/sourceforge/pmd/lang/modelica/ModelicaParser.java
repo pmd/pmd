@@ -8,7 +8,9 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
@@ -16,7 +18,11 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 
-
+/**
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
+ */
+@InternalApi
+@Deprecated
 public class ModelicaParser extends AbstractParser {
     public ModelicaParser(final ParserOptions parserOptions) {
         super(parserOptions);

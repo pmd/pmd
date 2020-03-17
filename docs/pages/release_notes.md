@@ -78,6 +78,11 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc visualforce::lang.vf.VfTokenManager %}
 *   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
 *   {% jdoc jsp::lang.jsp.JspTokenManager %}
+*   {% jdoc modelica::lang.modelica.ModelicaTokenManager %}
+*   {% jdoc cpp::lang.cpp.CppTokenManager %}
+*   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
+*   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
+*   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
 
 
 ### External Contributions
