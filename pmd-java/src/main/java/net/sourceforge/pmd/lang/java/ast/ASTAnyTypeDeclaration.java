@@ -21,6 +21,16 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 /**
  * Groups class, enum, record, annotation and interface declarations under a common
  * supertype.
+ *
+ * <pre class="grammar">
+ *
+ * AnyTypeDeclaration ::= {@link ASTClassOrInterfaceDeclaration ClassOrInterfaceDeclaration}
+ *                      | {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}
+ *                      | {@link ASTEnumDeclaration EnumDeclaration}
+ *                      | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}
+ *                      | {@link ASTRecordDeclaration RecordDeclaration}
+ *
+ * </pre>
  */
 public interface ASTAnyTypeDeclaration
     extends TypeNode,
@@ -138,11 +148,20 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
+     * Returns the operations declared in this class (methods and constructors).
+     */
+    default NodeStream<ASTMethodOrConstructorDeclaration> getOperations() {
+        return getDeclarations().filterIs(ASTMethodOrConstructorDeclaration.class);
+    }
+
+
+    /**
      * @deprecated Use {@link #getBinaryName()}
      */
     @Override
     @Deprecated
     JavaTypeQualifiedName getQualifiedName();
+
 
     /**
      * Returns the body of this type declaration.

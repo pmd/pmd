@@ -14,7 +14,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  * <pre class="grammar">
  *
  * RecordBody ::= "{" (   {@linkplain ASTRecordConstructorDeclaration RecordConstructorDeclaration}
- *                      | {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* "}"
+ *                      | {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )*
+ *                "}"
  *
  * </pre>
  *
