@@ -506,10 +506,10 @@ public class JavaParser {
    *  True if we're in a switch block, one precondition for parsing a yield
    *  statement.
    */
-  private boolean inSwitchBlock = false;
+  private boolean inSwitchExprBlock = false;
 
   private boolean isYieldStart() {
-    return inSwitchBlock && isJava13PreviewOr14()
+    return inSwitchExprBlock && isJava13PreviewOr14()
     && isKeyword("yield")
     && mayStartExprAfterYield(2);
   }
@@ -541,8 +541,9 @@ public class JavaParser {
                }
                // lambda:       yield () -> {};
                // method call:  yield ();
-               return lookahead != offset + 2 // ie ()
-                   || t.kind == ARROW;
+               return t != null
+                   && (lookahead != offset + 2 // ie ()
+                   || t.kind == LAMBDA);
            default:
                return false;
       }
@@ -1667,10 +1668,13 @@ void CastExpression() :
 }
 
 void SwitchExpression() :
-{}
+{boolean prevInSwitchBlock = inSwitchExprBlock;}
 {
     {checkForSwitchExpression();}
-    "switch" "(" Expression() ")" SwitchBlock()
+    "switch" "(" Expression() ")"
+    {inSwitchExprBlock = true;}
+    SwitchBlock()
+    {inSwitchExprBlock = prevInSwitchBlock;}
 }
 
 void PrimaryExpression() :
@@ -1838,6 +1842,7 @@ void Statement() :
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD( { isYieldStart() } ) YieldStatement()
 | LOOKAHEAD(2) LabeledStatement()
 | Block()
 | EmptyStatement()
@@ -1873,7 +1878,7 @@ void BlockStatement():
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD({ jdkVersion >= 13 && isKeyword("yield") }) YieldStatement()
+| LOOKAHEAD( { isYieldStart() } ) YieldStatement()
 |
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
@@ -1946,9 +1951,8 @@ void SwitchStatement():
 }
 
 void SwitchBlock() #void :
-{boolean prevInSwitchBlock = inSwitchBlock;}
+{}
 {
-    {inSwitchBlock = true;}
     "{"
         (
             SwitchLabel()
@@ -1963,7 +1967,6 @@ void SwitchBlock() #void :
             )
         )?
     "}"
-    {inSwitchBlock = prevInSwitchBlock;}
 }
 
 void SwitchLabeledRule() #void :

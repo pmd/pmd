@@ -357,7 +357,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public <T> List<T> findDescendantsOfType(final Class<T> targetType) {
+    public <T> List<T> findDescendantsOfType(final Class<? extends T> targetType) {
         final List<T> list = new ArrayList<>();
         findDescendantsOfType(this, targetType, list, false);
         return list;
@@ -381,7 +381,7 @@ public abstract class AbstractNode implements Node {
         findDescendantsOfType(this, targetType, results, crossBoundaries);
     }
 
-    private static <T> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
+    private static <T> void findDescendantsOfType(final Node node, final Class<? extends T> targetType, final List<T> results,
                                                   final boolean crossFindBoundaries) {
 
         for (Node child : node.children()) {
