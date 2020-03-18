@@ -8,9 +8,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -22,11 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
@@ -50,11 +45,6 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     /** Local index value for when the class is not local. */
     static final int NOTLOCAL_PLACEHOLDER = -1;
 
-    // Package names to package representation.
-    // Allows reusing the same list instance for the same packages.
-    // Package prefixes are also shared.
-    private static final Map<String, ImmutableList<String>> FOUND_PACKAGES = new ConcurrentHashMap<>(128);
-
     // The following stacks stack some counter of the
     // visited classes. A new entry is pushed when
     // we enter a new class, and popped when we get
@@ -65,59 +55,26 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      * to the count of local classes with that name declared
      * in the current class.
      */
-    private final Stack<Map<String, Integer>> currentLocalIndices = new Stack<>();
+    private final Deque<Map<String, Integer>> currentLocalIndices = new ArrayDeque<>();
 
     /**
      * The top of the stack is the current count of
      * anonymous classes of the currently visited class.
      */
-    private final Stack<MutableInt> anonymousCounters = new Stack<>();
+    private final Deque<MutableInt> anonymousCounters = new ArrayDeque<>();
 
-    private final Stack<String> innermostEnclosingTypeName = new Stack<>();
 
+    // these two are 1-to-1
+    private final Deque<String> innermostEnclosingTypeName = new ArrayDeque<>();
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
+
     private final AstSymFactory symFactory;
 
-    /**
-     * Package list of the current file.
-     * The qualified names of classes and methods declared
-     * in this compilation unit share this list, because they're
-     * declared in the same package.
-     *
-     * The head of this list is the name of the
-     * innermost package.
-     */
-    private ImmutableList<String> packages;
+    /** Package name of the current file. */
+    private String packageName;
 
-    /**
-     * Local indices of the currently visited class.
-     *
-     * The head of this list is the local index of the
-     * innermost class.
-     */
-    private ImmutableList<Integer> localIndices;
-
-    /**
-     * Class names of the currently visited class.
-     * For outer classes, this list has one name.
-     * For a nested class, names are prepended to
-     * this list from outermost to innermost.
-     *
-     * The head of this list is the name of the
-     * innermost class.
-     */
-    private ImmutableList<String> classNames;
-
-    /**
-     * The classloader that must be used to load classes for resolving types,
-     * e.g. for qualified names.
-     * This is the auxclasspath.
-     */
-    private ClassLoader classLoader;
-
-    public QualifiedNameResolver(AstSymFactory symFactory, ClassLoader classLoader) {
+    public QualifiedNameResolver(AstSymFactory symFactory) {
         this.symFactory = symFactory;
-        this.classLoader = classLoader;
     }
 
     /**
@@ -132,79 +89,15 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTCompilationUnit node, Object data) {
 
         // update the package list
-        packages = getPackageList(node.getFirstChildOfType(ASTPackageDeclaration.class));
+        packageName = node.getPackageName();
 
         // reset other variables
-        localIndices = ListFactory.emptyList();
-        classNames = ListFactory.emptyList();
         anonymousCounters.clear();
         currentLocalIndices.clear();
 
         return super.visit(node, data);
     }
 
-
-    /**
-     * Returns the immutable list representation of this package name.
-     * The list's tail is shared with all packages that start with
-     * the same prefix.
-     *
-     * @param pack The package declaration, may be null
-     */
-    private ImmutableList<String> getPackageList(ASTPackageDeclaration pack) {
-        if (pack == null) {
-            return ListFactory.emptyList();
-        }
-
-        final String image = pack.getPackageNameImage();
-        ImmutableList<String> fullExisting = FOUND_PACKAGES.get(image);
-
-        if (fullExisting != null) {
-            return fullExisting;
-        }
-
-        // else we'll have to look for the longest prefix currently known
-        // and complete it with remaining packages
-
-        final String[] allPacks = image.split("\\.");
-        ImmutableList<String> longestPrefix = getLongestPackagePrefix(image, allPacks.length);
-        StringBuilder prefixImage = new StringBuilder();
-        for (String p : longestPrefix) {
-            prefixImage.append(p);
-        }
-
-        for (int i = longestPrefix.size(); i < allPacks.length; i++) {
-            longestPrefix = longestPrefix.prepend(allPacks[i]);
-            prefixImage.append(allPacks[i]);
-            FOUND_PACKAGES.put(prefixImage.toString(), longestPrefix);
-        }
-
-        return longestPrefix;
-    }
-
-
-    /**
-     * Returns the longest list of package names contained in the cache
-     * that is a prefix of the given string. This method proceeds recursively,
-     * trimming one package name at each iteration and checking if the remaining
-     * prefix is already cached.
-     *
-     * @param acc Accumulator, initially the full package name
-     * @param i   Index indicating the remaining number of packages, initially
-     *            the total number of packages in the package name
-     */
-    private ImmutableList<String> getLongestPackagePrefix(String acc, int i) {
-        ImmutableList<String> prefix = FOUND_PACKAGES.get(acc);
-        if (prefix != null) {
-            return prefix;
-        }
-
-        if (i == 1) { // no prefix known, return early because there's no more '.' in acc
-            return ListFactory.emptyList();
-        }
-
-        return getLongestPackagePrefix(acc.substring(0, acc.lastIndexOf('.')), i - 1);
-    }
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -226,12 +119,13 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        int localIndex = NOTLOCAL_PLACEHOLDER;
+        String simpleName = node.getSimpleName();
         if (node.isLocal()) {
-            localIndex = getNextIndexFromHistogram(currentLocalIndices.peek(), node.getSimpleName(), 1);
+            simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
+                + simpleName;
         }
 
-        updateClassContext(node.getSimpleName(), localIndex);
+        updateClassContext(simpleName);
 
         return recurseOnClass(node);
     }
@@ -256,74 +150,61 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     public Object recurseOnExecutable(ASTMethodOrConstructorDeclaration node) {
         JExecutableSymbol sym = node.getSymbol();
-        enclosingSymbols.addLast(sym);
+        enclosingSymbols.push(sym);
 
         super.visit(node, null);
 
-        enclosingSymbols.removeLast();
+        enclosingSymbols.pop();
         return null;
     }
 
     public Object recurseOnClass(ASTAnyTypeDeclaration node) {
         InternalApiBridge.setQname(node, contextClassQName());
 
-        JClassSymbol sym = symFactory.setClassSymbol(enclosingSymbols.peekLast(), node);
-        enclosingSymbols.addLast(sym);
+        JClassSymbol sym = symFactory.setClassSymbol(enclosingSymbols.getFirst(), node);
+        enclosingSymbols.push(sym);
 
         super.visit(node, null);
 
         rollbackClassContext();
-        enclosingSymbols.removeLast();
+        enclosingSymbols.pop();
         return null;
     }
 
 
     private void updateContextForAnonymousClass() {
-        updateClassContext("" + anonymousCounters.peek().incrementAndGet(), NOTLOCAL_PLACEHOLDER);
+        updateClassContext("" + anonymousCounters.getFirst().incrementAndGet());
     }
 
 
-    /** Pushes a new context for an inner class. */
-    private void updateClassContext(String className, int localIndex) {
-        localIndices = localIndices.prepend(localIndex);
-        classNames = classNames.prepend(className);
+    /**
+     * Pushes a new context for an inner class.
+     *
+     * @param classInternalSimpleName Segment of the internal name (may contain the local index or be only numbers for
+     *                                anon classes)
+     */
+    private void updateClassContext(String classInternalSimpleName) {
+        String enclosing = innermostEnclosingTypeName.peek();
+        if (enclosing != null) {
+            innermostEnclosingTypeName.push(enclosing + "$" + classInternalSimpleName);
+        } else {
+            innermostEnclosingTypeName.push(packageName + "." + classInternalSimpleName);
+        }
         anonymousCounters.push(new MutableInt(0));
-        currentLocalIndices.push(new HashMap<String, Integer>());
-        innermostEnclosingTypeName.push(contextClassQName());
+        currentLocalIndices.push(new HashMap<>());
     }
 
 
     /** Rollback the context to the state of the enclosing class. */
     private void rollbackClassContext() {
-        localIndices = localIndices.tail();
-        classNames = classNames.tail();
+        innermostEnclosingTypeName.pop();
         anonymousCounters.pop();
         currentLocalIndices.pop();
-        innermostEnclosingTypeName.pop();
     }
 
     /** Creates a new class qname from the current context (fields). */
     private String contextClassQName() {
-        StringBuilder sb = new StringBuilder();
-
-        for (String aPackage : packages.reverse()) {
-            sb.append(aPackage).append('.');
-        }
-
-        // this in the normal order
-        ImmutableList<String> reversed = classNames.reverse();
-        sb.append(reversed.head());
-        for (Entry<String, Integer> classAndLocalIdx : reversed.tail().zip(localIndices.reverse().tail())) {
-            sb.append('$');
-
-            if (classAndLocalIdx.getValue() != NOTLOCAL_PLACEHOLDER) {
-                sb.append(classAndLocalIdx.getValue());
-            }
-
-            sb.append(classAndLocalIdx.getKey());
-        }
-
-        return sb.toString();
+        return innermostEnclosingTypeName.getFirst();
     }
 
 
