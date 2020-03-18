@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -60,12 +58,8 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).comment(comment);
     }
 
-    public static void setQname(ASTAnyTypeDeclaration declaration, JavaTypeQualifiedName qualifiedName) {
-        ((AbstractAnyTypeDeclaration) declaration).setQualifiedName(qualifiedName);
-    }
-
-    public static void setQname(ASTMethodOrConstructorDeclaration node, JavaOperationQualifiedName qualifiedName) {
-        ((AbstractMethodOrConstructorDeclaration) node).setQualifiedName(qualifiedName);
+    public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName) {
+        ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName);
     }
 
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {

@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 /**
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  */
 abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
-    private JavaTypeQualifiedName qualifiedName;
+    private String binaryName;
 
     AbstractAnyTypeDeclaration(int i) {
         super(i);
@@ -26,9 +26,18 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         return super.getImage();
     }
 
+    @NonNull
+    @Override
+    public String getSimpleName() {
+        assert getImage() != null : "Null simple name";
+        return getImage();
+    }
+
+    @NonNull
     @Override
     public String getBinaryName() {
-        return getQualifiedName().getBinaryName();
+        assert binaryName != null : "Null binary name";
+        return binaryName;
     }
 
     @Override
@@ -36,14 +45,9 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         return isLocal() ? Visibility.V_LOCAL : ASTAnyTypeDeclaration.super.getVisibility();
     }
 
-    @Override
-    public final JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
-    }
-
-    void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        setTypeDefinition(JavaTypeDefinition.forClass(qualifiedName.getType()));
+    void setBinaryName(String binaryName) {
+        assert binaryName != null : "Null binary name";
+        this.binaryName = binaryName;
     }
 }
 

@@ -4,16 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-
-
 /**
  * @deprecated Replaced with {@link ASTArrayAllocation} and {@link ASTConstructorCall}
  */
 @Deprecated
-public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
-
-    private JavaTypeQualifiedName qualifiedName;
+public class ASTAllocationExpression extends AbstractJavaTypeNode {
 
     ASTAllocationExpression(int id) {
         super(id);
@@ -45,16 +40,5 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
         return false;
     }
 
-    /**
-     * Gets the qualified name of the anonymous class
-     * declared by this node, or null if this node
-     * doesn't declare any.
-     *
-     * @see #isAnonymousClass()
-     */
-    @Override
-    public JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
-    }
 
 }

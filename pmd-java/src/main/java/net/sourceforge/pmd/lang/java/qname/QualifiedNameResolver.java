@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.qname;
 
-import static net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName.NOTLOCAL_PLACEHOLDER;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,15 +20,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
-import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -38,7 +34,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 
 
 /**
- * Populates {@link JavaQualifiableNode} instances with their qualified names.
  *
  * <p>In fact, populates symbols on declaration nodes.
  * TODO in the near future we'll get rid of qualified names, and can
@@ -51,6 +46,9 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 @Deprecated
 @InternalApi
 public class QualifiedNameResolver extends JavaParserVisitorAdapter {
+
+    /** Local index value for when the class is not local. */
+    static final int NOTLOCAL_PLACEHOLDER = -1;
 
     // Package names to package representation.
     // Allows reusing the same list instance for the same packages.
@@ -75,7 +73,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
      */
     private final Stack<MutableInt> anonymousCounters = new Stack<>();
 
-    private final Stack<JavaTypeQualifiedName> innermostEnclosingTypeName = new Stack<>();
+    private final Stack<String> innermostEnclosingTypeName = new Stack<>();
 
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
     private final AstSymFactory symFactory;
@@ -247,16 +245,11 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        String opname = getOperationName(node.getName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-        InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return recurseOnExecutable(node);
     }
 
-
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        String opname = getOperationName(classNames.head(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-        InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return recurseOnExecutable(node);
     }
 
@@ -310,20 +303,27 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     }
 
     /** Creates a new class qname from the current context (fields). */
-    private JavaTypeQualifiedName contextClassQName() {
-        return new JavaTypeQualifiedName(packages, classNames, localIndices, classLoader);
-    }
+    private String contextClassQName() {
+        StringBuilder sb = new StringBuilder();
 
+        for (String aPackage : packages.reverse()) {
+            sb.append(aPackage).append('.');
+        }
 
-    /** Creates a new operation qname, using the current context for the class part. */
-    private JavaOperationQualifiedName contextOperationQName(String op, boolean isLambda) {
-        return new JavaOperationQualifiedName(innermostEnclosingTypeName.peek(), op, isLambda);
-    }
+        // this in the normal order
+        ImmutableList<String> reversed = classNames.reverse();
+        sb.append(reversed.head());
+        for (Entry<String, Integer> classAndLocalIdx : reversed.tail().zip(localIndices.reverse().tail())) {
+            sb.append('$');
 
+            if (classAndLocalIdx.getValue() != NOTLOCAL_PLACEHOLDER) {
+                sb.append(classAndLocalIdx.getValue());
+            }
 
-    /** Returns a normalized method name (not Java-canonical!). */
-    private static String getOperationName(String methodName, ASTFormalParameters params) {
-        return PrettyPrintingUtil.displaySignature(methodName, params);
+            sb.append(classAndLocalIdx.getKey());
+        }
+
+        return sb.toString();
     }
 
 

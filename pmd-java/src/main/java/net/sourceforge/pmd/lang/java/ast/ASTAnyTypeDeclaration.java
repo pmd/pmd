@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
@@ -34,7 +33,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
  */
 public interface ASTAnyTypeDeclaration
     extends TypeNode,
-            JavaQualifiableNode,
             AccessNode,
             TypeParamOwnerNode,
             ASTBodyDeclaration,
@@ -61,6 +59,14 @@ public interface ASTAnyTypeDeclaration
     @Deprecated
     @Override
     String getImage();
+
+
+    /**
+     * Returns the name of the package in which this class is declared.
+     */
+    default String getPackageName() {
+        return getRoot().getPackageName();
+    }
 
 
     /**
@@ -153,14 +159,6 @@ public interface ASTAnyTypeDeclaration
     default NodeStream<ASTMethodOrConstructorDeclaration> getOperations() {
         return getDeclarations().filterIs(ASTMethodOrConstructorDeclaration.class);
     }
-
-
-    /**
-     * @deprecated Use {@link #getBinaryName()}
-     */
-    @Override
-    @Deprecated
-    JavaTypeQualifiedName getQualifiedName();
 
 
     /**

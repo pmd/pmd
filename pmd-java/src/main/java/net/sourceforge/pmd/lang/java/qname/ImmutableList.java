@@ -17,8 +17,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-
 
 /**
  * Classical immutable linked list representing an ordered collection.

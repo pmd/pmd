@@ -55,7 +55,7 @@ public final class PrettyPrintingUtil {
      */
     public static String displaySignature(ASTMethodOrConstructorDeclaration node) {
         ASTFormalParameters params = node.getFirstDescendantOfType(ASTFormalParameters.class);
-        String name = node instanceof ASTMethodDeclaration ? ((ASTMethodDeclaration) node).getName() : node.getImage();
+        String name = node instanceof ASTMethodDeclaration ? node.getName() : node.getImage();
 
         return displaySignature(name, params);
     }
@@ -64,8 +64,7 @@ public final class PrettyPrintingUtil {
      * Returns the generic kind of declaration this is, eg "enum" or "class".
      */
     public static String kindName(ASTAnyTypeDeclaration decl) {
-        if (decl instanceof ASTClassOrInterfaceDeclaration
-            && ((ASTClassOrInterfaceDeclaration) decl).isInterface()) {
+        if (decl instanceof ASTClassOrInterfaceDeclaration && decl.isInterface()) {
             return "interface";
         } else if (decl instanceof ASTAnnotationTypeDeclaration) {
             return "annotation";
