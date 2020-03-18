@@ -42,9 +42,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 @InternalApi
 public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
-    /** Local index value for when the class is not local. */
-    static final int NOTLOCAL_PLACEHOLDER = -1;
-
     // The following stacks stack some counter of the
     // visited classes. A new entry is pushed when
     // we enter a new class, and popped when we get
