@@ -163,7 +163,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
                 valueReport += " highest " + niceDoubleString(highest);
             }
             if (classValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getBinaryName(), valueReport,});
+                addViolation(data, node, new String[] {node.getBinaryName(), valueReport, });
             }
         }
         return super.visit(node, data);
@@ -176,7 +176,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
             double methodValue = MetricsUtil.computeMetric(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getEnclosingType().getBinaryName() + "#" + PrettyPrintingUtil.displaySignature(node),
-                                                       "" + niceDoubleString(methodValue),});
+                                                       "" + niceDoubleString(methodValue), });
             }
         }
         return super.visit(node, data);

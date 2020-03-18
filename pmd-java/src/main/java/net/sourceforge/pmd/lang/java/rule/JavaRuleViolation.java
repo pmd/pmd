@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Rule;
@@ -79,7 +78,12 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         if (enclosing == null) {
             return null;
         } else {
-            return StringUtils.removeStart(enclosing.getBinaryName(), file.getPackageName());
+            String binaryName = enclosing.getBinaryName();
+            String packageName = enclosing.getPackageName();
+            return packageName.isEmpty()
+                   ? binaryName
+                   // plus 1 for the '.'
+                   : binaryName.substring(packageName.length() + 1);
         }
     }
 

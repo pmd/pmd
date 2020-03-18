@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 
 
@@ -26,13 +25,13 @@ public final class AstSymFactory {
     /**
      * Builds, sets and returns the symbol for the given local variable.
      */
-    JLocalVariableSymbol setLocalVarSymbol(ASTVariableDeclaratorId id) {
+    void setLocalVarSymbol(ASTVariableDeclaratorId id) {
         assert !id.isField() && !id.isEnumConstant() : "Local var symbol is not appropriate for fields";
         assert !id.isFormalParameter()
             || id.isLambdaParameter()
             || id.isExceptionBlockParameter() : "Local var symbol is not appropriate for method parameters";
 
-        return new AstLocalVarSym(id, this);
+        new AstLocalVarSym(id, this);
     }
 
     /**
