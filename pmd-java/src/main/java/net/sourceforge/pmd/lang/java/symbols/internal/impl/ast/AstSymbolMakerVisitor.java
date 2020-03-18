@@ -10,73 +10,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 
 
 /**
- * Populates symbols on declaration nodes.
+ * Populates symbols on declaration nodes. Cannot be reused.
  */
 final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
 
-    static final AstSymbolMakerVisitor INSTANCE = new AstSymbolMakerVisitor();
-
-    // The following stacks stack some counter of the
-    // visited classes. A new entry is pushed when
-    // we enter a new class, and popped when we get
-    // out
-
-    /**
-     * The top of the stack is the map of local class names
-     * to the count of local classes with that name declared
-     * in the current class.
-     */
+    // these map simple name to count of local classes with that name in the given class
     private final Deque<Map<String, Integer>> currentLocalIndices = new ArrayDeque<>();
-
-    /**
-     * The top of the stack is the current count of
-     * anonymous classes of the currently visited class.
-     */
+    // these are counts of anon classes in the enclosing class
     private final Deque<MutableInt> anonymousCounters = new ArrayDeque<>();
-
-
     // these are binary names, eg may contain pack.Foo, pack.Foo$Nested, pack.Foo$Nested$1Local
     private final Deque<String> innermostEnclosingTypeName = new ArrayDeque<>();
     // these are symbols, NOT 1-to-1 with the type name stack because may contain method/ctor symbols
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
 
     /** Package name of the current file. */
-    private String packageName;
+    private final String packageName;
 
-    private AstSymbolMakerVisitor() {
-    }
-
-
-    @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-
+    AstSymbolMakerVisitor(ASTCompilationUnit node) {
         // update the package list
         packageName = node.getPackageName();
-
-        // reset other variables
-        anonymousCounters.clear();
-        currentLocalIndices.clear();
-
-        return super.visit(node, data);
     }
-
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -98,92 +65,47 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
+        String binaryName = makeBinaryName(node);
+        InternalApiBridge.setQname(node, binaryName);
+        JClassSymbol sym = ((AstSymFactory) data).setClassSymbol(enclosingSymbols.peek(), node);
+
+        innermostEnclosingTypeName.push(binaryName);
+        enclosingSymbols.push(sym);
+        anonymousCounters.push(new MutableInt(0));
+        currentLocalIndices.push(new HashMap<>());
+
+        super.visit(node, data);
+
+        currentLocalIndices.pop();
+        anonymousCounters.pop();
+        enclosingSymbols.pop();
+        innermostEnclosingTypeName.pop();
+
+        return null;
+    }
+
+    @NonNull
+    private String makeBinaryName(ASTAnyTypeDeclaration node) {
         String simpleName = node.getSimpleName();
         if (node.isLocal()) {
             simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
                 + simpleName;
+        } else if (node.isAnonymous()) {
+            simpleName = "" + anonymousCounters.getFirst().incrementAndGet();
         }
 
-        updateClassContext(simpleName);
-
-        return recurseOnClass(node, (AstSymFactory) data);
-    }
-
-    @Override
-    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
-        updateContextForAnonymousClass();
-        return recurseOnClass(node, (AstSymFactory) data);
-    }
-
-
-    @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        return recurseOnExecutable(node);
-    }
-
-    @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
-        return recurseOnExecutable(node);
-    }
-
-
-    public Object recurseOnExecutable(ASTMethodOrConstructorDeclaration node) {
-        JExecutableSymbol sym = node.getSymbol();
-        enclosingSymbols.push(sym);
-
-        super.visit(node, null);
-
-        enclosingSymbols.pop();
-        return null;
-    }
-
-    public Object recurseOnClass(ASTAnyTypeDeclaration node, AstSymFactory symFactory) {
-        InternalApiBridge.setQname(node, contextClassQName());
-
-        JClassSymbol sym = symFactory.setClassSymbol(enclosingSymbols.getFirst(), node);
-        enclosingSymbols.push(sym);
-
-        super.visit(node, null);
-
-        rollbackClassContext();
-        enclosingSymbols.pop();
-        return null;
-    }
-
-
-    private void updateContextForAnonymousClass() {
-        updateClassContext("" + anonymousCounters.getFirst().incrementAndGet());
-    }
-
-
-    /**
-     * Pushes a new context for an inner class.
-     *
-     * @param classInternalSimpleName Segment of the internal name (may contain the local index or be only numbers for
-     *                                anon classes)
-     */
-    private void updateClassContext(String classInternalSimpleName) {
         String enclosing = innermostEnclosingTypeName.peek();
-        if (enclosing != null) {
-            innermostEnclosingTypeName.push(enclosing + "$" + classInternalSimpleName);
-        } else {
-            innermostEnclosingTypeName.push(packageName + "." + classInternalSimpleName);
-        }
-        anonymousCounters.push(new MutableInt(0));
-        currentLocalIndices.push(new HashMap<>());
+        return enclosing != null ? enclosing + "$" + simpleName
+                                 : packageName.isEmpty() ? simpleName
+                                                         : packageName + "." + simpleName;
     }
 
-
-    /** Rollback the context to the state of the enclosing class. */
-    private void rollbackClassContext() {
-        innermostEnclosingTypeName.pop();
-        anonymousCounters.pop();
-        currentLocalIndices.pop();
-    }
-
-    /** Creates a new class qname from the current context (fields). */
-    private String contextClassQName() {
-        return innermostEnclosingTypeName.getFirst();
+    @Override
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        enclosingSymbols.push(node.getSymbol());
+        super.visit(node, data);
+        enclosingSymbols.pop();
+        return null;
     }
 
 

@@ -18,7 +18,7 @@ public final class AstSymFactory {
 
 
     public void createSymbolsOn(ASTCompilationUnit acu) {
-        acu.jjtAccept(AstSymbolMakerVisitor.INSTANCE, this);
+        acu.jjtAccept(new AstSymbolMakerVisitor(acu), this);
     }
 
     // keep in mind, creating a symbol sets it on the node (see constructor of AbstractAstBackedSymbol)

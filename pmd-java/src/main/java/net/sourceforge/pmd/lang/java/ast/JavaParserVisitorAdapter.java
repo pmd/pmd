@@ -206,6 +206,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     @Override
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+    @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
