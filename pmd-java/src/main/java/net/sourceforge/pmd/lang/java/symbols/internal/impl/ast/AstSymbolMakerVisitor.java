@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.qname;
+package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -25,22 +24,14 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 
 
 /**
- *
- * <p>In fact, populates symbols on declaration nodes.
- * TODO in the near future we'll get rid of qualified names, and can
- * reuse this class just to build symbols (moving it to symbols.impl.ast).
- *
- * @author Clément Fournier
- * @since 6.1.0
- * @deprecated Is internal API
+ * Populates symbols on declaration nodes.
  */
-@Deprecated
-@InternalApi
-public class QualifiedNameResolver extends JavaParserVisitorAdapter {
+final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
+
+    static final AstSymbolMakerVisitor INSTANCE = new AstSymbolMakerVisitor();
 
     // The following stacks stack some counter of the
     // visited classes. A new entry is pushed when
@@ -61,24 +52,15 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     private final Deque<MutableInt> anonymousCounters = new ArrayDeque<>();
 
 
-    // these two are 1-to-1
+    // these are binary names, eg may contain pack.Foo, pack.Foo$Nested, pack.Foo$Nested$1Local
     private final Deque<String> innermostEnclosingTypeName = new ArrayDeque<>();
+    // these are symbols, NOT 1-to-1 with the type name stack because may contain method/ctor symbols
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
-
-    private final AstSymFactory symFactory;
 
     /** Package name of the current file. */
     private String packageName;
 
-    public QualifiedNameResolver(AstSymFactory symFactory) {
-        this.symFactory = symFactory;
-    }
-
-    /**
-     * Traverse the compilation unit.
-     */
-    public void traverse(ASTCompilationUnit root) {
-        root.jjtAccept(this, null);
+    private AstSymbolMakerVisitor() {
     }
 
 
@@ -100,7 +82,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
         if (isTrueLocalVar(node)) {
-            symFactory.setLocalVarSymbol(node);
+            ((AstSymFactory) data).setLocalVarSymbol(node);
         } else {
             // in the other cases, building the method/ctor/class symbols already set the symbols
             assert node.getSymbol() != null : "Symbol was null for " + node;
@@ -124,13 +106,13 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
         updateClassContext(simpleName);
 
-        return recurseOnClass(node);
+        return recurseOnClass(node, (AstSymFactory) data);
     }
 
     @Override
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {
         updateContextForAnonymousClass();
-        return recurseOnClass(node);
+        return recurseOnClass(node, (AstSymFactory) data);
     }
 
 
@@ -155,7 +137,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    public Object recurseOnClass(ASTAnyTypeDeclaration node) {
+    public Object recurseOnClass(ASTAnyTypeDeclaration node, AstSymFactory symFactory) {
         InternalApiBridge.setQname(node, contextClassQName());
 
         JClassSymbol sym = symFactory.setClassSymbol(enclosingSymbols.getFirst(), node);

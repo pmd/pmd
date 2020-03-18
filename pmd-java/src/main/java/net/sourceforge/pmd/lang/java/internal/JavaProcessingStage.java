@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
@@ -64,12 +63,12 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
             ASTCompilationUnit acu = (ASTCompilationUnit) rootNode;
 
             AstSymFactory astSymFactory = new AstSymFactory();
-            ClassLoader classLoader = PMDASMClassLoader.getInstance(configuration.getTypeResolutionClassLoader());
 
             // Qualified name resolver now resolves also symbols for type declarations
             bench("Qualified name resolution",
-                () -> new QualifiedNameResolver(astSymFactory).traverse(acu));
+                () -> astSymFactory.createSymbolsOn(acu));
 
+            ClassLoader classLoader = PMDASMClassLoader.getInstance(configuration.getTypeResolutionClassLoader());
             SymbolResolver symResolver = new ClasspathSymbolResolver(classLoader, new ReflectionSymFactory());
 
             SemanticChecksLogger logger = new SemanticChecksLogger() {
