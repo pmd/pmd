@@ -74,10 +74,6 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
         private static final JavaParserVisitor INSTANCE = new MainAttrVisitor();
 
-        private MainAttrVisitor() {
-
-        }
-
         @Override
         public Object visit(JavaNode node, Object data) {
             return null; // don't recurse
