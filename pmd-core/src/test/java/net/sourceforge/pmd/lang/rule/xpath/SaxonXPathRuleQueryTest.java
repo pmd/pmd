@@ -117,9 +117,14 @@ public class SaxonXPathRuleQueryTest {
     }
 
     private static void assertExpression(String expected, Expression actual) {
-        Assert.assertEquals(expected.replaceAll("\\$qq:qq\\d+", "\\$qq:qq000").replaceAll("\\$zz:zz\\d+", "\\$zz:zz000"),
-                actual.toString().replaceAll("\\$qq:qq\\d+", "\\$qq:qq000").replaceAll("\\$zz:zz\\d+", "\\$zz:zz000"));
+        Assert.assertEquals(normalizeExprDump(expected),
+                            normalizeExprDump(actual.toString()));
         //Assert.assertEquals(expected, actual);
+    }
+
+    private static String normalizeExprDump(String dump) {
+        return dump.replaceAll("\\$qq:qq-?\\d+", "\\$qq:qq000")
+                   .replaceAll("\\$zz:zz-?\\d+", "\\$zz:zz000");
     }
 
     @Test
