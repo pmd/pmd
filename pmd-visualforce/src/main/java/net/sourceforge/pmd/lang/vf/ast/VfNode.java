@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 public interface VfNode extends Node {
 
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      */
     Object jjtAccept(VfParserVisitor visitor, Object data);
 
