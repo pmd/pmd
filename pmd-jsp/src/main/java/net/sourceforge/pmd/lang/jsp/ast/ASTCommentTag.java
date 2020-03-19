@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTCommentTag extends AbstractJspNode {
 
-public class ASTCommentTag extends AbstractJspNode {
-    @InternalApi
-    @Deprecated
-    public ASTCommentTag(int id) {
+    ASTCommentTag(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTCommentTag(JspParser p, int id) {
-        super(p, id);
     }
 
     @Override

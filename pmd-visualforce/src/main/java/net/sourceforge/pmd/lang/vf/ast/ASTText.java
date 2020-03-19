@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTText extends AbstractVfNode {
 
-public class ASTText extends AbstractVFNode {
-    @Deprecated
-    @InternalApi
-    public ASTText(int id) {
+    ASTText(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTText(VfParser p, int id) {
-        super(p, id);
     }
 
     @Override

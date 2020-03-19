@@ -1,25 +1,21 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ecmascript5;
+package net.sourceforge.pmd.lang.ecmascript5.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5ParserTokenManager;
 
 /**
  * Ecmascript 5 Token Manager implementation.
- *
- * @deprecated This is internal API
  */
-@Deprecated
 @InternalApi
 public class Ecmascript5TokenManager implements TokenManager {
-    private final Ecmascript5ParserTokenManager tokenManager;
+    private final Ecmascript5ParserImplTokenManager tokenManager;
 
     /**
      * Creates a new Ecmascript 5 Token Manager from the given source code.
@@ -28,7 +24,7 @@ public class Ecmascript5TokenManager implements TokenManager {
      *            the source code
      */
     public Ecmascript5TokenManager(Reader source) {
-        tokenManager = new Ecmascript5ParserTokenManager(CharStreamFactory.simpleCharStream(source));
+        tokenManager = new Ecmascript5ParserImplTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override
@@ -38,6 +34,6 @@ public class Ecmascript5TokenManager implements TokenManager {
 
     @Override
     public void setFileName(String fileName) {
-        Ecmascript5ParserTokenManager.setFileName(fileName);
+        Ecmascript5ParserImplTokenManager.setFileName(fileName);
     }
 }

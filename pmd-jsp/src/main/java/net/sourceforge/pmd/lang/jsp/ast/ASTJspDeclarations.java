@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTJspDeclarations extends AbstractJspNode {
 
-public class ASTJspDeclarations extends AbstractJspNode {
-    @InternalApi
-    @Deprecated
-    public ASTJspDeclarations(int id) {
+    ASTJspDeclarations(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTJspDeclarations(JspParser p, int id) {
-        super(p, id);
     }
 
     @Override

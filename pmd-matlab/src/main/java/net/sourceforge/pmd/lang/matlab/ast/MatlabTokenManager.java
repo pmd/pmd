@@ -1,34 +1,24 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.matlab;
+package net.sourceforge.pmd.lang.matlab.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.matlab.ast.MatlabParserTokenManager;
 
 /**
  * Matlab Token Manager implementation.
- *
- * @deprecated This is internal API
  */
-@Deprecated
 @InternalApi
 public class MatlabTokenManager implements TokenManager {
-    private final MatlabParserTokenManager tokenManager;
+    private final MatlabParserImplTokenManager tokenManager;
 
-    /**
-     * Creates a new Matlab Token Manager from the given source code.
-     *
-     * @param source
-     *            the source code
-     */
     public MatlabTokenManager(Reader source) {
-        tokenManager = new MatlabParserTokenManager(CharStreamFactory.simpleCharStream(source));
+        tokenManager = new MatlabParserImplTokenManager(CharStreamFactory.simpleCharStream(source));
     }
 
     @Override
@@ -38,6 +28,6 @@ public class MatlabTokenManager implements TokenManager {
 
     @Override
     public void setFileName(String fileName) {
-        MatlabParserTokenManager.setFileName(fileName);
+        MatlabParserImplTokenManager.setFileName(fileName);
     }
 }

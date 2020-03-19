@@ -19,8 +19,8 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
-import net.sourceforge.pmd.lang.cpp.CppTokenManager;
-import net.sourceforge.pmd.lang.cpp.ast.Token;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.cpp.ast.CppTokenManager;
 
 public class CPPTokenizerContinuationTest {
 
@@ -59,27 +59,27 @@ public class CPPTokenizerContinuationTest {
     public void parseWithContinuationCppTokenManager() throws Exception {
         String code = load("cpp_with_continuation.cpp");
         CppTokenManager tokenManager = new CppTokenManager(new StringReader(code));
-        List<Token> tokens = new ArrayList<>();
+        List<JavaccToken> tokens = new ArrayList<>();
 
-        Token token = (Token) tokenManager.getNextToken();
-        while (!token.image.isEmpty()) {
+        JavaccToken token = (JavaccToken) tokenManager.getNextToken();
+        while (!token.getImage().isEmpty()) {
             tokens.add(token);
-            token = (Token) tokenManager.getNextToken();
+            token = (JavaccToken) tokenManager.getNextToken();
         }
 
         assertEquals(51, tokens.size());
 
-        assertToken(tokens.get(2), "ab", 8, 12, 9, 1);
-        assertToken(tokens.get(22), "\"2 Hello, world!\\n\"", 18, 16, 19, 9);
+        assertToken(tokens.get(2), "ab", 8, 12, 9, 2);
+        assertToken(tokens.get(22), "\"2 Hello, world!\\n\"", 18, 16, 19, 10);
     }
 
 
-    private void assertToken(Token token, String image, int beginLine, int beginColumn, int endLine, int endColumn) {
-        assertEquals(image, token.image);
-        assertEquals(beginLine, token.beginLine);
-        assertEquals(beginColumn, token.beginColumn);
-        assertEquals(endLine, token.endLine);
-        assertEquals(endColumn, token.endColumn);
+    private void assertToken(JavaccToken token, String image, int beginLine, int beginColumn, int endLine, int endColumn) {
+        assertEquals(image, token.getImage());
+        assertEquals(beginLine, token.getBeginLine());
+        assertEquals(beginColumn, token.getBeginColumn());
+        assertEquals(endLine, token.getEndLine());
+        assertEquals(endColumn, token.getEndColumn());
     }
 
     @Test

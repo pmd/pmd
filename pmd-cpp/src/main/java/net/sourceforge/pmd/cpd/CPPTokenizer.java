@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -12,7 +12,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.cpp.CppTokenManager;
+import net.sourceforge.pmd.lang.cpp.ast.CppTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
