@@ -8,7 +8,6 @@ options {
 
 	MULTI=true;
 	VISITOR=true;
-	TRACK_TOKENS = true;
 }
 
 PARSER_BEGIN(VfParserImpl)
