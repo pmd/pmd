@@ -13,32 +13,28 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.properties.PropertyBuilder;
 
 
 /**
  * Validates the value of a property.
  *
- * <p>This interface will change a lot with PMD 7.0.0,
- * because of the switch to Java 8. Please use
- * only the ready-made validators in {@link NumericConstraints}
- * for now.
- *
  * @param <T> Type of value to handle
+ *
+ * @see PropertyBuilder#require(PropertyConstraint)
  *
  * @author Clément Fournier
  * @since 6.10.0
  */
-@Experimental
 public interface PropertyConstraint<T> {
 
     /**
      * Returns a diagnostic message if the value
-     * has a problem. Otherwise returns an empty
-     * optional.
+     * has a problem. Otherwise returns null.
      *
      * @param value The value to validate
      *
-     * @return An optional diagnostic message
+     * @return A diagnostic message
      */
     @Nullable
     String validate(T value);
@@ -126,7 +122,7 @@ public interface PropertyConstraint<T> {
             // TODO message could be better, eg include name of the property
             @Override
             public String validate(U value) {
-                return pred.test(value) ? null : "Constraint violated on property value '" + value + "' (" + StringUtils.uncapitalize(constraintDescription) + ")";
+                return pred.test(value) ? null :  value + " " + StringUtils.uncapitalize(constraintDescription);
             }
 
             @Override

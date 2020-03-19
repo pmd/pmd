@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.EnumUtils;
-
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
@@ -319,7 +317,7 @@ public final class PropertyFactory {
     }
 
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
-        return new GenericPropertyBuilder<>(name, enumerationParser(EnumUtils.getEnumMap(enumClass)));
+        return enumProperty(name, enumClass, Enum::name);
     }
 
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {

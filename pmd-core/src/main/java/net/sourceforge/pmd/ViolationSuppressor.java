@@ -5,6 +5,8 @@
 package net.sourceforge.pmd;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -37,10 +39,10 @@ public interface ViolationSuppressor {
 
         @Override
         public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            String regex = rv.getRule().getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
-            if (regex != null && rv.getDescription() != null) {
-                if (Pattern.matches(regex, rv.getDescription())) {
-                    return new SuppressedViolation(rv, this, regex);
+            Optional<String> regex = rv.getRule().getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
+            if (regex.isPresent() && rv.getDescription() != null) {
+                if (Pattern.matches(regex.get(), rv.getDescription())) {
+                    return new SuppressedViolation(rv, this, regex.get());
                 }
             }
             return null;
@@ -63,12 +65,12 @@ public interface ViolationSuppressor {
             //  this needs to be checked to be a valid xpath expression in the ruleset,
             //  not at the time it is evaluated, and also parsed by the XPath parser only once
             Rule rule = rv.getRule();
-            String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (xpath == null) {
+            Optional<String> xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+            if (!xpath.isPresent()) {
                 return null;
             }
             SaxonXPathRuleQuery rq = new SaxonXPathRuleQuery(
-                xpath,
+                xpath.get(),
                 XPathVersion.DEFAULT,
                 rule.getPropertiesByPropertyDescriptor(),
                 // todo version should be carried around by the node

@@ -96,8 +96,7 @@ public class PropertyDescriptorTest {
         PropertyConstraint<Integer> constraint = inRange(1, 10);
 
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
-                                   containsIgnoreCase(constraint.getConstraintDescription())));
+        thrown.expectMessage(containsIgnoreCase(constraint.getConstraintDescription()));
 
         PropertyFactory.intProperty("fooProp")
                        .desc("hello")
@@ -112,8 +111,7 @@ public class PropertyDescriptorTest {
         PropertyConstraint<Double> constraint = inRange(1d, 10d);
 
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
-                                   containsIgnoreCase(constraint.getConstraintDescription())));
+        thrown.expectMessage(containsIgnoreCase(constraint.getConstraintDescription()));
 
         PropertyFactory.doubleListProperty("fooProp")
                        .desc("hello")
