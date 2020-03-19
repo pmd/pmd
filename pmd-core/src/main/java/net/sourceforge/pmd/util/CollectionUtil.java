@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * Generic collection and array-related utility functions for java.util types.
@@ -394,6 +395,19 @@ public final class CollectionUtil {
             res.add(f.apply(from.next()));
         }
         return res;
+    }
+
+    public static <T> List<T> drop(List<T> list, int n) {
+        AssertionUtil.requireNonNegative("n", n);
+
+        return list.size() <= n ? Collections.emptyList()
+                                : list.subList(n, list.size());
+    }
+
+    public static <T> List<T> take(List<T> list, int n) {
+        AssertionUtil.requireNonNegative("n", n);
+        return list.size() <= n ? list
+                                : list.subList(0, n);
     }
 
     /**

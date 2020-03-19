@@ -60,12 +60,22 @@ final class TraversalUtils {
     }
 
     static <T> List<T> findChildrenMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
+        return findChildrenMatching(node, filter, from, len, Integer.MAX_VALUE);
+    }
+
+    static <T> List<T> findChildrenMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len, int maxSize) {
+        if (maxSize == 0) {
+            return Collections.emptyList();
+        }
         List<T> list = new ArrayList<>();
         for (int i = from, last = from + len; i < last; i++) {
             Node c = node.getChild(i);
             T t = filter.apply(c);
             if (t != null) {
                 list.add(t);
+                if (list.size() >= maxSize) {
+                    return list;
+                }
             }
         }
         return list;

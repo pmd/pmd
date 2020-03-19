@@ -124,8 +124,6 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  */
 public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
-    // TODO measure performance of eager child stream
-
     /**
      * Returns a node stream consisting of the results of replacing each
      * node of this stream with the contents of a stream produced by the
@@ -347,7 +345,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #ancestorsOrSelf()
      */
     default NodeStream<Node> parents() {
-        return map(t -> t.getParent());
+        return map(Node::getParent);
     }
 
 
@@ -438,7 +436,22 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return flatMap(it -> it.children(rClass));
     }
 
-    // todo maybe having a firstChild(rClass) -> flatMap(it -> it.children(rClass).take(1)) would be nice
+    /**
+     * Returns a stream containing the first child of each of the nodes
+     * in this stream that has the given type.
+     *
+     * <p>This is equivalent to {@code flatMap(it -> it.children(rClass).take(1))}.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see Node#children(Class)
+     */
+    default <R extends Node> NodeStream<R> firstChild(Class<R> rClass) {
+        return flatMap(it -> it.children(rClass).take(1));
+    }
 
     /**
      * Returns the {@linkplain #descendants() descendant stream} of each node

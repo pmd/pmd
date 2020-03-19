@@ -64,4 +64,14 @@ public class DummyNode extends AbstractNode {
     public Map<String, String> getUserData() {
         return userData;
     }
+
+
+    public static class DummyNodeTypeB extends DummyNode {
+
+        @Override
+        public String toString() {
+            return getImage();
+        }
+    }
+
 }

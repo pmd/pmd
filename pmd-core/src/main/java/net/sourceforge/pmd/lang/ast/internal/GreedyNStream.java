@@ -17,6 +17,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * A greedy stream evaluates all axis operations, except for descendants,
@@ -44,6 +45,27 @@ abstract class GreedyNStream<T extends Node> extends IteratorBasedNStream<T> {
     @Override
     public Iterator<T> iterator() {
         return toList().iterator();
+    }
+
+    @Override
+    public int count() {
+        return toList().size();
+    }
+
+    @Override
+    public NodeStream<T> drop(int n) {
+        if (n == 0) {
+            return this;
+        }
+        return StreamImpl.fromNonNullList(CollectionUtil.drop(toList(), n));
+    }
+
+    @Override
+    public NodeStream<T> take(int maxSize) {
+        if (maxSize >= count()) {
+            return this;
+        }
+        return StreamImpl.fromNonNullList(CollectionUtil.take(toList(), maxSize));
     }
 
     @Override
