@@ -5,10 +5,9 @@
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
 /**
  * The sum of the cognitive complexities of all the methods within a class.
@@ -18,6 +17,6 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 public class ClassCognitiveComplexityMetric extends AbstractApexClassMetric {
     @Override
     public double computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
-        return ApexMetrics.get(ApexOperationMetricKey.COGNITIVE, node, ResultOption.SUM);
+        return MetricsUtil.computeStatistics(ApexOperationMetricKey.COGNITIVE, node.getMethods()).getSum();
     }
 }
