@@ -9,6 +9,7 @@ import java.util.Comparator;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Reportable;
 import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.util.document.TextRegion;
  * class in a typical PMD run and this may reduce GC pressure.
  * </ul>
  */
-public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken> {
+public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken>, Reportable {
 
     /**
      * Kind for EOF tokens.
@@ -164,7 +165,8 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return region;
     }
 
-    private FileLocation getLocation() {
+    @Override
+    public FileLocation getReportLocation() {
         if (location == null) {
             location = document.getTextDocument().toLocation(getRegion());
         }
@@ -173,22 +175,22 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
 
     @Override
     public int getBeginLine() {
-        return getLocation().getBeginLine();
+        return getReportLocation().getBeginLine();
     }
 
     @Override
     public int getEndLine() {
-        return getLocation().getEndLine();
+        return getReportLocation().getEndLine();
     }
 
     @Override
     public int getBeginColumn() {
-        return getLocation().getBeginColumn();
+        return getReportLocation().getBeginColumn();
     }
 
     @Override
     public int getEndColumn() {
-        return getLocation().getEndColumn();
+        return getReportLocation().getEndColumn();
     }
 
 

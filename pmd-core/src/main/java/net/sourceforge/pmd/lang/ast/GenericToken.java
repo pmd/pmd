@@ -42,10 +42,8 @@ public interface GenericToken<T extends GenericToken<T>> {
     boolean isEof();
 
 
-    // TODO these default implementations are here for compatibility because
-    //  the functionality is only used in pmd-java for now, though it could
-    //  be ported. I prefer doing this as changing all the GenericToken in
-    //  pmd-java to JavaccToken
+    // TODO remove those methods, instead, implement Reportable.
+    //  This is already done for JavaccToken, to do for AntlrToken
 
 
     /**
