@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTAttributeValue extends AbstractJspNode {
 
-public class ASTAttributeValue extends AbstractJspNode {
-    @InternalApi
-    @Deprecated
-    public ASTAttributeValue(int id) {
+    ASTAttributeValue(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTAttributeValue(JspParser p, int id) {
-        super(p, id);
     }
 
     @Override

@@ -29,107 +29,16 @@ options {
   UNICODE_INPUT=true;
 }
 
-PARSER_BEGIN(CppParser)
+PARSER_BEGIN(CppParserImpl)
 package net.sourceforge.pmd.lang.cpp.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public final class CppParser {
+public final class CppParserImpl {
 
-  private static String vers = "0.1";
-  private static String id = "C++ Parser";
-
-  private static void msg(String s) {
-      System.out.println(id + " Version " + vers +": " + s);
-  }
-
-  public static void main(String args[]) {
-    CppParser parser;
-    java.io.InputStream input;
-
-    int ai = 0;
-
-    if (ai == (args.length-1)) {
-      msg("Reading from file " + args[ai] + " . . .");
-      try {
-        input = new java.io.FileInputStream(args[ai]);
-      } catch (java.io.FileNotFoundException e) {
-        msg("File " + args[0] + " not found.");
-        return;
-      }
-    } else if (ai >= args.length) {
-      msg("Reading from standard input . . .");
-      input = System.in;
-    } else {
-      msg("Usage: java " + id + " [-d] [inputfile]");
-      return;
-    }
-
-    try {
-      parser = new CppParser(input);
-      parser.translation_unit();
-      msg("Program parsed successfully.");
-    } catch (ParseException e) {
-      msg("Encountered errors during parse.");
-    }
-  }
-
-  /**
-   * A symbol table manager object. Currently only types are recorded for
-   * doing semantic predicates for parsing.
-   */
-  static SymtabManager sym;
-
-  /*
-   * Methods used in semantics predicates.
-   */
-
-  /**
-   * Reads a fully qualified name (since it is used during lookahead, we
-   * cannot use token. We have to explicitly use getToken).
-   */
-  static String GetFullyScopedName() throws ParseException
-  {
-     Token t = getToken(1);
-
-     if (t.kind != ID && t.kind != SCOPE)
-        return null;
-
-     StringBuilder s = new StringBuilder();
-
-     int i;
-     if (t.kind != SCOPE)
-     {
-        s.append(t.getImage());
-        t = getToken(2);
-        i = 3;
-     }
-     else
-        i = 2;
-
-     while (t.kind == SCOPE)
-     {
-        s.append(t.getImage());
-        s.append((t = getToken(i++)).getImage());
-        t = getToken(i++);
-     }
-
-     return s.toString();
-  }
-
-  /**
-   * This method first tries to read a sequence of tokens of the form
-   *             ("::")? <ID> ("::" <ID>)*
-   * and if it succeeds then asks the symbol table manager  if this is
-   * the name of a constructor.
-   */
-  static boolean IsCtor() throws ParseException
-  {
-      return sym.IsCtor(GetFullyScopedName());
-  }
 }
-PARSER_END(CppParser)
+PARSER_END(CppParserImpl)
 
 SKIP:
 {
@@ -337,7 +246,7 @@ TOKEN :
     //               ^
     for (;;) {
       try { curChar = input_stream.readChar(); }
-      catch(java.io.IOException e) { return; }
+      catch(java.io.IOException e) { return matchedToken; }
       if (curChar == '(') break;
       sb.append(curChar);
     }
@@ -348,35 +257,33 @@ rstringbody:
     //                   ^
     for (;;) {
       try { curChar = input_stream.readChar(); }
-      catch(java.io.IOException e) { return; }
+	  catch(java.io.IOException e) { return matchedToken; }
       if (curChar == ')') {
-	// delim --------------+
-	//                    vvv
-	// Matching R"...(...)..."
-	//                    ^^^
-	for (int i = 0; i < delim.length(); i++) {
+	  // delim --------------+
+	  //                    vvv
+	  // Matching R"...(...)..."
+	  //                    ^^^
+	  for (int i = 0; i < delim.length(); i++) {
+	    try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return matchedToken; }
+	    if (delim.charAt(i) != curChar) {
+	      input_stream.backup(1);
+	      continue rstringbody;
+	    }
+	  }
+	  // Matching R"...(...)..."
+	  //                       ^
 	  try { curChar = input_stream.readChar(); }
-	  catch(java.io.IOException e) { return; }
-	  if (delim.charAt(i) != curChar) {
+	  catch(java.io.IOException e) { return matchedToken; }
+	  if (curChar != '"') {
 	    input_stream.backup(1);
 	    continue rstringbody;
 	  }
-	}
-	// Matching R"...(...)..."
-	//                       ^
-	try { curChar = input_stream.readChar(); }
-	catch(java.io.IOException e) { return; }
-	if (curChar != '"') {
-	  input_stream.backup(1);
-	  continue rstringbody;
-	}
-	break;
+	  break;
       }
     }
-    // Setting final token image
-    matchedToken.image = input_stream.GetImage();
-    matchedToken.endLine = input_stream.getEndLine();
-    matchedToken.endColumn = input_stream.getEndColumn();
+
+    matchedToken = matchedToken.replaceImage(input_stream);
   }
 }
 

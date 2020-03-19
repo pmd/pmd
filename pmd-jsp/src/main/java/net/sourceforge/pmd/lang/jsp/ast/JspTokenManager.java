@@ -1,28 +1,24 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.jsp;
+package net.sourceforge.pmd.lang.jsp.ast;
 
 import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
-import net.sourceforge.pmd.lang.jsp.ast.JspParserTokenManager;
 
 /**
  * JSP Token Manager implementation.
- *
- * @deprecated This is internal API
  */
-@Deprecated
 @InternalApi
 public class JspTokenManager implements TokenManager {
-    private final JspParserTokenManager tokenManager;
+    private final JspParserImplTokenManager tokenManager;
 
     public JspTokenManager(Reader source) {
-        tokenManager = new JspParserTokenManager(CharStreamFactory.javaCharStream(source));
+        tokenManager = new JspParserImplTokenManager(CharStreamFactory.javaCharStream(source));
     }
 
     @Override
@@ -32,6 +28,6 @@ public class JspTokenManager implements TokenManager {
 
     @Override
     public void setFileName(String fileName) {
-        JspParserTokenManager.setFileName(fileName);
+        JspParserImplTokenManager.setFileName(fileName);
     }
 }

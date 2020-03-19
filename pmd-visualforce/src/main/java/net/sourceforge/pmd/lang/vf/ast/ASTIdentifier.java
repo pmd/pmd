@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTIdentifier extends AbstractVfNode {
 
-public class ASTIdentifier extends AbstractVFNode {
-    @Deprecated
-    @InternalApi
-    public ASTIdentifier(int id) {
+    ASTIdentifier(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTIdentifier(VfParser p, int id) {
-        super(p, id);
     }
 
     @Override

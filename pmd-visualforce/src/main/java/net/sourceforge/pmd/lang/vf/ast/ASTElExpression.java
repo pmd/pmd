@@ -4,19 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTElExpression extends AbstractVFNode {
-    @Deprecated
-    @InternalApi
-    public ASTElExpression(int id) {
+public final class ASTElExpression extends AbstractVfNode {
+    ASTElExpression(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTElExpression(VfParser p, int id) {
-        super(p, id);
     }
 
     @Override

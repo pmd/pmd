@@ -4,19 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTNegationExpression extends AbstractVFNode {
-    @Deprecated
-    @InternalApi
-    public ASTNegationExpression(int id) {
+public final class ASTNegationExpression extends AbstractVfNode {
+    ASTNegationExpression(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTNegationExpression(VfParser p, int id) {
-        super(p, id);
     }
 
     @Override

@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTDoctypeExternalId extends AbstractJspNode {
+public final class ASTDoctypeExternalId extends AbstractJspNode {
 
     /**
      * URI of the external entity. Cannot be null.
@@ -18,16 +16,8 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
      */
     private String publicId;
 
-    @InternalApi
-    @Deprecated
-    public ASTDoctypeExternalId(int id) {
+    ASTDoctypeExternalId(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTDoctypeExternalId(JspParser p, int id) {
-        super(p, id);
     }
 
     public boolean isHasPublicId() {
@@ -38,9 +28,7 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
         return uri;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setUri(String uri) {
+    void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -52,9 +40,7 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
         return null == publicId ? "" : publicId;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setPublicId(String publicId) {
+    void setPublicId(String publicId) {
         this.publicId = publicId;
     }
 

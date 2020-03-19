@@ -4,34 +4,22 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTJspDirective extends AbstractJspNode {
+public final class ASTJspDirective extends AbstractJspNode {
 
     /**
      * Name of the element-tag. Cannot be null.
      */
     private String name;
 
-    @InternalApi
-    @Deprecated
-    public ASTJspDirective(int id) {
+    ASTJspDirective(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTJspDirective(JspParser p, int id) {
-        super(p, id);
     }
 
     public String getName() {
         return name;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 

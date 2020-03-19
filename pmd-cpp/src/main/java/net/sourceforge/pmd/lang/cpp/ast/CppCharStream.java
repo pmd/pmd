@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.cpp;
+package net.sourceforge.pmd.lang.cpp.ast;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
-import net.sourceforge.pmd.lang.cpp.ast.CppParserConstants;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,
@@ -71,9 +70,7 @@ class CppCharStream extends SimpleCharStream {
         JavaccTokenDocument document = new JavaccTokenDocument(source) {
             @Override
             protected @Nullable String describeKindImpl(int kind) {
-                return 0 <= kind && kind < CppParserConstants.tokenImage.length
-                       ? CppParserConstants.tokenImage[kind]
-                       : null;
+                return CppTokenKinds.describe(kind);
             }
         };
         return new CppCharStream(document);

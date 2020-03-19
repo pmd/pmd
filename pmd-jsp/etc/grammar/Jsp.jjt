@@ -28,24 +28,25 @@ options {
 	TRACK_TOKENS = true;
 }
 
-PARSER_BEGIN(JspParser)
+PARSER_BEGIN(JspParserImpl)
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
  * JSP Parser for PMD.
  * @author Pieter, Application Engineers NV/SA, http://www.ae.be
  */
-public class JspParser {
+public class JspParserImpl {
 
 
 	/**
 	* Counter used to keep track of unclosed tags
 	*/
 	private OpenTagRegister tagRegister = new OpenTagRegister();
-	
+
 	/**
 	 * Return the contents of a quote.
 	 * @param quote String - starting and ending with " or '
@@ -55,7 +56,7 @@ public class JspParser {
 	private static String quoteContent(String quote) {
 		return quote.substring(1, quote.length()-1);
 	}
-	
+
 	/**
 	 * Return the contents of a EL expression or a Value Binding expression.
 	 * @param expression String - starting with ${ or #{ and ending with }
@@ -67,7 +68,7 @@ public class JspParser {
 	}
 }
 
-PARSER_END(JspParser)
+PARSER_END(JspParserImpl)
 
 
 /** ******************************************************************** */

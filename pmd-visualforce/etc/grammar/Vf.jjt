@@ -11,13 +11,13 @@ options {
 	TRACK_TOKENS = true;
 }
 
-PARSER_BEGIN(VfParser)
+PARSER_BEGIN(VfParserImpl)
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class VfParser {
+public class VfParserImpl {
 
 
 	/**
@@ -46,7 +46,7 @@ public class VfParser {
 	}
 }
 
-PARSER_END(VfParser)
+PARSER_END(VfParserImpl)
 
 /** *************************  VF LEXICON  **************************** */
 
