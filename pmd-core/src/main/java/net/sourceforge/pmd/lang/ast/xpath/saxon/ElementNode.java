@@ -14,8 +14,14 @@ import net.sf.saxon.om.EmptyIterator;
 import net.sf.saxon.om.Navigator;
 import net.sf.saxon.om.NodeArrayIterator;
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.SingleNodeIterator;
+import net.sf.saxon.om.SingletonIterator;
 import net.sf.saxon.type.Type;
+import net.sf.saxon.value.AtomicValue;
+import net.sf.saxon.value.StringValue;
+import net.sf.saxon.value.UntypedAtomicValue;
+import net.sf.saxon.value.Value;
 
 /**
  * A Saxon OM Element type node for an AST Node.
@@ -97,6 +103,27 @@ public class ElementNode extends AbstractNodeInfo {
     @Override
     public NodeInfo getParent() {
         return parent;
+    }
+
+    @Override
+    public SequenceIterator getTypedValue() {
+        return SingletonIterator.makeIterator((AtomicValue) atomize());
+    }
+
+    @Override
+    public Value atomize() {
+        switch (getNodeKind()) {
+        case Type.COMMENT:
+        case Type.PROCESSING_INSTRUCTION:
+            return new StringValue(getStringValueCS());
+        default:
+            return new UntypedAtomicValue(getStringValueCS());
+        }
+    }
+
+    @Override
+    public CharSequence getStringValueCS() {
+        return "";
     }
 
     @Override

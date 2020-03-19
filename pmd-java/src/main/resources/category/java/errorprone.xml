@@ -2416,7 +2416,7 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
  + count(BlockStatement//Statement/ContinueStatement)
  + count(BlockStatement//Statement/ThrowStatement)
  + count(BlockStatement//Statement/IfStatement[@Else= true() and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
- + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
+ + count(SwitchLabel[ following-sibling::node()[1][self::SwitchLabel] ])
  + count(SwitchLabel[count(following-sibling::node()) = 0])
   < count (SwitchLabel))]
 ]]>

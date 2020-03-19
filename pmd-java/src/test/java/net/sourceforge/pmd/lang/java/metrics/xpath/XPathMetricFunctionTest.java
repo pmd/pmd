@@ -33,6 +33,8 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  */
 public class XPathMetricFunctionTest {
 
+    // TODO 7.0 when removing jaxen these tests need to be updated to use pmd-java:metric
+
     private static final String VIOLATION_MESSAGE = "violation";
 
     @org.junit.Rule

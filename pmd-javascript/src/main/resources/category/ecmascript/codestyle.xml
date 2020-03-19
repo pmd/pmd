@@ -190,7 +190,7 @@ See also: &lt;http://eslint.org/docs/rules/no-else-return>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else="true"][Scope[1]/ReturnStatement]
+//IfStatement[@Else=true()][Scope[1]/ReturnStatement]
 ]]>
                 </value>
             </property>

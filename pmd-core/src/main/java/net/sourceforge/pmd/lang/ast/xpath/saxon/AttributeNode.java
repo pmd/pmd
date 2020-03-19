@@ -24,6 +24,8 @@ import net.sf.saxon.value.Value;
 @Deprecated
 @InternalApi
 public class AttributeNode extends AbstractNodeInfo {
+
+    private final ElementNode parent;
     protected final Attribute attribute;
     protected final int id;
     protected Value value;
@@ -32,9 +34,11 @@ public class AttributeNode extends AbstractNodeInfo {
     /**
      * Creates a new AttributeNode from a PMD Attribute.
      *
+     * @param parent
      * @param id The index within the attribute order
      */
-    public AttributeNode(Attribute attribute, int id) {
+    public AttributeNode(ElementNode parent, Attribute attribute, int id) {
+        this.parent = parent;
         this.attribute = attribute;
         this.id = id;
     }
@@ -52,6 +56,11 @@ public class AttributeNode extends AbstractNodeInfo {
     @Override
     public String getURI() {
         return "";
+    }
+
+    @Override
+    public ElementNode getParent() {
+        return parent;
     }
 
     @Override

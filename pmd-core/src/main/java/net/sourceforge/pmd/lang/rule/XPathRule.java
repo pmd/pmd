@@ -51,7 +51,7 @@ public class XPathRule extends AbstractRule {
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = EnumeratedProperty.<String>named("version")
             .desc("XPath specification version")
             .mappings(XPATH_VERSIONS)
-            .defaultValue(XPATH_2_0)
+            .defaultValue(XPATH_1_0)
             .type(String.class)
             .uiOrder(2.0f)
             .build();
