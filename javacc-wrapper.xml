@@ -213,6 +213,13 @@
             <file name="${parser-file}" />
         </replaceregexp>
 
+        <!-- This is handled by jjtClose  -->
+        <replaceregexp flags="g">
+            <regexp pattern='\w+.jjtSetLastToken\(getToken\(0\)\);\R' />
+            <substitution expression='' />
+            <file name="${parser-file}" />
+        </replaceregexp>
+
 
         <!-- The tree builder is generic now -->
         <replaceregexp flags="g">
