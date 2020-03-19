@@ -64,6 +64,7 @@ method visibility, even if they are private. This violates the principle of enca
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -137,6 +138,7 @@ Use of the term 'assert' will conflict with newer versions of Java since it is a
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//VariableDeclaratorId[@Image='assert']</value>
             </property>
@@ -216,6 +218,7 @@ original error, causing other, more subtle problems later on.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -281,6 +284,7 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -351,6 +355,7 @@ Use of the term 'enum' will conflict with newer versions of Java since it is a r
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//VariableDeclaratorId[@Image='enum']</value>
             </property>
@@ -419,6 +424,7 @@ Each caught exception type should be handled in its own catch clause.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -544,6 +550,7 @@ only add to code size.  Either remove the invocation, or use the return result.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -640,6 +647,7 @@ precision when comparing floating point numbers these are likely to cause logic 
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -720,6 +728,7 @@ public String bar(String string) {
         <description>Super should be called at the start of the method</description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -767,6 +776,7 @@ Super should be called at the end of the method
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -846,6 +856,7 @@ in a ClassCastException.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -889,6 +900,7 @@ Object.clone (which is protected) with a public method."
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -961,6 +973,7 @@ Note: This is only possible with Java 1.5 or higher.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1002,6 +1015,7 @@ The method clone() should throw a CloneNotSupportedException.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1181,6 +1195,7 @@ should be annotated with @Test and @Ignore.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //ClassOrInterfaceBodyDeclaration
@@ -1232,6 +1247,7 @@ leaks develop within an application, it should be dealt with JVM options rather 
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1287,6 +1303,7 @@ application server should stop the JVM. This rule also checks for the equivalent
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1322,6 +1339,7 @@ Extend Exception or RuntimeException instead of Throwable.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1349,6 +1367,7 @@ Use Environment.getExternalStorageDirectory() instead of "/sdcard"
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//Literal[starts-with(@Image,'"/sdcard')]</value>
             </property>
@@ -1379,6 +1398,7 @@ Note: This is a PMD implementation of the Lint4j rule "A throw in a finally bloc
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//FinallyStatement[descendant::ThrowStatement]</value>
             </property>
@@ -1431,6 +1451,7 @@ performance need (space or time).
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1470,6 +1491,7 @@ or reported.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1509,6 +1531,7 @@ Empty finalize methods serve no purpose and should be removed. Note that Oracle 
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1538,6 +1561,7 @@ Empty finally blocks serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1572,6 +1596,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1605,6 +1630,7 @@ Empty initializers serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//Initializer/Block[count(*)=0]</value>
             </property>
@@ -1633,6 +1659,7 @@ Empty block statements serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//BlockStatement/Statement/Block[count(*) = 0]</value>
             </property>
@@ -1666,6 +1693,7 @@ and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1706,6 +1734,7 @@ Empty switch statements serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//SwitchStatement[count(*) = 1]</value>
             </property>
@@ -1734,6 +1763,7 @@ Empty synchronized blocks serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//SynchronizedStatement/Block[1][count(*) = 0]</value>
             </property>
@@ -1762,6 +1792,7 @@ Avoid empty try blocks - what's the point?
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1797,6 +1828,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1827,6 +1859,7 @@ Tests for null should not use the equals() method. The '==' operator should be u
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1873,6 +1906,7 @@ If the finalize() is implemented, its last action should be to call super.finali
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <!-- in English: a method declaration of finalize(), with no arguments, containing
@@ -1917,6 +1951,7 @@ If the finalize() is implemented, it should do something besides just calling su
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1954,6 +1989,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1987,6 +2023,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2057,6 +2094,7 @@ Avoid instantiating an object just to call getClass() on it; use the .class publ
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2115,6 +2153,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //ForStatement
@@ -2153,6 +2192,7 @@ Some JUnit framework methods are easy to misspell.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2196,6 +2236,7 @@ The suite() method in a JUnit test needs to be both public and static.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2240,6 +2281,7 @@ The rule is replaced by {% rule java/errorprone/ProperLogger %}.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2364,6 +2406,7 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2417,6 +2460,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2547,6 +2591,7 @@ This legal, but confusing. It is easy to mix up the case labels and the non-case
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//SwitchStatement//BlockStatement/Statement/LabeledStatement</value>
             </property>
@@ -2676,6 +2721,7 @@ Object clone() should be implemented with super.clone().
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2778,6 +2824,7 @@ NullPointerExceptions.
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2855,6 +2902,7 @@ formatting is used.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2945,6 +2993,7 @@ behavior especially when instances are distributed by the container on several J
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3009,6 +3058,7 @@ new StringBuilder("A")   //  1 + 16 = 17
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3049,6 +3099,7 @@ intention to override the equals(Object) method.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3175,6 +3226,7 @@ Do not use "if" statements whose conditionals are always true or always false.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
  <![CDATA[
@@ -3213,6 +3265,7 @@ an error, use the fail() method and provide an indication message of why it did.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3298,6 +3351,7 @@ After checking an object reference for null, you should invoke equals() on that 
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3364,6 +3418,7 @@ To make sure the full stacktrace is printed out, use the logging statement with 
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3407,6 +3462,7 @@ Use the equals() method instead.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3481,6 +3537,7 @@ class Test {
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -3533,6 +3590,7 @@ Thread.currentThread().getContextClassLoader() instead.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//PrimarySuffix[@Image='getClassLoader']</value>
             </property>

@@ -41,8 +41,8 @@ public class XPathRule extends AbstractRule {
 
     static {
         Map<String, String> tmp = new HashMap<>();
-        tmp.put(XPATH_1_0, XPATH_2_0);
-        tmp.put(XPATH_1_0_COMPATIBILITY, XPATH_2_0);
+        tmp.put(XPATH_1_0, XPATH_1_0);
+        tmp.put(XPATH_1_0_COMPATIBILITY, XPATH_1_0_COMPATIBILITY);
         tmp.put(XPATH_2_0, XPATH_2_0);
         XPATH_VERSIONS = Collections.unmodifiableMap(tmp);
     }

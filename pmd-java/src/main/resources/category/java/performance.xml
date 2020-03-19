@@ -21,6 +21,7 @@ It is much better to use one of the type-specific toString() methods instead.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -68,6 +69,7 @@ Instead of manually copying data between two arrays, use the efficient Arrays.co
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -139,6 +141,7 @@ that one covers both.
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -212,6 +215,7 @@ adverse impacts on performance.
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -297,6 +301,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -470,6 +475,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -503,6 +509,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -544,6 +551,7 @@ is faster, but returns only an array of type `Object[]`.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -620,6 +628,7 @@ at the expense of some readability.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -667,6 +676,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -735,6 +745,7 @@ if-then statement to increase code readability.
         <priority>3</priority>
         <properties>
             <property name="minimumNumberCaseForASwitch" type="Integer" description="Minimum number of branches for a switch" min="1" max="100" value="3"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -805,6 +816,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -846,6 +858,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
 	</description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

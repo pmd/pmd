@@ -23,6 +23,7 @@ directly) a protected constructor can be provided prevent direct instantiation.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -194,6 +195,7 @@ Avoid printStackTrace(); use a logger call instead.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -299,6 +301,7 @@ if held within objects with long lifetimes.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -377,6 +380,7 @@ better placed in classes or enums. See Effective Java, item 19.
         <priority>3</priority>
         <properties>
         <property name="ignoreIfHasMethods" type="Boolean" description="Whether to ignore constants in interfaces if the interface defines any methods" value="true"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -422,6 +426,7 @@ By convention, the default label should be the last label in a switch statement.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -541,6 +546,7 @@ the loop iterates over. By default this rule allows a regular 'for' loop with on
         <properties>
             <property name="maximumVariables" type="Integer"
                       description="A regular for statement will have 1 control variable" min="0" max="100" value="1"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//ForInit/LocalVariableDeclaration[count(VariableDeclarator) > $maximumVariables]</value>
             </property>
@@ -587,6 +593,7 @@ through the @RunWith(Suite.class) annotation.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -628,6 +635,7 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -672,6 +680,7 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -716,6 +725,7 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -793,6 +803,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
         <priority>3</priority>
         <properties>
             <property name="maximumAsserts" type="Integer" min="1" max="1000" description="Maximum number of Asserts in a test method" value="1"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -981,6 +992,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1025,6 +1037,7 @@ can be avoided, they will just return false.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1069,6 +1082,7 @@ can be avoided, they will just return false.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1146,6 +1160,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1180,6 +1195,7 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
             </property>
@@ -1206,6 +1222,7 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
             </property>
@@ -1267,6 +1284,7 @@ will (and by priority) and avoid clogging the Standard out log.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1414,6 +1432,7 @@ This rule detects JUnit assertions in object equality. These assertions should b
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1460,6 +1479,7 @@ more specific methods, like assertNull, assertNotNull.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1509,6 +1529,7 @@ by more specific methods, like assertSame, assertNotSame.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1554,6 +1575,7 @@ When asserting a value is the same as a literal or Boxed boolean, use assertTrue
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

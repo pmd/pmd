@@ -45,6 +45,7 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -82,6 +83,7 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -139,6 +141,7 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -248,6 +251,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -345,6 +349,7 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
