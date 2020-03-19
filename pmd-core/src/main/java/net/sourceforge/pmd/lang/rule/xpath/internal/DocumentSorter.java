@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * Sorts nodes by document order.
  */
-class DocumentSorter implements Comparator<Node> {
+final class DocumentSorter implements Comparator<Node> {
 
     public static final DocumentSorter INSTANCE = new DocumentSorter();
 
