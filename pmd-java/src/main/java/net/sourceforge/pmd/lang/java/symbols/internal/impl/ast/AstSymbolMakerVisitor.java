@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -33,7 +34,9 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
     // these are counts of anon classes in the enclosing class
     private final Deque<MutableInt> anonymousCounters = new ArrayDeque<>();
     // these are binary names, eg may contain pack.Foo, pack.Foo$Nested, pack.Foo$Nested$1Local
-    private final Deque<String> innermostEnclosingTypeName = new ArrayDeque<>();
+    private final Deque<String> enclosingBinaryNames = new ArrayDeque<>();
+    // these are canonical names. Contains null values if the enclosing decl has no canonical name
+    private final Deque<@Nullable String> enclosingCanonicalNames = new ArrayDeque<>();
     // these are symbols, NOT 1-to-1 with the type name stack because may contain method/ctor symbols
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
 
@@ -66,10 +69,12 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         String binaryName = makeBinaryName(node);
-        InternalApiBridge.setQname(node, binaryName);
+        @Nullable String canonicalName = makeCanonicalName(node, binaryName);
+        InternalApiBridge.setQname(node, binaryName, canonicalName);
         JClassSymbol sym = ((AstSymFactory) data).setClassSymbol(enclosingSymbols.peek(), node);
 
-        innermostEnclosingTypeName.push(binaryName);
+        enclosingBinaryNames.push(binaryName);
+        enclosingCanonicalNames.push(canonicalName);
         enclosingSymbols.push(sym);
         anonymousCounters.push(new MutableInt(0));
         currentLocalIndices.push(new HashMap<>());
@@ -79,7 +84,8 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
         currentLocalIndices.pop();
         anonymousCounters.pop();
         enclosingSymbols.pop();
-        innermostEnclosingTypeName.pop();
+        enclosingBinaryNames.pop();
+        enclosingCanonicalNames.pop();
 
         return null;
     }
@@ -94,10 +100,28 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
             simpleName = "" + anonymousCounters.getFirst().incrementAndGet();
         }
 
-        String enclosing = innermostEnclosingTypeName.peek();
+        String enclosing = enclosingBinaryNames.peek();
         return enclosing != null ? enclosing + "$" + simpleName
                                  : packageName.isEmpty() ? simpleName
                                                          : packageName + "." + simpleName;
+    }
+
+    @Nullable
+    private String makeCanonicalName(ASTAnyTypeDeclaration node, String binaryName) {
+        if (node.isAnonymous() || node.isLocal()) {
+            return null;
+        }
+
+        if (enclosingCanonicalNames.isEmpty()) {
+            // toplevel
+            return binaryName;
+        }
+
+        @Nullable String enclCanon = enclosingCanonicalNames.getFirst();
+        return enclCanon == null
+               ? null  // enclosing has no canonical name, so this one doesn't either
+               : enclCanon + '.' + node.getSimpleName();
+
     }
 
     @Override

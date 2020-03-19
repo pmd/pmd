@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -58,8 +60,8 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).comment(comment);
     }
 
-    public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName) {
-        ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName);
+    public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
+        ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {

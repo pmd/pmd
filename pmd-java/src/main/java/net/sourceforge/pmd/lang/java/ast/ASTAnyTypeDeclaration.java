@@ -109,19 +109,7 @@ public interface ASTAnyTypeDeclaration
      * somewhere in a local/anonymous class also have no loc
      */
     @Nullable
-    default String getCanonicalName() {
-        if (isAnonymous() || isLocal()) {
-            return null;
-        }
-
-        ASTAnyTypeDeclaration encl = getEnclosingType();
-        if (encl == null) {
-            return getBinaryName(); // toplevel
-        }
-
-        String enclCanon = encl.getCanonicalName();
-        return enclCanon == null ? null : enclCanon + '.' + getSimpleName();
-    }
+    String getCanonicalName();
 
 
     /**
