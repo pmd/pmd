@@ -6,24 +6,19 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 import java.io.Reader;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.AbstractParser;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 
 /**
- * Adapter for the JspParser.
- *
- * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
+ * JSP language parser.
  */
-@InternalApi
-@Deprecated
-public class JspParser extends AbstractParser {
+public final class JspParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     public JspParser(ParserOptions parserOptions) {
         super(parserOptions);
@@ -35,9 +30,18 @@ public class JspParser extends AbstractParser {
     }
 
     @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
-        AbstractTokenManager.setFileName(fileName);
-        return new JspParserImpl(CharStreamFactory.simpleCharStream(source)).CompilationUnit();
+    protected JavaccTokenDocument newDocument(String fullText) {
+        return new JavaccTokenDocument(fullText) {
+            @Override
+            protected @Nullable String describeKindImpl(int kind) {
+                return JspTokenKinds.describe(kind);
+            }
+        };
+    }
+
+    @Override
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+        return new JspParserImpl(cs).CompilationUnit();
     }
 
 }
