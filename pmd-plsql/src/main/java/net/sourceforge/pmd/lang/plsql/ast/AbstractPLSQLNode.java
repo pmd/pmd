@@ -9,43 +9,17 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-@Deprecated
 @InternalApi
 public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> implements PLSQLNode {
     protected Object value;
     protected PLSQLParser parser;
     protected Scope scope;
 
-    public AbstractPLSQLNode(int i) {
+    AbstractPLSQLNode(int i) {
         super(i);
     }
 
-    public AbstractPLSQLNode(PLSQLParser p, int i) {
-        this(i);
-        parser = p;
-    }
-
-    @Override
-    public void jjtOpen() {
-        if (beginLine == -1 && parser.token.next != null) {
-            beginLine = parser.token.next.beginLine;
-            beginColumn = parser.token.next.beginColumn;
-        }
-    }
-
-    @Override
-    public void jjtClose() {
-        if (beginLine == -1 && children.length == 0) {
-            beginColumn = parser.token.beginColumn;
-        }
-        if (beginLine == -1) {
-            beginLine = parser.token.beginLine;
-        }
-        endLine = parser.token.endLine;
-        endColumn = parser.token.endColumn;
-    }
-
-    public void jjtSetValue(Object value) {
+    protected void jjtSetValue(Object value) {
         this.value = value;
     }
 
@@ -58,20 +32,10 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
         return visitor.visit(this, data);
     }
 
-    @Override
-    public Object childrenAccept(PLSQLParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((PLSQLNode) children[i]).jjtAccept(visitor, data);
-            }
-        }
-        return data;
-    }
-
 
     @Override
     public String getXPathNodeName() {
-        return PLSQLParserTreeConstants.jjtNodeName[id];
+        return PLSQLParserImplTreeConstants.jjtNodeName[id];
     }
 
     /*
@@ -80,9 +44,6 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
      * output uses more than one line you should override toString(String),
      * otherwise overriding toString() is probably all you need to do.
      */
-
-
-
     public String toString(String prefix) {
         return prefix + toString();
     }
@@ -115,7 +76,7 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
      * </p>
      */
     public String getCanonicalImage() {
-        return PLSQLParser.canonicalName(this.getImage());
+        return PLSQLParserImpl.canonicalName(this.getImage());
     }
 
     /**
@@ -131,13 +92,13 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
      * @return
      */
     public static String getCanonicalImage(String image) {
-        return PLSQLParser.canonicalName(image);
+        return PLSQLParserImpl.canonicalName(image);
     }
 
     @Override
     public Scope getScope() {
         if (scope == null) {
-            return ((PLSQLNode) parent).getScope();
+            return getParent().getScope();
         }
         return scope;
     }

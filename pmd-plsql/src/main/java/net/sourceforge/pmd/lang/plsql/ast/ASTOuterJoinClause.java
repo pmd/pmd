@@ -4,21 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTOuterJoinClause extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+public final class ASTOuterJoinClause extends AbstractPLSQLNode {
     private boolean natural;
 
-    @Deprecated
-    @InternalApi
-    public ASTOuterJoinClause(int id) {
+    ASTOuterJoinClause(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTOuterJoinClause(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     public boolean isNatural() {

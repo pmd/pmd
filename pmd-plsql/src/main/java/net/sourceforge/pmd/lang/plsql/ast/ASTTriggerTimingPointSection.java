@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode {
 
-public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode {
-    @Deprecated
-    @InternalApi
-    public ASTTriggerTimingPointSection(int id) {
+    ASTTriggerTimingPointSection(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTTriggerTimingPointSection(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override

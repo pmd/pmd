@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTSelectIntoStatement extends AbstractSelectStatement {
 
-public class ASTSelectIntoStatement extends AbstractSelectStatement {
-    @Deprecated
-    @InternalApi
-    public ASTSelectIntoStatement(int id) {
+    ASTSelectIntoStatement(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTSelectIntoStatement(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override

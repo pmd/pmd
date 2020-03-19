@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode {
 
-public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode {
-    @Deprecated
-    @InternalApi
-    public ASTTypeMethod(int id) {
+    ASTTypeMethod(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTTypeMethod(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override
