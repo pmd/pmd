@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript5.ast;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 /**
  * Ecmascript 5 Token Manager implementation.
- *
- * @deprecated This is internal API
  */
+@InternalApi
 public class Ecmascript5TokenManager implements TokenManager {
     private final Ecmascript5ParserImplTokenManager tokenManager;
 
