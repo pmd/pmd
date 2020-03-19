@@ -21,7 +21,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  */
 @InternalApi
-public class OpenTagRegister {
+class OpenTagRegister {
 
     private List<ASTElement> tagList = new ArrayList<>();
 
