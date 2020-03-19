@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.internal;
 
 import java.text.MessageFormat;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -14,13 +15,12 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.UnresolvedSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymFactory;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.AstSymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
@@ -101,10 +101,10 @@ public final class JavaAstProcessor {
             - TODO type resolution initialization
          */
 
-        bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
+        SymbolResolver knownSyms = bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
-        this.symResolver = SymbolResolver.layer(new AstSymbolResolver(acu), this.symResolver);
+        this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("AST disambiguation", () -> AstDisambiguationPass.disambig1(this, acu));
@@ -167,6 +167,12 @@ public final class JavaAstProcessor {
     private static void bench(String label, Runnable runnable) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             runnable.run();
+        }
+    }
+
+    private static <T> T bench(String label, Supplier<T> runnable) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+            return runnable.get();
         }
     }
 }
