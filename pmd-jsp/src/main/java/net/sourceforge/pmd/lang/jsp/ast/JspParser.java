@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.jsp;
+package net.sourceforge.pmd.lang.jsp.ast;
 
 import java.io.Reader;
 
@@ -37,7 +37,7 @@ public class JspParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
-        return new net.sourceforge.pmd.lang.jsp.ast.JspParser(CharStreamFactory.simpleCharStream(source)).CompilationUnit();
+        return new JspParserImpl(CharStreamFactory.simpleCharStream(source)).CompilationUnit();
     }
 
 }

@@ -159,7 +159,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     open fun parseClass(clazz: Class<*>, version: String? = null): T =
             parse(readClassSource(clazz), version)
 
-    protected fun readResource(resourceName: String): String {
+    fun readResource(resourceName: String): String {
         val rloader = params.resourceLoader ?: javaClass
 
         val input = rloader.getResourceAsStream(params.resourcePrefix + resourceName)

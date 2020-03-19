@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.vf;
+package net.sourceforge.pmd.lang.vf.ast;
 
 import java.io.Reader;
 
@@ -37,7 +37,7 @@ public class VfParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
-        return new net.sourceforge.pmd.lang.vf.ast.VfParser(CharStreamFactory.simpleCharStream(source)).CompilationUnit();
+        return new VfParserImpl(CharStreamFactory.simpleCharStream(source)).CompilationUnit();
     }
 
 }

@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTCData extends AbstractVfNode {
 
-public class ASTCData extends AbstractVFNode {
-    @Deprecated
-    @InternalApi
-    public ASTCData(int id) {
+    ASTCData(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTCData(VfParser p, int id) {
-        super(p, id);
     }
 
     @Override
