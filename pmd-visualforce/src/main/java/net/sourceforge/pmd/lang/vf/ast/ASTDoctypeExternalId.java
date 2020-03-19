@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 public final class ASTDoctypeExternalId extends AbstractVfNode {
 
     /**
@@ -30,9 +28,7 @@ public final class ASTDoctypeExternalId extends AbstractVfNode {
         return uri;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setUri(String uri) {
+    void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -44,9 +40,7 @@ public final class ASTDoctypeExternalId extends AbstractVfNode {
         return null == publicId ? "" : publicId;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setPublicId(String publicId) {
+    void setPublicId(String publicId) {
         this.publicId = publicId;
     }
 

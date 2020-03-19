@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 public final class ASTElement extends AbstractVfNode {
 
     /**
@@ -59,9 +57,7 @@ public final class ASTElement extends AbstractVfNode {
         return name;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -73,15 +69,11 @@ public final class ASTElement extends AbstractVfNode {
         return unclosed;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setUnclosed(boolean unclosed) {
+    void setUnclosed(boolean unclosed) {
         this.unclosed = unclosed;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setEmpty(boolean empty) {
+    void setEmpty(boolean empty) {
         this.empty = empty;
     }
 

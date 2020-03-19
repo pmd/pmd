@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 public final class ASTDeclaration extends AbstractVfNode {
 
     private String name;
@@ -18,9 +16,7 @@ public final class ASTDeclaration extends AbstractVfNode {
         return name;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
