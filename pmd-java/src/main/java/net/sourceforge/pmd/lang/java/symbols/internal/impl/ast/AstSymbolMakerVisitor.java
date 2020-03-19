@@ -29,14 +29,16 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
  */
 final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
 
+    private static final String NO_CANONICAL_NAME = "<impossible/name>";
+
     // these map simple name to count of local classes with that name in the given class
     private final Deque<Map<String, Integer>> currentLocalIndices = new ArrayDeque<>();
     // these are counts of anon classes in the enclosing class
     private final Deque<MutableInt> anonymousCounters = new ArrayDeque<>();
     // these are binary names, eg may contain pack.Foo, pack.Foo$Nested, pack.Foo$Nested$1Local
     private final Deque<String> enclosingBinaryNames = new ArrayDeque<>();
-    // these are canonical names. Contains null values if the enclosing decl has no canonical name
-    private final Deque<@Nullable String> enclosingCanonicalNames = new ArrayDeque<>();
+    // these are canonical names. Contains NO_CANONICAL_NAME if the enclosing decl has no canonical name
+    private final Deque<String> enclosingCanonicalNames = new ArrayDeque<>();
     // these are symbols, NOT 1-to-1 with the type name stack because may contain method/ctor symbols
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
 
@@ -74,7 +76,7 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
         JClassSymbol sym = ((AstSymFactory) data).setClassSymbol(enclosingSymbols.peek(), node);
 
         enclosingBinaryNames.push(binaryName);
-        enclosingCanonicalNames.push(canonicalName);
+        enclosingCanonicalNames.push(canonicalName == null ? NO_CANONICAL_NAME : canonicalName);
         enclosingSymbols.push(sym);
         anonymousCounters.push(new MutableInt(0));
         currentLocalIndices.push(new HashMap<>());
@@ -117,8 +119,8 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
             return binaryName;
         }
 
-        @Nullable String enclCanon = enclosingCanonicalNames.getFirst();
-        return enclCanon == null
+        String enclCanon = enclosingCanonicalNames.getFirst();
+        return NO_CANONICAL_NAME.equals(enclCanon)
                ? null  // enclosing has no canonical name, so this one doesn't either
                : enclCanon + '.' + node.getSimpleName();
 
