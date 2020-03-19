@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Adapter for the VmParser.
@@ -18,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
 
     @Override
-    protected JavaccTokenDocument newDocument(String fullText) {
+    protected JavaccTokenDocument newDocumentImpl(TextDocument fullText) {
         return new VmTokenDocument(fullText);
     }
 
@@ -30,7 +31,7 @@ public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
 
     private static class VmTokenDocument extends JavaccTokenDocument {
 
-        VmTokenDocument(String fullText) {
+        VmTokenDocument(TextDocument fullText) {
             super(fullText);
         }
 

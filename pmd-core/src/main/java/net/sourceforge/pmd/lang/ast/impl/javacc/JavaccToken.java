@@ -224,8 +224,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return new JavaccToken(
             this.kind,
             image,
-            this.startInclusive,
-            this.endExclusive,
+            this.getRegion(),
             this.document
         );
     }
