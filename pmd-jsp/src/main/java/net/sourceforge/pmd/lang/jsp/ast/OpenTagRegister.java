@@ -20,7 +20,6 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Victor Bucutea
  *
  */
-@Deprecated
 @InternalApi
 public class OpenTagRegister {
 
