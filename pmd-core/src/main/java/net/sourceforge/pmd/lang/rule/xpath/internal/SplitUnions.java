@@ -17,7 +17,7 @@ import net.sf.saxon.expr.VennExpression;
  * 
  * <p>E.g. "//A | //B | //C" will result in 3 expressions "//A", "//B", and "//C".
  */
-public class SplitUnions extends Visitor {
+class SplitUnions extends Visitor {
     private List<Expression> expressions = new ArrayList<>();
 
     @Override

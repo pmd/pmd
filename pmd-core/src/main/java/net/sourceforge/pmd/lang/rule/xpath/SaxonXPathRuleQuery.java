@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
-import net.sourceforge.pmd.lang.rule.xpath.internal.SplitUnions;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -263,14 +262,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         boolean useRuleChain = true;
 
         // First step: Split the union venn expressions into single expressions
-        List<Expression> subexpressions = new ArrayList<>();
-        SplitUnions unions = new SplitUnions();
-        unions.visit(expr);
-        if (unions.getExpressions().isEmpty()) {
-            subexpressions.add(expr);
-        } else {
-            subexpressions.addAll(unions.getExpressions());
-        }
+        Iterable<Expression> subexpressions = RuleChainAnalyzer.splitUnions(expr);
 
         // Second step: Analyze each expression separately
         for (Expression subexpression : subexpressions) {

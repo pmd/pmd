@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.Collections;
 import java.util.Comparator;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -97,6 +98,19 @@ public class RuleChainAnalyzer extends Visitor {
 
     public static Comparator<Node> documentOrderComparator() {
         return net.sourceforge.pmd.lang.rule.xpath.internal.DocumentSorter.INSTANCE;
+    }
+
+    /**
+     * Split union expressions into their components.
+     */
+    public static Iterable<Expression> splitUnions(Expression expr) {
+        SplitUnions unions = new SplitUnions();
+        unions.visit(expr);
+        if (unions.getExpressions().isEmpty()) {
+            return Collections.singletonList(expr);
+        } else {
+            return unions.getExpressions();
+        }
     }
 
 }
