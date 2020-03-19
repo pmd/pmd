@@ -12,7 +12,14 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * Sorts nodes by document order.
  */
-public class DocumentSorter implements Comparator<Node> {
+class DocumentSorter implements Comparator<Node> {
+
+    public static final DocumentSorter INSTANCE = new DocumentSorter();
+
+    private DocumentSorter() {
+
+    }
+
     @Override
     public int compare(Node node1, Node node2) {
         if (node1 == null && node2 == null) {

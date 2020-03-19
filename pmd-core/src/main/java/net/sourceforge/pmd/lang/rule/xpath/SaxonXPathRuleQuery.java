@@ -19,7 +19,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
-import net.sourceforge.pmd.lang.rule.xpath.internal.DocumentSorter;
 import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SplitUnions;
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -124,7 +123,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             for (final ElementNode elementNode : nodes) {
                 results.add((Node) elementNode.getUnderlyingNode());
             }
-            Collections.sort(results, new DocumentSorter());
+            Collections.sort(results, RuleChainAnalyzer.documentOrderComparator());
             return results;
         } catch (final XPathException e) {
             throw new RuntimeException(super.xpath + " had problem: " + e.getMessage(), e);

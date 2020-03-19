@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.Comparator;
+
+import net.sourceforge.pmd.lang.ast.Node;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
@@ -90,4 +94,9 @@ public class RuleChainAnalyzer extends Visitor {
         }
         return super.visit(e);
     }
+
+    public static Comparator<Node> documentOrderComparator() {
+        return net.sourceforge.pmd.lang.rule.xpath.internal.DocumentSorter.INSTANCE;
+    }
+
 }
