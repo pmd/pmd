@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -21,23 +19,17 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DocumentSorter;
+import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SplitUnions;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-import net.sf.saxon.Configuration;
-import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
-import net.sf.saxon.expr.FilterExpression;
-import net.sf.saxon.expr.PathExpression;
-import net.sf.saxon.expr.RootExpression;
-import net.sf.saxon.expr.Token;
-import net.sf.saxon.expr.VennExpression;
-import net.sf.saxon.om.Axis;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamespaceConstant;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.ValueRepresentation;
-import net.sf.saxon.sort.DocumentSorter;
 import net.sf.saxon.sxpath.AbstractStaticContext;
 import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
@@ -132,6 +124,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             for (final ElementNode elementNode : nodes) {
                 results.add((Node) elementNode.getUnderlyingNode());
             }
+            Collections.sort(results, new DocumentSorter());
             return results;
         } catch (final XPathException e) {
             throw new RuntimeException(super.xpath + " had problem: " + e.getMessage(), e);
@@ -264,89 +257,32 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * Analyzes the xpath expression if it is simple enough to be split apart and represented by
-     * multiple single xpath expressions.
-     *
-     * <p>Only the first level of element selection is checked, possibly combined with a union expression.
-     *
-     * <p>Example: The XPath expression <code>//A[condition()]/B | //C</code> results in two rule chain visits for the nodes
-     * "A" and "C". When visiting A, the XPath <code>self::node[condition()]/B</code> is executed, when visiting
-     * "C" the XPath <code>self::node()</code> is executed. At the end, the result of all executions is combined,
-     * since these were part of a union.
-     *
-     * <p>If the XPath expression is more complex, then no rule chain visit nodes are declared and the normal
-     * XPath query is executed.
-     */
+    
     private void analyzeXPathForRuleChain(final XPathEvaluator xpathEvaluator) {
-        Configuration config = xpathEvaluator.getConfiguration();
+        final Expression expr = xpathExpression.getInternalExpression();
+
         boolean useRuleChain = true;
-        final Deque<Expression> pending = new ArrayDeque<>();
-        pending.push(xpathExpression.getInternalExpression());
-        while (!pending.isEmpty()) {
-            final Expression node = pending.pop();
 
-            // Need to prove we can handle this part of the query
-            boolean valid = false;
+        // First step: Split the union venn expressions into single expressions
+        List<Expression> subexpressions = new ArrayList<>();
+        SplitUnions unions = new SplitUnions();
+        unions.visit(expr);
+        if (unions.getExpressions().isEmpty()) {
+            subexpressions.add(expr);
+        } else {
+            subexpressions.addAll(unions.getExpressions());
+        }
 
-            if (node instanceof VennExpression) {
-                VennExpression venn = (VennExpression) node;
-                if (venn.getOperator() == Token.UNION) {
-                    pending.addAll(Arrays.asList(venn.getOperands()));
-                    valid = true;
-                }
-            } else if (node instanceof DocumentSorter) {
-                // document sorter is ignored...
-                DocumentSorter sorter = (DocumentSorter) node;
-                pending.add(sorter.getBaseExpression());
-                valid = true;
-            } else if (node instanceof PathExpression) {
-                PathExpression path = (PathExpression) node;
-                // Path expression e.g. "//A[condition()]/B...". First step would be "//A[condition()]"
-                Expression firstStep = path.getFirstStep();
-                if (firstStep instanceof FilterExpression) {
-                    FilterExpression filterExpression = (FilterExpression) firstStep;
-                    if (filterExpression.getBaseExpression() instanceof PathExpression) {
-                        PathExpression root = (PathExpression) filterExpression.getBaseExpression();
-                        if (root.getStartExpression() instanceof RootExpression && root.getStepExpression() instanceof AxisExpression) {
-                            AxisExpression axis = (AxisExpression) root.getStepExpression();
-                            String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                            AxisExpression start = new AxisExpression(Axis.SELF, null);
-                            FilterExpression newfilter = new FilterExpression(start, filterExpression.getFilter());
-                            PathExpression p = new PathExpression(newfilter, path.getRemainingSteps());
-                            addExpressionForNode(nodeName, p);
-                            valid = true;
-                        }
-                    }
-                } else if (firstStep instanceof RootExpression && path.getStepExpression() instanceof AxisExpression) {
-                    // Path expression without filter, e.g. "//A"
-                    AxisExpression axis = (AxisExpression) path.getStepExpression();
-                    String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                    AxisExpression start = new AxisExpression(Axis.SELF, null);
-                    addExpressionForNode(nodeName, start);
-                    valid = true;
-                } else if (firstStep instanceof RootExpression && path.getRemainingSteps() instanceof PathExpression) {
-                    PathExpression secondPath = (PathExpression) path.getRemainingSteps();
-                    if (secondPath.getFirstStep() instanceof AxisExpression && secondPath.getRemainingSteps() instanceof FilterExpression) {
-                        AxisExpression axis = (AxisExpression) secondPath.getFirstStep();
-                        FilterExpression filter = (FilterExpression) secondPath.getRemainingSteps();
-                        if (axis.getNodeTest() == null && filter.getBaseExpression() instanceof AxisExpression) {
-                            axis = (AxisExpression) filter.getBaseExpression();
-                            String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                            AxisExpression start = new AxisExpression(Axis.SELF, null);
-                            FilterExpression newFilter = new FilterExpression(start, filter.getFilter());
-                            addExpressionForNode(nodeName, newFilter);
-                            valid = true;
-                        }
-                    }
-                }
-            } else if (node instanceof FilterExpression) {
-                // FilterExpression e.g. "//A[condition()]" or "//A[cond1()][cond2()]...
-                valid = convertFilterChain(config, node);
-            }
+        // Second step: Analyze each expression separately
+        for (Expression subexpression : subexpressions) {
+            RuleChainAnalyzer rca = new RuleChainAnalyzer(xpathEvaluator.getConfiguration());
+            Expression modified = rca.visit(subexpression);
 
-            if (!valid) {
+            if (rca.getRootElement() != null) {
+                addExpressionForNode(rca.getRootElement(), modified);
+            } else {
+                // couldn't find a root element for the expression, that means, we can't use rule chain at all
+                // even though, it would be possible for part of the expression.
                 useRuleChain = false;
                 break;
             }
@@ -363,64 +299,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
         // always add fallback expression
         addExpressionForNode(AST_ROOT, xpathExpression.getInternalExpression());
-    }
-
-    private boolean convertFilterChain(Configuration config, final Expression node) {
-        Deque<FilterExpression> filterChain = new ArrayDeque<>();
-        Expression current = node;
-        while (current instanceof FilterExpression) {
-            filterChain.push((FilterExpression) current);
-            current = ((FilterExpression) current).getBaseExpression();
-        }
-        if (current instanceof PathExpression) {
-            PathExpression root = (PathExpression) current;
-            if (root.getStartExpression() instanceof RootExpression && root.getStepExpression() instanceof AxisExpression) {
-                AxisExpression axis = (AxisExpression) root.getStepExpression();
-                String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-                AxisExpression start = new AxisExpression(Axis.SELF, null);
-
-                FilterExpression oldFilter = filterChain.pop();
-                FilterExpression newfilter = new FilterExpression(start, oldFilter.getFilter());
-                while (!filterChain.isEmpty()) {
-                    oldFilter = filterChain.pop();
-                    newfilter = new FilterExpression(newfilter, oldFilter.getFilter());
-                }
-                addExpressionForNode(nodeName, newfilter);
-                return true;
-            } else if (root.getStartExpression() instanceof PathExpression) {
-                Deque<PathExpression> pathChain = new ArrayDeque<>();
-                Expression currentPath = root;
-                while (currentPath instanceof PathExpression) {
-                    pathChain.push((PathExpression) currentPath);
-                    currentPath = ((PathExpression) currentPath).getStartExpression();
-                }
-                if (currentPath instanceof RootExpression && pathChain.peekFirst().getStepExpression() instanceof AxisExpression) {
-                    AxisExpression axis = (AxisExpression) pathChain.pop().getStepExpression();
-                    if (axis.getNodeTest() == null) {
-                        return false;
-                    }
-                    String nodeName = config.getNamePool().getClarkName(axis.getNodeTest().getFingerprint());
-
-                    AxisExpression start = new AxisExpression(Axis.SELF, null);
-                    PathExpression oldPath = pathChain.pop();
-                    PathExpression newPath = new PathExpression(start, oldPath.getStepExpression());
-                    while (!pathChain.isEmpty()) {
-                        oldPath = pathChain.pop();
-                        newPath = new PathExpression(newPath, oldPath.getStepExpression());
-                    }
-
-                    if (filterChain.isEmpty()) {
-                        addExpressionForNode(nodeName, newPath);
-                        return true;
-                    } else if (filterChain.size() == 1) {
-                        FilterExpression newFilter = new FilterExpression(newPath, filterChain.pop().getFilter());
-                        addExpressionForNode(nodeName, newFilter);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /**

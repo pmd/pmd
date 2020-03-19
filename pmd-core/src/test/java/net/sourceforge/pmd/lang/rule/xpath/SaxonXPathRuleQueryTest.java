@@ -5,15 +5,20 @@
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
+import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.XPathContext;
 
 public class SaxonXPathRuleQueryTest {
 
@@ -41,11 +46,11 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertTrue(ruleChainVisits.contains("bar"));
 
         Assert.assertEquals(3, query.nodeNameToXPaths.size());
-        assertExpression("self::node()", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
-        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq609962972 singleton eq false()))])", query.nodeNameToXPaths.get("dummyNode").get(1).toString());
-        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq106374177 singleton eq \"baz\"))])/child::element(foo, xs:anyType))", query.nodeNameToXPaths.get("dummyNode").get(2).toString());
-        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq232307208 singleton eq \"true\"))])", query.nodeNameToXPaths.get("bar").get(0).toString());
-        assertExpression("(((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq000 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq000 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq000 singleton eq false()))])) | ((/)/descendant::element(dummyNode, xs:anyType)))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0).toString());
+        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq106374177 singleton eq \"baz\"))])/child::element(foo, xs:anyType))", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq609962972 singleton eq false()))])", query.nodeNameToXPaths.get("dummyNode").get(1));
+        assertExpression("self::node()", query.nodeNameToXPaths.get("dummyNode").get(2));
+        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq232307208 singleton eq \"true\"))])", query.nodeNameToXPaths.get("bar").get(0));
+        assertExpression("(((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq000 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq000 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq000 singleton eq false()))])) | ((/)/descendant::element(dummyNode, xs:anyType)))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     @Test
@@ -55,8 +60,14 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Test2, xs:anyAtomicType)), ($qq:qq1741979653 singleton eq true()))])[QuantifiedExpression(Atomizer(attribute::attribute(Test1, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq false()))])", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
-        assertExpression("((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test2, xs:anyAtomicType)), ($qq:qq1741979653 singleton eq true()))])[QuantifiedExpression(Atomizer(attribute::attribute(Test1, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq false()))])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0).toString());
+        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Test2, xs:anyAtomicType)), ($qq:qq1741979653 singleton eq true()))])[QuantifiedExpression(Atomizer(attribute::attribute(Test1, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq false()))])", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test2, xs:anyAtomicType)), ($qq:qq1741979653 singleton eq true()))])[QuantifiedExpression(Atomizer(attribute::attribute(Test1, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq false()))])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+    }
+
+    public static class TestFunctions {
+        public static boolean typeIs(final XPathContext context, final String fullTypeName) {
+            return false;
+        }
     }
 
     @Test
@@ -66,24 +77,49 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("((((self::node()/child::element(foo, xs:anyType))/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq166794956 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
-        assertExpression("DocumentSorter(((((((/)/descendant::element(dummyNode, xs:anyType))/child::element(foo, xs:anyType))/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq166794956 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0).toString());
+        assertExpression("((((self::node()/child::element(foo, xs:anyType))/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq166794956 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("DocumentSorter(((((((/)/descendant::element(dummyNode, xs:anyType))/child::element(foo, xs:anyType))/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq166794956 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     @Test
-    @Ignore("this case is not implemented yet")
     public void ruleChainVisitsNested2() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode/foo[@Baz = 'a']/*/bar[@Test = 'false']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("(((((self::node()/child::element(foo, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Baz, xs:anyAtomicType)), ($qq:qq306612792 singleton eq \"a\"))])/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq1803669141 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
-        assertExpression("DocumentSorter((((((((/)/descendant::element(dummyNode, xs:anyType))/child::element(foo, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Baz, xs:anyAtomicType)), ($qq:qq306612792 singleton eq \"a\"))])/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq1803669141 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0).toString());
+        assertExpression("(((((self::node()/child::element(foo, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Baz, xs:anyAtomicType)), ($qq:qq306612792 singleton eq \"a\"))])/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq1803669141 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("DocumentSorter((((((((/)/descendant::element(dummyNode, xs:anyType))/child::element(foo, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Baz, xs:anyAtomicType)), ($qq:qq306612792 singleton eq \"a\"))])/child::element())/child::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Test, xs:anyAtomicType)), ($qq:qq1803669141 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
-    private static void assertExpression(String expected, String actual) {
-        Assert.assertEquals(expected.replaceAll("\\$qq:qq\\d+", "\\$qq:qq000"), actual.replaceAll("\\$qq:qq\\d+", "\\$qq:qq000"));
+    @Test
+    public void ruleChainVisitWithVariable() {
+        PropertyDescriptor<String> testClassPattern = PropertyFactory.stringProperty("testClassPattern").desc("test").defaultValue("a").build();
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[matches(@SimpleName, $testClassPattern)]", testClassPattern);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(1, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        assertExpression("LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (self::node()[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (((/)/descendant::element(dummyNode, xs:anyType))[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+    }
+
+    @Test
+    public void ruleChainVisitWithVariable2() {
+        PropertyDescriptor<String> testClassPattern = PropertyFactory.stringProperty("testClassPattern").desc("test").defaultValue("a").build();
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[matches(@SimpleName, $testClassPattern)]/foo", testClassPattern);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(1, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        assertExpression("(LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (self::node()[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))/child::element(foo, xs:anyType))", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("DocumentSorter((LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (((/)/descendant::element(dummyNode, xs:anyType))[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))/child::element(foo, xs:anyType)))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+    }
+
+    private static void assertExpression(String expected, Expression actual) {
+        Assert.assertEquals(expected.replaceAll("\\$qq:qq\\d+", "\\$qq:qq000").replaceAll("\\$zz:zz\\d+", "\\$zz:zz000"),
+                actual.toString().replaceAll("\\$qq:qq\\d+", "\\$qq:qq000").replaceAll("\\$zz:zz\\d+", "\\$zz:zz000"));
+        //Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -96,10 +132,10 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertTrue(ruleChainVisits.contains("bar"));
 
         Assert.assertEquals(3, query.nodeNameToXPaths.size());
-        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq609962972 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
-        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq106374177 singleton eq \"baz\"))])/child::element(foo, xs:anyType))", query.nodeNameToXPaths.get("dummyNode").get(1).toString());
-        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq232307208 singleton eq \"true\"))])", query.nodeNameToXPaths.get("bar").get(0).toString());
-        assertExpression("((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq106374177 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq232307208 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq609962972 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0).toString());
+        assertExpression("((self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq6519275 singleton eq \"baz\"))])/child::element(foo, xs:anyType))", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq \"false\"))])", query.nodeNameToXPaths.get("dummyNode").get(1));
+        assertExpression("(self::node()[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1484171695 singleton eq \"true\"))])", query.nodeNameToXPaths.get("bar").get(0));
+        assertExpression("((DocumentSorter(((((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Image, xs:anyAtomicType)), ($qq:qq692331943 singleton eq \"baz\"))])/child::element(foo, xs:anyType))) | (((/)/descendant::element(bar, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq2127036371 singleton eq \"true\"))])) | (((/)/descendant::element(dummyNode, xs:anyType))[QuantifiedExpression(Atomizer(attribute::attribute(Public, xs:anyAtomicType)), ($qq:qq1529060733 singleton eq \"false\"))]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     private static void assertQuery(int resultSize, String xpath, Node node) {
@@ -108,10 +144,18 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(resultSize, result.size());
     }
 
-    private static SaxonXPathRuleQuery createQuery(String xpath) {
+    private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?> ...descriptors) {
         SaxonXPathRuleQuery query = new SaxonXPathRuleQuery();
         query.setVersion(XPathRuleQuery.XPATH_2_0);
-        query.setProperties(Collections.<PropertyDescriptor<?>, Object>emptyMap());
+        if (descriptors != null) {
+            Map<PropertyDescriptor<?>, Object> props = new HashMap<PropertyDescriptor<?>, Object>();
+            for (PropertyDescriptor<?> prop : descriptors) {
+                props.put(prop, prop.defaultValue());
+            }
+            query.setProperties(props);
+        } else {
+            query.setProperties(Collections.<PropertyDescriptor<?>, Object>emptyMap());
+        }
         query.setXPath(xpath);
         return query;
     }
