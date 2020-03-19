@@ -5,10 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A record declaration is a special data class type (JDK 14 preview feature).
@@ -49,8 +48,8 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     }
 
     @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTRecordBody.class).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTRecordBody.class).children(ASTAnyTypeBodyDeclaration.class);
     }
 
     @Override

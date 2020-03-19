@@ -134,7 +134,7 @@ public class Java14PreviewTest {
         Assert.assertTrue(complex.isNested());
         Assert.assertEquals(0, getComponent(complex, 0).findChildrenOfType(ASTAnnotation.class).size());
         Assert.assertEquals(1, getComponent(complex, 1).findChildrenOfType(ASTAnnotation.class).size());
-        Assert.assertEquals(2, complex.getDeclarations().size());
+        Assert.assertEquals(2, complex.getDeclarations().count());
         Assert.assertTrue(complex.getDeclarations().get(0).getChild(1) instanceof ASTConstructorDeclaration);
         Assert.assertTrue(complex.getDeclarations().get(1).getChild(0) instanceof ASTRecordDeclaration);
         Assert.assertTrue(complex.getParent() instanceof ASTClassOrInterfaceBodyDeclaration);
@@ -153,7 +153,7 @@ public class Java14PreviewTest {
         Assert.assertEquals(1, rangeConstructors.size());
         Assert.assertEquals("Range", rangeConstructors.get(0).getImage());
         Assert.assertTrue(rangeConstructors.get(0).getChild(0) instanceof ASTAnnotation);
-        Assert.assertEquals(2, range.getDeclarations().size());
+        Assert.assertEquals(2, range.getDeclarations().count());
 
         ASTRecordDeclaration varRec = recordDecls.get(3);
         Assert.assertEquals("VarRec", varRec.getSimpleName());
