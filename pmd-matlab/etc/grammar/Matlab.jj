@@ -18,17 +18,17 @@ options {
   UNICODE_INPUT = true;
 }
 
-PARSER_BEGIN(MatlabParser)
+PARSER_BEGIN(MatlabParserImpl)
 package net.sourceforge.pmd.lang.matlab.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class MatlabParser {
+public class MatlabParserImpl {
 
 }
 
-PARSER_END(MatlabParser)
+PARSER_END(MatlabParserImpl)
 
 <DEFAULT, TRANSPOSE> SKIP :
 {

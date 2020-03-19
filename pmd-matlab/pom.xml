@@ -32,8 +32,10 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                                    <property name="no-jjtree" value="true"/> <!-- This is a CPD module -->
+                                    <property name="lang-name" value="Matlab" />
+                                    <property name="lang-terse-name" value="matlab" />
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                 </ant>
                             </target>
