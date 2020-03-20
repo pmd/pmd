@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.nio.CharBuffer;
+
+import net.sourceforge.pmd.util.document.StringPool;
 
 /**
  * This stream buffers the whole file in memory before parsing,
@@ -19,6 +22,7 @@ public class JavaCharStream extends JavaCharStreamBase {
     // full text with nothing escaped and all
     private final String fullText;
     private final JavaccTokenDocument document;
+    private final StringPool stringPool = new StringPool();
 
     private int[] startOffsets;
 
@@ -71,6 +75,17 @@ public class JavaCharStream extends JavaCharStreamBase {
     @Override
     public JavaccTokenDocument getTokenDocument() {
         return document;
+    }
+
+    @Override
+    public String GetImage() {
+        if (bufpos >= tokenBegin) {
+            return stringPool.pooledCharSeq(CharBuffer.wrap(buffer, tokenBegin, bufpos - tokenBegin + 1))
+                             .toString();
+        } else {
+            return new String(buffer, tokenBegin, bufsize - tokenBegin)
+                + new String(buffer, 0, bufpos + 1);
+        }
     }
 
     @Override

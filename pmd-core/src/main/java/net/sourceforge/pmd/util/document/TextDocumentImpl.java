@@ -22,7 +22,8 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private long curStamp;
 
     private SourceCodePositioner positioner;
-    private CharSequence text;
+    private CharBuffer text;
+    private final StringPool stringPool = new StringPool();
 
     private final LanguageVersion langVersion;
 
@@ -129,7 +130,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         if (region.isEmpty()) {
             return "";
         }
-        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
+        return stringPool.pooledCharSeq(text.subSequence(region.getStartOffset(), region.getEndOffset()));
     }
 
 }
