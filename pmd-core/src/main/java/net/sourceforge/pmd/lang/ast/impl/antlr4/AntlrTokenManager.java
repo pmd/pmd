@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 /**
  * Generic token manager implementation for all Antlr lexers.
  */
-public class AntlrTokenManager implements TokenManager {
+public class AntlrTokenManager implements TokenManager<AntlrToken> {
     private final Lexer lexer;
     private String fileName;
     private AntlrToken previousToken;
@@ -33,7 +33,7 @@ public class AntlrTokenManager implements TokenManager {
     }
 
     @Override
-    public Object getNextToken() {
+    public AntlrToken getNextToken() {
         AntlrToken nextToken = getNextTokenFromAnyChannel();
         while (!nextToken.isDefault()) {
             nextToken = getNextTokenFromAnyChannel();

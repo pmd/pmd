@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
-import org.apache.commons.io.input.CharSequenceReader;
+import java.io.IOException;
+import java.io.Reader;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.vf.ast.VfTokenManager;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.vf.ast.VfTokenKinds;
 
 /**
  * @author sergey.gorbaty
@@ -17,7 +20,12 @@ import net.sourceforge.pmd.util.IOUtil;
 public class VfTokenizer extends JavaCCTokenizer {
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        return new VfTokenManager(IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer())));
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return VfTokenKinds.newTokenManager(sourceCode);
+    }
+
+    @Override
+    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
+        return CharStreamFactory.javaCharStream(sourceCode);
     }
 }

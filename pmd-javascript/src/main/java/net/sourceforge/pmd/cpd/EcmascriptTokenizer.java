@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.StringReader;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenKinds;
-import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenManager;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * The Ecmascript Tokenizer
@@ -19,9 +16,8 @@ import net.sourceforge.pmd.util.IOUtil;
 public class EcmascriptTokenizer extends JavaCCTokenizer {
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
-        return new Ecmascript5TokenManager(IOUtil.skipBOM(new StringReader(buffer.toString())));
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return Ecmascript5TokenKinds.newTokenManager(sourceCode);
     }
 
     @Override

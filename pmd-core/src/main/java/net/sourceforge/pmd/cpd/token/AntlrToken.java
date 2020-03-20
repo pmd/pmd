@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 /**
  * Generic Antlr representation of a token.
  */
-public class AntlrToken implements GenericToken {
+public class AntlrToken implements GenericToken<AntlrToken> {
 
     private final Token token;
     private final AntlrToken previousComment;
@@ -29,13 +29,13 @@ public class AntlrToken implements GenericToken {
     }
 
     @Override
-    public GenericToken getNext() {
+    public AntlrToken getNext() {
         // Antlr implementation does not require this
         return null;
     }
 
     @Override
-    public GenericToken getPreviousComment() {
+    public AntlrToken getPreviousComment() {
         return previousComment;
     }
 

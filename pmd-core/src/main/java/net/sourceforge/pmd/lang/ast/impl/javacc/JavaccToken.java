@@ -24,8 +24,6 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  * <li>It's a bit lighter. Token instances are one of the most numerous
  * class in a typical PMD run and this may reduce GC pressure.
  * </ul>
- *
- * <p>TODO replace duplicates over PMD.
  */
 public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken> {
 
