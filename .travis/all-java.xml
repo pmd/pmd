@@ -116,7 +116,7 @@
     <!-- <rule ref="category/java/codestyle.xml/UseDiamondOperator"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UseShortArrayInitializer"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals"/> -->
-    <!-- <rule ref="category/java/codestyle.xml/UselessParentheses"/> -->
+    <rule ref="category/java/codestyle.xml/UselessParentheses"/>
     <!-- <rule ref="category/java/codestyle.xml/UselessQualifiedThis"/> -->
 
     <!-- design.xml -->

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
 public class UselessParenthesesTest extends PmdRuleTst {
     // no additional unit tests
 }
