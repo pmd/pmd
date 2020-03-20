@@ -6,17 +6,15 @@ package net.sourceforge.pmd.lang.ast;
 
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
- *
- * TODO make generic
  */
-public interface GenericToken {
+public interface GenericToken<T extends GenericToken<T>> {
 
     /**
      * Obtain the next generic token according to the input stream which generated the instance of this token.
      *
      * @return the next generic token if it exists; null if it does not exist
      */
-    GenericToken getNext();
+    T getNext();
 
     /**
      * Obtain a comment-type token which, according to the input stream which generated the instance of this token,
@@ -24,7 +22,7 @@ public interface GenericToken {
      *
      * @return the comment-type token if it exists; null if it does not exist
      */
-    GenericToken getPreviousComment();
+    T getPreviousComment();
 
     /**
      * Returns the token's text.

@@ -49,11 +49,6 @@ public class AntlrTokenManager implements TokenManager {
         return currentToken;
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
     public String getFileName() {
         return fileName;
     }

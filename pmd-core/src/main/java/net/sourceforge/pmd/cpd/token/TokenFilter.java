@@ -9,11 +9,11 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 /**
  * Defines filter to be applied to the token stream during CPD analysis
  */
-public interface TokenFilter {
+public interface TokenFilter<T extends GenericToken<T>> {
 
     /**
      * Retrieves the next token to pass the filter
      * @return The next token to pass the filter, or null if the end of the stream was reached
      */
-    GenericToken getNextToken();
+    T getNextToken();
 }

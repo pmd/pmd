@@ -26,8 +26,4 @@ public class PLSQLTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        PLSQLParserImplTokenManager.setFileName(fileName);
-    }
 }

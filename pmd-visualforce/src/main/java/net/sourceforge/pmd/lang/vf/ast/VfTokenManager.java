@@ -26,8 +26,4 @@ public class VfTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        VfParserImplTokenManager.setFileName(fileName);
-    }
 }

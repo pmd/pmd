@@ -26,8 +26,4 @@ public class JspTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        JspParserImplTokenManager.setFileName(fileName);
-    }
 }

@@ -61,7 +61,7 @@ public final class TokenMgrError extends RuntimeException {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
-        filename = AbstractTokenManager.getFileName();
+        filename = null;
     }
 
     /**
@@ -75,7 +75,7 @@ public final class TokenMgrError extends RuntimeException {
         super(makeReason(eofSeen, String.valueOf(lexState), errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
-        filename = AbstractTokenManager.getFileName();
+        filename = null;
     }
 
     public int getLine() {

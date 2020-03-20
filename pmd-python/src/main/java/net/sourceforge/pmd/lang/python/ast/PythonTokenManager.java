@@ -33,11 +33,6 @@ public class PythonTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        PythonParserImplTokenManager.setFileName(fileName);
-    }
-
     private static class PythonTokenDocument extends JavaccTokenDocument {
 
         PythonTokenDocument(String fullText) {

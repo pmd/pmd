@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.IOUtil;
 /**
  * The Python tokenizer.
  */
-public class PythonTokenizer extends JavaCCTokenizer<JavaccToken> {
+public class PythonTokenizer extends JavaCCTokenizer {
 
     private static final Pattern STRING_NL_ESCAPE = Pattern.compile("\\\\\\r?\\n");
 

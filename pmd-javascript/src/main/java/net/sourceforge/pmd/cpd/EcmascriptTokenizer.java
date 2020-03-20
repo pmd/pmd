@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.IOUtil;
 /**
  * The Ecmascript Tokenizer
  */
-public class EcmascriptTokenizer extends JavaCCTokenizer<JavaccToken> {
+public class EcmascriptTokenizer extends JavaCCTokenizer {
 
     @Override
     protected TokenManager getLexerForSource(SourceCode sourceCode) {

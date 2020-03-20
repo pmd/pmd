@@ -8,7 +8,6 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 
@@ -30,8 +29,4 @@ public class ModelicaTokenManager implements TokenManager {
         return modelicaParserTokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        AbstractTokenManager.setFileName(fileName);
-    }
 }

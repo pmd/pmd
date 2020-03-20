@@ -78,9 +78,6 @@ public class BaseTokenFilterTest {
             }
         }
 
-        @Override
-        public void setFileName(final String fileName) {
-        }
     }
 
     class DummyTokenFilter<T extends GenericToken> extends BaseTokenFilter<T> {

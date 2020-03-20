@@ -8,7 +8,6 @@ import java.io.Reader;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
@@ -21,11 +20,6 @@ public class ApexParser extends AbstractParser {
     public ApexParser(ParserOptions parserOptions) {
         super(parserOptions);
         apexParser = new net.sourceforge.pmd.lang.apex.ast.ApexParser((ApexParserOptions) parserOptions);
-    }
-
-    @Override
-    public TokenManager createTokenManager(Reader source) {
-        return null;
     }
 
     @Override

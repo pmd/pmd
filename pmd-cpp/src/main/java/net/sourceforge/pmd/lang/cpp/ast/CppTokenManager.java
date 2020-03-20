@@ -30,8 +30,4 @@ public final class CppTokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        CppParserImplTokenManager.setFileName(fileName);
-    }
 }

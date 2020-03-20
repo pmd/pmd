@@ -34,14 +34,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         return parserOptions;
     }
 
-    @Override
-    public TokenManager getTokenManager(String fileName, Reader source) {
-        TokenManager tokenManager = createTokenManager(source);
-        tokenManager.setFileName(fileName);
-        return tokenManager;
-    }
-
-    protected abstract TokenManager createTokenManager(Reader source);
+    protected abstract TokenManager<JavaccToken> createTokenManager(Reader source);
 
 
     protected abstract JavaccTokenDocument newDocument(String fullText);

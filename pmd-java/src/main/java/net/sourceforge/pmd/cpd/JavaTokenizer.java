@@ -14,7 +14,6 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenManager;
@@ -43,20 +42,19 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
+    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) {
         final StringBuilder stringBuilder = sourceCode.getCodeBuffer();
         return new JavaTokenManager(new StringReader(stringBuilder.toString()));
     }
 
     @Override
-    protected TokenFilter getTokenFilter(TokenManager tokenManager) {
+    protected TokenFilter<JavaccToken> getTokenFilter(TokenManager<JavaccToken> tokenManager) {
         return new JavaTokenFilter(tokenManager, ignoreAnnotations);
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String fileName) {
-        String image = currentToken.getImage();
-        JavaccToken javaToken = (JavaccToken) currentToken;
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken, String fileName) {
+        String image = javaToken.getImage();
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
 
@@ -72,7 +70,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.processToken(javaToken);
 
-        return new TokenEntry(image, fileName, currentToken.getBeginLine(), currentToken.getBeginColumn(), currentToken.getEndColumn());
+        return new TokenEntry(image, fileName, javaToken.getBeginLine(), javaToken.getBeginColumn(), javaToken.getEndColumn());
     }
 
     public void setIgnoreLiterals(boolean ignore) {
@@ -106,14 +104,13 @@ public class JavaTokenizer extends JavaCCTokenizer {
         private boolean discardingAnnotations = false;
         private boolean ignoreAnnotations = false;
 
-        JavaTokenFilter(final TokenManager tokenManager, final boolean ignoreAnnotations) {
+        JavaTokenFilter(final TokenManager<JavaccToken> tokenManager, final boolean ignoreAnnotations) {
             super(tokenManager);
             this.ignoreAnnotations = ignoreAnnotations;
         }
 
         @Override
-        protected void analyzeToken(final GenericToken currentToken) {
-            JavaccToken token = (JavaccToken) currentToken;
+        protected void analyzeToken(final JavaccToken token) {
             detectAnnotations(token);
 
             skipSemicolon(token);

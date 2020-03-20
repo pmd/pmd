@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  *
  * <p>TODO replace duplicates over PMD.
  */
-public class JavaccToken implements GenericToken, Comparable<JavaccToken> {
+public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken> {
 
     /**
      * Kind for EOF tokens.

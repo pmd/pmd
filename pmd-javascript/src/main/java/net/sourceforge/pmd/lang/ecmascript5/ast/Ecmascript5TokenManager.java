@@ -32,8 +32,4 @@ public class Ecmascript5TokenManager implements TokenManager {
         return tokenManager.getNextToken();
     }
 
-    @Override
-    public void setFileName(String fileName) {
-        Ecmascript5ParserImplTokenManager.setFileName(fileName);
-    }
 }

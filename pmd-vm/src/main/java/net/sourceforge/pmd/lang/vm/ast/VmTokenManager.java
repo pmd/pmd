@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.vm.ast;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 
 public class VmTokenManager implements TokenManager {
@@ -21,11 +20,6 @@ public class VmTokenManager implements TokenManager {
     @Override
     public Object getNextToken() {
         return vmParserTokenManager.getNextToken();
-    }
-
-    @Override
-    public void setFileName(final String fileName) {
-        AbstractTokenManager.setFileName(fileName);
     }
 
 }

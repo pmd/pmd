@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  * A generic filter for PMD token managers that allows to use comments
  * to enable / disable analysis of parts of the stream
  */
-public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFilter {
+public abstract class BaseTokenFilter<T extends GenericToken<T>> implements TokenFilter<T> {
 
     private final TokenManager tokenManager;
     private final LinkedList<T> unprocessedTokens; // NOPMD - used both as Queue and List
