@@ -41,7 +41,8 @@ open class RelevantAttributePrinter(stringConfig: StringConfig = UnicodeStrings)
 /**
  * Base attribute printer, subclass to filter attributes.
  */
-open class BaseNodeAttributePrinter(stringConfig: StringConfig = UnicodeStrings) : SimpleTreePrinter<Node>(NodeTreeLikeAdapter, stringConfig) {
+open class BaseNodeAttributePrinter(stringConfig: StringConfig = UnicodeStrings)
+    : SimpleTreePrinter<Node>(NodeTreeLikeAdapter, stringConfig) {
 
     protected open fun ignoreAttribute(node: Node, attribute: Attribute): Boolean = true
 

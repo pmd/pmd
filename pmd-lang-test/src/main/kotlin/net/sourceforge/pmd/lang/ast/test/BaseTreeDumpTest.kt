@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import com.github.oowekyala.treeutils.printers.TreePrinter
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.util.treeexport.TreeRenderer
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.test.assertEquals
@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
  * @param extension Extension that the unparsed source file is supposed to have
  */
 abstract class BaseTreeDumpTest(
-        val printer: TreePrinter<Node>,
+        val printer: TreeRenderer,
         val pathToFixtures: String,
         val extension: String
 ) {
@@ -45,7 +45,7 @@ abstract class BaseTreeDumpTest(
         }
 
         val parsed = parseFile(sourceFile.readText()) // UTF-8
-        val actual = printer.dumpSubtree(parsed)
+        val actual = StringBuilder().also { printer.renderSubtree(parsed, it) }.toString()
 
         if (!expectedFile.exists()) {
             expectedFile.writeText(actual)
@@ -62,7 +62,7 @@ abstract class BaseTreeDumpTest(
         // this is set from maven surefire
         System.getProperty("mvn.project.src.test.resources")
                 ?.let { Paths.get(it).toAbsolutePath() }
-        // that's for when the tests are run inside the IDE
+                // that's for when the tests are run inside the IDE
                 ?: Paths.get(javaClass.protectionDomain.codeSource.location.file)
                         // go up from target/test-classes into the project root
                         .resolve("../../src/test/resources").normalize()
