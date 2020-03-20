@@ -24,12 +24,12 @@ import net.sourceforge.pmd.util.IOUtil;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
-    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) {
+    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
         Reader reader = IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer()));
         return makeLexerImpl(makeCharStream(reader));
     }
 
-    protected CharStream makeCharStream(Reader sourceCode) {
+    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
         return CharStreamFactory.simpleCharStream(sourceCode);
     }
 

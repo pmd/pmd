@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,8 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.cpp.ast.CppTokenManager;
 
 public class CPPTokenizerContinuationTest {
 
@@ -58,13 +57,13 @@ public class CPPTokenizerContinuationTest {
     @Test
     public void parseWithContinuationCppTokenManager() throws Exception {
         String code = load("cpp_with_continuation.cpp");
-        CppTokenManager tokenManager = new CppTokenManager(new StringReader(code));
+        TokenManager<JavaccToken> tokenManager = new CPPTokenizer().getLexerForSource(new SourceCode(new StringCodeLoader(code)));
         List<JavaccToken> tokens = new ArrayList<>();
 
-        JavaccToken token = (JavaccToken) tokenManager.getNextToken();
+        JavaccToken token = tokenManager.getNextToken();
         while (!token.getImage().isEmpty()) {
             tokens.add(token);
-            token = (JavaccToken) tokenManager.getNextToken();
+            token = tokenManager.getNextToken();
         }
 
         assertEquals(51, tokens.size());
