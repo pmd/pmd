@@ -24,6 +24,7 @@ import net.sourceforge.pmd.util.IOUtil;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
+    @SuppressWarnings("PMD.CloseResource")
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
         Reader reader = IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer()));
         return makeLexerImpl(makeCharStream(reader));

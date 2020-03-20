@@ -51,7 +51,7 @@ public class CPPTokenizerContinuationTest {
     }
 
     /**
-     * Verifies the begin/end of a token. Uses the underlaying JavaCC Token and
+     * Verifies the begin/end of a token. Uses the underlying JavaCC Token and
      * not TokenEntry.
      */
     @Test

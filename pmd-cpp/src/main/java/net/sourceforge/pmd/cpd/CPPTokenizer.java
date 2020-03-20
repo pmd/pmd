@@ -24,9 +24,13 @@ import net.sourceforge.pmd.util.IOUtil;
  */
 public class CPPTokenizer extends JavaCCTokenizer {
 
-    private boolean skipBlocks = true;
+    private boolean skipBlocks;
     private String skipBlocksStart;
     private String skipBlocksEnd;
+
+    public CPPTokenizer() {
+        setProperties(new Properties()); // set the defaults
+    }
 
     /**
      * Sets the possible options for the C++ tokenizer.
@@ -86,6 +90,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
         return CppTokenKinds.newTokenManager(sourceCode);
     }
 
+    @SuppressWarnings("PMD.CloseResource")
     @Override
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
         Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(sourceCode.getCodeBuffer().toString())));

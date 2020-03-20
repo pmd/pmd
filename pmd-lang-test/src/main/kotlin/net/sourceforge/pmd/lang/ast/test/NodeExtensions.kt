@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.ast.AbstractNode
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
+import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import java.util.*
 
 
@@ -18,11 +20,11 @@ import java.util.*
 // but it doesn't recognise jjtGet* methods as getters
 
 
-val Node.firstToken: GenericToken
-    get() = (this as AbstractNode).jjtGetFirstToken()
+val AbstractJjtreeNode<*>.firstToken: JavaccToken
+    get() = jjtGetFirstToken()
 
-val Node.lastToken: GenericToken
-    get() = (this as AbstractNode).jjtGetLastToken()
+val AbstractJjtreeNode<*>.lastToken: JavaccToken
+    get() = jjtGetLastToken()
 
 fun Node.safeGetChild(i: Int): Node? = when {
     i < numChildren -> getChild(i)
