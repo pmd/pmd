@@ -173,7 +173,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     private fun consume(input: InputStream) =
             IOUtils.toString(input, StandardCharsets.UTF_8)
-                    .replace("\r\n", "\n")  // normalize line-endings
+                    .replace(Regex("\\R"), "\n")  // normalize line-endings
 
     /**
      * Gets the source from the source file in which the class was declared.

@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -34,7 +35,6 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public class RuleSetTest {
 
@@ -510,7 +510,7 @@ public class RuleSetTest {
         ruleset.apply(makeCompilationUnits(), context);
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
@@ -557,7 +557,7 @@ public class RuleSetTest {
         ruleset.apply(makeCompilationUnits(), context);
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
@@ -597,7 +597,7 @@ public class RuleSetTest {
         rulesets.apply(makeCompilationUnits(), context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
+        List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);

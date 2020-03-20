@@ -108,7 +108,11 @@
 
 
     <target name="jjtree" unless="jjtreeBuildNotRequired" description="Runs JJTree">
-        <!-- Token-tracking behavior is reimplemented -->
+
+        <!--
+             Token-tracking behavior is implemented in the JJTree builder,
+             so the grammar should have TRACK_TOKEN=false; (this is the default value)
+        -->
         <jjtree target="etc/grammar/${lang-name}.jjt"
                 outputdirectory="${target-package-dir}"
                 nodeusesparser="false"
@@ -210,6 +214,13 @@
         <replaceregexp flags="g">
             <regexp pattern='jjtree.closeNodeScope\((jjtn.*?)\);' />
             <substitution expression='jjtree.closeNodeScope(\1, getToken(0));' />
+            <file name="${parser-file}" />
+        </replaceregexp>
+
+        <!-- This is handled by jjtClose  -->
+        <replaceregexp flags="g">
+            <regexp pattern='\w+.jjtSetLastToken\(getToken\(0\)\);\R' />
+            <substitution expression='' />
             <file name="${parser-file}" />
         </replaceregexp>
 

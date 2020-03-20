@@ -187,7 +187,7 @@ public final class StreamImpl {
 
         @Override
         public DescendantNodeStream<N> crossFindBoundaries(boolean cross) {
-            return StreamImpl.empty();
+            return this;
         }
 
         @Override

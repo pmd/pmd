@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.internal;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertSame;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.nodeB;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyNodeTypeB;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -42,11 +44,11 @@ public class NodeStreamBlanketTest<T extends Node> {
                 node(
                     node(
                         node(),
-                        node(
+                        nodeB(
                             node()
                         ),
                         node(),
-                        node()
+                        nodeB()
                     ),
                     node()
                 )
@@ -56,7 +58,7 @@ public class NodeStreamBlanketTest<T extends Node> {
                 node(
                     node(),
                     node(),
-                    node(
+                    nodeB(
                         node()
                     ),
                     node()
@@ -200,7 +202,10 @@ public class NodeStreamBlanketTest<T extends Node> {
                 stream.drop(1),
                 stream.take(2),
                 stream.filter(n -> !n.getImage().isEmpty()),
-
+                stream.firstChild(DummyNodeTypeB.class),
+                stream.children(DummyNodeTypeB.class),
+                stream.descendants(DummyNodeTypeB.class),
+                stream.ancestors(DummyNodeTypeB.class),
                 stream.descendants(),
                 stream.ancestors(),
                 stream.ancestorsOrSelf(),
@@ -216,6 +221,8 @@ public class NodeStreamBlanketTest<T extends Node> {
             stream -> Stream.of(
                 stream,
                 stream.filterIs(DummyNode.class),
+                stream.take(1),
+                stream.drop(1),
                 stream.filter(n -> !n.getImage().isEmpty()),
                 stream.cached()
             )
