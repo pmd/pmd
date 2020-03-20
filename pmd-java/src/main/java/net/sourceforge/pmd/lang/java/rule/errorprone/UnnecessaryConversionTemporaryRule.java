@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -11,7 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
 
@@ -19,12 +20,11 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
     private ASTPrimaryExpression primary;
     private boolean usingPrimitiveWrapperAllocation;
 
-    private static final Set<String> PRIMITIVE_WRAPPERS = CollectionUtil
-            .asSet(new String[] { "Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float" });
+    private static final Set<String> PRIMITIVE_WRAPPERS = setOf("Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float");
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
-        if (node.getNumChildren() == 0 || (node.getChild(0)).getNumChildren() == 0
+        if (node.getNumChildren() == 0 || node.getChild(0).getNumChildren() == 0
                 || !(node.getChild(0).getChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }

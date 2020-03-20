@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -102,7 +102,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
                                                ? getFirstChildOfType(ASTExtendsList.class)
                                                : getFirstChildOfType(ASTImplementsList.class);
 
-        return it == null ? Collections.<ASTClassOrInterfaceType>emptyList() : CollectionUtil.toList(it.iterator());
+        return it == null ? Collections.emptyList() : IteratorUtil.toList(it.iterator());
     }
 
 }

@@ -583,11 +583,11 @@ public final class StringUtil {
 
         int minLength = Integer.MAX_VALUE;
 
-        for (int i = 0; i < strings.length; i++) {
-            if (strings[i] == null) {
+        for (String string : strings) {
+            if (string == null) {
                 return 0;
             }
-            minLength = Math.min(minLength, strings[i].length());
+            minLength = Math.min(minLength, string.length());
         }
 
         return minLength;
