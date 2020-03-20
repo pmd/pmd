@@ -31,6 +31,11 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
     }
 
     @Override
+    public ASTInput parse(String fileName, Reader source) throws ParseException {
+        return super.parse(fileName, IOUtil.skipBOM(source));
+    }
+
+    @Override
     protected ASTInput parseImpl(CharStream cs, ParserOptions options) throws ParseException {
         return new PLSQLParserImpl(cs).Input();
     }

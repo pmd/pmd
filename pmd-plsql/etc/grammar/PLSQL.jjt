@@ -227,8 +227,6 @@ PARSER_END(PLSQLParserImpl)
  */
 ASTInput Input() : {}
 {
-	[<BOM>] // Unicode BOM
-
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
 	 (LOOKAHEAD(7) PackageSpecification()
@@ -4505,7 +4503,6 @@ void AlterTrigger()  :
 // Copyright (C) 2002 Albert Tumanov
 
 /* WHITE SPACE */
-TOKEN : { <BOM: "\ufeff" > }
 
 SKIP :
 {
