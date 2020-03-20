@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.cpd.internal;
 
 import java.io.IOException;
+import java.io.Reader;
+
+import org.apache.commons.io.input.CharSequenceReader;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -13,12 +16,24 @@ import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.util.IOUtil;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
-    protected abstract TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode);
+    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) {
+        Reader reader = IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer()));
+        return makeLexerImpl(makeCharStream(reader));
+    }
+
+    protected CharStream makeCharStream(Reader sourceCode) {
+        return CharStreamFactory.simpleCharStream(sourceCode);
+    }
+
+    protected abstract TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode);
 
     protected TokenFilter<JavaccToken> getTokenFilter(TokenManager<JavaccToken> tokenManager) {
         return new JavaCCTokenFilter(tokenManager);
