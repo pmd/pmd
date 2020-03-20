@@ -1,10 +1,12 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -43,8 +45,8 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  * By default just prints the structure, like shown above. You can
  * configure it to render nodes differently by overriding {@link #appendNodeInfoLn(Appendable, Node)}.
- *
  */
+@Experimental
 public class TextTreeRenderer implements TreeRenderer {
 
     static final TreeRendererDescriptor DESCRIPTOR = new TreeRendererDescriptor() {
@@ -115,6 +117,17 @@ public class TextTreeRenderer implements TreeRenderer {
     private final Strings str;
     private final int maxLevel;
 
+    /**
+     * Creates a new text renderer.
+     *
+     * @param onlyAscii Whether to output the skeleton of the tree with
+     *                  only ascii characters. If false, uses unicode chars
+     *                  like '├'
+     * @param maxLevel  Max level on which to recurse. Negative means
+     *                  unbounded. If the max level is reached, a placeholder
+     *                  is dumped, like "1 child is not shown". This is
+     *                  controlled by {@link #appendBoundaryForNodeLn(Node, Appendable, String)}.
+     */
     public TextTreeRenderer(boolean onlyAscii, int maxLevel) {
         this.str = onlyAscii ? ASCII : UNICODE;
         this.maxLevel = maxLevel;

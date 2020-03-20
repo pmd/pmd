@@ -49,7 +49,7 @@ abstract class BaseTreeDumpTest(
 
         if (!expectedFile.exists()) {
             expectedFile.writeText(actual)
-            throw AssertionError("Reference file $expectedFile doesn't exist, created it anyway")
+            throw AssertionError("Reference file doesn't exist, created it at $expectedFile")
         }
 
         val expected = expectedFile.readText()

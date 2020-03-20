@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import com.github.oowekyala.treeutils.printers.SimpleTreePrinter
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.xpath.Attribute
+import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
 import org.apache.commons.lang3.StringEscapeUtils
 
 /**
@@ -21,15 +21,10 @@ import org.apache.commons.lang3.StringEscapeUtils
  *                       └── 1 child not shown
  *
  */
-object SimpleNodePrinter : SimpleTreePrinter<Node>(NodeTreeLikeAdapter, UnicodeStrings)
-
-/**
- * Prints all the XPath attributes of the node.
- */
-object FullAttributePrinter : BaseNodeAttributePrinter()
+val SimpleNodePrinter = TextTreeRenderer(false, -1)
 
 
-open class RelevantAttributePrinter(stringConfig: StringConfig = UnicodeStrings) : BaseNodeAttributePrinter(stringConfig) {
+open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
 
     private val Ignored = setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine")
 
@@ -41,23 +36,21 @@ open class RelevantAttributePrinter(stringConfig: StringConfig = UnicodeStrings)
 /**
  * Base attribute printer, subclass to filter attributes.
  */
-open class BaseNodeAttributePrinter(stringConfig: StringConfig = UnicodeStrings)
-    : SimpleTreePrinter<Node>(NodeTreeLikeAdapter, stringConfig) {
+open class BaseNodeAttributePrinter : TextTreeRenderer(false, -1) {
 
     protected open fun ignoreAttribute(node: Node, attribute: Attribute): Boolean = true
 
-    override fun StringBuilder.appendSingleNode(node: Node): StringBuilder {
+    override fun appendNodeInfoLn(out: Appendable, node: Node) {
+        out.append(node.xPathNodeName)
 
-        append(node.xPathNodeName)
-
-        return node.xPathAttributesIterator
-                .asSequence()
-                // sort to get deterministic results
-                .sortedBy { it.name }
-                .filterNot { ignoreAttribute(node, it) }
-                .joinTo(buffer = this, prefix = "[", postfix = "]") {
-                    "@${it.name} = ${valueToString(it.value)}"
-                }
+        node.xPathAttributesIterator
+            .asSequence()
+            // sort to get deterministic results
+            .sortedBy { it.name }
+            .filterNot { ignoreAttribute(node, it) }
+            .joinTo(buffer = out, prefix = "[", postfix = "]") {
+                "@${it.name} = ${valueToString(it.value)}"
+            }
     }
 
     protected open fun valueToString(value: Any?): String? {

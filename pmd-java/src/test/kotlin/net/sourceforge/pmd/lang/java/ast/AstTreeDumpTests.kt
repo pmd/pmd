@@ -13,10 +13,6 @@ import org.junit.Test
  */
 class AstTreeDumpTests : AbstractJavaTreeDumpTest() {
 
-
-    @Test
-    fun testCornerCases() = doTest("ParserCornerCases")
-
     @Test
     fun testComplicatedLambda() = doTest("Bug1429")
 
