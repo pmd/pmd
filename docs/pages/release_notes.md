@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
+*   core
+    *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
 
 ### API Changes
 
