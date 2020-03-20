@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTTypeSpecification extends AbstractPLSQLNode implements OracleObject {
 
-public class ASTTypeSpecification extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode implements OracleObject {
-    @Deprecated
-    @InternalApi
-    public ASTTypeSpecification(int id) {
+    ASTTypeSpecification(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTTypeSpecification(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override

@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public class ASTInlineConstraint extends AbstractPLSQLNode {
+public final class ASTInlineConstraint extends AbstractPLSQLNode {
     private ConstraintType type;
 
     ASTInlineConstraint(int id) {
         super(id);
-    }
-
-    ASTInlineConstraint(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     void setType(ConstraintType type) {

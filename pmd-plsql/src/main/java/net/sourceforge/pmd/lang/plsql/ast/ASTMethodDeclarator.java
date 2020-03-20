@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTMethodDeclarator extends AbstractPLSQLNode {
 
-public class ASTMethodDeclarator extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    @Deprecated
-    @InternalApi
-    public ASTMethodDeclarator(int id) {
+    ASTMethodDeclarator(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTMethodDeclarator(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override

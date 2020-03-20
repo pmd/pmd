@@ -6,22 +6,16 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    @Deprecated
-    @InternalApi
-    public ASTVariableOrConstantDeclaratorId(int id) {
-        super(id);
-    }
+public final class ASTVariableOrConstantDeclaratorId extends AbstractPLSQLNode {
+    private int arrayDepth;
+    private NameDeclaration nameDeclaration;
 
-    @Deprecated
-    @InternalApi
-    public ASTVariableOrConstantDeclaratorId(PLSQLParser p, int id) {
-        super(p, id);
+    ASTVariableOrConstantDeclaratorId(int id) {
+        super(id);
     }
 
     @Override
@@ -29,16 +23,11 @@ public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.
         return visitor.visit(this, data);
     }
 
-    private int arrayDepth;
-    private NameDeclaration nameDeclaration;
-
     public NameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setNameDeclaration(NameDeclaration decl) {
+    void setNameDeclaration(NameDeclaration decl) {
         nameDeclaration = decl;
     }
 
@@ -46,9 +35,7 @@ public class ASTVariableOrConstantDeclaratorId extends net.sourceforge.pmd.lang.
         return getScope().getDeclarations().get(nameDeclaration);
     }
 
-    @Deprecated
-    @InternalApi
-    public void bumpArrayDepth() {
+    void bumpArrayDepth() {
         arrayDepth++;
     }
 

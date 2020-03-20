@@ -38,9 +38,10 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
+                                    <property name="lang-name" value="PLSQL" />
+                                    <property name="lang-terse-name" value="plsql" />
                                 </ant>
                             </target>
                         </configuration>

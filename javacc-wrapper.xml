@@ -330,8 +330,11 @@
         <move file="${constants-itf-file}" tofile="${token-constants-file}" />
 
         <replaceregexp>
-            <regexp pattern="(public )?interface ${constants-itf-name}" />
-            <substitution expression="/** Token kinds ({@link ${ast-impl-package}.JavaccToken#kind}) for this language. */ public final class ${token-constants-name}"/>
+            <regexp pattern="(public )?interface ${constants-itf-name} \{" />
+            <substitution expression="/** Token kinds ({@link ${ast-impl-package}.JavaccToken#kind}) for this language. */${line.separator}
+public final class ${token-constants-name} \{${line.separator}
+    private ${token-constants-name}() { /* Utility class */ }${line.separator}
+"/>
             <fileset file="${token-constants-file}" />
         </replaceregexp>
 
@@ -342,8 +345,8 @@
         </replaceregexp>
 
         <replaceregexp flags="s">
-            <regexp pattern="/\*\* End of File.*?;" />
-            <substitution expression="private ${token-constants-name}() { /* Utility class */ }" />
+            <regexp pattern="/\*\* End of File. \*/\R" />
+            <substitution expression="public static final " />
             <fileset file="${token-constants-file}" />
         </replaceregexp>
 

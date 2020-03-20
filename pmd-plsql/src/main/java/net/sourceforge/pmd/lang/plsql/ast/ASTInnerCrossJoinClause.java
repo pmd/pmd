@@ -4,22 +4,12 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTInnerCrossJoinClause extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+public final class ASTInnerCrossJoinClause extends AbstractPLSQLNode {
     private boolean cross;
     private boolean natural;
 
-    @Deprecated
-    @InternalApi
-    public ASTInnerCrossJoinClause(int id) {
+    ASTInnerCrossJoinClause(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTInnerCrossJoinClause(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     public boolean isCross() {
