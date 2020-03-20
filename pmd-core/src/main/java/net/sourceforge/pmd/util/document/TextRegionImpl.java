@@ -14,9 +14,6 @@ final class TextRegionImpl implements TextRegion {
     private final int startOffset;
     private final int length;
 
-    /**
-     * @throws IllegalArgumentException If the start offset or length are negative
-     */
     private TextRegionImpl(int startOffset, int length) {
         this.startOffset = startOffset;
         this.length = length;

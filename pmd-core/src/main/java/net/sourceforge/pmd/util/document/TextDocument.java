@@ -6,7 +6,9 @@ package net.sourceforge.pmd.util.document;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Reader;
 
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
@@ -40,6 +42,12 @@ public interface TextDocument extends Closeable {
 
 
     /**
+     * Returns a reader over the text of this document.
+     */
+    Reader newReader();
+
+
+    /**
      * Returns the length in characters of the {@linkplain #getText() text}.
      */
     int getLength();
@@ -64,12 +72,25 @@ public interface TextDocument extends Closeable {
      * }</pre>
      *
      * @param startOffset 0-based, inclusive offset for the start of the region
-     * @param length      Length of the region in characters.
+     * @param length      Length of the region in characters
      *
      * @throws InvalidRegionException If the arguments do not identify
      *                                a valid region in this document
      */
     TextRegion createRegion(int startOffset, int length);
+
+
+    /**
+     * Returns a region that spans the text of all the given lines.
+     * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
+     *
+     * @param startLineInclusive Inclusive start line number (1-based)
+     * @param endLineInclusive   Inclusive end line number (1-based)
+     *
+     * @throws InvalidRegionException If the arguments do not identify
+     *                                a valid region in this document
+     */
+    TextRegion createLineRange(int startLineInclusive, int endLineInclusive);
 
 
     /**

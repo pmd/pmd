@@ -103,18 +103,40 @@ public final class SourceCodePositioner {
      * @return Text offset (zero-based), or -1
      */
     public int offsetFromLineColumn(final int line, final int column) {
-        final int lineIdx = line - 1;
-
-        if (lineIdx < 0 || lineIdx >= lineOffsets.length) {
+        if (!isValidLine(line)) {
             return -1;
         }
 
-        int bound = line == lineOffsets.length  // last line?
-                    ? sourceCodeLength
-                    : lineOffsets[line];
-
+        final int lineIdx = line - 1;
+        int bound = offsetOfEndOfLine(line);
         int off = lineOffsets[lineIdx] + column - 1;
         return off > bound ? -1 : off;
+    }
+
+    /**
+     * Returns the offset of the end of the given line. This is the caret
+     * position that follows the last character on the line (which includes
+     * the line terminator if any). This is the caret position at the
+     * start of the next line, except if the line is the last in the document.
+     *
+     * @param line Line number (1-based)
+     *
+     * @return Text offset
+     *
+     * @throws IllegalArgumentException If the line is invalid
+     */
+    public int offsetOfEndOfLine(final int line) {
+        if (!isValidLine(line)) {
+            throw new IllegalArgumentException(line + " is not a valid line number, expected at most " + lineOffsets.length);
+        }
+
+        return line == lineOffsets.length  // last line?
+               ? sourceCodeLength
+               : lineOffsets[line];
+    }
+
+    boolean isValidLine(int line) {
+        return line >= 1 && line <= getLastLine();
     }
 
     /**

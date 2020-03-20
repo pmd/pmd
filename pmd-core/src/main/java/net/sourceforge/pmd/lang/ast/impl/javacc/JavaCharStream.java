@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.StringReader;
 
 /**
  * This stream buffers the whole file in memory before parsing,
@@ -24,7 +23,7 @@ public class JavaCharStream extends JavaCharStreamBase {
     private int[] startOffsets;
 
     public JavaCharStream(JavaccTokenDocument document) {
-        super(new StringReader(document.getFullText()));
+        super(document.getTextDocument().newReader());
         this.fullText = document.getFullText();
         this.document = document;
         this.startOffsets = new int[bufsize];

@@ -5,7 +5,10 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.CharBuffer;
+
+import org.apache.commons.io.input.CharSequenceReader;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -78,6 +81,18 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         return TextRegionImpl.fromOffsetLength(startOffset, length);
     }
 
+    @Override
+    public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
+        if (!positioner.isValidLine(startLineInclusive)
+            || !positioner.isValidLine(endLineInclusive)
+            || startLineInclusive > endLineInclusive) {
+            throw InvalidRegionException.invalidLineRange(startLineInclusive, endLineInclusive, positioner.getLastLine());
+        }
+
+        int first = positioner.offsetFromLineColumn(startLineInclusive, 1);
+        int last = positioner.offsetOfEndOfLine(endLineInclusive);
+        return TextRegionImpl.fromBothOffsets(first, last);
+    }
 
     void checkInRange(int startOffset, int length) {
         if (startOffset < 0) {
@@ -97,6 +112,11 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     @Override
     public CharSequence getText() {
         return text;
+    }
+
+    @Override
+    public Reader newReader() {
+        return new CharSequenceReader(text);
     }
 
     long getCurStamp() {
