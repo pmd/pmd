@@ -37,7 +37,7 @@ public interface DesignerBindings {
      * when the node is displayed.
      *
      * <p>Order of the collection is unimportant, it's sorted using
-     * {@link AdditionalInfo#getAlphaSortKey()}.
+     * {@link AdditionalInfo#getSortKey()}.
      */
     Collection<AdditionalInfo> getAdditionalInfo(Node node);
 
@@ -47,12 +47,12 @@ public interface DesignerBindings {
      */
     class AdditionalInfo {
 
-        private final String alphaKey;
+        private final String sortKey;
         private final String display;
 
 
-        public AdditionalInfo(String alphaKey, String display) {
-            this.alphaKey = alphaKey;
+        public AdditionalInfo(String sortKey, String display) {
+            this.sortKey = sortKey;
             this.display = display;
         }
 
@@ -65,8 +65,8 @@ public interface DesignerBindings {
          * For example, returning {@code "A"} ensures this is displayed
          * first, provided there's no other entry with an {@code "A"}.
          */
-        public String getAlphaSortKey() {
-            return alphaKey;
+        public String getSortKey() {
+            return sortKey;
         }
 
         /**
