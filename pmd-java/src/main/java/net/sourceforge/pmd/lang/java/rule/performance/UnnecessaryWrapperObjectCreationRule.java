@@ -23,7 +23,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
     private static final Set<String> PREFIX_SET = setOf("Byte.valueOf", "Short.valueOf",
         "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf");
 
-    private static final Set<String> SUFFIX_SET = setOf( "toString", "byteValue",
+    private static final Set<String> SUFFIX_SET = setOf("toString", "byteValue",
         "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue");
 
     @Override
