@@ -1374,6 +1374,22 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="performance-improvements-for-xpath-20-rules">Performance improvements for XPath 2.0 rules</h4>
+
+<p>XPath rules written with XPath 2.0 now support conversion to a rulechain rule, which
+improves their performance. The rulechain is a mechanism that allows several rules
+to be executed in a single tree traversal. Conversion to the rulechain is possible if
+your XPath expression looks like <code class="highlighter-rouge">//someNode/... | //someOtherNode/...  | ...</code>, that
+is, a union of one or more path expressions that start with <code class="highlighter-rouge">//</code>. Instead of traversing
+the whole tree once per path expression (and per rule), a single traversal executes all
+rules in your ruleset as needed.</p>
+
+<p>This conversion is performed automatically and cannot be disabled. <em>The conversion should
+not change the result of your rules</em>, if it does, please report a bug at https://github.com/pmd/pmd/issues</p>
+
+<p>Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 6.22.0.
+<strong>We highly recommend that you upgrade your rules to XPath 2.0</strong>. Please refer to the <a href="https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20">migration guide</a>.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
