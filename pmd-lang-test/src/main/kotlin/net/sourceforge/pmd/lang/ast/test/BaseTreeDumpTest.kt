@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.util.treeexport.TreeRenderer
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -15,36 +14,29 @@ import kotlin.test.assertEquals
  * Compare a dump of a file against a saved baseline.
  *
  * @param printer The node printer used to dump the trees
- * @param pathToFixtures Path to the test files within the directory of the test case
  * @param extension Extension that the unparsed source file is supposed to have
  */
 abstract class BaseTreeDumpTest(
         val printer: TreeRenderer,
-        val pathToFixtures: String,
         val extension: String
 ) {
 
-    /**
-     * Parses the given string into a node.
-     */
-    abstract fun parseFile(fileText: String): Node
-
+    abstract val parser: BaseParsingHelper<*, *>
 
     /**
-     * Executes the test. The test files are looked up in [pathToFixtures],
-     * in the resource directory *of the subclass*.
+     * Executes the test. The test files are looked up using the [parser].
      * The reference test file must be named [fileBaseName] + [ExpectedExt].
      * The source file to parse must be named [fileBaseName] + [extension].
      */
     fun doTest(fileBaseName: String) {
-        val expectedFile = findTestFile(javaClass, "$pathToFixtures/$fileBaseName$ExpectedExt").toFile()
-        val sourceFile = findTestFile(javaClass, "$pathToFixtures/$fileBaseName$extension").toFile()
+        val expectedFile = findTestFile(parser.resourceLoader, "${parser.resourcePrefix}/$fileBaseName$ExpectedExt").toFile()
+        val sourceFile = findTestFile(parser.resourceLoader, "${parser.resourcePrefix}/$fileBaseName$extension").toFile()
 
         assert(sourceFile.isFile) {
             "Source file $sourceFile is missing"
         }
 
-        val parsed = parseFile(sourceFile.readText()) // UTF-8
+        val parsed = parser.parse(sourceFile.readText()) // UTF-8
         val actual = StringBuilder().also { printer.renderSubtree(parsed, it) }.toString()
 
         if (!expectedFile.exists()) {
