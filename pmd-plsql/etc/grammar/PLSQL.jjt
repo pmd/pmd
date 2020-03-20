@@ -123,7 +123,7 @@ options {
     BUILD_PARSER = true;
     BUILD_TOKEN_MANAGER = true;
     SANITY_CHECK = true;
-    TRACK_TOKENS = true;
+    TRACK_TOKENS = false;
     CACHE_TOKENS = true;
 
     MULTI = true;
