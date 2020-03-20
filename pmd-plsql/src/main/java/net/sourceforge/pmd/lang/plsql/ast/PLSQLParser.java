@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.Reader;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
@@ -27,7 +29,12 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
 
     @Override
     protected JavaccTokenDocument newDocument(String fullText) {
-        return new JavaccTokenDocument(fullText);
+        return new JavaccTokenDocument(fullText) {
+            @Override
+            protected @Nullable String describeKindImpl(int kind) {
+                return PLSQLTokenKinds.describe(kind);
+            }
+        };
     }
 
     @Override
