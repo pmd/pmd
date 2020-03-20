@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.io.Reader;
-
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
@@ -28,11 +25,6 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     public JavaParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
         super(parserOptions);
         this.checker = checker;
-    }
-
-    @Override
-    public TokenManager createTokenManager(Reader source) {
-        return new JavaTokenManager(source);
     }
 
 

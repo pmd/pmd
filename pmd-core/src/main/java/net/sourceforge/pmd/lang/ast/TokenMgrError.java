@@ -14,20 +14,6 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public final class TokenMgrError extends RuntimeException {
 
-
-    /**
-     * @deprecated Will be removed when all modules are ported
-     */
-    @Deprecated
-    public static final int LEXICAL_ERROR = 0;
-
-    /**
-     * @deprecated Will be removed when all modules are ported,
-     *     see {@link #TokenMgrError(String, int)}
-     */
-    @Deprecated
-    public static final int INVALID_LEXICAL_STATE = 1;
-
     private final int line;
     private final int column;
     private final String filename;
@@ -39,19 +25,6 @@ public final class TokenMgrError extends RuntimeException {
         this.filename = filename;
     }
 
-    public TokenMgrError(int line, int column, String message, @Nullable Throwable cause) {
-        this(line, column, null, message, cause);
-    }
-
-    /**
-     * @deprecated This is used by javacc but those usages are being replaced with an IllegalArgumentException
-     */
-    @Deprecated
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    public TokenMgrError(String message, int errorCode) {
-        this(-1, -1, null, message, null);
-    }
-
     /**
      * Constructor called by JavaCC.
      */
@@ -61,21 +34,7 @@ public final class TokenMgrError extends RuntimeException {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
-        filename = null;
-    }
-
-    /**
-     * Constructor called by JavaCC.
-     *
-     * @deprecated The error code is useless, ported modules use the other constructor
-     */
-    @Deprecated
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    public TokenMgrError(boolean eofSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int errorCode) {
-        super(makeReason(eofSeen, String.valueOf(lexState), errorAfter, curChar));
-        line = errorLine;
-        column = errorColumn;
-        filename = null;
+        filename = null; // may be replaced with #withFileName
     }
 
     public int getLine() {

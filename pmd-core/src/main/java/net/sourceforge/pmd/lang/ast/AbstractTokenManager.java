@@ -15,11 +15,6 @@ public abstract class AbstractTokenManager implements TokenManager<JavaccToken> 
 
     protected Map<Integer, String> suppressMap = new HashMap<>();
     protected String suppressMarker = PMD.SUPPRESS_MARKER;
-    protected String fileName;
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 
     public void setSuppressMarker(String marker) {
         this.suppressMarker = marker;

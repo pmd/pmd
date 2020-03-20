@@ -9,7 +9,6 @@ import java.io.Reader;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -20,11 +19,6 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
 
     public PLSQLParser(ParserOptions parserOptions) {
         super(parserOptions);
-    }
-
-    @Override
-    protected TokenManager createTokenManager(Reader source) {
-        return new PLSQLTokenManager(IOUtil.skipBOM(source));
     }
 
     @Override
