@@ -391,7 +391,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public NodeStream<T> take(int maxSize) {
             AssertionUtil.requireNonNegative("maxSize", maxSize);
-            return StreamImpl.sliceChildren(node, filter, low, min(maxSize, len));
+            // eager evaluation
+            if (maxSize == 1) {
+                return NodeStream.of(TraversalUtils.getFirstChildMatching(node, filter, low, len));
+            }
+            List<T> matching = TraversalUtils.findChildrenMatching(node, filter, low, len, maxSize);
+            return StreamImpl.fromNonNullList(matching);
         }
 
         @Override
@@ -400,14 +405,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             if (n == 0) {
                 return this;
             }
-            int newLow = min(low + n, node.getNumChildren());
-            int newLen = max(len - n, 0);
-            return StreamImpl.sliceChildren(node, filter, newLow, newLen);
+            return StreamImpl.fromNonNullList(toList()).drop(n);
         }
 
         @Override
         public String toString() {
-            return "Slice[" + node + ", " + low + ".." + (low + len) + "] -> " + toList();
+            return "FilteredSlice[" + node + ", " + low + ".." + (low + len) + "] -> " + toList();
         }
     }
 
@@ -436,6 +439,24 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         public Node get(int n) {
             AssertionUtil.requireNonNegative("n", n);
             return len > 0 && n < len ? node.getChild(low + n) : null;
+        }
+
+
+        @Override
+        public NodeStream<Node> take(int maxSize) {
+            AssertionUtil.requireNonNegative("maxSize", maxSize);
+            return StreamImpl.sliceChildren(node, filter, low, min(maxSize, len));
+        }
+
+        @Override
+        public NodeStream<Node> drop(int n) {
+            AssertionUtil.requireNonNegative("n", n);
+            if (n == 0) {
+                return this;
+            }
+            int newLow = min(low + n, node.getNumChildren());
+            int newLen = max(len - n, 0);
+            return StreamImpl.sliceChildren(node, filter, newLow, newLen);
         }
 
         @Override

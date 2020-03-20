@@ -101,6 +101,10 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
 
     static <I, O> Filtermap<I, O> isInstance(Class<O> oClass) {
+        if (oClass == Node.class) {
+            return (Filtermap<I, O>) NODE_IDENTITY;
+        }
+
         return new Filtermap<I, O>() {
             @Override
             @SuppressWarnings("unchecked")

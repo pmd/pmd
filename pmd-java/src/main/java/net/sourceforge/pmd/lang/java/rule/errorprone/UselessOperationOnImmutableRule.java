@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * An operation on an Immutable object (String, BigDecimal or BigInteger) won't
@@ -27,25 +28,25 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
     /**
      * These are the BigDecimal methods which are immutable
      */
-    private static final Set<String> BIG_DECIMAL_METHODS = CollectionUtil
-            .asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft",
-                ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round",
-                ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp", });
+    private static final Set<String> BIG_DECIMAL_METHODS =
+        setOf(".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft",
+              ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round",
+              ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp");
 
     /**
      * These are the BigInteger methods which are immutable
      */
-    private static final Set<String> BIG_INTEGER_METHODS = CollectionUtil
-            .asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max",
-                ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or",
-                ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor", });
+    private static final Set<String> BIG_INTEGER_METHODS =
+        setOf(".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max",
+              ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or",
+              ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor");
 
     /**
      * These are the String methods which are immutable
      */
-    private static final Set<String> STRING_METHODS = CollectionUtil
-            .asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring",
-                ".toLowerCase", ".toString", ".toUpperCase", ".trim", });
+    private static final Set<String> STRING_METHODS =
+        setOf(".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring",
+              ".toLowerCase", ".toString", ".toUpperCase", ".trim");
 
     /**
      * These are the classes that the rule can apply to

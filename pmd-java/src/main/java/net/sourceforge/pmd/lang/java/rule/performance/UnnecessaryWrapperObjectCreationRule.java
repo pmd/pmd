@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
@@ -15,15 +17,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
-    private static final Set<String> PREFIX_SET = CollectionUtil.asSet(new String[] { "Byte.valueOf", "Short.valueOf",
-        "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf", });
+    private static final Set<String> PREFIX_SET = setOf("Byte.valueOf", "Short.valueOf",
+        "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf");
 
-    private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] { "toString", "byteValue",
-        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue", });
+    private static final Set<String> SUFFIX_SET = setOf("toString", "byteValue",
+        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue");
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {

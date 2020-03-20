@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyNodeTypeB;
+
 
 /**
  * @author Clément Fournier
@@ -23,12 +25,21 @@ public final class DummyTreeUtil {
 
     /** Creates a dummy node with the given children. */
     public static DummyNode node(DummyNode... children) {
-        DummyNode node = new DummyNode(0) {
+        DummyNode node = new DummyNode() {
             @Override
             public String toString() {
                 return getImage();
             }
         };
+        return nodeImpl(node, children);
+    }
+
+    /** Creates a dummy node with the given children. */
+    public static DummyNode nodeB(DummyNode... children) {
+        return nodeImpl(new DummyNodeTypeB(), children);
+    }
+
+    private static DummyNode nodeImpl(DummyNode node, DummyNode... children) {
         node.children = children;
         for (int i = 0; i < children.length; i++) {
             children[i].jjtSetParent(node);
