@@ -101,41 +101,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Sergey Yanzin 11/2016
  */
 
-//
 options {
-	DEBUG_PARSER = false;
-	DEBUG_TOKEN_MANAGER = false;
-	DEBUG_LOOKAHEAD = false;
-	IGNORE_CASE = true;
-	STATIC = false;
-	LOOKAHEAD = 1;
-	// set the ambiguity checks to higher values, if you need more extensive checks of the grammar
-	// this however make the parser generation very slow, so should only be done once after
-	// modifying the grammar to make sure there are no grammar errors.
-	// Default value is 2.
-	CHOICE_AMBIGUITY_CHECK = 2;
-	OTHER_AMBIGUITY_CHECK = 1;
-	ERROR_REPORTING = true;
-	JAVA_UNICODE_ESCAPE = false; //true
-	UNICODE_INPUT = true;
-	USER_TOKEN_MANAGER = false;
-	USER_CHAR_STREAM = true;
-	BUILD_PARSER = true;
-	BUILD_TOKEN_MANAGER = true;
-	SANITY_CHECK = true;
-	FORCE_LA_CHECK = false;
+    DEBUG_PARSER = false;
+    DEBUG_TOKEN_MANAGER = false;
+    DEBUG_LOOKAHEAD = false;
+    IGNORE_CASE = true;
+    STATIC = false;
 
-	TRACK_TOKENS = true;
+    LOOKAHEAD= 1;
+    // set the ambiguity checks to higher values, if you need more extensive checks of the grammar
+    // this however make the parser generation very slow, so should only be done once after
+    // modifying the grammar to make sure there are no grammar errors.
+    // Default value is 2.
+    CHOICE_AMBIGUITY_CHECK = 2;
+    OTHER_AMBIGUITY_CHECK = 1;
+    ERROR_REPORTING = true;
+    JAVA_UNICODE_ESCAPE = false;
+    UNICODE_INPUT = true;
+    USER_TOKEN_MANAGER = false;
+    USER_CHAR_STREAM = true;
+    BUILD_PARSER = true;
+    BUILD_TOKEN_MANAGER = true;
+    SANITY_CHECK = true;
+    TRACK_TOKENS = false;
     CACHE_TOKENS = true;
 
     MULTI = true;
     VISITOR = true;
-    NODE_USES_PARSER = true;
-    NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
-    NODE_CLASS = "net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode";
 }
 
-PARSER_BEGIN(PLSQLParser)
+PARSER_BEGIN(PLSQLParserImpl)
 
 /* Copyright (C) 2002 Albert Tumanov
 
@@ -162,12 +157,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class PLSQLParser {
+public class PLSQLParserImpl {
 
   /**
    Return canonical version of the Oracle
   */
-  public static String canonicalName(String name)
+  static String canonicalName(String name)
   {
     StringBuilder s =  null ;
 
@@ -219,7 +214,7 @@ public class PLSQLParser {
   }
 }
 
-PARSER_END(PLSQLParser)
+PARSER_END(PLSQLParserImpl)
 /**
  * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
  *                                 Refactored printing of custom tags into the XML/DOM.
@@ -230,7 +225,7 @@ PARSER_END(PLSQLParser)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-ASTInput Input(String sourcecode) : {}
+ASTInput Input() : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
@@ -256,7 +251,7 @@ ASTInput Input(String sourcecode) : {}
 	 ("/")*
 	)*
 	<EOF>
-      { jjtThis.setSourcecode(sourcecode); return jjtThis ; }
+	{ return jjtThis; }
 }
 
 ASTDDLCommand DDLCommand() :

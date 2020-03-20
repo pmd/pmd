@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTFormalParameter extends AbstractPLSQLNode {
 
-public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    @Deprecated
-    @InternalApi
-    public ASTFormalParameter(int id) {
+    ASTFormalParameter(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTFormalParameter(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override

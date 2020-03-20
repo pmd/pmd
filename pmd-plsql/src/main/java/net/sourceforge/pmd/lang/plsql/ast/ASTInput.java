@@ -4,22 +4,12 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTInput extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode implements RootNode {
-    private String sourcecode;
+public final class ASTInput extends AbstractPLSQLNode implements RootNode {
 
-    @Deprecated
-    @InternalApi
-    public ASTInput(int id) {
+    ASTInput(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTInput(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override
@@ -27,11 +17,7 @@ public class ASTInput extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNo
         return visitor.visit(this, data);
     }
 
-    void setSourcecode(String sourcecode) {
-        this.sourcecode = sourcecode;
-    }
-
     public String getSourcecode() {
-        return sourcecode;
+        return new StringBuilder(getText()).toString();
     }
 }

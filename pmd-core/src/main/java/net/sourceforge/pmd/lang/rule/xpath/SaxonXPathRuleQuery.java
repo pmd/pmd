@@ -1,24 +1,32 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
+import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+import net.sf.saxon.expr.Expression;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamespaceConstant;
+import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.ValueRepresentation;
 import net.sf.saxon.sxpath.AbstractStaticContext;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -44,6 +52,12 @@ import net.sf.saxon.value.Value;
  * This is a Saxon based XPathRule query.
  */
 public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
+    /**
+     * Special nodeName that references the root expression.
+     */
+    static final String AST_ROOT = "_AST_ROOT_";
+
+    private static final Logger LOG = Logger.getLogger(SaxonXPathRuleQuery.class.getName());
 
     private static final int MAX_CACHE_SIZE = 20;
     private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
@@ -54,6 +68,11 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             return size() > MAX_CACHE_SIZE;
         }
     };
+
+    /**
+     * Contains for each nodeName a sub expression, used for implementing rule chain.
+     */
+    Map<String, List<Expression>> nodeNameToXPaths = new HashMap<>();
 
     /**
      * Representation of an XPath query, created at {@link #initializeXPathExpression()} using {@link #xpath}.
@@ -82,22 +101,39 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
             // Map AST Node -> Saxon Node
             final ElementNode rootElementNode = documentNode.nodeToElementNode.get(node);
-
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(rootElementNode);
-            final List<ElementNode> nodes = xpathExpression.evaluate(xpathDynamicContext);
+
+            final List<ElementNode> nodes = new LinkedList<>();
+            List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
+            for (Expression expression : expressions) {
+                SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
+                Item current = iterator.next();
+                while (current != null) {
+                    nodes.add((ElementNode) current);
+                    current = iterator.next();
+                }
+            }
 
             /*
              Map List of Saxon Nodes -> List of AST Nodes, which were detected to match the XPath expression
              (i.e. violation found)
               */
-            final List<Node> results = new ArrayList<>();
+            final List<Node> results = new ArrayList<>(nodes.size());
             for (final ElementNode elementNode : nodes) {
                 results.add((Node) elementNode.getUnderlyingNode());
             }
+            Collections.sort(results, RuleChainAnalyzer.documentOrderComparator());
             return results;
         } catch (final XPathException e) {
             throw new RuntimeException(super.xpath + " had problem: " + e.getMessage(), e);
         }
+    }
+
+    private List<Expression> getXPathExpressionForNodeOrDefault(String nodeName) {
+        if (nodeNameToXPaths.containsKey(nodeName)) {
+            return nodeNameToXPaths.get(nodeName);
+        }
+        return nodeNameToXPaths.get(AST_ROOT);
     }
 
     /**
@@ -171,6 +207,13 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         return root;
     }
 
+    private void addExpressionForNode(String nodeName, Expression expression) {
+        if (!nodeNameToXPaths.containsKey(nodeName)) {
+            nodeNameToXPaths.put(nodeName, new LinkedList<Expression>());
+        }
+        nodeNameToXPaths.get(nodeName).add(expression);
+    }
+
     /**
      * Initialize the {@link #xpathExpression} and the {@link #xpathVariables}.
      */
@@ -206,15 +249,48 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
                 }
             }
 
-            // TODO Come up with a way to make use of RuleChain. I had hacked up
-            // an approach which used Jaxen's stuff, but that only works for
-            // 1.0 compatibility mode. Rather do it right instead of kludging.
             xpathExpression = xpathEvaluator.createExpression(super.xpath);
+            analyzeXPathForRuleChain(xpathEvaluator);
         } catch (final XPathException e) {
             throw new RuntimeException(e);
         }
     }
+    
+    private void analyzeXPathForRuleChain(final XPathEvaluator xpathEvaluator) {
+        final Expression expr = xpathExpression.getInternalExpression();
 
+        boolean useRuleChain = true;
+
+        // First step: Split the union venn expressions into single expressions
+        Iterable<Expression> subexpressions = RuleChainAnalyzer.splitUnions(expr);
+
+        // Second step: Analyze each expression separately
+        for (Expression subexpression : subexpressions) {
+            RuleChainAnalyzer rca = new RuleChainAnalyzer(xpathEvaluator.getConfiguration());
+            Expression modified = rca.visit(subexpression);
+
+            if (rca.getRootElement() != null) {
+                addExpressionForNode(rca.getRootElement(), modified);
+            } else {
+                // couldn't find a root element for the expression, that means, we can't use rule chain at all
+                // even though, it would be possible for part of the expression.
+                useRuleChain = false;
+                break;
+            }
+        }
+
+        if (useRuleChain) {
+            super.ruleChainVisits.addAll(nodeNameToXPaths.keySet());
+        } else {
+            nodeNameToXPaths.clear();
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "Unable to use RuleChain for XPath: " + xpath);
+            }
+        }
+
+        // always add fallback expression
+        addExpressionForNode(AST_ROOT, xpathExpression.getInternalExpression());
+    }
 
     /**
      * Gets the Saxon representation of the parameter, if its type corresponds
@@ -266,5 +342,11 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             converted[i] = getAtomicRepresentation(list.get(i));
         }
         return new SequenceExtent(converted);
+    }
+
+    @Override
+    public List<String> getRuleChainVisits() {
+        initializeXPathExpression();
+        return super.getRuleChainVisits();
     }
 }

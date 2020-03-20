@@ -4,24 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTSubqueryOperation extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+public final class ASTSubqueryOperation extends AbstractPLSQLNode {
     private boolean union;
     private boolean all;
     private boolean intersect;
     private boolean minus;
 
-    @Deprecated
-    @InternalApi
-    public ASTSubqueryOperation(int id) {
+    ASTSubqueryOperation(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTSubqueryOperation(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     public boolean isAll() {

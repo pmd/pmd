@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
@@ -55,6 +56,10 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
         return new JavaParser(levelChecker, parserOptions);
     }
 
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return JavaDesignerBindings.INSTANCE;
+    }
 
     @Override
     public XPathHandler getXPathHandler() {

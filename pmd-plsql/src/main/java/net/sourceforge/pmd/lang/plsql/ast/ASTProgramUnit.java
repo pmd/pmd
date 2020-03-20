@@ -4,19 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject {
 
-public class ASTProgramUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject {
-    @Deprecated
-    @InternalApi
-    public ASTProgramUnit(int id) {
+    ASTProgramUnit(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTProgramUnit(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override

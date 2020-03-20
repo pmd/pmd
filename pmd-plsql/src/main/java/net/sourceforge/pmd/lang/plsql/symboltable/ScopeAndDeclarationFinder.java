@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
+import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -351,7 +352,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     public Object visit(ASTVariableOrConstantDeclaratorId node, Object data) {
         VariableNameDeclaration decl = new VariableNameDeclaration(node);
         node.getScope().addDeclaration(decl);
-        node.setNameDeclaration(decl);
+        InternalApiBridge.setNameDeclaration(node, decl);
         return super.visit(node, data);
     }
 

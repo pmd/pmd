@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.plsql;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous

@@ -4,19 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTPrimaryPrefix extends AbstractPLSQLNode {
+    private boolean usesSelfModifier;
 
-public class ASTPrimaryPrefix extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    @Deprecated
-    @InternalApi
-    public ASTPrimaryPrefix(int id) {
+    ASTPrimaryPrefix(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTPrimaryPrefix(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     @Override
@@ -24,16 +16,11 @@ public class ASTPrimaryPrefix extends net.sourceforge.pmd.lang.plsql.ast.Abstrac
         return visitor.visit(this, data);
     }
 
-    private boolean usesSelfModifier;
-
-    @Deprecated
-    @InternalApi
-    public void setUsesSelfModifier() {
+    void setUsesSelfModifier() {
         usesSelfModifier = true;
     }
 
     public boolean usesSelfModifier() {
         return this.usesSelfModifier;
     }
-
 }

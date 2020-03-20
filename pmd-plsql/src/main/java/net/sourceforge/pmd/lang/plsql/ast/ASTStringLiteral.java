@@ -5,16 +5,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-public final class ASTStringLiteral extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+public final class ASTStringLiteral extends AbstractPLSQLNode {
 
 
     ASTStringLiteral(int id) {
         super(id);
-    }
-
-
-    ASTStringLiteral(PLSQLParser p, int id) {
-        super(p, id);
     }
 
 
