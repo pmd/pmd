@@ -23,7 +23,7 @@ public final class GraphUtils {
 
 
     /**
-     * Generate a DOT graph for a graph.
+     * Generate a DOT representation for a graph.
      *
      * @param vertices     Set of vertices
      * @param successorFun Function fetching successors

@@ -9,7 +9,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
+/**
+ * Internal API of {@link RuleTargetSelector}.
+ */
 public abstract class TargetSelectorInternal {
 
     protected TargetSelectorInternal() {

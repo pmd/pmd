@@ -16,6 +16,9 @@ import java.util.Set;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ * Index of an AST, for use by the {@link RuleApplicator}.
+ */
 public class TreeIndex {
 
     private final LatticeRelation<Class<?>, Node> byClass;

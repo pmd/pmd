@@ -49,7 +49,7 @@ class LatticeRelation<K, @NonNull V> {
      * Those nodes that were added explicitly through #put, but may not be queried.
      * These can be fetched efficiently, which is nice since we're trying to index
      * the same keys over and over. If the node has no query node parent, then it's
-     * mapped to the {@link #blackHole}, which ignores incoming nodes.
+     * mapped to the {@link #blackHole}, which ignores incoming values.
      */
     private final Map<K, LNode> leaves = new HashMap<>();
     private final LNode blackHole = new BlackHoleNode();
