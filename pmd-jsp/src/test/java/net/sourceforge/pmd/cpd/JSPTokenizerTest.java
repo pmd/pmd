@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.jsp.JspParserTest;
 
 public class JSPTokenizerTest extends JspParserTest {
@@ -21,16 +22,15 @@ public class JSPTokenizerTest extends JspParserTest {
 
         String[] expectedTokens = new String[] {
             "<%--",
-            "\n"
-                + "BSD-style license; for more info see http://pmd.sourceforge.net/license.html\n",
+            PMD.EOL + "BSD-style license; for more info see http://pmd.sourceforge.net/license.html" + PMD.EOL,
             "--%>",
             "<%",
-            "\nString nodeContent = \"<% %>\";\n",
+            PMD.EOL + "String nodeContent = \"<% %>\";" + PMD.EOL,
             "%>",
             "<%",
-            "\n<![cdata[\n"
-                + "String nodeContent = \"<% %>\";\n"
-                + "]]>\n",
+            PMD.EOL + "<![cdata[" + PMD.EOL
+                + "String nodeContent = \"<% %>\";" + PMD.EOL
+                + "]]>" + PMD.EOL,
             "%>",
             "",
             };
