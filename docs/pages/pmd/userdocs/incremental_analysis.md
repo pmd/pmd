@@ -90,7 +90,9 @@ After we are done, the cache is updated with the new violations.
 
 This is possible. As long as the same PMD version and same ruleset is used on both branches.
 Also note, that if the branch uses a different dependencies, the auxclasspath is different on both
-classes, which invalidates the cache completely.
+classes, which invalidates the cache completely. If you project uses e.g. Maven for dependency
+management and your branch uses different dependencies (either different version or completely different
+artifacts), then the auxclasspath is changed.
 
 If files have been renamed on the branch, these files will be analyzed again since PMD uses
 the file names to assign existing rule violations from the cache. Also, if the full path name
