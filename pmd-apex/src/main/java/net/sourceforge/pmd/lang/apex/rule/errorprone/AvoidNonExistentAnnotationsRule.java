@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
@@ -58,7 +58,7 @@ public class AvoidNonExistentAnnotationsRule extends AbstractApexRule {
         return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
-    private Object checkForNonExistentAnnotation(final AbstractApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
+    private Object checkForNonExistentAnnotation(final ApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
         for (ASTAnnotation annotation : modifierNode.findChildrenOfType(ASTAnnotation.class)) {
             if (!annotation.isResolved()) {
                 addViolationWithMessage(data, node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");

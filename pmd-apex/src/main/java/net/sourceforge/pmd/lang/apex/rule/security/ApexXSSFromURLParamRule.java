@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
@@ -164,7 +164,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     }
 
-    private void findTaintedVariables(AbstractApexNode<?> node, Object data) {
+    private void findTaintedVariables(ApexNode<?> node, Object data) {
         final ASTMethodCallExpression right = node.getFirstChildOfType(ASTMethodCallExpression.class);
         // Looks for: (String) foo =
         // ApexPages.currentPage().getParameters().get(..)
@@ -209,7 +209,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     }
 
-    private void processVariableAssignments(AbstractApexNode<?> node, Object data, final boolean reverseOrder) {
+    private void processVariableAssignments(ApexNode<?> node, Object data, final boolean reverseOrder) {
         ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCallAssignment != null) {
 
@@ -252,7 +252,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     }
 
-    private void processBinaryExpression(AbstractApexNode<?> node, Object data) {
+    private void processBinaryExpression(ApexNode<?> node, Object data) {
         ASTBinaryExpression nestedBinaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
         if (nestedBinaryExpression != null) {
             processBinaryExpression(nestedBinaryExpression, data);
