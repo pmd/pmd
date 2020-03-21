@@ -61,6 +61,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         return node;
     }
 
+    @Override
     public boolean hasRealLoc() {
         try {
             Location loc = node.getLoc();
