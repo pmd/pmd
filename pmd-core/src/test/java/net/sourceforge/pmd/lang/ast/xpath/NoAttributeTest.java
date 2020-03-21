@@ -71,11 +71,11 @@ public class NoAttributeTest {
     private static class DummyNodeParent extends DummyNode {
 
         DummyNodeParent(int id) {
-            super(id);
+            super();
         }
 
         DummyNodeParent(int id, boolean findBoundary) {
-            super(id, findBoundary);
+            super(findBoundary);
         }
 
         public String getSomeName() {

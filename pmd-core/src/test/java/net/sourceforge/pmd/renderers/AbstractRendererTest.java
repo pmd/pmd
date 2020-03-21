@@ -82,11 +82,8 @@ public abstract class AbstractRendererTest {
     }
 
     protected static DummyNode createNode(int endColumn) {
-        DummyNode node = new DummyNode(1);
-        node.testingOnlySetBeginLine(1);
-        node.testingOnlySetBeginColumn(1);
-        node.testingOnlySetEndLine(1);
-        node.testingOnlySetEndColumn(endColumn);
+        DummyNode node = new DummyNode();
+        node.setCoords(1, 1, 1, endColumn);
         return node;
     }
 

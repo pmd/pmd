@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 
 public class DummyNode extends AbstractNode {
     public DummyNode(int id) {
-        super(id);
+        super();
     }
 
     @Deprecated

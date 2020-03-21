@@ -30,7 +30,7 @@ public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTS
         super.jjtClose();
         if (getNumChildren() > 0) {
             AbstractNode firstChild = (AbstractNode) getChild(0);
-            jjtSetFirstToken(firstChild.jjtGetFirstToken());
+            setFirstToken(firstChild.jjtGetFirstToken());
         }
     }
 }

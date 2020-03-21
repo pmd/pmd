@@ -25,16 +25,6 @@ public interface ApexNode<T extends AstNode> extends Node {
 
 
     /**
-     * Accept the visitor. *
-     *
-     * @deprecated This method is not useful, the logic for combining
-     *     children values should be present on the visitor, not the node
-     */
-    @Deprecated
-    Object childrenAccept(ApexParserVisitor visitor, Object data);
-
-
-    /**
      * Get the underlying AST node.
      * @deprecated the underlying AST node should not be available outside of the AST node.
      *      If information is needed from the underlying node, then PMD's AST node need to expose

@@ -31,7 +31,7 @@ public class LocalScopeTest extends BaseNonParserTest {
         name.setImage("foo");
         ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
         prefix.setUsesThisModifier();
-        name.jjtAddChild(prefix, 1);
+        name.addChild(prefix, 1);
         JavaNameOccurrence occ = new JavaNameOccurrence(name, "foo");
         scope.addNameOccurrence(occ);
         assertFalse(scope.getDeclarations().keySet().iterator().hasNext());
@@ -44,7 +44,7 @@ public class LocalScopeTest extends BaseNonParserTest {
         name.setImage("foo");
         ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
         prefix.setUsesSuperModifier();
-        name.jjtAddChild(prefix, 1);
+        name.addChild(prefix, 1);
         JavaNameOccurrence occ = new JavaNameOccurrence(name, "foo");
         scope.addNameOccurrence(occ);
         assertFalse(scope.getDeclarations().keySet().iterator().hasNext());

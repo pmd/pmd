@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 
 /**
@@ -20,57 +18,59 @@ import net.sourceforge.pmd.lang.ast.TextAvailableNode;
  * unforeseeable ways. Don't use it directly, use the node interfaces.
  */
 @Experimental
-public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode implements TextAvailableNode {
+public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode<N> implements TextAvailableNode {
+    protected final int id;
+    private JavaccToken firstToken;
+    private JavaccToken lastToken;
 
 
     public AbstractJjtreeNode(int id) {
-        super(id);
+        super();
+        this.id = id;
     }
 
     @Override
     public CharSequence getText() {
-        String fullText = jjtGetFirstToken().document.getFullText();
+        String fullText = getFirstToken().document.getFullText();
         return fullText.substring(getStartOffset(), getEndOffset());
     }
 
-    @Override
-    public JavaccToken jjtGetFirstToken() {
-        return (JavaccToken) super.jjtGetFirstToken();
+    /**
+     * This method is called after the node has been made the current node. It
+     * indicates that child nodes can now be added to it.
+     */
+    protected void jjtOpen() {
+        // to be overridden
+    }
+
+    /**
+     * This method is called after all the child nodes have been added.
+     */
+    protected void jjtClose() {
+        // to be overridden
     }
 
     @Override
-    public JavaccToken jjtGetLastToken() {
-        return (JavaccToken) super.jjtGetLastToken();
+    protected void addChild(N child, int index) {
+        super.addChild(child, index);
+    }
+
+    public JavaccToken getFirstToken() {
+        return firstToken;
+    }
+
+    public JavaccToken getLastToken() {
+        return lastToken;
     }
 
     // the super methods query line & column, which we want to avoid
 
-    @Override
-    public void jjtSetLastToken(GenericToken token) {
+    protected void setLastToken(JavaccToken token) {
         this.lastToken = token;
     }
 
-    @Override
-    public void jjtSetFirstToken(GenericToken token) {
+    protected void setFirstToken(JavaccToken token) {
         this.firstToken = token;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public N getChild(int index) {
-        return (N) super.getChild(index);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public N getParent() {
-        return (N) super.getParent();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public NodeStream<? extends N> children() {
-        return (NodeStream<N>) super.children();
     }
 
     @Override
@@ -102,11 +102,11 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode im
     }
 
     private int getStartOffset() {
-        return this.jjtGetFirstToken().getStartInDocument();
+        return this.getFirstToken().getStartInDocument();
     }
 
 
     private int getEndOffset() {
-        return this.jjtGetLastToken().getEndInDocument();
+        return this.getLastToken().getEndInDocument();
     }
 }

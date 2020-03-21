@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.AbstractNode2;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-abstract class AbstractApexNodeBase extends AbstractNode {
+abstract class AbstractApexNodeBase extends AbstractNode2<AbstractApexNode<?>> {
 
     protected AbstractApexNodeBase(Class<?> klass) {
-        super(klass.hashCode());
+        super();
     }
 
     /* package */ void calculateLineNumbers(SourceCodePositioner positioner, int startOffset, int endOffset) {
@@ -33,19 +33,6 @@ abstract class AbstractApexNodeBase extends AbstractNode {
      * Accept the visitor. *
      */
     public abstract Object jjtAccept(ApexParserVisitor visitor, Object data);
-
-    /**
-     * Accept the visitor. *
-     */
-    public Object childrenAccept(ApexParserVisitor visitor, Object data) {
-        for (int i = 0; i < children.length; ++i) {
-            // we know that the children here are all ApexNodes
-            AbstractApexNodeBase apexNode = (AbstractApexNodeBase) children[i];
-            apexNode.jjtAccept(visitor, data);
-        }
-
-        return data;
-    }
 
     @Override
     public int getBeginLine() {

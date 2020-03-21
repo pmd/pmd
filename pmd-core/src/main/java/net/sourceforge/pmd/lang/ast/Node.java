@@ -11,7 +11,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
@@ -49,130 +48,8 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * implementations should ensure that every node returned by these methods
  * are indeed of the same type. Possibly, a type parameter will be added to
  * the Node interface in 7.0.0 to enforce it at compile-time.
- *
- * <p>A number of methods are deprecated and will be removed in 7.0.0.
- * Most of them are implementation details that clutter this API and
- * make implementation more difficult. Some methods prefixed with {@code jjt}
- * have a more conventional counterpart (e.g. {@link #jjtGetParent()} and
- * {@link #getParent()}) that should be preferred.
  */
 public interface Node {
-
-    // COMMENT: is it ok to take the opportunity on PMD 7 to rename this API and take out of there the methods
-    // that are only needed for javaCC implementations?
-
-
-    /**
-     * This method is called after the node has been made the current node. It
-     * indicates that child nodes can now be added to it.
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    default void jjtOpen() {
-        // do nothing
-    }
-
-
-    /**
-     * This method is called after all the child nodes have been added.
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    default void jjtClose() {
-        // do nothing
-    }
-
-
-    /**
-     * Sets the parent of this node.
-     *
-     * @param parent The parent
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    default void jjtSetParent(Node parent) {
-        throw new UnsupportedOperationException("JJTree specific");
-    }
-
-
-    /**
-     * Returns the parent of this node.
-     *
-     * @return The parent of the node
-     *
-     * @deprecated Use {@link #getParent()}
-     */
-    @Deprecated
-    @Nullable
-    default Node jjtGetParent() {
-        return getParent();
-    }
-
-
-    /**
-     * This method tells the node to add its argument to the node's list of children.
-     *
-     * @param child The child to add
-     * @param index The index to which the child will be added
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    default void jjtAddChild(Node child, int index) {
-        throw new UnsupportedOperationException("JJTree specific");
-    }
-
-
-    /**
-     * Sets the index of this node from the perspective of its parent. This
-     * means: this.getParent().getChild(index) == this.
-     *
-     * @param index the child index
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    default void jjtSetChildIndex(int index) {
-        throw new UnsupportedOperationException("JJTree specific");
-    }
-
-
-    /**
-     * This method returns a child node. The children are numbered from zero, left to right.
-     *
-     * @param index the child index. Must be nonnegative and less than
-     *              {@link #jjtGetNumChildren}.
-     *
-     * @deprecated Use {@link #getChild(int)}
-     */
-    @Deprecated
-    default Node jjtGetChild(int index) {
-        return getChild(index);
-    }
-
-
-    /**
-     * Returns the number of children the node has.
-     *
-     * @deprecated Use {@link #getNumChildren()}
-     */
-    @Deprecated
-    default int jjtGetNumChildren() {
-        return getNumChildren();
-    }
-
-
-    /**
-     * @deprecated This is JJTree-specific and will be removed from this interface.
-     */
-    @Deprecated
-    default int jjtGetId() {
-        throw new UnsupportedOperationException("JJTree specific");
-    }
-
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
@@ -448,64 +325,10 @@ public interface Node {
         }
     }
 
-    /**
-     * Get the user data associated with this node. By default there is no data, unless it has been set via {@link
-     * #setUserData(Object)}.
-     *
-     * @return The user data set on this node.
-     * @deprecated Use {@link #getUserMap()}
-     */
-    @Deprecated
-    Object getUserData();
-
-    /**
-     * Set the user data associated with this node.
-     * <p>
-     * <p>PMD itself will never set user data onto a node. Nor should any Rule
-     * implementation, as the AST nodes are shared between concurrently executing Rules (i.e. it is <strong>not</strong>
-     * thread-safe).
-     * <p>
-     * <p>This API is most useful for external applications looking to leverage
-     * PMD's robust support for AST structures, in which case application specific annotations on the AST nodes can be
-     * quite useful.
-     *
-     * @param userData The data to set on this node.
-     * @deprecated Use {@link #getUserMap()}
-     */
-    @Deprecated
-    void setUserData(Object userData);
-
-
-    /**
-     * Remove the current node from its parent.
-     *
-     * @deprecated This is internal API and will be removed from this interface with 7.0.0
-     */
-    @Deprecated
-    @InternalApi
-    default void remove() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    /**
-     * This method tells the node to remove the child node at the given index from the node's list of children, if any;
-     * if not, no changes are done.
-     *
-     * @param childIndex The index of the child to be removed
-     *
-     * @deprecated This is internal API and will be removed from this interface with 7.0.0
-     */
-    @Deprecated
-    @InternalApi
-    default void removeChildAtIndex(int childIndex) {
-        throw new UnsupportedOperationException();
-    }
 
 
     /**
      * Returns a data map used to store additional information on this node.
-     * This replaces the legacy {@link #getUserData()}/{@link #setUserData(Object)}.
      *
      * @return The user data map of this node
      */
@@ -514,8 +337,6 @@ public interface Node {
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
-     *
-     * <p>This method should be preferred to {@link #jjtGetParent()}.
      *
      * @return The parent of this node
      */

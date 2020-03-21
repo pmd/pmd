@@ -28,7 +28,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
      *            the scala tree node this node wraps
      */
     AbstractScalaNode(T treeNode) {
-        super(0);
+        super();
         node = treeNode;
         pos = node.pos();
     }

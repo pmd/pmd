@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Unit test for {@link DocumentNavigator}
@@ -30,10 +29,9 @@ public class DocumentNavigatorTest {
             assertNotNull(e);
         }
 
-        Node root = new DummyRoot();
-        Node n = new DummyNode(1);
-        root.jjtAddChild(n, 0);
-        n.jjtSetParent(root);
+        DummyNode root = new DummyRoot();
+        DummyNode n = new DummyNode();
+        root.addChild(n, 0);
         assertSame(root, nav.getDocumentNode(n));
     }
 }

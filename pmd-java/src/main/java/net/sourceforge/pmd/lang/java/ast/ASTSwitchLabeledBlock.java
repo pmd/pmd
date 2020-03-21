@@ -30,7 +30,7 @@ public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitch
         super.jjtClose();
         if (getNumChildren() > 0) {
             AbstractNode firstChild = (AbstractNode) getChild(0);
-            jjtSetFirstToken(firstChild.jjtGetFirstToken());
+            setFirstToken(firstChild.jjtGetFirstToken());
         }
     }
 }

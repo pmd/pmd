@@ -12,7 +12,7 @@ public class JavadocElement extends AbstractNode {
     private final JavadocTag tag;
 
     public JavadocElement(int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn, JavadocTag theTag) {
-        super(-1, theBeginLine, theEndLine, theBeginColumn, theEndColumn);
+        super(theBeginLine, theEndLine, theBeginColumn, theEndColumn);
 
         tag = theTag;
     }

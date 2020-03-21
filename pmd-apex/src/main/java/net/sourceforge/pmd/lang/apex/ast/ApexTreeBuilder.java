@@ -234,7 +234,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     // The nodes having children built.
-    private final Stack<Node> nodes = new Stack<>();
+    private final Stack<AbstractApexNode<?>> nodes = new Stack<>();
 
     // The Apex nodes with children to build.
     private final Stack<AstNode> parents = new Stack<>();
@@ -281,10 +281,10 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         node.handleSourceCode(sourceCode);
 
         // Append to parent
-        Node parent = nodes.isEmpty() ? null : nodes.peek();
+        AbstractApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
             parent.jjtAddChild(node, parent.getNumChildren());
-            node.jjtSetParent(parent);
+            node.setParent(parent);
         }
 
         // Build the children...
@@ -316,7 +316,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 }
 
                 parent.jjtAddChild(comment, 0);
-                comment.jjtSetParent(parent);
+                comment.setParent(parent);
             }
         }
     }

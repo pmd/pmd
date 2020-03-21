@@ -7,42 +7,29 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DummyNode extends AbstractNode {
+public class DummyNode extends AbstractNode2 {
+
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
 
-    public DummyNode(int id) {
-        this(id, false);
-    }
-
     public DummyNode() {
-        this(0, false);
+        this(false);
     }
 
-    public DummyNode(int id, boolean findBoundary) {
-        this(id, findBoundary, "dummyNode");
+    public DummyNode(boolean findBoundary) {
+        this(findBoundary, "dummyNode");
     }
 
-    public DummyNode(int id, boolean findBoundary, String xpathName) {
-        super(id);
+    public DummyNode(boolean findBoundary, String xpathName) {
+        super();
         this.findBoundary = findBoundary;
         this.xpathName = xpathName;
     }
 
-    public void setBeginColumn(int i) {
-        beginColumn = i;
-    }
-
-    public void setBeginLine(int i) {
-        beginLine = i;
-    }
-
+    @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        beginLine = bline;
-        beginColumn = bcol;
-        endLine = eline;
-        endColumn = ecol;
+        super.setCoords(bline, bcol, eline, ecol);
     }
 
     @Override
@@ -60,11 +47,14 @@ public class DummyNode extends AbstractNode {
         return findBoundary;
     }
 
-    @Override
     public Map<String, String> getUserData() {
         return userData;
     }
 
+    @Override
+    public void addChild(AbstractNode child, int index) {
+        super.addChild(child, index);
+    }
 
     public static class DummyNodeTypeB extends DummyNode {
 

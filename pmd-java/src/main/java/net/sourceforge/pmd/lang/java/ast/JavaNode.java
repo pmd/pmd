@@ -87,10 +87,9 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     void setScope(Scope scope);
 
 
-    JavaccToken jjtGetFirstToken();
+    JavaccToken getFirstToken();
 
-
-    JavaccToken jjtGetLastToken();
+    JavaccToken getLastToken();
 
 
     @Override

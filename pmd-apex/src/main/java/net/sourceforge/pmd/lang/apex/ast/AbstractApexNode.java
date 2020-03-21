@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
@@ -20,16 +19,6 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNodeBase 
     protected AbstractApexNode(T node) {
         super(node.getClass());
         this.node = node;
-    }
-
-    @Override
-    public ApexNode<?> getChild(int index) {
-        return (ApexNode<?>) super.getChild(index);
-    }
-
-    @Override
-    public ApexNode<?> getParent() {
-        return (ApexNode<?>) super.getParent();
     }
 
     @Override

@@ -23,7 +23,7 @@ public class MatchesFunctionTest {
         private String className;
 
         public MyNode() {
-            super(1);
+            super();
         }
 
         @Override

@@ -15,7 +15,7 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode im
     protected final T node;
 
     AbstractEcmascriptNode(T node) {
-        super(node.getType());
+        super();
         this.node = node;
     }
 

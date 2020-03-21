@@ -73,12 +73,8 @@ public class RuleViolationComparatorTest {
             int beginColumn, int endLine, int endColumn) {
         RuleContext ruleContext = new RuleContext();
         ruleContext.setSourceCodeFile(new File(fileName));
-        DummyNode simpleNode = new DummyNode(1);
-        simpleNode.testingOnlySetBeginLine(beginLine);
-        simpleNode.testingOnlySetBeginColumn(beginColumn);
-        simpleNode.testingOnlySetEndLine(endLine);
-        simpleNode.testingOnlySetEndColumn(endColumn);
-        RuleViolation ruleViolation = new ParametricRuleViolation<Node>(rule, ruleContext, simpleNode, description);
-        return ruleViolation;
+        DummyNode simpleNode = new DummyNode();
+        simpleNode.setCoords(beginLine, beginColumn, endLine, endColumn);
+        return new ParametricRuleViolation<Node>(rule, ruleContext, simpleNode, description);
     }
 }

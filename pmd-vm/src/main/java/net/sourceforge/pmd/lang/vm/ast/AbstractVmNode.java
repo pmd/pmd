@@ -29,12 +29,14 @@ abstract class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNo
         super(i);
     }
 
+    @Override
     public JavaccToken getFirstToken() {
-        return jjtGetFirstToken();
+        return this.getFirstToken();
     }
 
+    @Override
     public JavaccToken getLastToken() {
-        return jjtGetLastToken();
+        return this.getLastToken();
     }
 
     @Override

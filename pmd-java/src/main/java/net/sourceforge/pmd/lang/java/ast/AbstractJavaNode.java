@@ -47,7 +47,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
     @Override
     public Scope getScope() {
         if (scope == null) {
-            return ((JavaNode) parent).getScope();
+            return getParent().getScope();
         }
         return scope;
     }

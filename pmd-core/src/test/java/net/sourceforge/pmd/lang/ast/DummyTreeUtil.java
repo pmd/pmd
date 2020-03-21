@@ -42,8 +42,8 @@ public final class DummyTreeUtil {
     private static DummyNode nodeImpl(DummyNode node, DummyNode... children) {
         node.children = children;
         for (int i = 0; i < children.length; i++) {
-            children[i].jjtSetParent(node);
-            children[i].jjtSetChildIndex(i);
+            children[i].setParent(node);
+            children[i].setChildIndex(i);
         }
         return node;
     }

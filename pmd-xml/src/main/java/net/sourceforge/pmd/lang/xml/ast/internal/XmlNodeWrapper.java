@@ -37,7 +37,7 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
 
 
     XmlNodeWrapper(XmlParserImpl parser, org.w3c.dom.Node domNode) {
-        super(0);
+        super();
         this.node = domNode;
         this.parser = parser;
     }
@@ -97,12 +97,6 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
     @Override
     public Object getUserData() {
         return userData;
-    }
-
-
-    @Override
-    public void setUserData(Object userData) {
-        this.userData = userData;
     }
 
 

@@ -77,9 +77,8 @@ public class AbstractRuleTest {
         r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
-        DummyNode s = new DummyNode(1);
-        s.testingOnlySetBeginColumn(5);
-        s.testingOnlySetBeginLine(5);
+        DummyNode s = new DummyNode();
+        s.setCoords(5, 5, 5, 10);
         RuleViolation rv = new ParametricRuleViolation(r, ctx, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
@@ -93,9 +92,8 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename"));
-        DummyNode s = new DummyNode(1);
-        s.testingOnlySetBeginColumn(5);
-        s.testingOnlySetBeginLine(5);
+        DummyNode s = new DummyNode();
+        s.setCoords(5, 5, 5, 10);
         RuleViolation rv = new ParametricRuleViolation<>(r, ctx, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());

@@ -34,7 +34,7 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> imp
 
     @Override
     public ModelicaScope getContainingScope() {
-        return ((AbstractModelicaNode) parent).getMostSpecificScope();
+        return getParent().getMostSpecificScope();
     }
 
     @Override

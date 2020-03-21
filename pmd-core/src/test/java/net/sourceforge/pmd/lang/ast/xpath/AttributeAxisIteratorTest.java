@@ -32,9 +32,8 @@ public class AttributeAxisIteratorTest {
      */
     @Test
     public void testAttributeAxisIterator() {
-        DummyNode dummyNode = new DummyNode(1);
-        dummyNode.testingOnlySetBeginLine(1);
-        dummyNode.testingOnlySetBeginColumn(1);
+        DummyNode dummyNode = new DummyNode();
+        dummyNode.setCoords(1, 1, 2, 2);
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
@@ -83,7 +82,7 @@ public class AttributeAxisIteratorTest {
     public static class DummyNodeWithEnum extends DummyNode {
 
         public DummyNodeWithEnum(int id) {
-            super(id);
+            super();
         }
 
         public enum MyEnum {
@@ -98,7 +97,7 @@ public class AttributeAxisIteratorTest {
     public static class DummyNodeWithList extends DummyNode {
 
         public DummyNodeWithList(int id) {
-            super(id);
+            super();
         }
 
         public List<String> getList() {
