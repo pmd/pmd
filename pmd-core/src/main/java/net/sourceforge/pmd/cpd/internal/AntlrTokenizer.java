@@ -11,9 +11,8 @@ import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
-import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 
 /**
@@ -32,13 +31,9 @@ public abstract class AntlrTokenizer implements Tokenizer {
         try {
             AntlrToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
-                processToken(tokenEntries, tokenManager.getFileName(), currentToken);
+                processToken(tokenEntries, sourceCode.getFileName(), currentToken);
                 currentToken = tokenFilter.getNextToken();
             }
-        } catch (final AntlrTokenManager.ANTLRSyntaxError err) {
-            // Wrap exceptions of the ANTLR tokenizer in a TokenMgrError, so they are correctly handled
-            // when CPD is executed with the '--skipLexicalErrors' command line option
-            throw new TokenMgrError(err.getLine(), err.getColumn(), tokenManager.getFileName(), err.getMessage(), null);
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

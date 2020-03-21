@@ -18,6 +18,15 @@ public final class TokenMgrError extends RuntimeException {
     private final int column;
     private final String filename;
 
+    /**
+     * Create a new exception.
+     *
+     * @param line     Line number
+     * @param column   Column number
+     * @param filename Filename. If unknown, it can be completed with {@link #withFileName(String)} later
+     * @param message  Message of the error
+     * @param cause    Cause of the error, if any
+     */
     public TokenMgrError(int line, int column, @Nullable String filename, String message, @Nullable Throwable cause) {
         super(message, cause);
         this.line = line;
@@ -29,7 +38,6 @@ public final class TokenMgrError extends RuntimeException {
      * Constructor called by JavaCC.
      */
     @InternalApi
-    @SuppressWarnings("PMD.UnusedFormalParameter")
     public TokenMgrError(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = errorLine;
@@ -60,6 +68,8 @@ public final class TokenMgrError extends RuntimeException {
      * Replace the file name of this error.
      *
      * @param filename New filename
+     *
+     * @return A new exception
      */
     public TokenMgrError withFileName(String filename) {
         return new TokenMgrError(this.line, this.column, filename, this.getMessage(), this.getCause());

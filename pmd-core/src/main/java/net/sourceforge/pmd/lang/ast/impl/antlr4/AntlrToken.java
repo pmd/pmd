@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd.token;
+package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
@@ -64,7 +64,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
         return token.getCharPositionInLine() + token.getStopIndex() - token.getStartIndex();
     }
 
-    public int getType() {
+    public int getKind() {
         return token.getType();
     }
 
