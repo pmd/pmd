@@ -135,6 +135,7 @@ methods on {% jdoc apex::lang.apex.ast.ApexParserVisitor %} and its implementati
 *   [#2278](https://github.com/pmd/pmd/pull/2278): \[java] fix UnusedImports rule for ambiguous static on-demand imports - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#2279](https://github.com/pmd/pmd/pull/2279): \[apex] Add support for suppressing violations using the // NOPMD comment - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2297](https://github.com/pmd/pmd/pull/2297): \[apex] Cognitive complexity metrics - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2314](https://github.com/pmd/pmd/pull/2314): \[doc] maven integration - Add version to plugin - [Pham Hai Trung](https://github.com/gpbp)
 
 {% endtocmaker %}
 
