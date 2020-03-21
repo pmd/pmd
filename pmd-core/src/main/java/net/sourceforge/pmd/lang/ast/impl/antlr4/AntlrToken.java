@@ -16,6 +16,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
     private final Token token;
     private final AntlrToken previousComment;
+    AntlrToken next;
 
     /**
      * Constructor
@@ -30,8 +31,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
     @Override
     public AntlrToken getNext() {
-        // Antlr implementation does not require this
-        return null;
+        return next;
     }
 
     @Override
