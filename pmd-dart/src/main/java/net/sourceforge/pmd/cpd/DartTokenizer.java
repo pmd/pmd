@@ -7,8 +7,8 @@ package net.sourceforge.pmd.cpd;
 import org.antlr.v4.runtime.CharStream;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer;
 
