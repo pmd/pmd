@@ -31,8 +31,10 @@ A clear and concise description of what the bug is.
 
 **Steps to reproduce:**
 
-1.  Compile the project: `mvn verify`
-2.  Run PMD: `run.sh pmd -d src -f xml -R ruleset.xml`
+Please provide detailed steps for how we can reproduce the bug.
+
+1.  ... (e.g. if you're using maven: `mvn clean verify`)
+2.  ...
 
 **Running PMD through:** *[CLI | Ant | Maven | Gradle | Designer | Other]*
 

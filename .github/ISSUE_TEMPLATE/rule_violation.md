@@ -12,6 +12,9 @@ assignees: ''
 
 **Rule:**
 
+Please provide the rule name and a link to the rule documentation:
+<https://pmd.github.io/latest/pmd_rules_XXX_XXX.html#XXX>
+
 **Description:**
 
 **Code Sample demonstrating the issue:**
