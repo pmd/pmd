@@ -430,4 +430,7 @@ entries:
         - title: Merging pull requests
           url: /pmd_projectdocs_committers_merging_pull_requests.html
           output: web, pdf
+        - title: Main Landing page
+          url: /pmd_projectdocs_committers_main_landing_page.html
+          output: web, pdf
 

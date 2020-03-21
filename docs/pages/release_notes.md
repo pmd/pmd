@@ -34,6 +34,8 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 
 ### Fixed Issues
 
+*   core
+    *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
 *   apex
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
 
