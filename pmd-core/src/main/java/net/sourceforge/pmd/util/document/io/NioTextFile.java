@@ -37,7 +37,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
-    public @NonNull String getFileName() {
+    public @NonNull String getDisplayName() {
         return path.toAbsolutePath().toString();
     }
 
@@ -74,6 +74,6 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public String toString() {
-        return "NioVFile[charset=" + charset + ", path=" + path + ']';
+        return "NioTextFile[charset=" + charset + ", path=" + path + ']';
     }
 }

@@ -51,7 +51,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public CharSequence getText() {
-        return getTextDocument().subSequence(getTextRegion());
+        return getTextDocument().slice(getTextRegion());
     }
 
     private TextDocument getTextDocument() {

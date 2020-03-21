@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.io.TextFile;
 
@@ -20,6 +21,12 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  * external modifications, instead {@link TextFile} provides a
  * very simple stamping system to avoid overwriting external modifications
  * (by failing in {@link TextEditor#close()}).
+ *
+ * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
+ * {@link DataSource}, though the abstraction level of {@link DataSource}
+ * is the {@link TextFile}.
+ *
+ * <p>TODO should TextDocument normalize line separators?
  */
 public interface TextDocument extends Closeable {
 
@@ -31,7 +38,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns the name of the {@link TextFile} backing this instance.
      */
-    String getFileName();
+    String getDisplayName();
 
 
     /**
@@ -106,7 +113,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
      */
-    CharSequence subSequence(TextRegion region);
+    CharSequence slice(TextRegion region);
 
 
     /**
@@ -130,12 +137,16 @@ public interface TextDocument extends Closeable {
      *  this may be fixed when CPD and PMD languages are merged
      */
     static TextDocument readOnlyString(final String source, LanguageVersion lv) {
+        TextFile textFile = TextFile.readOnlyString(source, "n/a", lv);
         try {
-            return new TextDocumentImpl(TextFile.readOnlyString(source, "n/a", lv), lv);
+            return new TextDocumentImpl(textFile, lv);
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }
     }
+
+    // </editor-fold>
+
 
 
 }

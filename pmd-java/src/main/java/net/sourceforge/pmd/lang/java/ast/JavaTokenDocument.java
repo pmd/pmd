@@ -92,7 +92,7 @@ final class JavaTokenDocument extends JavaccTokenDocument {
 
         @Override
         public String getImage() {
-            return document.getTextDocument().subSequence(getRegion()).toString();
+            return document.getTextDocument().slice(getRegion()).toString();
         }
     }
 

@@ -13,6 +13,7 @@ import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -20,16 +21,16 @@ import net.sourceforge.pmd.util.document.TextDocument;
 /**
  * Represents some location containing character data. Despite the name,
  * it's not necessarily backed by a file in the file-system: it may be
- * eg an in-memory buffer, or a zip entry. Virtual files are the input
- * files which PMD processes.
+ * eg an in-memory buffer, or a zip entry, ie it's an abstraction. Text
+ * files are the input which PMD and CPD process.
  *
  * <p>Text files must provide read access, and may provide write access.
  * This interface only provides block IO operations, while {@link TextDocument} adds logic
  * about incremental edition (eg replacing a single region of text).
  *
- * <p>This interface is meant to replace {@link DataSource}. "DataSource"
- * is not an appropriate name for a file which can be written to, also,
- * the "data" it provides is text.
+ * <p>This interface is meant to replace {@link DataSource} and {@link SourceCode.CodeLoader}.
+ * "DataSource" is not an appropriate name for a file which can be written
+ * to, also, the "data" it provides is text, not bytes.
  */
 public interface TextFile extends Closeable {
 
@@ -38,7 +39,7 @@ public interface TextFile extends Closeable {
      * reporting and should not be interpreted.
      */
     @NonNull
-    String getFileName();
+    String getDisplayName();
 
 
     /**
@@ -86,6 +87,7 @@ public interface TextFile extends Closeable {
      */
     long fetchStamp() throws IOException;
 
+    // <editor-fold desc="Creator methods" collapsed-by-default="true">
 
     /**
      * Returns an instance of this interface reading and writing to a file.
@@ -113,4 +115,7 @@ public interface TextFile extends Closeable {
     static TextFile readOnlyString(String source, String name, LanguageVersion lv) {
         return new StringTextFile(source, name, lv);
     }
+
+    // </editor-fold>
+
 }

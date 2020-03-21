@@ -89,7 +89,7 @@ public interface TextRegion extends Comparable<TextRegion> {
      */
     default boolean overlaps(TextRegion other) {
         TextRegion intersection = this.intersect(other);
-        return intersection != null && !intersection.isEmpty();
+        return intersection != null && intersection.getLength() != 0;
     }
 
 

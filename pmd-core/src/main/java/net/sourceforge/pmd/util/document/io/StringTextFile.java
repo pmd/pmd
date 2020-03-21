@@ -15,21 +15,21 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 class StringTextFile implements TextFile {
 
-    private final String buffer;
+    private final CharSequence buffer;
     private final String name;
     private final LanguageVersion lv;
 
-    StringTextFile(String source, @NonNull String name, LanguageVersion lv) {
+    StringTextFile(CharSequence source, @NonNull String name, LanguageVersion lv) {
         this.lv = lv;
         AssertionUtil.requireParamNotNull("source text", source);
         AssertionUtil.requireParamNotNull("file name", name);
 
         this.buffer = source;
-        this.name = String.valueOf(name);
+        this.name = name;
     }
 
     @Override
-    public @NonNull String getFileName() {
+    public @NonNull String getDisplayName() {
         return name;
     }
 
@@ -44,7 +44,7 @@ class StringTextFile implements TextFile {
     }
 
     @Override
-    public String readContents() {
+    public CharSequence readContents() {
         return buffer;
     }
 
@@ -60,7 +60,7 @@ class StringTextFile implements TextFile {
 
     @Override
     public String toString() {
-        return "ReadOnlyString[" + StringUtil.truncate(buffer, 40, "...") + "]";
+        return "ReadOnlyString[" + StringUtil.truncate(buffer.toString(), 40, "...") + "]";
     }
 
 }

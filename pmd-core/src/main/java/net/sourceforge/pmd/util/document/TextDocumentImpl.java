@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.util.document;
 
+import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.CharBuffer;
-
-import org.apache.commons.io.input.CharSequenceReader;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -37,7 +36,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         this.text = CharBuffer.wrap(backend.readContents());
         this.langVersion = langVersion;
         this.positioner = null;
-        this.fileName = backend.getFileName();
+        this.fileName = backend.getDisplayName();
     }
 
     @Override
@@ -46,7 +45,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public String getFileName() {
+    public String getDisplayName() {
         return fileName;
     }
 
@@ -107,17 +106,18 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     @Override
     public int getLength() {
-        return getText().length();
+        return text.length();
     }
 
     @Override
     public CharSequence getText() {
-        return text;
+        return text.asReadOnlyBuffer();
     }
 
     @Override
     public Reader newReader() {
-        return new CharSequenceReader(text);
+
+        return new CharArrayReader(text.array());
     }
 
     long getCurStamp() {
@@ -126,8 +126,8 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
 
     @Override
-    public CharSequence subSequence(TextRegion region) {
-        if (region.isEmpty()) {
+    public CharSequence slice(TextRegion region) {
+        if (region.getLength() == 0) {
             return "";
         }
         return stringPool.pooledCharSeq(text.subSequence(region.getStartOffset(), region.getEndOffset()));
