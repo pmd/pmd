@@ -23,15 +23,13 @@ public final class DummyTreeUtil {
     }
 
 
+    public static DummyRoot root(DummyNode... children) {
+        return nodeImpl(new DummyRoot(), children);
+    }
+
     /** Creates a dummy node with the given children. */
     public static DummyNode node(DummyNode... children) {
-        DummyNode node = new DummyNode() {
-            @Override
-            public String toString() {
-                return getImage();
-            }
-        };
-        return nodeImpl(node, children);
+        return nodeImpl(new DummyNode(), children);
     }
 
     /** Creates a dummy node with the given children. */
@@ -39,7 +37,7 @@ public final class DummyTreeUtil {
         return nodeImpl(new DummyNodeTypeB(), children);
     }
 
-    private static DummyNode nodeImpl(DummyNode node, DummyNode... children) {
+    private static <T extends DummyNode> T nodeImpl(T node, DummyNode... children) {
         node.children = children;
         for (int i = 0; i < children.length; i++) {
             children[i].setParent(node);
@@ -77,8 +75,8 @@ public final class DummyTreeUtil {
      * )
      * </pre>
      */
-    public static DummyNode tree(Supplier<DummyNode> supplier) {
-        DummyNode dummyNode = supplier.get();
+    public static DummyRoot tree(Supplier<DummyRoot> supplier) {
+        DummyRoot dummyNode = supplier.get();
         assignPathImage(dummyNode, "");
         return dummyNode;
     }

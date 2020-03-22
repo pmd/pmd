@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates {
+public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
 
     private final boolean findBoundary;
     private final String xpathName;
@@ -34,7 +34,7 @@ public class DummyNode extends AbstractNodeWithTextCoordinates {
 
     @Override
     public String toString() {
-        return xpathName;
+        return getImage();
     }
 
     @Override
@@ -52,16 +52,17 @@ public class DummyNode extends AbstractNodeWithTextCoordinates {
     }
 
     @Override
-    public void addChild(AbstractNode child, int index) {
+    public void addChild(DummyNode child, int index) {
         super.addChild(child, index);
+    }
+
+    @Override
+    public DummyNode getChild(int index) {
+        return super.getChild(index);
     }
 
     public static class DummyNodeTypeB extends DummyNode {
 
-        @Override
-        public String toString() {
-            return getImage();
-        }
     }
 
 }

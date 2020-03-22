@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
@@ -89,6 +90,29 @@ public abstract class AbstractNode<T extends Node> implements Node {
         child1.setChildIndex(index);
         child1.setParent((T) this);
     }
+
+    protected void remove() {
+        // Detach current node of its parent, if any
+        final AbstractNode<T> parent = (AbstractNode<T>) getParent();
+        if (parent != null) {
+            parent.removeChildAtIndex(getIndexInParent());
+            setParent(null);
+        }
+
+        // TODO [autofix]: Notify action for handling text edition
+    }
+
+    protected void removeChildAtIndex(final int childIndex) {
+        if (0 <= childIndex && childIndex < getNumChildren()) {
+            // Remove the child at the given index
+            children = ArrayUtils.remove(children, childIndex);
+            // Update the remaining & left-shifted children indexes
+            for (int i = childIndex; i < getNumChildren(); i++) {
+                ((AbstractNode<T>) getChild(i)).setChildIndex(i);
+            }
+        }
+    }
+
 
 
     @Override

@@ -26,11 +26,6 @@ public class DummyRoot extends DummyNode implements RootNode {
     }
 
     @Override
-    public String toString() {
-        return "dummyRootNode";
-    }
-
-    @Override
     public String getXPathNodeName() {
         return "dummyRootNode";
     }
