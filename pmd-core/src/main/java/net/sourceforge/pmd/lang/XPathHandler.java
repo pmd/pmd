@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import org.jaxen.Navigator;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
@@ -36,16 +37,24 @@ public interface XPathHandler {
         }
     };
 
+    Rule newXPathRule()
+
     /**
      * Initialize. This is intended to be called by {@link Initializer} to
      * perform Language specific initialization.
+     *
+     * @deprecated Jaxen support will be removed in 7.0.0
      */
+    @Deprecated
     void initialize();
 
     /**
      * Initialize. This is intended to be called by {@link Initializer} to
      * perform Language specific initialization for Saxon.
+     *
+     * @deprecated Internal API
      */
+    @Deprecated
     void initialize(IndependentContext context);
 
     /**
