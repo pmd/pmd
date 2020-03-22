@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DummyNode extends AbstractNode2 {
+public class DummyNode extends AbstractNodeWithTextCoordinates {
 
     private final boolean findBoundary;
     private final String xpathName;

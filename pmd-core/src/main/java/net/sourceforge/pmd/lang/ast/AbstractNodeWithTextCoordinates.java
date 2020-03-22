@@ -14,27 +14,15 @@ package net.sourceforge.pmd.lang.ast;
  * will have default implementations with PMD 7.0.0, so that it
  * will not be necessary to extend this class directly.
  */
-public abstract class AbstractNode2<T extends AbstractNode2<T>> extends AbstractNode<T> {
+public abstract class AbstractNodeWithTextCoordinates<T extends Node> extends AbstractNode<T> {
 
     protected int beginLine = -1;
     protected int endLine = -1;
     protected int beginColumn = -1;
     protected int endColumn = -1;
 
-    protected AbstractNode2() {}
-
-
-    protected AbstractNode2(final int theBeginLine,
-                            final int theEndLine,
-                            final int theBeginColumn,
-                            final int theEndColumn) {
-
-        beginLine = theBeginLine;
-        endLine = theEndLine;
-        beginColumn = theBeginColumn;
-        endColumn = theEndColumn;
+    protected AbstractNodeWithTextCoordinates() {
     }
-
 
     @Override
     public int getBeginLine() {
