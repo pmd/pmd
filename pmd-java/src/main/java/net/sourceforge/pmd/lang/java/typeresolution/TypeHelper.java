@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
-import org.apache.commons.lang3.ClassUtils;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -13,8 +18,47 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
+import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader.ClassLoaderWrapper;
 
 public final class TypeHelper {
+
+
+    /** Maps a primitive class name to its corresponding abbreviation used in array class names. */
+    private static final Map<String, String> abbreviationMap;
+    /** Maps names of primitives to their corresponding primitive {@code Class}es. */
+    private static final Map<String, Class<?>> namePrimitiveMap = new HashMap<>();
+
+
+    static {
+        namePrimitiveMap.put("boolean", Boolean.TYPE);
+        namePrimitiveMap.put("byte", Byte.TYPE);
+        namePrimitiveMap.put("char", Character.TYPE);
+        namePrimitiveMap.put("short", Short.TYPE);
+        namePrimitiveMap.put("int", Integer.TYPE);
+        namePrimitiveMap.put("long", Long.TYPE);
+        namePrimitiveMap.put("double", Double.TYPE);
+        namePrimitiveMap.put("float", Float.TYPE);
+        namePrimitiveMap.put("void", Void.TYPE);
+    }
+
+    static {
+        final Map<String, String> m = new HashMap<>();
+        m.put("int", "I");
+        m.put("boolean", "Z");
+        m.put("float", "F");
+        m.put("long", "J");
+        m.put("short", "S");
+        m.put("byte", "B");
+        m.put("double", "D");
+        m.put("char", "C");
+        final Map<String, String> r = new HashMap<>();
+        for (final Map.Entry<String, String> e : m.entrySet()) {
+            r.put(e.getValue(), e.getKey());
+        }
+        abbreviationMap = Collections.unmodifiableMap(m);
+    }
+
 
     private TypeHelper() {
         // utility class
@@ -101,33 +145,55 @@ public final class TypeHelper {
 
     private static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
         if (n.getType() != null) {
-            return loadClass(n.getType().getClassLoader(), clazzName);
+            return loadClass(n.getRoot().getClassTypeResolver(), clazzName);
         }
 
         return null;
     }
 
-    private static Class<?> loadClass(final ClassLoader nullableClassLoader, final String clazzName) {
-        try {
-            ClassLoader classLoader = nullableClassLoader;
-            if (classLoader == null) {
-                // Using the system classloader then
-                classLoader = ClassLoader.getSystemClassLoader();
+    private static Class<?> loadClass(NullableClassLoader ctr, String className) {
+        Class<?> clazz;
+        if (namePrimitiveMap.containsKey(className)) {
+            clazz = namePrimitiveMap.get(className);
+        } else {
+            clazz = ctr.loadClassOrNull(toCanonicalName(className));
+        }
+        if (clazz != null) {
+            return clazz;
+        }
+
+        // allow path separators (.) as inner class name separators
+        final int lastDotIndex = className.lastIndexOf('.');
+
+        if (lastDotIndex != -1) {
+            String asInner = className.substring(0, lastDotIndex)
+                + '$' + className.substring(lastDotIndex + 1);
+            return loadClass(ctr, asInner);
+        }
+        return null;
+    }
+
+
+    private static String toCanonicalName(String className) {
+        className = StringUtils.deleteWhitespace(className);
+        Validate.notNull(className, "className must not be null.");
+        if (className.endsWith("[]")) {
+            final StringBuilder classNameBuffer = new StringBuilder();
+            while (className.endsWith("[]")) {
+                className = className.substring(0, className.length() - 2);
+                classNameBuffer.append("[");
             }
-
-            // If the requested type is in the classpath, using the same classloader should work
-            return ClassUtils.getClass(classLoader, clazzName);
-        } catch (ClassNotFoundException ignored) {
-            // The requested type is not on the auxclasspath. This might happen, if the type node
-            // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
-            // Failing to resolve clazzName does not necessarily indicate an incomplete auxclasspath.
-        } catch (final LinkageError expected) {
-            // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
-            // if it was a NoClassDefFoundError. TODO : Report it?
+            final String abbreviation = abbreviationMap.get(className);
+            if (abbreviation != null) {
+                classNameBuffer.append(abbreviation);
+            } else {
+                classNameBuffer.append("L").append(className).append(";");
+            }
+            className = classNameBuffer.toString();
         }
-
-        return null;
+        return className;
     }
+
 
     /** @see #isA(TypeNode, String) */
     public static boolean isA(TypeNode n, Class<?> clazz) {
@@ -142,7 +208,7 @@ public final class TypeHelper {
         Class<?> type = vnd.getType();
         for (final Class<?> clazz : clazzes) {
             if (type != null && type.equals(clazz) || type == null
-                    && (clazz.getSimpleName().equals(vnd.getTypeImage()) || clazz.getName().equals(vnd.getTypeImage()))) {
+                && (clazz.getSimpleName().equals(vnd.getTypeImage()) || clazz.getName().equals(vnd.getTypeImage()))) {
                 return true;
             }
         }
@@ -192,7 +258,7 @@ public final class TypeHelper {
     public static boolean isA(TypedNameDeclaration vnd, String className) {
         Class<?> type = vnd.getType();
         if (type != null) {
-            Class<?> clazz = loadClass(type.getClassLoader(), className);
+            Class<?> clazz = loadClass(new ClassLoaderWrapper(type.getClassLoader()), className);
             if (clazz != null) {
                 return clazz.isAssignableFrom(type);
             }
