@@ -63,13 +63,9 @@ public enum XPathVersion {
      *
      * @return An XPath version
      *
-     * @throws IllegalArgumentException If the argument doesn't match any known version
+     * @return Null if the argument is not a valid version
      */
-    public static XPathVersion fromString(String version) {
-        XPathVersion v = BY_NAME.get(version);
-        if (v == null) {
-            throw new IllegalArgumentException("Version '" + version + "' is not a valid XPath version");
-        }
-        return v;
+    public static XPathVersion ofId(String version) {
+        return BY_NAME.get(version);
     }
 }

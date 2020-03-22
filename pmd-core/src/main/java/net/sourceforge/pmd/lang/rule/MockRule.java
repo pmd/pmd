@@ -22,7 +22,8 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Java.
  *
  * @deprecated This is not a supported API. You need the pmd-test module
- *  on your classpath. This will be removed in 7.0.0
+ *     on your classpath, or pmd-core's test sources. This will be removed
+ *     in 7.0.0
  */
 @Deprecated
 public class MockRule extends AbstractRule {
