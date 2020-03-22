@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
  */
 public abstract class AbstractLanguageVersionHandler implements LanguageVersionHandler {
 
+
     @Override
     public DataFlowHandler getDataFlowHandler() {
         return DataFlowHandler.DUMMY;
@@ -25,7 +26,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
     @Override
     public XPathHandler getXPathHandler() {
-        return XPathHandler.DUMMY;
+        return XPathHandler.DEFAULT;
     }
 
     @Override

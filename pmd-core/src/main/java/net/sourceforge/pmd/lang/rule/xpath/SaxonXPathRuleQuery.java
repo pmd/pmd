@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
@@ -50,7 +51,11 @@ import net.sf.saxon.value.Value;
 
 /**
  * This is a Saxon based XPathRule query.
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     /**
      * Special nodeName that references the root expression.

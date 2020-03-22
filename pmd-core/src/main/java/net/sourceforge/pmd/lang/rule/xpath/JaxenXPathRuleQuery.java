@@ -31,12 +31,17 @@ import org.jaxen.expr.XPathFactory;
 import org.jaxen.saxpath.Axis;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * This is a Jaxen based XPathRule query.
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final Logger LOG = Logger.getLogger(JaxenXPathRuleQuery.class.getName());
