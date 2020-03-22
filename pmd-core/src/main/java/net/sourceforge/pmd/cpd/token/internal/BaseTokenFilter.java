@@ -119,9 +119,12 @@ public abstract class BaseTokenFilter<T extends GenericToken<T>> implements Toke
      * Extension point for subclasses to indicate when to stop filtering tokens.
      *
      * @param currentToken The token to be analyzed
+     *
      * @return True if the token filter has finished consuming all tokens, false otherwise
      */
-    protected abstract boolean shouldStopProcessing(T currentToken);
+    protected boolean shouldStopProcessing(T currentToken) {
+        return currentToken.isEof();
+    }
 
     private class RemainingTokens implements Iterable<T> {
 

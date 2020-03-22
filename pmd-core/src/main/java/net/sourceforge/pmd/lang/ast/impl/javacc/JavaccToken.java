@@ -31,6 +31,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      * Kind for EOF tokens.
      */
     public static final int EOF = 0;
+
     /**
      * Kind for implicit tokens. Negative because JavaCC only picks
      * positive numbers for token kinds.
@@ -119,6 +120,10 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return document;
     }
 
+    @Override
+    public boolean isEof() {
+        return kind == EOF;
+    }
 
     @Override
     public JavaccToken getNext() {

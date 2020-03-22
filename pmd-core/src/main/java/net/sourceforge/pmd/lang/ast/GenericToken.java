@@ -30,6 +30,13 @@ public interface GenericToken<T extends GenericToken<T>> {
     String getImage();
 
 
+    /**
+     * Returns true if this token is an end-of-file token. This is the
+     * last token of token sequences that have been fully lexed.
+     */
+    boolean isEof();
+
+
     // TODO these default implementations are here for compatibility because
     //  the functionality is only used in pmd-java for now, though it could
     //  be ported. I prefer doing this as changing all the GenericToken in

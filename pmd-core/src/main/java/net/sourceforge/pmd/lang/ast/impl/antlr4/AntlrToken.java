@@ -45,6 +45,11 @@ public class AntlrToken implements GenericToken<AntlrToken> {
     }
 
     @Override
+    public boolean isEof() {
+        return getKind() == Token.EOF;
+    }
+
+    @Override
     public int getBeginLine() {
         return token.getLine();
     }

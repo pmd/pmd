@@ -22,8 +22,4 @@ public class JavaCCTokenFilter extends BaseTokenFilter<JavaccToken> {
         super(tokenManager);
     }
 
-    @Override
-    protected boolean shouldStopProcessing(final JavaccToken currentToken) {
-        return currentToken.getImage().isEmpty();
-    }
 }

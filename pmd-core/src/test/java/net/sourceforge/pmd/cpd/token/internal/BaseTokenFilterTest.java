@@ -40,6 +40,11 @@ public class BaseTokenFilterTest {
         }
 
         @Override
+        public boolean isEof() {
+            return text == null;
+        }
+
+        @Override
         public String getImage() {
             return text;
         }
