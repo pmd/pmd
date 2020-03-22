@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast;
+package net.sourceforge.pmd.lang.ast.impl;
+
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Base class for all implementations of the Node interface.

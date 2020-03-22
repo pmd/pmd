@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.ast.internal;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertSame;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.nodeB;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.nodeB;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 
 import java.util.ArrayList;
 import java.util.Arrays;

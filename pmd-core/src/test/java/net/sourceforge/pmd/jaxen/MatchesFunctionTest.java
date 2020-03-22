@@ -13,7 +13,7 @@ import org.jaxen.Context;
 import org.jaxen.FunctionCallException;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xpath.MatchesFunction;
 

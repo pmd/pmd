@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import io.kotlintest.matchers.string.shouldContain
-import net.sourceforge.pmd.lang.ast.AbstractNode
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.TextAvailableNode

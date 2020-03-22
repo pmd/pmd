@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.pathsOf;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.followPath;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.pathsOf;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;

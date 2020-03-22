@@ -13,6 +13,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+
 /**
  * Unit test for {@link AbstractNode} tree traversal methods
  */

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
 
     private final boolean findBoundary;
