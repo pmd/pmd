@@ -13,6 +13,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 public class TypeHelperTest extends BaseNonParserTest {
@@ -46,11 +47,10 @@ public class TypeHelperTest extends BaseNonParserTest {
 
         Assert.assertNull(klass.getType());
         Assert.assertTrue(TypeHelper.isA(klass, "org.FooBar"));
-        Assert.assertTrue(TypeHelper.isA(klass, "java.lang.Iterable"));
-        Assert.assertTrue(TypeHelper.isA(klass, Iterable.class));
-        Assert.assertTrue(TypeHelper.isA(klass, Enum.class));
-        Assert.assertTrue(TypeHelper.isA(klass, Serializable.class));
-        Assert.assertTrue(TypeHelper.isA(klass, Comparable.class));
+        assertIsA(klass, Iterable.class);
+        assertIsA(klass, Enum.class);
+        assertIsA(klass, Serializable.class);
+        assertIsA(klass, Object.class);
     }
 
     @Test
@@ -64,8 +64,18 @@ public class TypeHelperTest extends BaseNonParserTest {
 
         Assert.assertNull(klass.getType());
         Assert.assertTrue(TypeHelper.isA(klass, "org.FooBar"));
-        Assert.assertTrue(TypeHelper.isA(klass, Annotation.class));
+        assertIsA(klass, Annotation.class);
+        assertIsA(klass, Object.class);
     }
 
+    private void assertIsA(TypeNode node, Class<?> type) {
+        Assert.assertTrue(TypeHelper.isA(node, type));
+        Assert.assertTrue(TypeHelper.isA(node, type.getCanonicalName()));
+    }
+
+    private void assertIsExactlyA(TypeNode node, Class<?> type) {
+        Assert.assertTrue(TypeHelper.isExactlyA(node, type.getCanonicalName()));
+        assertIsA(node, type);
+    }
 
 }

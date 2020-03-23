@@ -130,9 +130,11 @@ public final class TypeHelper {
             return "java.lang.Enum".equals(clazzName)
                 // supertypes of Enum
                 || "java.lang.Comparable".equals(clazzName)
-                || "java.io.Serializable".equals(clazzName);
+                || "java.io.Serializable".equals(clazzName)
+                || "java.lang.Object".equals(clazzName);
         } else if (n instanceof ASTAnnotationTypeDeclaration) {
-            return "java.lang.annotation.Annotation".equals(clazzName);
+            return "java.lang.annotation.Annotation".equals(clazzName)
+                || "java.lang.Object".equals(clazzName);
         }
 
         return false;
