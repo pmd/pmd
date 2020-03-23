@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
-import java.util.Collections;
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,42 +23,21 @@ import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader
 
 public final class TypeHelper {
 
-
-    /** Maps a primitive class name to its corresponding abbreviation used in array class names. */
-    private static final Map<String, String> abbreviationMap;
     /** Maps names of primitives to their corresponding primitive {@code Class}es. */
-    private static final Map<String, Class<?>> namePrimitiveMap = new HashMap<>();
+    private static final Map<String, Class<?>> PRIMITIVES_BY_NAME = new HashMap<>();
 
 
     static {
-        namePrimitiveMap.put("boolean", Boolean.TYPE);
-        namePrimitiveMap.put("byte", Byte.TYPE);
-        namePrimitiveMap.put("char", Character.TYPE);
-        namePrimitiveMap.put("short", Short.TYPE);
-        namePrimitiveMap.put("int", Integer.TYPE);
-        namePrimitiveMap.put("long", Long.TYPE);
-        namePrimitiveMap.put("double", Double.TYPE);
-        namePrimitiveMap.put("float", Float.TYPE);
-        namePrimitiveMap.put("void", Void.TYPE);
+        PRIMITIVES_BY_NAME.put("boolean", Boolean.TYPE);
+        PRIMITIVES_BY_NAME.put("byte", Byte.TYPE);
+        PRIMITIVES_BY_NAME.put("char", Character.TYPE);
+        PRIMITIVES_BY_NAME.put("short", Short.TYPE);
+        PRIMITIVES_BY_NAME.put("int", Integer.TYPE);
+        PRIMITIVES_BY_NAME.put("long", Long.TYPE);
+        PRIMITIVES_BY_NAME.put("double", Double.TYPE);
+        PRIMITIVES_BY_NAME.put("float", Float.TYPE);
+        PRIMITIVES_BY_NAME.put("void", Void.TYPE);
     }
-
-    static {
-        final Map<String, String> m = new HashMap<>();
-        m.put("int", "I");
-        m.put("boolean", "Z");
-        m.put("float", "F");
-        m.put("long", "J");
-        m.put("short", "S");
-        m.put("byte", "B");
-        m.put("double", "D");
-        m.put("char", "C");
-        final Map<String, String> r = new HashMap<>();
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            r.put(e.getValue(), e.getKey());
-        }
-        abbreviationMap = Collections.unmodifiableMap(m);
-    }
-
 
     private TypeHelper() {
         // utility class
@@ -79,7 +58,7 @@ public final class TypeHelper {
      */
     public static boolean isA(final TypeNode n, final String clazzName) {
         if (n.getType() != null && n.getType().isAnnotation()) {
-            return isAnnotationSubtype(n, clazzName);
+            return isAnnotationSubtype(n.getType(), clazzName);
         }
 
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
@@ -91,13 +70,18 @@ public final class TypeHelper {
         return fallbackIsA(n, clazzName);
     }
 
-    private static boolean isAnnotationSubtype(TypeNode n, String clazzName) {
+    /**
+     * Returns true if the class n is a subtype of clazzName, given n
+     * is an annotationt type.
+     */
+    private static boolean isAnnotationSubtype(Class<?> n, String clazzName) {
+        assert n != null && n.isAnnotation() : "Not an annotation type";
         // then, the supertype may only be Object, j.l.Annotation, or the class name
         // this avoids classloading altogether
         // this is used e.g. by the typeIs function in XPath
-        return clazzName.equals("java.lang.annotation.Annotation")
-            || clazzName.equals("java.lang.Object")
-            || clazzName.equals(n.getType().getName());
+        return "java.lang.annotation.Annotation".equals(clazzName)
+            || "java.lang.Object".equals(clazzName)
+            || clazzName.equals(n.getName());
     }
 
     private static boolean fallbackIsA(TypeNode n, String clazzName) {
@@ -171,47 +155,78 @@ public final class TypeHelper {
         return null;
     }
 
-    private static Class<?> loadClass(NullableClassLoader ctr, String className) {
-        Class<?> clazz;
-        if (namePrimitiveMap.containsKey(className)) {
-            clazz = namePrimitiveMap.get(className);
-        } else {
-            clazz = ctr.loadClassOrNull(toCanonicalName(className));
+
+    /**
+     * Load a class. Supports loading array types like 'java.lang.String[]' and
+     * converting a canonical name to a binary name (eg 'java.util.Map.Entry' ->
+     * 'java.util.Map$Entry').
+     */
+    // test only
+    static Class<?> loadClass(NullableClassLoader ctr, String className) {
+        return loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className));
+    }
+
+    private static Class<?> loadClassFromCanonicalName(NullableClassLoader ctr, String className) {
+        Class<?> clazz = PRIMITIVES_BY_NAME.get(className);
+        if (clazz == null) {
+            clazz = ctr.loadClassOrNull(className);
         }
         if (clazz != null) {
             return clazz;
         }
-
         // allow path separators (.) as inner class name separators
         final int lastDotIndex = className.lastIndexOf('.');
 
-        if (lastDotIndex != -1) {
+        if (lastDotIndex >= 0) {
             String asInner = className.substring(0, lastDotIndex)
                 + '$' + className.substring(lastDotIndex + 1);
-            return loadClass(ctr, asInner);
+            return loadClassFromCanonicalName(ctr, asInner);
         }
         return null;
     }
 
 
-    private static String toCanonicalName(String className) {
-        className = StringUtils.deleteWhitespace(className);
+    private static Class<?> loadClassMaybeArray(NullableClassLoader classLoader,
+                                                String className) {
         Validate.notNull(className, "className must not be null.");
         if (className.endsWith("[]")) {
-            final StringBuilder classNameBuffer = new StringBuilder();
-            while (className.endsWith("[]")) {
-                className = className.substring(0, className.length() - 2);
-                classNameBuffer.append("[");
+            int dimension = 0;
+            int i = className.length();
+            while (i >= 2 && className.startsWith("[]", i - 2)) {
+                dimension++;
+                i -= 2;
             }
-            final String abbreviation = abbreviationMap.get(className);
-            if (abbreviation != null) {
-                classNameBuffer.append(abbreviation);
-            } else {
-                classNameBuffer.append("L").append(className).append(";");
+
+            checkJavaIdent(className, i);
+            String elementName = className.substring(0, i);
+
+            Class<?> elementType = loadClassFromCanonicalName(classLoader, elementName);
+            if (elementType == null) {
+                return null;
             }
-            className = classNameBuffer.toString();
+
+            return Array.newInstance(elementType, (int[]) Array.newInstance(int.class, dimension)).getClass();
+        } else {
+            checkJavaIdent(className, className.length());
+            return loadClassFromCanonicalName(classLoader, className);
         }
-        return className;
+    }
+
+    private static IllegalArgumentException invalidClassName(String className) {
+        return new IllegalArgumentException("Not a valid class name \"" + className + "\"");
+    }
+
+    private static void checkJavaIdent(String className, int endOffsetExclusive) {
+        if (endOffsetExclusive <= 0 || !Character.isJavaIdentifierStart(className.charAt(0))) {
+            throw invalidClassName(className);
+        }
+
+        for (int i = 1; i < endOffsetExclusive; i++) {
+            char c = className.charAt(i);
+            if (!(Character.isJavaIdentifierPart(c) || c == '.')) {
+                throw invalidClassName(className);
+            }
+        }
     }
 
 
