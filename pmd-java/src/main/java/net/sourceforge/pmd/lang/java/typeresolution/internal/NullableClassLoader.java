@@ -4,8 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution.internal;
 
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
+
+/**
+ * A classloader that doesn't throw a {@link ClassNotFoundException}
+ * to report unresolved classes. This is a big performance improvement
+ * for {@link PMDASMClassLoader}, which caches negative cases.
+ *
+ * <p>See https://github.com/pmd/pmd/pull/2236
+ */
 public interface NullableClassLoader {
 
+    /**
+     * Load a class from its binary name. Returns null if not found.
+     */
     Class<?> loadClassOrNull(String binaryName);
 
 
