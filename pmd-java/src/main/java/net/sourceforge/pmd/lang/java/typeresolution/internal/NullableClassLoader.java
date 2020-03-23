@@ -13,7 +13,8 @@ public interface NullableClassLoader {
 
         private final ClassLoader classLoader;
 
-        public ClassLoaderWrapper(ClassLoader classLoader) {
+        private ClassLoaderWrapper(ClassLoader classLoader) {
+            assert classLoader != null : "Null classloader";
             this.classLoader = classLoader;
         }
 
@@ -24,6 +25,13 @@ public interface NullableClassLoader {
             } catch (ClassNotFoundException e) {
                 return null;
             }
+        }
+
+        public static ClassLoaderWrapper wrapNullable(ClassLoader classLoader) {
+            if (classLoader == null) {
+                classLoader = ClassLoader.getSystemClassLoader();
+            }
+            return new ClassLoaderWrapper(classLoader);
         }
     }
 }
