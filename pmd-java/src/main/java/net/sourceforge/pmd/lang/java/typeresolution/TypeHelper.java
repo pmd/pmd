@@ -78,6 +78,10 @@ public final class TypeHelper {
      * @return <code>true</code> if type node n is of type clazzName or a subtype of clazzName
      */
     public static boolean isA(final TypeNode n, final String clazzName) {
+        if (n.getType() != null && n.getType().isAnnotation()) {
+            return isAnnotationSubtype(n, clazzName);
+        }
+
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
 
         if (clazz != null || n.getType() != null) {
@@ -85,6 +89,15 @@ public final class TypeHelper {
         }
 
         return fallbackIsA(n, clazzName);
+    }
+
+    private static boolean isAnnotationSubtype(TypeNode n, String clazzName) {
+        // then, the supertype may only be Object, j.l.Annotation, or the class name
+        // this avoids classloading altogether
+        // this is used e.g. by the typeIs function in XPath
+        return clazzName.equals("java.lang.annotation.Annotation")
+            || clazzName.equals("java.lang.Object")
+            || clazzName.equals(n.getType().getName());
     }
 
     private static boolean fallbackIsA(TypeNode n, String clazzName) {
@@ -134,6 +147,11 @@ public final class TypeHelper {
      * @return <code>true</code> if type node n is exactly of type clazzName.
      */
     public static boolean isExactlyA(final TypeNode n, final String clazzName) {
+        if (n.getType() != null && n.getType().getName().equals(clazzName)) {
+            // fast path avoiding classloading
+            return true;
+        }
+
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
 
         if (clazz != null) {
