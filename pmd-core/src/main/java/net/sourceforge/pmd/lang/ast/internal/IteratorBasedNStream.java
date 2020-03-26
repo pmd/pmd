@@ -52,8 +52,12 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         return mapIter(iter -> IteratorUtil.flatMap(iter, mapper.andThen(IteratorBasedNStream::safeMap)));
     }
 
-    private static <R extends Node> @NonNull Iterator<? extends R> safeMap(@Nullable NodeStream<? extends R> ns) {
-        return ns == null ? Collections.emptyIterator() : ns.iterator();
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=561482
+    // return type should be Iterator<? extends R>, but that doesn't compile with JDT, if used as a method
+    // reference in flatMap above.
+    @SuppressWarnings("unchecked")
+    private static <R extends Node> @NonNull Iterator<R> safeMap(@Nullable NodeStream<? extends R> ns) {
+        return ns == null ? Collections.emptyIterator() : (Iterator<R>) ns.iterator();
     }
 
     @Override
