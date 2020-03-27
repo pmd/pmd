@@ -13,6 +13,12 @@ import net.sf.saxon.om.Axis;
 
 /**
  * Simple printer for saxon expressions. Might be useful for debugging / during development.
+ *
+ * <p>Example:
+ * <pre>
+ * ExpressionPrinter printer = new ExpressionPrinter();
+ * printer.visit(query.xpathExpression.getInternalExpression());
+ * </pre>
  */
 public class ExpressionPrinter extends Visitor {
     private int depth = 0;

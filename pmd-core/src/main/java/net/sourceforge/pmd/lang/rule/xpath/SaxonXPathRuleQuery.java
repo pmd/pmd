@@ -77,7 +77,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     /**
      * Representation of an XPath query, created at {@link #initializeXPathExpression()} using {@link #xpath}.
      */
-    private XPathExpression xpathExpression;
+    XPathExpression xpathExpression;
 
     /**
      * Holds the static context later used to match the variables in the dynamic context in

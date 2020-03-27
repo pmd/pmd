@@ -13,6 +13,7 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
+import net.sf.saxon.expr.LazyExpression;
 import net.sf.saxon.expr.PathExpression;
 import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.om.Axis;
@@ -92,6 +93,15 @@ public class RuleChainAnalyzer extends Visitor {
             } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.CHILD) {
                 rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
             }
+        }
+        return super.visit(e);
+    }
+
+    @Override
+    public Expression visit(LazyExpression e) {
+        if (e.getBaseExpression() instanceof PathExpression) {
+            this.rootElement = null;
+            return e;
         }
         return super.visit(e);
     }
