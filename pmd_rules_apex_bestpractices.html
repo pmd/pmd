@@ -1385,7 +1385,7 @@ improves the readability of test output.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@isTest</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-     <span class="nd">@isTest</span>
+    <span class="nd">@isTest</span>
     <span class="kd">static</span> <span class="kt">void</span> <span class="nf">methodATest</span><span class="o">()</span> <span class="o">{</span>
         <span class="nc">System</span><span class="o">.</span><span class="na">assertNotEquals</span><span class="o">(</span><span class="err">'</span><span class="mi">123</span><span class="err">'</span><span class="o">,</span> <span class="n">o</span><span class="o">.</span><span class="na">StageName</span><span class="o">);</span> <span class="c1">// not good</span>
         <span class="nc">System</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="err">'</span><span class="mi">123</span><span class="err">'</span><span class="o">,</span> <span class="n">o</span><span class="o">.</span><span class="na">StageName</span><span class="o">,</span> <span class="err">'</span><span class="nc">Opportunity</span> <span class="n">stageName</span> <span class="n">is</span> <span class="n">wrong</span><span class="o">.</span><span class="err">'</span><span class="o">);</span> <span class="c1">// good</span>
@@ -1447,12 +1447,12 @@ with messages provide the developer a clearer idea of what the test does.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@isTest</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-   <span class="kd">public</span> <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
-      <span class="nc">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-   <span class="c1">// This is better than having a NullPointerException</span>
-   <span class="c1">// System.assertNotEquals(a, null, 'account not found');</span>
-   <span class="n">a</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-   <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="c1">// This is better than having a NullPointerException</span>
+        <span class="c1">// System.assertNotEquals(a, null, 'account not found');</span>
+        <span class="n">a</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1575,12 +1575,12 @@ As testMethod keyword is deprecated, Salesforce advices to use @isTest annotatio
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@isTest</span><span class="o">(</span><span class="n">seeAllData</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-   <span class="kd">public</span> <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
-      <span class="nc">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-   <span class="c1">// This is better than having a NullPointerException</span>
-   <span class="c1">// System.assertNotEquals(a, null, 'account not found');</span>
-   <span class="n">a</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-   <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">testSomething</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Account</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="c1">// This is better than having a NullPointerException</span>
+        <span class="c1">// System.assertNotEquals(a, null, 'account not found');</span>
+        <span class="n">a</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -1840,7 +1840,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 22, 2020 <br />
+ Site last generated: Mar 27, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

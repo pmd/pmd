@@ -1481,7 +1481,10 @@ complex components.</p>
         <span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">Phone</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>                          <span class="c1">// +1</span>
             <span class="n">a</span><span class="o">.</span><span class="na">Phone</span> <span class="o">=</span> <span class="n">phone</span><span class="o">;</span>
             <span class="n">update</span> <span class="n">a</span><span class="o">;</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
         <span class="o">}</span>
+
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="c1">// Has a cognitive complexity of 5</span>
@@ -1776,7 +1779,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// too many arguments liable to be mixed up</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span><span class="kt">int</span> <span class="n">birthYear</span><span class="o">,</span> <span class="kt">int</span> <span class="n">birthMonth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">birthDate</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height</span><span class="o">,</span> <span class="kt">int</span> <span class="n">weight</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">birthYear</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">birthMonth</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">birthDate</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">height</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">weight</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// ...</span>
 <span class="o">}</span>
 <span class="c1">// preferred approach</span>
@@ -2045,8 +2048,8 @@ lines of code that are split are counted as one.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="c1">//this method only has 1 NCSS lines</span>
-    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">methd</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kd">super</span><span class="o">.</span><span class="na">methd</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">method</span><span class="o">();</span>
 
 
 
@@ -2343,11 +2346,11 @@ city/state/zip fields could park them within a single Address field.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
     <span class="c1">// too many separate fields</span>
-    <span class="kt">int</span> <span class="n">birthYear</span><span class="o">;</span>
-    <span class="kt">int</span> <span class="n">birthMonth</span><span class="o">;</span>
-    <span class="kt">int</span> <span class="n">birthDate</span><span class="o">;</span>
-    <span class="kt">float</span> <span class="n">height</span><span class="o">;</span>
-    <span class="kt">float</span> <span class="n">weight</span><span class="o">;</span>
+    <span class="nc">Integer</span> <span class="n">birthYear</span><span class="o">;</span>
+    <span class="nc">Integer</span> <span class="n">birthMonth</span><span class="o">;</span>
+    <span class="nc">Integer</span> <span class="n">birthDate</span><span class="o">;</span>
+    <span class="nc">Double</span> <span class="n">height</span><span class="o">;</span>
+    <span class="nc">Double</span> <span class="n">weight</span><span class="o">;</span>
 <span class="o">}</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
@@ -2424,7 +2427,7 @@ city/state/zip fields could park them within a single Address field.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 22, 2020 <br />
+ Site last generated: Mar 27, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
