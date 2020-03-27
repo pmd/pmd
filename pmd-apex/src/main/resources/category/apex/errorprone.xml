@@ -199,9 +199,9 @@ Empty block statements serve no purpose and should be removed.
 <![CDATA[
 public class Foo {
 
-   private int _bar;
+   private Integer _bar;
 
-   public void setBar(int bar) {
+   public void setBar(Integer bar) {
         // empty
    }
 
@@ -244,7 +244,7 @@ public class Foo {
 public class Foo {
     public void bar() {
         try {
-            int x=2;
+            Integer x=2;
         } finally {
             // empty!
         }
