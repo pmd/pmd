@@ -120,6 +120,11 @@ class UnresolvedClassImpl implements JClassSymbol {
     }
 
     @Override
+    public boolean isRecord() {
+        return false;
+    }
+
+    @Override
     public boolean isAnnotation() {
         return false;
     }

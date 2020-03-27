@@ -132,6 +132,15 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
+     * Returns the record components declared by this enum. If this is not
+     * a record declaration, returns null.
+     */
+    default @Nullable ASTRecordComponentList getRecordComponentList() {
+        return null;
+    }
+
+
+    /**
      * Retrieves the member declarations (fields, methods, classes, etc.) from the body of this type declaration.
      *
      * @return The member declarations declared in this type declaration

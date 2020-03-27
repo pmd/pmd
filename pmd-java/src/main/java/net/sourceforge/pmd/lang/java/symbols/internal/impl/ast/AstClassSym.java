@@ -17,7 +17,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -55,7 +57,11 @@ final class AstClassSym
         List<JFieldSymbol> myFields = new ArrayList<>();
 
         if (node instanceof ASTEnumDeclaration) {
-            node.getEnumConstants().forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+            node.getEnumConstants()
+                .forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+        } else if (node instanceof ASTRecordDeclaration) {
+            ASTList.orEmpty(((ASTRecordDeclaration) node).getRecordComponentList())
+                   .forEach(component -> myFields.add(new AstFieldSym(component.getVarId(), factory, this)));
         }
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
@@ -189,6 +195,11 @@ final class AstClassSym
     @Override
     public boolean isEnum() {
         return node.isEnum();
+    }
+
+    @Override
+    public boolean isRecord() {
+        return node instanceof ASTRecordDeclaration;
     }
 
     @Override

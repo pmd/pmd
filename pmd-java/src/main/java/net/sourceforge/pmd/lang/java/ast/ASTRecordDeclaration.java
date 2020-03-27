@@ -42,8 +42,8 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         visitor.visit(this, data);
     }
 
-    /** Returns the list of record components. */
-    public ASTRecordComponentList getComponentList() {
+    @Override
+    public ASTRecordComponentList getRecordComponentList() {
         return getFirstChildOfType(ASTRecordComponentList.class);
     }
 }
