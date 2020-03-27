@@ -66,8 +66,9 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         ASTAnyTypeDeclaration enclosing = node instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) node
                                                                                 : node.getEnclosingType();
 
+        ASTCompilationUnit file = node.getRoot();
         if (enclosing == null) {
-            NodeStream<ASTAnyTypeDeclaration> tds = node.getRoot().getTypeDeclarations();
+            NodeStream<ASTAnyTypeDeclaration> tds = file.getTypeDeclarations();
             enclosing = tds.first(AccessNode::isPublic);
             if (enclosing == null) {
                 enclosing = tds.first();
@@ -77,7 +78,12 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         if (enclosing == null) {
             return null;
         } else {
-            return String.join("$", enclosing.getQualifiedName().getClassList());
+            String binaryName = enclosing.getBinaryName();
+            String packageName = enclosing.getPackageName();
+            return packageName.isEmpty()
+                   ? binaryName
+                   // plus 1 for the '.'
+                   : binaryName.substring(packageName.length() + 1);
         }
     }
 

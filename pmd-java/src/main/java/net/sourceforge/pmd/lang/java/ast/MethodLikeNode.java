@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
-
-
 /**
  * Groups method, constructor and lambda declarations under a common type.
  *
@@ -18,16 +15,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  *     Ultimately this supertype is not useful and can go away.
  */
 @Deprecated
-public interface MethodLikeNode extends JavaQualifiableNode, JavaNode {
-
-
-    /**
-     * @deprecated Qualified names are not very useful objects. Use them
-     *     to get a nice string for a method, but this is not going
-     */
-    @Override
-    @Deprecated
-    JavaOperationQualifiedName getQualifiedName();
+public interface MethodLikeNode extends JavaNode {
 
 
 }

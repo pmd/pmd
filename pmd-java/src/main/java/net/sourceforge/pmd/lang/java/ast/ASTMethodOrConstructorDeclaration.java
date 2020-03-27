@@ -9,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 
 
@@ -41,8 +40,7 @@ public interface ASTMethodOrConstructorDeclaration
 
     /**
      * Returns the name of the method, or the simple name of the declaring class for
-     * a constructor declaration. This is consistent with the result of
-     * {@link JavaOperationQualifiedName#getOperation()} for {@link #getQualifiedName()}.
+     * a constructor declaration.
      */
     String getName();
 

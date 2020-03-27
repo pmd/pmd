@@ -187,7 +187,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(EnumWithAnonymousInnerClass.class);
         // try it in jshell, an enum constant with a body is compiled to an anonymous class,
         // the counter is shared with other anonymous classes of the enum
-        Class<?> enumAnon = acu.getFirstDescendantOfType(ASTAnonymousClassDeclaration.class).getQualifiedName().getType();
+        Class<?> enumAnon = acu.getFirstDescendantOfType(ASTAnonymousClassDeclaration.class).getType();
         assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$1", enumAnon.getName());
 
         Class<?> inner = acu.getFirstDescendantOfType(ASTConstructorCall.class)

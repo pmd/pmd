@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
@@ -211,13 +210,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTPackageDeclaration node, Object data) {
         // no need to visit children, the only child, ASTName, will have no type
         return data;
-    }
-
-    @Override
-    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
-        populateType(node, node.getQualifiedName().toString());
-
-        return super.visit(node, data);
     }
 
 
