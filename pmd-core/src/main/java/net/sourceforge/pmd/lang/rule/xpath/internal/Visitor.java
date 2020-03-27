@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import net.sf.saxon.expr.AxisExpression;
+import net.sf.saxon.expr.BooleanExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
 import net.sf.saxon.expr.LazyExpression;
@@ -69,6 +70,13 @@ abstract class Visitor {
         return LazyExpression.makeLazyExpression(base);
     }
 
+    public Expression visit(BooleanExpression e) {
+        final Expression[] operands = e.getOperands();
+        Expression operand0 = visit(operands[0]);
+        Expression operand1 = visit(operands[1]);
+        return new BooleanExpression(operand0, e.getOperator(), operand1);
+    }
+
     public Expression visit(Expression expr) {
         Expression result;
         if (expr instanceof DocumentSorter) {
@@ -89,6 +97,8 @@ abstract class Visitor {
             result = visit((LetExpression) expr);
         } else if (expr instanceof LazyExpression) {
             result = visit((LazyExpression) expr);
+        } else if (expr instanceof BooleanExpression) {
+            result = visit((BooleanExpression) expr);
         } else {
             result = expr;
         }

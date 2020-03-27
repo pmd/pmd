@@ -70,7 +70,6 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        System.out.println(query.nodeNameToXPaths);
         assertExpression("(self::node()[pmd-dummy:typeIs(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(Image, xs:anyAtomicType))))))])", query.nodeNameToXPaths.get("dummyNode").get(0));
         assertExpression("DocumentSorter((((/)/descendant-or-self::node())/(child::element(dummyNode, xs:anyType)[pmd-dummy:typeIs(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(Image, xs:anyAtomicType))))))])))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
@@ -93,6 +92,13 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(0, ruleChainVisits.size());
         Assert.assertEquals(1, query.nodeNameToXPaths.size());
         assertExpression("LetExpression(LazyExpression(((/)/descendant::element(ClassOrInterfaceType, xs:anyType))), (((/)/descendant::element(dummyNode, xs:anyType))[(ancestor::element(ClassOrInterfaceDeclaration, xs:anyType)[$zz:zz106374177])]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+
+        // third example, with boolean expr
+        query = createQuery("//dummyNode[//ClassOrInterfaceType or //OtherNode]");
+        ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+        Assert.assertEquals(1, query.nodeNameToXPaths.size());
+        assertExpression("LetExpression(LazyExpression((((/)/descendant::element(ClassOrInterfaceType, xs:anyType)) or ((/)/descendant::element(OtherNode, xs:anyType)))), (((/)/descendant::element(dummyNode, xs:anyType))[$zz:zz1364913072]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     @Test

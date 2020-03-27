@@ -38,13 +38,18 @@ public class RuleChainAnalyzer extends Visitor {
     private final Configuration configuration;
     private String rootElement;
     private boolean rootElementReplaced;
+    private boolean insideLazyExpression;
+    private boolean foundPathInsideLazy;
 
     public RuleChainAnalyzer(Configuration currentConfiguration) {
         this.configuration = currentConfiguration;
     }
 
     public String getRootElement() {
-        return rootElement;
+        if (!foundPathInsideLazy && rootElementReplaced) {
+            return rootElement;
+        }
+        return null;
     }
 
     @Override
@@ -56,7 +61,7 @@ public class RuleChainAnalyzer extends Visitor {
 
     @Override
     public Expression visit(PathExpression e) {
-        if (rootElement == null) {
+        if (!insideLazyExpression && rootElement == null) {
             Expression result = super.visit(e);
             if (rootElement != null && !rootElementReplaced) {
                 if (result instanceof PathExpression) {
@@ -80,6 +85,9 @@ public class RuleChainAnalyzer extends Visitor {
             }
             return result;
         } else {
+            if (insideLazyExpression) {
+                foundPathInsideLazy = true;
+            }
             return super.visit(e);
         }
     }
@@ -99,11 +107,10 @@ public class RuleChainAnalyzer extends Visitor {
 
     @Override
     public Expression visit(LazyExpression e) {
-        if (e.getBaseExpression() instanceof PathExpression) {
-            this.rootElement = null;
-            return e;
-        }
-        return super.visit(e);
+        insideLazyExpression = true;
+        Expression result = super.visit(e);
+        insideLazyExpression = false;
+        return result;
     }
 
     public static Comparator<Node> documentOrderComparator() {
