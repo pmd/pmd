@@ -34,7 +34,7 @@ import net.sf.saxon.type.Type;
  * <p>DocumentSorter expression is removed. The sorting of the resulting nodes needs to be done
  * after all (sub)expressions have been executed.
  */
-public class RuleChainAnalyzer extends Visitor {
+public class RuleChainAnalyzer extends SaxonExprVisitor {
     private final Configuration configuration;
     private String rootElement;
     private boolean rootElementReplaced;
@@ -107,9 +107,10 @@ public class RuleChainAnalyzer extends Visitor {
 
     @Override
     public Expression visit(LazyExpression e) {
+        boolean prevCtx = insideLazyExpression;
         insideLazyExpression = true;
         Expression result = super.visit(e);
-        insideLazyExpression = false;
+        insideLazyExpression = prevCtx;
         return result;
     }
 

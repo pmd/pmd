@@ -20,7 +20,7 @@ import net.sf.saxon.om.Axis;
  * printer.visit(query.xpathExpression.getInternalExpression());
  * </pre>
  */
-public class ExpressionPrinter extends Visitor {
+public class ExpressionPrinter extends SaxonExprVisitor {
     private int depth = 0;
 
     private void print(String s) {

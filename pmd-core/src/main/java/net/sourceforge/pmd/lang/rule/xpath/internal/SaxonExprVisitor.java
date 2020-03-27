@@ -16,7 +16,7 @@ import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.expr.VennExpression;
 import net.sf.saxon.sort.DocumentSorter;
 
-abstract class Visitor {
+abstract class SaxonExprVisitor {
     public Expression visit(DocumentSorter e) {
         Expression base = visit(e.getBaseExpression());
         return new DocumentSorter(base);
