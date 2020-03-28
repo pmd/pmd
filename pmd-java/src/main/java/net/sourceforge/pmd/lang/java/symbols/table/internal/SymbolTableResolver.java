@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
@@ -208,6 +209,17 @@ public final class SymbolTableResolver {
             int pushed = 0;
             pushed += pushOnStack(TypeOnlySymTable::new, node.getTypeParameters());
             pushed += pushOnStack(VarOnlySymTable::new, formalsOf(node));
+
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTRecordConstructorDeclaration node, Void data) {
+            setTopSymbolTable(node.getModifiers());
+
+            int pushed = 0;
+            pushed += pushOnStack(VarOnlySymTable::new, node);
 
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);

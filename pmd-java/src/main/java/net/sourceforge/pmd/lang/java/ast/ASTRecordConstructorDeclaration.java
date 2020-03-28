@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  * </pre>
  */
 @Experimental
-public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode {
+public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, AccessNode {
 
     private JConstructorSymbol symbol;
 
@@ -43,6 +43,11 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaNode impl
 
     public ASTBlock getBody() {
         return getFirstChildOfType(ASTBlock.class);
+    }
+
+    @Override
+    public ASTRecordDeclaration getEnclosingType() {
+        return (ASTRecordDeclaration) super.getEnclosingType();
     }
 
     @Override
