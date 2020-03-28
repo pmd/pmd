@@ -237,7 +237,7 @@ class VarScopingTest : ParserTestSpec({
         val (insideCompact, insideRegular) =
                 acu.descendants(ASTAssertStatement::class.java).toList()
 
-        val (compactCtor, normalCtor) =
+        val (_, compactCtor, normalCtor) =
                 acu.descendants(ASTBodyDeclaration::class.java).filterIs(SymbolDeclaratorNode::class.java).toList()
 
         doTest("Inside compact ctor: components are in scope as formals") {
@@ -254,12 +254,10 @@ class VarScopingTest : ParserTestSpec({
         doTest("Inside normal ctor: components are in scope as fields") {
             insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("x") {
                 result::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
-                this::getContributor shouldBe xComp
             }
 
             insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("rest") {
                 result::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
-                this::getContributor shouldBe restComp
             }
         }
     }
