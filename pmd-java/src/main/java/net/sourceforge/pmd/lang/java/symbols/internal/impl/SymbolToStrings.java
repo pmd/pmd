@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 public class SymbolToStrings {
 
     public static final SymbolToStrings SHARED = new SymbolToStrings("");
+    public static final SymbolToStrings FAKE = new SymbolToStrings("fake");
     public static final SymbolToStrings REFLECT = new SymbolToStrings("reflect");
     public static final SymbolToStrings AST = new SymbolToStrings("ast");
 
@@ -43,21 +44,11 @@ public class SymbolToStrings {
             if (!impl.isEmpty()) {
                 builder.append(impl).append(':');
             }
-            builder.append(kind).append('(');
-            appendArg(builder, first);
+            builder.append(kind).append('(').append(first);
             for (Object s : rest) {
-                builder.append(", ");
-                appendArg(builder, s);
+                builder.append(", ").append(s);
             }
             return builder.append(')');
-        }
-
-        private void appendArg(StringBuilder builder, Object s) {
-            if (s instanceof JElementSymbol) {
-                ((JElementSymbol) s).acceptVisitor(this, builder);
-            } else {
-                builder.append(s);
-            }
         }
 
         @Override

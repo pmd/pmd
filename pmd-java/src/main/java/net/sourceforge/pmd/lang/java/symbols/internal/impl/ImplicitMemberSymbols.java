@@ -194,6 +194,11 @@ public final class ImplicitMemberSymbols {
             return emptyList();
         }
 
+
+        @Override
+        public String toString() {
+            return SymbolToStrings.FAKE.toString(this);
+        }
     }
 
     private static final class FakeMethodSym extends FakeExecutableSymBase<JMethodSymbol> implements JMethodSymbol {
@@ -259,6 +264,21 @@ public final class ImplicitMemberSymbols {
         public String getSimpleName() {
             return name;
         }
+
+        @Override
+        public String toString() {
+            return SymbolToStrings.FAKE.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return SymbolEquality.FORMAL_PARAM.equals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return SymbolEquality.FORMAL_PARAM.hash(this);
+        }
     }
 
 
@@ -292,6 +312,11 @@ public final class ImplicitMemberSymbols {
         @Override
         public @NonNull JClassSymbol getEnclosingClass() {
             return owner;
+        }
+
+        @Override
+        public String toString() {
+            return SymbolToStrings.FAKE.toString(this);
         }
 
         @Override
