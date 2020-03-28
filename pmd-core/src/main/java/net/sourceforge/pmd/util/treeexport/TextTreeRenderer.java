@@ -100,20 +100,6 @@ public class TextTreeRenderer implements TreeRenderer {
         }
     };
 
-    private static final Strings ASCII = new Strings(
-        "+- ",
-        "+- ",
-        "|  ",
-        "   "
-    );
-
-    private static final Strings UNICODE = new Strings(
-        "└─ ",
-        "├─ ",
-        "│  ",
-        "   "
-    );
-
     private final Strings str;
     private final int maxLevel;
 
@@ -129,7 +115,7 @@ public class TextTreeRenderer implements TreeRenderer {
      *                  controlled by {@link #appendBoundaryForNodeLn(Node, Appendable, String)}.
      */
     public TextTreeRenderer(boolean onlyAscii, int maxLevel) {
-        this.str = onlyAscii ? ASCII : UNICODE;
+        this.str = onlyAscii ? Strings.ASCII : Strings.UNICODE;
         this.maxLevel = maxLevel;
     }
 
@@ -194,6 +180,18 @@ public class TextTreeRenderer implements TreeRenderer {
 
     private static final class Strings {
 
+        private static final Strings ASCII = new Strings(
+            "+- ",
+            "+- ",
+            "|  ",
+            "   "
+        );
+        private static final Strings UNICODE = new Strings(
+            "└─ ",
+            "├─ ",
+            "│  ",
+            "   "
+        );
 
         private final String tailFork;
         private final String fork;
