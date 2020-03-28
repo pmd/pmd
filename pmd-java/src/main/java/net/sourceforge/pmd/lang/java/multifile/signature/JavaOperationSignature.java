@@ -4,23 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.multifile.signature;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Signature for an operation.
@@ -112,26 +107,19 @@ public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConst
 
         private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
 
-            ClassScope scope = node.getScope().getEnclosingScope(ClassScope.class);
-
             // fields names mapped to their types
-            Map<String, String> fieldNames = new HashMap<>();
-
-            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> decl
-                : scope.getVariableDeclarations().entrySet()) {
-
-                ASTFieldDeclaration field = decl.getKey()
-                                                .getNode()
-                                                .getFirstParentOfType(ASTFieldDeclaration.class);
-
-                // the field might be null in record types - the fields for the record components are synthetic
-                if (field != null) {
-                    Matcher matcher = FIELD_NAME_PATTERN.matcher(field.getVariableName());
-                    String varName = matcher.find() ? matcher.group(1) : field.getVariableName();
-
-                    fieldNames.put(varName, field.getFirstChildOfType(ASTType.class).getTypeImage());
-                }
-            }
+            Map<String, String> fieldNames =
+                node.getEnclosingType()
+                    .getDeclarations()
+                    .filterIs(ASTFieldDeclaration.class)
+                    .flatMap(ASTFieldDeclaration::getVarIds)
+                    .collect(Collectors.toMap(
+                        f -> {
+                            Matcher matcher = FIELD_NAME_PATTERN.matcher(f.getVariableName());
+                            return matcher.find() ? matcher.group(1) : f.getVariableName();
+                        },
+                        f -> f.getTypeNode().getTypeImage()
+                    ));
 
             return isGetter(node, fieldNames) || isSetter(node, fieldNames);
         }

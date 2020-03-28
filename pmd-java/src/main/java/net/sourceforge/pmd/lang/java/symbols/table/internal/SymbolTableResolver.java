@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
-import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -50,89 +50,22 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 public final class SymbolTableResolver {
 
-    private final SymbolTableHelper myResolveHelper;
-    private final ASTCompilationUnit root;
-    // current top of the stack
-    private JSymbolTable myStackTop;
-
-
-    /**
-     * Initialize this resolver using an analysis context and a root node.
-     *
-     * @param symResolver Resolver for external references
-     * @param root        The root node
-     */
-    public SymbolTableResolver(SymbolResolver symResolver,
-                               SemanticChecksLogger logger,
-                               ASTCompilationUnit root) {
-        this.root = root;
-        myResolveHelper = new SymbolTableHelper(root.getPackageName(), symResolver, logger);
-        // this is the only place pushOnStack can be circumvented
-        myStackTop = EmptySymbolTable.getInstance();
-
+    private SymbolTableResolver() {
+        // façade
     }
 
-    /**
-     * Start the analysis.
-     */
-    public void traverse() {
-        assert myStackTop instanceof EmptySymbolTable
-            : "Top should be an empty symtable when starting the traversal";
-
-        root.jjtAccept(new MyVisitor(), null);
-
-        assert myStackTop instanceof EmptySymbolTable
-            : "Unbalanced stack push/pop! Top is " + myStackTop;
+    public static void traverse(JavaAstProcessor processor, ASTCompilationUnit root) {
+        SymbolTableHelper helper = new SymbolTableHelper(root.getPackageName(), processor);
+        new MyVisitor(root, helper).traverse();
     }
 
-
-    /**
-     * Create a new symbol table using {@link TableLinker#createAndLink(JSymbolTable, SymbolTableHelper, Object)},
-     * linking it to the top of the stack as its parent.
-     *
-     * Pushes must naturally be balanced with {@link #popStack()} calls.
-     *
-     * @param data Additional param passed to the linker. Passing parameters
-     *             like this avoids having to create a capturing lambda.
-     *
-     * @return 1 if the table was pushed, 0 if not
-     */
-    private <T> int pushOnStack(TableLinker<T> tableLinker, T data) {
-        AbstractSymbolTable created = tableLinker.createAndLink(peekStack(), myResolveHelper, data);
-        return pushOnStack(created) ? 1 : 0;
-    }
-
-    private boolean pushOnStack(AbstractSymbolTable table) {
-        assert table.getParent() == peekStack() : "Wrong parent";
-        if (table.isPrunable()) {
-            return false; // and don't set the stack top
-        }
-        this.myStackTop = table;
-        return true;
-    }
-
-    private JSymbolTable popStack() {
-        JSymbolTable curTop = this.myStackTop;
-        this.myStackTop = curTop.getParent();
-        return curTop;
-    }
-
-    private void popStack(int times) {
-        while (times-- > 0) {
-            popStack();
-        }
-    }
-
-    private JSymbolTable peekStack() {
-        return this.myStackTop;
-    }
 
     @FunctionalInterface
     private interface TableLinker<T> {
 
         /**
          * Create a symbol table, given its parent, a helper instance,
-         * and some other data passed by {@link #pushOnStack(TableLinker, Object)}.
+         * and some other data passed by {@link MyVisitor#pushOnStack(TableLinker, Object)}.
          *
          * @param stackTop Top of the stack, becomes the parent of the new node
          * @param helper   Shared helper
@@ -141,12 +74,32 @@ public final class SymbolTableResolver {
         AbstractSymbolTable createAndLink(JSymbolTable stackTop, SymbolTableHelper helper, T data);
     }
 
-    private class MyVisitor extends SideEffectingVisitorAdapter<Void> {
+    private static class MyVisitor extends SideEffectingVisitorAdapter<Void> {
+
+        private final ASTCompilationUnit root;
+        private final SymbolTableHelper myResolveHelper;
+        private JSymbolTable myStackTop;
+
+        MyVisitor(ASTCompilationUnit root, SymbolTableHelper helper) {
+            this.root = root;
+            myResolveHelper = helper;
+            // this is the only place pushOnStack can be circumvented
+            myStackTop = EmptySymbolTable.getInstance();
+        }
 
 
-        // The AstAnalysisConfiguration is only used in the constructor
-        // The parameter on the visit methods is unnecessary
-        // TODO introduce another visitor with `void visit(Node);` signature
+        /**
+         * Start the analysis.
+         */
+        public void traverse() {
+            assert myStackTop instanceof EmptySymbolTable
+                : "Top should be an empty symtable when starting the traversal";
+
+            root.jjtAccept(this, null);
+
+            assert myStackTop instanceof EmptySymbolTable
+                : "Unbalanced stack push/pop! Top is " + myStackTop;
+        }
 
         @Override
         public void visit(ASTModifierList node, Void data) {
@@ -296,6 +249,9 @@ public final class SymbolTableResolver {
             popStack(pushed);
         }
 
+
+        // <editor-fold defaultstate="collapsed" desc="Stack manipulation routines">
+
         private void setTopSymbolTable(JavaNode node) {
             InternalApiBridge.setSymbolTable(node, peekStack());
         }
@@ -310,6 +266,52 @@ public final class SymbolTableResolver {
                 child.jjtAccept(this, null);
             }
         }
+
+
+
+        /**
+         * Create a new symbol table using {@link TableLinker#createAndLink(JSymbolTable, SymbolTableHelper, Object)},
+         * linking it to the top of the stack as its parent.
+         *
+         * Pushes must naturally be balanced with {@link #popStack()} calls.
+         *
+         * @param data Additional param passed to the linker. Passing parameters
+         *             like this avoids having to create a capturing lambda.
+         *
+         * @return 1 if the table was pushed, 0 if not
+         */
+        private <T> int pushOnStack(TableLinker<T> tableLinker, T data) {
+            AbstractSymbolTable created = tableLinker.createAndLink(peekStack(), myResolveHelper, data);
+            return pushOnStack(created) ? 1 : 0;
+        }
+
+        private boolean pushOnStack(AbstractSymbolTable table) {
+            assert table.getParent() == peekStack() : "Wrong parent";
+            if (table.isPrunable()) {
+                return false; // and don't set the stack top
+            }
+            this.myStackTop = table;
+            return true;
+        }
+
+        private JSymbolTable popStack() {
+            JSymbolTable curTop = this.myStackTop;
+            this.myStackTop = curTop.getParent();
+            return curTop;
+        }
+
+        private void popStack(int times) {
+            while (times-- > 0) {
+                popStack();
+            }
+        }
+
+        private JSymbolTable peekStack() {
+            return this.myStackTop;
+        }
+
+        // </editor-fold>
+
     }
 
 }

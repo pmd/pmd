@@ -6,12 +6,15 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.shouldThrow
+import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.TokenMgrError
 import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldMatchNode
+import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
+import net.sourceforge.pmd.lang.java.JavaParsingHelper.TestCheckLogger
+import net.sourceforge.pmd.lang.java.JavaParsingHelper.WITH_PROCESSING
 import java.beans.PropertyDescriptor
 
 /**
@@ -26,7 +29,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
 
-    val parser: JavaParsingHelper = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion(pmdName)
+    val pmdVersion get() = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(pmdName)
+
+    val parser: JavaParsingHelper = WITH_PROCESSING.withDefaultVersion(pmdName)
 
     operator fun not(): List<JavaVersion> = values().toList() - this
 
@@ -54,15 +59,19 @@ enum class JavaVersion : Comparable<JavaVersion> {
 
 object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) {
 
+    private val ignoredProps = setOf("scope")
+
     override fun takePropertyDescriptorIf(node: Node, prop: PropertyDescriptor): Boolean =
             when {
+                prop.name in ignoredProps                          -> false
                 prop.readMethod?.declaringClass !== node.javaClass -> false
                 // avoid outputting too much, it's bad for readability
-                node is ASTNumericLiteral -> when {
-                    node.isIntLiteral || node.isLongLiteral -> prop.name == "valueAsInt"
-                    else -> prop.name == "valueAsDouble"
+                node is ASTNumericLiteral                          -> when {
+                    node.isIntegral -> prop.name == "valueAsInt"
+                    else            -> prop.name == "valueAsDouble"
                 }
-                else -> true
+
+                else                                               -> true
             }
 
     // dump the 'it::getName' instead of 'it.name' syntax
@@ -155,7 +164,14 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          var packageName: String = "",
                          var genClassHeader: String = "class Foo") {
 
-    val parser get() = javaVersion.parser
+    var parser: JavaParsingHelper = javaVersion.parser.withProcessing(false)
+        private set
+
+    fun enableProcessing(logToConsole: Boolean = false): TestCheckLogger {
+        val logger = TestCheckLogger(logToConsole)
+        parser = parser.withProcessing(true).withLogger(logger)
+        return logger
+    }
 
     var fullSource: String? = null
 

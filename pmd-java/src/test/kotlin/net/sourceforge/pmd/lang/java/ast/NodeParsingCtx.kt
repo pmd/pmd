@@ -29,7 +29,7 @@ abstract class NodeParsingCtx<T : Node>(val constructName: String) {
      * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
      */
     fun parseNode(construct: String, ctx: ParserTestCtx): T {
-        val root = ctx.javaVersion.parser.parse(getTemplate(construct, ctx))
+        val root = ctx.parser.parse(getTemplate(construct, ctx))
 
         return retrieveNode(root)
     }

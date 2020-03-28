@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
 import java.lang.reflect.Modifier
 
-class VarScopingTest : ParserTestSpec({
+class VarScopingTest : ProcessorTestSpec({
 
     parserTest("Shadowing of variables") {
 

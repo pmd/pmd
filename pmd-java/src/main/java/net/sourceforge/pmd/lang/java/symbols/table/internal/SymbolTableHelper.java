@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
@@ -18,20 +19,14 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 final class SymbolTableHelper {
 
     private final String thisPackage;
-    private final SymbolResolver symbolResolver;
-    private final SemanticChecksLogger logger;
+    private final JavaAstProcessor processor;
 
 
-    SymbolTableHelper(String thisPackage,
-                      SymbolResolver symbolResolver,
-                      SemanticChecksLogger logger) {
-
-        this.thisPackage = thisPackage;
-        this.symbolResolver = symbolResolver;
-        this.logger = logger;
-
-        assert symbolResolver != null;
+    SymbolTableHelper(String thisPackage, JavaAstProcessor processor) {
         assert thisPackage != null;
+        assert processor != null;
+        this.thisPackage = thisPackage;
+        this.processor = processor;
     }
 
 
@@ -41,19 +36,20 @@ final class SymbolTableHelper {
     }
 
 
-    /** @see SymbolResolver#resolveClassOrDefault(String) */
     public JClassSymbol findSymbolCannotFail(String name) {
-        return symbolResolver.resolveClassOrDefault(name);
+        JClassSymbol found = processor.getSymResolver().resolveClassFromCanonicalName(name);
+        return found == null ? processor.makeUnresolvedReference(name, 0)
+                             : found;
     }
 
     /** @see SymbolResolver#resolveClassFromCanonicalName(String) */
     @Nullable
     JClassSymbol loadClassOrFail(String fqcn) {
-        return symbolResolver.resolveClassFromCanonicalName(fqcn);
+        return processor.getSymResolver().resolveClassFromCanonicalName(fqcn);
     }
 
     SemanticChecksLogger getLogger() {
-        return logger;
+        return processor.getLogger();
     }
 
     public String getThisPackage() {

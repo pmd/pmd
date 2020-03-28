@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
-import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import io.kotlintest.should as kotlintestShould
 
 /**
@@ -102,10 +102,18 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
         context.registerTestCase(
                 name = name,
                 spec = this,
-                test = { ParserTestCtx(javaVersion).assertions() },
+                test = { ParserTestCtx(javaVersion).apply { setup() }.assertions() },
                 config = defaultTestCaseConfig,
                 type = TestType.Test
         )
+    }
+
+    /**
+     * Setup to apply to spawned [ParserTestCtx]. By default, AST
+     * processing is disabled beyond the parser.
+     */
+    protected open fun ParserTestCtx.setup() {
+
     }
 
     inner class GroupTestCtx(private val context: TestContext) {
@@ -116,7 +124,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
                 context.registerTestCase(
                         name = "Java ${javaVersion.pmdName}",
                         spec = this@ParserTestSpec,
-                        test = { VersionedTestCtx(this, javaVersion).spec() },
+                        test = { VersionedTestCtx(this, javaVersion).apply { setup() }.spec() },
                         config = defaultTestCaseConfig,
                         type = TestType.Container
                 )
@@ -147,11 +155,14 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
             infix fun String.shouldNot(matcher: Matcher<String>) =
                     should(matcher.invert())
 
-            fun inContext(nodeParsingCtx: NodeParsingCtx<*>, assertions: ImplicitNodeParsingCtx.() -> Unit) {
+            fun <T : Node> inContext(nodeParsingCtx: NodeParsingCtx<T>, assertions: ImplicitNodeParsingCtx<T>.() -> Unit) {
                 ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
             }
 
-            inner class ImplicitNodeParsingCtx(private val nodeParsingCtx: NodeParsingCtx<*>) {
+            inner class ImplicitNodeParsingCtx<T : Node>(private val nodeParsingCtx: NodeParsingCtx<T>) {
+
+                fun doParse(s: String): T =
+                        nodeParsingCtx.parseNode(s, this@VersionedTestCtx)
 
                 /**
                  * A matcher that succeeds if the string parses correctly.
@@ -165,21 +176,20 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
                         this@VersionedTestCtx.notParseIn(nodeParsingCtx, expected)
 
 
-                fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
-                    val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
-                    val idx = node.indexInParent
-                    node.parent kotlintestShould matchNode<Node> {
-                        if (idx > 0) {
-                            unspecifiedChildren(idx)
-                        }
-                        matcher()
-                        val left = it.numChildren - 1 - idx
-                        if (left > 0) {
-                            unspecifiedChildren(left)
-                        }
-                    }
+                fun parseAs(matcher: ValuedNodeSpec<Node, out Any>): Assertions<String> = { str ->
+                    nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
+                            .shouldMatchN(matcher)
                 }
             }
         }
+    }
+}
+
+/**
+ * A spec for which AST processing beyond the parser is enabled.
+ */
+abstract class ProcessorTestSpec(body: ParserTestSpec.() -> Unit) : ParserTestSpec(body), IntelliMarker {
+    override fun ParserTestCtx.setup() {
+        enableProcessing(true)
     }
 }
