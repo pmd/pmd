@@ -19,11 +19,13 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
+import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.sxpath.IndependentContext;
 
 /**
@@ -67,11 +69,18 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractLanguageVersionHandler {
+        public static class TestFunctions {
+            public static boolean typeIs(final XPathContext context, final String fullTypeName) {
+                return false;
+            }
+        }
+
         @Override
         public XPathHandler getXPathHandler() {
-            return new XPathHandler() {
+            return new AbstractASTXPathHandler() {
                 @Override
                 public void initialize(IndependentContext context) {
+                    super.initialize(context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME), TestFunctions.class);
                 }
 
                 @Override
