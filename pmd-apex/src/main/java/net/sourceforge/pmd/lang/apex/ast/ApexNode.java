@@ -49,4 +49,6 @@ public interface ApexNode<T extends AstNode> extends Node {
 
     @Override
     ApexNode<?> getParent();
+
+    boolean hasRealLoc();
 }

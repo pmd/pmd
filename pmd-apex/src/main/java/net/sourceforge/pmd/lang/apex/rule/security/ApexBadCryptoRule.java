@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
@@ -71,7 +71,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
         return data;
     }
 
-    private void findSafeVariables(AbstractApexNode<?> var) {
+    private void findSafeVariables(ApexNode<?> var) {
         ASTMethodCallExpression methodCall = var.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCall != null && Helper.isMethodName(methodCall, BLOB, VALUE_OF)) {
             ASTVariableExpression variable = var.getFirstChildOfType(ASTVariableExpression.class);

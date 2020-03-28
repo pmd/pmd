@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import net.sf.saxon.expr.AxisExpression;
+import net.sf.saxon.expr.BooleanExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
+import net.sf.saxon.expr.LazyExpression;
 import net.sf.saxon.expr.LetExpression;
 import net.sf.saxon.expr.PathExpression;
 import net.sf.saxon.expr.QuantifiedExpression;
@@ -14,7 +16,7 @@ import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.expr.VennExpression;
 import net.sf.saxon.sort.DocumentSorter;
 
-abstract class Visitor {
+abstract class SaxonExprVisitor {
     public Expression visit(DocumentSorter e) {
         Expression base = visit(e.getBaseExpression());
         return new DocumentSorter(base);
@@ -63,6 +65,18 @@ abstract class Visitor {
         return result;
     }
 
+    public Expression visit(LazyExpression e) {
+        Expression base = visit(e.getBaseExpression());
+        return LazyExpression.makeLazyExpression(base);
+    }
+
+    public Expression visit(BooleanExpression e) {
+        final Expression[] operands = e.getOperands();
+        Expression operand0 = visit(operands[0]);
+        Expression operand1 = visit(operands[1]);
+        return new BooleanExpression(operand0, e.getOperator(), operand1);
+    }
+
     public Expression visit(Expression expr) {
         Expression result;
         if (expr instanceof DocumentSorter) {
@@ -81,6 +95,10 @@ abstract class Visitor {
             result = visit((QuantifiedExpression) expr);
         } else if (expr instanceof LetExpression) {
             result = visit((LetExpression) expr);
+        } else if (expr instanceof LazyExpression) {
+            result = visit((LazyExpression) expr);
+        } else if (expr instanceof BooleanExpression) {
+            result = visit((BooleanExpression) expr);
         } else {
             result = expr;
         }
