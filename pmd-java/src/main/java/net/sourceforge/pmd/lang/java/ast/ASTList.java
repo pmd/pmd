@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
 
 /**
@@ -47,7 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  */
 public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode implements Iterable<N> {
 
-    private final Class<N> elementType;
+    protected final Class<N> elementType;
 
     ASTList(int id, Class<N> kind) {
         super(id);
@@ -98,16 +99,30 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
      * Super type for *nonempty* lists that *only* have nodes of type {@code <T>}
      * as a child.
      */
-    abstract static class ASTNonEmptyList<T extends JavaNode> extends ASTList<T> implements AtLeastOneChildOfType<T> {
+    abstract static class ASTNonEmptyList<T extends JavaNode>
+        extends ASTMaybeEmptyListOf<T>
+        implements AtLeastOneChildOfType<T> {
 
         ASTNonEmptyList(int id, Class<T> kind) {
             super(id, kind);
         }
+    }
+
+    /**
+     * Super type for lists that *only* have nodes of type {@code <T>}
+     * as a child.
+     */
+    abstract static class ASTMaybeEmptyListOf<T extends JavaNode>
+        extends ASTList<T>
+        implements AllChildrenAreOfType<T> {
+
+        ASTMaybeEmptyListOf(int id, Class<T> kind) {
+            super(id, kind);
+        }
 
         @Override
-        @SuppressWarnings("unchecked")
         public T getChild(int index) {
-            return (T) super.getChild(index);
+            return elementType.cast(super.getChild(index));
         }
     }
 }

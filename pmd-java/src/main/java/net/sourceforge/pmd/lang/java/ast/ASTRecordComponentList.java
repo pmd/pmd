@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
  * Defines the state description of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  * </pre>
  */
 @Experimental
-public final class ASTRecordComponentList extends ASTNonEmptyList<ASTRecordComponent> {
+public final class ASTRecordComponentList extends ASTMaybeEmptyListOf<ASTRecordComponent> {
 
     ASTRecordComponentList(int id) {
         super(id, ASTRecordComponent.class);
@@ -28,7 +28,8 @@ public final class ASTRecordComponentList extends ASTNonEmptyList<ASTRecordCompo
      * Returns true if the last component is varargs.
      */
     public boolean isVarargs() {
-        return getLastChild().isVarargs();
+        ASTRecordComponent lastChild = getLastChild();
+        return lastChild != null && lastChild.isVarargs();
     }
 
     @Override

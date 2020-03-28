@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
+
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
  *
@@ -13,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *                  | "&lt;" "&gt;"
  * </pre>
  */
-public final class ASTTypeArguments extends ASTList<ASTType> {
+public final class ASTTypeArguments extends ASTMaybeEmptyListOf<ASTType> {
 
     ASTTypeArguments(int id) {
         super(id, ASTType.class);
