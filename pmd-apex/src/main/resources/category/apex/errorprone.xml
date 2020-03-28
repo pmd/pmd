@@ -72,7 +72,7 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
 
-   for ( Account a : Trigger.new ){
+   for ( Account a : Trigger.new ) {
         //Good: Iterate through the trigger.new array instead.
    }
 }
@@ -96,9 +96,9 @@ the logic can dynamically identify the proper data to operate against and not fa
 public without sharing class Foo {
     void foo() {
         //Error - hardcoded the record type id
-        if(a.RecordTypeId == '012500000009WAr'){
+        if (a.RecordTypeId == '012500000009WAr') {
             //do some logic here.....
-        } else if(a.RecordTypeId == '0123000000095Km'){
+        } else if (a.RecordTypeId == '0123000000095Km') {
             //do some logic here for a different record type...
         }
     }
@@ -131,12 +131,12 @@ or reported.
         <example>
 <![CDATA[
 public void doSomething() {
-  ...
-  try {
-    insert accounts;
-  } catch (DmlException dmle) {
-    // not good
-  }
+    ...
+    try {
+        insert accounts;
+    } catch (DmlException dmle) {
+        // not good
+    }
 }
 ]]>
         </example>
@@ -165,11 +165,11 @@ Empty If Statement finds instances where a condition is checked but nothing is d
         <example>
 <![CDATA[
 public class Foo {
-  public void bar(Integer x) {
-    if (x == 0) {
-      // empty!
+    public void bar(Integer x) {
+        if (x == 0) {
+            // empty!
+        }
     }
-  }
 }
 ]]>
         </example>
@@ -199,9 +199,9 @@ Empty block statements serve no purpose and should be removed.
 <![CDATA[
 public class Foo {
 
-   private int _bar;
+   private Integer _bar;
 
-   public void setBar(int bar) {
+   public void setBar(Integer bar) {
         // empty
    }
 
@@ -244,7 +244,7 @@ public class Foo {
 public class Foo {
     public void bar() {
         try {
-            int x=2;
+            Integer x=2;
         } finally {
             // empty!
         }

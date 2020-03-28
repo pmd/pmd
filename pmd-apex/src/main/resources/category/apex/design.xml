@@ -121,7 +121,10 @@ public class Foo {
         if (a.Phone == null) {                          // +1
             a.Phone = phone;
             update a;
+            return true;
         }
+
+        return false;
     }
 
     // Has a cognitive complexity of 5
@@ -189,7 +192,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
         <example>
 <![CDATA[
 // too many arguments liable to be mixed up
-public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
+public void addPerson(Integer birthYear, Integer birthMonth, Integer birthDate, Integer height, Integer weight, Integer ssn) {
     // ...
 }
 // preferred approach
@@ -272,8 +275,8 @@ lines of code that are split are counted as one.
 <![CDATA[
 public class Foo extends Bar {
     //this method only has 1 NCSS lines
-    public Integer methd() {
-        super.methd();
+    public Integer method() {
+        super.method();
 
 
 
@@ -382,11 +385,11 @@ city/state/zip fields could park them within a single Address field.
 <![CDATA[
 public class Person {
     // too many separate fields
-    int birthYear;
-    int birthMonth;
-    int birthDate;
-    float height;
-    float weight;
+    Integer birthYear;
+    Integer birthMonth;
+    Integer birthDate;
+    Double height;
+    Double weight;
 }
 
 public class Person {
