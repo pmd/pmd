@@ -80,7 +80,7 @@ public final class SymbolTableResolver {
         private final SymbolTableHelper myResolveHelper;
         private JSymbolTable myStackTop;
 
-        public MyVisitor(ASTCompilationUnit root, SymbolTableHelper helper) {
+        MyVisitor(ASTCompilationUnit root, SymbolTableHelper helper) {
             this.root = root;
             myResolveHelper = helper;
             // this is the only place pushOnStack can be circumvented

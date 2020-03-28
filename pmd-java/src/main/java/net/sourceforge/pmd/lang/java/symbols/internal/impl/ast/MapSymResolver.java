@@ -20,8 +20,8 @@ final class MapSymResolver implements SymbolResolver {
     private final Map<String, JClassSymbol> byCanonicalName;
     private final Map<String, JClassSymbol> byBinaryName;
 
-    public MapSymResolver(Map<String, JClassSymbol> byCanonicalName,
-                          Map<String, JClassSymbol> byBinaryName) {
+    MapSymResolver(Map<String, JClassSymbol> byCanonicalName,
+                   Map<String, JClassSymbol> byBinaryName) {
         this.byCanonicalName = byCanonicalName;
         this.byBinaryName = byBinaryName;
     }

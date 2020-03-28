@@ -35,9 +35,9 @@ public final class JavaAstProcessor {
     private static final Logger DEFAULT_LOG = Logger.getLogger(JavaAstProcessor.class.getName());
 
     private final SemanticChecksLogger logger;
-    private final LanguageVersion languageVersion;
+    private final LanguageVersion languageVersion; // NOPMD
     private final AstSymFactory astSymFactory;
-    private final ReflectionSymFactory reflectSymFactory;
+    private final ReflectionSymFactory reflectSymFactory; // NOPMD
     private final UnresolvedSymFactory unresolvedSymFactory;
     private SymbolResolver symResolver;
 
