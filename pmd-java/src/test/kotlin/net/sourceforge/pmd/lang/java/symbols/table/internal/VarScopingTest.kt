@@ -212,6 +212,57 @@ class VarScopingTest : ParserTestSpec({
             iAccess2 shouldResolveToLocal ivar
         }
     }
+
+    parserTest("Record constructors") {
+
+        val acu = parser.withProcessing().parse("""
+
+            record Cons(int x, int... rest) {
+                Cons {
+                    assert true;
+                }
+
+                Cons(int x2, int y2) {
+                    assert false; 
+                    this.x = x2;
+                    x2 = x;
+                    this.rest = new int[] { y2 };
+                }
+            }
+        """.trimIndent())
+
+        val (xComp, restComp, x2Formal, y2Formal) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val (insideCompact, insideRegular) =
+                acu.descendants(ASTAssertStatement::class.java).toList()
+
+        val (compactCtor, normalCtor) =
+                acu.descendants(ASTBodyDeclaration::class.java).filterIs(SymbolDeclaratorNode::class.java).toList()
+
+        doTest("Inside compact ctor: components are in scope as formals") {
+            insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("x") {
+                result::getDeclaringSymbol shouldBe compactCtor.symbol
+                this::getContributor shouldBe xComp
+            }
+            insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("rest") {
+                result::getDeclaringSymbol shouldBe compactCtor.symbol
+                this::getContributor shouldBe restComp
+            }
+        }
+
+        doTest("Inside normal ctor: components are in scope as fields") {
+            insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("x") {
+                result::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+                this::getContributor shouldBe xComp
+            }
+
+            insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("rest") {
+                result::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+                this::getContributor shouldBe restComp
+            }
+        }
+    }
 })
 
 private infix fun JavaNode.shouldResolveToLocal(localId: ASTVariableDeclaratorId): JLocalVariableSymbol =

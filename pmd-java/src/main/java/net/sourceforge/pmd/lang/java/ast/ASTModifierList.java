@@ -233,7 +233,7 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         @Override
         public void visit(ASTRecordComponent node, Set<JModifier> effective) {
-            effective.add(PUBLIC);
+            effective.add(PRIVATE); // field is private, an accessor method is generated
             effective.add(FINAL);
         }
 

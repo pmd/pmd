@@ -68,9 +68,9 @@ final class VarOnlySymTable extends AbstractSymbolTable {
         this.varResults = new HashMap<>(formals.size());
         for (int i = 0; i < formals.size(); i++) {
             JFormalParamSymbol formalSym = formals.get(i);
-            ASTRecordComponent comp = components.get(i);
+            ASTVariableDeclaratorId comp = components.get(i).getVarId();
 
-            assert comp.getVarId().getVariableName().equals(formalSym.getSimpleName());
+            assert comp.getVariableName().equals(formalSym.getSimpleName());
 
             varResults.put(formalSym.getSimpleName(), new VarResolveResult(formalSym, this, comp));
         }
