@@ -7,13 +7,28 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
  * Defines a single component of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 preview feature).
  *
  * <p>The varargs ellipsis {@code "..."} is parsed as an {@linkplain ASTArrayTypeDim array dimension}
  * in the type node.
-
+ *
+ * <p>Record components declare a field, and if a canonical constructor
+ * is synthesized by the compiler, also a formal parameter (which is in
+ * scope in the body of a {@linkplain ASTRecordConstructorDeclaration compact record constructor}).
+ * They also may imply the declaration of an accessor method.
+ * <ul>
+ * <li>The symbol exposed by the {@link ASTVariableDeclaratorId} is the field
+ * symbol.
+ * <li> The formal parameter symbol is accessible in the formal parameter
+ * list of the {@link JConstructorSymbol} for the {@linkplain ASTRecordComponentList#getSymbol() canonical constructor}.
+ * <li>The symbol for the accessor method can be found in the {@link JClassSymbol#getDeclaredMethods() declared methods}
+ * of the symbol for the record declaration. TODO when we support usage search this needs to be more straightforward
+ * </ul>
+ *
  * <pre class="grammar">
  *
  * RecordComponent ::= {@linkplain ASTAnnotation Annotation}* {@linkplain ASTType Type} {@linkplain ASTVariableDeclaratorId VariableDeclaratorId}

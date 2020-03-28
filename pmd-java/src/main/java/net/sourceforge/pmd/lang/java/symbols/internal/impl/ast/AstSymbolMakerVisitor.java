@@ -64,7 +64,10 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
     }
 
     private boolean isTrueLocalVar(ASTVariableDeclaratorId node) {
-        return !(node.isField() || node.isEnumConstant() || node.getParent() instanceof ASTFormalParameter);
+        return !(node.isField()
+            || node.isEnumConstant()
+            || node.isRecordComponent()
+            || node.getParent() instanceof ASTFormalParameter);
     }
 
 

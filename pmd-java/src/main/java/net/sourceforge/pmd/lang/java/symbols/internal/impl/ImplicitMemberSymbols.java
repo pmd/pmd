@@ -100,10 +100,8 @@ public final class ImplicitMemberSymbols {
                                                        boolean isVarargs) {
         assert recordSym.isRecord() : "Not a record symbol " + recordSym;
 
-        int modifiers = recordSym.getModifiers() & VISIBILITY_MASK;
-        if (isVarargs) {
-            modifiers |= VARARGS_MOD;
-        }
+        int modifiers = isVarargs ? Modifier.PUBLIC | VARARGS_MOD
+                                  : Modifier.PUBLIC;
 
         return new FakeCtorSym(
             recordSym,

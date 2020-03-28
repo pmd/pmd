@@ -38,6 +38,11 @@ public final class AstSymFactory {
      * Builds, sets and returns the symbol for the given class.
      */
     JClassSymbol setClassSymbol(@Nullable JTypeParameterOwnerSymbol enclosing, ASTAnyTypeDeclaration klass) {
+        if (enclosing instanceof JClassSymbol && klass.isNested()) {
+            JClassSymbol inner = ((JClassSymbol) enclosing).getDeclaredClass(klass.getSimpleName());
+            assert inner != null : "Inner class symbol was not created for " + klass;
+            return inner;
+        }
         return new AstClassSym(klass, this, enclosing);
     }
 

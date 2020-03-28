@@ -32,6 +32,7 @@ abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbo
 
 
     void setSymbol(T symbol) {
+        AbstractTypedSymbolDeclarator.assertSymbolNull(this.symbol, this);
         this.symbol = symbol;
     }
 

@@ -132,7 +132,7 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
-     * Returns the record components declared by this enum. If this is not
+     * Returns the record components declared by this class. If this is not
      * a record declaration, returns null.
      */
     default @Nullable ASTRecordComponentList getRecordComponentList() {
@@ -207,6 +207,13 @@ public interface ASTAnyTypeDeclaration
      */
     default boolean isEnum() {
         return this instanceof ASTEnumDeclaration;
+    }
+
+    /**
+     * Returns true if this is an {@linkplain ASTRecordDeclaration record class declaration}.
+     */
+    default boolean isRecord() {
+        return this instanceof ASTRecordDeclaration;
     }
 
     /**

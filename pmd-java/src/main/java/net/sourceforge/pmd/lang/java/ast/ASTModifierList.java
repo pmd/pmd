@@ -188,12 +188,14 @@ public final class ASTModifierList extends AbstractJavaNode {
                 if (!node.isTopLevel()) {
                     effective.add(STATIC);
                 }
-            } else if (node instanceof ASTEnumDeclaration && !node.isTopLevel()) {
+            } else if (!node.isTopLevel()
+                && (node instanceof ASTEnumDeclaration || node instanceof ASTRecordDeclaration)) {
                 effective.add(STATIC);
             }
 
             if (node instanceof ASTEnumDeclaration
-                && node.getEnumConstants().none(ASTEnumConstant::isAnonymousClass)) {
+                && node.getEnumConstants().none(ASTEnumConstant::isAnonymousClass)
+                || node instanceof ASTRecordDeclaration) {
                 effective.add(FINAL);
             }
         }

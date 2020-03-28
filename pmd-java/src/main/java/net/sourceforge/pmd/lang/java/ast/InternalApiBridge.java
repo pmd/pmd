@@ -45,8 +45,8 @@ public final class InternalApiBridge {
             ((ASTVariableDeclaratorId) node).setSymbol((JVariableSymbol) symbol);
         } else if (node instanceof ASTTypeParameter) {
             ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
-        } else if (node instanceof ASTRecordConstructorDeclaration) {
-            ((ASTRecordConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
+        } else if (node instanceof ASTRecordComponentList) {
+            ((ASTRecordComponentList) node).setSymbol((JConstructorSymbol) symbol);
         } else {
             throw new AssertionError("Cannot set symbol " + symbol + " on node " + node);
         }

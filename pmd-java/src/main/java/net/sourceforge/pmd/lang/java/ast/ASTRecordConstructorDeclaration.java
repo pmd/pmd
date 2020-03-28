@@ -10,14 +10,11 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
  * This defines a compact constructor for a {@link ASTRecordDeclaration RecordDeclaration}
- * (JDK 14 preview feature). Such a declaration implicitly declares formal
- * parameters corresponding to the record component list. These formal
- * parameters are those of the {@linkplain #getSymbol() symbol} accessible
- * on this node. They are distinct from the field symbols declared
- * by the VariableDeclaratorId of the {@linkplain ASTRecordComponent record components},
- * in fact they shadow them.
+ * (JDK 14 preview feature). Compact constructors implicitly declares formal
+ * parameters corresponding to the record component list. These can be
+ * fetched from {@link #getSymbol()}.
  *
- * <p>The modifier list implicitly has modifiers "private final".
+ * <p>Compact record constructors must be declared "public".
  *
  * TODO make implicit formal parameter node and implement ASTMethodOrConstructorDeclaration.
  *
@@ -31,8 +28,6 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  */
 @Experimental
 public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, AccessNode {
-
-    private JConstructorSymbol symbol;
 
     ASTRecordConstructorDeclaration(int id) {
         super(id);
@@ -59,10 +54,6 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaNode impl
 
     @Override
     public JConstructorSymbol getSymbol() {
-        return symbol;
-    }
-
-    void setSymbol(JConstructorSymbol symbol) {
-        this.symbol = symbol;
+        return getEnclosingType().getRecordComponentList().getSymbol();
     }
 }
