@@ -94,7 +94,7 @@ abstract class Foo {
     </test-code>
 
     <test-code>
-        <description>FN with nested class</description>
+        <description>FN with sibling class</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
