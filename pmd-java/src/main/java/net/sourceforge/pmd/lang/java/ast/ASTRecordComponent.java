@@ -46,9 +46,6 @@ public final class ASTRecordComponent extends AbstractJavaNode implements Access
         return getTypeNode() instanceof ASTArrayType && ((ASTArrayType) getTypeNode()).getDimensions().getLastChild().isVarargs();
     }
 
-    /**
-     * Returns the type node.
-     */
     public ASTType getTypeNode() {
         return getFirstChildOfType(ASTType.class);
     }

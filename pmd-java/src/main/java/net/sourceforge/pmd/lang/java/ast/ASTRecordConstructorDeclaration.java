@@ -10,7 +10,14 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
  * This defines a compact constructor for a {@link ASTRecordDeclaration RecordDeclaration}
- * (JDK 14 preview feature).
+ * (JDK 14 preview feature). Such a declaration implicitly declares formal
+ * parameters corresponding to the record component list. These formal
+ * parameters are those of the {@linkplain #getSymbol() symbol} accessible
+ * on this node. They are distinct from the field symbols declared
+ * by the VariableDeclaratorId of the {@linkplain ASTRecordComponent record components},
+ * in fact they shadow them.
+ *
+ * <p>The modifier list implicitly has modifiers "private final".
  *
  * TODO make implicit formal parameter node and implement ASTMethodOrConstructorDeclaration.
  *
