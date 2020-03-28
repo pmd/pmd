@@ -115,6 +115,23 @@ public final class ImplicitMemberSymbols {
         );
     }
 
+    /**
+     * Symbol for a record component accessor.
+     * Only synthesized if it is not explicitly declared.
+     */
+    public static JMethodSymbol recordAccessor(JClassSymbol recordSym, JFieldSymbol recordComponent) {
+        // See https://cr.openjdk.java.net/~gbierman/jep359/jep359-20200115/specs/records-jls.html#jls-8.10.3
+
+        assert recordSym.isRecord() : "Not a record symbol " + recordSym;
+
+        return new FakeMethodSym(
+            recordSym,
+            recordComponent.getSimpleName(),
+            Modifier.PUBLIC,
+            emptyList()
+        );
+    }
+
     public static JFieldSymbol arrayLengthField(JClassSymbol arraySym) {
         assert arraySym.isArray() : "Not an array symbol " + arraySym;
 

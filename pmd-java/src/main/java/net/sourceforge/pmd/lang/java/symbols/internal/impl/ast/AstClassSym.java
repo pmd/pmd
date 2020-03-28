@@ -61,13 +61,17 @@ final class AstClassSym
         final List<JFieldSymbol> myFields = new ArrayList<>();
         @Nullable JConstructorSymbol canonicalRecordCtor;
 
-        if (node instanceof ASTRecordDeclaration) {
+        List<JFieldSymbol> recordComponents;
+        boolean isRecord = isRecord();
+        if (isRecord) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponentList(),
                                                                        "Null component list for " + node);
-            List<JFieldSymbol> recordComponents = CollectionUtil.map(components, comp -> new AstFieldSym(comp.getVarId(), factory, this));
+            recordComponents = CollectionUtil.map(components, comp -> new AstFieldSym(comp.getVarId(), factory, this));
             canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
             myFields.addAll(recordComponents);
+            myCtors.add(canonicalRecordCtor);
         } else {
+            recordComponents = Collections.emptyList();
             canonicalRecordCtor = null;
             if (node instanceof ASTEnumDeclaration) {
                 node.getEnumConstants()
@@ -81,6 +85,10 @@ final class AstClassSym
             if (dnode instanceof ASTAnyTypeDeclaration) {
                 myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTMethodDeclaration) {
+                if (isRecord && ((ASTMethodDeclaration) dnode).getArity() == 0) {
+                    // filter out record component, so that the accessor is not generated
+                    recordComponents.removeIf(f -> f.getSimpleName().equals(((ASTMethodDeclaration) dnode).getName()));
+                }
                 myMethods.add(new AstMethodSym((ASTMethodDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTConstructorDeclaration) {
                 myCtors.add(new AstCtorSym((ASTConstructorDeclaration) dnode, factory, this));
@@ -91,6 +99,15 @@ final class AstClassSym
             } else if (dnode instanceof ASTRecordConstructorDeclaration) {
                 assert canonicalRecordCtor != null : "Record constructor declaration in a class that is not a record: " + this;
                 InternalApiBridge.setSymbol((ASTRecordConstructorDeclaration) dnode, canonicalRecordCtor);
+            }
+        }
+
+        if (isRecord && !recordComponents.isEmpty()) {
+            // then the recordsComponents contains all record components
+            // for which we must synthesize an accessor (explicitly declared
+            // accessors have been filtered out)
+            for (JFieldSymbol component : recordComponents) {
+                myMethods.add(ImplicitMemberSymbols.recordAccessor(this, component));
             }
         }
 
