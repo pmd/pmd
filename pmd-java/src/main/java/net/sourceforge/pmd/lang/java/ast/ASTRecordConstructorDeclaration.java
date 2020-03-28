@@ -16,7 +16,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  * <pre class="grammar">
  *
  * RecordConstructorDeclaration ::=  {@link ASTModifierList Modifiers}
- *                                   {@link ASTTypeParameters TypeParameters}?
  *                                   &lt;IDENTIFIER&gt;
  *                                   {@link ASTBlock Block}
  *

@@ -49,7 +49,10 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends @Nullable NodeStream<? extends R>> mapper) {
-        return mapIter(iter -> IteratorUtil.flatMap(iter, mapper.andThen(IteratorBasedNStream::safeMap)));
+        // Note temporary function is complete typing is needed so that it compiles with ejc
+        // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=561482
+        Function<? super T, Iterator<? extends R>> mapped = mapper.andThen(IteratorBasedNStream::safeMap);
+        return mapIter(iter -> IteratorUtil.flatMap(iter, mapped));
     }
 
     private static <R extends Node> @NonNull Iterator<? extends R> safeMap(@Nullable NodeStream<? extends R> ns) {

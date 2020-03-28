@@ -24,7 +24,7 @@ improves the readability of test output.
             <![CDATA[
 @isTest
 public class Foo {
-     @isTest
+    @isTest
     static void methodATest() {
         System.assertNotEquals('123', o.StageName); // not good
         System.assertEquals('123', o.StageName, 'Opportunity stageName is wrong.'); // good
@@ -50,12 +50,12 @@ with messages provide the developer a clearer idea of what the test does.
 <![CDATA[
 @isTest
 public class Foo {
-   public static testMethod void testSomething() {
-      Account a = null;
-   // This is better than having a NullPointerException
-   // System.assertNotEquals(a, null, 'account not found');
-   a.toString();
-   }
+    public static testMethod void testSomething() {
+        Account a = null;
+        // This is better than having a NullPointerException
+        // System.assertNotEquals(a, null, 'account not found');
+        a.toString();
+    }
 }
 ]]>
         </example>
@@ -106,12 +106,12 @@ Apex unit tests should not use @isTest(seeAllData=true) because it opens up the 
 <![CDATA[
 @isTest(seeAllData = true)
 public class Foo {
-   public static testMethod void testSomething() {
-      Account a = null;
-   // This is better than having a NullPointerException
-   // System.assertNotEquals(a, null, 'account not found');
-   a.toString();
-   }
+    public static testMethod void testSomething() {
+        Account a = null;
+        // This is better than having a NullPointerException
+        // System.assertNotEquals(a, null, 'account not found');
+        a.toString();
+    }
 }
 ]]>
         </example>
