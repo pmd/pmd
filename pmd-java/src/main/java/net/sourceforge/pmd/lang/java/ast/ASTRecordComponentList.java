@@ -24,6 +24,13 @@ public final class ASTRecordComponentList extends ASTNonEmptyList<ASTRecordCompo
         super(id, ASTRecordComponent.class);
     }
 
+    /**
+     * Returns true if the last component is varargs.
+     */
+    public boolean isVarargs() {
+        return getLastChild().isVarargs();
+    }
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

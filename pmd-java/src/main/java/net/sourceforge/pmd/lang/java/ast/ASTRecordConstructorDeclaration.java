@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
  * This defines a compact constructor for a {@link ASTRecordDeclaration RecordDeclaration}
@@ -16,14 +17,15 @@ import net.sourceforge.pmd.annotation.Experimental;
  * <pre class="grammar">
  *
  * RecordConstructorDeclaration ::=  {@link ASTModifierList Modifiers}
- *                                   {@link ASTTypeParameters TypeParameters}?
  *                                   &lt;IDENTIFIER&gt;
  *                                   {@link ASTBlock Block}
  *
  * </pre>
  */
 @Experimental
-public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration {
+public final class ASTRecordConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode {
+
+    private JConstructorSymbol symbol;
 
     ASTRecordConstructorDeclaration(int id) {
         super(id);
@@ -41,5 +43,14 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaNode impl
 
     public ASTBlock getBody() {
         return getFirstChildOfType(ASTBlock.class);
+    }
+
+    @Override
+    public JConstructorSymbol getSymbol() {
+        return symbol;
+    }
+
+    void setSymbol(JConstructorSymbol symbol) {
+        this.symbol = symbol;
     }
 }

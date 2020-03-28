@@ -29,6 +29,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class ImplicitMemberSymbols {
 
     private static final int VISIBILITY_MASK = Modifier.PRIVATE | Modifier.PUBLIC | Modifier.PROTECTED;
+    /** This is the private access flag for varargs modifiers. */
+    private static final int VARARGS_MOD = 0x00000080;
 
     private ImplicitMemberSymbols() {
 
@@ -92,6 +94,27 @@ public final class ImplicitMemberSymbols {
         );
     }
 
+    /** Symbol for the canonical record constructor. */
+    public static JConstructorSymbol recordConstructor(JClassSymbol recordSym,
+                                                       List<JFieldSymbol> recordComponents,
+                                                       boolean isVarargs) {
+        assert recordSym.isRecord() : "Not a record symbol " + recordSym;
+
+        int modifiers = recordSym.getModifiers() & VISIBILITY_MASK;
+        if (isVarargs) {
+            modifiers |= VARARGS_MOD;
+        }
+
+        return new FakeCtorSym(
+            recordSym,
+            modifiers,
+            CollectionUtil.map(
+                recordComponents,
+                f -> c -> new FakeFormalParamSym(c, f.getSimpleName())
+            )
+        );
+    }
+
     public static JFieldSymbol arrayLengthField(JClassSymbol arraySym) {
         assert arraySym.isArray() : "Not an array symbol " + arraySym;
 
@@ -131,7 +154,7 @@ public final class ImplicitMemberSymbols {
 
         @Override
         public boolean isVarargs() {
-            return false;
+            return (modifiers & VARARGS_MOD) != 0;
         }
 
         @Override

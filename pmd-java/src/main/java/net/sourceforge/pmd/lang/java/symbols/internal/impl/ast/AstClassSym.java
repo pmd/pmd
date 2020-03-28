@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -17,10 +18,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -30,6 +33,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class AstClassSym
@@ -51,18 +55,26 @@ final class AstClassSym
         // evaluate everything strictly
         // this populates symbols on the relevant AST nodes
 
-        List<JClassSymbol> myClasses = new ArrayList<>();
-        List<JMethodSymbol> myMethods = new ArrayList<>();
-        List<JConstructorSymbol> myCtors = new ArrayList<>();
-        List<JFieldSymbol> myFields = new ArrayList<>();
+        final List<JClassSymbol> myClasses = new ArrayList<>();
+        final List<JMethodSymbol> myMethods = new ArrayList<>();
+        final List<JConstructorSymbol> myCtors = new ArrayList<>();
+        final List<JFieldSymbol> myFields = new ArrayList<>();
+        @Nullable JConstructorSymbol canonicalRecordCtor;
 
-        if (node instanceof ASTEnumDeclaration) {
-            node.getEnumConstants()
-                .forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
-        } else if (node instanceof ASTRecordDeclaration) {
-            ASTList.orEmpty(((ASTRecordDeclaration) node).getRecordComponentList())
-                   .forEach(component -> myFields.add(new AstFieldSym(component.getVarId(), factory, this)));
+        if (node instanceof ASTRecordDeclaration) {
+            ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponentList(),
+                                                                       "Null component list for " + node);
+            List<JFieldSymbol> recordComponents = CollectionUtil.map(components, comp -> new AstFieldSym(comp.getVarId(), factory, this));
+            canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
+            myFields.addAll(recordComponents);
+        } else {
+            canonicalRecordCtor = null;
+            if (node instanceof ASTEnumDeclaration) {
+                node.getEnumConstants()
+                    .forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+            }
         }
+
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
@@ -76,6 +88,9 @@ final class AstClassSym
                 for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
+            } else if (dnode instanceof ASTRecordConstructorDeclaration) {
+                assert canonicalRecordCtor != null : "Record constructor declaration in a class that is not a record: " + this;
+                InternalApiBridge.setSymbol((ASTRecordConstructorDeclaration) dnode, canonicalRecordCtor);
             }
         }
 
