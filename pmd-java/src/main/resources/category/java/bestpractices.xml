@@ -1421,16 +1421,21 @@ This rule detects JUnit assertions in object equality. These assertions should b
     PrimaryPrefix/Name[@Image = 'assertTrue']
 ][
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-    [ends-with(@Image, '.equals')]
+        [ends-with(@Image, '.equals')]
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
-    or //MarkerAnnotation/Name[
+[ancestor::ClassOrInterfaceDeclaration[
+    pmd-java:typeIs('junit.framework.TestCase')
+    or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]
     ]
-]]]]>
+]
+]]>
                 </value>
             </property>
         </properties>
@@ -1464,20 +1469,25 @@ more specific methods, like assertNull, assertNotNull.
                 <value>
 <![CDATA[
 //PrimaryExpression[
- PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ][
- PrimarySuffix/Arguments/ArgumentList[
-  Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
- ]
-]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
-    or //MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    PrimarySuffix/Arguments/ArgumentList[
+        Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
     ]
-]]]]>
+]
+[ancestor::ClassOrInterfaceDeclaration[
+    pmd-java:typeIs('junit.framework.TestCase')
+    or .//MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]
+    ]
+]
+]]>
                 </value>
             </property>
         </properties>
@@ -1513,20 +1523,25 @@ by more specific methods, like assertSame, assertNotSame.
                 <value>
 <![CDATA[
 //PrimaryExpression[
-    PrimaryPrefix/Name
-     [@Image = 'assertTrue' or @Image = 'assertFalse']
+    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ]
-[PrimarySuffix/Arguments
- /ArgumentList/Expression
- /EqualityExpression[count(.//NullLiteral) = 0]]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
-    or //MarkerAnnotation/Name[
+[
+    PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression
+        [count(.//NullLiteral) = 0]
+]
+[ancestor::ClassOrInterfaceDeclaration[
+    pmd-java:typeIs('junit.framework.TestCase')
+    or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+        ]
     ]
-]]]]>
+]
+]]>
                 </value>
             </property>
         </properties>
