@@ -13,6 +13,7 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -106,6 +107,7 @@ public final class JavaAstProcessor {
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        bench("AST disambiguation", () -> AstDisambiguationPass.disambig1(this, acu));
 
     }
 

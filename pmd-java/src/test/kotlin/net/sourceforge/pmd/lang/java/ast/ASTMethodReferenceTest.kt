@@ -240,3 +240,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
         }
     }
 })
+
+
+
+fun ASTClassOrInterfaceType.getAmbiguousLhs(): ASTAmbiguousName? =
+        children(ASTAmbiguousName::class.java).first()
