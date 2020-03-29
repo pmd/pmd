@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -31,7 +32,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class AstClassSym
@@ -58,12 +58,11 @@ final class AstClassSym
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
 
-        List<JFieldSymbol> recordComponents;
-        boolean isRecord = isRecord();
-        if (isRecord) {
+        final List<JFieldSymbol> recordComponents;
+        if (isRecord()) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponentList(),
                                                                        "Null component list for " + node);
-            recordComponents = CollectionUtil.map(components, comp -> new AstFieldSym(comp.getVarId(), factory, this));
+            recordComponents = mapComponentsToMutableList(factory, components);
             myFields.addAll(recordComponents);
 
             JConstructorSymbol canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
@@ -84,7 +83,7 @@ final class AstClassSym
             if (dnode instanceof ASTAnyTypeDeclaration) {
                 myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTMethodDeclaration) {
-                if (isRecord && ((ASTMethodDeclaration) dnode).getArity() == 0) {
+                if (!recordComponents.isEmpty() && ((ASTMethodDeclaration) dnode).getArity() == 0) {
                     // filter out record component, so that the accessor is not generated
                     recordComponents.removeIf(f -> f.getSimpleName().equals(((ASTMethodDeclaration) dnode).getName()));
                 }
@@ -98,7 +97,7 @@ final class AstClassSym
             }
         }
 
-        if (isRecord && !recordComponents.isEmpty()) {
+        if (!recordComponents.isEmpty()) {
             // then the recordsComponents contains all record components
             // for which we must synthesize an accessor (explicitly declared
             // accessors have been filtered out)
@@ -120,6 +119,12 @@ final class AstClassSym
         this.declaredMethods = Collections.unmodifiableList(myMethods);
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
+    }
+
+    private ArrayList<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
+        return components.toStream()
+                         .collect(Collectors.mapping(comp -> new AstFieldSym(comp.getVarId(), factory, this),
+                                                     Collectors.toCollection(ArrayList::new)));
     }
 
     @Override
