@@ -1265,14 +1265,7 @@ as:
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression
-[
-    .//Name[@Image='assertTrue' or  @Image='assertFalse']
-    and
-    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/UnaryExpressionNotPlusMinus[@Image='!']
-        /PrimaryExpression/PrimaryPrefix
-]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -1283,6 +1276,12 @@ as:
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
     ]
+//StatementExpression
+[
+    .//Name[@Image='assertTrue' or  @Image='assertFalse']
+    and
+    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/UnaryExpressionNotPlusMinus[@Image='!']
+        /PrimaryExpression/PrimaryPrefix
 ]
 ]]>
                 </value>

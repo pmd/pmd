@@ -2196,12 +2196,7 @@ Some JUnit framework methods are easy to misspell.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[(not(@Name = 'setUp')
- and translate(@Name, 'SETuP', 'setUp') = 'setUp')
- or (not(@Name = 'tearDown')
- and translate(@Name, 'TEARdOWN', 'tearDown') = 'tearDown')]
- [@Arity = 0]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -2212,7 +2207,11 @@ Some JUnit framework methods are easy to misspell.
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
     ]
-]
+//MethodDeclaration[(not(@Name = 'setUp')
+ and translate(@Name, 'SETuP', 'setUp') = 'setUp')
+ or (not(@Name = 'tearDown')
+ and translate(@Name, 'TEARdOWN', 'tearDown') = 'tearDown')]
+ [@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -2245,10 +2244,7 @@ The suite() method in a JUnit test needs to be both public and static.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[not(@Static= true()) or not(@Public= true())]
-[@Name='suite']
-[@Arity = 0]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -2259,7 +2255,9 @@ The suite() method in a JUnit test needs to be both public and static.
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
     ]
-]
+//MethodDeclaration[not(@Static= true()) or not(@Public= true())]
+[@Name='suite']
+[@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -3279,18 +3277,7 @@ an error, use the fail() method and provide an indication message of why it did.
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression
-[
-    PrimaryExpression/PrimaryPrefix/Name[@Image='assertTrue' or  @Image='assertFalse']
-    and
-    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression[
-        PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
-        or
-        UnaryExpressionNotPlusMinus[@Image='!']
-            /PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]]
-    ]
-]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -3300,6 +3287,16 @@ an error, use the fail() method and provide an indication message of why it did.
         or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
+    ]
+//StatementExpression
+[
+    PrimaryExpression/PrimaryPrefix/Name[@Image='assertTrue' or  @Image='assertFalse']
+    and
+    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression[
+        PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+        or
+        UnaryExpressionNotPlusMinus[@Image='!']
+            /PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]]
     ]
 ]
 ]]>

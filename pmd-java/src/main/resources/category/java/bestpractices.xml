@@ -1436,13 +1436,7 @@ This rule detects JUnit assertions in object equality. These assertions should b
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue']
-][
-    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-        [ends-with(@Image, '.equals')]
-]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -1453,6 +1447,11 @@ This rule detects JUnit assertions in object equality. These assertions should b
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
     ]
+//PrimaryExpression[
+    PrimaryPrefix/Name[@Image = 'assertTrue']
+][
+    PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+        [ends-with(@Image, '.equals')]
 ]
 ]]>
                 </value>
@@ -1488,14 +1487,7 @@ more specific methods, like assertNull, assertNotNull.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
-][
-    PrimarySuffix/Arguments/ArgumentList[
-        Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
-    ]
-]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -1505,6 +1497,12 @@ more specific methods, like assertNull, assertNotNull.
         or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
+    ]
+//PrimaryExpression[
+    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+][
+    PrimarySuffix/Arguments/ArgumentList[
+        Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
     ]
 ]
 ]]>
@@ -1543,14 +1541,7 @@ by more specific methods, like assertSame, assertNotSame.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[
-    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
-]
-[
-    PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression
-        [count(.//NullLiteral) = 0]
-]
-[ancestor::ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
     or .//MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -1561,6 +1552,12 @@ by more specific methods, like assertSame, assertNotSame.
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
     ]
+//PrimaryExpression[
+    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+]
+[
+    PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression
+        [count(.//NullLiteral) = 0]
 ]
 ]]>
                 </value>
