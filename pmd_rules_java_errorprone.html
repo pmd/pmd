@@ -3779,14 +3779,18 @@ other classes may invoke it at inappropriate times.</p>
  </span><span class="ow">or</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="p">(</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'tearDown'</span><span class="p">)</span><span class="w">
  </span><span class="ow">and</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'TEARdOWN'</span><span class="p">,</span><span class="w"> </span><span class="s1">'tearDown'</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'tearDown'</span><span class="p">)]</span><span class="w">
  </span><span class="p">[</span><span class="na">@Arity</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
-</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
+    </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
         </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="p">]</span><span class="w">
     </span><span class="p">]</span><span class="w">
-</span><span class="p">]]</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3815,14 +3819,18 @@ other classes may invoke it at inappropriate times.</p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="na">@Static</span><span class="err">=</span><span class="s1">'true'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="na">@Public</span><span class="err">=</span><span class="s1">'true'</span><span class="p">)]</span><span class="w">
 </span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'suite'</span><span class="p">]</span><span class="w">
 </span><span class="p">[</span><span class="na">@Arity</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
-</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
+    </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
         </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="p">]</span><span class="w">
     </span><span class="p">]</span><span class="w">
-</span><span class="p">]]</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4844,22 +4852,27 @@ an error, use the fail() method and provide an indication message of why it did.
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="w">
 </span><span class="p">[</span><span class="w">
-</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'assertTrue'</span><span class="w"> </span><span class="ow">or</span><span class="w">  </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'assertFalse'</span><span class="p">]</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="w">
-</span><span class="p">[</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="w">
-</span><span class="ow">or</span><span class="w">
-</span><span class="nt">UnaryExpressionNotPlusMinus</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'!'</span><span class="p">]</span><span class="w">
-</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">Name</span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="err">/</span><span class="p">..</span><span class="err">/*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]]]</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
-        </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+    </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'assertTrue'</span><span class="w"> </span><span class="ow">or</span><span class="w">  </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'assertFalse'</span><span class="p">]</span><span class="w">
+    </span><span class="ow">and</span><span class="w">
+    </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="w">
+        </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="w">
+        </span><span class="ow">or</span><span class="w">
+        </span><span class="nt">UnaryExpressionNotPlusMinus</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'!'</span><span class="p">]</span><span class="w">
+            </span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">Name</span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="err">/</span><span class="p">..</span><span class="err">/*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]]</span><span class="w">
     </span><span class="p">]</span><span class="w">
-</span><span class="p">]]</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
+    </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+        </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -5177,7 +5190,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 28, 2020 <br />
+ Site last generated: Mar 29, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
