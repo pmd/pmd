@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringEscapeUtils
  *                       └── 1 child not shown
  *
  */
-val SimpleNodePrinter = TextTreeRenderer(false, -1)
+val SimpleNodePrinter = TextTreeRenderer(true, -1)
 
 
 open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
@@ -36,7 +36,7 @@ open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
 /**
  * Base attribute printer, subclass to filter attributes.
  */
-open class BaseNodeAttributePrinter : TextTreeRenderer(false, -1) {
+open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
     protected open fun ignoreAttribute(node: Node, attribute: Attribute): Boolean = true
 
