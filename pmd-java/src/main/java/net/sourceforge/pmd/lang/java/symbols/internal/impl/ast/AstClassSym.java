@@ -11,7 +11,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -158,13 +157,7 @@ final class AstClassSym
 
         if (isEnum()) {
             return ReflectSymInternals.ENUM_SYM;
-        } else if (node instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
-            return sup != null ? (JClassSymbol) sup.getReferencedSym()
-                               : node.isInterface() ? null
-                                                    : ReflectSymInternals.OBJECT_SYM;
-
-        } else if (node instanceof ASTAnonymousClassDeclaration) {
+        } else if (isAnonymousClass()) {
 
             if (node.getParent() instanceof ASTEnumConstant) {
 
@@ -179,6 +172,16 @@ final class AstClassSym
                        : ReflectSymInternals.OBJECT_SYM;
 
             }
+
+        } else if (isClass()) {
+            ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
+            if (sup == null) {
+                return ReflectSymInternals.OBJECT_SYM;
+            } else if (sup.getReferencedSym() instanceof JClassSymbol) {
+                return (JClassSymbol) sup.getReferencedSym();
+            } else {
+                return null;
+            }
         }
         // TODO records
         return null;
@@ -186,7 +189,16 @@ final class AstClassSym
 
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        return CollectionUtil.map(node.getSuperInterfaces(), n -> (JClassSymbol) n.getReferencedSym());
+        return CollectionUtil.mapNotNull(
+            node.getSuperInterfaces(),
+            n -> {
+                // we play safe here, but the symbol is either a JClassSymbol
+                // or a JTypeParameterSymbol, with the latter case being a
+                // compile-time error
+                JTypeDeclSymbol sym = n.getReferencedSym();
+                return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+            }
+        );
     }
 
     @Override

@@ -24,7 +24,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 
 /**
- * This implements name disambiguation following the JLS: https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2
+ * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
+ * (see also <a href="https://docs.oracle.com/javase/specs/jls/se13/html/jls-6.html#jls-6.4.2">JLS§6.4.2 - Obscuring</a>)
  *
  * <p>Currently disambiguation of package vs type name is fully implemented,
  * with the following limitations: TODO
@@ -132,6 +133,10 @@ public final class AstDisambiguationPass {
         public static final DisambigVisitor INSTANCE = new DisambigVisitor();
 
         private void visitChildren(JavaNode node, JavaAstProcessor data) {
+            // note that this differs from the default impl, because
+            // the default declares last = node.getNumChildren()
+            // at the beginning of the loop, but in this visitor the
+            // number of children may change.
             for (int i = 0; i < node.getNumChildren(); i++) {
                 node.getChild(i).jjtAccept(this, data);
             }
@@ -170,7 +175,7 @@ public final class AstDisambiguationPass {
                 checkParentIsMember(processor, resolvedType, parent);
             }
 
-            if (resolved != name) {
+            if (resolved != name) { // NOPMD - intentional check for reference equality
                 ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
             }
         }
@@ -181,11 +186,7 @@ public final class AstDisambiguationPass {
                 return;
             }
 
-            if (type.getFirstChild() instanceof ASTAmbiguousName) {
-                type.getFirstChild().jjtAccept(this, processor); // reclassify
-            }
-
-            visitChildren(type, processor); // visit the rest of children
+            visitChildren(type, processor);
 
             if (type.getReferencedSym() != null) {
                 return;
@@ -407,34 +408,9 @@ public final class AstDisambiguationPass {
 
             String canonical = packageImage + '.' + nextIdent.getImage();
 
-            JClassSymbol nextClass = processor.getSymResolver().resolveClassFromBinaryName(canonical);
-
             // Don't interpret periods as nested class separators (this will be handled by resolveType).
-            // This makes the lookup of a qualified name linear instead of quadratic. Eg. for
-            // 'net.sourceforge.pmd.lang.java.ast.Outer' (7 segments), interpreting the separators
-            // would perform 56 classloader hits instead of 7. It would go like
-            //    net
-            //    net.sourceforge
-            //    net$sourceforge
-            //    net.sourceforge.pmd
-            //    net.sourceforge$pmd
-            //    net$sourceforge$pmd
-            //    ...
-            //    net$sourceforge$pmd$lang$java$ast
-            //    net.sourceforge.pmd.lang.java.ast.Outer
-            //
-            //  but there are duplicates here (eg 'net$sourceforge' can never succeed if 'net' is not a class)
-
-            // These disambiguation routines perform the following:
-            // net
-            // net.sourceforge
-            // net.sourceforge.pmd
-            // ...
-            // net.sourceforge.pmd.lang.java.ast.Outer
-
-            // Then if there are any more segments, they don't use the
-            // classloader directly, because resolveType uses getMemberClass
-
+            // Otherwise lookup of a fully qualified name would be quadratic
+            JClassSymbol nextClass = processor.getSymResolver().resolveClassFromBinaryName(canonical);
 
             if (nextClass != null) {
                 return resolveType(null, nextClass, canonical, nextIdent, remaining, ambig, isPackageOrTypeOnly, processor);

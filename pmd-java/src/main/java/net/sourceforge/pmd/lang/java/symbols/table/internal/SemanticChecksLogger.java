@@ -17,16 +17,34 @@ public interface SemanticChecksLogger {
     //   many rules don't absolutely need correctness to work
     //   maybe we need to identify separate "levels" of the tree
     //   eg level 0: lexable (CPD)
-    //      level 2: parsable (many syntax-only rules, eg UnnecessaryParentheses)
-    //      level 3: type-resolved (more complicated rules)
+    //      level 1: parsable (many syntax-only rules, eg UnnecessaryParentheses)
+    //      level 2: type-resolved (more complicated rules)
 
     /**
      * Warning, classpath is misconfigured (or not configured).
      */
     String CANNOT_RESOLVE_SYMBOL = "Cannot resolve symbol {0}";
 
+
     /**
-     * Should be an error
+     * We had resolved a prefix, and a suffix is not resolved. This may
+     * mean that the classpath is out-of-date, or the code is incorrect.
+     * Eg {@code System.oute}: {@code System} is resolved, {@code oute}
+     * is not a member of that type.
+     *
+     * <p>This differs from {@link #CANNOT_RESOLVE_SYMBOL} in that for
+     * the latter, it's more probable that the classpath is incorrect.
+     * It is emitted eg when we see an import, so a fully qualified
+     * name, and yet we can't resolve it.
+     * TODO whether it's incorrect code or incorrect classpath is only
+     *  a guess, probably we need an option to differentiate the two
+     *  (eg in an IDE plugin, it may well be incorrect code, but in a
+     *  CLI run, it's more likely to be incorrect classpath).
+     */
+    String CANNOT_RESOLVE_MEMBER = "Cannot resolve ''{0}'' in {1}, treating it as {2}"; // javac gives a simple "cannot resolve symbol {0}"
+
+    /**
+     * TODO Should be an error.
      */
     String MALFORMED_GENERIC_TYPE = "Maformed generic type: expected {0} type arguments, got {1}";
 
@@ -36,14 +54,6 @@ public interface SemanticChecksLogger {
      * Eg {@code package.that.doesnt.exist.Type}
      */
     String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as a {1}";
-
-    /**
-     * We had resolved a prefix, and a suffix is not resolved. This may
-     * mean that the classpath is out-of-date.
-     * Eg {@code System.oute}: {@code System} is resolved, {@code oute}
-     * is not a member of that type.
-     */
-    String CANNOT_RESOLVE_MEMBER = "Cannot resolve ''{0}'' in {1}, treating it as {2}"; // javac gives a simple "cannot resolve symbol {0}"
 
 
     /**

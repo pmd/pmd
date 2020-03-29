@@ -19,6 +19,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
@@ -372,6 +375,21 @@ public final class CollectionUtil {
         union.add(first);
         union.addAll(Arrays.asList(rest));
         return union;
+    }
+
+    public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
+        Iterator<? extends T> it = from.iterator();
+        if (!it.hasNext()) {
+            return Collections.emptyList();
+        }
+        List<R> res = new ArrayList<>();
+        while (it.hasNext()) {
+            R r = f.apply(it.next());
+            if (r != null) {
+                res.add(r);
+            }
+        }
+        return res;
     }
 
     public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {

@@ -93,7 +93,7 @@ public final class SymbolTableResolver {
         private final SymbolTableHelper helper;
         private JSymbolTable myStackTop;
 
-        public MyVisitor(ASTCompilationUnit root, SymbolTableHelper helper) {
+        MyVisitor(ASTCompilationUnit root, SymbolTableHelper helper) {
             this.root = root;
             this.helper = helper;
             // this is the only place pushOnStack can be circumvented
@@ -382,7 +382,7 @@ public final class SymbolTableResolver {
             final JSymbolTable curTop = this.myStackTop;
             int i = 0;
             JSymbolTable parent = leaf;
-            while (parent != null && parent != curTop) {
+            while (parent != null && parent != curTop) {  // NOPMD - intentional check for reference equality
                 i++;
                 parent = parent.getParent();
             }
