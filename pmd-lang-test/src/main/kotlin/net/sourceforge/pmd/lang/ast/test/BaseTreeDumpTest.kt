@@ -46,7 +46,7 @@ abstract class BaseTreeDumpTest(
 
         val expected = expectedFile.readText()
 
-        assertEquals(expected, actual, "Tree dump comparison failed, see the reference: $expectedFile")
+        assertEquals(expected.normalize(), actual.normalize(), "Tree dump comparison failed, see the reference: $expectedFile")
     }
 
     // Outputting a path makes for better error messages
@@ -67,6 +67,8 @@ abstract class BaseTreeDumpTest(
 
     companion object {
         const val ExpectedExt = ".txt"
+
+        fun String.normalize() = replace(Regex("\\R"), "\n")
     }
 
 }
