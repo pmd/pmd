@@ -212,6 +212,23 @@ public final class AstDisambiguationPass {
             assert type.getReferencedSym() != null : "Null symbol for " + type;
         }
 
+        /*
+
+           This is implemented as a set of mutually recursive methods
+           that act as a kind of automaton. State transitions:
+
+                        +-----+       +--+        +--+
+                        |     |       |  |        |  |
+           +-----+      +     v       +  v        +  v
+           |START+----> PACKAGE +---> TYPE +----> EXPR
+           +-----+                     ^           ^
+             |                         |           |
+             +-------------------------------------+
+
+           Not pictured are the error transitions.
+           Only Type & Expr are valid exit states.
+         */
+
         /**
          * Resolve an ambiguous name occurring in an expression context.
          * Returns the expression to which the name was resolved. If the
