@@ -18,9 +18,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.testProcessor
 class AstSymbolResolverTest : ProcessorTestSpec({
 
     parserTest("Simple test") {
-        enableProcessing(false)
 
-        val resolver = parser.parse("""
+        val resolver = parser.withProcessing(false).parse("""
             package com.foo.bar;
             
             public class Foo {
