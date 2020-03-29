@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import java.util.ArrayDeque;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -21,6 +26,9 @@ final class SymbolTableHelper {
     private final String thisPackage;
     private final JavaAstProcessor processor;
 
+    // this will be used later
+    private final ArrayDeque<JClassSymbol> contextType = new ArrayDeque<>(2);
+
 
     SymbolTableHelper(String thisPackage, JavaAstProcessor processor) {
         assert thisPackage != null;
@@ -29,6 +37,18 @@ final class SymbolTableHelper {
         this.processor = processor;
     }
 
+    public void earlyDisambig(NodeStream<? extends JavaNode> nodes) {
+        AstDisambiguationPass.disambig(processor, nodes);
+    }
+
+    void pushCtxType(JClassSymbol t) {
+        assert !t.isArray() && !t.isPrimitive();
+        contextType.push(t);
+    }
+
+    void popCtxType() {
+        contextType.pop();
+    }
 
     /** Prepend the package name, handling empty package. */
     String prependPackageName(String name) {

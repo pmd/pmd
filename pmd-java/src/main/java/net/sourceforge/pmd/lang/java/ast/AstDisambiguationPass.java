@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -43,7 +44,7 @@ public final class AstDisambiguationPass {
     }
 
     /**
-     * Disambiguate the given compilation unit. After this:
+     * Disambiguate the subtrees rooted at the given nodes. After this:
      * <ul>
      * <li>All ClassOrInterfaceTypes either see their ambiguous LHS
      * promoted to a ClassOrInterfaceType, or demoted to a package
@@ -54,8 +55,8 @@ public final class AstDisambiguationPass {
      * for the worst kind of ambiguity
      * </ul>
      */
-    public static void disambig1(JavaAstProcessor processor, ASTCompilationUnit compilationUnit) {
-        compilationUnit.jjtAccept(DisambigVisitor.INSTANCE, processor);
+    public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes) {
+        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, processor)));
     }
 
 
@@ -130,6 +131,12 @@ public final class AstDisambiguationPass {
 
         public static final DisambigVisitor INSTANCE = new DisambigVisitor();
 
+        private void visitChildren(JavaNode node, JavaAstProcessor data) {
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                node.getChild(i).jjtAccept(this, data);
+            }
+        }
+
         @Override
         public void visit(ASTAmbiguousName name, JavaAstProcessor processor) {
             JSymbolTable symbolTable = name.getSymbolTable();
@@ -163,7 +170,7 @@ public final class AstDisambiguationPass {
                 checkParentIsMember(processor, resolvedType, parent);
             }
 
-            if (!resolved.equals(name)) {
+            if (resolved != name) {
                 ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
             }
         }
@@ -174,7 +181,15 @@ public final class AstDisambiguationPass {
                 return;
             }
 
-            super.visit(type, processor); // bottom up
+            if (type.getFirstChild() instanceof ASTAmbiguousName) {
+                type.getFirstChild().jjtAccept(this, processor); // reclassify
+            }
+
+            visitChildren(type, processor); // visit the rest of children
+
+            if (type.getReferencedSym() != null) {
+                return;
+            }
 
             ASTClassOrInterfaceType lhsType = type.getQualifier();
             if (lhsType != null) {

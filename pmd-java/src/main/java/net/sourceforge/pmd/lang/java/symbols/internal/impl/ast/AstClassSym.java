@@ -152,6 +152,10 @@ final class AstClassSym
 
     @Override
     public @Nullable JClassSymbol getSuperclass() {
+        // notice this relies on the fact that the extends clause
+        // (or the type node of the constructor call, for an anonymous class),
+        // was disambiguated early
+
         if (isEnum()) {
             return ReflectSymInternals.ENUM_SYM;
         } else if (node instanceof ASTClassOrInterfaceDeclaration) {

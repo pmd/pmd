@@ -75,9 +75,20 @@ final class TypeMemberSymTable extends AbstractSymbolTable {
         return new ClassResolveResult(member, this, node);
     }
 
-    // get an accessible member class
     @Nullable
     private JClassSymbol findMemberClass(@NonNull JClassSymbol typeSym, String simpleName) {
+        // todo type param substitution for non-static classes, eg
+        //    static class Sup<T> {
+        //        class Inner extends ArrayList<List<T>> {}
+        //    }
+        //    class Sub extends Sup<Integer> {
+        //        {
+        //            List<List<Integer>> lists = new Inner();
+        //        }
+        //    }
+
+        // todo ambiguity handling
+
         JClassSymbol klass = typeSym.getDeclaredClass(simpleName);
         if (klass != null && (typeSym == this.typeSym || isAccessibleInStrictSubtypeOfOwner(typeSym))) {
             return klass;
