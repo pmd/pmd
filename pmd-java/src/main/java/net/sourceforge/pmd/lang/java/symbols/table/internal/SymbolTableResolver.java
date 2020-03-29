@@ -5,13 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.TypeOnlySymTable.localClassesOf;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.TypeOnlySymTable.nestedClassesOf;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.formalsOf;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.resourceIds;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfBlock;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfInit;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfSwitchBlock;
 
 import java.util.List;
 import java.util.Map;
@@ -27,10 +23,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -175,25 +176,7 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTBlock node, Void data) {
-            int pushed = 0;
-            pushed += pushOnStack(VarOnlySymTable::new, varsOfBlock(node));
-            pushed += pushOnStack(TypeOnlySymTable::new, localClassesOf(node));
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTForeachStatement node, Void data) {
-            int pushed = pushOnStack(VarOnlySymTable::new, node.getVarId());
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
-        }
-
-        @Override
-        public void visit(ASTForStatement node, Void data) {
-            int pushed = pushOnStack(VarOnlySymTable::new, varsOfInit(node));
-            setTopSymbolTableAndRecurse(node);
-            popStack(pushed);
+            visitBlockLike(node);
         }
 
         @Override
@@ -209,14 +192,46 @@ public final class SymbolTableResolver {
         private void visitSwitch(ASTSwitchLike node) {
             setTopSymbolTable(node);
             visitSubtree(node.getTestedExpression());
+            visitBlockLike(stmtsOfSwitchBlock(node));
+        }
 
-            // since there's no node for the block we have to set children individually
-            int pushed = pushOnStack(VarOnlySymTable::new, varsOfSwitchBlock(node));
 
-            for (JavaNode notExpr : node.children().drop(1)) {
-                setTopSymbolTableAndRecurse(notExpr);
+        private void visitBlockLike(Iterable<? extends ASTStatement> node) {
+            /*
+             * Process the statements of a block in a sequence. Each local
+             * var/class declaration is only in scope for the following
+             * statements (and its own initializer).
+             */
+            int pushed = 0;
+            for (ASTStatement st : node) {
+                if (st instanceof ASTLocalVariableDeclaration) {
+                    pushed += pushOnStack(VarOnlySymTable::new, ((ASTLocalVariableDeclaration) st).getVarIds());
+                } else if (st instanceof ASTLocalClassStatement) {
+                    pushed += pushOnStack(TypeOnlySymTable::new, ((ASTLocalClassStatement) st).getDeclaration());
+                }
+
+
+                setTopSymbolTable(st);
+                st.jjtAccept(this, null);
             }
 
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTForeachStatement node, Void data) {
+            // the varId is only in scope in the body and not the iterable expr
+            setTopSymbolTableAndRecurse(node.getIterableExpr());
+
+            int pushed = pushOnStack(VarOnlySymTable::new, node.getVarId());
+            node.getBody().jjtAccept(this, data);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTForStatement node, Void data) {
+            int pushed = pushOnStack(VarOnlySymTable::new, varsOfInit(node));
+            setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
 
@@ -225,16 +240,16 @@ public final class SymbolTableResolver {
 
             ASTResourceList resources = node.getResources();
             if (resources != null) {
-                int pushed = pushOnStack(VarOnlySymTable::new, resourceIds(resources));
+                NodeStream<ASTStatement> union =
+                    NodeStream.union(
+                        stmtsOfResources(resources),
+                        // use the body instead of unwrapping it so
+                        // that it has the correct symbol table too
+                        NodeStream.of(node.getBody())
+                    );
+                visitBlockLike(union);
 
-                setTopSymbolTableAndRecurse(resources);
-
-                ASTBlock body = node.getBody();
-                body.jjtAccept(this, data);
-
-                popStack(pushed); // pop resources table before visiting catch & finally
-
-                for (Node child : body.asStream().followingSiblings()) {
+                for (Node child : node.getBody().asStream().followingSiblings()) {
                     ((JavaNode) child).jjtAccept(this, data);
                 }
             } else {
@@ -309,6 +324,18 @@ public final class SymbolTableResolver {
         private JSymbolTable peekStack() {
             return this.myStackTop;
         }
+
+        static NodeStream<ASTStatement> stmtsOfSwitchBlock(ASTSwitchLike node) {
+            return node.getBranches()
+                       .filterIs(ASTSwitchFallthroughBranch.class)
+                       .flatMap(ASTSwitchFallthroughBranch::getStatements);
+        }
+
+
+        static NodeStream<ASTLocalVariableDeclaration> stmtsOfResources(ASTResourceList node) {
+            return node.toStream().map(ASTResource::asLocalVariableDeclaration);
+        }
+
 
         // </editor-fold>
 

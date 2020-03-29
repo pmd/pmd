@@ -7,10 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration
-import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 
 class LocalScopesTest : ParserTestSpec({
@@ -73,6 +70,39 @@ class LocalScopesTest : ParserTestSpec({
 
         }
 
+    }
+
+    parserTest("Scoping of local classes") {
+
+        val acu = parser.withProcessing().parse("""
+            package myTest;
+
+            class Foo {
+                class Inner {}
+                void method() {
+                    Inner i = new Inner(); // this is a new Foo.Inner
+                    class Inner {}         // local class, that shadows Foo.Inner
+                    Inner i2 = new Inner(); // this is a new instance of the local class
+                }
+            }
+        """)
+
+        val (_/*the block*/, iVar, localClass, i2Var) =
+                acu.descendants(ASTStatement::class.java).toList()
+
+        doTest("Before the local type declaration, only the nested class is in scope") {
+
+            iVar.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
+                result::getCanonicalName shouldBe "myTest.Foo.Inner"
+            }
+
+            listOf(i2Var, localClass).forEach {
+                it.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
+                    result::getCanonicalName shouldBe null
+                    result::getBinaryName shouldBe "myTest.Foo$1Inner" // the local class
+                }
+            }
+        }
     }
 
     parserTest("Scoping of types w.r.t. imports") {
