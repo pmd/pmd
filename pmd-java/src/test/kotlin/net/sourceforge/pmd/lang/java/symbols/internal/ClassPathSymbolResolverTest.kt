@@ -8,7 +8,6 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.impls.GenericClass
 import javasymbols.testdata.impls.SomeInnerClasses
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver
 
 /**
@@ -35,14 +34,6 @@ class ClassPathSymbolResolverTest : FunSpec({
 
         resolver.resolveClassFromCanonicalName("javasymbols.testdata.impls.SomeInnerClasses\$Inner")
                 .shouldBe(classSym(SomeInnerClasses.Inner::class.java))
-    }
-
-    test("Test default to unresolved") {
-
-        val sym = resolver.resolveClassOrDefault("javasymbols.testdata.impls.This.Does.NotExist")
-
-        sym::isUnresolved shouldBe true
-        sym::getSimpleName shouldBe "NotExist"
     }
 
 })

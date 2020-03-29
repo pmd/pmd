@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
 
 /**
@@ -45,9 +46,16 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
     /** Package name of the current file. */
     private final String packageName;
 
+    private final Map<String, JClassSymbol> byCanonicalName = new HashMap<>();
+    private final Map<String, JClassSymbol> byBinaryName = new HashMap<>();
+
     AstSymbolMakerVisitor(ASTCompilationUnit node) {
         // update the package list
         packageName = node.getPackageName();
+    }
+
+    public SymbolResolver makeKnownSymbolResolver() {
+        return new MapSymResolver(byCanonicalName, byBinaryName);
     }
 
     @Override
@@ -77,6 +85,11 @@ final class AstSymbolMakerVisitor extends JavaParserVisitorAdapter {
         @Nullable String canonicalName = makeCanonicalName(node, binaryName);
         InternalApiBridge.setQname(node, binaryName, canonicalName);
         JClassSymbol sym = ((AstSymFactory) data).setClassSymbol(enclosingSymbols.peek(), node);
+
+        byBinaryName.put(binaryName, sym);
+        if (canonicalName != null) {
+            byCanonicalName.put(canonicalName, sym);
+        }
 
         enclosingBinaryNames.push(binaryName);
         enclosingCanonicalNames.push(canonicalName == null ? NO_CANONICAL_NAME : canonicalName);

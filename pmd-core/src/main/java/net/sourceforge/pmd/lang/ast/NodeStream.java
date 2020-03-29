@@ -204,6 +204,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> append(NodeStream<? extends T> right);
 
@@ -215,6 +217,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> prepend(NodeStream<? extends T> right);
 

@@ -957,13 +957,12 @@ void RecordBodyDeclaration() #void :
 private void RecordCtorLookahead() #void:
 {}
 {
-    ModifierList() [ TypeParameters() ] <IDENTIFIER> ("throws" |  "{")
+    ModifierList() <IDENTIFIER> "{"
 }
 
 void RecordConstructorDeclaration():
 {}
 {
-  [TypeParameters()]
   <IDENTIFIER> { jjtThis.setImage(token.image); }
   Block()
 }

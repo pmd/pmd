@@ -106,7 +106,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     List<JClassSymbol> getDeclaredClasses();
 
 
-    /** Returns a class with the given name accessed defined in this class. */
+    /** Returns a class with the given name defined in this class. */
     @Nullable
     default JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
@@ -158,7 +158,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     List<JFieldSymbol> getDeclaredFields();
 
 
-    /** Returns a field with the given name accessed defined in this class. */
+    /** Returns a field with the given name defined in this class. */
     @Nullable
     default JFieldSymbol getDeclaredField(String name) {
         for (JFieldSymbol field : getDeclaredFields()) {

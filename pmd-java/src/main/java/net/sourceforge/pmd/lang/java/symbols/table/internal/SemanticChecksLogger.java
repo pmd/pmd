@@ -25,4 +25,6 @@ public interface SemanticChecksLogger {
      */
     void warning(JavaNode location, String message, Object... args);
 
+    void error(JavaNode location, String message, Object... args);
+
 }

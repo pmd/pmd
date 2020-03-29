@@ -216,14 +216,14 @@ class TypeParamScopingTest : ParserTestSpec({
 
         doTest("TParams of method are in scope in method body") {
 
-            vt.symbolTable shouldBe vx.symbolTable
+            for (node in listOf(vt, vx)) {
+                node.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
+                    result shouldBe t2.symbol
+                }
 
-            vt.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
-                result shouldBe t2.symbol
-            }
-
-            vx.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("X") {
-                result shouldBe x.symbol
+                node.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("X") {
+                    result shouldBe x.symbol
+                }
             }
         }
 

@@ -5,25 +5,21 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.JavaNode
+import net.sourceforge.pmd.lang.java.JavaParsingHelper.TestCheckLogger
+import net.sourceforge.pmd.lang.java.ast.JavaVersion
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymResolver
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
 
-internal fun testResolveHelper(packageName: String, jdkVersion: Int = 11, logger: TestCheckLogger = TestCheckLogger()) =
-        SymbolTableHelper(packageName, testSymResolver, logger)
+internal fun testProcessor(jdkVersion: JavaVersion = JavaVersion.J13, logger: TestCheckLogger = TestCheckLogger()) =
+        JavaAstProcessor.create(testSymResolver, testSymFactory, jdkVersion.pmdVersion, logger)
 
-class TestCheckLogger : SemanticChecksLogger {
-
-    private val accumulator = mutableMapOf<String, Pair<JavaNode, Array<out Any>>>()
-
-    override fun warning(location: JavaNode, message: String, args: Array<Any>) {
-        accumulator[message] = (location to args)
-    }
-
-}
+internal fun testResolveHelper(packageName: String, jdkVersion: JavaVersion = JavaVersion.J13, logger: TestCheckLogger = TestCheckLogger()) =
+        SymbolTableHelper(packageName, testProcessor(jdkVersion, logger))
 
 
 inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleName: String,

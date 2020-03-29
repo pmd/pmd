@@ -4,17 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotlintest.matchers.beEmpty
+import io.kotlintest.should
 import io.kotlintest.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
 import java.lang.reflect.Modifier
 
-class VarScopingTest : ParserTestSpec({
+class VarScopingTest : ProcessorTestSpec({
 
     parserTest("Shadowing of variables") {
 
@@ -27,8 +28,9 @@ class VarScopingTest : ParserTestSpec({
 
                 {
                     f.foo(); // outerField
+                    T f;
 
-                    for (T f : someList) {
+                    for (T f : f.foo()) { // localInInit
                        f.foo(); // foreachParam
                     }
                 }
@@ -55,10 +57,10 @@ class VarScopingTest : ParserTestSpec({
         val (outerClass, innerClass) =
                 acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
 
-        val (outerField, foreachParam, methodParam, localInBlock, innerField) =
+        val (outerField, localInInit, foreachParam, methodParam, localInBlock, innerField) =
                 acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
-        val (inInitializer, inForeach, inMethod, inLocalBlock, inInnerClass) =
+        val (inInitializer, inForeachInit, inForeach, inMethod, inLocalBlock, inInnerClass) =
                 acu.descendants(ASTMethodCall::class.java).toList()
 
 
@@ -71,6 +73,11 @@ class VarScopingTest : ParserTestSpec({
                     it shouldBe outerField.symbol
                 }
             }
+        }
+
+        doTest("Inside foreach initializer: f is localInInit") {
+            val sym = inForeachInit shouldResolveToLocal localInInit
+            sym.shouldBeA<JLocalVariableSymbol>()
         }
 
         doTest("Inside foreach: f is foreachParam") {
@@ -124,15 +131,19 @@ class VarScopingTest : ParserTestSpec({
                       r.close(); // inFinally: field
                     }
 
-                    try (Reader r = new StringReader("k"); // reader2
+                    try (Reader r = new StringReader("k");   // reader2
                          BufferedReader br = r.buffered()) { // bufferedReader, inResource
 
+                    }
+
+                    try (Reader f = r;                      // reader3 
+                         BufferedReader r = f.buffered()) { // br2
                     }
                 }
             }
         """.trimIndent())
 
-        val (outerField, exception1, reader1, exception2, reader2, bufferedReader) =
+        val (outerField, exception1, reader1, exception2, reader2, bufferedReader, reader3, br2) =
                 acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
         val (inCatch1, inTry, inCatch2, inFinally, inResource) =
@@ -163,6 +174,22 @@ class VarScopingTest : ParserTestSpec({
         doTest("Inside resource declaration: r is the resource of the same resource list") {
             inResource shouldResolveToLocal reader2
         }
+
+        doTest("Inside resource declaration 2: r is the field, before the other resource is declared") {
+            reader3.initializer!! shouldResolveToField outerField
+        }
+
+        doTest("Inside resource declaration 2: r is the resource, after its declaration") {
+            br2.initializer!! shouldResolveToLocal reader3
+        }
+
+        doTest("Resources are in scope, even if the try body is empty") {
+            val emptyBlock = br2.ancestors(ASTTryStatement::class.java).firstOrThrow().body
+            emptyBlock.toList() should beEmpty()
+
+            emptyBlock shouldResolveToLocal reader3
+            emptyBlock shouldResolveToLocal br2
+        }
     }
 
     parserTest("Switch statement") {
@@ -172,25 +199,26 @@ class VarScopingTest : ParserTestSpec({
             // TODO test with static import, currently there are no "unresolved field" symbols
 
             class Outer extends Sup {
-                private int i; // outerField
+                private int j; // outerField
 
                 {
-                    switch (i) { // fAccess
+                    switch (j) { // fAccess
                     case 4:
-                        int i = 0; // ivar
-                        return i + 1; // iAccess
+                        int i = j; // ivar, fAccess2
+                        int j = i; // jvar, iAccess
+                        return j + 1; // jAccess
                     case 3:
-                        int k = 0; // kvar
+                        int k = 0, l = k + l; // kvar, lvar, kAccess, lAccess
                         return i + 1; // iAccess2
                     }
                 }
             }
         """.trimIndent())
 
-        val (outerField, ivar) =
+        val (outerField, ivar, jvar, kvar, lvar) =
                 acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
-        val (fAccess, iAccess, iAccess2) =
+        val (fAccess, fAccess2, iAccess, jAccess, kAccess, lAccess, iAccess2) =
                 acu.descendants(ASTVariableAccess::class.java).toList()
 
         infix fun JavaNode.shouldResolveToField(fieldId: ASTVariableDeclaratorId): JFieldSymbol =
@@ -202,8 +230,21 @@ class VarScopingTest : ParserTestSpec({
             fAccess shouldResolveToField outerField
         }
 
-        doTest("Inside label: var is in scope") {
+        doTest("Inside label: var is NOT in scope BEFORE its declaration") {
+            fAccess2 shouldResolveToField outerField
+        }
+
+        doTest("Inside label: var IS in scope AFTER its declaration") {
+            jAccess shouldResolveToLocal jvar
             iAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Var is in scope in its own initializer (error)") {
+            lAccess shouldResolveToLocal lvar
+        }
+
+        doTest("Var is in scope in other initializers in same statement") {
+            kAccess shouldResolveToLocal kvar
         }
 
         doTest("Inside fallthrough: var is in scope") {
