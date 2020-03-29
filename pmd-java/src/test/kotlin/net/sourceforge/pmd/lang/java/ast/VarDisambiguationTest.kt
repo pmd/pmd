@@ -9,10 +9,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
 class VarDisambiguationTest : ParserTestSpec({
 
 

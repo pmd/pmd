@@ -7,10 +7,6 @@ import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
 
-/**
- * @author Clément Fournier
- * @since 7.0.0
- */
 class TypeDisambiguationTest : ParserTestSpec({
 
 
@@ -24,13 +20,43 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         """)
 
+        val (foo, inner) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
         val (f1) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
         f1.typeNode.shouldMatchNode<ASTClassOrInterfaceType> {
             it::getSimpleName shouldBe "Inner"
             it::getImage shouldBe "Inner"
+            it::getReferencedSym shouldBe inner
             it::getAmbiguousLhs shouldBe null
-            it::getQualifier shouldBe classType("Foo")
+            it::getQualifier shouldBe classType("Foo") {
+                it::getReferencedSym shouldBe foo
+            }
+        }
+    }
+
+
+    parserTest("Fully qualified names") {
+        enableProcessing(true)
+
+        inContext(TypeParsingCtx) {
+            "javasymbols.testdata.Statics" should parseAs {
+                classType("Statics") {
+                    it::getImage shouldBe "javasymbols.testdata.Statics"
+                    it::getQualifier shouldBe null
+                    it::getAmbiguousLhs shouldBe null
+                }
+            }
+
+            "javasymbols.testdata.Statics.PublicStatic" should parseAs {
+                classType("PublicStatic") {
+
+                    it::getQualifier shouldBe classType("Statics") {
+                        it::getImage shouldBe "javasymbols.testdata.Statics"
+                        it::getQualifier shouldBe null
+                        it::getAmbiguousLhs shouldBe null
+                    }
+                }
+            }
         }
     }
 
@@ -66,32 +92,6 @@ class TypeDisambiguationTest : ParserTestSpec({
                     it.referencedSym.shouldBeA<JClassSymbol> {
                         it::isUnresolved shouldBe true
                         it::getSimpleName shouldBe "Bar"
-                    }
-                }
-            }
-        }
-    }
-
-
-    parserTest("Fully qualified names") {
-        enableProcessing(true)
-
-        inContext(TypeParsingCtx) {
-            "javasymbols.testdata.Statics" should parseAs {
-                classType("Statics") {
-                    it::getImage shouldBe "javasymbols.testdata.Statics"
-                    it::getQualifier shouldBe null
-                    it::getAmbiguousLhs shouldBe null
-                }
-            }
-
-            "javasymbols.testdata.Statics.PublicStatic" should parseAs {
-                classType("PublicStatic") {
-
-                    it::getQualifier shouldBe classType("Statics") {
-                        it::getImage shouldBe "javasymbols.testdata.Statics"
-                        it::getQualifier shouldBe null
-                        it::getAmbiguousLhs shouldBe null
                     }
                 }
             }

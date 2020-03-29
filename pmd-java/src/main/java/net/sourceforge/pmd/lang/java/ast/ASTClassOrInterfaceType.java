@@ -73,6 +73,10 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         this.symbol = symbol;
     }
 
+    /**
+     * Returns the type symbol this type refers to. This is never null
+     * after disambiguation has been run.
+     */
     public JTypeDeclSymbol getReferencedSym() {
         // this is a crutch for now, can be replaced with getTypeDefinition later
         return symbol;
@@ -123,7 +127,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     @Override
     @Experimental
     public String getTypeImage() {
-        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".") + getImage();
+        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".").orElse("") + getImage();
     }
 
     /**

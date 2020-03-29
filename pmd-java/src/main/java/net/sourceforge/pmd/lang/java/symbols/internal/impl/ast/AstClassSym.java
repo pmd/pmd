@@ -156,8 +156,9 @@ final class AstClassSym
             return ReflectSymInternals.ENUM_SYM;
         } else if (node instanceof ASTClassOrInterfaceDeclaration) {
             ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
-            return sup == null? ReflectSymInternals.OBJECT_SYM
-                              : (JClassSymbol) sup.getReferencedSym();
+            return sup == null
+                   ? ReflectSymInternals.OBJECT_SYM
+                   : (JClassSymbol) sup.getReferencedSym();
 
         } else if (node instanceof ASTAnonymousClassDeclaration) {
 
@@ -175,6 +176,7 @@ final class AstClassSym
 
             }
         }
+        // TODO records
         return null;
     }
 

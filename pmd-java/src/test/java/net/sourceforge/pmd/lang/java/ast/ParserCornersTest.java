@@ -20,14 +20,11 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class ParserCornersTest {
+public class ParserCornersTest extends BaseParserTest {
 
     private static final String MULTICATCH = "public class Foo { public void bar() { "
         + "try { System.out.println(); } catch (RuntimeException | IOException e) {} } }";
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withResourceContext(ParserCornersTest.class);
-    private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
-    private final JavaParsingHelper java5 = java.withDefaultVersion("1.5");
     private final JavaParsingHelper java7 = java.withDefaultVersion("1.7");
     @Rule
     public ExpectedException expect = ExpectedException.none();

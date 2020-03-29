@@ -6,10 +6,8 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -58,9 +56,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * a class or instance initializer.
      */
     @Nullable
-    default JExecutableSymbol getEnclosingMethod() {
-        throw new NotImplementedException("TODO, trickier than it appears");
-    }
+    JExecutableSymbol getEnclosingMethod();
 
 
     @Override

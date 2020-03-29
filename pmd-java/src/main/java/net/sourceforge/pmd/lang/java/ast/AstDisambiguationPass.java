@@ -76,8 +76,7 @@ public final class AstDisambiguationPass {
         AMBIGUOUS("ambiguous"),
         FIELD_ACCESS("a field access"),
         PACKAGE_NAME("a package name"),
-        TYPE("an unresolved type"),
-        ;
+        TYPE("an unresolved type");
 
         private final String displayName;
 
@@ -164,7 +163,7 @@ public final class AstDisambiguationPass {
                 checkParentIsMember(processor, resolvedType, parent);
             }
 
-            if (resolved != name) {
+            if (!resolved.equals(name)) {
                 ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
             }
         }
