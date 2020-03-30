@@ -121,7 +121,7 @@ final class AstClassSym
         this.declaredFields = Collections.unmodifiableList(myFields);
     }
 
-    private ArrayList<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
+    private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
         return components.toStream()
                          .collect(Collectors.mapping(comp -> new AstFieldSym(comp.getVarId(), factory, this),
                                                      Collectors.toCollection(ArrayList::new)));
