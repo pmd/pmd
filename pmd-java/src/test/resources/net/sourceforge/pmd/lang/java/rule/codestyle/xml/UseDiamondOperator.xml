@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description>Use Diamond</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,8</expected-linenumbers>
-        <code><![CDATA[
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+   <test-code>
+      <description>Use Diamond</description>
+      <expected-problems>3</expected-problems>
+      <expected-linenumbers>6,9,10</expected-linenumbers>
+      <code><![CDATA[
 import java.util.ArrayList;
 import java.util.List;
 public class Foo {
@@ -15,15 +14,19 @@ public class Foo {
     public void foo() {
        List<String> strings = new ArrayList<String>();
        List<String> strings2 = new ArrayList<>();
+       List<List<String>> strings3 = new ArrayList<>();
+       List<List<String>> strings4 = new ArrayList<List<List<String>>>();
        this.field = new ArrayList<String>();
     }
 }
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description>False positive cases: anonymous classes, methods calls</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>False positive cases: anonymous classes, methods calls</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>27</expected-linenumbers>
+      <code><![CDATA[
 public class Foo {
     private WeakReference<Class<?>> typeReference;
     public void foo() {
@@ -58,12 +61,13 @@ public class Foo {
     }
 }
         ]]></code>
-    </test-code>
-     <test-code>
-        <description>#1624[java] UseDiamondOperator doesn't work with var</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
-        <code><![CDATA[
+   </test-code>
+
+   <test-code>
+      <description>#1624[java] UseDiamondOperator doesn't work with var</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>6</expected-linenumbers>
+      <code><![CDATA[
 import java.util.ArrayList;
 public class Buzz {
     public void buzz() {
@@ -72,13 +76,14 @@ public class Buzz {
         f = new ArrayList<String>(); // flagged by rule
     }
 }
-     ]]></code>
-    </test-code>
-     <test-code>
-        <description>Multiple initializations in a single declaration</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
-        <code><![CDATA[
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>Multiple initializations in a single declaration</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>6</expected-linenumbers>
+      <code><![CDATA[
 import java.util.ArrayList;
 import java.util.List;
 public class Buzz {
@@ -88,6 +93,38 @@ public class Buzz {
             baz = new ArrayList<>(); // ok
     }
 }
-     ]]></code>
-    </test-code>
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>#1723 FP with var inside lambda (declaration)</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+class Foo {
+  {
+    Runnable someAction = () -> {
+  	  var foo = new ArrayList<String>(5); // ok
+  		System.err.println(foo);
+    };
+  }
+}
+        ]]></code>
+   </test-code>
+
+   <test-code>
+      <description>#1723 FP with var inside lambda (assignment)</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+class Foo {
+  {
+    Runnable someAction;
+    someAction = () -> {
+      var foo = new ArrayList<String>(5); // ok
+      System.err.println(foo);
+    };
+  }
+}
+        ]]></code>
+   </test-code>
+
 </test-data>
