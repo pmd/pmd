@@ -124,6 +124,18 @@ class Foo {
         ]]></code>
    </test-code>
 
+   <test-code>
+      <description>FP with array creation</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+class Foo {
+  {
+    Class<?> c = new Class<?>[0];
+  }
+}
+        ]]></code>
+   </test-code>
+
     <!-- These tests depend on the Java version used -->
     <!-- For now we keep the old behaviour of ignoring type
      arguments that have type arguments themselves, ie we have
@@ -147,7 +159,7 @@ public class Foo {
     }
 }
         ]]></code>
-       <source-type>java 1.7</source-type>
+      <source-type>java 1.7</source-type>
    </test-code>
 
    <test-code regressionTest="false">
@@ -164,7 +176,7 @@ public class Foo {
     }
 }
         ]]></code>
-       <source-type>java 1.8</source-type>
+      <source-type>java 1.8</source-type>
    </test-code>
 
 </test-data>

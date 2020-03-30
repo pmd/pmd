@@ -1977,7 +1977,11 @@ which makes the code also more readable.
 //StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
 )
 /Expression/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
-/PrimaryPrefix/AllocationExpression[@AnonymousClass=false() and ClassOrInterfaceType/TypeArguments[@Diamond=false() and not(TypeArgument//TypeArguments)]]
+/PrimaryPrefix
+/AllocationExpression
+    [@AnonymousClass=false()]
+    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not(TypeArgument//TypeArguments)]]
+    [not(ArrayDimsAndInits)]
 ]]>
                 </value>
             </property>
