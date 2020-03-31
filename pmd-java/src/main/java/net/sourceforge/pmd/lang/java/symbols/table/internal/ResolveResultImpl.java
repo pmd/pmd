@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 
 abstract class ResolveResultImpl<T> implements ResolveResult<T> {
@@ -36,19 +35,6 @@ abstract class ResolveResultImpl<T> implements ResolveResult<T> {
     @Override
     public T getResult() {
         return sym;
-    }
-
-    @NonNull
-    @Override
-    public JavaNode getContributor() {
-        return contributor;
-    }
-
-
-    @NonNull
-    @Override
-    public JSymbolTable getSymbolTable() {
-        return symbolTable;
     }
 
 

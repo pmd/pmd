@@ -148,6 +148,11 @@ class PMultimap<K, V> {
         return new Builder<>();
     }
 
+    @Override
+    public String toString() {
+        return map.toString();
+    }
+
     public static class Builder<K, V> {
 
         private final HashMap<K, ConsPStack<V>> map;

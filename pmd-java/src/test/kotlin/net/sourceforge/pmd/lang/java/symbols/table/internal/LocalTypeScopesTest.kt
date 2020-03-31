@@ -136,18 +136,10 @@ class LocalTypeScopesTest : ParserTestSpec({
 
             insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
                 result::getCanonicalName shouldBe "myTest.Foo.Inner"
-
-                contributor.shouldBeA<ASTClassOrInterfaceDeclaration> {
-                    it::getSymbol shouldBe foo.symbol
-                }
             }
 
             insideInner.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
                 result::getCanonicalName shouldBe "myTest.Foo.Inner"
-
-                contributor.shouldBeA<ASTClassOrInterfaceDeclaration> {
-                    it::getSymbol shouldBe result
-                }
             }
         }
 
@@ -155,7 +147,6 @@ class LocalTypeScopesTest : ParserTestSpec({
 
             foo.superClassTypeNode.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
                 result::getCanonicalName shouldBe "somewhere.Inner"
-                contributor.shouldBeA<ASTImportDeclaration> {}
             }
         }
 
@@ -164,8 +155,6 @@ class LocalTypeScopesTest : ParserTestSpec({
             insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
                 result::getCanonicalName shouldBe "somewhere.Inner"
                 result::isUnresolved shouldBe true
-
-                contributor.shouldBeA<ASTImportDeclaration>()
             }
         }
     }

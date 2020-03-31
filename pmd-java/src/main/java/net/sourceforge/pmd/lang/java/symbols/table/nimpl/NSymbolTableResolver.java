@@ -81,6 +81,7 @@ public final class NSymbolTableResolver {
 
             stack.push(NSymTableImpl.EMPTY);
             root.jjtAccept(this, null);
+            stack.pop();
 
             assert stack.isEmpty()
                 : "Unbalanced stack push/pop! Left " + stack;
@@ -121,8 +122,7 @@ public final class NSymbolTableResolver {
             }
 
             popStack(pushed);
-
-
+            pushed = 0;
             pushed += pushOnStack(f.typeBody(top(), node.getSymbol()));
             setTopSymbolTableAndRecurse(node.getBody());
             popStack(pushed);
@@ -272,6 +272,7 @@ public final class NSymbolTableResolver {
         }
 
         private void popStack(int times) {
+            assert stack.size() > times : "Stack is too small (" + times + ") " + stack;
             while (times-- > 0) {
                 popStack();
             }

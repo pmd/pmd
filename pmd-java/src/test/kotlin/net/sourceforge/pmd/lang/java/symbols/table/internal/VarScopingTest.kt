@@ -66,7 +66,6 @@ class VarScopingTest : ProcessorTestSpec({
 
         doTest("Inside outer initializer: f is outerField") {
             inInitializer.symbolTable.shouldResolveVarTo<JFieldSymbol>("f") {
-                this::getContributor shouldBe outerClass
                 this.result.shouldBeA<JFieldSymbol> {
                     it::getSimpleName shouldBe "f"
                     it::getModifiers shouldBe Modifier.PRIVATE
@@ -98,10 +97,8 @@ class VarScopingTest : ProcessorTestSpec({
 
         doTest("Inside inner class: f is inner field") {
             inInnerClass.symbolTable.shouldResolveVarTo<JFieldSymbol>("f") {
-                this::getContributor shouldBe innerClass
-            }.also {
-                it::getModifiers shouldBe 0
-                it shouldBe innerField.symbol
+                result::getModifiers shouldBe 0
+                result shouldBe innerField.symbol
             }
         }
     }
@@ -306,6 +303,5 @@ class VarScopingTest : ProcessorTestSpec({
 
 private infix fun JavaNode.shouldResolveToLocal(localId: ASTVariableDeclaratorId): JLocalVariableSymbol =
         symbolTable.shouldResolveVarTo(localId.variableName) {
-            this::getContributor shouldBe localId
             this::getResult shouldBe localId.symbol
         }

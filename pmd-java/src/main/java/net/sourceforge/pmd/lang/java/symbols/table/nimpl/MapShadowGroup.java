@@ -40,6 +40,11 @@ public final class MapShadowGroup<S extends JElementSymbol> implements ShadowGro
         return nextShadowGroups.getOrDefault(name, fallback);
     }
 
+    @Override
+    public String toString() {
+        return symbolsByName.toString();
+    }
+
 
     // construction/transformation methods
 

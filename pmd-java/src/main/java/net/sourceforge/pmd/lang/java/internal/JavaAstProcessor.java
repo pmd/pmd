@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionP
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.nimpl.NSymbolTableResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 /**
@@ -107,7 +107,7 @@ public final class JavaAstProcessor {
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
-        bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        bench("Symbol table resolution", () -> NSymbolTableResolver.traverse(this, acu));
         bench("AST disambiguation", () -> InternalApiBridge.disambig(this, NodeStream.of(acu)));
 
     }

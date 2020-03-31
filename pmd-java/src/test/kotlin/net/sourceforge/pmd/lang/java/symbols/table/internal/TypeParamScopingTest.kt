@@ -51,10 +51,6 @@ class TypeParamScopingTest : ParserTestSpec({
             insideFoo.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
                 result::getSimpleName shouldBe "T"
                 result::getDeclaringSymbol shouldBe fooClass.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
             }
         }
 
@@ -63,10 +59,6 @@ class TypeParamScopingTest : ParserTestSpec({
             insideInner.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
                 result::getSimpleName shouldBe "T"
                 result::getDeclaringSymbol shouldBe fooClass.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
             }
         }
 
@@ -75,10 +67,6 @@ class TypeParamScopingTest : ParserTestSpec({
             insideInner2.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
                 result::getSimpleName shouldBe "T"
                 result::getDeclaringSymbol shouldBe inner2Class.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
             }
         }
 
@@ -87,8 +75,6 @@ class TypeParamScopingTest : ParserTestSpec({
             insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("T") {
                 result::getCanonicalName shouldBe "somewhere.T"
                 result::isUnresolved shouldBe true
-
-                contributor.shouldBeA<ASTImportDeclaration>()
             }
         }
 
@@ -272,10 +258,6 @@ class TypeParamScopingTest : ParserTestSpec({
             insideFoo.symbolTable.shouldResolveTypeTo<JTypeParameterSymbol>("T") {
                 result::getSimpleName shouldBe "T"
                 result::getDeclaringSymbol shouldBe fooClass.symbol
-
-                contributor.shouldBeA<ASTTypeParameter> {
-                    it::getSymbol shouldBe result
-                }
             }
         }
 
@@ -284,10 +266,6 @@ class TypeParamScopingTest : ParserTestSpec({
             insideT.symbolTable.shouldResolveTypeTo<JClassSymbol>("T") {
                 result::getSimpleName shouldBe "T"
                 result shouldBe innerTClass.symbol
-
-                contributor.shouldBeA<ASTAnyTypeDeclaration> {
-                    it::getSymbol shouldBe result
-                }
             }
         }
     }
