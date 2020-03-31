@@ -5,29 +5,44 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
 
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.formalsOf;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.TypeMemberSymTable;
 
 
 /**
@@ -97,6 +112,147 @@ public final class NSymbolTableResolver {
         }
 
 
+        @Override
+        public void visit(ASTAnyTypeDeclaration node, Void data) {
+            setTopSymbolTable(node.getModifiers());
+
+            int pushed = 0;
+            pushed += pushOnStack(f.typeOnlySymTable(top(), node)); // pushes its own name, shadows type params of enclosing type
+
+            if (pushOnStack(f.typeParamSymTable(top(), node.getTypeParameters())) > 0) {
+                // there are type parameters: the extends/implements/type parameter section know about them
+
+                NodeStream<? extends JavaNode> notBody = node.children().drop(1).filterNot(it -> it instanceof ASTTypeBody);
+                for (JavaNode it : notBody) {
+                    setTopSymbolTable(it);
+                }
+
+                popStack();
+            }
+
+            // the following is just for the body
+
+            pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
+            pushed += pushOnStack(f.typeParamSymTable(top(), node.getTypeParameters())); // shadow type names of the former 2
+
+            setTopSymbolTableAndRecurse(node.getBody());
+
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTMethodOrConstructorDeclaration node, Void data) {
+            setTopSymbolTable(node.getModifiers());
+            int pushed = pushOnStack(f.bodyDeclaration(top(), node.getFormalParameters(), node.getTypeParameters()));
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTInitializer node, Void data) {
+            int pushed = pushOnStack(f.bodyDeclaration(top(), null, null));
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTLambdaExpression node, Void data) {
+            int pushed = pushOnStack(f.mergedVarSymTable(top(), formalsOf(node)));
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTBlock node, Void data) {
+            visitBlockLike(node);
+        }
+
+        @Override
+        public void visit(ASTSwitchStatement node, Void data) {
+            visitSwitch(node);
+        }
+
+        @Override
+        public void visit(ASTSwitchExpression node, Void data) {
+            visitSwitch(node);
+        }
+
+        private void visitSwitch(ASTSwitchLike node) {
+            setTopSymbolTable(node);
+            visitSubtree(node.getTestedExpression());
+            visitBlockLike(stmtsOfSwitchBlock(node));
+        }
+
+
+        private void visitBlockLike(Iterable<? extends ASTStatement> node) {
+            /*
+             * Process the statements of a block in a sequence. Each local
+             * var/class declaration is only in scope for the following
+             * statements (and its own initializer).
+             */
+            int pushed = 0;
+            for (ASTStatement st : node) {
+                // TODO those sym table are not their own shadow groups, they should be merged
+                if (st instanceof ASTLocalVariableDeclaration) {
+                    pushed += pushOnStack(f.mergedVarSymTable(top(), ((ASTLocalVariableDeclaration) st).getVarIds()));
+                } else if (st instanceof ASTLocalClassStatement) {
+                    pushed += pushOnStack(f.typeOnlySymTable(top(), ((ASTLocalClassStatement) st).getDeclaration()));
+                }
+
+
+                setTopSymbolTable(st);
+                st.jjtAccept(this, null);
+            }
+
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTForeachStatement node, Void data) {
+            // the varId is only in scope in the body and not the iterable expr
+            setTopSymbolTableAndRecurse(node.getIterableExpr());
+
+            int pushed = pushOnStack(f.mergedVarSymTable(top(), node.getVarId()));
+            node.getBody().jjtAccept(this, data);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTForStatement node, Void data) {
+            int pushed = pushOnStack(f.mergedVarSymTable(top(), varsOfInit(node)));
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTTryStatement node, Void data) {
+
+            ASTResourceList resources = node.getResources();
+            if (resources != null) {
+                NodeStream<ASTStatement> union =
+                    NodeStream.union(
+                        stmtsOfResources(resources),
+                        // use the body instead of unwrapping it so
+                        // that it has the correct symbol table too
+                        NodeStream.of(node.getBody())
+                    );
+                visitBlockLike(union);
+
+                for (Node child : node.getBody().asStream().followingSiblings()) {
+                    ((JavaNode) child).jjtAccept(this, data);
+                }
+            } else {
+                super.visit(node, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTCatchClause node, Void data) {
+            int pushed = pushOnStack(f.mergedVarSymTable(top(), node.getParameter().getVarId()));
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
 
         // <editor-fold defaultstate="collapsed" desc="Stack manipulation routines">
 
@@ -137,6 +293,12 @@ public final class NSymbolTableResolver {
             return stack.getFirst();
         }
 
+
+        // </editor-fold>
+
+        // <editor-fold defaultstate="collapsed" desc="Convenience methods">
+
+
         static NodeStream<ASTStatement> stmtsOfSwitchBlock(ASTSwitchLike node) {
             return node.getBranches()
                        .filterIs(ASTSwitchFallthroughBranch.class)
@@ -149,7 +311,21 @@ public final class NSymbolTableResolver {
         }
 
 
+        static NodeStream<ASTVariableDeclaratorId> varsOfInit(ASTForStatement node) {
+            return NodeStream.of(node.getInit())
+                             .filterIs(ASTLocalVariableDeclaration.class)
+                             .flatMap(ASTLocalVariableDeclaration::getVarIds);
+        }
+
+        static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTLambdaExpression node) {
+            return node.getParameters().toStream().map(ASTLambdaParameter::getVarId);
+        }
+
+        static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTMethodOrConstructorDeclaration node) {
+            return node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId);
+        }
         // </editor-fold>
+
 
     }
 

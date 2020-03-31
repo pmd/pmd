@@ -24,7 +24,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
@@ -107,14 +112,29 @@ final class SymTableFactory {
         }
     }
 
-    private <S extends JElementSymbol> ShadowGroup<S> buildGroup(ShadowGroup<S> parent,
-                                                                 PMultimap.Builder<String, S> names) {
+    private <S extends JElementSymbol> ShadowGroup<S> shadowingGroup(ShadowGroup<S> parent, PMultimap<String, S> names) {
+        if (parent instanceof MapShadowGroup) {
+            return ((MapShadowGroup<S>) parent).shadow(names);
+        } else {
+            return MapShadowGroup.root(parent, names);
+        }
+    }
+
+    private <S extends JElementSymbol> ShadowGroup<S> mergedGroup(ShadowGroup<S> parent, PMultimap<String, S> names) {
         if (names.isEmpty()) {
             return parent;
         } else if (parent instanceof MapShadowGroup) {
-            return ((MapShadowGroup<S>) parent).shadow(names.build());
+            return ((MapShadowGroup<S>) parent).merge(names);
         } else {
-            return MapShadowGroup.root(parent, names.build());
+            return MapShadowGroup.root(parent, names);
+        }
+    }
+
+    private <S extends JElementSymbol> ShadowGroup<S> mergedGroup(ShadowGroup<S> parent, S lastName) {
+        if (parent instanceof MapShadowGroup) {
+            return ((MapShadowGroup<S>) parent).merge(lastName);
+        } else {
+            return MapShadowGroup.root(parent, lastName);
         }
     }
 
@@ -140,12 +160,12 @@ final class SymTableFactory {
 
         fillImportOnDemands(importsOnDemand, importedTypes, importedFields, importedMethods, lazyImportedPackagesAndTypes);
 
-        ShadowGroup<JVariableSymbol> vars = buildGroup(parent.variables(), importedFields);
-        ShadowGroup<JMethodSymbol> methods = buildGroup(parent.methods(), importedMethods);
+        ShadowGroup<JVariableSymbol> vars = shadowingGroup(parent.variables(), importedFields.build());
+        ShadowGroup<JMethodSymbol> methods = shadowingGroup(parent.methods(), importedMethods.build());
         ShadowGroup<JTypeDeclSymbol> types;
         if (lazyImportedPackagesAndTypes.isEmpty()) {
             // then we don't need to use the lazy impl
-            types = buildGroup(parent.types(), importedTypes);
+            types = shadowingGroup(parent.types(), importedTypes.build());
         } else {
             types = new LazyShadowGroup<>(parent.types(), importedTypes.getMap(), importedOnDemandLazyResolver(lazyImportedPackagesAndTypes));
         }
@@ -223,9 +243,9 @@ final class SymTableFactory {
 
         return buildTable(
             parent,
-            buildGroup(parent.variables(), importedFields),
-            buildGroup(parent.methods(), importedMethods),
-            buildGroup(parent.types(), importedTypes)
+            shadowingGroup(parent.variables(), importedFields.build()),
+            shadowingGroup(parent.methods(), importedMethods.build()),
+            shadowingGroup(parent.types(), importedTypes.build())
         );
 
     }
@@ -303,21 +323,63 @@ final class SymTableFactory {
     }
 
     NSymbolTable typeOnlySymTable(NSymbolTable parent, NodeStream<ASTAnyTypeDeclaration> decl) {
-        Builder<String, JTypeDeclSymbol> builder = PMultimap.newBuilder();
-        decl.forEach(t -> builder.appendValue(t.getSimpleName(), t.getSymbol()));
-        return NSymTableImpl.withTypes(parent, buildGroup(parent.types(), builder));
+        return typeSymTable(parent, PMultimap.groupBy(decl, ASTAnyTypeDeclaration::getSimpleName, ASTAnyTypeDeclaration::getSymbol));
     }
 
-    NSymbolTable varOnlySymTable(NSymbolTable parent, NodeStream<ASTVariableDeclaratorId> decl) {
-        Builder<String, JVariableSymbol> builder = PMultimap.newBuilder();
-        decl.forEach(t -> builder.appendValue(t.getVariableName(), t.getSymbol()));
-        return NSymTableImpl.withVars(parent, buildGroup(parent.variables(), builder));
+    NSymbolTable typeParamSymTable(NSymbolTable parent, @Nullable ASTTypeParameters tparams) {
+        if (tparams == null) {
+            return parent;
+        }
+        return typeSymTable(parent, PMultimap.groupBy(tparams.toStream(), ASTTypeParameter::getParameterName, ASTTypeParameter::getSymbol));
+    }
+
+    NSymbolTable typeOnlySymTable(NSymbolTable parent, ASTAnyTypeDeclaration decl) {
+        return typeSymTable(parent, PMultimap.singleton(decl.getSimpleName(), decl.getSymbol()));
+    }
+
+    @NonNull
+    private NSymbolTable typeSymTable(NSymbolTable parent, PMultimap<String, JTypeDeclSymbol> map) {
+        return NSymTableImpl.withTypes(parent, shadowingGroup(parent.types(), map));
+    }
+
+    /**
+     * Symbol table for a body declaration. This places a shadowing
+     * group for variables, ie, nested variable shadowing groups will
+     * be merged into it but not into the parent. This implements shadowing
+     * of fields by local variables and formals.
+     */
+    NSymbolTable bodyDeclaration(NSymbolTable parent, @Nullable ASTFormalParameters formals, @Nullable ASTTypeParameters tparams) {
+        return new NSymTableImpl(
+            formalParameters(parent, ASTList.orEmptyStream(formals)),
+            typeParameters(parent, ASTList.orEmptyStream(tparams)),
+            parent.methods()
+        );
+    }
+
+    ShadowGroup<JVariableSymbol> formalParameters(NSymbolTable parent, NodeStream<ASTFormalParameter> params) {
+        return shadowingGroup(parent.variables(), PMultimap.groupBy(params.map(ASTFormalParameter::getVarId),
+                                                                    ASTVariableDeclaratorId::getVariableName,
+                                                                    ASTVariableDeclaratorId::getSymbol));
+    }
+
+    ShadowGroup<JTypeDeclSymbol> typeParameters(NSymbolTable parent, NodeStream<ASTTypeParameter> tparams) {
+        return shadowingGroup(parent.types(), PMultimap.groupBy(tparams,
+                                                                ASTTypeParameter::getParameterName,
+                                                                ASTTypeParameter::getSymbol));
+    }
+
+    NSymbolTable mergedVarSymTable(NSymbolTable parent, NodeStream<ASTVariableDeclaratorId> decl) {
+        PMultimap<String, JVariableSymbol> map = PMultimap.groupBy(decl, ASTVariableDeclaratorId::getVariableName, ASTVariableDeclaratorId::getSymbol);
+        return NSymTableImpl.withVars(parent, mergedGroup(parent.variables(), map));
+    }
+
+    NSymbolTable mergedVarSymTable(NSymbolTable parent, ASTVariableDeclaratorId id) {
+        return NSymTableImpl.withVars(parent, mergedGroup(parent.variables(), id.getSymbol()));
     }
 
     private static <T> List<T> listOfNotNull(T t) {
         return t == null ? emptyList() : singletonList(t);
     }
-
 
 
     // this map is mutable, will be used as the cache of all javaLangSymTables

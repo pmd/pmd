@@ -1,6 +1,7 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
 
 import java.util.HashMap;
@@ -42,8 +43,32 @@ class PMultimap<K, V> {
         return new PMultimap<>(appendV(map, k, v));
     }
 
-    public PMultimap<K, V> replaceValue(K k, V v) {
-        return new PMultimap<>(map.plus(k, ConsPStack.singleton(v)));
+    public PMultimap<K, V> appendAll(PMultimap<K, ? extends V> map) {
+        PMap<K, ConsPStack<V>> m2 = (PMap) map.map;
+        // iterate on the smallest one
+        return this.map.size() < m2.size() ? new PMultimap<>(mergeMaps(this.map, m2))
+                                           : new PMultimap<>(mergeMaps(m2, this.map));
+    }
+
+    // TODO maybe use builder instead
+    private PMap<K, ConsPStack<V>> mergeMaps(PMap<K, ConsPStack<V>> m1,
+                                             PMap<K, ConsPStack<V>> m2) {
+        PMap<K, ConsPStack<V>> newMap = m2;
+        for (K k : m1.keySet()) {
+            ConsPStack<V> curV = getInternal(newMap, k);
+            ConsPStack<V> otherV = getInternal(m1, k);
+            if (curV.isEmpty()) {
+                newMap = newMap.plus(k, otherV);
+            } else {
+                if (curV.size() < otherV.size()) {
+                    ConsPStack<V> tmp = curV;
+                    curV = otherV;
+                    otherV = tmp;
+                }
+                newMap = newMap.plus(k, curV.plusAll(otherV));
+            }
+        }
+        return newMap;
     }
 
     public PMultimap<K, V> appendAllGroupingBy(Iterable<? extends V> values,
@@ -53,7 +78,11 @@ class PMultimap<K, V> {
             K k = keyExtractor.apply(v);
             newMap = appendV(newMap, k, v);
         }
-        return new PMultimap<>(map);
+        return new PMultimap<>(newMap);
+    }
+
+    public PMultimap<K, V> replaceValue(K k, V v) {
+        return new PMultimap<>(map.plus(k, ConsPStack.singleton(v)));
     }
 
     public <A, R> R overrideWith(final PMultimap<K, V> otherMap,
@@ -82,9 +111,27 @@ class PMultimap<K, V> {
         return map.containsKey(v);
     }
 
+    public static <K, V> PMultimap<K, V> singleton(K k, V v) {
+        return PMultimap.<K, V>empty().appendValue(k, v);
+    }
+
     public static <K, V> PMultimap<K, V> groupBy(Iterable<? extends V> values,
                                                  Function<? super V, ? extends K> keyExtractor) {
-        return PMultimap.<K, V>empty().appendAllGroupingBy(values, keyExtractor);
+        Builder<K, V> builder = newBuilder();
+        for (V v : values) {
+            builder.appendValue(keyExtractor.apply(v), v);
+        }
+        return builder.build();
+    }
+
+    public static <I, K, V> PMultimap<K, V> groupBy(Iterable<? extends I> values,
+                                                    Function<? super I, ? extends K> keyExtractor,
+                                                    Function<? super I, ? extends V> valueExtractor) {
+        Builder<K, V> builder = newBuilder();
+        for (I i : values) {
+            builder.appendValue(keyExtractor.apply(i), valueExtractor.apply(i));
+        }
+        return builder.build();
     }
 
     private static <K, V> PMap<K, ConsPStack<V>> appendV(PMap<K, ConsPStack<V>> map, K k, V v) {
@@ -107,7 +154,11 @@ class PMultimap<K, V> {
 
     public static class Builder<K, V> {
 
-        private final HashMap<K, ConsPStack<V>> map = new HashMap<>();
+        private final HashMap<K, ConsPStack<V>> map;
+
+        private Builder() {
+            map = new HashMap<>();
+        }
 
         public Builder<K, V> replaceValue(K key, V elt) {
             map.put(key, ConsPStack.singleton(elt));

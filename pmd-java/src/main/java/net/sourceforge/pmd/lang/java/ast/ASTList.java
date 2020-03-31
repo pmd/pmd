@@ -95,6 +95,10 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
         return list == null ? Collections.emptyList() : list.toList();
     }
 
+    public static <N extends JavaNode> @NonNull NodeStream<N> orEmptyStream(@Nullable ASTList<N> list) {
+        return list == null ? NodeStream.empty() : list.toStream();
+    }
+
     /**
      * Super type for *nonempty* lists that *only* have nodes of type {@code <T>}
      * as a child.

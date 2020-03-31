@@ -53,8 +53,8 @@ public final class MapShadowGroup<S extends JElementSymbol> implements ShadowGro
         );
     }
 
-    ShadowGroup<S> merge(Iterable<? extends S> symbols) {
-        return new MapShadowGroup<>(this.fallback, this.symbolsByName.appendAllGroupingBy(symbols, JElementSymbol::getSimpleName), nextShadowGroups);
+    ShadowGroup<S> merge(PMultimap<String, S> symbols) {
+        return new MapShadowGroup<>(this.fallback, this.symbolsByName.appendAll(symbols), nextShadowGroups);
     }
 
     ShadowGroup<S> merge(S symbol) {
@@ -62,13 +62,12 @@ public final class MapShadowGroup<S extends JElementSymbol> implements ShadowGro
     }
 
     static <S extends JElementSymbol> ShadowGroup<S> root(ShadowGroup<S> fallback,
-                                                          Iterable<? extends S> symbols) {
-        return root(fallback, PMultimap.groupBy(symbols, JElementSymbol::getSimpleName));
-    }
-
-    static <S extends JElementSymbol> ShadowGroup<S> root(ShadowGroup<S> fallback,
                                                           PMultimap<String, S> symbols) {
         return new MapShadowGroup<>(fallback, symbols, HashTreePMap.empty());
+    }
+
+    static <S extends JElementSymbol> ShadowGroup<S> root(ShadowGroup<S> fallback, S symbol) {
+        return root(fallback, PMultimap.singleton(symbol.getSimpleName(), symbol));
     }
 
     static <S extends JElementSymbol> ShadowGroup<S> empty() {
