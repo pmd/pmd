@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -20,7 +21,7 @@ import org.pcollections.PMap;
 class PMultimap<K, V> {
 
     @SuppressWarnings("rawtypes")
-    private static final PMultimap EMPTY = new PMultimap(HashTreePMap.empty());
+    private static final PMultimap EMPTY = new PMultimap<>(HashTreePMap.empty());
 
     private final PMap<K, ConsPStack<V>> map;
 
@@ -50,12 +51,35 @@ class PMultimap<K, V> {
         return new PMultimap<>(map);
     }
 
+    public <A, R> R overrideWith(final PMultimap<K, V> otherMap,
+                                 final A zero,
+                                 final BiFunction<A, K, A> onOverride,
+                                 final BiFunction<PMultimap<K, V>, A, R> finisher) {
+
+        PMap<K, ConsPStack<V>> finalMap = otherMap.map;
+
+        A a = zero;
+        for (K k : this.map.keySet()) {
+            if (otherMap.containsKey(k)) {
+                a = onOverride.apply(a, k);
+            } else {
+                finalMap = finalMap.plus(k, this.map.get(k));
+            }
+        }
+        return finisher.apply(new PMultimap<>(finalMap), a);
+    }
+
     public Set<K> keySet() {
         return map.keySet();
     }
 
     public boolean containsKey(K v) {
         return map.containsKey(v);
+    }
+
+    public static <K, V> PMultimap<K, V> groupBy(Iterable<? extends V> values,
+                                                 Function<? super V, ? extends K> keyExtractor) {
+        return PMultimap.<K, V>empty().appendAllGroupingBy(values, keyExtractor);
     }
 
     private static <K, V> PMap<K, ConsPStack<V>> appendV(PMap<K, ConsPStack<V>> map, K k, V v) {
