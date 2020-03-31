@@ -36,13 +36,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.TypeMemberSymTable;
 
 
 /**
@@ -116,27 +114,17 @@ public final class NSymbolTableResolver {
         public void visit(ASTAnyTypeDeclaration node, Void data) {
             setTopSymbolTable(node.getModifiers());
 
-            int pushed = 0;
-            pushed += pushOnStack(f.typeOnlySymTable(top(), node)); // pushes its own name, shadows type params of enclosing type
+            int pushed = pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
-            if (pushOnStack(f.typeParamSymTable(top(), node.getTypeParameters())) > 0) {
-                // there are type parameters: the extends/implements/type parameter section know about them
-
-                NodeStream<? extends JavaNode> notBody = node.children().drop(1).filterNot(it -> it instanceof ASTTypeBody);
-                for (JavaNode it : notBody) {
-                    setTopSymbolTable(it);
-                }
-
-                popStack();
+            for (JavaNode it : node.children().drop(1).take(node.getNumChildren() - 2)) {
+                setTopSymbolTable(it);
             }
 
-            // the following is just for the body
+            popStack(pushed);
 
-            pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
-            pushed += pushOnStack(f.typeParamSymTable(top(), node.getTypeParameters())); // shadow type names of the former 2
 
+            pushed += pushOnStack(f.typeBody(top(), node.getSymbol()));
             setTopSymbolTableAndRecurse(node.getBody());
-
             popStack(pushed);
         }
 
@@ -157,7 +145,7 @@ public final class NSymbolTableResolver {
 
         @Override
         public void visit(ASTLambdaExpression node, Void data) {
-            int pushed = pushOnStack(f.mergedVarSymTable(top(), formalsOf(node)));
+            int pushed = pushOnStack(f.localVarSymTable(top(), formalsOf(node)));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
@@ -194,9 +182,9 @@ public final class NSymbolTableResolver {
             for (ASTStatement st : node) {
                 // TODO those sym table are not their own shadow groups, they should be merged
                 if (st instanceof ASTLocalVariableDeclaration) {
-                    pushed += pushOnStack(f.mergedVarSymTable(top(), ((ASTLocalVariableDeclaration) st).getVarIds()));
+                    pushed += pushOnStack(f.localVarSymTable(top(), ((ASTLocalVariableDeclaration) st).getVarIds()));
                 } else if (st instanceof ASTLocalClassStatement) {
-                    pushed += pushOnStack(f.typeOnlySymTable(top(), ((ASTLocalClassStatement) st).getDeclaration()));
+                    pushed += pushOnStack(f.localTypeSymTable(top(), ((ASTLocalClassStatement) st).getDeclaration().getSymbol()));
                 }
 
 
@@ -212,14 +200,14 @@ public final class NSymbolTableResolver {
             // the varId is only in scope in the body and not the iterable expr
             setTopSymbolTableAndRecurse(node.getIterableExpr());
 
-            int pushed = pushOnStack(f.mergedVarSymTable(top(), node.getVarId()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), node.getVarId()));
             node.getBody().jjtAccept(this, data);
             popStack(pushed);
         }
 
         @Override
         public void visit(ASTForStatement node, Void data) {
-            int pushed = pushOnStack(f.mergedVarSymTable(top(), varsOfInit(node)));
+            int pushed = pushOnStack(f.localVarSymTable(top(), varsOfInit(node)));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
@@ -248,7 +236,7 @@ public final class NSymbolTableResolver {
 
         @Override
         public void visit(ASTCatchClause node, Void data) {
-            int pushed = pushOnStack(f.mergedVarSymTable(top(), node.getParameter().getVarId()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), node.getParameter().getVarId()));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }

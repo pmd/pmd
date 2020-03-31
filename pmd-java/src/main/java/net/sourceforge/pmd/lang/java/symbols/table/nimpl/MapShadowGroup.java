@@ -44,7 +44,7 @@ public final class MapShadowGroup<S extends JElementSymbol> implements ShadowGro
     // construction/transformation methods
 
 
-    ShadowGroup<S> shadow(PMultimap<String, S> symbols) {
+    MapShadowGroup<S> shadowWith(PMultimap<String, S> symbols) {
         return this.symbolsByName.overrideWith(
             symbols,
             nextShadowGroups,
@@ -61,7 +61,7 @@ public final class MapShadowGroup<S extends JElementSymbol> implements ShadowGro
         return new MapShadowGroup<>(this.fallback, this.symbolsByName.appendValue(symbol.getSimpleName(), symbol), nextShadowGroups);
     }
 
-    static <S extends JElementSymbol> ShadowGroup<S> root(ShadowGroup<S> fallback,
+    static <S extends JElementSymbol> MapShadowGroup<S> root(ShadowGroup<S> fallback,
                                                           PMultimap<String, S> symbols) {
         return new MapShadowGroup<>(fallback, symbols, HashTreePMap.empty());
     }

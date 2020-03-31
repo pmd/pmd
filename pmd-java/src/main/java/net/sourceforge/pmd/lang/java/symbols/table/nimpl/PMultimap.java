@@ -117,11 +117,7 @@ class PMultimap<K, V> {
 
     public static <K, V> PMultimap<K, V> groupBy(Iterable<? extends V> values,
                                                  Function<? super V, ? extends K> keyExtractor) {
-        Builder<K, V> builder = newBuilder();
-        for (V v : values) {
-            builder.appendValue(keyExtractor.apply(v), v);
-        }
-        return builder.build();
+        return groupBy(values, keyExtractor, Function.identity());
     }
 
     public static <I, K, V> PMultimap<K, V> groupBy(Iterable<? extends I> values,

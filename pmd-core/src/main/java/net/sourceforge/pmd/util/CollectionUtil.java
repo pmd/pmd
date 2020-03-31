@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -394,7 +393,7 @@ public final class CollectionUtil {
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
         if (rest.length == 0) {
-            return Collections.singletonList(first);
+            return singletonList(first);
         }
         List<T> union = new ArrayList<>();
         union.add(first);
@@ -523,7 +522,7 @@ public final class CollectionUtil {
         if (!from.hasNext()) {
             return emptyList();
         } else if (sizeHint == 1) {
-            return Collections.singletonList(f.apply(from.next()));
+            return singletonList(f.apply(from.next()));
         }
         List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
         while (from.hasNext()) {
@@ -662,4 +661,5 @@ public final class CollectionUtil {
     public static <N> boolean none(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
         return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
     }
+
 }
