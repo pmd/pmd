@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.CharBuffer;
@@ -116,8 +115,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     @Override
     public Reader newReader() {
-
-        return new CharArrayReader(text.array());
+        return new CharBufferReader(text.duplicate());
     }
 
     long getCurStamp() {
