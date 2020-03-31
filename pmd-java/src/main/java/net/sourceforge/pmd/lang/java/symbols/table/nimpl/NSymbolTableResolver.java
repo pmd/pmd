@@ -13,10 +13,14 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -28,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -41,6 +46,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -102,31 +108,93 @@ public final class NSymbolTableResolver {
             pushed += pushOnStack(f.javaLangSymTable(top()));
             pushed += pushOnStack(f.samePackageSymTable(top()));
             pushed += pushOnStack(f.singleImportsSymbolTable(top(), isImportOnDemand.get(false)));
+
+            NodeStream<ASTAnyTypeDeclaration> typeDecls = node.getTypeDeclarations();
+
             // types declared inside the compilation unit
-            pushed += pushOnStack(f.typeOnlySymTable(top(), node.getTypeDeclarations()));
+            pushed += pushOnStack(f.typeOnlySymTable(top(), typeDecls));
+
+            setTopSymbolTable(node);
+
+            for (ASTAnyTypeDeclaration td : typeDecls) {
+                // preprocess all sibling types
+                processTypeHeader(td);
+            }
 
             // All of the header symbol tables belong to the CompilationUnit
-            setTopSymbolTableAndRecurse(node);
+            visitSubtree(node);
+
             popStack(pushed);
         }
 
 
-        @Override
-        public void visit(ASTAnyTypeDeclaration node, Void data) {
+        private void processTypeHeader(ASTAnyTypeDeclaration node) {
             setTopSymbolTable(node.getModifiers());
 
-            int pushed = pushOnStack(f.typeHeader(top(), node.getSymbol()));
+            int pushed = pushOnStack(f.typeOnlySymTable(top(), node.getSymbol()));
+            pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
-            for (JavaNode it : node.children().drop(1).take(node.getNumChildren() - 2)) {
+            NodeStream<? extends JavaNode> notBody = node.children().drop(1).take(node.getNumChildren() - 2);
+            for (JavaNode it : notBody) {
                 setTopSymbolTable(it);
             }
 
-            popStack(pushed);
-            pushed = 0;
+            popStack(pushed - 1);
+
+            // resolve the supertypes, necessary for TypeMemberSymTable
+            f.earlyDisambig(notBody); // extends/implements
+
+            setTopSymbolTable(node);
+            popStack();
+        }
+
+        @Override
+        public void visit(ASTAnyTypeDeclaration node, Void data) {
+            int pushed = 0;
+
+            // the following is just for the body
+            // helper.pushCtxType(node.getSymbol());
+
             pushed += pushOnStack(f.typeBody(top(), node.getSymbol()));
-            setTopSymbolTableAndRecurse(node.getBody());
+
+            setTopSymbolTable(node.getBody());
+
+            // preprocess siblings
+            node.getDeclarations()
+                .filterIs(ASTAnyTypeDeclaration.class)
+                .forEach(this::processTypeHeader);
+
+
+            // process fields first, their type is needed for JSymbolTable#resolveValue
+            f.earlyDisambig(node.getDeclarations()
+                                .filterIs(ASTFieldDeclaration.class)
+                                .map(ASTFieldDeclaration::getTypeNode));
+
+            visitSubtree(node.getBody());
+
+            // helper.popCtxType();
+
             popStack(pushed);
         }
+
+        @Override
+        public void visit(ASTAnonymousClassDeclaration node, Void data) {
+
+            // the supertype node, should be disambiguated to access members of the type
+            f.earlyDisambig(node.asStream().parents()
+                                .filterIs(ASTConstructorCall.class)
+                                .map(ASTConstructorCall::getTypeNode));
+
+            // helper.pushCtxType(node.getSymbol());
+            int pushed = pushOnStack(f.typeBody(top(), node.getSymbol())); // methods & fields & inherited classes
+
+            setTopSymbolTableAndRecurse(node.getBody());
+
+            // helper.popCtxType();
+            popStack(pushed);
+        }
+
+
 
         @Override
         public void visit(ASTMethodOrConstructorDeclaration node, Void data) {
@@ -142,6 +210,16 @@ public final class NSymbolTableResolver {
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
+
+
+        @Override
+        public void visit(ASTRecordConstructorDeclaration node, Void data) {
+            setTopSymbolTable(node.getModifiers());
+            int pushed = pushOnStack(f.recordCtor(top(), node.getSymbol()));
+            setTopSymbolTableAndRecurse(node);
+            popStack(pushed);
+        }
+
 
         @Override
         public void visit(ASTLambdaExpression node, Void data) {
@@ -184,7 +262,9 @@ public final class NSymbolTableResolver {
                 if (st instanceof ASTLocalVariableDeclaration) {
                     pushed += pushOnStack(f.localVarSymTable(top(), ((ASTLocalVariableDeclaration) st).getVarIds()));
                 } else if (st instanceof ASTLocalClassStatement) {
-                    pushed += pushOnStack(f.localTypeSymTable(top(), ((ASTLocalClassStatement) st).getDeclaration().getSymbol()));
+                    ASTClassOrInterfaceDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
+                    pushed += pushOnStack(f.localTypeSymTable(top(), local.getSymbol()));
+                    processTypeHeader(local);
                 }
 
 
@@ -265,6 +345,23 @@ public final class NSymbolTableResolver {
             }
             stack.push(table);
             return 1;
+        }
+
+
+        private int restoreStack(final JSymbolTable leaf) {
+            assert leaf != null : "Table not set";
+
+            final JSymbolTable curTop = popStack();
+
+            int i = 0;
+            JSymbolTable parent = leaf;
+            while (!stack.isEmpty() && parent != curTop) {  // NOPMD - intentional check for reference equality
+                i++;
+                parent = popStack();
+            }
+
+            assert !stack.isEmpty() : "Sibling left dangling tables on the stack";
+            return i;
         }
 
         private NSymbolTable popStack() {

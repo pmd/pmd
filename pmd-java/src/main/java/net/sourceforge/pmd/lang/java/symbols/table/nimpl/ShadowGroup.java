@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
  *      ShadowGroup<JVariableSymbol> next;
  *      while ((next = group.nextShadowGroup("foo")) != null) {
  *          List<JVariableSymbol> fooNext = next.resolve("foo");
- *          // if nonempty, then these names are shadowed by the original group
+ *          // if nonempty, then these names are shadowed in the original group
  *
  *      }
  *      if (next == null) {

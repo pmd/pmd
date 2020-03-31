@@ -39,6 +39,15 @@ final class NSymTableImpl implements NSymbolTable {
         return methods;
     }
 
+    @Override
+    public String toString() {
+        return "NSymTableImpl{" +
+            "vars=" + vars +
+            ", types=" + types +
+            ", methods=" + methods +
+            '}';
+    }
+
     static NSymbolTable withVars(NSymbolTable parent, ShadowGroup<JVariableSymbol> vars) {
         return new NSymTableImpl(vars, parent.types(), parent.methods());
     }

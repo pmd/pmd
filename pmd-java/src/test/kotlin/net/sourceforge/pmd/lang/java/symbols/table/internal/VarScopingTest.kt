@@ -281,11 +281,9 @@ class VarScopingTest : ProcessorTestSpec({
         doTest("Inside compact ctor: components are in scope as formals") {
             insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("x") {
                 result::getDeclaringSymbol shouldBe compactCtor.symbol
-                this::getContributor shouldBe xComp
             }
             insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("rest") {
                 result::getDeclaringSymbol shouldBe compactCtor.symbol
-                this::getContributor shouldBe restComp
             }
         }
 

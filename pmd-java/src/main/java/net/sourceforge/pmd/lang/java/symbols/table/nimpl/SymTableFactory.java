@@ -29,10 +29,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -58,6 +60,11 @@ final class SymTableFactory {
 
     // <editor-fold defaultstate="collapsed" desc="Utilities for classloading">
 
+
+    public void earlyDisambig(NodeStream<? extends JavaNode> nodes) {
+        AstDisambiguationPass.disambig(processor, nodes);
+    }
+
     /** Prepend the package name, handling empty package. */
     String prependPackageName(String pack, String name) {
         return pack.isEmpty() ? name : pack + "." + name;
@@ -70,7 +77,7 @@ final class SymTableFactory {
     final JClassSymbol loadClassReportFailure(JavaNode location, String fqcn) {
         JClassSymbol loaded = loadClassOrFail(fqcn);
         if (loaded == null) {
-            getLogger().warning(location, SemanticChecksLogger.CANNOT_FIND_CLASSPATH_SYMBOL, fqcn);
+            getLogger().warning(location, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, fqcn);
         }
 
         return loaded;
@@ -349,7 +356,11 @@ final class SymTableFactory {
 
 
     NSymbolTable typeOnlySymTable(NSymbolTable parent, NodeStream<ASTAnyTypeDeclaration> decl) {
-        return typeSymTable(parent, PMultimap.groupBy(decl, ASTAnyTypeDeclaration::getSimpleName, ASTAnyTypeDeclaration::getSymbol));
+        return typeSymTable(parent, toPMap(decl, ASTAnyTypeDeclaration::getSymbol));
+    }
+
+    NSymbolTable typeOnlySymTable(NSymbolTable parent, JClassSymbol sym) {
+        return typeSymTable(parent, toPMap(sym));
     }
 
     @NonNull
@@ -360,7 +371,6 @@ final class SymTableFactory {
     NSymbolTable typeBody(NSymbolTable parent, JClassSymbol sym) {
 
         ShadowGroup<JTypeDeclSymbol> types = parent.types();
-        types = shadowingGroup(types, toPMap(sym));
         types = shadowingGroup(types, toPMap(sym.getDeclaredClasses()));
         types = shadowingGroup(types, toPMap(sym.getTypeParameters()));
 
@@ -371,11 +381,7 @@ final class SymTableFactory {
     }
 
     NSymbolTable typeHeader(NSymbolTable parent, JClassSymbol sym) {
-        ShadowGroup<JTypeDeclSymbol> types = parent.types();
-        types = shadowingGroup(types, toPMap(sym));
-        types = shadowingGroup(types, toPMap(sym.getTypeParameters()));
-
-        return NSymTableImpl.withTypes(parent, types);
+        return NSymTableImpl.withTypes(parent, shadowingGroup(parent.types(), toPMap(sym.getTypeParameters())));
     }
 
     /**
@@ -390,6 +396,10 @@ final class SymTableFactory {
             shadowingGroup(parent.types(), toPMap(ASTList.orEmptyStream(tparams), ASTTypeParameter::getSymbol)),
             parent.methods()
         );
+    }
+
+    NSymbolTable recordCtor(NSymbolTable parent, JConstructorSymbol symbol) {
+        return NSymTableImpl.withVars(parent, shadowingGroup(parent.variables(), toPMap(symbol.getFormalParameters())));
     }
 
 

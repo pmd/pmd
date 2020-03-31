@@ -46,6 +46,13 @@ public final class LazyShadowGroup<S extends JElementSymbol> implements ShadowGr
     }
 
     @Override
+    public String toString() {
+        return "LazyShadowGroup{"
+            + "cache size=" + cache.size()
+            + '}';
+    }
+
+    @Override
     public @Nullable ShadowGroup<S> nextShadowGroup(String name) {
         return next;
     }
