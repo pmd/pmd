@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 @Experimental
 public interface JSymbolTable {
 
+
     /**
      * Returns the parent of this table, that is, the symbol table that will be
      * delegated to if this table doesn't find a declaration.

@@ -1,10 +1,11 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -31,6 +32,10 @@ class PMultimap<K, V> {
 
     public @NonNull List<V> get(K k) {
         return getInternal(map, k);
+    }
+
+    public boolean isEmpty() {
+        return map.isEmpty();
     }
 
     public PMultimap<K, V> appendValue(K k, V v) {
@@ -96,54 +101,36 @@ class PMultimap<K, V> {
         return EMPTY;
     }
 
-    //    public static <K, V> Builder<K, V> newBuilder() {
-    //        return new Builder<>();
-    //    }
-    //
-    //    public static class Builder<K, V> {
-    //
-    //        private final HashMap<K, Object> map = new HashMap<>();
-    //
-    //        public Builder<K, V> replaceValue(K key, V elt) {
-    //            map.put(key, elt);
-    //            return this;
-    //        }
-    //
-    //        public Builder<K, V> appendValue(K key, V v) {
-    //            map.merge(key, v, (oldV, newV) -> {
-    //                if (oldV instanceof MyVList) {
-    //                    ((MyVList) oldV).add(newV);
-    //                    return oldV;
-    //                } else {
-    //                    MyVList<Object> newVList = new MyVList<>(2);
-    //                    newVList.add(oldV);
-    //                    newVList.add(newV);
-    //                    return newVList;
-    //                }
-    //            });
-    //            return this;
-    //        }
-    //
-    //
-    //        private List<V> interpretValue(Object value) {
-    //            if (value instanceof MyVList) {
-    //                return Collections.unmodifiableList((MyVList<V>) value);
-    //            } else {
-    //                return Collections.singletonList((V) value);
-    //            }
-    //        }
-    //
-    //        public PMultimap<K, V> build() {
-    //            PMap<K, List<V>> result = HashTreePMap.empty();
-    //            for (K k : map.keySet()) {
-    //                Object v = map.get(k);
-    //                if (v == null) {
-    //                    continue;
-    //                }
-    //                result = result.plus(k, interpretValue(v));
-    //            }
-    //            return new PMultimap<>(result);
-    //        }
-    //    }
+    public static <K, V> Builder<K, V> newBuilder() {
+        return new Builder<>();
+    }
+
+    public static class Builder<K, V> {
+
+        private final HashMap<K, ConsPStack<V>> map = new HashMap<>();
+
+        public Builder<K, V> replaceValue(K key, V elt) {
+            map.put(key, ConsPStack.singleton(elt));
+            return this;
+        }
+
+        public Builder<K, V> appendValue(K key, V v) {
+            map.compute(key, (k, oldV) -> oldV == null ? ConsPStack.singleton(v) : oldV.plus(v));
+            return this;
+        }
+
+        @SuppressWarnings( {"unchecked", "rawtypes"})
+        public Map<K, List<V>> getMap() {
+            return (Map) map;
+        }
+
+        public PMultimap<K, V> build() {
+            return isEmpty() ? empty() : new PMultimap<>(HashTreePMap.from(map));
+        }
+
+        public boolean isEmpty() {
+            return map.isEmpty();
+        }
+    }
 
 }
