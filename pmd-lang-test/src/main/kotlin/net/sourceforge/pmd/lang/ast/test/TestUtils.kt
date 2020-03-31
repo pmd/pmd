@@ -8,6 +8,7 @@ import io.kotlintest.Matcher
 import io.kotlintest.equalityMatcher
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.should
+import io.kotlintest.shouldThrow
 import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
@@ -74,6 +75,39 @@ inline fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
 
 fun Stream<*>.shouldHaveSize(i: Int) {
     toList() should haveSize(i)
+}
+
+fun <T> List<T>.shouldBeUnmodifiable(tdata: List<T?> = listOf(null)) {
+
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    (this as? java.util.List<T>)?.apply {
+        shouldThrow<UnsupportedOperationException> {
+            add(tdata.firstOrNull())
+        }
+        shouldThrow<UnsupportedOperationException> {
+            addAll(tdata)
+        }
+        shouldThrow<UnsupportedOperationException> {
+            retainAll(tdata)
+        }
+        shouldThrow<UnsupportedOperationException> {
+            addAll(tdata)
+        }
+        shouldThrow<UnsupportedOperationException> {
+            removeIf { true }
+        }
+        shouldThrow<UnsupportedOperationException> {
+            clear()
+        }
+        if (isNotEmpty()) {
+            shouldThrow<UnsupportedOperationException> {
+                remove(0)
+            }
+            shouldThrow<UnsupportedOperationException> {
+                set(0, tdata.firstOrNull())
+            }
+        }
+    }
 }
 
 operator fun <T> List<T>.component6() = get(5)

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,15 @@ final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
         completeInit();
     }
+
+
+    @Override
+    protected @Nullable List<JMethodSymbol> getCachedMethodResults(String simpleName) {
+        // import on demand tables don't need to override resolveMethodNameHere,
+        // they're the last table that may contain methods
+        return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList());
+    }
+
 
 
     @Override
