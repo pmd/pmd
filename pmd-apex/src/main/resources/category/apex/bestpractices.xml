@@ -211,7 +211,7 @@ public class Foo {
     <rule name="UnusedLocalVariable"
           since="6.23.0"
           language="apex"
-          message="Variable defined but not used"
+          message="Variable ''{0}'' defined but not used"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
         <description>

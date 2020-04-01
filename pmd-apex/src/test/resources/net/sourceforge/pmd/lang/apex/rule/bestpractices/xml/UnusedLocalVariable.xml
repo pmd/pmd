@@ -7,6 +7,10 @@
         <description>Unused variables should result in errors</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-messages>
+            <message>Variable 'foo' defined but not used</message>
+            <message>Variable 'foo' defined but not used</message>
+        </expected-messages>
         <code>
 <![CDATA[
 public class Foo {

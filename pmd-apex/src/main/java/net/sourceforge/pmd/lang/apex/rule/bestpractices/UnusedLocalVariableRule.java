@@ -28,7 +28,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
             }
         }
 
-        addViolation(data, node);
+        addViolation(data, node, variableName);
         return data;
     }
 }
