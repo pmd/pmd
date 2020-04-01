@@ -37,6 +37,16 @@ public class Foo {
         String x = 'blah';
         return [SELECT Id FROM Account WHERE Name = :x];
     }
+
+    public String usageInBlocks(Boolean y) {
+        String x = 'used variable';
+
+        if (y) {
+            return x;
+        } else {
+            return 'some other string';
+        }
+    }
 }
 ]]>
         </code>
