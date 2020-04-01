@@ -24,7 +24,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
 
         Optional<NodeAndLocation> firstMethod =
-            methods.stream().map(NodeAndLocation::new)
+            methods.stream()
+                .filter(method -> method.hasRealLoc())
+                .map(method -> new NodeAndLocation(method))
                 .min(Comparator.naturalOrder());
 
         if (!firstMethod.isPresent()) {
@@ -47,7 +49,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         public int column;
         public ApexNode<?> node;
 
-        public NodeAndLocation(ApexNode<?> node) {
+        NodeAndLocation(ApexNode<?> node) {
             this.node = node;
 
             line = node.getBeginLine();
