@@ -20,6 +20,9 @@ class Foo {
         <description>Does warn if a field is after a method</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
         <code>
 <![CDATA[
 class Foo {
@@ -35,6 +38,9 @@ class Foo {
         <description>Warns if field is after constructor</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'someField' should be before method declarations in its class</message>
+        </expected-messages>
         <code>
 <![CDATA[
 class Foo {
@@ -52,6 +58,9 @@ class Foo {
         <description>Warns only for fields after the first method declaration</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisFieldIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
         <code>
 <![CDATA[
 class Foo {
@@ -71,6 +80,9 @@ class Foo {
         <description>Warns for fields defined on the same line after a method</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisFieldIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
         <code>
 <![CDATA[
 class Foo {

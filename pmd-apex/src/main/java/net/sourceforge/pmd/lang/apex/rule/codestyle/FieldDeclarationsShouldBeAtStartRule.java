@@ -37,7 +37,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         for (ASTFieldDeclaration field : fields) {
             NodeAndLocation fieldPosition = new NodeAndLocation(field);
             if (fieldPosition.compareTo(firstMethod.get()) > 0) {
-                addViolation(data, field);
+                addViolation(data, field, field.getName());
             }
         }
 

@@ -368,7 +368,7 @@ while (true) {  // preferred approach
     <rule name="FieldDeclarationsShouldBeAtStart"
           language="apex"
           since="5.23.0"
-          message="Field declarations should be before method declarations in a class"
+          message="Field declaration for ''{0}'' should be before method declarations in its class"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart">
         <description>
