@@ -365,4 +365,27 @@ while (true) {  // preferred approach
         </example>
     </rule>
 
+    <rule name="FieldDeclarationsShouldBeAtStart"
+          language="apex"
+          since="5.23.0"
+          message="Field declarations should be before method declarations in a class"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart">
+        <description>
+            Field declarations should appear before method declarations within a class.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+    public Integer someField; // good
+
+    public void someMethod() {
+    }
+
+    public Integer anotherField; // bad
+}
+]]>
+        </example>
+    </rule>
 </ruleset>
