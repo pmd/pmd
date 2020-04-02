@@ -27,7 +27,6 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PMap;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -423,9 +422,6 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
-        if (m instanceof PMap) {
-            return ((PMap<K, V>) m).plus(k, v);
-        }
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
