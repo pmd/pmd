@@ -57,7 +57,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null
-                || classNode.getSuperInterfaceTypeNodes() != null) {
+                || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
             return false;
         }
 

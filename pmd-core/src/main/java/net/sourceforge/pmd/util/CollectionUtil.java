@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,12 +22,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.Validate;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PMap;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 /**
  * Generic collection and array-related utility functions for java.util types.
@@ -354,15 +365,33 @@ public final class CollectionUtil {
     }
 
 
+    /**
+     * Returns a set containing the given elements. No guarantee is
+     * made about mutability.
+     *
+     * @param first First element
+     * @param rest  Following elements
+     */
     @SafeVarargs
     public static <T> Set<T> setOf(T first, T... rest) {
+        return immutableSetOf(first, rest);
+    }
+
+    /**
+     * Returns an unmodifiable set containing the given elements.
+     *
+     * @param first First element
+     * @param rest  Following elements
+     */
+    @SafeVarargs
+    public static <T> Set<T> immutableSetOf(T first, T... rest) {
         if (rest.length == 0) {
             return Collections.singleton(first);
         }
         Set<T> union = new LinkedHashSet<>();
         union.add(first);
-        union.addAll(Arrays.asList(rest));
-        return union;
+        Collections.addAll(union, rest);
+        return Collections.unmodifiableSet(union);
     }
 
 
@@ -374,7 +403,111 @@ public final class CollectionUtil {
         List<T> union = new ArrayList<>();
         union.add(first);
         union.addAll(Arrays.asList(rest));
-        return union;
+        return Collections.unmodifiableList(union);
+    }
+
+    public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
+        Iterator<? extends T> it = from.iterator();
+        if (!it.hasNext()) {
+            return Collections.emptyList();
+        }
+        List<R> res = new ArrayList<>();
+        while (it.hasNext()) {
+            R r = f.apply(it.next());
+            if (r != null) {
+                res.add(r);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Produce a new map with the mappings of the first, and one additional
+     * mapping. The returned map may be unmodifiable.
+     */
+    public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        if (m instanceof PMap) {
+            return ((PMap<K, V>) m).plus(k, v);
+        }
+        if (m.isEmpty()) {
+            return Collections.singletonMap(k, v);
+        }
+        HashMap<K, V> newM = new HashMap<>(m);
+        newM.put(k, v);
+        return newM;
+    }
+
+
+    /**
+     * Returns a map associating each key in the first list to its
+     * corresponding value in the second.
+     *
+     * @throws IllegalArgumentException If the list size are mismatched
+     * @throws NullPointerException     If either of the parameter is null,
+     *                                  or any of the keys or values are null
+     */
+    public static <K, V> Map<K, V> zip(List<? extends @NonNull K> from, List<? extends @NonNull V> to) {
+        AssertionUtil.requireParamNotNull("keys", from);
+        AssertionUtil.requireParamNotNull("values", to);
+        Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
+
+        if (from.isEmpty()) {
+            return emptyMap();
+        }
+
+        Map<K, V> map = new HashMap<>(from.size());
+
+        for (int i = 0; i < from.size(); i++) {
+            K key = from.get(i);
+            V val = to.get(i);
+
+            Validate.notNull(key);
+            Validate.notNull(val);
+
+            map.put(key, val);
+        }
+
+        return map;
+    }
+
+    public static <K, V> Map<K, V> associateWith(Collection<? extends @NonNull K> keys, Function<? super K, ? extends V> mapper) {
+        AssertionUtil.requireParamNotNull("keys", keys);
+        if (keys.isEmpty()) {
+            return emptyMap();
+        }
+
+        return associateWithTo(new HashMap<>(keys.size()), keys, mapper);
+    }
+
+    public static <K, V> Map<K, V> associateWithTo(Map<K, V> collector, Collection<? extends @NonNull K> keys, Function<? super K, ? extends V> mapper) {
+        AssertionUtil.requireParamNotNull("collector", collector);
+        AssertionUtil.requireParamNotNull("keys", keys);
+        AssertionUtil.requireParamNotNull("mapper", mapper);
+        for (K key : keys) {
+            collector.put(key, mapper.apply(key));
+        }
+        return collector;
+    }
+
+
+    public static <K, V> Map<K, V> associateBy(Collection<? extends @NonNull V> values, Function<? super V, ? extends K> keyMapper) {
+        AssertionUtil.requireParamNotNull("values", values);
+        if (values.isEmpty()) {
+            return emptyMap();
+        }
+
+        return associateByTo(new HashMap<>(values.size()), values, keyMapper);
+    }
+
+
+    public static <K, V> Map<K, V> associateByTo(Map<K, V> collector, Collection<? extends @NonNull V> values, Function<? super V, ? extends K> keyMapper) {
+        AssertionUtil.requireParamNotNull("collector", collector);
+        AssertionUtil.requireParamNotNull("values", values);
+        AssertionUtil.requireParamNotNull("keyMapper", keyMapper);
+        for (V v : values) {
+            collector.put(keyMapper.apply(v), v);
+        }
+        return collector;
     }
 
     public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
@@ -400,25 +533,31 @@ public final class CollectionUtil {
         return map(from.iterator(), UNKNOWN_SIZE, f);
     }
 
+    public static <T, R> List<R> map(T[] from, Function<? super T, ? extends R> f) {
+        return map(Arrays.asList(from), f);
+    }
+
     public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
         return map(from, UNKNOWN_SIZE, f);
     }
 
     private static <T, R> List<R> map(Iterator<? extends T> from, int sizeHint, Function<? super T, ? extends R> f) {
         if (!from.hasNext()) {
-            return Collections.emptyList();
+            return emptyList();
+        } else if (sizeHint == 1) {
+            return Collections.singletonList(f.apply(from.next()));
         }
         List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
         while (from.hasNext()) {
             res.add(f.apply(from.next()));
         }
-        return res;
+        return Collections.unmodifiableList(res);
     }
 
     public static <T> List<T> drop(List<T> list, int n) {
         AssertionUtil.requireNonNegative("n", n);
 
-        return list.size() <= n ? Collections.emptyList()
+        return list.size() <= n ? emptyList()
                                 : list.subList(n, list.size());
     }
 
@@ -516,5 +655,33 @@ public final class CollectionUtil {
             largerOne[i] = newOnes.get(i - values.length);
         }
         return largerOne;
+    }
+
+    public static <T> List<T> listOfNotNull(T t) {
+        return t == null ? emptyList() : singletonList(t);
+    }
+
+    /**
+     * Returns true if any element of the iterable matches the predicate. Return
+     * false if the list is null or empty.
+     */
+    public static <N> boolean any(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
+        return list != null && IteratorUtil.anyMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * Returns true if all elements of the iterable match the predicate. Return
+     * true if the list is null or empty.
+     */
+    public static <N> boolean all(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
+        return list == null || IteratorUtil.allMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * Returns true if no element of the iterable matches the predicate. Return
+     * true if the list is null or empty.
+     */
+    public static <N> boolean none(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
+        return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
     }
 }

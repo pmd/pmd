@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.util.CollectionUtil.any;
+
 import org.apache.commons.lang3.ClassUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
@@ -58,13 +59,11 @@ public final class TypeHelper {
                 return isA(superClass, clazzName);
             }
 
-            return ASTList.any(((ASTClassOrInterfaceDeclaration) n).getSuperInterfaceTypeNodes(),
-                               itf -> isA(itf, clazzName));
+            return any(((ASTClassOrInterfaceDeclaration) n).getSuperInterfaceTypeNodes(), itf -> isA(itf, clazzName));
 
         } else if (n instanceof ASTEnumDeclaration) {
 
-            if (ASTList.any(((ASTEnumDeclaration) n).getSuperInterfaceTypeNodes(),
-                            itf -> isA(itf, clazzName))) {
+            if (any(((ASTEnumDeclaration) n).getSuperInterfaceTypeNodes(), itf -> isA(itf, clazzName))) {
                 return true;
             }
 
