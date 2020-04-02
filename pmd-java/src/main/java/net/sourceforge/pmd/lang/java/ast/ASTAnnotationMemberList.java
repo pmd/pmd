@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
-
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
  * Represents the list of {@link ASTMemberValuePair member-value pairs}
@@ -20,22 +18,15 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * </pre>
  */
-public final class ASTAnnotationMemberList extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
+public final class ASTAnnotationMemberList extends ASTMaybeEmptyListOf<ASTMemberValuePair> {
 
     ASTAnnotationMemberList(int id) {
-        super(id);
+        super(id, ASTMemberValuePair.class);
     }
-
 
     @Override
     public ASTAnnotation getParent() {
         return (ASTAnnotation) super.getParent();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public NodeStream<ASTMemberValuePair> children() {
-        return (NodeStream<ASTMemberValuePair>) super.children();
     }
 
     @Override
@@ -47,10 +38,5 @@ public final class ASTAnnotationMemberList extends AbstractJavaNode implements I
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-    @Override
-    public Iterator<ASTMemberValuePair> iterator() {
-        return children().iterator();
     }
 }
