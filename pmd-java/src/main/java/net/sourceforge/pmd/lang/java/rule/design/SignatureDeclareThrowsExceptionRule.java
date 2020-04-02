@@ -60,7 +60,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        for (final ASTClassOrInterfaceType type : node.getSuperInterfacesTypeNodes()) {
+        for (final ASTClassOrInterfaceType type : node.getSuperInterfaceTypeNodes()) {
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);

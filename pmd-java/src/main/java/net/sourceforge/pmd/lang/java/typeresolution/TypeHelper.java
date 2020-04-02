@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
@@ -58,19 +57,16 @@ public final class TypeHelper {
                 return isA(superClass, clazzName);
             }
 
-            for (ASTClassOrInterfaceType itf : ((ASTClassOrInterfaceDeclaration) n).getSuperInterfacesTypeNodes()) {
+            for (ASTClassOrInterfaceType itf : ((ASTClassOrInterfaceDeclaration) n).getSuperInterfaceTypeNodes()) {
                 if (isA(itf, clazzName)) {
                     return true;
                 }
             }
         } else if (n instanceof ASTEnumDeclaration) {
 
-            ASTImplementsList implemented = n.getFirstChildOfType(ASTImplementsList.class);
-            if (implemented != null) {
-                for (ASTClassOrInterfaceType itf : implemented) {
-                    if (isA(itf, clazzName)) {
-                        return true;
-                    }
+            for (ASTClassOrInterfaceType itf : ((ASTEnumDeclaration) n).getSuperInterfaceTypeNodes()) {
+                if (isA(itf, clazzName)) {
+                    return true;
                 }
             }
 
