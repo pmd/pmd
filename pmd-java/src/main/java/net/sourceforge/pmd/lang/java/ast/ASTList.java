@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
@@ -93,6 +95,30 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
      */
     public static <N extends JavaNode> @NonNull List<N> orEmpty(@Nullable ASTList<N> list) {
         return list == null ? Collections.emptyList() : list.toList();
+    }
+
+    /**
+     * Returns true if any element of the list matches the predicate. Return
+     * false if the list is null or empty.
+     */
+    public static <N extends JavaNode> boolean any(@Nullable ASTList<? extends N> list, Predicate<? super N> predicate) {
+        return list != null && IteratorUtil.anyMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * Returns true if all elements of the list match the predicate. Return
+     * true if the list is null or empty.
+     */
+    public static <N extends JavaNode> boolean all(@Nullable ASTList<? extends N> list, Predicate<? super N> predicate) {
+        return list == null || IteratorUtil.allMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * Returns true if no element of the list matches the predicate. Return
+     * true if the list is null or empty.
+     */
+    public static <N extends JavaNode> boolean none(@Nullable ASTList<? extends N> list, Predicate<? super N> predicate) {
+        return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
     }
 
     /**

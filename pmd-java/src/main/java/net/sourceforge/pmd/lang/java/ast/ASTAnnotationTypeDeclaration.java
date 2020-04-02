@@ -46,9 +46,4 @@ public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclarati
     public boolean isInterface() {
         return true;
     }
-
-    @Override
-    public List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
-        return Collections.emptyList();
-    }
 }

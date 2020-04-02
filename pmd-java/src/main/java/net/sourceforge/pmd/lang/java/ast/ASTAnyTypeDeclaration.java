@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -230,12 +228,12 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
-     * Returns the interfaces implemented by this class, or
-     * extended by this interface. Returns an empty list if
-     * none is specified.
+     * Returns the list of interfaces implemented by this class, or
+     * extended by this interface. Returns null if no such list is declared.
      */
-    default List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
-        return ASTList.orEmpty(isInterface() ? getFirstChildOfType(ASTExtendsList.class)
-                                             : getFirstChildOfType(ASTImplementsList.class));
+    @Nullable
+    default ASTList<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+        return isInterface() ? getFirstChildOfType(ASTExtendsList.class)
+                             : getFirstChildOfType(ASTImplementsList.class);
     }
 }
