@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
@@ -31,7 +32,8 @@ public abstract class AbstractNode implements Node {
     @Deprecated
     public static final SimpleDataKey<Object> LEGACY_USER_DATA = DataMap.simpleDataKey("legacy user data");
 
-    private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
+    // lazy initialized, many nodes don't need it
+    private @Nullable DataMap<DataKey<?, ?>> userData;
 
     /**
      * @deprecated Use {@link #getParent()}
@@ -303,17 +305,20 @@ public abstract class AbstractNode implements Node {
     @Override
     @Deprecated
     public Object getUserData() {
-        return userData.get(LEGACY_USER_DATA);
+        return getUserMap().get(LEGACY_USER_DATA);
     }
 
     @Override
     @Deprecated
     public void setUserData(final Object userData) {
-        this.userData.set(LEGACY_USER_DATA, userData);
+        getUserMap().set(LEGACY_USER_DATA, userData);
     }
 
     @Override
     public DataMap<DataKey<?, ?>> getUserMap() {
+        if (userData == null) {
+            userData = DataMap.newDataMap();
+        }
         return userData;
     }
 
