@@ -62,7 +62,7 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
      * of nodes yielded by the {@link #iterator()}.
      */
     public int size() {
-        return getNumChildren();
+        return toStream().count();
     }
 
     /**

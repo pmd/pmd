@@ -142,7 +142,7 @@ public interface ASTAnyTypeDeclaration
      * @return The member declarations declared in this type declaration
      */
     default NodeStream<ASTBodyDeclaration> getDeclarations() {
-        return getBody().getDeclarations();
+        return getBody().toStream();
     }
 
 
