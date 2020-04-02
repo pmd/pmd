@@ -165,12 +165,17 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isEnum();
 
+    boolean isRecord();
+
     boolean isAnnotation();
 
     boolean isLocalClass();
 
     boolean isAnonymousClass();
 
+    /**
+     * This returns true if this is not an interface, primitive or array.
+     */
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();
     }

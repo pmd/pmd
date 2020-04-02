@@ -8,6 +8,7 @@ import io.kotlintest.Matcher
 import io.kotlintest.equalityMatcher
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.should
+import io.kotlintest.shouldThrow
 import java.util.stream.Stream
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
@@ -70,10 +71,6 @@ inline fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
         f(this)
         return this
     } else throw AssertionError("Expected an instance of ${T::class.java}, got $this")
-}
-
-fun Stream<*>.shouldHaveSize(i: Int) {
-    toList() should haveSize(i)
 }
 
 operator fun <T> List<T>.component6() = get(5)

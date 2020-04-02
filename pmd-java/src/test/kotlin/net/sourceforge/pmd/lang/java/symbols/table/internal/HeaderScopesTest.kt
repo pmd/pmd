@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.matchers.collections.containExactly
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.haveSize
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
@@ -245,6 +246,53 @@ class HeaderScopesTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Method imported through $onDemandStaticImports should be shadowed by $staticSingleMemberImports") {
+
+        val acu = parser.parse(
+                """
+
+            import static javasymbols.testdata.StaticNameCollision.publicMethod;
+
+            import static javasymbols.testdata.Statics.*;
+
+            class Foo {}
+
+                """
+        )
+
+        acu.symbolTable.let {
+
+            doTest("The static import should shadow methods with the same name") {
+                it.resolveMethodName("publicMethod").let {
+                    it should haveSize(2)
+                    it.forEach {
+                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
+                    }
+                }
+
+                it.parent.parent.let {
+                    it.resolveMethodName("publicMethod").let {
+                        it should haveSize(2)
+                        it.forEach {
+                            it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                        }
+                    }
+                }
+            }
+
+            doTest("Other names are not shadowed but treated separately") {
+
+                // other names are still imported by the import on demand
+                it.resolveMethodName("publicMethod2").let {
+                    it should haveSize(1)
+                    it.forEach {
+                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                    }
+                }
+            }
+        }
+    }
+
     parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
 
         val acu = parser.parseClass(javasymbols.testdata.deep.StaticCollisionImport::class.java)
@@ -260,7 +308,4 @@ class HeaderScopesTest : ProcessorTestSpec({
     }
 
 })
-
-
-
 

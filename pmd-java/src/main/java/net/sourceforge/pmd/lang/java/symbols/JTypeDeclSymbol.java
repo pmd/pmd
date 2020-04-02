@@ -73,6 +73,10 @@ public interface JTypeDeclSymbol extends JElementSymbol, JAccessibleElementSymbo
     String getSimpleName();
 
 
+    /**
+     * This returns true if this is an interface. Annotation types are
+     * also interface types.
+     */
     default boolean isInterface() {
         return false;
     }

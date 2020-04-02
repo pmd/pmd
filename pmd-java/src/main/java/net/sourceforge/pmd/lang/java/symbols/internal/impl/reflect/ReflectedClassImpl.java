@@ -134,6 +134,13 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     }
 
     @Override
+    public boolean isRecord() {
+        // Class::isRecord is only available in jdk 14
+        Class<?> sup = myClass.getSuperclass();
+        return sup != null && "java.lang.Record".equals(sup.getName());
+    }
+
+    @Override
     public boolean isAnnotation() {
         return myClass.isAnnotation();
     }

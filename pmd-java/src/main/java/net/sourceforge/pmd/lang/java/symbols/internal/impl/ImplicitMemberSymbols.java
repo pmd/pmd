@@ -29,6 +29,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class ImplicitMemberSymbols {
 
     private static final int VISIBILITY_MASK = Modifier.PRIVATE | Modifier.PUBLIC | Modifier.PROTECTED;
+    /** This is the private access flag for varargs modifiers. */
+    private static final int VARARGS_MOD = 0x00000080;
 
     private ImplicitMemberSymbols() {
 
@@ -92,6 +94,42 @@ public final class ImplicitMemberSymbols {
         );
     }
 
+    /** Symbol for the canonical record constructor. */
+    public static JConstructorSymbol recordConstructor(JClassSymbol recordSym,
+                                                       List<JFieldSymbol> recordComponents,
+                                                       boolean isVarargs) {
+        assert recordSym.isRecord() : "Not a record symbol " + recordSym;
+
+        int modifiers = isVarargs ? Modifier.PUBLIC | VARARGS_MOD
+                                  : Modifier.PUBLIC;
+
+        return new FakeCtorSym(
+            recordSym,
+            modifiers,
+            CollectionUtil.map(
+                recordComponents,
+                f -> c -> new FakeFormalParamSym(c, f.getSimpleName())
+            )
+        );
+    }
+
+    /**
+     * Symbol for a record component accessor.
+     * Only synthesized if it is not explicitly declared.
+     */
+    public static JMethodSymbol recordAccessor(JClassSymbol recordSym, JFieldSymbol recordComponent) {
+        // See https://cr.openjdk.java.net/~gbierman/jep359/jep359-20200115/specs/records-jls.html#jls-8.10.3
+
+        assert recordSym.isRecord() : "Not a record symbol " + recordSym;
+
+        return new FakeMethodSym(
+            recordSym,
+            recordComponent.getSimpleName(),
+            Modifier.PUBLIC,
+            emptyList()
+        );
+    }
+
     public static JFieldSymbol arrayLengthField(JClassSymbol arraySym) {
         assert arraySym.isArray() : "Not an array symbol " + arraySym;
 
@@ -131,7 +169,7 @@ public final class ImplicitMemberSymbols {
 
         @Override
         public boolean isVarargs() {
-            return false;
+            return (modifiers & VARARGS_MOD) != 0;
         }
 
         @Override
@@ -154,6 +192,11 @@ public final class ImplicitMemberSymbols {
             return emptyList();
         }
 
+
+        @Override
+        public String toString() {
+            return SymbolToStrings.FAKE.toString(this);
+        }
     }
 
     private static final class FakeMethodSym extends FakeExecutableSymBase<JMethodSymbol> implements JMethodSymbol {
@@ -219,6 +262,21 @@ public final class ImplicitMemberSymbols {
         public String getSimpleName() {
             return name;
         }
+
+        @Override
+        public String toString() {
+            return SymbolToStrings.FAKE.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return SymbolEquality.FORMAL_PARAM.equals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return SymbolEquality.FORMAL_PARAM.hash(this);
+        }
     }
 
 
@@ -252,6 +310,11 @@ public final class ImplicitMemberSymbols {
         @Override
         public @NonNull JClassSymbol getEnclosingClass() {
             return owner;
+        }
+
+        @Override
+        public String toString() {
+            return SymbolToStrings.FAKE.toString(this);
         }
 
         @Override

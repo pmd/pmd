@@ -187,6 +187,11 @@ class ArraySymbolImpl implements JClassSymbol {
     }
 
     @Override
+    public boolean isRecord() {
+        return false;
+    }
+
+    @Override
     public boolean isLocalClass() {
         return false;
     }

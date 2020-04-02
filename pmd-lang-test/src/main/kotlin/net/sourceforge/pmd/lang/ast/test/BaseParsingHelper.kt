@@ -50,7 +50,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
-        val language = LanguageRegistry.getLanguage(langName)
+        val language = LanguageRegistry.getLanguage(langName) ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
         return if (version == null) language.defaultVersion
                else language.getVersion(version) ?: throw AssertionError("Unsupported version $version for language $language")
     }

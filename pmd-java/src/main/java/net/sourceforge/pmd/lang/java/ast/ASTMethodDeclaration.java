@@ -76,6 +76,23 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
 
     /**
+     * If this method declaration is an explicit record component accessor,
+     * returns the corresponding record component. Otherwise returns null.
+     */
+    public @Nullable ASTRecordComponent getAccessedRecordComponent() {
+        if (getArity() != 0) {
+            return null;
+        }
+        ASTRecordComponentList components = getEnclosingType().getRecordComponentList();
+        if (components == null) {
+            return null;
+        }
+
+        return components.toStream().first(it -> it.getVarId().getVariableName().equals(this.getName()));
+    }
+
+
+    /**
      * Returns true if the result type of this method is {@code void}.
      *
      * TODO remove, just as simple to write getResultType().isVoid()

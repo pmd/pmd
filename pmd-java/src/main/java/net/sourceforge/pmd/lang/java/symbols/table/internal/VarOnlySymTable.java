@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -19,7 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
@@ -38,6 +44,30 @@ final class VarOnlySymTable extends AbstractSymbolTable {
                     NodeStream<ASTVariableDeclaratorId> stream) {
         super(parent, helper);
         this.varResults = stream.collect(varIdCollector());
+    }
+
+    /**
+     * For formal parameters of a record constructor.
+     */
+    VarOnlySymTable(JSymbolTable parent,
+                    SymbolTableHelper helper,
+                    ASTRecordConstructorDeclaration recordCtor) {
+        super(parent, helper);
+
+        List<JFormalParamSymbol> formals = recordCtor.getSymbol().getFormalParameters();
+        List<ASTRecordComponent> components = recordCtor.getEnclosingType().getRecordComponentList().toList();
+        assert components.size() == formals.size()
+            : "Mismatched formals " + formals + " for record components " + components;
+
+        this.varResults = new HashMap<>(formals.size());
+        for (int i = 0; i < formals.size(); i++) {
+            JFormalParamSymbol formalSym = formals.get(i);
+            ASTVariableDeclaratorId comp = components.get(i).getVarId();
+
+            assert comp.getVariableName().equals(formalSym.getSimpleName());
+
+            varResults.put(formalSym.getSimpleName(), new VarResolveResult(formalSym, this, comp));
+        }
     }
 
     VarOnlySymTable(JSymbolTable parent,
@@ -76,6 +106,12 @@ final class VarOnlySymTable extends AbstractSymbolTable {
 
     static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTLambdaExpression node) {
         return node.getParameters().toStream().map(ASTLambdaParameter::getVarId);
+    }
+
+    static List<JFormalParamSymbol> formalsOf(ASTRecordConstructorDeclaration node) {
+        JConstructorSymbol symbol = node.getSymbol();
+        assert symbol != null : "Null symbol for " + node;
+        return symbol.getFormalParameters();
     }
 
     static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTMethodOrConstructorDeclaration node) {

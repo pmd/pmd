@@ -2,6 +2,8 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -330,6 +332,106 @@ class AstSymbolTests : ParserTestSpec({
         }
 
     }
+
+
+
+    parserTest("Record symbols") {
+
+        // TODO explicit declaration of canonical ctor (need type res)
+
+        val acu = parser.withProcessing().parse("""
+            package com.foo;
+
+            public record Point(int x, int y) {
+
+                public int x() {} // explicitly declared accessor, the other is synthesized
+
+            }
+
+            record Point2(int x2, int... y2) {
+
+                public Point2 { // must be declared public
+
+                }
+                
+                public Point2(int x2) { // aux constructor
+                    this(x2);
+                }
+            }
+
+        """)
+
+        val (pointRecord, point2Record) = acu.descendants(ASTRecordDeclaration::class.java).toList { it.symbol }
+        val (canonCtor1, canonCtor2) = acu.descendants(ASTRecordComponentList::class.java).toList { it.symbol }
+        val (auxCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
+        val (xAccessor) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
+        val (xComp, yComp, x2Comp, y2Comp, x2Formal) = acu.descendants(ASTVariableDeclaratorId::class.java).toList { it.symbol }
+
+
+        doTest("should reflect their modifiers") {
+            pointRecord::getModifiers shouldBe (Modifier.PUBLIC or Modifier.FINAL)
+            point2Record::getModifiers shouldBe (Modifier.FINAL)
+        }
+
+        doTest("should reflect their simple names properly") {
+            pointRecord::getSimpleName shouldBe "Point"
+            point2Record::getSimpleName shouldBe "Point2"
+        }
+
+        doTest("Should have a canonical ctor") {
+            pointRecord::getConstructors shouldBe listOf(canonCtor1)
+
+            canonCtor1::getSimpleName shouldBe JConstructorSymbol.CTOR_NAME
+            canonCtor1::getModifiers shouldBe Modifier.PUBLIC
+
+            canonCtor1.formalParameters should haveSize(2)
+            canonCtor1.formalParameters[0].shouldBeA<JFormalParamSymbol> {
+                it::getSimpleName shouldBe "x"
+                it::getDeclaringSymbol shouldBe canonCtor1
+            }
+            canonCtor1.formalParameters[1].shouldBeA<JFormalParamSymbol> {
+                it::getSimpleName shouldBe "y"
+                it::getDeclaringSymbol shouldBe canonCtor1
+            }
+
+            point2Record::getConstructors shouldBe listOf(canonCtor2, auxCtor)
+            canonCtor2::isVarargs shouldBe true
+        }
+
+        doTest("should have field symbols for each component") {
+            xComp.shouldBeA<JFieldSymbol> {
+                it::getSimpleName shouldBe "x"
+                it::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+                it::getEnclosingClass shouldBe pointRecord
+            }
+
+            yComp.shouldBeA<JFieldSymbol> {
+                it::getSimpleName shouldBe "y"
+                it::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+                it::getEnclosingClass shouldBe pointRecord
+            }
+
+            y2Comp.shouldBeA<JFieldSymbol> {
+                it::getSimpleName shouldBe "y2"
+                it::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+                it::getEnclosingClass shouldBe point2Record
+            }
+        }
+
+
+        doTest("should declare field accessors") {
+            pointRecord.declaredMethods should haveSize(2)
+            pointRecord.getDeclaredMethods("x") shouldBe listOf(xAccessor)
+            pointRecord.getDeclaredMethods("y").single().shouldBeA<JMethodSymbol> {
+                it::getModifiers shouldBe Modifier.PUBLIC
+                it::getFormalParameters shouldBe emptyList()
+                it::getSimpleName shouldBe "y"
+                it::getTypeParameters shouldBe emptyList()
+            }
+        }
+    }
+
+
 
     parserTest("Anonymous class symbols") {
 

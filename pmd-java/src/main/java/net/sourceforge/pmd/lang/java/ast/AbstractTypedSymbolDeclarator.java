@@ -30,10 +30,15 @@ abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol>
     }
 
     static void assertSymbolNotNull(JElementSymbol symbol, SymbolDeclaratorNode node) {
-        assert symbol != null : "Symbol was null, not set by qualified name resolver, on " + node;
+        assert symbol != null : "Symbol was null, not set by resolver, on " + node;
+    }
+
+    static void assertSymbolNull(JElementSymbol symbol, SymbolDeclaratorNode node) {
+        assert symbol == null : "Symbol was not null, already set to " + symbol + " by  resolver, on " + node;
     }
 
     void setSymbol(T symbol) {
+        assertSymbolNull(this.symbol, this);
         this.symbol = symbol;
     }
 

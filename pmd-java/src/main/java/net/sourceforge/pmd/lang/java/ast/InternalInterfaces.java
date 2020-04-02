@@ -96,21 +96,42 @@ final class InternalInterfaces {
         }
     }
 
-    /**
-     * Tags a node that has at least one child, then some methods never
-     * return null.
-     */
-    interface AtLeastOneChildOfType<T extends JavaNode> extends JavaNode {
+    interface AllChildrenAreOfType<T extends JavaNode> extends JavaNode {
 
         @Override
         T getChild(int index);
 
+        @Override
+        @Nullable
+        default T getFirstChild() {
+            if (getNumChildren() == 0) {
+                return null;
+            }
+            return getChild(0);
+        }
+
+
+        @Override
+        @Nullable
+        default T getLastChild() {
+            if (getNumChildren() == 0) {
+                return null;
+            }
+            return getChild(getNumChildren() - 1);
+        }
+    }
+
+    /**
+     * Tags a node that has at least one child, then some methods never
+     * return null.
+     */
+    interface AtLeastOneChildOfType<T extends JavaNode> extends AllChildrenAreOfType<T> {
 
         /** Returns the first child of this node, never null. */
         @Override
         @NonNull
         default T getFirstChild() {
-            assert getNumChildren() > 0;
+            assert getNumChildren() > 0 : "No children for node implementing AtLeastOneChild " + this;
             return getChild(0);
         }
 
@@ -119,7 +140,7 @@ final class InternalInterfaces {
         @Override
         @NonNull
         default T getLastChild() {
-            assert getNumChildren() > 0;
+            assert getNumChildren() > 0 : "No children for node implementing AtLeastOneChild " + this;
             return getChild(getNumChildren() - 1);
         }
     }

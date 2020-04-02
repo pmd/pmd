@@ -40,7 +40,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
     private final Map<String, ResolveResult<JTypeDeclSymbol>> importedTypes = new HashMap<>();
     private final Map<String, ResolveResult<JVariableSymbol>> importedStaticFields = new HashMap<>();
-    private Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
+    protected final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
 
     /**
      * Constructor with the parent table and the auxclasspath classloader.
@@ -63,7 +63,7 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
         // import tables don't need to override resolveMethodNameHere,
         // they shadow their parentage (which are only other import tables,
         // or SamePackageSymTable, which only tracks types)
-        return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList());
+        return importedStaticMethods.get(simpleName);
     }
 
     @Override

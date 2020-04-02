@@ -132,6 +132,15 @@ public interface ASTAnyTypeDeclaration
 
 
     /**
+     * Returns the record components declared by this class. If this is not
+     * a record declaration, returns null.
+     */
+    default @Nullable ASTRecordComponentList getRecordComponentList() {
+        return null;
+    }
+
+
+    /**
      * Retrieves the member declarations (fields, methods, classes, etc.) from the body of this type declaration.
      *
      * @return The member declarations declared in this type declaration
@@ -198,6 +207,13 @@ public interface ASTAnyTypeDeclaration
      */
     default boolean isEnum() {
         return this instanceof ASTEnumDeclaration;
+    }
+
+    /**
+     * Returns true if this is an {@linkplain ASTRecordDeclaration record class declaration}.
+     */
+    default boolean isRecord() {
+        return this instanceof ASTRecordDeclaration;
     }
 
     /**

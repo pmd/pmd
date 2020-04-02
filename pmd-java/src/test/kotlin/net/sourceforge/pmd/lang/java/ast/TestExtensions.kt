@@ -41,25 +41,6 @@ fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : M
             Result(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
 }
 
-
-infix fun <T, U : T> Optional<T>.shouldBePresent(any: U) {
-    ::isPresent shouldBe true
-    ::get shouldBe any
-}
-
-fun Optional<*>.shouldBeEmpty() {
-    ::isPresent shouldBe false
-}
-
-fun KCallable<Optional<*>>.shouldBeEmpty() = this shouldMatch {
-    ::isPresent shouldBe false
-}
-
-infix fun <T, U : T> KCallable<Optional<T>>.shouldBePresent(any: U) = this shouldMatch {
-    ::isPresent shouldBe true
-    ::get shouldBe any
-}
-
 fun JavaNode.tokenList(): List<GenericToken> {
     val lst = mutableListOf<GenericToken>()
     var t = jjtGetFirstToken()

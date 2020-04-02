@@ -15,6 +15,14 @@ public class StaticNameCollision {
     }
 
 
+    public static String publicMethod() {
+        return "";
+    }
+
+    public static String publicMethod(int other) {
+        return "";
+    }
+
     public static class Ola {
 
     }
