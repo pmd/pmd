@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.internal.impl.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,7 +20,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -49,20 +53,40 @@ final class AstClassSym
         // evaluate everything strictly
         // this populates symbols on the relevant AST nodes
 
-        List<JClassSymbol> myClasses = new ArrayList<>();
-        List<JMethodSymbol> myMethods = new ArrayList<>();
-        List<JConstructorSymbol> myCtors = new ArrayList<>();
-        List<JFieldSymbol> myFields = new ArrayList<>();
+        final List<JClassSymbol> myClasses = new ArrayList<>();
+        final List<JMethodSymbol> myMethods = new ArrayList<>();
+        final List<JConstructorSymbol> myCtors = new ArrayList<>();
+        final List<JFieldSymbol> myFields = new ArrayList<>();
 
-        if (node instanceof ASTEnumDeclaration) {
-            node.getEnumConstants().forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+        final List<JFieldSymbol> recordComponents;
+        if (isRecord()) {
+            ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponentList(),
+                                                                       "Null component list for " + node);
+            recordComponents = mapComponentsToMutableList(factory, components);
+            myFields.addAll(recordComponents);
+
+            JConstructorSymbol canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
+            myCtors.add(canonicalRecordCtor);
+            InternalApiBridge.setSymbol(components, canonicalRecordCtor);
+
+        } else {
+            recordComponents = Collections.emptyList();
+            if (node instanceof ASTEnumDeclaration) {
+                node.getEnumConstants()
+                    .forEach(constant -> myFields.add(new AstFieldSym(constant.getVarId(), factory, this)));
+            }
         }
+
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
             if (dnode instanceof ASTAnyTypeDeclaration) {
                 myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTMethodDeclaration) {
+                if (!recordComponents.isEmpty() && ((ASTMethodDeclaration) dnode).getArity() == 0) {
+                    // filter out record component, so that the accessor is not generated
+                    recordComponents.removeIf(f -> f.getSimpleName().equals(((ASTMethodDeclaration) dnode).getName()));
+                }
                 myMethods.add(new AstMethodSym((ASTMethodDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTConstructorDeclaration) {
                 myCtors.add(new AstCtorSym((ASTConstructorDeclaration) dnode, factory, this));
@@ -70,6 +94,15 @@ final class AstClassSym
                 for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
+            }
+        }
+
+        if (!recordComponents.isEmpty()) {
+            // then the recordsComponents contains all record components
+            // for which we must synthesize an accessor (explicitly declared
+            // accessors have been filtered out)
+            for (JFieldSymbol component : recordComponents) {
+                myMethods.add(ImplicitMemberSymbols.recordAccessor(this, component));
             }
         }
 
@@ -86,6 +119,12 @@ final class AstClassSym
         this.declaredMethods = Collections.unmodifiableList(myMethods);
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
+    }
+
+    private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
+        return components.toStream()
+                         .collect(Collectors.mapping(comp -> new AstFieldSym(comp.getVarId(), factory, this),
+                                                     Collectors.toCollection(ArrayList::new)));
     }
 
     @Override
@@ -189,6 +228,11 @@ final class AstClassSym
     @Override
     public boolean isEnum() {
         return node.isEnum();
+    }
+
+    @Override
+    public boolean isRecord() {
+        return node.isRecord();
     }
 
     @Override

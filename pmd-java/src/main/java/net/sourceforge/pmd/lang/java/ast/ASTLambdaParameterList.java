@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
+
 /**
  * The parameter list of a {@linkplain ASTLambdaExpression lambda expression}.
  *
@@ -14,7 +16,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTLambdaParameterList extends ASTList<ASTLambdaParameter> {
+public final class ASTLambdaParameterList extends ASTMaybeEmptyListOf<ASTLambdaParameter> {
 
     ASTLambdaParameterList(int id) {
         super(id, ASTLambdaParameter.class);

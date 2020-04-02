@@ -141,6 +141,15 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return getParent() instanceof ASTFormalParameter || isLambdaParameter();
     }
 
+    /**
+     * Returns true if this node declares a record component. The symbol
+     * born by this node is the symbol of the corresponding field (not the
+     * formal parameter of the record constructor).
+     */
+    public boolean isRecordComponent() {
+        return getParent() instanceof ASTRecordComponent;
+    }
+
 
     /**
      * Returns true if this node declares a local variable.

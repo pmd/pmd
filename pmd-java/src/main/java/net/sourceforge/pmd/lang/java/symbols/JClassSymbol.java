@@ -195,9 +195,16 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isPrimitive();
 
+
+    /**
+     * This returns true if this is an interface. Annotation types are
+     * also interface types.
+     */
     boolean isInterface();
 
     boolean isEnum();
+
+    boolean isRecord();
 
     boolean isAnnotation();
 
@@ -206,6 +213,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     boolean isAnonymousClass();
 
 
+    /**
+     * This returns true if this is not an interface, primitive or array.
+     */
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();
     }

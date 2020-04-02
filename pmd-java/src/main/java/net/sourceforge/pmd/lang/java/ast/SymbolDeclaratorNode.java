@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 
 /**
- * @author Clément Fournier
+ * A node that declares a corresponding {@linkplain JElementSymbol symbol}.
  */
 public interface SymbolDeclaratorNode extends JavaNode {
 
