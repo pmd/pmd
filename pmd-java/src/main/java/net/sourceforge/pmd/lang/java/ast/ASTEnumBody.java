@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  *
  */
-public final class ASTEnumBody extends AbstractJavaNode implements ASTTypeBody {
+public final class ASTEnumBody extends ASTTypeBody {
 
     private boolean trailingComma;
     private boolean separatorSemi;
