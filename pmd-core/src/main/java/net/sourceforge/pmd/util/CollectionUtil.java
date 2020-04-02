@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +21,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 /**
  * Generic collection and array-related utility functions for java.util types.
@@ -358,8 +365,8 @@ public final class CollectionUtil {
         }
         Set<T> union = new LinkedHashSet<>();
         union.add(first);
-        union.addAll(Arrays.asList(rest));
-        return union;
+        Collections.addAll(union, rest);
+        return Collections.unmodifiableSet(union);
     }
 
 
@@ -388,7 +395,7 @@ public final class CollectionUtil {
 
     private static <T, R> List<R> map(Iterator<? extends T> from, int sizeHint, Function<? super T, ? extends R> f) {
         if (!from.hasNext()) {
-            return Collections.emptyList();
+            return emptyList();
         }
         List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
         while (from.hasNext()) {
@@ -400,7 +407,7 @@ public final class CollectionUtil {
     public static <T> List<T> drop(List<T> list, int n) {
         AssertionUtil.requireNonNegative("n", n);
 
-        return list.size() <= n ? Collections.emptyList()
+        return list.size() <= n ? emptyList()
                                 : list.subList(n, list.size());
     }
 
@@ -498,5 +505,33 @@ public final class CollectionUtil {
             largerOne[i] = newOnes.get(i - values.length);
         }
         return largerOne;
+    }
+
+    public static <T> List<T> listOfNotNull(T t) {
+        return t == null ? emptyList() : singletonList(t);
+    }
+
+    /**
+     * Returns true if any element of the iterable matches the predicate. Return
+     * false if the list is null or empty.
+     */
+    public static <N> boolean any(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
+        return list != null && IteratorUtil.anyMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * Returns true if all elements of the iterable match the predicate. Return
+     * true if the list is null or empty.
+     */
+    public static <N> boolean all(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
+        return list == null || IteratorUtil.allMatch(list.iterator(), predicate);
+    }
+
+    /**
+     * Returns true if no element of the iterable matches the predicate. Return
+     * true if the list is null or empty.
+     */
+    public static <N> boolean none(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
+        return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
     }
 }

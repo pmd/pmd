@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
@@ -61,7 +60,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        for (final ASTClassOrInterfaceType type : ASTList.orEmpty(node.getSuperInterfaceTypeNodes())) {
+        for (final ASTClassOrInterfaceType type : node.getSuperInterfaceTypeNodes()) {
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
