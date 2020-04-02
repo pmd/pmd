@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTAnnotationTypeBody extends AbstractJavaNode implements ASTTypeBody {
+public final class ASTAnnotationTypeBody extends ASTTypeBody {
 
     ASTAnnotationTypeBody(int id) {
         super(id);

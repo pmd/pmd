@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 
@@ -58,20 +58,14 @@ public final class TypeHelper {
                 return isA(superClass, clazzName);
             }
 
-            for (ASTClassOrInterfaceType itf : ((ASTClassOrInterfaceDeclaration) n).getSuperInterfacesTypeNodes()) {
-                if (isA(itf, clazzName)) {
-                    return true;
-                }
-            }
+            return ASTList.any(((ASTClassOrInterfaceDeclaration) n).getSuperInterfaceTypeNodes(),
+                               itf -> isA(itf, clazzName));
+
         } else if (n instanceof ASTEnumDeclaration) {
 
-            ASTImplementsList implemented = n.getFirstChildOfType(ASTImplementsList.class);
-            if (implemented != null) {
-                for (ASTClassOrInterfaceType itf : implemented) {
-                    if (isA(itf, clazzName)) {
-                        return true;
-                    }
-                }
+            if (ASTList.any(((ASTEnumDeclaration) n).getSuperInterfaceTypeNodes(),
+                            itf -> isA(itf, clazzName))) {
+                return true;
             }
 
             return "java.lang.Enum".equals(clazzName)

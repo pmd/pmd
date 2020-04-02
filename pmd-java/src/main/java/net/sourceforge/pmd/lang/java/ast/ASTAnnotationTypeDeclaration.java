@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The declaration of an annotation type.
  *
@@ -43,5 +46,4 @@ public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclarati
     public boolean isInterface() {
         return true;
     }
-
 }
