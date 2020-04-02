@@ -214,6 +214,9 @@ final class AstClassSym
 
             }
 
+        } else if (isRecord()) {
+            // TODO, maybe not on the classpath.
+            return ReflectSymInternals.OBJECT_SYM;
         } else if (isClass()) {
             ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
             if (sup == null) {
