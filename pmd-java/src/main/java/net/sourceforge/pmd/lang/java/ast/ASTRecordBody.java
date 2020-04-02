@@ -21,7 +21,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  */
 @Experimental
-public final class ASTRecordBody extends AbstractJavaNode implements ASTTypeBody {
+public final class ASTRecordBody extends ASTTypeBody {
     ASTRecordBody(int id) {
         super(id);
     }
