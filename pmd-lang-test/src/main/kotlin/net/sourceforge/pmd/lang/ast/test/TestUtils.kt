@@ -73,43 +73,6 @@ inline fun <reified T> Any?.shouldBeA(f: (T) -> Unit = {}): T {
     } else throw AssertionError("Expected an instance of ${T::class.java}, got $this")
 }
 
-fun Stream<*>.shouldHaveSize(i: Int) {
-    toList() should haveSize(i)
-}
-
-fun <T> List<T>.shouldBeUnmodifiable(tdata: List<T?> = listOf(null)) {
-
-    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-    (this as? java.util.List<T>)?.apply {
-        shouldThrow<UnsupportedOperationException> {
-            add(tdata.firstOrNull())
-        }
-        shouldThrow<UnsupportedOperationException> {
-            addAll(tdata)
-        }
-        shouldThrow<UnsupportedOperationException> {
-            retainAll(tdata)
-        }
-        shouldThrow<UnsupportedOperationException> {
-            addAll(tdata)
-        }
-        shouldThrow<UnsupportedOperationException> {
-            removeIf { true }
-        }
-        shouldThrow<UnsupportedOperationException> {
-            clear()
-        }
-        if (isNotEmpty()) {
-            shouldThrow<UnsupportedOperationException> {
-                remove(0)
-            }
-            shouldThrow<UnsupportedOperationException> {
-                set(0, tdata.firstOrNull())
-            }
-        }
-    }
-}
-
 operator fun <T> List<T>.component6() = get(5)
 operator fun <T> List<T>.component7() = get(6)
 operator fun <T> List<T>.component8() = get(7)

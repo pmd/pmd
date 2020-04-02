@@ -15,7 +15,6 @@ import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.ast.test.shouldBeUnmodifiable
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
@@ -269,7 +268,6 @@ class HeaderScopesTest : ProcessorTestSpec({
                     it.forEach {
                         it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
                     }
-                    it.shouldBeUnmodifiable()
                 }
 
                 it.parent.parent.let {
@@ -278,7 +276,6 @@ class HeaderScopesTest : ProcessorTestSpec({
                         it.forEach {
                             it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                         }
-                        it.shouldBeUnmodifiable()
                     }
                 }
             }
@@ -291,7 +288,6 @@ class HeaderScopesTest : ProcessorTestSpec({
                     it.forEach {
                         it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
                     }
-                    it.shouldBeUnmodifiable()
                 }
             }
         }
