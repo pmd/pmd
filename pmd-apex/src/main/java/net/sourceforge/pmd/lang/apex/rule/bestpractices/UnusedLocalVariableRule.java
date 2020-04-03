@@ -12,6 +12,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class UnusedLocalVariableRule extends AbstractApexRule {
+    public UnusedLocalVariableRule() {
+        addRuleChainVisit(ASTVariableDeclaration.class);
+    }
+
     @Override
     public Object visit(ASTVariableDeclaration node, Object data) {
         String variableName = node.getImage();
