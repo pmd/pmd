@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -32,6 +33,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTMethod.class));
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
+        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTProperty.class));
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)

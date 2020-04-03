@@ -155,4 +155,19 @@ class Foo {
 ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Fields should go before properties too</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code>
+            <![CDATA[
+class Foo {
+    public Integer someProperty { get; }
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
 </test-data>
