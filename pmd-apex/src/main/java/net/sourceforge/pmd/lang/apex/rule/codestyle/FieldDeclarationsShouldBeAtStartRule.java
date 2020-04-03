@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -25,8 +25,8 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
         // so we have to rely on line numbers / positions to work out where the first method starts so we
         // can check if the fields are in acceptable places.
-        List<ASTFieldDeclaration> fields = node.findDescendantsOfType(ASTFieldDeclaration.class);
-        List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
+        List<ASTField> fields = node.findChildrenOfType(ASTField.class);
+        List<ASTMethod> methods = node.findChildrenOfType(ASTMethod.class);
 
         Optional<ASTMethod> firstMethod = methods.stream()
             .filter(ApexNode::hasRealLoc)
@@ -37,7 +37,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             return data;
         }
 
-        for (ASTFieldDeclaration field : fields) {
+        for (ASTField field : fields) {
             if (nodeBySourceLocationComparator.compare(field, firstMethod.get()) > 0) {
                 addViolation(data, field, field.getName());
             }

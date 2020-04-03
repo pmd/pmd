@@ -103,4 +103,20 @@ class Foo {
 ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Allows nested classes to have fields</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+class Foo {
+    void bar() { }
+
+    private class InnerFoo {
+        public Integer thisIsOkay;
+    }
+}
+]]>
+        </code>
+    </test-code>
 </test-data>
