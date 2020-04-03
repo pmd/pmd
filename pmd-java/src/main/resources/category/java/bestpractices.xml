@@ -641,7 +641,7 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
     [MethodDeclaration[@Name='tearDown']]
-    [not(Annotation/MarkerAnnotation/Name[
+    [not(Annotation/*/Name[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
@@ -686,7 +686,7 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
     [MethodDeclaration[@Name='setUp']]
-    [not(Annotation/MarkerAnnotation/Name[
+    [not(Annotation/*/Name[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
