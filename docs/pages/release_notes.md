@@ -36,6 +36,8 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 
 *   apex
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
+*   java
+    *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
 
 ### API Changes
 
