@@ -85,7 +85,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
-    private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?i).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
+    private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
 
     private final Map<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
