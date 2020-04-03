@@ -26,6 +26,10 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             .thenComparing(ApexNode::getBeginColumn);
     public static final String STATIC_INITIALIZER_METHOD_NAME = "<clinit>";
 
+    public FieldDeclarationsShouldBeAtStartRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
@@ -46,7 +50,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         if (!firstNonFieldDeclaration.isPresent()) {
             // there is nothing except field declaration, so that has to come first
-            return super.visit(node, data);
+            return data;
         }
 
         for (ASTField field : fields) {
@@ -55,7 +59,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             }
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
     private List<ApexNode<?>> getMethodNodes(ASTUserClass node) {
