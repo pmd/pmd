@@ -28,10 +28,10 @@ directly) a protected constructor can be provided prevent direct instantiation.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration
- [@Abstract= true()
-  and count( .//MethodDeclaration[@Abstract= true()] )=0 ]
-  [count(ImplementsList)=0]
-  [count(.//ExtendsList)=0]
+  [@Abstract= true()]
+  [not(ImplementsList)]
+  [not(.//ExtendsList)]
+  [not(.//MethodDeclaration[@Abstract= true()])]
 ]]>
                 </value>
             </property>
@@ -641,11 +641,11 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
     [MethodDeclaration[@Name='tearDown']]
-    [count(Annotation//Name[
+    [not(Annotation/MarkerAnnotation/Name[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterAll')
-        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])=0]
+        or pmd-java:typeIs('org.testng.annotations.AfterMethod')])]
 ]]>
                 </value>
             </property>
@@ -686,11 +686,11 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
     [MethodDeclaration[@Name='setUp']]
-    [count(Annotation//Name[
+    [not(Annotation/MarkerAnnotation/Name[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeAll')
-        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])=0]
+        or pmd-java:typeIs('org.testng.annotations.BeforeMethod')])]
 ]]>
                 </value>
             </property>
@@ -1557,7 +1557,7 @@ by more specific methods, like assertSame, assertNotSame.
 ]
 [
     PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression
-        [count(.//NullLiteral) = 0]
+        [not(.//NullLiteral)]
 ]
 ]]>
                 </value>

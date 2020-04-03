@@ -860,15 +860,11 @@ in a ClassCastException.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
-"Object"]]/PrimaryExpression
-[
- PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
- and
- PrimarySuffix/Arguments[count(*) = 0]
-and
-count(PrimarySuffix) = 1
-]
+//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image != "Object"]]
+    /PrimaryExpression
+    [PrimaryPrefix/Name[ends-with(@Image, '.toArray')]]
+    [PrimarySuffix/Arguments[not(*)]]
+    [count(PrimarySuffix) = 1]
 ]]>
                 </value>
             </property>
@@ -1496,7 +1492,8 @@ or reported.
                 <value>
 <![CDATA[
 //CatchStatement
- [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != true() or Block/@containsComment = false())]
+ [not(Block/BlockStatement)]
+ [$allowCommentedBlocks != true() or Block/@containsComment = false()]
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
@@ -1536,7 +1533,7 @@ Empty finalize methods serve no purpose and should be removed. Note that Oracle 
                 <value>
 <![CDATA[
 //MethodDeclaration[@Name='finalize'][@Arity = 0]
-  /Block[count(*)=0]
+  /Block[not(*)]
 ]]>
                 </value>
             </property>
@@ -1565,7 +1562,7 @@ Empty finally blocks serve no purpose and should be removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FinallyStatement[count(Block/BlockStatement) = 0]
+//FinallyStatement[not(Block/BlockStatement)]
 ]]>
                 </value>
             </property>
@@ -1601,7 +1598,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
                 <value>
 <![CDATA[
 //IfStatement/Statement
- [EmptyStatement or Block[count(*) = 0]]
+ [EmptyStatement or Block[not(*)]]
 ]]>
                 </value>
             </property>
@@ -1632,7 +1629,7 @@ Empty initializers serve no purpose and should be removed.
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//Initializer/Block[count(*)=0]</value>
+                <value>//Initializer/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1661,7 +1658,7 @@ Empty block statements serve no purpose and should be removed.
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//BlockStatement/Statement/Block[count(*) = 0]</value>
+                <value>//BlockStatement/Statement/Block[not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1765,7 +1762,7 @@ Empty synchronized blocks serve no purpose and should be removed.
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//SynchronizedStatement/Block[1][count(*) = 0]</value>
+                <value>//SynchronizedStatement/Block[1][not(*)]</value>
             </property>
         </properties>
         <example>
@@ -1796,7 +1793,7 @@ Avoid empty try blocks - what's the point?
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
+//TryStatement[not(ResourceSpecification)]/Block[1][not(*)]
 ]]>
                 </value>
             </property>
@@ -1832,7 +1829,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+//WhileStatement/Statement[Block[not(*)] or EmptyStatement]
 ]]>
                 </value>
             </property>
@@ -2776,13 +2773,13 @@ with the restriction that the logger needs to be passed into the constructor.
                 <value>
 <![CDATA[
 //FieldDeclaration
-[.//ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+[Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
 [
     (: check modifiers :)
     (@Private = false() or @Final = false())
     (: check logger name :)
-    or (@Static and .//VariableDeclaratorId[@Image != $staticLoggerName])
-    or (@Static = false() and .//VariableDeclaratorId[@Image != $loggerName])
+    or (@Static and VariableDeclarator/VariableDeclaratorId[@Image != $staticLoggerName])
+    or (@Static = false() and VariableDeclarator/VariableDeclaratorId[@Image != $loggerName])
 
     (: check logger argument type matches class or enum name :)
     or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@SimpleName]
@@ -2790,14 +2787,14 @@ with the restriction that the logger needs to be passed into the constructor.
 ]
 [not(
      (: special case - final logger initialized inside constructor :)
-     count(.//VariableInitializer)=0
+     not(VariableDeclarator/VariableInitializer)
      and @Static = false()
      and
      ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
         [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
         [AssignmentOperator[@Image = '=']]
         [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Image]]
-        [count(.//AllocationExpression)=0]
+        [not(.//AllocationExpression)]
   )
 ]
 ]]>
@@ -3370,9 +3367,9 @@ After checking an object reference for null, you should invoke equals() on that 
 <![CDATA[
 (//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
  /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
+ /PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix
  /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
- /EqualityExpression[@Image="!=" and count(./preceding-sibling::*)=0 and
+ /EqualityExpression[@Image="!=" and not(./preceding-sibling::*) and
  ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
   /PrimaryExpression/PrimaryPrefix/Name/@Image]
 ]]>
@@ -3480,10 +3477,10 @@ Use the equals() method instead.
                 <value>
 <![CDATA[
 //EqualityExpression/PrimaryExpression
-[(PrimaryPrefix/Literal
+[not(PrimarySuffix)]
+[PrimaryPrefix/Literal
    [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]
-and count(PrimarySuffix) = 0)]
+   [ends-with(@Image, '"')]]
 ]]>
                 </value>
             </property>

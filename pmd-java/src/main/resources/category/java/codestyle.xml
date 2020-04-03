@@ -360,10 +360,10 @@ another constructor (such as an overloaded constructor) is called, this rule wil
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+//ClassOrInterfaceDeclaration[ExtendsList/*]
 /ClassOrInterfaceBody
  /ClassOrInterfaceBodyDeclaration
- /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+ /ConstructorDeclaration[ not(.//ExplicitConstructorInvocation) ]
 ]]>
                 </value>
             </property>
@@ -646,7 +646,7 @@ usage by developers who should be implementing their own versions in the concret
         or
         (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
         or
-        ( count (./Block/*) = 0 )
+        ( not (./Block/*) )
     ]
 ]]>
                 </value>
@@ -2045,10 +2045,10 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
 |
 //Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    count(./CastExpression)=0 and
-    count(./EqualityExpression/MultiplicativeExpression)=0 and
-    count(./ConditionalExpression)=0 and
-    count(./ConditionalOrExpression)=0]
+    not(./CastExpression) and
+    not(./EqualityExpression/MultiplicativeExpression) and
+    not(./ConditionalExpression) and
+    not(./ConditionalOrExpression)]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and

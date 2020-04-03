@@ -96,7 +96,9 @@ and unintentional empty constructors.
                 <value>
 <![CDATA[
 //ConstructorDeclaration[@Private= false()]
-                        [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = true() or not(ExplicitConstructorInvocation)) and @containsComment = false()]
+                        [@containsComment = false()]
+                        [not(BlockStatement)]
+                        [$ignoreExplicitConstructorInvocation = true() or not(ExplicitConstructorInvocation)]
                         [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('javax.inject.Inject')])]
 ]]>
                 </value>

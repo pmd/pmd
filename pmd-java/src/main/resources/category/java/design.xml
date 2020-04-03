@@ -29,7 +29,8 @@ protected constructor in order to prevent instantiation than make the class misl
 <![CDATA[
 //ClassOrInterfaceDeclaration
     [@Abstract = true()]
-    [count(./ClassOrInterfaceBody/*/MethodDeclaration) + count(./ClassOrInterfaceBody/*/ConstructorDeclaration) = 0]
+    [not(./ClassOrInterfaceBody/*/ConstructorDeclaration)]
+    [not(./ClassOrInterfaceBody/*/MethodDeclaration)]
     [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
 ]]>
                 </value>
@@ -348,8 +349,8 @@ is invoked by a inner class.
 <![CDATA[
 //TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
 [@Final = false()]
-[count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]) >= 1 ]
-[count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())]) = 0 ]
+[ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
+[not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
 [not(.//ClassOrInterfaceDeclaration)]
 ]]>
                 </value>
@@ -1392,7 +1393,7 @@ ConditionalAndExpression
  [EqualityExpression[@Image='!=']//NullLiteral
  and
 InstanceOfExpression
- [PrimaryExpression[count(PrimarySuffix[@ArrayDereference= true()])=0]
+ [PrimaryExpression[not(PrimarySuffix[@ArrayDereference= true()])]
   //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
    /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]
  and
