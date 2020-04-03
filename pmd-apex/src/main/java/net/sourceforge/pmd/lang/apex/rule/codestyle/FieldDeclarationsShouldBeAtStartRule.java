@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -32,7 +34,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         List<ApexNode<?>> nonFieldDeclarations = new ArrayList<>();
 
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTMethod.class));
+        nonFieldDeclarations.addAll(getMethodNodes(node));
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTProperty.class));
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTBlockStatement.class));
@@ -53,5 +55,15 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         }
 
         return super.visit(node, data);
+    }
+
+    private List<ApexNode<?>> getMethodNodes(ASTUserClass node) {
+        // The method <clinit> represents static initializer blocks, of which there can be many. Given that the
+        // <clinit> method doesn't contain location information, only the containing ASTBlockStatements, we fetch
+        // them for that method only.
+        return node.findChildrenOfType(ASTMethod.class).stream()
+            .flatMap(method -> method.getImage().equals("<clinit>") ?
+                method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
+            .collect(Collectors.toList());
     }
 }

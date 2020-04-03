@@ -187,4 +187,21 @@ class Foo {
 ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Fields should go before static block statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+class Foo {
+    static {
+        System.debug('Hello');
+    }
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
 </test-data>
