@@ -24,6 +24,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         Comparator
             .<ApexNode<?>>comparingInt(ApexNode::getBeginLine)
             .thenComparing(ApexNode::getBeginColumn);
+    public static final String STATIC_INITIALIZER_METHOD_NAME = "<clinit>";
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -62,7 +63,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // <clinit> method doesn't contain location information, however the containing ASTBlockStatements do,
         // so we fetch them for that method only.
         return node.findChildrenOfType(ASTMethod.class).stream()
-            .flatMap(method -> method.getImage().equals("<clinit>")
+            .flatMap(method -> method.getImage().equals(STATIC_INITIALIZER_METHOD_NAME)
                 ? method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
             .collect(Collectors.toList());
     }
