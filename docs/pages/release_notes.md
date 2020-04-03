@@ -37,6 +37,10 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 *   apex
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2358](https://github.com/pmd/pmd/issues/2358): \[apex] Invalid Apex in Cognitive Complexity tests
+*   java
+    *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
+*   java-design
+    *   [#2390](https://github.com/pmd/pmd/issues/2390): \[java] AbstractClassWithoutAnyMethod: missing violation for nested classes
 
 ### API Changes
 
@@ -96,6 +100,12 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
 *   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
 
+##### For removal
+
+*   {% jdoc !!core::lang.Parser#getTokenManager(java.lang.String,java.io.Reader) %}
+*   {% jdoc !!core::lang.TokenManager#setFileName(java.lang.String) %}
+*   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
+*   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
 
 ### External Contributions
 

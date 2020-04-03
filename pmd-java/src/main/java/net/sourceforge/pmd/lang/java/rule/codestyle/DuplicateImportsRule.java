@@ -66,7 +66,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
                         return true;
                     }
                 } else {
-                    Class<?> importClass = node.getClassTypeResolver().loadClass(thisImportOnDemand.getName());
+                    Class<?> importClass = node.getClassTypeResolver().loadClassOrNull(thisImportOnDemand.getName());
                     if (importClass != null) {
                         for (Method m : importClass.getMethods()) {
                             if (Modifier.isStatic(m.getModifiers()) && m.getName().equals(singleTypeName)) {
