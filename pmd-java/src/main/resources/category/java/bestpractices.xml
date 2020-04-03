@@ -30,8 +30,8 @@ directly) a protected constructor can be provided prevent direct instantiation.
 //ClassOrInterfaceDeclaration
   [@Abstract= true()]
   [not(ImplementsList)]
-  [not(.//ExtendsList)]
-  [not(.//MethodDeclaration[@Abstract= true()])]
+  [not(ExtendsList)]
+  [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Abstract= true()])]
 ]]>
                 </value>
             </property>
@@ -599,7 +599,7 @@ through the @RunWith(Suite.class) annotation.
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration
 [MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
-[not(MethodDeclaration/Block//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
+[not(MethodDeclaration/Block/BlockStatement/Statement/ReturnStatement//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
             </property>

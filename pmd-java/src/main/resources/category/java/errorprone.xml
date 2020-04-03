@@ -292,15 +292,15 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
 [ClassOrInterfaceType[@Image="BigDecimal"]]
 [Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
     [
-        Literal[(not(ends-with(@Image,'"'))) and contains(@Image,".")]
+        Literal[(not(ends-with(@Image,'"')))][contains(@Image,".")]
         or
-        Name[ancestor::Block/BlockStatement/LocalVariableDeclaration
+        Name[ancestor::Block[1]/BlockStatement/LocalVariableDeclaration
                 [Type[PrimitiveType[@Image='double' or @Image='float']
                       or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
                 /VariableDeclarator/VariableDeclaratorId/@Image = @Image
             ]
         or
-        Name[ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter
+        Name[ancestor::MethodDeclaration[1]/MethodDeclarator/FormalParameters/FormalParameter
                 [Type[PrimitiveType[@Image='double' or @Image='float']
                       or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
                 /VariableDeclaratorId/@Image = @Image
@@ -2243,8 +2243,8 @@ The suite() method in a JUnit test needs to be both public and static.
 <![CDATA[
 //ClassOrInterfaceDeclaration[
     pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
+    or .//Name[parent::MarkerAnnotation][
+           pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
         or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
@@ -2252,7 +2252,7 @@ The suite() method in a JUnit test needs to be both public and static.
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         ]
     ]
-//MethodDeclaration[not(@Static= true()) or not(@Public= true())]
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[not(@Static= true()) or not(@Public= true())]
 [@Name='suite']
 [@Arity = 0]
 ]]>
@@ -2733,11 +2733,8 @@ Object clone() should be implemented with super.clone().
 //MethodDeclaration
 [@Name = 'clone']
 [@Arity = 0]
-[count(./Block//*[
-    (self::AllocationExpression) and
-    (./ClassOrInterfaceType/@Image = ancestor::
-ClassOrInterfaceDeclaration[1]/@SimpleName)
-  ])> 0
+[Block
+  [.//AllocationExpression[ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]]]
 ]
 ]]>
                 </value>
