@@ -276,6 +276,19 @@ public class Foo {
 	</test-code>
 
 	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED Line Break </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Contact foo(String tempID) {
+		Contact c = [SELECT Name FROM Contact WHERE Id=: tempID
+		WITH SECURITY_ENFORCED];
+		return c;
+	}
+} ]]></code>
+	</test-code>
+
+	<test-code>
 		<description>Accepts Closure SECURITY ENFORCED in a List </description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -288,12 +301,38 @@ public class Foo {
 	</test-code>
 
 	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED in a List Line Break</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public List<Contact> m() {
+		List<Contact> c = [SELECT Name FROM Contact
+		WITH SECURITY_ENFORCED LIMIT 1];
+		return c;
+	}
+} ]]></code>
+	</test-code>
+
+	<test-code>
 		<description>Accepts Closure SECURITY ENFORCED with Case Insensitivity </description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
 	public Contact foo(String tempID) {
 		Contact c = [SELECT Name FROM Contact WHERE Id=: tempID WItH SECURITY_ENFORCED];
+		return c;
+	}
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED with Case Insensitivity Line Break </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Contact foo(String tempID) {
+		Contact c = [SELECT Name FROM Contact WHERE Id=: tempID
+		WItH SECURITY_ENFORCED];
 		return c;
 	}
 } ]]></code>
@@ -318,6 +357,19 @@ public class Foo {
 public class Foo {
 	public Contact foo() {
 		Contact c = [SELECT Name FROM Contact WHERE Name = 'WITH SECURITY_ENFORCED' WITH SECURITY_ENFORCED];
+		return c;
+	}
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Accepts Closure SECURITY ENFORCED Secured Line Break </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Contact foo() {
+		Contact c = [SELECT Name FROM Contact WHERE Name = 'WITH SECURITY_ENFORCED'
+		WITH SECURITY_ENFORCED];
 		return c;
 	}
 } ]]></code>
