@@ -95,6 +95,12 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
 *   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
 
+##### For removal
+
+*   {% jdoc !!core::lang.Parser#getTokenManager(java.lang.String,java.io.Reader) %}
+*   {% jdoc !!core::lang.TokenManager#setFileName(java.lang.String) %}
+*   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
+*   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
 
 ### External Contributions
 
