@@ -34,7 +34,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         if (!firstMethod.isPresent()) {
             // there are no methods so the field declaration has to come first
-            return data;
+            return super.visit(node, data);
         }
 
         for (ASTField field : fields) {
@@ -43,6 +43,6 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             }
         }
 
-        return data;
+        return super.visit(node, data);
     }
 }
