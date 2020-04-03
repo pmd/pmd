@@ -1399,6 +1399,11 @@ not change the result of your rules</em>, if it does, please report a bug at htt
       <li><a href="https://github.com/pmd/pmd/issues/2358">#2358</a>: [apex] Invalid Apex in Cognitive Complexity tests</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2378">#2378</a>: [java] AbstractJUnitRule has bad performance on large code bases</li>
+    </ul>
+  </li>
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2390">#2390</a>: [java] AbstractClassWithoutAnyMethod: missing violation for nested classes</li>
@@ -1475,6 +1480,15 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.23.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCTokenManager.html#"><code>ObjectiveCTokenManager</code></a></li>
 </ul>
 
+<h5 id="for-removal">For removal</h5>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/Parser.html#getTokenManager(java.lang.String,java.io.Reader)"><code>Parser#getTokenManager</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/TokenManager.html#setFileName(java.lang.String)"><code>TokenManager#setFileName</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/ast/AbstractTokenManager.html#setFileName(java.lang.String)"><code>AbstractTokenManager#setFileName</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/ast/AbstractTokenManager.html#getFileName(java.lang.String)"><code>AbstractTokenManager#getFileName</code></a></li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1500,7 +1514,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 29, 2020 <br />
+ Site last generated: Apr 3, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
