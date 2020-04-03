@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
-    private static final Comparator<ApexNode<?>> nodeBySourceLocationComparator =
+    private static final Comparator<ApexNode<?>> NODE_BY_SOURCE_LOCATION_COMPARATOR =
         Comparator
             .<ApexNode<?>>comparingInt(ApexNode::getBeginLine)
             .thenComparing(ApexNode::getBeginColumn);
@@ -41,7 +41,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)
-            .min(nodeBySourceLocationComparator);
+            .min(NODE_BY_SOURCE_LOCATION_COMPARATOR);
 
         if (!firstNonFieldDeclaration.isPresent()) {
             // there is nothing except field declaration, so that has to come first
@@ -49,7 +49,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         }
 
         for (ASTField field : fields) {
-            if (nodeBySourceLocationComparator.compare(field, firstNonFieldDeclaration.get()) > 0) {
+            if (NODE_BY_SOURCE_LOCATION_COMPARATOR.compare(field, firstNonFieldDeclaration.get()) > 0) {
                 addViolation(data, field, field.getName());
             }
         }
@@ -62,8 +62,8 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // <clinit> method doesn't contain location information, only the containing ASTBlockStatements, we fetch
         // them for that method only.
         return node.findChildrenOfType(ASTMethod.class).stream()
-            .flatMap(method -> method.getImage().equals("<clinit>") ?
-                method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
+            .flatMap(method -> method.getImage().equals("<clinit>")
+                ? method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
             .collect(Collectors.toList());
     }
 }
