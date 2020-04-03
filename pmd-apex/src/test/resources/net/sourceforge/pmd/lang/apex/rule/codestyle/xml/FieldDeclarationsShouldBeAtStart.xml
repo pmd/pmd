@@ -140,4 +140,19 @@ class Foo {
 ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Fields should go before inner classes too</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code>
+<![CDATA[
+class Foo {
+    private class InnerFoo {}
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
 </test-data>

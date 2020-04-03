@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -23,22 +24,26 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
-        // so we have to rely on line numbers / positions to work out where the first method starts so we
-        // can check if the fields are in acceptable places.
+        // so we have to rely on line numbers / positions to work out where the first non-field declaration starts
+        // so we can check if the fields are in acceptable places.
         List<ASTField> fields = node.findChildrenOfType(ASTField.class);
-        List<ASTMethod> methods = node.findChildrenOfType(ASTMethod.class);
 
-        Optional<ASTMethod> firstMethod = methods.stream()
+        List<ApexNode<?>> nonFieldDeclarations = new ArrayList<>();
+
+        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTMethod.class));
+        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
+
+        Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)
             .min(nodeBySourceLocationComparator);
 
-        if (!firstMethod.isPresent()) {
-            // there are no methods so the field declaration has to come first
+        if (!firstNonFieldDeclaration.isPresent()) {
+            // there is nothing except field declaration, so that has to come first
             return super.visit(node, data);
         }
 
         for (ASTField field : fields) {
-            if (nodeBySourceLocationComparator.compare(field, firstMethod.get()) > 0) {
+            if (nodeBySourceLocationComparator.compare(field, firstNonFieldDeclaration.get()) > 0) {
                 addViolation(data, field, field.getName());
             }
         }
