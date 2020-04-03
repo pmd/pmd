@@ -41,6 +41,7 @@ public interface JavaNode extends ScopedNode {
     @Deprecated
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
+    ASTCompilationUnit getRoot();
 
     @Override
     JavaNode getChild(int index);

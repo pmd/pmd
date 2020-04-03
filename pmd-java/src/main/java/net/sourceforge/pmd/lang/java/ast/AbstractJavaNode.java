@@ -15,6 +15,7 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
     protected JavaParser parser;
     private Scope scope;
     private Comment comment;
+    private ASTCompilationUnit root;
 
     @InternalApi
     @Deprecated
@@ -62,6 +63,14 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
             }
         }
         return data;
+    }
+
+    @Override
+    public ASTCompilationUnit getRoot() {
+        if (root == null) {
+            root = getParent().getRoot();
+        }
+        return root;
     }
 
     @Override
