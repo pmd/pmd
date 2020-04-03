@@ -15,6 +15,11 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
+    private static final Comparator<ApexNode<?>> nodeBySourceLocationComparator =
+        Comparator
+            .<ApexNode<?>>comparingInt(ApexNode::getBeginLine)
+            .thenComparing(ApexNode::getBeginColumn);
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
@@ -23,11 +28,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         List<ASTFieldDeclaration> fields = node.findDescendantsOfType(ASTFieldDeclaration.class);
         List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
 
-        Optional<NodeAndLocation> firstMethod =
-            methods.stream()
-                .filter(method -> method.hasRealLoc())
-                .map(method -> new NodeAndLocation(method))
-                .min(Comparator.naturalOrder());
+        Optional<ASTMethod> firstMethod = methods.stream()
+            .filter(ApexNode::hasRealLoc)
+            .min(nodeBySourceLocationComparator);
 
         if (!firstMethod.isPresent()) {
             // there are no methods so the field declaration has to come first
@@ -35,35 +38,11 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         }
 
         for (ASTFieldDeclaration field : fields) {
-            NodeAndLocation fieldPosition = new NodeAndLocation(field);
-            if (fieldPosition.compareTo(firstMethod.get()) > 0) {
+            if (nodeBySourceLocationComparator.compare(field, firstMethod.get()) > 0) {
                 addViolation(data, field, field.getName());
             }
         }
 
         return data;
-    }
-
-    private static class NodeAndLocation implements Comparable<NodeAndLocation> {
-        public int line;
-        public int column;
-        public ApexNode<?> node;
-
-        NodeAndLocation(ApexNode<?> node) {
-            this.node = node;
-
-            line = node.getBeginLine();
-            column = node.getBeginColumn();
-        }
-
-        @Override
-        public int compareTo(NodeAndLocation other) {
-            int lineCompare = Integer.compare(line, other.line);
-            if (lineCompare != 0) {
-                return lineCompare;
-            }
-
-            return Integer.compare(column, other.column);
-        }
     }
 }
