@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
@@ -34,6 +35,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTMethod.class));
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
         nonFieldDeclarations.addAll(node.findChildrenOfType(ASTProperty.class));
+        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTBlockStatement.class));
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)
