@@ -91,7 +91,7 @@ public final class SymbolTableResolver {
             assert stack.isEmpty()
                 : "Stack should be empty when starting the traversal";
 
-            stack.push(NSymbolTableImpl.EMPTY);
+            stack.push(SymbolTableImpl.EMPTY);
             root.jjtAccept(this, null);
             stack.pop();
 
@@ -285,7 +285,7 @@ public final class SymbolTableResolver {
             // the varId is only in scope in the body and not the iterable expr
             setTopSymbolTableAndRecurse(node.getIterableExpr());
 
-            int pushed = pushOnStack(f.localVarSymTable(top(), node.getVarId()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), node.getVarId().getSymbol()));
             node.getBody().jjtAccept(this, data);
             popStack(pushed);
         }
@@ -325,7 +325,7 @@ public final class SymbolTableResolver {
 
         @Override
         public void visit(ASTCatchClause node, Void data) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), node.getParameter().getVarId()));
+            int pushed = pushOnStack(f.localVarSymTable(top(), node.getParameter().getVarId().getSymbol()));
             setTopSymbolTableAndRecurse(node);
             popStack(pushed);
         }
