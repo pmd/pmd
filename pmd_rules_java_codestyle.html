@@ -1300,6 +1300,12 @@
                         
                         
                         
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
                     </ul>
                 </li>
                 
@@ -4070,15 +4076,17 @@ Instead, the compiler is now able to infer the parameter types for constructor c
 which makes the code also more readable.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableInitializer</span><span class="p">[</span><span class="kn">preceding-sibling::</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@TypeInferred</span><span class="err">=</span><span class="s2">"false"</span><span class="p">]</span><span class="w">
-</span><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)]</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ArgumentList</span><span class="p">)]</span><span class="w">
-</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="p">[</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@AnonymousClass</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="o">/</span><span class="nt">TypeArguments</span><span class="o">//</span><span class="nt">ReferenceType</span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">TypeArguments</span><span class="p">)]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="w">
+</span><span class="o">//</span><span class="nt">VariableInitializer</span><span class="p">[</span><span class="kn">preceding-sibling::</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@TypeInferred</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">StatementExpression</span><span class="p">[</span><span class="nt">AssignmentOperator</span><span class="p">][</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Expression</span><span class="p">)]]</span><span class="w">
-</span><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)]</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ArgumentList</span><span class="p">)]</span><span class="w">
-</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="p">[</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@AnonymousClass</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="o">/</span><span class="nt">TypeArguments</span><span class="o">//</span><span class="nt">ReferenceType</span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">TypeArguments</span><span class="p">)]]</span><span class="w">
+</span><span class="o">//</span><span class="nt">StatementExpression</span><span class="p">[</span><span class="nt">AssignmentOperator</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Expression</span><span class="p">)]]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ArgumentList</span><span class="p">)]</span><span class="w">
+</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="w">
+</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="w">
+    </span><span class="p">[</span><span class="na">@AnonymousClass</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
+    </span><span class="p">[</span><span class="nt">ClassOrInterfaceType</span><span class="o">/</span><span class="nt">TypeArguments</span><span class="p">[</span><span class="na">@Diamond</span><span class="err">=</span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">TypeArgument</span><span class="o">//</span><span class="nt">TypeArguments</span><span class="p">)]]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4517,7 +4525,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 3, 2020 <br />
+ Site last generated: Apr 4, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

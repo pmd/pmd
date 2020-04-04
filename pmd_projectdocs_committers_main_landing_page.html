@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="keywords" content=" ">
-<title>Products/books related to PMD | PMD Source Code Analyzer</title>
+<title>Main Landing Page | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Products/books related to PMD">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Main Landing Page">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -1205,7 +1205,7 @@
                         
                         
                         
-                        <li class="active"><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
+                        <li><a href="pmd_projectdocs_trivia_products.html">Products & books related to PMD</a></li>
                         
                         
                         
@@ -1302,7 +1302,7 @@
                         
                         
                         
-                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        <li class="active"><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
                         
                         
                         
@@ -1337,7 +1337,7 @@
         <!-- Content Column -->
         <div class="col-md-9" id="tg-sb-content">
             <div class="post-header">
-   <h1 class="post-title-main">Products/books related to PMD</h1>
+   <h1 class="post-title-main">Main Landing Page</h1>
 </div>
 
 
@@ -1368,77 +1368,105 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
         
         
 
-    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/trivia/products.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/projectdocs/committers/main_landing_page.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     
 
-  <h2 id="open-source-products">Open source products</h2>
+  <p>The main homepage of PMD <a href="https://pmd.github.io">https://pmd.github.io</a> is hosted by Github Pages.</p>
+
+<p>The repository is <a href="https://github.com/pmd/pmd.github.io">https://github.com/pmd/pmd.github.io</a>.</p>
+
+<p>It uses <a href="https://jekyllrb.com/">Jekyll</a> to generate the static html pages. Jekyll is
+executed by github for every push to the repository. Please note, that it takes some time
+until Jekyll has been executed and due to caching, the homepage is not updated immediately.
+It usually takes 15 minutes.</p>
+
+<h2 id="contents">Contents</h2>
 
 <ul>
-  <li>
-    <p><a href="http://jbrugge.com/glean/index.html">Glean</a> - Aggregates PMD + numerous other source code feedback tools</p>
+  <li>Main page - aka “Landing page”: <a href="https://pmd.github.io">https://pmd.github.io</a>
+    <ul>
+      <li>Layout: <a href="https://github.com/pmd/pmd.github.io/blob/master/_layouts/default.html">_layouts/default.html</a>.
+It includes all the sub section, which can be found in the includes directory <a href="https://github.com/pmd/pmd.github.io/tree/master/_includes">_includes/</a></li>
+      <li>The latest PMD version is configured in <code class="highlighter-rouge">_config.yml</code> and the variables <code class="highlighter-rouge">site.pmd.latestVersion</code> are used
+e.g. in <a href="https://github.com/pmd/pmd.github.io/blob/master/_includes/home.html">_includes/home.html</a>.</li>
+    </ul>
   </li>
-  <li>
-    <p><a href="http://qalab.sf.net">QALab</a> - Aggregates PMD + Checkstyle + FindBugs and tracks problems over time</p>
+  <li>Blog - aka “News”: <a href="https://pmd.github.io/news/">https://pmd.github.io/news/</a>
+    <ul>
+      <li>This is a section on main page. It shows the 5 latest news. See <a href="https://github.com/pmd/pmd.github.io/blob/master/_includes/news.html">_includes/news.html</a>.</li>
+      <li>There is also a sub page “news” which lists all news.
+        <ul>
+          <li>Layout: <a href="https://github.com/pmd/pmd.github.io/blob/master/_layouts/news.html">_layouts/news.html</a></li>
+          <li>Page (which is pretty empty): <a href="https://github.com/pmd/pmd.github.io/blob/master/news.html">news.html</a></li>
+        </ul>
+      </li>
+    </ul>
   </li>
-  <li>
-    <p><a href="http://xradar.sf.net">XRadar</a> - Using PMD, CPD, and lots of other projects to give measurements on
-standard software metrics such as package metrics and dependencies, code size and complexity, code duplications,
-coding violations and code-style violations.</p>
+  <li>Documentation for the latest release: <a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a>
+    <ul>
+      <li>The PMD documentation of the latest release is simply copied as static html into the folder <a href="https://github.com/pmd/pmd.github.io/tree/master/latest">latest/</a>.
+This makes the latest release documentation available under the stable URL
+<a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a>. This URL is also used for the <a href="https://github.com/pmd/pmd.github.io/blob/master/sitemap.xml">sitemap.xml</a>.</li>
+    </ul>
   </li>
+  <li>Documentation for previous releases are still being kept under the folders <code class="highlighter-rouge">pmd-&lt;version&gt;/</code>.</li>
 </ul>
 
-<h2 id="commercial-products">Commercial products</h2>
+<h2 id="building-the-page-locally">Building the page locally</h2>
+
+<p>Since the repository contains the documentation for many old PMD releases, it is quite big. When executing
+Jekyll to generate the site, it copies all the files to the folder <code class="highlighter-rouge">_site/</code> - and this can take a while.</p>
+
+<p>In order to speed things up locally, consider to add <code class="highlighter-rouge">pmd-*</code> to the exclude patterns in <code class="highlighter-rouge">_config.yml</code>. See
+also the comments in this file.</p>
+
+<p>Then it is a matter of simply executing <code class="highlighter-rouge">bundle exec jekyll serve</code>. This will generate the site and host
+it on localhost, so you can test the page at <a href="http://127.0.0.1:4000">http://127.0.0.1:4000</a>.</p>
+
+<h2 id="updates-during-a-release">Updates during a release</h2>
+
+<p>When creating a new PMD release, some content of the main page need to be updated as well.
+This done as part of the <a href="pmd_projectdocs_committers_releasing.html">Release process</a>, but is
+summarized here as well:</p>
 
 <ul>
-  <li>
-    <p><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technology’s Convergence [link broken]</a> -
-a quality management dashboard for the Java platform.  Thanks to Vanward Technologies for their support of PMD
-by buying copies of <a href="https://pmdapplied.thomasleecopeland.com/">PMD Applied</a>!</p>
+  <li>The versions (e.g. <code class="highlighter-rouge">pmd.latestVersion</code>) needs to be updated in <code class="highlighter-rouge">_config.yml</code>
+    <ul>
+      <li>This is needed to generate the correct links and texts for the latest version on landing page</li>
+    </ul>
   </li>
-  <li>
-    <p><a href="http://javacentral.compuware.com/products/optimaladvisor/">Compuware’s OptimalAdvisor [link broken]</a>
-<a href="http://www.componentsource.com/beasv/products/compuware-optimaladvisor/index.html">OptimalAdvisor from ComponentSource</a> -
-static code analysis and refactoring tool</p>
-  </li>
+  <li>The new PMD documentation needs to be copied to <code class="highlighter-rouge">/pmd-&lt;version&gt;/</code></li>
+  <li>Then this folder needs to copied to <code class="highlighter-rouge">/latest/</code>, actually replacing the old version.</li>
+  <li>A new blog post with release notes is added: <code class="highlighter-rouge">/_posts/YYYY-mm-dd-PMD-&lt;version&gt;.md</code></li>
+  <li>The sitemap <code class="highlighter-rouge">sitemap.xml</code> is regenerated</li>
 </ul>
 
-<h2 id="books-that-mention-pmd">Books that mention PMD</h2>
+<p>Some of these steps are automated through <code class="highlighter-rouge">do-release.sh</code> (like blog post), some are manual steps
+(updating the version in _config.yml) and other steps are done on the travis-ci-build (like
+copying the new documentation).</p>
+
+<h2 id="adding-a-new-blog-post">Adding a new blog post</h2>
+
+<p>Adding a new blog post is as easy as:</p>
 
 <ul>
-  <li>
-    <p><a href="https://pmdapplied.thomasleecopeland.com/">PMD Applied</a> - the official manual by Tom Copeland.</p>
-
-    <p><em>Note:</em> This book is from November 2005 and quite outdated. It discusses PMD 3.</p>
-  </li>
-  <li>
-    <p><a href="http://www.oreilly.com/catalog/9780596510237">Checking Java Programs</a> - by Ian Darwin;
-also discusses FindBugs.</p>
-  </li>
-  <li>
-    <p><a href="http://www.amazon.com/gp/product/0321286081">Sustainable Software Development: An Agile Perspective</a> -
-by Kevin Tate, discusses both PMD and CPD</p>
-  </li>
-  <li>
-    <p><a href="http://www.amazon.com/gp/product/0321375777">High-Assurance Design: Architecting Secure and Reliable Enterprise Applications</a> -
-by Cliff Berg, mentions PMD in a discussion of static analysis utilities</p>
-  </li>
-  <li>
-    <p><a href="http://www.amazon.com/gp/product/0321288157">Eclipse Distilled</a> - by David Carlson,
-discusses the PMD plugin</p>
-  </li>
-  <li>
-    <p><a href="http://www.oreilly.com/catalog/9780596007508">Maven: A Developer’s Notebook</a>, co-authored by
-Vincent Massol, who’s done a bunch of work on PMD.  Thanks Vincent!</p>
-  </li>
-  <li>
-    <p><a href="http://www.amazon.com/gp/product/0596007949">Network Security Tools</a>, chapter 6 discusses using PMD
-to catch web app security problems.  Thanks to Joseph Hemler for the props!</p>
-  </li>
-  <li>
-    <p><a href="http://www.amazon.com/gp/product/0672325624">Extreme Programming With Ant</a></p>
-  </li>
+  <li>Creating a new file in the folder “_posts”: <code class="highlighter-rouge">/_posts/YYYY-mm-dd-&lt;title&gt;.md</code></li>
+  <li>The file name needs to fit this pattern. The date of the blog post is taken from the file name. The “<title>"
+is used for the url.</title></li>
+  <li>The file is a markdown file starting with a frontmatter for jekyll. Just use this template for the new file:</li>
 </ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+layout: post
+title: Title
+---
+
+Here comes the text
+</code></pre></div></div>
+
+<p>Once you commit and push it, Github will run Jekyll and update the page. The Jekyll templates take care that
+the new post is recognized and added to the news section and also on the news subpage.</p>
 
 
     <div class="tags">
@@ -1455,7 +1483,7 @@ to catch web app security problems.  Thanks to Joseph Hemler for the props!</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 4, 2020 <br />
+<span>Page last updated:</span> March 2020<br/> Site last generated: Apr 4, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

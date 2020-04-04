@@ -1300,6 +1300,12 @@
                         
                         
                         
+                        
+                        
+                        <li><a href="pmd_projectdocs_committers_main_landing_page.html">Main Landing page</a></li>
+                        
+                        
+                        
                     </ul>
                 </li>
                 
@@ -1384,13 +1390,98 @@ untouched, files with violations will be listed with full detail. Therefore, its
 <p>Incremental analysis is enabled automatically once a location to store the cache has been defined.
 From command-line that is done through the <a href="pmd_userdocs_cli_reference.html#cache"><code class="highlighter-rouge">-cache</code></a> argument, but support for the feature is
 available for tools integrating PMD such as <a href="pmd_userdocs_tools_ant.html">Ant</a>,
-<a href="pmd_userdocs_tools_maven.html">Maven</a>, and Gradle.</p>
+<a href="pmd_userdocs_tools_maven.html">Maven</a>, and <a href="pmd_userdocs_tools_gradle.html">Gradle</a>.</p>
 
 <h3 id="disabling-incremental-analysis">Disabling incremental analysis</h3>
 
 <p>By default, PMD will suggest to use an analysis cache by logging a warning.
 If you’d like to disable this warning, or ignore the analysis cache for a
 few runs, you can use the <a href="pmd_userdocs_cli_reference.html#no-cache"><code class="highlighter-rouge">-no-cache</code></a> switch.</p>
+
+<h3 id="faq">FAQ</h3>
+
+<h4 id="when-is-the-cache-invalidated">When is the cache invalidated?</h4>
+
+<p>On the following reasons, the complete cache file is considered invalid:</p>
+
+<ul>
+  <li>The PMD version differs. Since each PMD version might have fixed some false-positives or false-negatives for rules,
+a cache file created with a different version is considered invalid. The version comparison is exact.</li>
+  <li>The used ruleset has been changed. If the ruleset is changed in any way (e.g. adding/removing rules, changing
+rule properties, …), the cache is considered invalid.</li>
+  <li>The <a href="pmd_userdocs_cli_reference.html#auxclasspath"><code class="highlighter-rouge">auxclasspath</code></a> changed. The auxclasspath is used during
+type resolution. A changed auxclasspath can result for rules, that use type resolution, in different
+violations. Usually, if the auxclasspath is correct and type resolution works, the rules report less false-positives.
+To make sure, the correct violations are reported, the cache is considered invalid, if the auxclasspath has changed.</li>
+  <li>The execution classpath has been changed. On the execution classpath not only the PMD classes are located, but also
+the implementation of e.g. custom rules. If any jar file/class file on the execution classpath is changed, then
+the cache is considered invalid as well.</li>
+</ul>
+
+<h4 id="what-is-stored-in-the-cache-file">What is stored in the cache file?</h4>
+
+<p>The cache file consists of a header and a body. The header stores the information which is used to decided
+whether the whole cache file is valid or not (see above). The following information is stored:</p>
+
+<ul>
+  <li>PMD Version</li>
+  <li>Ruleset checksum</li>
+  <li>Auxclasspath checksum</li>
+  <li>Execution classpath checksum</li>
+</ul>
+
+<p>The body contains an entry for every file that has been analyzed. For every file, the following information
+is stored:</p>
+
+<ul>
+  <li>The full (absolute) pathname of the file</li>
+  <li>The checksum of the file itself</li>
+  <li>0 or more rule violations with all the info (line number, etc.)</li>
+</ul>
+
+<p>You can think of the cache as a Map where the filepath is used as the key
+and the violations found in previous runs are the value.</p>
+
+<p>The cache is in the end just a file with serialized data (binary). The implementation is
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/cache/FileAnalysisCache.html#"><code>FileAnalysisCache</code></a>.</p>
+
+<h4 id="how-does-pmd-detect-whether-a-file-has-been-changed">How does PMD detect whether a file has been changed?</h4>
+
+<p>When analyzing a file, PMD records the checksum of the file content and stores this
+together with the violations in the cache file. When running PMD with the cache file,
+PMD looks up the file in the cache and compares the checksums.
+If the checksums match, then the file is not even parsed, the rules
+are not executed and the violations for this file are entirely used from the cache.
+If the checksum doesn’t match, then the cached violations are discarded (if there are any)
+and the file is fully processed: the file is parsed and all the rules are run for it.
+After we are done, the cache is updated with the new violations.</p>
+
+<h4 id="can-i-reuse-a-cache-created-on-branch-a-for-analyzing-my-project-on-branch-b">Can I reuse a cache created on branch A for analyzing my project on branch B?</h4>
+
+<p>This is possible. As long as the same PMD version and same ruleset is used on both branches.
+Also note, that if the branch uses a different dependencies, the auxclasspath is different on both
+classes, which invalidates the cache completely. If you project uses e.g. Maven for dependency
+management and your branch uses different dependencies (either different version or completely different
+artifacts), then the auxclasspath is changed.</p>
+
+<p>If files have been renamed on the branch, these files will be analyzed again since PMD uses
+the file names to assign existing rule violations from the cache. Also, if the full path name
+of the file changes, because the other branch is checked out at a different location, then all
+the cached files don’t match.</p>
+
+<p>Apart from these restrictions, PMD will only analyze files that changed between runs.
+If your previous run was on branch A and then you run on branch B using the same cache file,
+it will only look at files that are different between the 2 branches.</p>
+
+<h4 id="can-i-reuse-a-cache-file-across-different-machines">Can I reuse a cache file across different machines?</h4>
+
+<p>This is only possible, if the other machine uses the exact same path names. That means that
+your project needs to be checked out into the same directory structure.</p>
+
+<p>Additionally, all the other restrictions apply (same PMD version, same ruleset, same auxclasspath,
+same execution classpath).</p>
+
+<p>See also issue <a href="https://github.com/pmd/pmd/issues/2063">#2063 [core] Support sharing incremental analysis cache file across different machines</a>.</p>
 
 
     <div class="tags">
@@ -1415,7 +1506,7 @@ few runs, you can use the <a href="pmd_userdocs_cli_reference.html#no-cache"><co
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 3, 2020 <br />
+ Site last generated: Apr 4, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

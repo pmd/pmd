@@ -4367,6 +4367,22 @@
 
 
 {
+"title": "Main Landing Page",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_committers_main_landing_page.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Making rulesets",
 "tags": "getting_starteduserdocs",
 "keywords": "rulesetsreferenceruleexcludeincludepatternfilter",
@@ -5126,7 +5142,7 @@
 
 
 {
-"title": "Releasing",
+"title": "Release process",
 "tags": "",
 "keywords": "",
 "url": "pmd_projectdocs_committers_releasing.html",
