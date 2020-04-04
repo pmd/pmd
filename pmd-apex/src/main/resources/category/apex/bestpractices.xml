@@ -208,4 +208,25 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnusedLocalVariable"
+          since="6.23.0"
+          language="apex"
+          message="Variable ''{0}'' defined but not used"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
+        <description>
+Detects when a local variable is declared and/or assigned but not used.
+        </description>
+        <example>
+<![CDATA[
+    public Boolean bar(String z) {
+        String x = 'some string'; // not used
+
+        String y = 'some other string'; // used in the next line
+        return z.equals(y);
+    }
+]]>
+        </example>
+    </rule>
+
 </ruleset>
