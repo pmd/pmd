@@ -30,7 +30,10 @@ not change the result of your rules*, if it does, please report a bug at https:/
 Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 6.22.0.
 **We highly recommend that you upgrade your rules to XPath 2.0**. Please refer to the [migration guide](https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20).
 
+#### New Rules
 
+*   The new Apex rule {% rule "apex/codestyle/FieldDeclarationsShouldBeAtStart" %} (`apex-codestyle`)
+    helps to ensure that field declarations are always at the beginning of a class.
 
 ### Fixed Issues
 
@@ -105,6 +108,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2314](https://github.com/pmd/pmd/pull/2314): \[doc] maven integration - Add version to plugin - [Pham Hai Trung](https://github.com/gpbp)
 *   [#2353](https://github.com/pmd/pmd/pull/2353): \[plsql] xmlforest with optional AS - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2383](https://github.com/pmd/pmd/pull/2383): \[apex] Fix invalid apex in documentation - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2396](https://github.com/pmd/pmd/pull/2396): \[apex] New rule: field declarations should be at start - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 
 {% endtocmaker %}
 
