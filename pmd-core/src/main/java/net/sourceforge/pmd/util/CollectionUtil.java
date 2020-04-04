@@ -405,21 +405,6 @@ public final class CollectionUtil {
         return Collections.unmodifiableList(union);
     }
 
-    public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
-        Iterator<? extends T> it = from.iterator();
-        if (!it.hasNext()) {
-            return Collections.emptyList();
-        }
-        List<R> res = new ArrayList<>();
-        while (it.hasNext()) {
-            R r = f.apply(it.next());
-            if (r != null) {
-                res.add(r);
-            }
-        }
-        return res;
-    }
-
     /**
      * Produce a new map with the mappings of the first, and one additional
      * mapping. The returned map may be unmodifiable.

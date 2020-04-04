@@ -234,7 +234,7 @@ final class AstClassSym
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
         return CollectionUtil.mapNotNull(
-            node.getSuperInterfaces(),
+            node.getSuperInterfaceTypeNodes(),
             n -> {
                 // we play safe here, but the symbol is either a JClassSymbol
                 // or a JTypeParameterSymbol, with the latter case being a
