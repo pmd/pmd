@@ -34,9 +34,11 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 
 ### Fixed Issues
 
-*   apex
-    *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
+*   apex-design
     *   [#2358](https://github.com/pmd/pmd/issues/2358): \[apex] Invalid Apex in Cognitive Complexity tests
+*   apex-security
+    *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
+    *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
 *   java-design
@@ -113,6 +115,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2314](https://github.com/pmd/pmd/pull/2314): \[doc] maven integration - Add version to plugin - [Pham Hai Trung](https://github.com/gpbp)
 *   [#2353](https://github.com/pmd/pmd/pull/2353): \[plsql] xmlforest with optional AS - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2383](https://github.com/pmd/pmd/pull/2383): \[apex] Fix invalid apex in documentation - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2397](https://github.com/pmd/pmd/pull/2397): \[apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - [Kieran Black](https://github.com/kieranlblack)
 
 {% endtocmaker %}
 
