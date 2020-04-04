@@ -4,14 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,17 +22,12 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.MostlySingularMultimap.Builder;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.NameResolver.MultiSymResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.NameResolver.SingleSymResolver;
-import net.sourceforge.pmd.util.OptionalBool;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.MultiSymResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleSymResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroupBuilder;
 
 class Resolvers {
-
-
-    static <V> MostlySingularMultimap.Builder<String, V> newMapBuilder() {
-        return MostlySingularMultimap.newBuilder(HashMap::new);
-    }
 
     /** Prepend the package name, handling empty package. */
     static String prependPackageName(String pack, String name) {
@@ -111,99 +101,6 @@ class Resolvers {
         };
     }
 
-    static <S> NameResolver<S> singleton(String name, S symbol) {
-        final List<S> single = singletonList(symbol);
-        return new SingleSymResolver<S>() {
-            @Override
-            public List<S> resolveHere(String s) {
-                return name.equals(s) ? single : emptyList();
-            }
-
-            @Override
-            public @Nullable S resolveFirst(String simpleName) {
-                return name.equals(simpleName) ? symbol : null;
-            }
-
-            @Override
-            public @Nullable OptionalBool knows(String simpleName) {
-                return OptionalBool.definitely(name.equals(simpleName));
-            }
-
-            @Override
-            public String toString() {
-                return "Single(" + symbol + ")";
-            }
-        };
-    }
-
-    @NonNull
-    static <S> NameResolver<S> mapResolver(MostlySingularMultimap.Builder<String, S> symbols) {
-        Entry<String, S> pair = symbols.singleOrNull();
-        if (pair != null) {
-            return singleton(pair.getKey(), pair.getValue());
-        } else if (symbols.isEmpty()) {
-            return emptyResolver();
-        }
-
-        MostlySingularMultimap<String, S> map = symbols.build();
-
-        return new MultiSymResolver<S>() {
-            @Override
-            public List<S> resolveHere(String s) {
-                return map.get(s);
-            }
-
-            @Override
-            public @Nullable OptionalBool knows(String simpleName) {
-                return OptionalBool.definitely(map.containsKey(simpleName));
-            }
-
-            @Override
-            public String toString() {
-                return "Map(" + mapToString() + ")";
-            }
-
-            private String mapToString() {
-                if (map.isEmpty()) {
-                    return "{}";
-                }
-                StringBuilder sb = new StringBuilder("{");
-                map.processValuesOneByOne((k, v) -> sb.append(v).append(", "));
-                return sb.substring(0, sb.length() - 2) + "}";
-            }
-        };
-    }
-
-    static <S> EmptyResolver<S> emptyResolver() {
-        return EmptyResolver.INSTANCE;
-    }
-
-    static class EmptyResolver<S> implements NameResolver<S> {
-
-        private static final EmptyResolver INSTANCE = new EmptyResolver<>();
-
-        @Nullable
-        @Override
-        public S resolveFirst(String simpleName) {
-            return null;
-        }
-
-        @Override
-        public List<S> resolveHere(String simpleName) {
-            return emptyList();
-        }
-
-        @Override
-        public @Nullable OptionalBool knows(String simpleName) {
-            return OptionalBool.NO;
-        }
-
-        @Override
-        public String toString() {
-            return "Empty";
-        }
-    }
-
     static NameResolver<JMethodSymbol> methodResolver(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();
         return new MultiSymResolver<JMethodSymbol>() {
@@ -225,8 +122,8 @@ class Resolvers {
     static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> classAndFieldResolvers(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();
 
-        Builder<String, JVariableSymbol> fields = newMapBuilder();
-        Builder<String, JTypeDeclSymbol> types = newMapBuilder();
+        ShadowGroupBuilder<JVariableSymbol>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
+        ShadowGroupBuilder<JTypeDeclSymbol>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
 
         Set<String> seenFields = new HashSet<>();
         Set<String> seenTypes = new HashSet<>();
@@ -234,7 +131,7 @@ class Resolvers {
         for (JClassSymbol sup : SymUtils.iterateSuperTypes(t, Interfaces.INCLUDE)) {
             for (JFieldSymbol df : sup.getDeclaredFields()) {
                 if (seenFields.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
-                    fields.appendValue(df.getSimpleName(), df);
+                    fields.append(df);
                 }
             }
 
@@ -242,40 +139,13 @@ class Resolvers {
             for (JClassSymbol df : sup.getDeclaredClasses()) {
                 if (inInterface
                     || seenTypes.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
-                    types.appendValue(df.getSimpleName(), df);
+                    types.append(df);
                 }
             }
 
 
         }
-        return Pair.of(mapResolver(types), mapResolver(fields));
-    }
-
-    // same thing as above, the above just uses a single traversal
-    // this will usually be queried just once because of
-    static NameResolver<JTypeDeclSymbol> lazyNestedClassResolver(JClassSymbol t) {
-        return new SingleSymResolver<JTypeDeclSymbol>() {
-            @Nullable
-            @Override
-            public JTypeDeclSymbol resolveFirst(String simpleName) {
-                JClassSymbol here = t.getDeclaredClass(simpleName);
-                if (here != null) {
-                    return here;
-                }
-
-                JClassSymbol nestRoot = t.getNestRoot();
-                Set<String> seenTypes = new HashSet<>();
-                for (JClassSymbol sup : SymUtils.iterateSuperTypes(t, Interfaces.INCLUDE)) {
-                    for (JClassSymbol df : sup.getDeclaredClasses()) {
-                        if (seenTypes.add(df.getSimpleName())
-                            && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
-                            return df;
-                        }
-                    }
-                }
-                return null;
-            }
-        };
+        return Pair.of(types.build(), fields.build());
     }
 
     // whether the given symbol is accessible in this.typeSym, assuming

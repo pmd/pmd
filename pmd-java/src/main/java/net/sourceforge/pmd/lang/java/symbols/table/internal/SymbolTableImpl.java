@@ -8,10 +8,12 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroup;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroupBuilder;
 
 final class SymbolTableImpl implements JSymbolTable {
 
-    static JSymbolTable EMPTY = new SymbolTableImpl(RootShadowGroup.empty(), RootShadowGroup.empty(), RootShadowGroup.empty());
+    static JSymbolTable EMPTY = new SymbolTableImpl(ShadowGroupBuilder.rootGroup(), ShadowGroupBuilder.rootGroup(), ShadowGroupBuilder.rootGroup());
 
     private final ShadowGroup<JVariableSymbol> vars;
     private final ShadowGroup<JTypeDeclSymbol> types;

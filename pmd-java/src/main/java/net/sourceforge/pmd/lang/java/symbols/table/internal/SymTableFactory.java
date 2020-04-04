@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
 import static net.sourceforge.pmd.internal.util.AssertionUtil.isValidJavaPackageName;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.Resolvers.newMapBuilder;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -32,14 +31,15 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.MostlySingularMultimap.Builder;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroup;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroupBuilder;
 
 final class SymTableFactory {
 
@@ -47,9 +47,9 @@ final class SymTableFactory {
     private final String thisPackage;
     private final JavaAstProcessor processor;
 
-    private static final ShadowGroupBuilder<JTypeDeclSymbol> TYPES = new ShadowGroupBuilder<>(JTypeDeclSymbol::getSimpleName);
-    private static final ShadowGroupBuilder<JVariableSymbol> VARS = new ShadowGroupBuilder<>(JElementSymbol::getSimpleName);
-    private static final ShadowGroupBuilder<JMethodSymbol> METHODS = new ShadowGroupBuilder<>(JElementSymbol::getSimpleName);
+    static final ShadowGroupBuilder<JTypeDeclSymbol> TYPES = new SymbolGroupBuilder<>();
+    static final ShadowGroupBuilder<JVariableSymbol> VARS = new SymbolGroupBuilder<>();
+    static final ShadowGroupBuilder<JMethodSymbol> METHODS = new SymbolGroupBuilder<>();
 
 
     SymTableFactory(String thisPackage, JavaAstProcessor processor) {
@@ -116,9 +116,10 @@ final class SymTableFactory {
             return parent;
         }
 
-        Builder<String, JTypeDeclSymbol> importedTypes = newMapBuilder();
-        Builder<String, JVariableSymbol> importedFields = newMapBuilder();
-        Builder<String, JMethodSymbol> importedMethods = newMapBuilder();
+
+        ShadowGroupBuilder<JTypeDeclSymbol>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+        ShadowGroupBuilder<JVariableSymbol>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
+        ShadowGroupBuilder<JMethodSymbol>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
 
         Set<String> lazyImportedPackagesAndTypes = new LinkedHashSet<>();
 
@@ -147,25 +148,25 @@ final class SymTableFactory {
             return parent;
         }
 
-        Builder<String, JTypeDeclSymbol> importedTypes = newMapBuilder();
-        Builder<String, JVariableSymbol> importedFields = newMapBuilder();
-        Builder<String, JMethodSymbol> importedMethods = newMapBuilder();
+        ShadowGroupBuilder<JTypeDeclSymbol>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+        ShadowGroupBuilder<JVariableSymbol>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
+        ShadowGroupBuilder<JMethodSymbol>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
 
         fillSingleImports(singleImports, importedTypes, importedFields, importedMethods);
 
         return buildTable(
             parent,
-            VARS.shadow(parent.variables(), importedFields),
-            METHODS.shadow(parent.methods(), importedMethods),
-            TYPES.shadow(parent.types(), importedTypes)
+            VARS.shadow(parent.variables(), importedFields.build()),
+            METHODS.shadow(parent.methods(), importedMethods.build()),
+            TYPES.shadow(parent.types(), importedTypes.build())
         );
 
     }
 
     private void fillImportOnDemands(Iterable<ASTImportDeclaration> importsOnDemand,
-                                     Builder<String, JTypeDeclSymbol> importedTypes,
-                                     Builder<String, JVariableSymbol> importedFields,
-                                     Builder<String, JMethodSymbol> importedMethods,
+                                     ShadowGroupBuilder<JTypeDeclSymbol>.ResolverBuilder importedTypes,
+                                     ShadowGroupBuilder<JVariableSymbol>.ResolverBuilder importedFields,
+                                     ShadowGroupBuilder<JMethodSymbol>.ResolverBuilder importedMethods,
                                      Set<String> importedPackagesAndTypes) {
         for (ASTImportDeclaration anImport : importsOnDemand) {
             assert anImport.isImportOnDemand() : "Expected import on demand: " + anImport;
@@ -181,19 +182,19 @@ final class SymTableFactory {
 
                     for (JMethodSymbol m : containerClass.getDeclaredMethods()) {
                         if (Modifier.isStatic(m.getModifiers()) && canBeImported(m)) {
-                            importedMethods.appendValue(m.getSimpleName(), m);
+                            importedMethods.append(m);
                         }
                     }
 
                     for (JFieldSymbol f : containerClass.getDeclaredFields()) {
                         if (Modifier.isStatic(f.getModifiers()) && canBeImported(f)) {
-                            importedFields.appendValue(f.getSimpleName(), f);
+                            importedFields.append(f);
                         }
                     }
 
                     for (JClassSymbol t : containerClass.getDeclaredClasses()) {
                         if (Modifier.isStatic(t.getModifiers()) && canBeImported(t)) {
-                            importedTypes.appendValue(t.getSimpleName(), t);
+                            importedTypes.append(t);
                         }
                     }
                 }
@@ -209,9 +210,9 @@ final class SymTableFactory {
     }
 
     private void fillSingleImports(List<ASTImportDeclaration> singleImports,
-                                   Builder<String, JTypeDeclSymbol> importedTypes,
-                                   Builder<String, JVariableSymbol> importedFields,
-                                   Builder<String, JMethodSymbol> importedMethods) {
+                                   ShadowGroupBuilder<JTypeDeclSymbol>.ResolverBuilder importedTypes,
+                                   ShadowGroupBuilder<JVariableSymbol>.ResolverBuilder importedFields,
+                                   ShadowGroupBuilder<JMethodSymbol>.ResolverBuilder importedMethods) {
         for (ASTImportDeclaration anImport : singleImports) {
             if (anImport.isImportOnDemand()) {
                 throw new IllegalArgumentException(anImport.toString());
@@ -240,23 +241,23 @@ final class SymTableFactory {
                 for (JMethodSymbol m : containerClass.getDeclaredMethods()) {
                     if (m.getSimpleName().equals(simpleName) && Modifier.isStatic(m.getModifiers())
                         && canBeImported(m)) {
-                        importedMethods.appendValue(m.getSimpleName(), m);
+                        importedMethods.append(m);
                     }
                 }
 
                 JFieldSymbol f = containerClass.getDeclaredField(simpleName);
                 if (f != null && Modifier.isStatic(f.getModifiers())) {
-                    importedFields.appendValue(f.getSimpleName(), f);
+                    importedFields.append(f);
                 }
 
                 JClassSymbol c = containerClass.getDeclaredClass(simpleName);
                 if (c != null && Modifier.isStatic(c.getModifiers()) && canBeImported(c)) {
-                    importedTypes.appendValue(c.getSimpleName(), c);
+                    importedTypes.append(c);
                 }
 
             } else {
                 // Single-Type-Import Declaration
-                importedTypes.appendValue(simpleName, findSymbolCannotFail(name));
+                importedTypes.append(findSymbolCannotFail(name));
             }
         }
     }
@@ -275,11 +276,7 @@ final class SymTableFactory {
 
         return SymbolTableImpl.withTypes(
             parent,
-            new CachedShadowGroup<>(
-                parent.types(),
-                Resolvers.packageResolver(processor.getSymResolver(), packageName),
-                true
-            )
+            TYPES.augmentWithCache(parent.types(), true, Resolvers.packageResolver(processor.getSymResolver(), packageName))
         );
     }
 

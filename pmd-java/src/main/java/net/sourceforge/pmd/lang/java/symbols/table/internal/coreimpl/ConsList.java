@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
 
 import java.util.AbstractList;
 import java.util.Collections;

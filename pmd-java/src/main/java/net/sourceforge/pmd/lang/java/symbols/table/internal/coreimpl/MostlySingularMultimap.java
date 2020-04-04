@@ -2,11 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,7 +35,7 @@ class MostlySingularMultimap<K, V> {
     }
 
     @FunctionalInterface
-    interface MapMaker<K> {
+    public interface MapMaker<K> {
         /** Produce a new mutable map with the contents of the given map. */
         <V> Map<K, V> copy(Map<K, V> m);
     }
@@ -92,10 +91,6 @@ class MostlySingularMultimap<K, V> {
     @SuppressWarnings("unchecked")
     public static <K, V> MostlySingularMultimap<K, V> empty() {
         return EMPTY;
-    }
-
-    public static <K, V> Builder<K, V> newBuilder() {
-        return newBuilder(HashMap::new);
     }
 
     public static <K, V> Builder<K, V> newBuilder(MapMaker<K> mapMaker) {
