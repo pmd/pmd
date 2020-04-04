@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import static net.sourceforge.pmd.util.CollectionUtil.any;
 
+import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;

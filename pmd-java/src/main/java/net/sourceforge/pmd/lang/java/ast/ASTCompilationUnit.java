@@ -85,12 +85,14 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         return classTypeResolver;
     }
 
-    }
 
     @Override
     public @NonNull JSymbolTable getSymbolTable() {
         assert symbolTable != null : "Symbol table wasn't set";
         return symbolTable;
+    }
+
+
     @InternalApi
     @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
