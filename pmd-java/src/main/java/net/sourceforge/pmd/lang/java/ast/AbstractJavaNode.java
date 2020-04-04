@@ -45,14 +45,6 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
 
 
     @Override
-    public ASTCompilationUnit getRoot() {
-        if (root == null) {
-            root = getParent().getRoot();
-        }
-        return root;
-    }
-
-    @Override
     public Scope getScope() {
         if (scope == null) {
             return ((JavaNode) parent).getScope();

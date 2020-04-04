@@ -87,12 +87,6 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return classTypeResolver;
     }
 
-
-    @Override
-    public ASTCompilationUnit getRoot() {
-        return this;
-    }
-
     @InternalApi
     @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {

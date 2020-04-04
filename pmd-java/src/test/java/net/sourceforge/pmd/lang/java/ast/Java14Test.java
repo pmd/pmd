@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -94,15 +95,16 @@ public class Java14Test {
 
     private void checkYieldStatements(JavaParsingHelper parser) {
         ASTCompilationUnit compilationUnit = parser.parseResource("YieldStatements.java");
-        List<JavaNode> stmts = compilationUnit.<JavaNode>findDescendantsOfType(ASTBlockStatement.class);
+        List<ASTBlockStatement> blockStmts = compilationUnit.findDescendantsOfType(ASTBlockStatement.class);
+        List<JavaNode> stmts = new ArrayList<>();
         // fetch the interesting node, on the java-grammar branch this is not needed
-        for (int i = 0; i < stmts.size(); i++) {
-            JavaNode child = stmts.get(i).getChild(0);
+        for (int i = 0; i < blockStmts.size(); i++) {
+            JavaNode child = blockStmts.get(i).getChild(0);
 
             if (child instanceof ASTStatement) {
-                stmts.set(i, child.getChild(0));
+                stmts.add(child.getChild(0));
             } else {
-                stmts.set(i, child);
+                stmts.add(child);
             }
         }
 

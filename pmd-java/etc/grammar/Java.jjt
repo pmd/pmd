@@ -294,7 +294,7 @@ class JavaParserImpl {
   private boolean inSwitchExprBlock = false;
 
   private boolean isYieldStart() {
-    return inSwitchExprBlock && isJava13PreviewOr14()
+    return inSwitchExprBlock
     && isKeyword("yield")
     && mayStartExprAfterYield(2);
   }

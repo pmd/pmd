@@ -46,7 +46,6 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     @Deprecated
     Object childrenAccept(JavaParserVisitor visitor, Object data);
 
-    ASTCompilationUnit getRoot();
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
