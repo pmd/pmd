@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,12 +22,6 @@ class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
                                 boolean shadowBarrier) {
         super(parent, shadowBarrier, resolver);
         this.cache = known;
-    }
-
-    protected CachedShadowGroup(@NonNull ShadowGroup<S> parent,
-                                NameResolver<S> resolver,
-                                boolean shadowBarrier) {
-        this(parent, new HashMap<>(), resolver, shadowBarrier);
     }
 
     @Override
@@ -51,7 +44,7 @@ class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
         S first = super.resolveFirst(name);
         if (first == null) {
             cache.put(name, Collections.emptyList());
-        } else if (resolver instanceof NameResolver.SingleSymResolver && isShadowBarrier()) {
+        } else if (resolver instanceof NameResolver.SingleNameResolver && isShadowBarrier()) {
             cache.put(name, Collections.singletonList(first));
         }
         return first;

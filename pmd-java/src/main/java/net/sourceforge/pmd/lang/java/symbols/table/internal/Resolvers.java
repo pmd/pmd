@@ -23,8 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.MultiSymResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleSymResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroupBuilder;
 
 class Resolvers {
@@ -63,7 +62,7 @@ class Resolvers {
     static NameResolver<JTypeDeclSymbol> importedOnDemand(Set<String> lazyImportedPackagesAndTypes,
                                                           final SymbolResolver symResolver,
                                                           final String thisPackage) {
-        return new SingleSymResolver<JTypeDeclSymbol>() {
+        return new SingleNameResolver<JTypeDeclSymbol>() {
             @Nullable
             @Override
             public JTypeDeclSymbol resolveFirst(String simpleName) {
@@ -87,7 +86,7 @@ class Resolvers {
 
     @NonNull
     static NameResolver<JTypeDeclSymbol> packageResolver(SymbolResolver symResolver, String packageName) {
-        return new SingleSymResolver<JTypeDeclSymbol>() {
+        return new SingleNameResolver<JTypeDeclSymbol>() {
             @Nullable
             @Override
             public JTypeDeclSymbol resolveFirst(String simpleName) {
@@ -103,9 +102,9 @@ class Resolvers {
 
     static NameResolver<JMethodSymbol> methodResolver(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();
-        return new MultiSymResolver<JMethodSymbol>() {
+        return new NameResolver<JMethodSymbol>() {
             @Override
-            public List<JMethodSymbol> resolveHere(String simpleName) {
+            public @NonNull List<JMethodSymbol> resolveHere(String simpleName) {
                 return SymUtils.getSuperTypeStream(t, Interfaces.INCLUDE)
                                .flatMap(it -> it.getDeclaredMethods().stream())
                                .filter(it -> it.getSimpleName().equals(simpleName) && isAccessibleInStrictSubtypeOfOwner(nestRoot, it))
@@ -135,15 +134,12 @@ class Resolvers {
                 }
             }
 
-            boolean inInterface = sup.isInterface();
+            // TODO ambiguity when other types may
             for (JClassSymbol df : sup.getDeclaredClasses()) {
-                if (inInterface
-                    || seenTypes.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
+                if (seenTypes.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
                     types.append(df);
                 }
             }
-
-
         }
         return Pair.of(types.build(), fields.build());
     }

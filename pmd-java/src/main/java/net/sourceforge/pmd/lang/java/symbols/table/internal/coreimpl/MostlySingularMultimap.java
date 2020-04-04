@@ -20,7 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
- * A persistent multimap type, efficient if the single-value case is the
+ * An unmodifiable multimap type, efficient if the single-value case is the
  * most common.
  */
 class MostlySingularMultimap<K, V> {
@@ -36,6 +36,7 @@ class MostlySingularMultimap<K, V> {
 
     @FunctionalInterface
     public interface MapMaker<K> {
+
         /** Produce a new mutable map with the contents of the given map. */
         <V> Map<K, V> copy(Map<K, V> m);
     }
@@ -115,6 +116,8 @@ class MostlySingularMultimap<K, V> {
         private final MapMaker<K> mapMaker;
         private @Nullable Map<K, Object> map;
         private boolean consumed;
+        /** True unless some entry has a list of values. */
+        private boolean isSingular = true;
 
         private Builder(MapMaker<K> mapMaker) {
             this.mapMaker = mapMaker;
@@ -129,17 +132,22 @@ class MostlySingularMultimap<K, V> {
         }
 
         public Builder<K, V> appendValue(K key, V v) {
-            Validate.isTrue(!consumed, "Builder was already consumed");
+            ensureOpen();
             AssertionUtil.requireParamNotNull("value", v);
             AssertionUtil.requireParamNotNull("key", key);
 
-            getMap().compute(key, (k, oldV) -> appendSingle(oldV, v));
+            getMap().compute(key, (k, oldV) -> {
+                if (oldV != null && isSingular) {
+                    isSingular = false;
+                }
+                return appendSingle(oldV, v);
+            });
             return this;
         }
 
         public Builder<K, V> groupBy(Iterable<? extends V> values,
                                      Function<? super V, ? extends K> keyExtractor) {
-            Validate.isTrue(!consumed, "Builder was already consumed");
+            ensureOpen();
             return groupBy(values, keyExtractor, Function.identity());
         }
 
@@ -147,13 +155,12 @@ class MostlySingularMultimap<K, V> {
         public <I> Builder<K, V> groupBy(Iterable<? extends I> values,
                                          Function<? super I, ? extends K> keyExtractor,
                                          Function<? super I, ? extends V> valueExtractor) {
-            Validate.isTrue(!consumed, "Builder was already consumed");
+            ensureOpen();
             for (I i : values) {
                 appendValue(keyExtractor.apply(i), valueExtractor.apply(i));
             }
             return this;
         }
-
 
         private Object appendSingle(@Nullable Object vs, V v) {
             if (vs == null) {
@@ -173,21 +180,30 @@ class MostlySingularMultimap<K, V> {
         }
 
         public MostlySingularMultimap<K, V> build() {
-            Validate.isTrue(!consumed, "Builder was already consumed");
-            consumed = true;
+            consume();
             return isEmpty() ? empty() : new MostlySingularMultimap<>(getMap());
         }
 
-        @Nullable
-        public Entry<K, V> singleOrNull() {
-            if (map == null || map.size() != 1) {
+        public @Nullable Map<K, V> buildAsSingular() {
+            consume();
+            if (!isSingular) {
                 return null;
             }
-            Entry<K, Object> first = map.entrySet().iterator().next();
-            if (first.getValue() instanceof VList) {
-                return null;
-            }
-            return (Entry<K, V>) first;
+            return (Map<K, V>) map;
+        }
+
+
+        private void consume() {
+            ensureOpen();
+            consumed = true;
+        }
+
+        private void ensureOpen() {
+            Validate.isTrue(!consumed, "Builder was already consumed");
+        }
+
+        public boolean isSingular() {
+            return isSingular;
         }
 
         public Map<K, List<V>> getMutableMap() {

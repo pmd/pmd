@@ -5,9 +5,14 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
 
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.CoreResolvers.multimapResolver;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.CoreResolvers.singleton;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.CoreResolvers.singularMapResolver;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.MostlySingularMultimap.Builder;
@@ -54,7 +59,7 @@ public abstract class ShadowGroupBuilder<S> {
     }
 
     public ShadowGroup<S> augment(ShadowGroup<S> parent, boolean shadowBarrier, S symbol) {
-        return new SimpleShadowGroup<>(parent, shadowBarrier, CoreResolvers.singleton(getSimpleName(symbol), symbol));
+        return new SimpleShadowGroup<>(parent, shadowBarrier, singleton(getSimpleName(symbol), symbol));
     }
 
     public ShadowGroup<S> augmentWithCache(ShadowGroup<S> parent, boolean shadowBarrier, NameResolver<S> resolver) {
@@ -92,7 +97,7 @@ public abstract class ShadowGroupBuilder<S> {
     }
 
     public NameResolver<S> groupByName(S sym) {
-        return CoreResolvers.singleton(getSimpleName(sym), sym);
+        return singleton(getSimpleName(sym), sym);
     }
 
 
@@ -118,7 +123,19 @@ public abstract class ShadowGroupBuilder<S> {
         }
 
         public NameResolver<S> build() {
-            return CoreResolvers.mapResolver(myBuilder);
+            if (isEmpty()) {
+                return CoreResolvers.emptyResolver();
+            } else if (myBuilder.isSingular()) {
+                Map<String, S> singular = myBuilder.buildAsSingular();
+                assert singular != null;
+                if (singular.size() == 1) {
+                    Entry<String, S> pair = singular.entrySet().iterator().next();
+                    return singleton(pair.getKey(), pair.getValue());
+                } else {
+                    return singularMapResolver(singular);
+                }
+            }
+            return multimapResolver(myBuilder.build());
         }
 
         public boolean isEmpty() {

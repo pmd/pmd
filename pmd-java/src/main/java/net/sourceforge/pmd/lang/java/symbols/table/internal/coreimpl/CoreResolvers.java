@@ -8,22 +8,21 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.MultiSymResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleSymResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.util.OptionalBool;
 
-public final class CoreResolvers {
+final class CoreResolvers {
 
-    public static <S> NameResolver<S> singleton(String name, S symbol) {
+    static <S> NameResolver<S> singleton(String name, S symbol) {
         final List<S> single = singletonList(symbol);
-        return new SingleSymResolver<S>() {
+        return new SingleNameResolver<S>() {
             @Override
-            public List<S> resolveHere(String s) {
+            public @NonNull List<S> resolveHere(String s) {
                 return name.equals(s) ? single : emptyList();
             }
 
@@ -44,49 +43,77 @@ public final class CoreResolvers {
         };
     }
 
-    @NonNull
-    public static <S> NameResolver<S> mapResolver(MostlySingularMultimap.Builder<String, S> symbols) {
-        Entry<String, S> pair = symbols.singleOrNull();
-        if (pair != null) {
-            return singleton(pair.getKey(), pair.getValue());
-        } else if (symbols.isEmpty()) {
-            return emptyResolver();
-        }
-
-        MostlySingularMultimap<String, S> map = symbols.build();
-
-        return new MultiSymResolver<S>() {
-            @Override
-            public List<S> resolveHere(String s) {
-                return map.get(s);
-            }
-
-            @Override
-            public @Nullable OptionalBool knows(String simpleName) {
-                return OptionalBool.definitely(map.containsKey(simpleName));
-            }
-
-            @Override
-            public String toString() {
-                return "Map(" + mapToString() + ")";
-            }
-
-            private String mapToString() {
-                if (map.isEmpty()) {
-                    return "{}";
-                }
-                StringBuilder sb = new StringBuilder("{");
-                map.processValuesOneByOne((k, v) -> sb.append(v).append(", "));
-                return sb.substring(0, sb.length() - 2) + "}";
-            }
-        };
+    static <S> NameResolver<S> multimapResolver(MostlySingularMultimap<String, S> symbols) {
+        return new MultimapResolver<>(symbols);
     }
 
-    public static <S> EmptyResolver<S> emptyResolver() {
+    static <S> SingleNameResolver<S> singularMapResolver(Map<String, S> singular) {
+        return new SingularMapResolver<>(singular);
+    }
+
+    private static class SingularMapResolver<S> implements SingleNameResolver<S> {
+
+        private final Map<String, S> map;
+
+        private SingularMapResolver(Map<String, S> map) {
+            this.map = map;
+        }
+
+        @Nullable
+        @Override
+        public S resolveFirst(String simpleName) {
+            return map.get(simpleName);
+        }
+
+        @Override
+        public @Nullable OptionalBool knows(String simpleName) {
+            return OptionalBool.definitely(map.containsKey(simpleName));
+        }
+
+        @Override
+        public String toString() {
+            return "SingularMap(" + map.values() + ")";
+        }
+    }
+
+    private static class MultimapResolver<S> implements NameResolver<S> {
+
+        private final MostlySingularMultimap<String, S> map;
+
+        public MultimapResolver(MostlySingularMultimap<String, S> map) {
+            this.map = map;
+        }
+
+        @Override
+        public @NonNull List<S> resolveHere(String s) {
+            return map.get(s);
+        }
+
+        @Override
+        public @Nullable OptionalBool knows(String simpleName) {
+            return OptionalBool.definitely(map.containsKey(simpleName));
+        }
+
+        @Override
+        public String toString() {
+            return "Map(" + mapToString() + ")";
+        }
+
+        private String mapToString() {
+            if (map.isEmpty()) {
+                return "{}";
+            }
+            StringBuilder sb = new StringBuilder("{");
+            map.processValuesOneByOne((k, v) -> sb.append(v).append(", "));
+            return sb.substring(0, sb.length() - 2) + "}";
+        }
+    }
+
+    static <S> EmptyResolver<S> emptyResolver() {
         return EmptyResolver.INSTANCE;
     }
 
-    private static class EmptyResolver<S> implements NameResolver<S> {
+    private static class EmptyResolver<S> implements SingleNameResolver<S> {
 
         private static final EmptyResolver INSTANCE = new EmptyResolver<>();
 
@@ -97,7 +124,7 @@ public final class CoreResolvers {
         }
 
         @Override
-        public List<S> resolveHere(String simpleName) {
+        public @NonNull List<S> resolveHere(String simpleName) {
             return emptyList();
         }
 
