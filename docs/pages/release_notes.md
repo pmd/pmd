@@ -37,6 +37,8 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 *   apex
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2358](https://github.com/pmd/pmd/issues/2358): \[apex] Invalid Apex in Cognitive Complexity tests
+*   java-codestyle
+    *   [#1723](https://github.com/pmd/pmd/issues/1723): \[java] UseDiamondOperator false-positive inside lambda
 
 ### API Changes
 
