@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.ShadowGroup;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ShadowGroup;
 
 // @formatter:off
 /**

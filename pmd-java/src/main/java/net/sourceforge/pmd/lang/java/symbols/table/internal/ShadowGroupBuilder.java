@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
 import java.util.HashMap;
@@ -10,9 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.MostlySingularMultimap.Builder;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.MostlySingularMultimap.Builder;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+/**
+ * Simple utility methods to provide an API
+ * @param <S>
+ */
 public class ShadowGroupBuilder<S> {
 
     private final Function<? super S, String> namer;

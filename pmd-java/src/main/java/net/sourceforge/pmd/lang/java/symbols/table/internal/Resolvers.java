@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -27,9 +27,9 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.MostlySingularMultimap.Builder;
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.NameResolver.MultiSymResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.NameResolver.SingleSymResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.MostlySingularMultimap.Builder;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.NameResolver.MultiSymResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.NameResolver.SingleSymResolver;
 import net.sourceforge.pmd.util.OptionalBool;
 
 class Resolvers {

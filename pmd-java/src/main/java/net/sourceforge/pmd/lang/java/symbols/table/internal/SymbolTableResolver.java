@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

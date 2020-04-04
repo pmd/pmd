@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.impl.ast.SymbolResolutionP
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ClasspathSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectionSymFactory;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.SymbolTableResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 /**

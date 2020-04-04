@@ -6,15 +6,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
-import io.kotlintest.matchers.collections.containExactly
 import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
-import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
@@ -23,8 +20,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.ShadowGroup
 
 /**
  * Tests the scopes that dominate the whole compilation unit.

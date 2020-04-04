@@ -2,11 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
 import static net.sourceforge.pmd.internal.util.AssertionUtil.isValidJavaPackageName;
-import static net.sourceforge.pmd.lang.java.symbols.table.nimpl.Resolvers.newMapBuilder;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.Resolvers.newMapBuilder;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -39,8 +39,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.MostlySingularMultimap.Builder;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.MostlySingularMultimap.Builder;
 
 final class SymTableFactory {
 

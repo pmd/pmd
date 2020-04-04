@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymFactory
 import net.sourceforge.pmd.lang.java.symbols.internal.testSymResolver
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import net.sourceforge.pmd.lang.java.symbols.table.nimpl.ShadowGroup
 
 internal fun testProcessor(jdkVersion: JavaVersion = JavaVersion.J13, logger: TestCheckLogger = TestCheckLogger()) =
         JavaAstProcessor.create(testSymResolver, testSymFactory, jdkVersion.pmdVersion, logger)
