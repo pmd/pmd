@@ -1967,18 +1967,21 @@ which makes the code also more readable.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
                     <![CDATA[
-//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred="false"]
-//PrimaryExpression[not(PrimarySuffix)]
-[not(ancestor::ArgumentList)]
-/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+(
+//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred=false()]
 |
-//StatementExpression[AssignmentOperator][PrimaryExpression/PrimaryPrefix[not(Expression)]]
-//PrimaryExpression[not(PrimarySuffix)]
-[not(ancestor::ArgumentList)]
-/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+//StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
+)
+/Expression/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
+/PrimaryPrefix
+/AllocationExpression
+    [@AnonymousClass=false()]
+    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not(TypeArgument//TypeArguments)]]
+    [not(ArrayDimsAndInits)]
 ]]>
                 </value>
             </property>
