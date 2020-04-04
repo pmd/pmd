@@ -54,6 +54,11 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
     }
 
+    @Override
+    public ASTCompilationUnit getRoot() {
+        return this;
+    }
+
     /**
      * Returns the package name of this compilation unit. If there is no
      * package declaration, then returns the empty string.
@@ -82,15 +87,11 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
 
 
     @Override
-    public ASTCompilationUnit getRoot() {
-        return this;
-    }
-
-    @Override
     public @NonNull JSymbolTable getSymbolTable() {
         assert symbolTable != null : "Symbol table wasn't set";
         return symbolTable;
     }
+
 
     @InternalApi
     @Deprecated
