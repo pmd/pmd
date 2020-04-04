@@ -394,7 +394,7 @@ public final class CollectionUtil {
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
         if (rest.length == 0) {
-            return singletonList(first);
+            return Collections.singletonList(first);
         }
         List<T> union = new ArrayList<>();
         union.add(first);
@@ -523,7 +523,7 @@ public final class CollectionUtil {
         if (!from.hasNext()) {
             return emptyList();
         } else if (sizeHint == 1) {
-            return singletonList(f.apply(from.next()));
+            return Collections.singletonList(f.apply(from.next()));
         }
         List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
         while (from.hasNext()) {
@@ -662,5 +662,4 @@ public final class CollectionUtil {
     public static <N> boolean none(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
         return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
     }
-
 }

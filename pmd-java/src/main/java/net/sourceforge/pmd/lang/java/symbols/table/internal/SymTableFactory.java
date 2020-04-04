@@ -285,18 +285,17 @@ final class SymTableFactory {
 
     JSymbolTable typeBody(JSymbolTable parent, @NonNull JClassSymbol sym) {
 
-        Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inherited = JavaResolvers.classAndFieldResolvers(sym, true);
-        Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> declaredHere = JavaResolvers.classAndFieldResolvers(sym, false);
+        Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inherited = JavaResolvers.inheritedMembersResolvers(sym);
 
         ShadowGroup<JTypeDeclSymbol, ScopeInfo> types = parent.types();
-        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, sym);                                    // self name
-        types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                         // inherited classes
-        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, declaredHere.getLeft());          // inner classes declared here
-        types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters())); // type parameters
+        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, sym);                                                // self name
+        types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                                     // inherited classes (note they shadow the enclosing type)
+        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(sym.getDeclaredClasses())); // inner classes declared here
+        types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters()));             // type parameters
 
         ShadowGroup<JVariableSymbol, ScopeInfo> fields = parent.variables();
         fields = VARS.shadow(fields, ScopeInfo.INHERITED, inherited.getRight());
-        fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, declaredHere.getRight());
+        fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(sym.getDeclaredFields()));
 
         ShadowGroup<JMethodSymbol, ScopeInfo> methods = parent.methods();
         // notice this is a shadow barrier

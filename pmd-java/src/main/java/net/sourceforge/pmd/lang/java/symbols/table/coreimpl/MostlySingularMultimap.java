@@ -123,7 +123,7 @@ class MostlySingularMultimap<K, V> {
             this.mapMaker = mapMaker;
         }
 
-        private Map<K, Object> getMap() {
+        private Map<K, Object> getMapInternal() {
             if (map == null) {
                 map = mapMaker.copy(Collections.emptyMap());
                 Validate.isTrue(map.isEmpty(), "Map should be empty");
@@ -131,18 +131,36 @@ class MostlySingularMultimap<K, V> {
             return map;
         }
 
-        public Builder<K, V> appendValue(K key, V v) {
-            ensureOpen();
-            AssertionUtil.requireParamNotNull("value", v);
-            AssertionUtil.requireParamNotNull("key", key);
 
-            getMap().compute(key, (k, oldV) -> {
+        public void replaceValue(K key, V v) {
+            checkKeyValue(key, v);
+            getMapInternal().put(key, v);
+        }
+
+        public void addUnlessKeyExists(K key, V v) {
+            checkKeyValue(key, v);
+            getMapInternal().putIfAbsent(key, v);
+        }
+
+        public void appendValue(K key, V v) {
+            appendValue(key, v, false);
+        }
+
+        public void appendValue(K key, V v, boolean noDuplicate) {
+            checkKeyValue(key, v);
+
+            getMapInternal().compute(key, (k, oldV) -> {
                 if (oldV != null && isSingular) {
                     isSingular = false;
                 }
-                return appendSingle(oldV, v);
+                return appendSingle(oldV, v, noDuplicate);
             });
-            return this;
+        }
+
+        private void checkKeyValue(K key, V v) {
+            ensureOpen();
+            AssertionUtil.requireParamNotNull("value", v);
+            AssertionUtil.requireParamNotNull("key", key);
         }
 
         public Builder<K, V> groupBy(Iterable<? extends V> values,
@@ -162,26 +180,29 @@ class MostlySingularMultimap<K, V> {
             return this;
         }
 
-        private Object appendSingle(@Nullable Object vs, V v) {
+        private Object appendSingle(@Nullable Object vs, V v, boolean noDuplicate) {
             if (vs == null) {
                 return v;
             } else if (vs instanceof VList) {
-                // note that we grow the list without making a copy
-                // This means that to design a Map -> Builder conversion
-                // we'd need to copy all vlists
+                if (noDuplicate && ((VList) vs).contains(v)) {
+                    return vs;
+                }
                 ((VList) vs).add(v);
                 return vs;
             } else {
+                if (noDuplicate && vs.equals(v)) {
+                    return vs;
+                }
                 VList<V> vs2 = new VList<>(2);
-                vs2.add(v);
                 vs2.add((V) vs);
+                vs2.add(v);
                 return vs2;
             }
         }
 
         public MostlySingularMultimap<K, V> build() {
             consume();
-            return isEmpty() ? empty() : new MostlySingularMultimap<>(getMap());
+            return isEmpty() ? empty() : new MostlySingularMultimap<>(getMapInternal());
         }
 
         public @Nullable Map<K, V> buildAsSingular() {
@@ -208,7 +229,7 @@ class MostlySingularMultimap<K, V> {
 
         public Map<K, List<V>> getMutableMap() {
             Map<K, List<V>> mutable = mapMaker.copy(Collections.emptyMap());
-            for (Entry<K, Object> entry : getMap().entrySet()) {
+            for (Entry<K, Object> entry : getMapInternal().entrySet()) {
                 mutable.put(entry.getKey(), interpretValue(entry.getValue()));
             }
             return mutable;
@@ -217,6 +238,7 @@ class MostlySingularMultimap<K, V> {
         public boolean isEmpty() {
             return map == null || map.isEmpty();
         }
+
     }
 
 }

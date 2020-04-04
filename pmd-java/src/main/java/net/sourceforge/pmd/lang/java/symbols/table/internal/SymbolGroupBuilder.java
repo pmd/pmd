@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
 class SymbolGroupBuilder<S extends JElementSymbol> extends ShadowGroupBuilder<S, ScopeInfo> {
 
     @Override
-    protected String getSimpleName(S sym) {
+    public String getSimpleName(S sym) {
         return sym.getSimpleName();
     }
 }

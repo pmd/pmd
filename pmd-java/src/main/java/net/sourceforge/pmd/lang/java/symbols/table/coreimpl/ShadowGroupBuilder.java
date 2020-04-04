@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers
 import static net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers.singularMapResolver;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,11 +37,11 @@ public abstract class ShadowGroupBuilder<S, I> {
     }
 
     protected <V> Map<String, V> copyStrategy(Map<String, V> m) {
-        return new HashMap<>(m);
+        return new LinkedHashMap<>(m);
     }
 
 
-    protected abstract String getSimpleName(S sym);
+    public abstract String getSimpleName(S sym);
 
 
     public static <S, I> ShadowGroup<S, I> rootGroup() {
@@ -115,6 +116,16 @@ public abstract class ShadowGroupBuilder<S, I> {
 
         public ResolverBuilder append(S sym) {
             myBuilder.appendValue(getSimpleName(sym), sym);
+            return this;
+        }
+
+        public ResolverBuilder appendWithoutDuplicate(S sym) {
+            myBuilder.appendValue(getSimpleName(sym), sym, true);
+            return this;
+        }
+
+        public ResolverBuilder overwrite(S sym) {
+            myBuilder.replaceValue(getSimpleName(sym), sym);
             return this;
         }
 

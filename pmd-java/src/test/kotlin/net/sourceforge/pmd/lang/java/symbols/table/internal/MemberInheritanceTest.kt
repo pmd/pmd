@@ -85,13 +85,13 @@ class MemberInheritanceTest : ParserTestSpec({
 
     parserTest("Shadowing of inherited types") {
 
-        doTest("Inaccessible member types of supertypes shadow types inherited from further supertypes") {
+        doTest("Inaccessible member types of supertypes hide types inherited from further supertypes") {
             val acu = parser.withProcessing().parse("""
 
             interface M { class E {} }
 
             class Sup implements M {
-                private class E {} // shadows M.E, inaccessible from Foo
+                private class E {} // hides M.E, inaccessible from Foo
             }
 
             class Foo extends Sup {
@@ -104,13 +104,13 @@ class MemberInheritanceTest : ParserTestSpec({
             insideFoo.symbolTable.types().resolveFirst("E") shouldBe null
         }
 
-        doTest("Accessible member types of supertypes shadow types inherited from further supertypes") {
+        doTest("Accessible member types of supertypes hide types inherited from further supertypes") {
             val acu = parser.withProcessing().parse("""
 
             interface M { class E {} }
 
             class Sup implements M {
-                class E {} // shadows M.E
+                class E {} // hides M.E
             }
 
             class Foo extends Sup {
@@ -273,7 +273,7 @@ class Impl implements I2 { // <- difference here
             }
         }
 
-        doTest("Case 4: superclass takes precedence for FIELDS, but not for TYPES") {
+        doTest("Case 4: I1 as n+1 and n+2 superinterface through superclass ") {
             val acu = parser.withProcessing().parse("""
 
 
@@ -288,7 +288,7 @@ class I2 implements I1 { // <- difference here, this is a class
 }
 
 class Impl extends I2 implements I1 { // <- still implements I1
-    private final C i = A; // ONLY C is ambiguous, A is I2.A !!!
+    private final C i = A; // both are ambiguous
 }
 
         """)
@@ -306,7 +306,83 @@ class Impl extends I2 implements I1 { // <- still implements I1
             withClue("For fields") {
 
                 implA.symbolTable.variables().resolve("A") shouldBe
-                        listOf(i2a.symbol) // unambiguous
+                        listOf(i2a.symbol, i1a.symbol) // ambiguous
+
+            }
+        }
+
+        doTest("Case 4.1: superclass doesn't hide unrelated field") {
+            val acu = parser.withProcessing().parse("""
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+class I2 {              // <- difference here I2 does not extend I1
+    class C { }
+    C A = new C();
+}
+
+class Impl extends I2 implements I1 { // <- still implements I1
+    private final C i = A; // both are ambiguous
+}
+
+
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c, i1c) // ambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i2a.symbol, i1a.symbol) // unambiguous
+
+            }
+        }
+
+
+        doTest("Case 4.1: private superclass field member doesn't hide anything") {
+            val acu = parser.withProcessing().parse("""
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+class I2 implements I1 { // <- difference here, this is a class
+    private class C { }
+    private C A = new C();
+}
+
+class Impl extends I2 implements I1 { // <- still implements I1
+    private final C i = A;            // both come from I1
+}
+
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c) // unambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i1a.symbol) // unambiguous
 
             }
         }
@@ -338,7 +414,7 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
             withClue("For types") {
 
                 implA.symbolTable.types().resolve("C") shouldBe
-                        listOf(i2c, i1c) // ambiguous
+                        listOf(i2c) // unambiguous
 
             }
 

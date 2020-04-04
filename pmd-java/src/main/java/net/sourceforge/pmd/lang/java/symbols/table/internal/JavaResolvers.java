@@ -5,21 +5,25 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.ALL_STRICT_SUPERTYPES;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.DIRECT_STRICT_SUPERTYPES;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.JUST_SELF;
 
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -126,29 +130,75 @@ class JavaResolvers {
         };
     }
 
-    static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> classAndFieldResolvers(JClassSymbol t, boolean onlyInherited) {
+    /**
+     * Resolvers for inherited member types and fields. We can't process
+     * methods that way, because there may be duplicates and the equals
+     * of {@link JMethodSymbol} is not reliable for now (cannot differentiate
+     * overloads). But also, usually a subset of methods is used in a subclass,
+     * and it's ok performance-wise to process them lazily.
+     */
+    static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inheritedMembersResolvers(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();
 
         ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
         ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
 
-        Set<String> seenFields = new HashSet<>();
-        Set<String> seenTypes = new HashSet<>();
+        for (JClassSymbol next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
+            walkSelf(next, nestRoot, fields, types, new HashMap<>(), HashTreePSet.empty(), HashTreePSet.empty());
+        }
 
-        for (JClassSymbol sup : enumeratorFor(onlyInherited).iterable(t)) {
-            for (JFieldSymbol df : sup.getDeclaredFields()) {
-                if (seenFields.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
-                    fields.append(df);
-                }
+        return Pair.of(types.build(), fields.build());
+    }
+
+    private static void walkSelf(JClassSymbol t,
+                                 JClassSymbol nestRoot, // context
+                                 ShadowGroupBuilder<JVariableSymbol, ?>.ResolverBuilder fields,
+                                 ShadowGroupBuilder<JTypeDeclSymbol, ?>.ResolverBuilder types,
+                                 // map from symbol to set of paths taken to reach that symbol
+                                 Map<JClassSymbol, Set<Pair<Set<String>, Set<String>>>> paths,
+                                 // persistent because may change in every path of the recursion
+                                 final PSet<String> hiddenFields,
+                                 final PSet<String> hiddenTypes) {
+
+        Pair<Set<String>, Set<String>> hiddenPair = Pair.of(hiddenFields, hiddenTypes);
+        if (!paths.computeIfAbsent(t, k -> new HashSet<>()).add(hiddenPair)) {
+            // equivalent path was already taken, we don't need to recurse further
+            return;
+        }
+
+        // Note that it is possible that this process recurses several
+        // times into the same interface (if it is reachable from several paths)
+        // This is because the set of hidden declarations depends on the
+        // full path, and may be different each time.
+        // I don't know how prevalent this case happens, if it causes
+        // performance problems we can always add a recursion guard
+
+        PSet<String> hiddenTypesInSup = processDeclarations(nestRoot, types, hiddenTypes, t.getDeclaredClasses());
+        PSet<String> hiddenFieldsInSup = processDeclarations(nestRoot, fields, hiddenFields, t.getDeclaredFields());
+
+        // depth first
+        for (JClassSymbol next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
+            walkSelf(next, nestRoot, fields, types, paths, hiddenFieldsInSup, hiddenTypesInSup);
+        }
+    }
+
+    private static <S extends JAccessibleElementSymbol> PSet<String> processDeclarations(JClassSymbol nestRoot,
+                                                                                         ShadowGroupBuilder<? super S, ?>.ResolverBuilder builder,
+                                                                                         PSet<String> hidden,
+                                                                                         List<S> syms) {
+        for (S inner : syms) {
+            String simpleName = inner.getSimpleName();
+            if (hidden.contains(simpleName)) {
+                continue;
             }
 
-            for (JClassSymbol df : sup.getDeclaredClasses()) {
-                if (seenTypes.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
-                    types.append(df);
-                }
+            hidden = hidden.plus(simpleName);
+
+            if (isAccessibleInStrictSubtypeOfOwner(nestRoot, inner)) {
+                builder.appendWithoutDuplicate(inner);
             }
         }
-        return Pair.of(types.build(), fields.build());
+        return hidden;
     }
 
     // whether the given symbol is accessible in this.typeSym, assuming
