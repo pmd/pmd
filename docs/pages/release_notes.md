@@ -35,6 +35,9 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 *   The new Apex rule {% rule "apex/codestyle/FieldDeclarationsShouldBeAtStart" %} (`apex-codestyle`)
     helps to ensure that field declarations are always at the beginning of a class.
 
+*   The new Apex rule {% rule "apex/bestpractices/UnusedLocalVariable" %} (`apex-bestpractices`) detects unused
+    local variables.
+
 ### Fixed Issues
 
 *   apex-design
@@ -123,6 +126,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2314](https://github.com/pmd/pmd/pull/2314): \[doc] maven integration - Add version to plugin - [Pham Hai Trung](https://github.com/gpbp)
 *   [#2353](https://github.com/pmd/pmd/pull/2353): \[plsql] xmlforest with optional AS - [Piotr Szymanski](https://github.com/szyman23)
 *   [#2383](https://github.com/pmd/pmd/pull/2383): \[apex] Fix invalid apex in documentation - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2395](https://github.com/pmd/pmd/pull/2395): \[apex] New Rule: Unused local variables - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2396](https://github.com/pmd/pmd/pull/2396): \[apex] New rule: field declarations should be at start - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2397](https://github.com/pmd/pmd/pull/2397): \[apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - [Kieran Black](https://github.com/kieranlblack)
 
