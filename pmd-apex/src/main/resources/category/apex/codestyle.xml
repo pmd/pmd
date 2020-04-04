@@ -102,6 +102,30 @@ if (foo) {  // preferred approach
         </example>
     </rule>
 
+    <rule name="FieldDeclarationsShouldBeAtStart"
+          language="apex"
+          since="6.23.0"
+          message="Field declaration for ''{0}'' should be before method declarations in its class"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart">
+        <description>
+            Field declarations should appear before method declarations within a class.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+    public Integer someField; // good
+
+    public void someMethod() {
+    }
+
+    public Integer anotherField; // bad
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="FieldNamingConventions"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
@@ -364,5 +388,4 @@ while (true) {  // preferred approach
 ]]>
         </example>
     </rule>
-
 </ruleset>
