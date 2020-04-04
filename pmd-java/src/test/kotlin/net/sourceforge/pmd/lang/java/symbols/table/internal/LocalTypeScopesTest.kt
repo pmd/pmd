@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.component6
+import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 
@@ -136,6 +137,7 @@ class LocalTypeScopesTest : ParserTestSpec({
 
             insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
                 result::getCanonicalName shouldBe "myTest.Foo.Inner"
+                result shouldBe inner.symbol
             }
 
             insideInner.symbolTable.shouldResolveTypeTo<JClassSymbol>("Inner") {
@@ -158,4 +160,90 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         }
     }
+
+
+    parserTest("Shadowing of inherited types") {
+
+        doTest("Inaccessible member types of supertypes shadow types inherited from further supertypes") {
+            val acu = parser.withProcessing().parse("""
+
+            interface M { class E {} }
+
+            class Sup implements M {
+                private class E {} // shadows M.E, inaccessible from Foo
+            }
+
+            class Foo extends Sup {
+                E e; // not in scope
+            }
+        """)
+
+            val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
+
+            insideFoo.symbolTable.resolveTypeName("E") shouldBe null
+        }
+
+        doTest("Accessible member types of supertypes shadow types inherited from further supertypes") {
+            val acu = parser.withProcessing().parse("""
+
+            interface M { class E {} }
+
+            class Sup implements M {
+                class E {} // shadows M.E
+            }
+
+            class Foo extends Sup {
+                E e; // Sup.E
+            }
+        """)
+
+            val (m, me, sup, supe, foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+
+            val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
+
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("E") {
+                result shouldBe supe
+            }
+        }
+
+        doTest("All member types should be inherited transitively") {
+            val acu = parser.withProcessing().parse("""
+
+            interface M { class E {} }
+
+            class Sup implements M {
+                E e; // M.E
+                class F {}
+                class K {}
+            }
+
+            class Foo extends Sup {
+                F f; // Sup.F
+
+                class K { }
+            }
+        """)
+
+            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+
+            val (insideSup, insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
+
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("E") {
+                result shouldBe me
+            }
+
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("F") {
+                result shouldBe supf
+            }
+
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassSymbol>("K") {
+                result shouldBe fook
+            }
+
+            insideSup.symbolTable.shouldResolveTypeTo<JClassSymbol>("K") {
+                result shouldBe supk
+            }
+        }
+    }
+
 })
