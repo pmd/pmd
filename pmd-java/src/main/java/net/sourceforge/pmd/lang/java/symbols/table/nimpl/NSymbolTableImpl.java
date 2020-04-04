@@ -7,10 +7,11 @@ package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
-final class NSymbolTableImpl implements NSymbolTable {
+final class NSymbolTableImpl implements JSymbolTable {
 
-    static NSymbolTable EMPTY = new NSymbolTableImpl(RootShadowGroup.empty(), RootShadowGroup.empty(), RootShadowGroup.empty());
+    static JSymbolTable EMPTY = new NSymbolTableImpl(RootShadowGroup.empty(), RootShadowGroup.empty(), RootShadowGroup.empty());
 
     private final ShadowGroup<JVariableSymbol> vars;
     private final ShadowGroup<JTypeDeclSymbol> types;
@@ -48,11 +49,11 @@ final class NSymbolTableImpl implements NSymbolTable {
             '}';
     }
 
-    static NSymbolTable withVars(NSymbolTable parent, ShadowGroup<JVariableSymbol> vars) {
+    static JSymbolTable withVars(JSymbolTable parent, ShadowGroup<JVariableSymbol> vars) {
         return new NSymbolTableImpl(vars, parent.types(), parent.methods());
     }
 
-    static NSymbolTable withTypes(NSymbolTable parent, ShadowGroup<JTypeDeclSymbol> types) {
+    static JSymbolTable withTypes(JSymbolTable parent, ShadowGroup<JTypeDeclSymbol> types) {
         return new NSymbolTableImpl(parent.variables(), types, parent.methods());
     }
 }

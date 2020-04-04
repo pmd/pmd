@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -54,9 +55,9 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
  *
  * @since 7.0.0
  */
-public final class NSymbolTableResolver {
+public final class SymbolTableResolver {
 
-    private NSymbolTableResolver() {
+    private SymbolTableResolver() {
         // façade
     }
 
@@ -69,7 +70,7 @@ public final class NSymbolTableResolver {
 
         private final ASTCompilationUnit root;
         private final SymTableFactory f;
-        private final Deque<NSymbolTable> stack = new ArrayDeque<>();
+        private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
         /*
             TODO do disambiguation entirely in this visitor
@@ -347,7 +348,7 @@ public final class NSymbolTableResolver {
             }
         }
 
-        private int pushOnStack(NSymbolTable table) {
+        private int pushOnStack(JSymbolTable table) {
             if (table == top()) {
                 return 0; // and don't set the stack top
             }
@@ -355,7 +356,7 @@ public final class NSymbolTableResolver {
             return 1;
         }
 
-        private NSymbolTable popStack() {
+        private JSymbolTable popStack() {
             return stack.pop();
         }
 
@@ -366,7 +367,7 @@ public final class NSymbolTableResolver {
             }
         }
 
-        private NSymbolTable top() {
+        private JSymbolTable top() {
             return stack.getFirst();
         }
 

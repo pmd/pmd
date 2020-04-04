@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.ResolveResult;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 
 /**
@@ -208,13 +207,11 @@ final class AstDisambiguationPass {
                 assert lhsSym != null : "Unresolved LHS for " + type;
                 checkParentIsMember(processor, lhsType, type);
             } else {
-                ResolveResult<JTypeDeclSymbol> result = type.getSymbolTable().resolveTypeName(type.getSimpleName());
-                JTypeDeclSymbol sym;
-                if (result == null) {
+                JTypeDeclSymbol sym = type.getSymbolTable().resolveTypeName(type.getSimpleName());
+                if (sym == null) {
                     processor.getLogger().warning(type, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
                     sym = setArity(type, processor, type.getSimpleName());
                 } else {
-                    sym = result.getResult();
                     if (sym.isUnresolved()) {
                         sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
                     }
@@ -264,7 +261,7 @@ final class AstDisambiguationPass {
 
             if (!isPackageOrTypeOnly) {
                 // first test if the leftmost segment is an expression
-                ResolveResult<JVariableSymbol> varResult = symTable.resolveValueName(firstIdent.getImage());
+                JVariableSymbol varResult = symTable.variables().resolveFirst(firstIdent.getImage());
 
                 if (varResult != null) {
                     return resolveExpr(null, firstIdent, tokens, processor);
@@ -273,11 +270,10 @@ final class AstDisambiguationPass {
 
             // otherwise, test if it is a type name
 
-            ResolveResult<JTypeDeclSymbol> typeResult = symTable.resolveTypeName(firstIdent.getImage());
+            JTypeDeclSymbol typeResult = symTable.types().resolveFirst(firstIdent.getImage());
 
             if (typeResult != null) {
-                JTypeDeclSymbol result = typeResult.getResult();
-                return resolveType(null, result, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, processor);
+                return resolveType(null, typeResult, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, processor);
             }
 
             // otherwise, first is reclassified as package name.

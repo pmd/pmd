@@ -193,11 +193,6 @@
             <artifactId>system-rules</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.pcollections</groupId>
-            <artifactId>pcollections</artifactId>
-            <version>3.1.0</version>
-        </dependency>
     </dependencies>
 
     <profiles>

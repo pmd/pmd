@@ -65,13 +65,7 @@ class VarScopingTest : ProcessorTestSpec({
 
 
         doTest("Inside outer initializer: f is outerField") {
-            inInitializer.symbolTable.shouldResolveVarTo<JFieldSymbol>("f") {
-                this.result.shouldBeA<JFieldSymbol> {
-                    it::getSimpleName shouldBe "f"
-                    it::getModifiers shouldBe Modifier.PRIVATE
-                    it shouldBe outerField.symbol
-                }
-            }
+            inInitializer.symbolTable.shouldResolveVarTo<JFieldSymbol>("f", outerField.symbol)
         }
 
         doTest("Inside foreach initializer: f is localInInit") {
@@ -96,10 +90,7 @@ class VarScopingTest : ProcessorTestSpec({
         }
 
         doTest("Inside inner class: f is inner field") {
-            inInnerClass.symbolTable.shouldResolveVarTo<JFieldSymbol>("f") {
-                result::getModifiers shouldBe 0
-                result shouldBe innerField.symbol
-            }
+            inInnerClass.symbolTable.shouldResolveVarTo<JFieldSymbol>("f", innerField.symbol)
         }
     }
 
@@ -145,12 +136,6 @@ class VarScopingTest : ProcessorTestSpec({
 
         val (inCatch1, inTry, inCatch2, inFinally, inResource) =
                 acu.descendants(ASTMethodCall::class.java).toList()
-
-        infix fun JavaNode.shouldResolveToField(fieldId: ASTVariableDeclaratorId): JFieldSymbol =
-                symbolTable.shouldResolveVarTo(fieldId.variableName) {
-                    this::getResult shouldBe fieldId.symbol
-                }
-
 
         doTest("Inside catch clause: catch param is in scope") {
             inCatch1 shouldResolveToLocal exception1
@@ -218,11 +203,6 @@ class VarScopingTest : ProcessorTestSpec({
         val (fAccess, fAccess2, iAccess, jAccess, kAccess, lAccess, iAccess2) =
                 acu.descendants(ASTVariableAccess::class.java).toList()
 
-        infix fun JavaNode.shouldResolveToField(fieldId: ASTVariableDeclaratorId): JFieldSymbol =
-                symbolTable.shouldResolveVarTo(fieldId.variableName) {
-                    this::getResult shouldBe fieldId.symbol
-                }
-
         doTest("Inside tested expr: vars are not in scope") {
             fAccess shouldResolveToField outerField
         }
@@ -279,27 +259,22 @@ class VarScopingTest : ProcessorTestSpec({
                 acu.descendants(ASTBodyDeclaration::class.java).filterIs(SymbolDeclaratorNode::class.java).toList()
 
         doTest("Inside compact ctor: components are in scope as formals") {
-            insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("x") {
-                result::getDeclaringSymbol shouldBe compactCtor.symbol
+            insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("x").let {
+                it::getDeclaringSymbol shouldBe compactCtor.symbol
             }
-            insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("rest") {
-                result::getDeclaringSymbol shouldBe compactCtor.symbol
+            insideCompact.symbolTable.shouldResolveVarTo<JFormalParamSymbol>("rest").let {
+                it::getDeclaringSymbol shouldBe compactCtor.symbol
             }
         }
 
         doTest("Inside normal ctor: components are in scope as fields") {
-            insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("x") {
-                result::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+            insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("x").let {
+                it::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
             }
 
-            insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("rest") {
-                result::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
+            insideRegular.symbolTable.shouldResolveVarTo<JFieldSymbol>("rest").let {
+                it::getModifiers shouldBe (Modifier.PRIVATE or Modifier.FINAL)
             }
         }
     }
 })
-
-private infix fun JavaNode.shouldResolveToLocal(localId: ASTVariableDeclaratorId): JLocalVariableSymbol =
-        symbolTable.shouldResolveVarTo(localId.variableName) {
-            this::getResult shouldBe localId.symbol
-        }
