@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -67,7 +70,7 @@ public class Java14Test {
         Assert.assertEquals(Integer.TYPE, switchExpressions.get(0).getType());
         Assert.assertEquals(4, switchExpressions.get(0).findChildrenOfType(ASTSwitchLabeledExpression.class).size());
         Assert.assertEquals(Integer.TYPE, switchExpressions.get(0).getFirstChildOfType(ASTSwitchLabeledExpression.class)
-                .getFirstChildOfType(ASTExpression.class).getType());
+                                                           .getFirstChildOfType(ASTExpression.class).getType());
 
         Assert.assertTrue(switchExpressions.get(1).getChild(3) instanceof ASTSwitchLabeledBlock);
 
@@ -77,6 +80,60 @@ public class Java14Test {
         Assert.assertEquals("SwitchExpressions.BAZ", yields.get(2).getImage());
 
         Assert.assertEquals(String.class, switchExpressions.get(3).getType());
+    }
+
+    @Test
+    public void checkYieldConditionalBehaviour() {
+        checkYieldStatements(java13p);
+    }
+
+    @Test
+    public void checkYieldConditionalBehaviourJ14() {
+        checkYieldStatements(java14);
+    }
+
+    private void checkYieldStatements(JavaParsingHelper parser) {
+        ASTCompilationUnit compilationUnit = parser.parseResource("YieldStatements.java");
+        List<JavaNode> stmts = compilationUnit.<JavaNode>findDescendantsOfType(ASTBlockStatement.class);
+        // fetch the interesting node, on the java-grammar branch this is not needed
+        for (int i = 0; i < stmts.size(); i++) {
+            JavaNode child = stmts.get(i).getChild(0);
+
+            if (child instanceof ASTStatement) {
+                stmts.set(i, child.getChild(0));
+            } else {
+                stmts.set(i, child);
+            }
+        }
+
+        Assert.assertEquals(18, stmts.size());
+
+        int i = 0;
+        assertThat(stmts.get(i++), instanceOf(ASTLocalVariableDeclaration.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+
+        assertThat(stmts.get(i++), instanceOf(ASTIfStatement.class));
+
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+
+        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+
+        Assert.assertEquals(i, stmts.size());
     }
 
     @Test

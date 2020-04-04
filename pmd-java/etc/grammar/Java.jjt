@@ -502,6 +502,53 @@ public class JavaParser {
     return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
   }
 
+  /**
+   *  True if we're in a switch block, one precondition for parsing a yield
+   *  statement.
+   */
+  private boolean inSwitchExprBlock = false;
+
+  private boolean isYieldStart() {
+    return inSwitchExprBlock && isJava13PreviewOr14()
+    && isKeyword("yield")
+    && mayStartExprAfterYield(2);
+  }
+
+  private boolean mayStartExprAfterYield(final int offset) {
+      // based off of https://hg.openjdk.java.net/jdk/jdk/file/bc3da0226ffa/src/jdk.compiler/share/classes/com/sun/tools/javac/parser/JavacParser.java#l2580
+      // please don't sue me
+      Token token = getToken(offset);
+      if (token == null) return false; // eof
+      switch (token.kind) {
+           case PLUS: case MINUS: case STRING_LITERAL: case CHARACTER_LITERAL:
+           case INTEGER_LITERAL: case FLOATING_POINT_LITERAL: case HEX_FLOATING_POINT_LITERAL:
+           case NULL: case IDENTIFIER: case TRUE: case FALSE:
+           case NEW: case SWITCH: case THIS: case SUPER:
+               return true;
+           case INCR: case DECR:
+               return getToken(offset + 1).kind != SEMICOLON; // eg yield++;
+           case LPAREN:
+               int lookahead = offset + 1;
+               int balance = 1;
+               Token t;
+               while ((t = getToken(lookahead)) != null && balance > 0) {
+                   switch (t.kind) {
+                       case LPAREN: balance++; break;
+                       case RPAREN: balance--; break;
+                       case COMMA: if (balance == 1) return false; // a method call, eg yield(1, 2);
+                   }
+                   lookahead++;
+               }
+               // lambda:       yield () -> {};
+               // method call:  yield ();
+               return t != null
+                   && (lookahead != offset + 2 // ie ()
+                   || t.kind == LAMBDA);
+           default:
+               return false;
+      }
+  }
+
   private boolean shouldStartStatementInSwitch() {
     switch (getToken(1).kind) {
         case _DEFAULT:
@@ -1620,10 +1667,13 @@ void CastExpression() :
 }
 
 void SwitchExpression() :
-{}
+{boolean prevInSwitchBlock = inSwitchExprBlock;}
 {
     {checkForSwitchExpression();}
-    "switch" "(" Expression() ")" SwitchBlock()
+    "switch" "(" Expression() ")"
+    {inSwitchExprBlock = true;}
+    SwitchBlock()
+    {inSwitchExprBlock = prevInSwitchBlock;}
 }
 
 void PrimaryExpression() :
@@ -1791,6 +1841,7 @@ void Statement() :
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD( { isYieldStart() } ) YieldStatement()
 | LOOKAHEAD(2) LabeledStatement()
 | Block()
 | EmptyStatement()
@@ -1826,7 +1877,7 @@ void BlockStatement():
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD({ jdkVersion >= 13 && isKeyword("yield") }) YieldStatement()
+| LOOKAHEAD( { isYieldStart() } ) YieldStatement()
 |
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
