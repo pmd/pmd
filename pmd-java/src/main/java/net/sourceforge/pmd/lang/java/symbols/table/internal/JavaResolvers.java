@@ -142,7 +142,6 @@ class JavaResolvers {
                 }
             }
 
-            // TODO ambiguity when other types may
             for (JClassSymbol df : sup.getDeclaredClasses()) {
                 if (seenTypes.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
                     types.append(df);

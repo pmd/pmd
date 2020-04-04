@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.withClue
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.component7
@@ -152,6 +153,291 @@ class MemberInheritanceTest : ParserTestSpec({
 
             insideSup.symbolTable.shouldResolveTypeTo("K", supk)
         }
+    }
+
+    parserTest("Ambiguity handling when inheriting members from several unrelated interfaces") {
+
+        // only happens for types & fields, for methods this is handled through override/overload resolution
+
+
+        doTest("Case 1: two unrelated interfaces") {
+            val acu = parser.withProcessing().parse("""
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+interface I2 {
+    class C { }
+    C A = new C();
+}
+
+class Impl implements I1, I2 {
+    private final C i = A; // both "C" and "A" are ambiguous
+}
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c, i2c) // ambiguous
+
+            }
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i1a.symbol, i2a.symbol) // ambiguous
+
+            }
+        }
+
+        doTest("Case 2: two interfaces extending each other, impl has both as direct supertypes") {
+            val acu = parser.withProcessing().parse("""
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+interface I2 extends I1 { // <- difference here
+    class C { }
+    C A = new C();
+}
+
+class Impl implements I1, I2 {
+    private final C i = A; // both "C" and "A" are still ambiguous
+}
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c, i2c) // ambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i1a.symbol, i2a.symbol) // ambiguous
+
+            }
+        }
+
+        doTest("Case 3: two interfaces extending each other, impl has only the deepest as direct supertype") {
+            val acu = parser.withProcessing().parse("""
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+interface I2 extends I1 {
+    class C { }
+    C A = new C();
+}
+
+class Impl implements I2 { // <- difference here
+    private final C i = A; // I2.A, I2.C
+}
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c) // unambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i2a.symbol) // unambiguous
+
+            }
+        }
+
+        doTest("Case 4: superclass takes precedence for FIELDS, but not for TYPES") {
+            val acu = parser.withProcessing().parse("""
+
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+class I2 implements I1 { // <- difference here, this is a class
+    class C { }
+    C A = new C();
+}
+
+class Impl extends I2 implements I1 { // <- still implements I1
+    private final C i = A; // ONLY C is ambiguous, A is I2.A !!!
+}
+
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c, i1c) // ambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i2a.symbol) // unambiguous
+
+            }
+        }
+
+
+        doTest("Case 5: class only extends superclass") {
+            val acu = parser.withProcessing().parse("""
+
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+class I2 implements I1 { // <- difference here, this is a class
+    class C { }
+    C A = new C();
+}
+
+class Impl extends I2 { // <- difference here, doesn't implement I1
+    private final C i = A; // both are UNambiguous
+}
+
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c, i1c) // ambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i2a.symbol) // unambiguous
+
+            }
+        }
+
+        doTest("Case 6: ambiguity in n+1 supertypes is not transferred to subclass") {
+            val acu = parser.withProcessing().parse("""
+
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+interface I2 {
+    class C { }
+    C A = new C();
+}
+
+class Sup implements I1, I2 {
+    class C { }
+    C A = new C();
+}
+
+class Impl extends Sup  {
+    private final C i = A; // no ambiguity, these are the Sup members
+}
+
+
+        """)
+
+            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, supA, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(supC) // ambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(supA.symbol) // unambiguous
+
+            }
+        }
+
+
+        doTest("Case 7: ambiguity in n+1 supertypes may be transferred to subclass") {
+            val acu = parser.withProcessing().parse("""
+
+
+interface I1 {
+    class C { }
+    C A = new C();
+}
+
+interface I2 {
+    class C { }
+    C A = new C();
+}
+
+class Sup implements I1, I2 {
+    // no declarations to shadow the next ones
+}
+
+class Impl extends Sup {
+    private final C i = A; // ambiguity for both A and C
+}
+
+
+        """)
+
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+            withClue("For types") {
+
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c, i2c) // ambiguous
+
+            }
+
+            withClue("For fields") {
+
+                implA.symbolTable.variables().resolve("A") shouldBe
+                        listOf(i1a.symbol, i2a.symbol) // unambiguous
+
+            }
+        }
+
     }
 
 })
