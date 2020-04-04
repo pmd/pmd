@@ -96,7 +96,7 @@ final class SymTableFactory {
     }
 
     protected boolean canBeImported(JAccessibleElementSymbol member) {
-        return Resolvers.canBeImportedIn(thisPackage, member);
+        return JavaResolvers.canBeImportedIn(thisPackage, member);
     }
 
     // </editor-fold>
@@ -118,7 +118,6 @@ final class SymTableFactory {
             return parent;
         }
 
-
         ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
         ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
         ShadowGroupBuilder<JMethodSymbol, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
@@ -139,14 +138,14 @@ final class SymTableFactory {
                 true,
                 ScopeInfo.IMPORT_ON_DEMAND,
                 importedTypes.getMutableMap(),
-                Resolvers.importedOnDemand(lazyImportedPackagesAndTypes, processor.getSymResolver(), thisPackage)
+                JavaResolvers.importedOnDemand(lazyImportedPackagesAndTypes, processor.getSymResolver(), thisPackage)
             );
         }
 
         return buildTable(parent, vars, methods, types);
     }
 
-    JSymbolTable singleImportsSymbolTable(JSymbolTable parent, List<ASTImportDeclaration> singleImports) {
+    JSymbolTable singleImportsSymbolTable(JSymbolTable parent, Collection<ASTImportDeclaration> singleImports) {
         if (singleImports.isEmpty()) {
             return parent;
         }
@@ -171,6 +170,7 @@ final class SymTableFactory {
                                      ShadowGroupBuilder<JVariableSymbol, ?>.ResolverBuilder importedFields,
                                      ShadowGroupBuilder<JMethodSymbol, ?>.ResolverBuilder importedMethods,
                                      Set<String> importedPackagesAndTypes) {
+
         for (ASTImportDeclaration anImport : importsOnDemand) {
             assert anImport.isImportOnDemand() : "Expected import on demand: " + anImport;
 
@@ -212,7 +212,7 @@ final class SymTableFactory {
         }
     }
 
-    private void fillSingleImports(List<ASTImportDeclaration> singleImports,
+    private void fillSingleImports(Iterable<ASTImportDeclaration> singleImports,
                                    ShadowGroupBuilder<JTypeDeclSymbol, ?>.ResolverBuilder importedTypes,
                                    ShadowGroupBuilder<JVariableSymbol, ?>.ResolverBuilder importedFields,
                                    ShadowGroupBuilder<JMethodSymbol, ?>.ResolverBuilder importedMethods) {
@@ -279,21 +279,32 @@ final class SymTableFactory {
 
         return SymbolTableImpl.withTypes(
             parent,
-            TYPES.augmentWithCache(parent.types(), true, scopeTag, Resolvers.packageResolver(processor.getSymResolver(), packageName))
+            TYPES.augmentWithCache(parent.types(), true, scopeTag, JavaResolvers.packageResolver(processor.getSymResolver(), packageName))
         );
     }
 
     JSymbolTable typeBody(JSymbolTable parent, @NonNull JClassSymbol sym) {
 
-        Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> resolvers = Resolvers.classAndFieldResolvers(sym);
+        Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inherited = JavaResolvers.classAndFieldResolvers(sym, true);
+        Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> declaredHere = JavaResolvers.classAndFieldResolvers(sym, false);
 
         ShadowGroup<JTypeDeclSymbol, ScopeInfo> types = parent.types();
-        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, sym); // self name
-        types = TYPES.shadow(types, ScopeInfo.INHERITED, resolvers.getLeft()); // inner & inherited class names
-        types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters()));
+        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, sym);                                    // self name
+        types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                         // inherited classes
+        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, declaredHere.getLeft());          // inner classes declared here
+        types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters())); // type parameters
 
-        ShadowGroup<JVariableSymbol, ScopeInfo> fields = VARS.shadow(parent.variables(), ScopeInfo.ENCLOSING_TYPE, resolvers.getRight());
-        ShadowGroup<JMethodSymbol, ScopeInfo> methods = METHODS.augmentWithCache(parent.methods(), true, ScopeInfo.ENCLOSING_TYPE, Resolvers.methodResolver(sym));
+        ShadowGroup<JVariableSymbol, ScopeInfo> fields = parent.variables();
+        fields = VARS.shadow(fields, ScopeInfo.INHERITED, inherited.getRight());
+        fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, declaredHere.getRight());
+
+        ShadowGroup<JMethodSymbol, ScopeInfo> methods = parent.methods();
+        // notice this is a shadow barrier
+        methods = METHODS.augmentWithCache(methods, true, ScopeInfo.INHERITED, JavaResolvers.methodResolver(sym, true));
+        // and not this one
+        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.ENCLOSING_TYPE_MEMBER, JavaResolvers.methodResolver(sym, false));
+        // This means their results will be merged.
+        // They're only split to give a different, more specific scope tag
 
         return buildTable(parent, fields, methods, types);
     }
@@ -303,7 +314,7 @@ final class SymTableFactory {
     }
 
     JSymbolTable selfType(JSymbolTable parent, JClassSymbol sym) {
-        return SymbolTableImpl.withTypes(parent, TYPES.shadow(parent.types(), ScopeInfo.ENCLOSING_TYPE, TYPES.groupByName(sym)));
+        return SymbolTableImpl.withTypes(parent, TYPES.shadow(parent.types(), ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(sym)));
     }
 
     JSymbolTable typeHeader(JSymbolTable parent, JClassSymbol sym) {

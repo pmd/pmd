@@ -82,7 +82,7 @@ class SimpleShadowGroup<S, I> implements ShadowGroup<S, I> {
 
     @Override
     public String toString() {
-        return resolver.toString();
+        return scopeTag + "  " + resolver.toString();
     }
 
 }

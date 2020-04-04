@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.ALL_STRICT_SUPERTYPES;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.JUST_SELF;
+
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ClassUtils.Interfaces;
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -26,7 +28,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
 
-class Resolvers {
+class JavaResolvers {
 
     /** Prepend the package name, handling empty package. */
     static String prependPackageName(String pack, String name) {
@@ -100,15 +102,21 @@ class Resolvers {
         };
     }
 
-    static NameResolver<JMethodSymbol> methodResolver(JClassSymbol t) {
+    private static SuperTypesEnumerator enumeratorFor(boolean onlyInherited) {
+        return onlyInherited ? ALL_STRICT_SUPERTYPES : JUST_SELF;
+    }
+
+    static NameResolver<JMethodSymbol> methodResolver(JClassSymbol t, boolean onlyInherited) {
         JClassSymbol nestRoot = t.getNestRoot();
+        SuperTypesEnumerator enumerator = enumeratorFor(onlyInherited);
         return new NameResolver<JMethodSymbol>() {
             @Override
             public @NonNull List<JMethodSymbol> resolveHere(String simpleName) {
-                return SymUtils.getSuperTypeStream(t, Interfaces.INCLUDE)
-                               .flatMap(it -> it.getDeclaredMethods().stream())
-                               .filter(it -> it.getSimpleName().equals(simpleName) && isAccessibleInStrictSubtypeOfOwner(nestRoot, it))
-                               .collect(Collectors.toList());
+                return enumerator.stream(t)
+                                 .flatMap(it -> it.getDeclaredMethods().stream())
+                                 .filter(it -> it.getSimpleName().equals(simpleName)
+                                     && isAccessibleInStrictSubtypeOfOwner(nestRoot, it))
+                                 .collect(Collectors.toList());
             }
 
             @Override
@@ -118,7 +126,7 @@ class Resolvers {
         };
     }
 
-    static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> classAndFieldResolvers(JClassSymbol t) {
+    static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> classAndFieldResolvers(JClassSymbol t, boolean onlyInherited) {
         JClassSymbol nestRoot = t.getNestRoot();
 
         ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
@@ -127,7 +135,7 @@ class Resolvers {
         Set<String> seenFields = new HashSet<>();
         Set<String> seenTypes = new HashSet<>();
 
-        for (JClassSymbol sup : SymUtils.iterateSuperTypes(t, Interfaces.INCLUDE)) {
+        for (JClassSymbol sup : enumeratorFor(onlyInherited).iterable(t)) {
             for (JFieldSymbol df : sup.getDeclaredFields()) {
                 if (seenFields.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
                     fields.append(df);
