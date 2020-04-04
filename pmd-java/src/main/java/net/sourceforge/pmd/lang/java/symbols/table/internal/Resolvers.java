@@ -121,8 +121,8 @@ class Resolvers {
     static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> classAndFieldResolvers(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();
 
-        ShadowGroupBuilder<JVariableSymbol>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
-        ShadowGroupBuilder<JTypeDeclSymbol>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
+        ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
+        ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
 
         Set<String> seenFields = new HashSet<>();
         Set<String> seenTypes = new HashSet<>();

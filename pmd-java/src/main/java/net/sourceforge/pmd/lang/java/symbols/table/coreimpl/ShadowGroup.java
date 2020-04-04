@@ -13,40 +13,28 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A shadow group indexes symbols by their simple name. It's a subset
  * of a symbol table, caring about symbols of a certain kind.
  *
- * <p>Usage example:
+ * <p>Basic usage:
  * <pre>{@code
- *
- *   String name = "foo";
- *
- *   List<JVariableSymbol> foo = group.resolve(name);
+ *   List<JVariableSymbol> foo = group.resolve("foo");
  *   if (foo.isEmpty()) {
  *      // failed
  *   } else if (foo.size() > 1) {
  *      // ambiguity between all the members of the list
  *   } else {
  *      JVariableSymbol varFoo = foo.get(0); // it's this symbol
- *
- *      // does the symbol shadow another?
- *      ShadowGroup<JVariableSymbol> next = group.nextShadowGroup(name);
- *      if (next == null) {
- *          // then in the scope of "group", the name 'foo' is not shadowed
- *      } else {
- *          // otherwise this non-empty list contains the shadowed
- *          // symbols one level up.
- *          List<JVariableSymbol> fooNext = next.resolve(name);
- *          // next.nextShadowGroup(name) == null ? ... etc
- *      }
  *   }
  * }</pre>
+ *
+ * <p>More advanced functionality is provided by {@link ShadowChainIterator}.
+ *
+ * @param <S> Type of symbols this group tracks
+ * @param <I> Type of the "scope tag", some data used to help identify
+ *            the reason why a declaration is in scope. This can be retrieved
+ *            with {@link ShadowChainIterator#getScopeTag()}
  */
 public interface ShadowGroup<S, I> {
 
 
-    @Nullable ShadowGroup<S, I> getParent();
-
-
-
-    ShadowIterator<S, I> iterateResults(String name);
 
 
     /**
@@ -56,7 +44,7 @@ public interface ShadowGroup<S, I> {
      * there is ambiguity. For methods, ambiguity may be resolved through
      * overload resolution, for other kinds of symbols, it causes an error.
      *
-     * @param name Simple name
+     * @param name Simple name of the symbols to find
      *
      * @return A list of symbols
      */
@@ -67,7 +55,7 @@ public interface ShadowGroup<S, I> {
      * Returns the first symbol that would be yielded by {@link #resolve(String)},
      * if it would return a non-empty list. Otherwise returns null.
      *
-     * @param name Simple name
+     * @param name Simple name of the symbol to find
      *
      * @return An optional symbol
      */
@@ -75,21 +63,14 @@ public interface ShadowGroup<S, I> {
 
 
     /**
-     * Returns the next shadow group that contains a declaration for
-     * the given name. If it exists (and this group has a declaration
-     * for the given name), then those declarations are shadowed
-     * by a declaration in this group.
+     * Returns an iterator that iterates over sets of shadowed declarations
+     * with the given name.
      *
-     * @param name Simple name
-     *
-     * @return A group, or null
-     *
-     * @implNote To implement this correctly, all name resolvers that
-     *     have uncertainty when calling {@link NameResolver#knows(String)}
-     *     must be cached ({@link ShadowGroupBuilder#augmentWithCache(ShadowGroup, boolean, NameResolver)
-     *     augmentWithCache}).
+     * @param name Simple name of the symbols to find
      */
-    @Nullable ShadowGroup<S, I> nextShadowGroup(String name);
+    default ShadowChainIterator<S, I> iterateResults(String name) {
+        return new ShadowChainIteratorImpl<>(this, name);
+    }
 
 
     /**
@@ -100,4 +81,6 @@ public interface ShadowGroup<S, I> {
      */
     boolean isShadowBarrier();
 
+
+    @Nullable ShadowGroup<S, I> getParent();
 }

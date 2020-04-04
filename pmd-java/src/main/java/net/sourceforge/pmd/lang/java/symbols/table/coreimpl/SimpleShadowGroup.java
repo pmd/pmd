@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -29,11 +28,6 @@ class SimpleShadowGroup<S, I> implements ShadowGroup<S, I> {
     }
 
     @Override
-    public I getScopeTag() {
-        return scopeTag;
-    }
-
-    @Override
     public final boolean isShadowBarrier() {
         return shadowBarrier;
     }
@@ -43,46 +37,19 @@ class SimpleShadowGroup<S, I> implements ShadowGroup<S, I> {
         return parent;
     }
 
+    /**
+     * This is package protected, because it would be impossible to find
+     * a value for this on the root shadow group. Instead, the scope tag
+     * is only accessible from a {@link ShadowChainIterator}, if we found results
+     * (which naturally excludes the root group, being empty)
+     */
+    I getScopeTag() {
+        return scopeTag;
+    }
 
     @Override
-    public @Nullable ShadowGroup<S, I> nextShadowGroup(String simpleName) {
-        // this is the group that answered the "resolve" call
-        ShadowGroup<S, I> answerer = nextGroupThatKnows(this, simpleName, false);
-        if (answerer == null) {
-            return null;
-        }
-        // we want the next one, to get different results
-        return nextGroupThatKnows(answerer.getParent(), simpleName, true);
-    }
-
-    // inclusive of the parameter
-    private static <S, I> @Nullable ShadowGroup<S, I> nextGroupThatKnows(@Nullable ShadowGroup<S, I> group, String name, boolean acceptUnknown) {
-        ShadowGroup<S, I> parent = group;
-        while (parent != null && !definitelyKnows(parent, name, acceptUnknown)) {
-            parent = parent.getParent();
-        }
-        return parent;
-    }
-
-    private static boolean definitelyKnows(@NonNull ShadowGroup<?, ?> group, String name, boolean acceptUnknown) {
-        if (group instanceof SimpleShadowGroup) {
-            OptionalBool opt = ((SimpleShadowGroup<?, ?>) group).knowsSymbol(name);
-            if (opt.isKnown()) {
-                return opt.isTrue();
-            } else {
-                if (acceptUnknown) {
-                    return group.resolveFirst(name) != null;
-                } else {
-                    // note: this could also be an implementation mistake,
-                    // whereby an indefinite resolver was not cached.
-                    throw new IllegalStateException(
-                        "Called nextShadowGroup without first querying resolve on " + group);
-                }
-            }
-        } else {
-            assert group instanceof RootShadowGroup : "Not a root shadow group? " + group;
-            return false;
-        }
+    public ShadowChainIterator<S, I> iterateResults(String name) {
+        return new ShadowChainIteratorImpl<>(this, name);
     }
 
     /** Doesn't ask the parents. */

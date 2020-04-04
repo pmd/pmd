@@ -4,6 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
+
+/**
+ * A {@linkplain ShadowChainIterator#getScopeTag() scope tag} for java
+ * shadow groups. This gives information about why a declaration is in
+ * scope.
+ */
 public enum ScopeInfo {
 
     ENCLOSING_TYPE,

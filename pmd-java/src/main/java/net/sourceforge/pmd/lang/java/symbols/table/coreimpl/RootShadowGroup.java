@@ -29,11 +29,6 @@ class RootShadowGroup<S, I> implements ShadowGroup<S, I> {
     }
 
     @Override
-    public I getScopeTag() {
-        return null;
-    }
-
-    @Override
     public boolean isShadowBarrier() {
         return true;
     }
@@ -49,13 +44,8 @@ class RootShadowGroup<S, I> implements ShadowGroup<S, I> {
     }
 
     @Override
-    public @Nullable ShadowGroup<S, I> nextShadowGroup(String name) {
-        return null;
-    }
-
-    @Override
     public String toString() {
-        return "Empty";
+        return "Root";
     }
 
     static <S, I> ShadowGroup<S, I> empty() {

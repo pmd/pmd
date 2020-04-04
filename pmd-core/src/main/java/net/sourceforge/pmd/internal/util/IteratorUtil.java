@@ -437,4 +437,38 @@ public final class IteratorUtil {
         }
 
     }
+
+    public abstract static class AbstractPausingIterator<T> extends AbstractIterator<T> {
+
+        private int numYielded = 0;
+        private T currentValue;
+
+        @Override
+        public T next() {
+            T next = super.next();
+            currentValue = next;
+            prepareViewOn(next);
+            numYielded++;
+            return next;
+        }
+
+        protected void prepareViewOn(T current) {
+            // to be overridden
+        }
+
+        protected final int getIterationCount() {
+            return numYielded;
+        }
+
+        protected T getCurrentValue() {
+            ensureReadable();
+            return currentValue;
+        }
+
+        protected void ensureReadable() {
+            if (numYielded == 0) {
+                throw new IllegalStateException("No values were yielded, should have called next");
+            }
+        }
+    }
 }

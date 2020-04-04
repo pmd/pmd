@@ -11,6 +11,7 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
@@ -21,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroup
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo.*
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -42,21 +44,20 @@ class HeaderScopesTest : ProcessorTestSpec({
     fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s).shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s)
 
-    fun ShadowGroup<JTypeDeclSymbol>.shouldResolveToClass(simpleName: String, qualName: String) {
+    fun ShadowGroup<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
         resolveFirst(simpleName).shouldBeA<JClassSymbol> {
             it::getBinaryName shouldBe qualName
             it::getSimpleName shouldBe simpleName
         }
     }
 
-    fun ShadowGroup<JTypeDeclSymbol>.shadowSequence(simpleName: String): List<JClassSymbol> {
+    fun ShadowGroup<JTypeDeclSymbol, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
         return sequence {
-            var group: ShadowGroup<JTypeDeclSymbol> = this@shadowSequence
-            var sym = group.resolveFirst(simpleName) as JClassSymbol?
-            while (sym != null) {
-                yield(sym as JClassSymbol)
-                group = group.nextShadowGroup(simpleName) ?: return@sequence
-                sym = group.resolveFirst(simpleName) as JClassSymbol?
+            val iter = iterateResults(simpleName)
+            while (iter.hasNext()) {
+                iter.next()
+                val sym = iter.results.single().shouldBeA<JClassSymbol>()
+                yield(iter.scopeTag to sym.binaryName)
             }
         }.toList()
     }
@@ -74,9 +75,10 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
 
-        acu.symbolTable.types().shadowSequence("Thread").map { it.binaryName } shouldBe
+        acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
                 // from same package
-                listOf("javasymbols.testdata.Thread", "java.lang.Thread")
+                listOf(SAME_PACKAGE to "javasymbols.testdata.Thread",
+                        JAVA_LANG to "java.lang.Thread")
     }
 
 
@@ -85,10 +87,10 @@ class HeaderScopesTest : ProcessorTestSpec({
 
         val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
-        acu.symbolTable.types().shadowSequence("SomeClassA").map { it.binaryName } shouldBe
+        acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
                 // from same package
-                listOf("javasymbols.testdata.SomeClassA",
-                        "javasymbols.testdata.deep.SomeClassA")
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
+                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA")
 
     }
 
@@ -96,13 +98,9 @@ class HeaderScopesTest : ProcessorTestSpec({
 
         val acu = parser.parseClass(javasymbols.testdata.deep.SomewhereElse::class.java)
 
-        var group = acu.symbolTable.types()
-        group.shouldResolveToClass("Thread", "javasymbols.testdata.Thread")
-        group = group.nextShadowGroup("Thread")
-        group.shouldResolveToClass("Thread", "java.lang.Thread")
-
-        acu.symbolTable.types().shadowSequence("Thread").map { it.binaryName } shouldBe
-                listOf("javasymbols.testdata.Thread", "java.lang.Thread")
+        acu.symbolTable.types().typeShadowSequence("Thread") shouldBe
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.Thread",
+                        JAVA_LANG to "java.lang.Thread")
     }
 
 
@@ -113,23 +111,24 @@ class HeaderScopesTest : ProcessorTestSpec({
 
         val group = acu.symbolTable.types()
 
-        group.shadowSequence("Thread").map { it.binaryName } shouldBe
+        group.typeShadowSequence("Thread") shouldBe
                 // from java.lang
-                listOf("java.lang.Thread",
-                        "javasymbols.testdata.Thread")
+                listOf(JAVA_LANG to "java.lang.Thread",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Thread")
 
-        group.shadowSequence("SomeClassA").map { it.binaryName } shouldBe
+        group.typeShadowSequence("SomeClassA") shouldBe
                 // from same package
-                listOf("javasymbols.testdata.deep.SomeClassA",
-                        "javasymbols.testdata.SomeClassA")
+                listOf(SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.SomeClassA")
 
-        group.shadowSequence("Statics").map { it.binaryName } shouldBe
+        group.typeShadowSequence("Statics") shouldBe
                 // from the import-on-demand
-                listOf("javasymbols.testdata.Statics")
+                listOf(IMPORT_ON_DEMAND to "javasymbols.testdata.Statics")
 
-        group.shadowSequence("TestCase1").map { it.binaryName } shouldBe
+        group.typeShadowSequence("TestCase1") shouldBe
                 // from the single type import
-                listOf("javasymbols.testdata.TestCase1")
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.TestCase1",
+                       IMPORT_ON_DEMAND to "javasymbols.testdata.TestCase1")
     }
 
 
@@ -184,10 +183,10 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.deep.StaticImportOnDemand::class.java)
         // import javasymbols.testdata.Statics.*;
 
-        acu.symbolTable.types().shadowSequence("PublicShadowed").map { it.binaryName } shouldBe
+        acu.symbolTable.types().typeShadowSequence("PublicShadowed") shouldBe
                 // from same package
-                listOf("javasymbols.testdata.deep.PublicShadowed",
-                        "javasymbols.testdata.Statics\$PublicShadowed")
+                listOf(SAME_PACKAGE to "javasymbols.testdata.deep.PublicShadowed",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$PublicShadowed")
     }
 
     parserTest("Types imported through $onDemandStaticImports should be shadowed by $singleTypeImports") {
@@ -195,11 +194,11 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.deep.StaticIOD2::class.java)
         // import javasymbols.testdata.Statics.*;
 
-        acu.symbolTable.types().shadowSequence("SomeClassA").map { it.binaryName } shouldBe
-                // from same package
-                listOf("javasymbols.testdata.SomeClassA",
-                        "javasymbols.testdata.Statics\$SomeClassA")
-
+        acu.symbolTable.types().typeShadowSequence("SomeClassA") shouldBe
+                listOf(SINGLE_IMPORT to "javasymbols.testdata.SomeClassA",
+                        SAME_PACKAGE to "javasymbols.testdata.deep.SomeClassA",
+                        IMPORT_ON_DEMAND to "javasymbols.testdata.Statics\$SomeClassA"
+                )
     }
 
     parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
