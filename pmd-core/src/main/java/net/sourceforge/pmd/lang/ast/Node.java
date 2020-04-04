@@ -329,7 +329,7 @@ public interface Node {
      * @param targetType class which you want to find.
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType) {
+    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType) {
         return descendants(targetType).toList();
     }
 
