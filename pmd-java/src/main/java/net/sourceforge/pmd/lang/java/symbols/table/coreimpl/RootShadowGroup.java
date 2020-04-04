@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import static java.util.Collections.emptyList;
 
@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * An empty group, bottom of the linked lists, for implementation simplicity.
  */
-class RootShadowGroup<S> implements ShadowGroup<S> {
+class RootShadowGroup<S, I> implements ShadowGroup<S, I> {
 
     @SuppressWarnings( {"rawtypes"})
     private static final RootShadowGroup EMPTY = new RootShadowGroup<>();
@@ -24,7 +24,12 @@ class RootShadowGroup<S> implements ShadowGroup<S> {
     }
 
     @Override
-    public @Nullable ShadowGroup<S> getParent() {
+    public @Nullable ShadowGroup<S, I> getParent() {
+        return null;
+    }
+
+    @Override
+    public I getScopeTag() {
         return null;
     }
 
@@ -44,7 +49,7 @@ class RootShadowGroup<S> implements ShadowGroup<S> {
     }
 
     @Override
-    public @Nullable ShadowGroup<S> nextShadowGroup(String name) {
+    public @Nullable ShadowGroup<S, I> nextShadowGroup(String name) {
         return null;
     }
 
@@ -53,7 +58,7 @@ class RootShadowGroup<S> implements ShadowGroup<S> {
         return "Empty";
     }
 
-    static <S> ShadowGroup<S> empty() {
+    static <S, I> ShadowGroup<S, I> empty() {
         return EMPTY;
     }
 }

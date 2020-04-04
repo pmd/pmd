@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -13,7 +13,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleNameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.util.OptionalBool;
 
 final class CoreResolvers {

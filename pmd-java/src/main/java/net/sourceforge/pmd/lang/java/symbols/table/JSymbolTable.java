@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroup;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroup;
 
 // @formatter:off
 /**
@@ -48,23 +47,14 @@ public interface JSymbolTable {
         return null;
     }
 
-    // note that types and value names can be obscured, but that depends on the syntactic
-    // context of the *usage* and is not relevant to the symbol table stack.
+
+    ShadowGroup<JVariableSymbol, ScopeInfo> variables();
 
 
-    @Nullable
-    default JTypeDeclSymbol resolveTypeName(String simpleName) {
-        return types().resolveFirst(simpleName);
-    }
+    ShadowGroup<JTypeDeclSymbol, ScopeInfo> types();
 
 
-    ShadowGroup<JVariableSymbol> variables();
-
-
-    ShadowGroup<JTypeDeclSymbol> types();
-
-
-    ShadowGroup<JMethodSymbol> methods();
+    ShadowGroup<JMethodSymbol, ScopeInfo> methods();
 
 
 }

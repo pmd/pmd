@@ -22,9 +22,9 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.NameResolver.SingleNameResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroupBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
 
 class Resolvers {
 

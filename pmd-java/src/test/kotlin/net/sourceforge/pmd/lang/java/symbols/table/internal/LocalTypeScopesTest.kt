@@ -53,7 +53,7 @@ class LocalTypeScopesTest : ParserTestSpec({
 
             insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Foo", foo)
 
-            insideOther.symbolTable.resolveTypeName("Inner") shouldBe null
+            insideOther.symbolTable.types().resolveFirst("Inner") shouldBe null
 
             insideOther.symbolTable.shouldResolveTypeTo<JClassSymbol>("Other", other)
 
@@ -162,7 +162,7 @@ class LocalTypeScopesTest : ParserTestSpec({
 
             val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-            insideFoo.symbolTable.resolveTypeName("E") shouldBe null
+            insideFoo.symbolTable.types().resolveFirst("E") shouldBe null
         }
 
         doTest("Accessible member types of supertypes shadow types inherited from further supertypes") {

@@ -207,7 +207,7 @@ final class AstDisambiguationPass {
                 assert lhsSym != null : "Unresolved LHS for " + type;
                 checkParentIsMember(processor, lhsType, type);
             } else {
-                JTypeDeclSymbol sym = type.getSymbolTable().resolveTypeName(type.getSimpleName());
+                JTypeDeclSymbol sym = type.getSymbolTable().types().resolveFirst(type.getSimpleName());
                 if (sym == null) {
                     processor.getLogger().warning(type, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
                     sym = setArity(type, processor, type.getSimpleName());

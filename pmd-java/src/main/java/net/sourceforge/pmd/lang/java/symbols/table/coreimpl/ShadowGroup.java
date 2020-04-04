@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
 
@@ -39,10 +39,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *   }
  * }</pre>
  */
-public interface ShadowGroup<S> {
+public interface ShadowGroup<S, I> {
 
 
-    @Nullable ShadowGroup<S> getParent();
+    @Nullable ShadowGroup<S, I> getParent();
+
+
+
+    ShadowIterator<S, I> iterateResults(String name);
 
 
     /**
@@ -85,7 +89,7 @@ public interface ShadowGroup<S> {
      *     must be cached ({@link ShadowGroupBuilder#augmentWithCache(ShadowGroup, boolean, NameResolver)
      *     augmentWithCache}).
      */
-    @Nullable ShadowGroup<S> nextShadowGroup(String name);
+    @Nullable ShadowGroup<S, I> nextShadowGroup(String name);
 
 
     /**

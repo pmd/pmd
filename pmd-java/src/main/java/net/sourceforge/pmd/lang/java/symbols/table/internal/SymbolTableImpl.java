@@ -8,37 +8,37 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroup;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl.ShadowGroupBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroup;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
 
 final class SymbolTableImpl implements JSymbolTable {
 
     static JSymbolTable EMPTY = new SymbolTableImpl(ShadowGroupBuilder.rootGroup(), ShadowGroupBuilder.rootGroup(), ShadowGroupBuilder.rootGroup());
 
-    private final ShadowGroup<JVariableSymbol> vars;
-    private final ShadowGroup<JTypeDeclSymbol> types;
-    private final ShadowGroup<JMethodSymbol> methods;
+    private final ShadowGroup<JVariableSymbol, ScopeInfo> vars;
+    private final ShadowGroup<JTypeDeclSymbol, ScopeInfo> types;
+    private final ShadowGroup<JMethodSymbol, ScopeInfo> methods;
 
-    SymbolTableImpl(ShadowGroup<JVariableSymbol> vars,
-                    ShadowGroup<JTypeDeclSymbol> types,
-                    ShadowGroup<JMethodSymbol> methods) {
+    SymbolTableImpl(ShadowGroup<JVariableSymbol, ScopeInfo> vars,
+                    ShadowGroup<JTypeDeclSymbol, ScopeInfo> types,
+                    ShadowGroup<JMethodSymbol, ScopeInfo> methods) {
         this.vars = vars;
         this.types = types;
         this.methods = methods;
     }
 
     @Override
-    public ShadowGroup<JVariableSymbol> variables() {
+    public ShadowGroup<JVariableSymbol, ScopeInfo> variables() {
         return vars;
     }
 
     @Override
-    public ShadowGroup<JTypeDeclSymbol> types() {
+    public ShadowGroup<JTypeDeclSymbol, ScopeInfo> types() {
         return types;
     }
 
     @Override
-    public ShadowGroup<JMethodSymbol> methods() {
+    public ShadowGroup<JMethodSymbol, ScopeInfo> methods() {
         return methods;
     }
 
@@ -51,11 +51,11 @@ final class SymbolTableImpl implements JSymbolTable {
             '}';
     }
 
-    static JSymbolTable withVars(JSymbolTable parent, ShadowGroup<JVariableSymbol> vars) {
+    static JSymbolTable withVars(JSymbolTable parent, ShadowGroup<JVariableSymbol, ScopeInfo> vars) {
         return new SymbolTableImpl(vars, parent.types(), parent.methods());
     }
 
-    static JSymbolTable withTypes(JSymbolTable parent, ShadowGroup<JTypeDeclSymbol> types) {
+    static JSymbolTable withTypes(JSymbolTable parent, ShadowGroup<JTypeDeclSymbol, ScopeInfo> types) {
         return new SymbolTableImpl(parent.variables(), types, parent.methods());
     }
 }

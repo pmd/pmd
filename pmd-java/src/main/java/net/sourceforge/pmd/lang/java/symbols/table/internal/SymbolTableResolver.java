@@ -118,7 +118,7 @@ public final class SymbolTableResolver {
             NodeStream<ASTAnyTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
             // types declared inside the compilation unit
-            pushed += pushOnStack(f.typeOnlySymTable(top(), typeDecls));
+            pushed += pushOnStack(f.typesInFile(top(), typeDecls));
 
             setTopSymbolTable(node);
 
@@ -137,7 +137,7 @@ public final class SymbolTableResolver {
         private void processTypeHeader(ASTAnyTypeDeclaration node) {
             setTopSymbolTable(node.getModifiers());
 
-            int pushed = pushOnStack(f.typeOnlySymTable(top(), node.getSymbol()));
+            int pushed = pushOnStack(f.selfType(top(), node.getSymbol()));
             pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
             NodeStream<? extends JavaNode> notBody = node.children().drop(1).take(node.getNumChildren() - 2);

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
 
@@ -11,17 +11,26 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
-class SimpleShadowGroup<S> implements ShadowGroup<S> {
+class SimpleShadowGroup<S, I> implements ShadowGroup<S, I> {
 
     protected final NameResolver<S> resolver;
-    protected final @NonNull ShadowGroup<S> parent;
+    protected final @NonNull ShadowGroup<S, I> parent;
     private final boolean shadowBarrier;
+    private final I scopeTag;
 
-
-    SimpleShadowGroup(@NonNull ShadowGroup<S> fallback, boolean shadowBarrier, NameResolver<S> resolver) {
-        this.parent = fallback;
+    SimpleShadowGroup(@NonNull ShadowGroup<S, I> parent,
+                      boolean shadowBarrier,
+                      I scopeTag,
+                      NameResolver<S> resolver) {
+        this.parent = parent;
+        this.scopeTag = scopeTag;
         this.shadowBarrier = shadowBarrier;
         this.resolver = resolver;
+    }
+
+    @Override
+    public I getScopeTag() {
+        return scopeTag;
     }
 
     @Override
@@ -30,15 +39,15 @@ class SimpleShadowGroup<S> implements ShadowGroup<S> {
     }
 
     @Override
-    public @NonNull ShadowGroup<S> getParent() {
+    public @NonNull ShadowGroup<S, I> getParent() {
         return parent;
     }
 
 
     @Override
-    public @Nullable ShadowGroup<S> nextShadowGroup(String simpleName) {
+    public @Nullable ShadowGroup<S, I> nextShadowGroup(String simpleName) {
         // this is the group that answered the "resolve" call
-        ShadowGroup<S> answerer = nextGroupThatKnows(this, simpleName, false);
+        ShadowGroup<S, I> answerer = nextGroupThatKnows(this, simpleName, false);
         if (answerer == null) {
             return null;
         }
@@ -47,17 +56,17 @@ class SimpleShadowGroup<S> implements ShadowGroup<S> {
     }
 
     // inclusive of the parameter
-    private static <S> @Nullable ShadowGroup<S> nextGroupThatKnows(@Nullable ShadowGroup<S> group, String name, boolean acceptUnknown) {
-        ShadowGroup<S> parent = group;
+    private static <S, I> @Nullable ShadowGroup<S, I> nextGroupThatKnows(@Nullable ShadowGroup<S, I> group, String name, boolean acceptUnknown) {
+        ShadowGroup<S, I> parent = group;
         while (parent != null && !definitelyKnows(parent, name, acceptUnknown)) {
             parent = parent.getParent();
         }
         return parent;
     }
 
-    private static boolean definitelyKnows(@NonNull ShadowGroup<?> group, String name, boolean acceptUnknown) {
+    private static boolean definitelyKnows(@NonNull ShadowGroup<?, ?> group, String name, boolean acceptUnknown) {
         if (group instanceof SimpleShadowGroup) {
-            OptionalBool opt = ((SimpleShadowGroup<?>) group).knowsSymbol(name);
+            OptionalBool opt = ((SimpleShadowGroup<?, ?>) group).knowsSymbol(name);
             if (opt.isKnown()) {
                 return opt.isTrue();
             } else {

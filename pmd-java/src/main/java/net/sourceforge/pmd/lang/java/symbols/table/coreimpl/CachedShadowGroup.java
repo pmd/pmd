@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
+package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
-class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
+class CachedShadowGroup<S, I> extends SimpleShadowGroup<S, I> {
 
     private final Map<String, List<S>> cache;
 
@@ -21,11 +21,12 @@ class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
     // result when asked for it
     private final Map<String, OptionalBool> keysThatIKnow = new HashMap<>();
 
-    protected CachedShadowGroup(@NonNull ShadowGroup<S> parent,
+    protected CachedShadowGroup(@NonNull ShadowGroup<S, I> parent,
                                 Map<String, List<S>> known,
                                 NameResolver<S> resolver,
-                                boolean shadowBarrier) {
-        super(parent, shadowBarrier, resolver);
+                                boolean shadowBarrier,
+                                I scopeTag) {
+        super(parent, shadowBarrier, scopeTag, resolver);
         this.cache = known;
     }
 
