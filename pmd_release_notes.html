@@ -1396,6 +1396,19 @@ not change the result of your rules</em>, if it does, please report a bug at htt
 <p>Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 6.22.0.
 <strong>We highly recommend that you upgrade your rules to XPath 2.0</strong>. Please refer to the <a href="https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20">migration guide</a>.</p>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>
+    <p>The new Apex rule <a href="pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart"><code class="highlighter-rouge">FieldDeclarationsShouldBeAtStart</code></a> (<code class="highlighter-rouge">apex-codestyle</code>)
+helps to ensure that field declarations are always at the beginning of a class.</p>
+  </li>
+  <li>
+    <p>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#unusedlocalvariable"><code class="highlighter-rouge">UnusedLocalVariable</code></a> (<code class="highlighter-rouge">apex-bestpractices</code>) detects unused
+local variables.</p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1518,6 +1531,8 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://github.com/pmd/pmd/pull/2314">#2314</a>: [doc] maven integration - Add version to plugin - <a href="https://github.com/gpbp">Pham Hai Trung</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2353">#2353</a>: [plsql] xmlforest with optional AS - <a href="https://github.com/szyman23">Piotr Szymanski</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2383">#2383</a>: [apex] Fix invalid apex in documentation - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2395">#2395</a>: [apex] New Rule: Unused local variables - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2396">#2396</a>: [apex] New rule: field declarations should be at start - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2397">#2397</a>: [apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - <a href="https://github.com/kieranlblack">Kieran Black</a></li>
 </ul>
 

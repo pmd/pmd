@@ -910,6 +910,15 @@
 "url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
 "summary": "Rules which enforce generally accepted best practices."
 }
+,
+
+{
+"title": "UnusedLocalVariable (Apex, Best Practices)",
+"tags": "",
+"keywords": "UnusedLocalVariable",
+"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
 
 
 
@@ -1805,6 +1814,15 @@
 "tags": "",
 "keywords": "IfStmtsMustUseBraces",
 "url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "FieldDeclarationsShouldBeAtStart (Apex, Code Style)",
+"tags": "",
+"keywords": "FieldDeclarationsShouldBeAtStart",
+"url": "pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
