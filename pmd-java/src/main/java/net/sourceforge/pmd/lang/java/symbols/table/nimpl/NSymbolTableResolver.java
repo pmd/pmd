@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -46,7 +47,6 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -72,6 +72,12 @@ public final class NSymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<NSymbolTable> stack = new ArrayDeque<>();
 
+        /*
+            TODO do disambiguation entirely in this visitor
+             This is because qualified ctor invocations need the type of their LHS
+             This is tricky because disambig needs to proceed bottom up
+         */
+
         MyVisitor(ASTCompilationUnit root, SymTableFactory helper) {
             this.root = root;
             f = helper;
@@ -85,7 +91,7 @@ public final class NSymbolTableResolver {
             assert stack.isEmpty()
                 : "Stack should be empty when starting the traversal";
 
-            stack.push(NSymTableImpl.EMPTY);
+            stack.push(NSymbolTableImpl.EMPTY);
             root.jjtAccept(this, null);
             stack.pop();
 
@@ -142,7 +148,7 @@ public final class NSymbolTableResolver {
             popStack(pushed - 1);
 
             // resolve the supertypes, necessary for TypeMemberSymTable
-            f.earlyDisambig(notBody); // extends/implements
+            f.disambig(notBody); // extends/implements
 
             setTopSymbolTable(node);
             popStack();
@@ -155,7 +161,7 @@ public final class NSymbolTableResolver {
             // the following is just for the body
             // helper.pushCtxType(node.getSymbol());
 
-            pushed += pushOnStack(f.typeBody(top(), node.getSymbol()));
+            pushed += pushOnStack(f.typeBody(top(), node.getTypeMirror()));
 
             setTopSymbolTable(node.getBody());
 
@@ -166,9 +172,9 @@ public final class NSymbolTableResolver {
 
 
             // process fields first, their type is needed for JSymbolTable#resolveValue
-            f.earlyDisambig(node.getDeclarations()
-                                .filterIs(ASTFieldDeclaration.class)
-                                .map(ASTFieldDeclaration::getTypeNode));
+            f.disambig(node.getDeclarations()
+                           .filterIs(ASTFieldDeclaration.class)
+                           .map(ASTFieldDeclaration::getTypeNode));
 
             visitSubtree(node.getBody());
 
@@ -181,19 +187,18 @@ public final class NSymbolTableResolver {
         public void visit(ASTAnonymousClassDeclaration node, Void data) {
 
             // the supertype node, should be disambiguated to access members of the type
-            f.earlyDisambig(node.asStream().parents()
-                                .filterIs(ASTConstructorCall.class)
-                                .map(ASTConstructorCall::getTypeNode));
+            f.disambig(node.asStream().parents()
+                           .filterIs(ASTConstructorCall.class)
+                           .map(ASTConstructorCall::getTypeNode));
 
             // helper.pushCtxType(node.getSymbol());
-            int pushed = pushOnStack(f.typeBody(top(), node.getSymbol())); // methods & fields & inherited classes
+            int pushed = pushOnStack(f.typeBody(top(), node.getTypeMirror())); // methods & fields & inherited classes
 
             setTopSymbolTableAndRecurse(node.getBody());
 
             // helper.popCtxType();
             popStack(pushed);
         }
-
 
 
         @Override
@@ -293,6 +298,29 @@ public final class NSymbolTableResolver {
         }
 
         @Override
+        public void visit(ASTConstructorCall node, Void data) {
+            ASTExpression qual = node.getQualifier();
+            if (qual != null) {
+                // then the inner classes of the lhs type are in scope
+                // in the ClassType. Eg `foo.new Bar()` doesn't require
+                // an import for Bar
+                f.disambig(qual);
+
+                int pushed = pushOnStack(f.qualifiedCtorInvoc(top(), qual.getTypeMirror()));
+                setTopSymbolTableAndRecurse(node.getTypeNode());
+                popStack(pushed);
+            }
+
+            if (node.isAnonymousClass()) {
+                // then the type node needs to be disambiguated early,
+                // for the supertypes of the anon class to be resolved
+                f.disambig(node.getTypeNode());
+            }
+
+            setTopSymbolTableAndRecurse(node);
+        }
+
+        @Override
         public void visit(ASTTryStatement node, Void data) {
 
             ASTResourceList resources = node.getResources();
@@ -345,23 +373,6 @@ public final class NSymbolTableResolver {
             }
             stack.push(table);
             return 1;
-        }
-
-
-        private int restoreStack(final JSymbolTable leaf) {
-            assert leaf != null : "Table not set";
-
-            final JSymbolTable curTop = popStack();
-
-            int i = 0;
-            JSymbolTable parent = leaf;
-            while (!stack.isEmpty() && parent != curTop) {  // NOPMD - intentional check for reference equality
-                i++;
-                parent = popStack();
-            }
-
-            assert !stack.isEmpty() : "Sibling left dangling tables on the stack";
-            return i;
         }
 
         private NSymbolTable popStack() {

@@ -8,17 +8,17 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
-final class NSymTableImpl implements NSymbolTable {
+final class NSymbolTableImpl implements NSymbolTable {
 
-    static NSymbolTable EMPTY = new NSymTableImpl(MapShadowGroup.empty(), MapShadowGroup.empty(), MapShadowGroup.empty());
+    static NSymbolTable EMPTY = new NSymbolTableImpl(RootShadowGroup.empty(), RootShadowGroup.empty(), RootShadowGroup.empty());
 
     private final ShadowGroup<JVariableSymbol> vars;
     private final ShadowGroup<JTypeDeclSymbol> types;
     private final ShadowGroup<JMethodSymbol> methods;
 
-    NSymTableImpl(ShadowGroup<JVariableSymbol> vars,
-                  ShadowGroup<JTypeDeclSymbol> types,
-                  ShadowGroup<JMethodSymbol> methods) {
+    NSymbolTableImpl(ShadowGroup<JVariableSymbol> vars,
+                     ShadowGroup<JTypeDeclSymbol> types,
+                     ShadowGroup<JMethodSymbol> methods) {
         this.vars = vars;
         this.types = types;
         this.methods = methods;
@@ -49,10 +49,10 @@ final class NSymTableImpl implements NSymbolTable {
     }
 
     static NSymbolTable withVars(NSymbolTable parent, ShadowGroup<JVariableSymbol> vars) {
-        return new NSymTableImpl(vars, parent.types(), parent.methods());
+        return new NSymbolTableImpl(vars, parent.types(), parent.methods());
     }
 
     static NSymbolTable withTypes(NSymbolTable parent, ShadowGroup<JTypeDeclSymbol> types) {
-        return new NSymTableImpl(parent.variables(), types, parent.methods());
+        return new NSymbolTableImpl(parent.variables(), types, parent.methods());
     }
 }

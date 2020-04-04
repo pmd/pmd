@@ -55,8 +55,8 @@ public interface NSymbolTable extends JSymbolTable {
 
 
     static <T extends JElementSymbol> ResolveResult<T> resolveCompat(String simpleName, ShadowGroup<T> shadowGroup) {
-        List<T> resolve = shadowGroup.resolve(simpleName);
-        return resolve.isEmpty() ? null : () -> resolve.get(0);
+        T resolve = shadowGroup.resolveFirst(simpleName);
+        return resolve == null ? null : () -> resolve;
     }
 
 }
