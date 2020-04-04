@@ -11,6 +11,7 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
@@ -74,7 +75,7 @@ class HeaderScopesTest : ProcessorTestSpec({
         val acu = parser.parseClass(javasymbols.testdata.TestCase1::class.java)
 
 
-        acu.symbolTable.types().shadowSequence("SomeClassA").map { it.binaryName } shouldBe
+        acu.symbolTable.types().shadowSequence("Thread").map { it.binaryName } shouldBe
                 // from same package
                 listOf("javasymbols.testdata.Thread", "java.lang.Thread")
     }

@@ -54,7 +54,7 @@ public interface NameResolver<S> {
      *
      * }</pre>
      */
-    default @Nullable OptionalBool knows(String simpleName) {
+    default @NonNull OptionalBool knows(String simpleName) {
         return OptionalBool.UNKNOWN;
     }
 

@@ -41,6 +41,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface ShadowGroup<S> {
 
+
+    @Nullable ShadowGroup<S> getParent();
+
+
     /**
      * Returns the list of symbols accessible by simple name in the scope
      * of this group. No name in this list shadows another. An empty list
@@ -75,6 +79,11 @@ public interface ShadowGroup<S> {
      * @param name Simple name
      *
      * @return A group, or null
+     *
+     * @implNote To implement this correctly, all name resolvers that
+     *     have uncertainty when calling {@link NameResolver#knows(String)}
+     *     must be cached ({@link ShadowGroupBuilder#augmentWithCache(ShadowGroup, boolean, NameResolver)
+     *     augmentWithCache}).
      */
     @Nullable ShadowGroup<S> nextShadowGroup(String name);
 

@@ -32,7 +32,7 @@ final class CoreResolvers {
             }
 
             @Override
-            public @Nullable OptionalBool knows(String simpleName) {
+            public @NonNull OptionalBool knows(String simpleName) {
                 return OptionalBool.definitely(name.equals(simpleName));
             }
 
@@ -66,7 +66,7 @@ final class CoreResolvers {
         }
 
         @Override
-        public @Nullable OptionalBool knows(String simpleName) {
+        public @NonNull OptionalBool knows(String simpleName) {
             return OptionalBool.definitely(map.containsKey(simpleName));
         }
 
@@ -90,7 +90,7 @@ final class CoreResolvers {
         }
 
         @Override
-        public @Nullable OptionalBool knows(String simpleName) {
+        public @NonNull OptionalBool knows(String simpleName) {
             return OptionalBool.definitely(map.containsKey(simpleName));
         }
 
@@ -129,7 +129,7 @@ final class CoreResolvers {
         }
 
         @Override
-        public @Nullable OptionalBool knows(String simpleName) {
+        public @NonNull OptionalBool knows(String simpleName) {
             return OptionalBool.NO;
         }
 

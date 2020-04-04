@@ -30,24 +30,50 @@ class SimpleShadowGroup<S> implements ShadowGroup<S> {
     }
 
     @Override
-    public @Nullable ShadowGroup<S> nextShadowGroup(String simpleName) {
-        boolean shadowBarrierCrossed = isShadowBarrier();
-        ShadowGroup<S> parent = this.parent;
-        OptionalBool parentKnows;
-        do {
-            shadowBarrierCrossed |= parent.isShadowBarrier();
-
-            if (parent instanceof SimpleShadowGroup) {
-                SimpleShadowGroup<S> p = (SimpleShadowGroup<S>) parent;
-                parentKnows = p.knowsSymbol(simpleName);
-                parent = p.parent;
-            } else {
-                // root
-                return null;
-            }
-        } while (parentKnows == OptionalBool.NO || !shadowBarrierCrossed);
-
+    public @NonNull ShadowGroup<S> getParent() {
         return parent;
+    }
+
+
+    @Override
+    public @Nullable ShadowGroup<S> nextShadowGroup(String simpleName) {
+        // this is the group that answered the "resolve" call
+        ShadowGroup<S> answerer = nextGroupThatKnows(this, simpleName, false);
+        if (answerer == null) {
+            return null;
+        }
+        // we want the next one, to get different results
+        return nextGroupThatKnows(answerer.getParent(), simpleName, true);
+    }
+
+    // inclusive of the parameter
+    private static <S> @Nullable ShadowGroup<S> nextGroupThatKnows(@Nullable ShadowGroup<S> group, String name, boolean acceptUnknown) {
+        ShadowGroup<S> parent = group;
+        while (parent != null && !definitelyKnows(parent, name, acceptUnknown)) {
+            parent = parent.getParent();
+        }
+        return parent;
+    }
+
+    private static boolean definitelyKnows(@NonNull ShadowGroup<?> group, String name, boolean acceptUnknown) {
+        if (group instanceof SimpleShadowGroup) {
+            OptionalBool opt = ((SimpleShadowGroup<?>) group).knowsSymbol(name);
+            if (opt.isKnown()) {
+                return opt.isTrue();
+            } else {
+                if (acceptUnknown) {
+                    return group.resolveFirst(name) != null;
+                } else {
+                    // note: this could also be an implementation mistake,
+                    // whereby an indefinite resolver was not cached.
+                    throw new IllegalStateException(
+                        "Called nextShadowGroup without first querying resolve on " + group);
+                }
+            }
+        } else {
+            assert group instanceof RootShadowGroup : "Not a root shadow group? " + group;
+            return false;
+        }
     }
 
     /** Doesn't ask the parents. */
@@ -58,6 +84,7 @@ class SimpleShadowGroup<S> implements ShadowGroup<S> {
     @Override
     public @NonNull List<S> resolve(String name) {
         List<S> res = resolver.resolveHere(name);
+        handleResolverKnows(name, !res.isEmpty());
         if (res.isEmpty()) {
             return parent.resolve(name);
         } else if (!isShadowBarrier()) {
@@ -66,9 +93,14 @@ class SimpleShadowGroup<S> implements ShadowGroup<S> {
         return res;
     }
 
+    protected void handleResolverKnows(String name, boolean resolverKnows) {
+        // to be overridden
+    }
+
     @Override
     public S resolveFirst(String name) {
         S s = resolver.resolveFirst(name);
+        handleResolverKnows(name, name != null);
         return s != null ? s : parent.resolveFirst(name);
     }
 

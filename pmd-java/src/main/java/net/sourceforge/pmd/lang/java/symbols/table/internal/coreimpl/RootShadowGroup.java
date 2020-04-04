@@ -24,6 +24,11 @@ class RootShadowGroup<S> implements ShadowGroup<S> {
     }
 
     @Override
+    public @Nullable ShadowGroup<S> getParent() {
+        return null;
+    }
+
+    @Override
     public boolean isShadowBarrier() {
         return true;
     }

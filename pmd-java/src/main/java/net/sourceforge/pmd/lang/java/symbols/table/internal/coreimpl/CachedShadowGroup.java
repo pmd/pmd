@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal.coreimpl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,10 @@ import net.sourceforge.pmd.util.OptionalBool;
 class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
 
     private final Map<String, List<S>> cache;
+
+    // contains YES/NO depending on whether *this* name resolver knew a
+    // result when asked for it
+    private final Map<String, OptionalBool> keysThatIKnow = new HashMap<>();
 
     protected CachedShadowGroup(@NonNull ShadowGroup<S> parent,
                                 Map<String, List<S>> known,
@@ -36,6 +41,11 @@ class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
     }
 
     @Override
+    protected void handleResolverKnows(String name, boolean resolverKnows) {
+        keysThatIKnow.put(name, OptionalBool.definitely(resolverKnows));
+    }
+
+    @Override
     public S resolveFirst(String name) {
         List<S> result = cache.get(name);
         if (result != null && !result.isEmpty()) {
@@ -52,13 +62,11 @@ class CachedShadowGroup<S> extends SimpleShadowGroup<S> {
 
     @Override
     protected OptionalBool knowsSymbol(String simpleName) {
-        List<S> cached = cache.get(simpleName);
-        if (cached == null) {
-            return super.knowsSymbol(simpleName); // ask resolver
-        } else if (cached.isEmpty()) {
-            return OptionalBool.NO;
+        OptionalBool resolverKnows = resolver.knows(simpleName);
+        if (resolverKnows.isKnown()) {
+            return resolverKnows;
         } else {
-            return OptionalBool.YES;
+            return keysThatIKnow.getOrDefault(simpleName, OptionalBool.UNKNOWN);
         }
     }
 
