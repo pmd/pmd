@@ -55,4 +55,28 @@ public class Foo {
 ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>Shadowing a field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String myfield;
+
+    public void unused() {
+        String myfield = 'unused string';
+    }
+
+    public String usedDifferentMethod() {
+        String myfield = 'used';
+        return myfield;
+    }
+
+    public String fieldUsage() {
+        return myfield;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
