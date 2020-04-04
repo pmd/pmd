@@ -8,6 +8,7 @@
 This ruleset contains links to rules that are new in PMD v6.23.0
   </description>
 
+    <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/apex/codestyle.xml/FieldDeclarationsShouldBeAtStart"/>
 
 </ruleset>
