@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -161,7 +160,7 @@ public final class NSymbolTableResolver {
             // the following is just for the body
             // helper.pushCtxType(node.getSymbol());
 
-            pushed += pushOnStack(f.typeBody(top(), node.getTypeMirror()));
+            pushed += pushOnStack(f.typeBody(top(), node.getSymbol()));
 
             setTopSymbolTable(node.getBody());
 
@@ -192,7 +191,7 @@ public final class NSymbolTableResolver {
                            .map(ASTConstructorCall::getTypeNode));
 
             // helper.pushCtxType(node.getSymbol());
-            int pushed = pushOnStack(f.typeBody(top(), node.getTypeMirror())); // methods & fields & inherited classes
+            int pushed = pushOnStack(f.typeBody(top(), node.getSymbol())); // methods & fields & inherited classes
 
             setTopSymbolTableAndRecurse(node.getBody());
 
@@ -297,28 +296,9 @@ public final class NSymbolTableResolver {
             popStack(pushed);
         }
 
-        @Override
-        public void visit(ASTConstructorCall node, Void data) {
-            ASTExpression qual = node.getQualifier();
-            if (qual != null) {
-                // then the inner classes of the lhs type are in scope
-                // in the ClassType. Eg `foo.new Bar()` doesn't require
-                // an import for Bar
-                f.disambig(qual);
 
-                int pushed = pushOnStack(f.qualifiedCtorInvoc(top(), qual.getTypeMirror()));
-                setTopSymbolTableAndRecurse(node.getTypeNode());
-                popStack(pushed);
-            }
-
-            if (node.isAnonymousClass()) {
-                // then the type node needs to be disambiguated early,
-                // for the supertypes of the anon class to be resolved
-                f.disambig(node.getTypeNode());
-            }
-
-            setTopSymbolTableAndRecurse(node);
-        }
+        // TODO constructors of inner classes push a scope that depends on type resolution of the qualifier
+        // Eg `foo.new Bar()` doesn't require an import for Bar
 
         @Override
         public void visit(ASTTryStatement node, Void data) {

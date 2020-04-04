@@ -33,18 +33,14 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.Named;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.symbols.table.nimpl.MostlySingularMultimap.Builder;
-import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 final class SymTableFactory {
@@ -95,11 +91,6 @@ final class SymTableFactory {
                              : found;
     }
 
-    @NonNull
-    private JMethodSig sigOf(JMethodSymbol m) {
-        return processor.getTypeSystem().sigOf(m);
-    }
-
     protected boolean canBeImported(JAccessibleElementSymbol member) {
         return Resolvers.canBeImportedIn(thisPackage, member);
     }
@@ -108,20 +99,20 @@ final class SymTableFactory {
 
     // <editor-fold defaultstate="collapsed" desc="Shadowing essentials">
 
-    private <N, S extends Named> Builder<String, S> groupByName(Iterable<? extends N> tparams, Function<? super N, ? extends S> symbolFetcher) {
-        return Resolvers.<S>newMapBuilder().groupBy(CollectionUtil.map(tparams, symbolFetcher), Named::getSimpleName);
+    private <N, S extends JElementSymbol> Builder<String, S> groupByName(Iterable<? extends N> tparams, Function<? super N, ? extends S> symbolFetcher) {
+        return Resolvers.<S>newMapBuilder().groupBy(CollectionUtil.map(tparams, symbolFetcher), JElementSymbol::getSimpleName);
 
     }
 
-    private <S extends Named> Builder<String, S> groupByName(Iterable<? extends S> tparams) {
-        return Resolvers.<S>newMapBuilder().groupBy(tparams, Named::getSimpleName);
+    private <S extends JElementSymbol> Builder<String, S> groupByName(Iterable<? extends S> tparams) {
+        return Resolvers.<S>newMapBuilder().groupBy(tparams, JElementSymbol::getSimpleName);
     }
 
 
     @NonNull
     private NSymbolTable buildTable(NSymbolTable parent,
                                     ShadowGroup<JVariableSymbol> vars,
-                                    ShadowGroup<JMethodSig> methods,
+                                    ShadowGroup<JMethodSymbol> methods,
                                     ShadowGroup<JTypeDeclSymbol> types) {
         if (vars == parent.variables() && methods == parent.methods() && types == parent.types()) {
             return parent;
@@ -157,14 +148,14 @@ final class SymTableFactory {
 
         Builder<String, JTypeDeclSymbol> importedTypes = newMapBuilder();
         Builder<String, JVariableSymbol> importedFields = newMapBuilder();
-        Builder<String, JMethodSig> importedMethods = newMapBuilder();
+        Builder<String, JMethodSymbol> importedMethods = newMapBuilder();
 
         Set<String> lazyImportedPackagesAndTypes = new LinkedHashSet<>();
 
         fillImportOnDemands(importsOnDemand, importedTypes, importedFields, importedMethods, lazyImportedPackagesAndTypes);
 
         ShadowGroup<JVariableSymbol> vars = augment(parent.variables(), true, importedFields);
-        ShadowGroup<JMethodSig> methods = augment(parent.methods(), true, importedMethods);
+        ShadowGroup<JMethodSymbol> methods = augment(parent.methods(), true, importedMethods);
         ShadowGroup<JTypeDeclSymbol> types;
         if (lazyImportedPackagesAndTypes.isEmpty()) {
             // then we don't need to use the lazy impl
@@ -188,7 +179,7 @@ final class SymTableFactory {
 
         Builder<String, JTypeDeclSymbol> importedTypes = newMapBuilder();
         Builder<String, JVariableSymbol> importedFields = newMapBuilder();
-        Builder<String, JMethodSig> importedMethods = newMapBuilder();
+        Builder<String, JMethodSymbol> importedMethods = newMapBuilder();
 
         fillSingleImports(singleImports, importedTypes, importedFields, importedMethods);
 
@@ -204,7 +195,7 @@ final class SymTableFactory {
     private void fillImportOnDemands(Iterable<ASTImportDeclaration> importsOnDemand,
                                      Builder<String, JTypeDeclSymbol> importedTypes,
                                      Builder<String, JVariableSymbol> importedFields,
-                                     Builder<String, JMethodSig> importedMethods,
+                                     Builder<String, JMethodSymbol> importedMethods,
                                      Set<String> importedPackagesAndTypes) {
         for (ASTImportDeclaration anImport : importsOnDemand) {
             assert anImport.isImportOnDemand() : "Expected import on demand: " + anImport;
@@ -220,7 +211,7 @@ final class SymTableFactory {
 
                     for (JMethodSymbol m : containerClass.getDeclaredMethods()) {
                         if (Modifier.isStatic(m.getModifiers()) && canBeImported(m)) {
-                            importedMethods.appendValue(m.getSimpleName(), sigOf(m));
+                            importedMethods.appendValue(m.getSimpleName(), m);
                         }
                     }
 
@@ -250,7 +241,7 @@ final class SymTableFactory {
     private void fillSingleImports(List<ASTImportDeclaration> singleImports,
                                    Builder<String, JTypeDeclSymbol> importedTypes,
                                    Builder<String, JVariableSymbol> importedFields,
-                                   Builder<String, JMethodSig> importedMethods) {
+                                   Builder<String, JMethodSymbol> importedMethods) {
         for (ASTImportDeclaration anImport : singleImports) {
             if (anImport.isImportOnDemand()) {
                 throw new IllegalArgumentException(anImport.toString());
@@ -279,7 +270,7 @@ final class SymTableFactory {
                 for (JMethodSymbol m : containerClass.getDeclaredMethods()) {
                     if (m.getSimpleName().equals(simpleName) && Modifier.isStatic(m.getModifiers())
                         && canBeImported(m)) {
-                        importedMethods.appendValue(m.getSimpleName(), sigOf(m));
+                        importedMethods.appendValue(m.getSimpleName(), m);
                     }
                 }
 
@@ -327,16 +318,16 @@ final class SymTableFactory {
         return NSymbolTableImpl.withTypes(parent, augment(parent.types(), true, map));
     }
 
-    NSymbolTable typeBody(NSymbolTable parent, @NonNull JClassType sym) {
+    NSymbolTable typeBody(NSymbolTable parent, @NonNull JClassSymbol sym) {
 
         Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> resolvers = Resolvers.classAndFieldResolvers(sym);
 
         ShadowGroup<JTypeDeclSymbol> types = parent.types();
         types = augment(types, true, resolvers.getLeft());
-        types = augment(types, true, groupByName(sym.getFormalTypeParams(), JTypeVar::getSymbol));
+        types = augment(types, true, groupByName(sym.getTypeParameters()));
 
         ShadowGroup<JVariableSymbol> fields = augment(parent.variables(), true, resolvers.getRight());
-        ShadowGroup<JMethodSig> methods = new CachedShadowGroup<>(parent.methods(), Resolvers.methodResolver(sym), true);
+        ShadowGroup<JMethodSymbol> methods = new CachedShadowGroup<>(parent.methods(), Resolvers.methodResolver(sym), true);
 
         return buildTable(parent, fields, methods, types);
     }
@@ -353,7 +344,7 @@ final class SymTableFactory {
     }
 
     NSymbolTable typeHeader(NSymbolTable parent, JClassSymbol sym) {
-        return NSymbolTableImpl.withTypes(parent, augment(parent.types(), true, groupByName(sym.getTypeParameters(), JTypeVar::getSymbol)));
+        return NSymbolTableImpl.withTypes(parent, augment(parent.types(), true, groupByName(sym.getTypeParameters())));
     }
 
     /**
@@ -373,16 +364,6 @@ final class SymTableFactory {
     NSymbolTable recordCtor(NSymbolTable parent, JConstructorSymbol symbol) {
         return NSymbolTableImpl.withVars(parent, augment(parent.variables(), true, groupByName(symbol.getFormalParameters())));
     }
-
-
-    NSymbolTable qualifiedCtorInvoc(NSymbolTable parent, JTypeMirror qualifierType) {
-        if (qualifierType instanceof JClassType) {
-            return NSymbolTableImpl.withTypes(parent, augment(parent.types(), true, Resolvers.lazyNestedClassResolver((JClassType) qualifierType)));
-        } else {
-            return parent;
-        }
-    }
-
 
     /**
      * Local vars are merged into the parent shadowing group. They don't

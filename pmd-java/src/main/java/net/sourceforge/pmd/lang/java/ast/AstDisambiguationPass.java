@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticCheck
 
 import java.util.Iterator;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -58,6 +59,10 @@ final class AstDisambiguationPass {
      */
     public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes) {
         JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, processor)));
+    }
+
+    public static void disambig(JavaAstProcessor processor, JavaNode node) {
+        disambig(processor, NodeStream.of(node));
     }
 
 
@@ -186,6 +191,11 @@ final class AstDisambiguationPass {
                 return;
             }
 
+            if (type.getFirstChild() instanceof ASTAmbiguousName) {
+                type.getFirstChild().jjtAccept(this, processor);
+            }
+
+            // revisit children, which may have changed
             visitChildren(type, processor);
 
             if (type.getReferencedSym() != null) {
@@ -202,15 +212,23 @@ final class AstDisambiguationPass {
                 JTypeDeclSymbol sym;
                 if (result == null) {
                     processor.getLogger().warning(type, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
-                    int arity = ASTList.orEmpty(type.getTypeArguments()).size();
-                    sym = processor.makeUnresolvedReference(type.getSimpleName(), arity);
+                    sym = setArity(type, processor, type.getSimpleName());
                 } else {
                     sym = result.getResult();
+                    if (sym.isUnresolved()) {
+                        sym = setArity(type, processor, ((JClassSymbol) sym).getCanonicalName());
+                    }
                 }
                 type.setSymbol(sym);
 
             }
             assert type.getReferencedSym() != null : "Null symbol for " + type;
+        }
+
+        @NonNull
+        private JTypeDeclSymbol setArity(ASTClassOrInterfaceType type, JavaAstProcessor processor, String canonicalName) {
+            int arity = ASTList.orEmpty(type.getTypeArguments()).size();
+            return processor.makeUnresolvedReference(canonicalName, arity);
         }
 
         /*

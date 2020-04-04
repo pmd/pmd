@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.nimpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static net.sourceforge.pmd.util.StreamUtils.toList;
 
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ClassUtils.Interfaces;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,9 +30,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.nimpl.MostlySingularMultimap.Builder;
 import net.sourceforge.pmd.lang.java.symbols.table.nimpl.NameResolver.MultiSymResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.nimpl.NameResolver.SingleSymResolver;
-import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.util.OptionalBool;
 
 class Resolvers {
@@ -208,10 +205,14 @@ class Resolvers {
     }
 
     static NameResolver<JMethodSymbol> methodResolver(JClassSymbol t) {
+        JClassSymbol nestRoot = t.getNestRoot();
         return new MultiSymResolver<JMethodSymbol>() {
             @Override
             public List<JMethodSymbol> resolveHere(String simpleName) {
-                return toList(t.streamMethods(TypeOps.accessibleMethodFilter(simpleName, t.getSymbol())));
+                return SymUtils.getSuperTypeStream(t, Interfaces.INCLUDE)
+                               .flatMap(it -> it.getDeclaredMethods().stream())
+                               .filter(it -> it.getSimpleName().equals(simpleName) && isAccessibleInStrictSubtypeOfOwner(nestRoot, it))
+                               .collect(Collectors.toList());
             }
 
             @Override
@@ -230,15 +231,15 @@ class Resolvers {
         Set<String> seenFields = new HashSet<>();
         Set<String> seenTypes = new HashSet<>();
 
-        for (JClassType sup : TypeOps.iterateSuperTypes(t, Interfaces.INCLUDE)) {
-            for (JFieldSymbol df : sup.getSymbol().getDeclaredFields()) {
+        for (JClassSymbol sup : SymUtils.iterateSuperTypes(t, Interfaces.INCLUDE)) {
+            for (JFieldSymbol df : sup.getDeclaredFields()) {
                 if (seenFields.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
                     fields.appendValue(df.getSimpleName(), df);
                 }
             }
 
             boolean inInterface = sup.isInterface();
-            for (JClassSymbol df : sup.getSymbol().getDeclaredClasses()) {
+            for (JClassSymbol df : sup.getDeclaredClasses()) {
                 if (inInterface
                     || seenTypes.add(df.getSimpleName()) && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
                     types.appendValue(df.getSimpleName(), df);
@@ -252,20 +253,20 @@ class Resolvers {
 
     // same thing as above, the above just uses a single traversal
     // this will usually be queried just once because of
-    static NameResolver<JTypeDeclSymbol> lazyNestedClassResolver(JClassType t) {
+    static NameResolver<JTypeDeclSymbol> lazyNestedClassResolver(JClassSymbol t) {
         return new SingleSymResolver<JTypeDeclSymbol>() {
             @Nullable
             @Override
             public JTypeDeclSymbol resolveFirst(String simpleName) {
-                JClassSymbol here = t.getSymbol().getDeclaredClass(simpleName);
+                JClassSymbol here = t.getDeclaredClass(simpleName);
                 if (here != null) {
                     return here;
                 }
 
-                JClassSymbol nestRoot = t.getSymbol().getNestRoot();
+                JClassSymbol nestRoot = t.getNestRoot();
                 Set<String> seenTypes = new HashSet<>();
-                for (JClassType sup : TypeOps.iterateSuperTypes(t, Interfaces.INCLUDE)) {
-                    for (JClassSymbol df : sup.getSymbol().getDeclaredClasses()) {
+                for (JClassSymbol sup : SymUtils.iterateSuperTypes(t, Interfaces.INCLUDE)) {
+                    for (JClassSymbol df : sup.getDeclaredClasses()) {
                         if (seenTypes.add(df.getSimpleName())
                             && isAccessibleInStrictSubtypeOfOwner(nestRoot, df)) {
                             return df;

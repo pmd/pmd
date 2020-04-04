@@ -5,12 +5,20 @@
 package net.sourceforge.pmd.internal.util;
 
 
+import java.util.regex.Pattern;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
 
+    private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+(\\.\\w+)*|");
+
     private AssertionUtil() {
         // utility class
+    }
+
+    public static boolean isValidJavaPackageName(CharSequence name) {
+        return PACKAGE_PATTERN.matcher(name).matches();
     }
 
     public static int requireOver1(String name, final int value) {
