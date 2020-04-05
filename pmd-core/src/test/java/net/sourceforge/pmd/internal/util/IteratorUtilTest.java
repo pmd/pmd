@@ -171,6 +171,17 @@ public class IteratorUtilTest {
 
 
     @Test
+    public void testFlatmapWithSelf() {
+        Iterator<String> iter = iterOf("ab", "e", null, "f");
+        Function<String, Iterator<String>> fun = s -> s == null ? null // test null safety
+                                                                : iterOf(s + "1", s + "2");
+
+        Iterator<String> mapped = IteratorUtil.flatMapWithSelf(iter, fun);
+
+        assertThat(IteratorUtil.toList(mapped), contains("ab", "ab1", "ab2", "e", "e1", "e2", null, "f", "f1", "f2"));
+    }
+
+    @Test
     public void testMapNotNull() {
         Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
         Function<String, Integer> fun = s -> s.length() < 2 ? null : s.length();

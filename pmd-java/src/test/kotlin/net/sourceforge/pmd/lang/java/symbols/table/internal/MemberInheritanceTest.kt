@@ -472,6 +472,7 @@ class Impl extends Sup  {
 
 
         doTest("Case 7: ambiguity in n+1 supertypes may be transferred to subclass") {
+
             val acu = parser.withProcessing().parse("""
 
 

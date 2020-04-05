@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static java.util.Collections.emptySet;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -15,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
@@ -29,15 +27,6 @@ enum SuperTypesEnumerator {
         @Override
         public Iterator<JClassSymbol> iterator(JClassSymbol t) {
             return IteratorUtil.singletonIterator(t);
-        }
-    },
-
-    ALL_STRICT_SUPERTYPES {
-        @Override
-        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
-            Iterator<JClassSymbol> iter = ALL_SUPERTYPES_INCLUDING_SELF.iterator(t);
-            IteratorUtil.advance(iter, 1);
-            return iter;
         }
     },
 
@@ -84,6 +73,20 @@ enum SuperTypesEnumerator {
         }
     },
 
+
+    /**
+     * Restriction of {@link #ALL_SUPERTYPES_INCLUDING_SELF} to just the
+     * strict supertypes.
+     */
+    ALL_STRICT_SUPERTYPES {
+        @Override
+        public Iterator<JClassSymbol> iterator(JClassSymbol t) {
+            Iterator<JClassSymbol> iter = ALL_SUPERTYPES_INCLUDING_SELF.iterator(t);
+            IteratorUtil.advance(iter, 1);
+            return iter;
+        }
+    },
+
     /**
      * Walks supertypes depth-first, without duplicates. For example
      * for the following:
@@ -104,42 +107,21 @@ enum SuperTypesEnumerator {
     ALL_SUPERTYPES_INCLUDING_SELF {
         @Override
         public Iterator<JClassSymbol> iterator(JClassSymbol t) {
-            return flatMapToAddInterfaces(SUPERCLASSES_AND_SELF.iterator(t));
+            final Set<JClassSymbol> seenInterfaces = new HashSet<>();
+            return IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
+                final Set<JClassSymbol> currentInterfaces = new LinkedHashSet<>();
+                walkInterfaces(seenInterfaces, currentInterfaces, type);
+                return currentInterfaces.iterator();
+            });
         }
 
-        @NonNull
-        private Iterator<JClassSymbol> flatMapToAddInterfaces(Iterator<JClassSymbol> classes) {
-
-            return new Iterator<JClassSymbol>() {
-                private final Set<JClassSymbol> seenInterfaces = new HashSet<>();
-                private Iterator<JClassSymbol> interfaces = Collections.emptyIterator();
-
-                @Override
-                public boolean hasNext() {
-                    return interfaces.hasNext() || classes.hasNext();
+        private void walkInterfaces(final Set<JClassSymbol> seen, final Set<JClassSymbol> addTo, final JClassSymbol c) {
+            for (final JClassSymbol iface : c.getSuperInterfaces()) {
+                if (seen.add(iface)) {
+                    addTo.add(iface);
+                    walkInterfaces(seen, addTo, iface); // Recurses into all super itfs
                 }
-
-                @Override
-                public JClassSymbol next() {
-                    if (interfaces.hasNext()) {
-                        return interfaces.next();
-                    }
-                    final JClassSymbol nextSuperclass = classes.next();
-                    final Set<JClassSymbol> currentInterfaces = new LinkedHashSet<>();
-                    walkInterfaces(currentInterfaces, nextSuperclass);
-                    interfaces = currentInterfaces.iterator();
-                    return nextSuperclass;
-                }
-
-                private void walkInterfaces(final Set<JClassSymbol> addTo, final JClassSymbol c) {
-                    for (final JClassSymbol iface : c.getSuperInterfaces()) {
-                        if (seenInterfaces.add(iface)) {
-                            addTo.add(iface);
-                            walkInterfaces(addTo, iface); // Recurses into all super itfs
-                        }
-                    }
-                }
-            };
+            }
         }
     };
 
