@@ -1,0 +1,14 @@
+{
+  "version": "unknown",
+  "timestamp": "--replaced--",
+  "files": [],
+  "suppressedViolations": [],
+  "processingErrors": [
+    {
+      "filename": "file",
+      "message": "RuntimeException: Error",
+      "detail": "###REPLACE_ME###"
+    }
+  ],
+  "configurationErrors": []
+}

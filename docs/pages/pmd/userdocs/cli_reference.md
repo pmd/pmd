@@ -234,6 +234,8 @@ which can be specified with the `-property` option on the command-line.
     *   sourcePath:
     *   fileName:
 
+*   **json**: JSON format.
+
 *   **summaryhtml**: Summary HTML format.
 
     Properties:
