@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import javasymbols.testdata.StaticNameCollision
@@ -213,6 +215,58 @@ class HeaderScopesTest : ProcessorTestSpec({
         }
     }
 
+
+    parserTest("Method imported through $onDemandStaticImports should be shadowed by $staticSingleMemberImports") {
+
+        val acu = parser.parse(
+                """
+
+            import static javasymbols.testdata.StaticNameCollision.publicMethod;
+
+            import static javasymbols.testdata.Statics.*;
+
+            class Foo {}
+
+                """
+        )
+        doTest("The static import should shadow methods with the same name") {
+
+            acu.symbolTable.methods().iterateResults("publicMethod").let {
+                it.next()
+                it.apply {
+                    scopeTag shouldBe SINGLE_IMPORT
+                    results should haveSize(2)
+                    results.forEach {
+                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.StaticNameCollision"
+                    }
+                }
+
+                it.next()
+                it.apply {
+                    scopeTag shouldBe IMPORT_ON_DEMAND
+                    results should haveSize(2)
+                    results.forEach {
+                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                    }
+                }
+            }
+        }
+        doTest("Other names are not shadowed but treated separately") {
+
+            acu.symbolTable.methods().iterateResults("publicMethod2").let {
+                // other names are still imported by the import on demand
+
+                it.next()
+                it.apply {
+                    scopeTag shouldBe IMPORT_ON_DEMAND
+                    results should haveSize(1)
+                    results.forEach {
+                        it.enclosingClass.canonicalName shouldBe "javasymbols.testdata.Statics"
+                    }
+                }
+            }
+        }
+    }
 })
 
 
