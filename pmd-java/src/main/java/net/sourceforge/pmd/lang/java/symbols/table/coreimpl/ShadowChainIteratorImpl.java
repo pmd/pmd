@@ -68,16 +68,17 @@ class ShadowChainIteratorImpl<S, I>
     }
 
     private static boolean definitelyKnows(@NonNull ShadowChain<?, ?> group, String name) {
+        // It's not cool to depend on the implementation, but doing otherwise is publishing a lot of API
         if (group instanceof ShadowChainNode) {
             OptionalBool opt = ((ShadowChainNode<?, ?>) group).knowsSymbol(name);
             return opt.isKnown()
                    ? opt.isTrue()
-                   // Note that we bypass the shadow group to call directly the resolver
+                   // Note that we bypass the node to call directly the resolver
                    // This is to bypass the cache of cached resolvers, which stores declarations
                    // of enclosing groups
                    : ((ShadowChainNode<?, ?>) group).resolver.resolveFirst(name) != null;
         } else {
-            assert group instanceof ShadowChainRoot : "Not a root shadow group? " + group;
+            assert group instanceof ShadowChainRoot : "Not a root node? " + group;
             return false;
         }
     }

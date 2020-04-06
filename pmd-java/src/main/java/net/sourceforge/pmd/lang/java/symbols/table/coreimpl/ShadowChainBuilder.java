@@ -21,32 +21,46 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultim
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Utility to build shadow groups for a given type.
+ * Build a shadow chain for some type.
  *
- * @param <S> Type of symbols for the built shadow groups.
+ * <p>Implementing this framework means implementing {@link NameResolver}s for
+ * each relevant way that a declaration may be brought in scope, then figuring
+ * out the correct way these resolvers should be linked into a ShadowGroup chain.
+ * Shadow chain builders just give some utility methods to make the linking
+ * process more straightforward.
+ *
+ * @param <S> Type of symbols
+ * @param <I> Type of scope tags
  */
-public abstract class ShadowGroupBuilder<S, I> {
+public abstract class ShadowChainBuilder<S, I> {
 
-    private final MapMaker<String> mapMaker = this::copyStrategy;
+    private final MapMaker<String> mapMaker = this::copyToMutable;
 
-    public ShadowGroupBuilder() {
+    public ShadowChainBuilder() {
     }
 
-    private MostlySingularMultimap.Builder<String, S> newMapBuilder() {
+    MostlySingularMultimap.Builder<String, S> newMapBuilder() {
         return MostlySingularMultimap.newBuilder(mapMaker);
     }
 
-    protected <V> Map<String, V> copyStrategy(Map<String, V> m) {
+    /**
+     * Copy the given map into a new mutable map. This is provided
+     * as a hook to experiment with alternative map implementations
+     * easily, eg tries, or specialized maps.
+     */
+    protected <V> Map<String, V> copyToMutable(Map<String, V> m) {
         return new LinkedHashMap<>(m);
     }
 
-
+    /** Returns the name with which the given symbol should be indexed. */
     public abstract String getSimpleName(S sym);
 
-
+    /** Returns the singleton for the chain root. */
     public static <S, I> ShadowChain<S, I> rootGroup() {
         return ShadowChainRoot.empty();
     }
+
+    // #augment overloads wrap a resolver into a new chain node
 
     public ShadowChain<S, I> augment(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, ResolverBuilder symbols) {
         if (symbols.isEmpty() && !shadowBarrier) {
@@ -63,16 +77,28 @@ public abstract class ShadowGroupBuilder<S, I> {
         return new ShadowChainNode<>(parent, shadowBarrier, scopeTag, singleton(getSimpleName(symbol), symbol));
     }
 
+    // #__WithCache use a cache for resolved symbols
+    // Use this for expensive resolvers, instead of caching in the
+    // resolver itself (the chain node will cache the results of the
+    // parents too)
+
     public ShadowChain<S, I> augmentWithCache(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
-        return augmentWithCache(parent, shadowBarrier, scopeTag, new HashMap<>(), resolver);
+        return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag);
     }
 
-    public ShadowChain<S, I> augmentWithCache(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, Map<String, List<S>> cacheMap, NameResolver<S> resolver) {
-        return new CachedShadowGroup<>(parent, cacheMap, resolver, shadowBarrier, scopeTag);
+    public ShadowChain<S, I> shadowWithCache(ShadowChain<S, I> parent,
+                                             I scopeTag,
+                                             // this map will be used as the cache without copy,
+                                             // it may contain initial bindings, which is only
+                                             // valid if the built group is a shadow barrier, which
+                                             // is why this parameter is defaulted.
+                                             Map<String, List<S>> cacheMap,
+                                             NameResolver<S> resolver) {
+        return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag);
     }
 
 
-    // default the shadowBarrier param to true
+    // #shadow overloads default the shadowBarrier param to true
 
     public ShadowChain<S, I> shadow(ShadowChain<S, I> parent, I scopeTag, ResolverBuilder resolver) {
         return augment(parent, true, scopeTag, resolver);
@@ -87,7 +113,7 @@ public abstract class ShadowGroupBuilder<S, I> {
     }
 
 
-    // convenience
+    // convenience to build name resolvers
 
     public <N> ResolverBuilder groupByName(Iterable<? extends N> input, Function<? super N, ? extends S> symbolFetcher) {
         return new ResolverBuilder(newMapBuilder().groupBy(CollectionUtil.map(input, symbolFetcher), this::getSimpleName));
@@ -101,7 +127,11 @@ public abstract class ShadowGroupBuilder<S, I> {
         return singleton(getSimpleName(sym), sym);
     }
 
-
+    /**
+     * Helper to build a new name resolver. The internal data structure
+     * optimises for the case where there are no name collisions, which
+     * is a good trade for Java.
+     */
     public class ResolverBuilder {
 
         private final MostlySingularMultimap.Builder<String, S> myBuilder;

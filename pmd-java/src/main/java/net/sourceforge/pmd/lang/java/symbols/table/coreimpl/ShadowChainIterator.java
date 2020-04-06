@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Iterates over a {@link ShadowChain} chain to find a given name. This
+ * Iterates up a {@link ShadowChain} chain to find a given name. This
  * can be used to find all shadowed declarations for a given name, or to
  * find the reason why a declaration is in scope {@link #getScopeTag()}.
  */
@@ -19,11 +19,11 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChain<S, I>> {
 
 
     /**
-     * Returns the next shadow group that contains a declaration for
+     * Returns the next node in th chain that contains a declaration for
      * the name this iterator searches. If that group exists ({@link #hasNext()})
      * then the symbols yielded by {@link #getResults()} are shadowed
      * in the previous groups that were yielded (unless they are the same
-     * symbols, in which case there are eg duplicate imports).
+     * symbols, in which case there could be eg duplicate imports).
      */
     @Override
     ShadowChain<S, I> next();
@@ -38,8 +38,9 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChain<S, I>> {
 
 
     /**
-     * Returns the results of the search in the current shadow group.
-     * This list is nonempty.
+     * Returns the results of the search at the point the iterator is stopped.
+     * This list is nonempty.Note that a shadow chain iterator considers
+     * results node by node, it won't ask the next nodes in the tree.
      *
      * @throws IllegalStateException If {@link #next()} has not been called
      */

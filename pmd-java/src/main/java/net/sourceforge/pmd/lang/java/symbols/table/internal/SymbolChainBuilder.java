@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 
-class SymbolGroupBuilder<S extends JElementSymbol> extends ShadowGroupBuilder<S, ScopeInfo> {
+class SymbolChainBuilder<S extends JElementSymbol> extends ShadowChainBuilder<S, ScopeInfo> {
 
     @Override
     public String getSimpleName(S sym) {

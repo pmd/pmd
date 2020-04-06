@@ -10,20 +10,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Shadow groups structure {@link NameResolver}s into a linked list to
- * handle shadowing relations between declarations. Each group tracks
- * a single set of declarations of a single kind, resolved by a
- * {@link NameResolver}, and delegates resolve failures to the next
- * group in the chain. Groups can be seen as a node in the chain,
- * or as an entire chain. The latter view is more useful  the names
- * "group" They are meant to
- * be a building block for a full symbol table.
+ * A shadow chain is a linked list of {@link NameResolver}s, which handles
+ * shadowing relations between declarations. Chains track the scope of
+ * declarations of a single kind, corresponding to a namespace (eg types
+ * or methods).
  *
  * <h3>API usage</h3>
  *
  * <p>Basic usage:
  * <pre>{@code
- *   List<JVariableSymbol> foo = group.resolve("foo");
+ *   List<JVariableSymbol> foo = chain.resolve("foo");
  *   if (foo.isEmpty()) {
  *      // failed
  *   } else if (foo.size() > 1) {
@@ -35,29 +31,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <p>More advanced functionality is provided by {@link ShadowChainIterator}.
  *
- * @param <S> Type of symbols this group tracks
+ * @param <S> Type of symbols this chain tracks
  * @param <I> Type of the "scope tag", some data used to help identify
  *            the reason why a declaration is in scope. This can be retrieved
- *            with {@link ShadowChainIterator#getScopeTag()}
+ *            with {@link ShadowChainIterator#getScopeTag()}.
  *
- * @implNote Each shadow group is linked to the next one, and owns a {@link NameResolver}.
- *     When resolving a name, the search starts from the innermost shadow
- *     group around the name reference, then proceeds to the next one in the
- *     chain until it succeeds. When it succeeds, the next shadow groups in
- *     the chain are not queried: their declarations for the searched name
- *     are <i>shadowed</i> at the point of the name reference.
- *
- *     <p>Independent shadow group chains may track independent namespaces.
- *     For example in java, types, variables and methods occupy different
- *     namespaces (in fact, package names and statement labels do the same,
- *     in a useless sense). Shadow groups do not handle namespace collisions
- *     (in Java, <i>obscuring</i>), only name collisions within the same namespace.
- *     Shadow groups make the general assumption that names may be colliding
- *     anywhere, which is why {@link #resolve(String)} returns a list of symbols.
- *
- *     <p>Implementing this framework means implementing {@link NameResolver}s for
- *     each relevant way that a declaration may be brought in scope, then figuring
- *     out the correct way these resolvers should be linked into a ShadowGroup chain.
+ * @implNote ShadowChain instances can be viewed as both a node in the
+ *     chain or as the entire chain, I leave the former interpretation
+ *     as an implementation detail, and use the latter to explain the
+ *     API more simply. See {@link ShadowChainBuilder} for implementation
+ *     details
  */
 public interface ShadowChain<S, I> {
 

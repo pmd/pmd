@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 
 class JavaResolvers {
 
@@ -140,8 +140,8 @@ class JavaResolvers {
     static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inheritedMembersResolvers(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();
 
-        ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
-        ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
+        ShadowChainBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder fields = SymTableFactory.VARS.new ResolverBuilder();
+        ShadowChainBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
 
         for (JClassSymbol next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
             walkSelf(next, nestRoot, fields, types, new HashMap<>(), HashTreePSet.empty(), HashTreePSet.empty());
@@ -156,8 +156,8 @@ class JavaResolvers {
 
     private static void walkSelf(JClassSymbol t,
                                  JClassSymbol nestRoot, // context
-                                 ShadowGroupBuilder<JVariableSymbol, ?>.ResolverBuilder fields,
-                                 ShadowGroupBuilder<JTypeDeclSymbol, ?>.ResolverBuilder types,
+                                 ShadowChainBuilder<JVariableSymbol, ?>.ResolverBuilder fields,
+                                 ShadowChainBuilder<JTypeDeclSymbol, ?>.ResolverBuilder types,
                                  // map from symbol to set of paths taken to reach that symbol
                                  Map<JClassSymbol, Set<Pair<Set<String>, Set<String>>>> paths,
                                  // persistent because may change in every path of the recursion
@@ -187,7 +187,7 @@ class JavaResolvers {
     }
 
     private static <S extends JAccessibleElementSymbol> PSet<String> processDeclarations(JClassSymbol nestRoot,
-                                                                                         ShadowGroupBuilder<? super S, ?>.ResolverBuilder builder,
+                                                                                         ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
                                                                                          PSet<String> hidden,
                                                                                          List<S> syms) {
         for (S inner : syms) {

@@ -9,11 +9,11 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 
 final class SymbolTableImpl implements JSymbolTable {
 
-    static JSymbolTable EMPTY = new SymbolTableImpl(ShadowGroupBuilder.rootGroup(), ShadowGroupBuilder.rootGroup(), ShadowGroupBuilder.rootGroup());
+    static JSymbolTable EMPTY = new SymbolTableImpl(ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup());
 
     private final ShadowChain<JVariableSymbol, ScopeInfo> vars;
     private final ShadowChain<JTypeDeclSymbol, ScopeInfo> types;

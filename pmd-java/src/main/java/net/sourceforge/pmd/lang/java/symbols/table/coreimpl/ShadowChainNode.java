@@ -39,9 +39,9 @@ class ShadowChainNode<S, I> implements ShadowChain<S, I> {
 
     /**
      * This is package protected, because it would be impossible to find
-     * a value for this on the root shadow group. Instead, the scope tag
-     * is only accessible from a {@link ShadowChainIterator}, if we found results
-     * (which naturally excludes the root group, being empty)
+     * a value for this on the root node. Instead, the scope tag
+     * is only accessible from a {@link ShadowChainIterator}, if we found
+     * results (which naturally excludes the root group, being empty)
      */
     I getScopeTag() {
         return scopeTag;
@@ -64,6 +64,9 @@ class ShadowChainNode<S, I> implements ShadowChain<S, I> {
         if (res.isEmpty()) {
             return parent.resolve(name);
         } else if (!isShadowBarrier()) {
+            // A successful search ends on the first node that is a
+            // shadow barrier, inclusive
+            // A failed search continues regardless
             return ConsList.cons(res, parent.resolve(name));
         }
         return res;

@@ -263,7 +263,6 @@ public final class SymbolTableResolver {
              */
             int pushed = 0;
             for (ASTStatement st : node) {
-                // TODO those sym table are not their own shadow groups, they should be merged
                 if (st instanceof ASTLocalVariableDeclaration) {
                     pushed += pushOnStack(f.localVarSymTable(top(), ((ASTLocalVariableDeclaration) st).getVarIds()));
                 } else if (st instanceof ASTLocalClassStatement) {
@@ -271,7 +270,6 @@ public final class SymbolTableResolver {
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getSymbol()));
                     processTypeHeader(local);
                 }
-
 
                 setTopSymbolTable(st);
                 st.jjtAccept(this, null);

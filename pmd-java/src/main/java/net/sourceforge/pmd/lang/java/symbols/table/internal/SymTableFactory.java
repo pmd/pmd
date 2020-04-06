@@ -41,7 +41,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 
 final class SymTableFactory {
 
@@ -49,9 +49,9 @@ final class SymTableFactory {
     private final String thisPackage;
     private final JavaAstProcessor processor;
 
-    static final ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo> TYPES = new SymbolGroupBuilder<>();
-    static final ShadowGroupBuilder<JVariableSymbol, ScopeInfo> VARS = new SymbolGroupBuilder<>();
-    static final ShadowGroupBuilder<JMethodSymbol, ScopeInfo> METHODS = new SymbolGroupBuilder<>();
+    static final ShadowChainBuilder<JTypeDeclSymbol, ScopeInfo> TYPES = new SymbolChainBuilder<>();
+    static final ShadowChainBuilder<JVariableSymbol, ScopeInfo> VARS = new SymbolChainBuilder<>();
+    static final ShadowChainBuilder<JMethodSymbol, ScopeInfo> METHODS = new SymbolChainBuilder<>();
 
 
     SymTableFactory(String thisPackage, JavaAstProcessor processor) {
@@ -118,9 +118,9 @@ final class SymTableFactory {
             return parent;
         }
 
-        ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
-        ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
-        ShadowGroupBuilder<JMethodSymbol, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
+        ShadowChainBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+        ShadowChainBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
+        ShadowChainBuilder<JMethodSymbol, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
 
         Set<String> lazyImportedPackagesAndTypes = new LinkedHashSet<>();
 
@@ -133,9 +133,8 @@ final class SymTableFactory {
             // then we don't need to use the lazy impl
             types = TYPES.shadow(parent.types(), ScopeInfo.IMPORT_ON_DEMAND, importedTypes);
         } else {
-            types = TYPES.augmentWithCache(
+            types = TYPES.shadowWithCache(
                 parent.types(),
-                true,
                 ScopeInfo.IMPORT_ON_DEMAND,
                 importedTypes.getMutableMap(),
                 JavaResolvers.importedOnDemand(lazyImportedPackagesAndTypes, processor.getSymResolver(), thisPackage)
@@ -150,9 +149,9 @@ final class SymTableFactory {
             return parent;
         }
 
-        ShadowGroupBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
-        ShadowGroupBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
-        ShadowGroupBuilder<JMethodSymbol, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
+        ShadowChainBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder importedTypes = TYPES.new ResolverBuilder();
+        ShadowChainBuilder<JVariableSymbol, ScopeInfo>.ResolverBuilder importedFields = VARS.new ResolverBuilder();
+        ShadowChainBuilder<JMethodSymbol, ScopeInfo>.ResolverBuilder importedMethods = METHODS.new ResolverBuilder();
 
         fillSingleImports(singleImports, importedTypes, importedFields, importedMethods);
 
@@ -166,9 +165,9 @@ final class SymTableFactory {
     }
 
     private void fillImportOnDemands(Iterable<ASTImportDeclaration> importsOnDemand,
-                                     ShadowGroupBuilder<JTypeDeclSymbol, ?>.ResolverBuilder importedTypes,
-                                     ShadowGroupBuilder<JVariableSymbol, ?>.ResolverBuilder importedFields,
-                                     ShadowGroupBuilder<JMethodSymbol, ?>.ResolverBuilder importedMethods,
+                                     ShadowChainBuilder<JTypeDeclSymbol, ?>.ResolverBuilder importedTypes,
+                                     ShadowChainBuilder<JVariableSymbol, ?>.ResolverBuilder importedFields,
+                                     ShadowChainBuilder<JMethodSymbol, ?>.ResolverBuilder importedMethods,
                                      Set<String> importedPackagesAndTypes) {
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
@@ -213,9 +212,9 @@ final class SymTableFactory {
     }
 
     private void fillSingleImports(Iterable<ASTImportDeclaration> singleImports,
-                                   ShadowGroupBuilder<JTypeDeclSymbol, ?>.ResolverBuilder importedTypes,
-                                   ShadowGroupBuilder<JVariableSymbol, ?>.ResolverBuilder importedFields,
-                                   ShadowGroupBuilder<JMethodSymbol, ?>.ResolverBuilder importedMethods) {
+                                   ShadowChainBuilder<JTypeDeclSymbol, ?>.ResolverBuilder importedTypes,
+                                   ShadowChainBuilder<JVariableSymbol, ?>.ResolverBuilder importedFields,
+                                   ShadowChainBuilder<JMethodSymbol, ?>.ResolverBuilder importedMethods) {
         for (ASTImportDeclaration anImport : singleImports) {
             if (anImport.isImportOnDemand()) {
                 throw new IllegalArgumentException(anImport.toString());
