@@ -10,8 +10,54 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A shadow group indexes symbols by their simple name. It's a subset
- * of a symbol table, caring about symbols of a certain kind.
+ * Shadow groups structure {@link NameResolver}s into a linked list to
+ * handle shadowing relations between declarations. They are meant to
+ * be a building block for a full symbol table. Each shadow group is
+ * linked to the next one, and owns a {@link NameResolver}. When resolving
+ * a name, the search starts from the innermost shadow group around the
+ * name reference, then proceeds to the next one in the chain until it
+ * succeeds. When it succeeds, the next shadow groups in the chain are
+ * not queried: their declarations for the searched name are <i>shadowed</i>
+ * at the point of the name reference.
+ *
+ * <p>Independent shadow group chains may track independent namespaces.
+ * For example in java, types, variables and methods occupy different
+ * namespaces (in fact, package names and statement labels do the same).
+ * When namespaces collide
+ *
+ * FIXME this is a mess
+ *
+ * It's a subset
+ * of a symbol table, caring about symbols of a certain kind. For example
+ * in java, there are three kinds of shadow groups, which correspond to
+ * independent namespaces: for types, methods, and variables. At a particular
+ * program point in the source code, many different declarations may be <i>in
+ * scope</i>, meaning they can be referred to by simple name. When multiple
+ * declarations which have the same simple name are in scope at the same
+ * time, the language semantics decide which one is preferred (eg prefer
+ * a local variable to a field). This is called <i>shadowing</i> (in a
+ * loose sense). When the choice cannot be arbitrated, a compiler might
+ * raise an ambiguity error (eg several types inherited from unrelated
+ * interfaces), some other kind of error (eg declaring several local
+ * variables with the same name in the same block is illegal), or just
+ * ignore it. This again depends on the semantics of the language (the
+ * examples are given for Java).
+ *
+ * <p>Inside a code analysis tool, like PMD, or a compiler, declarations
+ * are tracked by a <i>symbol table</i>, which indexes the symbols that
+ * are in scope at any program point. ShadowGroups are meant to be a
+ * building block for
+ *
+ * <p>In languages like Java, the scope of declarations follow closely
+ * the structure of the AST (eg they mostly correspond to blocks), which
+ * means it's practicable to just have a data structure track the names
+ * that
+ *
+ * Inside each scope, some declarations may be in scope,
+ * and some may be They have independent namespaces, and though those may
+ * collide (obscuring), shadow groups . The term "shadowing" is meant in a general
+ * sense here, since it depends on the semantics associated with the members
+ * of the namespace.
  *
  * <p>Basic usage:
  * <pre>{@code
