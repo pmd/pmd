@@ -14,13 +14,13 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 class ShadowChainIteratorImpl<S, I>
-    extends IteratorUtil.AbstractPausingIterator<ShadowChain<S, I>>
+    extends IteratorUtil.AbstractPausingIterator<ShadowChainNode<S, I>>
     implements ShadowChainIterator<S, I> {
 
-    private ShadowChain<S, I> nextGroupToTest;
+    private ShadowChainNode<S, I> nextGroupToTest;
     private final String name;
 
-    ShadowChainIteratorImpl(ShadowChain<S, I> firstInclusive, String name) {
+    ShadowChainIteratorImpl(ShadowChainNode<S, I> firstInclusive, String name) {
         this.nextGroupToTest = firstInclusive;
         this.name = name;
     }
@@ -29,7 +29,7 @@ class ShadowChainIteratorImpl<S, I>
 
     @Override
     protected void computeNext() {
-        ShadowChain<S, I> next = nextGroupThatKnows(nextGroupToTest, name);
+        ShadowChainNode<S, I> next = nextGroupThatKnows(nextGroupToTest, name);
         if (next == null) {
             done();
             return;
@@ -39,8 +39,8 @@ class ShadowChainIteratorImpl<S, I>
 
 
     @Override
-    protected void prepareViewOn(ShadowChain<S, I> current) {
-        if (current instanceof ShadowChainNode) {
+    protected void prepareViewOn(ShadowChainNode<S, I> current) {
+        if (current instanceof ShadowChainNodeBase) {
             nextGroupToTest = current.getParent();
         } else {
             throw new IllegalStateException("Root group is empty " + current);
@@ -49,38 +49,34 @@ class ShadowChainIteratorImpl<S, I>
 
     @Override
     public I getScopeTag() {
-        return ((ShadowChainNode<S, I>) getCurrentValue()).getScopeTag();
+        return ((ShadowChainNodeBase<S, I>) getCurrentValue()).getScopeTag();
     }
 
     @Override
     public List<S> getResults() {
-        return getCurrentValue().resolve(name);
+        return getCurrentValue().getResolver().resolveHere(name);
     }
 
     // inclusive of the parameter
     // @Contract("null -> null")
-    private @Nullable ShadowChain<S, I> nextGroupThatKnows(@Nullable ShadowChain<S, I> group, String name) {
-        ShadowChain<S, I> parent = group;
+    private @Nullable ShadowChainNode<S, I> nextGroupThatKnows(@Nullable ShadowChainNode<S, I> group, String name) {
+        ShadowChainNode<S, I> parent = group;
         while (parent != null && !definitelyKnows(parent, name)) {
             parent = parent.getParent();
         }
         return parent;
     }
 
-    private static boolean definitelyKnows(@NonNull ShadowChain<?, ?> group, String name) {
+    private static boolean definitelyKnows(@NonNull ShadowChainNode<?, ?> group, String name) {
         // It's not cool to depend on the implementation, but doing otherwise is publishing a lot of API
-        if (group instanceof ShadowChainNode) {
-            OptionalBool opt = ((ShadowChainNode<?, ?>) group).knowsSymbol(name);
-            return opt.isKnown()
-                   ? opt.isTrue()
-                   // Note that we bypass the node to call directly the resolver
-                   // This is to bypass the cache of cached resolvers, which stores declarations
-                   // of enclosing groups
-                   : ((ShadowChainNode<?, ?>) group).resolver.resolveFirst(name) != null;
-        } else {
-            assert group instanceof ShadowChainRoot : "Not a root node? " + group;
-            return false;
+        OptionalBool opt = group.knowsSymbol(name);
+        if (opt.isKnown()) {
+            return opt.isTrue();
         }
+        // Note that we bypass the node to call directly the resolver
+        // This is to bypass the cache of cached resolvers, which stores declarations
+        // of enclosing groups
+        return group.getResolver().resolveFirst(name) != null;
     }
 
 }

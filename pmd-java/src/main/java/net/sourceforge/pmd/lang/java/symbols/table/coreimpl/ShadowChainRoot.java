@@ -11,20 +11,42 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.util.OptionalBool;
+
 
 /**
  * An empty group, bottom of the linked lists, for implementation simplicity.
  */
-class ShadowChainRoot<S, I> implements ShadowChain<S, I> {
+class ShadowChainRoot<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> {
 
-    @SuppressWarnings({"rawtypes"})
+    @SuppressWarnings( {"rawtypes"})
     private static final ShadowChainRoot EMPTY = new ShadowChainRoot<>();
 
     private ShadowChainRoot() {
     }
 
     @Override
-    public @Nullable ShadowChain<S, I> getParent() {
+    public ShadowChain<S, I> asChain() {
+        return this;
+    }
+
+    @Override
+    public ShadowChainNode<S, I> asNode() {
+        return this;
+    }
+
+    @Override
+    public NameResolver<S> getResolver() {
+        return CoreResolvers.emptyResolver();
+    }
+
+    @Override
+    public OptionalBool knowsSymbol(String name) {
+        return OptionalBool.NO;
+    }
+
+    @Override
+    public @Nullable ShadowChainNode<S, I> getParent() {
         return null;
     }
 
@@ -48,8 +70,8 @@ class ShadowChainRoot<S, I> implements ShadowChain<S, I> {
         return "Root";
     }
 
-    @SuppressWarnings({"unchecked"})
-    static <S, I> ShadowChain<S, I> empty() {
+    @SuppressWarnings( {"unchecked"})
+    static <S, I> ShadowChainNode<S, I> empty() {
         return EMPTY;
     }
 }

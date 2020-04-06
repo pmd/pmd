@@ -10,18 +10,19 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainNode;
 
 final class SymbolTableImpl implements JSymbolTable {
 
     static JSymbolTable EMPTY = new SymbolTableImpl(ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup());
 
-    private final ShadowChain<JVariableSymbol, ScopeInfo> vars;
-    private final ShadowChain<JTypeDeclSymbol, ScopeInfo> types;
-    private final ShadowChain<JMethodSymbol, ScopeInfo> methods;
+    private final ShadowChainNode<JVariableSymbol, ScopeInfo> vars;
+    private final ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types;
+    private final ShadowChainNode<JMethodSymbol, ScopeInfo> methods;
 
-    SymbolTableImpl(ShadowChain<JVariableSymbol, ScopeInfo> vars,
-                    ShadowChain<JTypeDeclSymbol, ScopeInfo> types,
-                    ShadowChain<JMethodSymbol, ScopeInfo> methods) {
+    SymbolTableImpl(ShadowChainNode<JVariableSymbol, ScopeInfo> vars,
+                    ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types,
+                    ShadowChainNode<JMethodSymbol, ScopeInfo> methods) {
         this.vars = vars;
         this.types = types;
         this.methods = methods;
@@ -29,17 +30,17 @@ final class SymbolTableImpl implements JSymbolTable {
 
     @Override
     public ShadowChain<JVariableSymbol, ScopeInfo> variables() {
-        return vars;
+        return vars.asChain();
     }
 
     @Override
     public ShadowChain<JTypeDeclSymbol, ScopeInfo> types() {
-        return types;
+        return types.asChain();
     }
 
     @Override
     public ShadowChain<JMethodSymbol, ScopeInfo> methods() {
-        return methods;
+        return methods.asChain();
     }
 
     @Override
@@ -51,11 +52,11 @@ final class SymbolTableImpl implements JSymbolTable {
             '}';
     }
 
-    static JSymbolTable withVars(JSymbolTable parent, ShadowChain<JVariableSymbol, ScopeInfo> vars) {
-        return new SymbolTableImpl(vars, parent.types(), parent.methods());
+    static JSymbolTable withVars(JSymbolTable parent, ShadowChainNode<JVariableSymbol, ScopeInfo> vars) {
+        return new SymbolTableImpl(vars, parent.types().asNode(), parent.methods().asNode());
     }
 
-    static JSymbolTable withTypes(JSymbolTable parent, ShadowChain<JTypeDeclSymbol, ScopeInfo> types) {
-        return new SymbolTableImpl(parent.variables(), types, parent.methods());
+    static JSymbolTable withTypes(JSymbolTable parent, ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types) {
+        return new SymbolTableImpl(parent.variables().asNode(), types, parent.methods().asNode());
     }
 }

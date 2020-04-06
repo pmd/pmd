@@ -56,25 +56,25 @@ public abstract class ShadowChainBuilder<S, I> {
     public abstract String getSimpleName(S sym);
 
     /** Returns the singleton for the chain root. */
-    public static <S, I> ShadowChain<S, I> rootGroup() {
+    public static <S, I> ShadowChainNode<S, I> rootGroup() {
         return ShadowChainRoot.empty();
     }
 
     // #augment overloads wrap a resolver into a new chain node
 
-    public ShadowChain<S, I> augment(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, ResolverBuilder symbols) {
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, ResolverBuilder symbols) {
         if (symbols.isEmpty() && !shadowBarrier) {
             return parent;
         }
-        return new ShadowChainNode<>(parent, shadowBarrier, scopeTag, symbols.build());
+        return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, symbols.build());
     }
 
-    public ShadowChain<S, I> augment(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
-        return new ShadowChainNode<>(parent, shadowBarrier, scopeTag, resolver);
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
+        return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, resolver);
     }
 
-    public ShadowChain<S, I> augment(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, S symbol) {
-        return new ShadowChainNode<>(parent, shadowBarrier, scopeTag, singleton(getSimpleName(symbol), symbol));
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, S symbol) {
+        return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, singleton(getSimpleName(symbol), symbol));
     }
 
     // #__WithCache use a cache for resolved symbols
@@ -82,33 +82,33 @@ public abstract class ShadowChainBuilder<S, I> {
     // resolver itself (the chain node will cache the results of the
     // parents too)
 
-    public ShadowChain<S, I> augmentWithCache(ShadowChain<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
         return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag);
     }
 
-    public ShadowChain<S, I> shadowWithCache(ShadowChain<S, I> parent,
-                                             I scopeTag,
-                                             // this map will be used as the cache without copy,
-                                             // it may contain initial bindings, which is only
-                                             // valid if the built group is a shadow barrier, which
-                                             // is why this parameter is defaulted.
-                                             Map<String, List<S>> cacheMap,
-                                             NameResolver<S> resolver) {
+    public ShadowChainNode<S, I> shadowWithCache(ShadowChainNode<S, I> parent,
+                                                 I scopeTag,
+                                                 // this map will be used as the cache without copy,
+                                                 // it may contain initial bindings, which is only
+                                                 // valid if the built group is a shadow barrier, which
+                                                 // is why this parameter is defaulted.
+                                                 Map<String, List<S>> cacheMap,
+                                                 NameResolver<S> resolver) {
         return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag);
     }
 
 
     // #shadow overloads default the shadowBarrier param to true
 
-    public ShadowChain<S, I> shadow(ShadowChain<S, I> parent, I scopeTag, ResolverBuilder resolver) {
+    public ShadowChainNode<S, I> shadow(ShadowChainNode<S, I> parent, I scopeTag, ResolverBuilder resolver) {
         return augment(parent, true, scopeTag, resolver);
     }
 
-    public ShadowChain<S, I> shadow(ShadowChain<S, I> parent, I scopeTag, NameResolver<S> resolver) {
+    public ShadowChainNode<S, I> shadow(ShadowChainNode<S, I> parent, I scopeTag, NameResolver<S> resolver) {
         return augment(parent, true, scopeTag, resolver);
     }
 
-    public ShadowChain<S, I> shadow(ShadowChain<S, I> parent, I scopeTag, S symbol) {
+    public ShadowChainNode<S, I> shadow(ShadowChainNode<S, I> parent, I scopeTag, S symbol) {
         return augment(parent, true, scopeTag, symbol);
     }
 

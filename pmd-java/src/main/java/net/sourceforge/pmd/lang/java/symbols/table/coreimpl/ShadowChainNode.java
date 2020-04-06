@@ -4,88 +4,46 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
-import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
-class ShadowChainNode<S, I> implements ShadowChain<S, I> {
+/**
+ * A {@link ShadowChain} viewed as individual nodes. This offers a lower
+ * level API as {@link ShadowChain}.
+ */
+public interface ShadowChainNode<S, I> {
 
-    protected final NameResolver<S> resolver;
-    protected final @NonNull ShadowChain<S, I> parent;
-    private final boolean shadowBarrier;
-    private final I scopeTag;
-
-    ShadowChainNode(@NonNull ShadowChain<S, I> parent,
-                    boolean shadowBarrier,
-                    I scopeTag,
-                    NameResolver<S> resolver) {
-        this.parent = parent;
-        this.scopeTag = scopeTag;
-        this.shadowBarrier = shadowBarrier;
-        this.resolver = resolver;
-    }
-
-    @Override
-    public final boolean isShadowBarrier() {
-        return shadowBarrier;
-    }
-
-    @Override
-    public @NonNull ShadowChain<S, I> getParent() {
-        return parent;
-    }
 
     /**
-     * This is package protected, because it would be impossible to find
-     * a value for this on the root node. Instead, the scope tag
-     * is only accessible from a {@link ShadowChainIterator}, if we found
-     * results (which naturally excludes the root group, being empty)
+     * Returns true if this group shadows the next groups in the chain.
+     * This means, that if this group knows about a name, it won't delegate
+     * resolve to the next group in the chain. If it doesn't know about it
+     * then resolve proceeds anyway.
      */
-    I getScopeTag() {
-        return scopeTag;
-    }
+    boolean isShadowBarrier();
 
-    @Override
-    public ShadowChainIterator<S, I> iterateResults(String name) {
-        return new ShadowChainIteratorImpl<>(this, name);
-    }
 
-    /** Doesn't ask the parents. */
-    protected OptionalBool knowsSymbol(String simpleName) {
-        return resolver.knows(simpleName);
-    }
+    /**
+     * Returns the next node in the chain. Returns null if this is the
+     * root.
+     */
+    @Nullable ShadowChainNode<S, I> getParent();
 
-    @Override
-    public @NonNull List<S> resolve(String name) {
-        List<S> res = resolver.resolveHere(name);
-        handleResolverKnows(name, !res.isEmpty());
-        if (res.isEmpty()) {
-            return parent.resolve(name);
-        } else if (!isShadowBarrier()) {
-            // A successful search ends on the first node that is a
-            // shadow barrier, inclusive
-            // A failed search continues regardless
-            return ConsList.cons(res, parent.resolve(name));
-        }
-        return res;
-    }
 
-    protected void handleResolverKnows(String name, boolean resolverKnows) {
-        // to be overridden
-    }
+    /**
+     * Returns the resolver for this node.
+     */
+    NameResolver<S> getResolver();
 
-    @Override
-    public S resolveFirst(String name) {
-        S s = resolver.resolveFirst(name);
-        handleResolverKnows(name, name != null);
-        return s != null ? s : parent.resolveFirst(name);
-    }
 
-    @Override
-    public String toString() {
-        return scopeTag + "  " + resolver.toString();
-    }
+    /**
+     * Returns whether this node knows the given symbol (without asking
+     * the parents).
+     */
+    OptionalBool knowsSymbol(String name);
+
+
+    ShadowChain<S, I> asChain();
 
 }

@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
-class CachingShadowChainNode<S, I> extends ShadowChainNode<S, I> {
+class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
 
     private final Map<String, List<S>> cache;
 
@@ -21,7 +21,7 @@ class CachingShadowChainNode<S, I> extends ShadowChainNode<S, I> {
     // result when asked for it
     private final Map<String, OptionalBool> keysThatIKnow = new HashMap<>();
 
-    protected CachingShadowChainNode(@NonNull ShadowChain<S, I> parent,
+    protected CachingShadowChainNode(@NonNull ShadowChainNode<S, I> parent,
                                      Map<String, List<S>> known,
                                      NameResolver<S> resolver,
                                      boolean shadowBarrier,
@@ -63,7 +63,7 @@ class CachingShadowChainNode<S, I> extends ShadowChainNode<S, I> {
     }
 
     @Override
-    protected OptionalBool knowsSymbol(String simpleName) {
+    public OptionalBool knowsSymbol(String simpleName) {
         OptionalBool resolverKnows = resolver.knows(simpleName);
         if (resolverKnows.isKnown()) {
             return resolverKnows;

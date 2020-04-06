@@ -40,8 +40,8 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainNode;
 
 final class SymTableFactory {
 
@@ -103,14 +103,26 @@ final class SymTableFactory {
 
     @NonNull
     private JSymbolTable buildTable(JSymbolTable parent,
-                                    ShadowChain<JVariableSymbol, ScopeInfo> vars,
-                                    ShadowChain<JMethodSymbol, ScopeInfo> methods,
-                                    ShadowChain<JTypeDeclSymbol, ScopeInfo> types) {
+                                    ShadowChainNode<JVariableSymbol, ScopeInfo> vars,
+                                    ShadowChainNode<JMethodSymbol, ScopeInfo> methods,
+                                    ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types) {
         if (vars == parent.variables() && methods == parent.methods() && types == parent.types()) {
             return parent;
         } else {
             return new SymbolTableImpl(vars, types, methods);
         }
+    }
+
+    private ShadowChainNode<JTypeDeclSymbol, ScopeInfo> typeNode(JSymbolTable parent) {
+        return parent.types().asNode();
+    }
+
+    private ShadowChainNode<JVariableSymbol, ScopeInfo> varNode(JSymbolTable parent) {
+        return parent.variables().asNode();
+    }
+
+    private ShadowChainNode<JMethodSymbol, ScopeInfo> methodNode(JSymbolTable parent) {
+        return parent.methods().asNode();
     }
 
     JSymbolTable importsOnDemand(JSymbolTable parent, Collection<ASTImportDeclaration> importsOnDemand) {
@@ -126,15 +138,15 @@ final class SymTableFactory {
 
         fillImportOnDemands(importsOnDemand, importedTypes, importedFields, importedMethods, lazyImportedPackagesAndTypes);
 
-        ShadowChain<JVariableSymbol, ScopeInfo> vars = VARS.shadow(parent.variables(), ScopeInfo.IMPORT_ON_DEMAND, importedFields);
-        ShadowChain<JMethodSymbol, ScopeInfo> methods = METHODS.shadow(parent.methods(), ScopeInfo.IMPORT_ON_DEMAND, importedMethods);
-        ShadowChain<JTypeDeclSymbol, ScopeInfo> types;
+        ShadowChainNode<JVariableSymbol, ScopeInfo> vars = VARS.shadow(varNode(parent), ScopeInfo.IMPORT_ON_DEMAND, importedFields);
+        ShadowChainNode<JMethodSymbol, ScopeInfo> methods = METHODS.shadow(methodNode(parent), ScopeInfo.IMPORT_ON_DEMAND, importedMethods);
+        ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types;
         if (lazyImportedPackagesAndTypes.isEmpty()) {
             // then we don't need to use the lazy impl
-            types = TYPES.shadow(parent.types(), ScopeInfo.IMPORT_ON_DEMAND, importedTypes);
+            types = TYPES.shadow(typeNode(parent), ScopeInfo.IMPORT_ON_DEMAND, importedTypes);
         } else {
             types = TYPES.shadowWithCache(
-                parent.types(),
+                typeNode(parent),
                 ScopeInfo.IMPORT_ON_DEMAND,
                 importedTypes.getMutableMap(),
                 JavaResolvers.importedOnDemand(lazyImportedPackagesAndTypes, processor.getSymResolver(), thisPackage)
@@ -143,6 +155,7 @@ final class SymTableFactory {
 
         return buildTable(parent, vars, methods, types);
     }
+
 
     JSymbolTable singleImportsSymbolTable(JSymbolTable parent, Collection<ASTImportDeclaration> singleImports) {
         if (singleImports.isEmpty()) {
@@ -157,9 +170,9 @@ final class SymTableFactory {
 
         return buildTable(
             parent,
-            VARS.shadow(parent.variables(), ScopeInfo.SINGLE_IMPORT, importedFields.build()),
-            METHODS.shadow(parent.methods(), ScopeInfo.SINGLE_IMPORT, importedMethods.build()),
-            TYPES.shadow(parent.types(), ScopeInfo.SINGLE_IMPORT, importedTypes.build())
+            VARS.shadow(varNode(parent), ScopeInfo.SINGLE_IMPORT, importedFields.build()),
+            METHODS.shadow(methodNode(parent), ScopeInfo.SINGLE_IMPORT, importedMethods.build()),
+            TYPES.shadow(typeNode(parent), ScopeInfo.SINGLE_IMPORT, importedTypes.build())
         );
 
     }
@@ -278,7 +291,7 @@ final class SymTableFactory {
 
         return SymbolTableImpl.withTypes(
             parent,
-            TYPES.augmentWithCache(parent.types(), true, scopeTag, JavaResolvers.packageResolver(processor.getSymResolver(), packageName))
+            TYPES.augmentWithCache(typeNode(parent), true, scopeTag, JavaResolvers.packageResolver(processor.getSymResolver(), packageName))
         );
     }
 
@@ -286,17 +299,17 @@ final class SymTableFactory {
 
         Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inherited = JavaResolvers.inheritedMembersResolvers(sym);
 
-        ShadowChain<JTypeDeclSymbol, ScopeInfo> types = parent.types();
+        ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types = typeNode(parent);
         types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, sym);                                                // self name
         types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                                     // inherited classes (note they shadow the enclosing type)
         types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(sym.getDeclaredClasses())); // inner classes declared here
         types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters()));             // type parameters
 
-        ShadowChain<JVariableSymbol, ScopeInfo> fields = parent.variables();
+        ShadowChainNode<JVariableSymbol, ScopeInfo> fields = varNode(parent);
         fields = VARS.shadow(fields, ScopeInfo.INHERITED, inherited.getRight());
         fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(sym.getDeclaredFields()));
 
-        ShadowChain<JMethodSymbol, ScopeInfo> methods = parent.methods();
+        ShadowChainNode<JMethodSymbol, ScopeInfo> methods = methodNode(parent);
         // notice this is a shadow barrier
         methods = METHODS.augmentWithCache(methods, true, ScopeInfo.INHERITED, JavaResolvers.methodResolver(sym, true));
         // and not this one
@@ -308,15 +321,15 @@ final class SymTableFactory {
     }
 
     JSymbolTable typesInFile(JSymbolTable parent, NodeStream<ASTAnyTypeDeclaration> decls) {
-        return SymbolTableImpl.withTypes(parent, TYPES.shadow(parent.types(), SAME_FILE, TYPES.groupByName(decls, ASTAnyTypeDeclaration::getSymbol)));
+        return SymbolTableImpl.withTypes(parent, TYPES.shadow(typeNode(parent), SAME_FILE, TYPES.groupByName(decls, ASTAnyTypeDeclaration::getSymbol)));
     }
 
     JSymbolTable selfType(JSymbolTable parent, JClassSymbol sym) {
-        return SymbolTableImpl.withTypes(parent, TYPES.shadow(parent.types(), ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(sym)));
+        return SymbolTableImpl.withTypes(parent, TYPES.shadow(typeNode(parent), ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(sym)));
     }
 
     JSymbolTable typeHeader(JSymbolTable parent, JClassSymbol sym) {
-        return SymbolTableImpl.withTypes(parent, TYPES.shadow(parent.types(), ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters())));
+        return SymbolTableImpl.withTypes(parent, TYPES.shadow(typeNode(parent), ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters())));
     }
 
     /**
@@ -327,14 +340,14 @@ final class SymTableFactory {
      */
     JSymbolTable bodyDeclaration(JSymbolTable parent, @Nullable ASTFormalParameters formals, @Nullable ASTTypeParameters tparams) {
         return new SymbolTableImpl(
-            VARS.shadow(parent.variables(), ScopeInfo.FORMAL_PARAM, VARS.groupByName(ASTList.orEmptyStream(formals), fp -> fp.getVarId().getSymbol())),
-            TYPES.shadow(parent.types(), ScopeInfo.TYPE_PARAM, TYPES.groupByName(ASTList.orEmptyStream(tparams), ASTTypeParameter::getSymbol)),
-            parent.methods()
+            VARS.shadow(varNode(parent), ScopeInfo.FORMAL_PARAM, VARS.groupByName(ASTList.orEmptyStream(formals), fp -> fp.getVarId().getSymbol())),
+            TYPES.shadow(typeNode(parent), ScopeInfo.TYPE_PARAM, TYPES.groupByName(ASTList.orEmptyStream(tparams), ASTTypeParameter::getSymbol)),
+            methodNode(parent)
         );
     }
 
     JSymbolTable recordCtor(JSymbolTable parent, JConstructorSymbol symbol) {
-        return SymbolTableImpl.withVars(parent, VARS.shadow(parent.variables(), FORMAL_PARAM, VARS.groupByName(symbol.getFormalParameters())));
+        return SymbolTableImpl.withVars(parent, VARS.shadow(varNode(parent), FORMAL_PARAM, VARS.groupByName(symbol.getFormalParameters())));
     }
 
     /**
@@ -346,16 +359,16 @@ final class SymTableFactory {
         if (list.size() == 1) {
             return localVarSymTable(parent, list.get(0));
         }
-        return SymbolTableImpl.withVars(parent, VARS.augment(parent.variables(), false, ScopeInfo.LOCAL, VARS.groupByName(list)));
+        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, VARS.groupByName(list)));
     }
 
     JSymbolTable localTypeSymTable(JSymbolTable parent, JClassSymbol sym) {
         // TODO is this really not a shadow barrier?
-        return SymbolTableImpl.withTypes(parent, TYPES.augment(parent.types(), false, ScopeInfo.LOCAL, sym));
+        return SymbolTableImpl.withTypes(parent, TYPES.augment(typeNode(parent), false, ScopeInfo.LOCAL, sym));
     }
 
     JSymbolTable localVarSymTable(JSymbolTable parent, JVariableSymbol id) {
-        return SymbolTableImpl.withVars(parent, VARS.augment(parent.variables(), false, ScopeInfo.LOCAL, id));
+        return SymbolTableImpl.withVars(parent, VARS.augment(varNode(parent), false, ScopeInfo.LOCAL, id));
     }
 
 }

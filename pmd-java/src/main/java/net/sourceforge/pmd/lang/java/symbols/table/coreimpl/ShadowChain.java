@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A shadow chain is a linked list of {@link NameResolver}s, which handles
@@ -30,17 +29,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * }</pre>
  *
  * <p>More advanced functionality is provided by {@link ShadowChainIterator}.
+ * ShadowChain instances can be viewed as both a node in the
+ * chain or as the entire chain. The former interpretation is rendered
+ * by the lower-level API of {@link ShadowChainNode}.
  *
  * @param <S> Type of symbols this chain tracks
  * @param <I> Type of the "scope tag", some data used to help identify
  *            the reason why a declaration is in scope. This can be retrieved
  *            with {@link ShadowChainIterator#getScopeTag()}.
- *
- * @implNote ShadowChain instances can be viewed as both a node in the
- *     chain or as the entire chain, I leave the former interpretation
- *     as an implementation detail, and use the latter to explain the
- *     API more simply. See {@link ShadowChainBuilder} for implementation
- *     details
  */
 public interface ShadowChain<S, I> {
 
@@ -77,18 +73,13 @@ public interface ShadowChain<S, I> {
      * @param name Simple name of the symbols to find
      */
     default ShadowChainIterator<S, I> iterateResults(String name) {
-        return new ShadowChainIteratorImpl<>(this, name);
+        return new ShadowChainIteratorImpl<>(asNode(), name);
     }
 
 
     /**
-     * Returns true if this group shadows the next groups in the chain.
-     * This means, that if this group knows about a name, it won't delegate
-     * resolve to the next group in the chain. If it doesn't know about it
-     * then resolve proceeds anyway.
+     * Returns the API of this instance that views the chain as individual nodes.
      */
-    boolean isShadowBarrier();
+    ShadowChainNode<S, I> asNode();
 
-
-    @Nullable ShadowChain<S, I> getParent();
 }

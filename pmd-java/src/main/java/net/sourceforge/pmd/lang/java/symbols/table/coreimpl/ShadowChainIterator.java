@@ -12,7 +12,7 @@ import java.util.List;
  * can be used to find all shadowed declarations for a given name, or to
  * find the reason why a declaration is in scope {@link #getScopeTag()}.
  */
-public interface ShadowChainIterator<S, I> extends Iterator<ShadowChain<S, I>> {
+public interface ShadowChainIterator<S, I> extends Iterator<ShadowChainNode<S, I>> {
 
     @Override
     boolean hasNext();
@@ -26,7 +26,7 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChain<S, I>> {
      * symbols, in which case there could be eg duplicate imports).
      */
     @Override
-    ShadowChain<S, I> next();
+    ShadowChainNode<S, I> next();
 
 
     /**
