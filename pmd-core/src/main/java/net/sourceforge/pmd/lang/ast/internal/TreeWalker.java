@@ -112,10 +112,12 @@ final class TreeWalker {
 
         private final Deque<Node> queue = new ArrayDeque<>();
         private final TreeWalker config;
+        private boolean isFirst;
 
         /** Always {@link #hasNext()} after exiting the constructor. */
         DescendantOrSelfIterator(Node top, TreeWalker walker) {
             this.config = walker;
+            this.isFirst = true;
             queue.addFirst(top);
         }
 
@@ -129,12 +131,14 @@ final class TreeWalker {
         public @NonNull Node next() {
             Node node = queue.removeFirst();
             enqueueChildren(node);
+            isFirst = false;
             return node;
         }
 
 
         private void enqueueChildren(Node n) {
-            if (config.isCrossFindBoundaries() || !n.isFindBoundary()) {
+            // on the first node, we must cross find boundaries anyway
+            if (config.isCrossFindBoundaries() || !n.isFindBoundary() || isFirst) {
                 for (int i = n.getNumChildren() - 1; i >= 0; i--) {
                     queue.addFirst(n.getChild(i));
                 }
