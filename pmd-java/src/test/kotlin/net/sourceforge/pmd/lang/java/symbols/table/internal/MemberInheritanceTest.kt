@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
+import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.withClue
@@ -13,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals
 import org.checkerframework.checker.nullness.qual.NonNull
 
 class MemberInheritanceTest : ParserTestSpec({
@@ -81,6 +84,32 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         }
     }
+
+
+
+    parserTest("Methods of Object are in scope in interfaces") {
+
+        val acu = parser.withProcessing().parse("""
+            interface Foo {
+                default Class<? extends Foo> foo() {
+                    return getClass();
+                }
+            }
+        """)
+
+        val (insideFoo) =
+                acu.descendants(ASTMethodCall::class.java).toList()
+
+        insideFoo.symbolTable.methods().resolve("getClass").also {
+            it.shouldHaveSize(1)
+            it[0].apply {
+                formalParameters shouldBe emptyList()
+                enclosingClass shouldBe ReflectSymInternals.OBJECT_SYM
+            }
+        }
+
+    }
+
 
 
     parserTest("Shadowing of inherited types") {

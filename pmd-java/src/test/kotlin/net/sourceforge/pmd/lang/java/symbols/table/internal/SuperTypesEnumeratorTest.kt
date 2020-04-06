@@ -28,9 +28,9 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         val acu = parser.withProcessing().parse("""
             package test;
 
-            interface I1 { } // yields I1
+            interface I1 { } // yields I1, Object
 
-            interface I2 extends I1 { }  // yields I2, I1
+            interface I2 extends I1 { }  // yields I2, I1, Object
 
             class Sup implements I2 { }  // yields Sup, I2, I1, Object
 
@@ -44,15 +44,15 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
 
         doTest("ALL_SUPERTYPES_INCLUDING_SELF") {
-            ALL_SUPERTYPES_INCLUDING_SELF.list(i1) should containExactly(i1)
-            ALL_SUPERTYPES_INCLUDING_SELF.list(i2) should containExactly(i2, i1)
+            ALL_SUPERTYPES_INCLUDING_SELF.list(i1) should containExactly(i1, ReflectSymInternals.OBJECT_SYM)
+            ALL_SUPERTYPES_INCLUDING_SELF.list(i2) should containExactly(i2, i1, ReflectSymInternals.OBJECT_SYM)
             ALL_SUPERTYPES_INCLUDING_SELF.list(sup) should containExactly(sup, i2, i1, ReflectSymInternals.OBJECT_SYM)
             ALL_SUPERTYPES_INCLUDING_SELF.list(sub) should containExactly(sub, i1, sup, i2, ReflectSymInternals.OBJECT_SYM)
         }
 
         doTest("ALL_STRICT_SUPERTYPES") {
-            ALL_STRICT_SUPERTYPES.list(i1) should beEmpty()
-            ALL_STRICT_SUPERTYPES.list(i2) should containExactly(i1)
+            ALL_STRICT_SUPERTYPES.list(i1) should containExactly(ReflectSymInternals.OBJECT_SYM)
+            ALL_STRICT_SUPERTYPES.list(i2) should containExactly(i1, ReflectSymInternals.OBJECT_SYM)
             ALL_STRICT_SUPERTYPES.list(sup) should containExactly(i2, i1, ReflectSymInternals.OBJECT_SYM)
             ALL_STRICT_SUPERTYPES.list(sub) should containExactly(i1, sup, i2, ReflectSymInternals.OBJECT_SYM)
         }

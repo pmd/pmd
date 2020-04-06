@@ -147,6 +147,10 @@ class JavaResolvers {
             walkSelf(next, nestRoot, fields, types, new HashMap<>(), HashTreePSet.empty(), HashTreePSet.empty());
         }
 
+        // Note that if T is an interface, Object won't have been visited
+        // This is fine for now because Object has no fields or nested types
+        // in any known version of the JDK
+
         return Pair.of(types.build(), fields.build());
     }
 

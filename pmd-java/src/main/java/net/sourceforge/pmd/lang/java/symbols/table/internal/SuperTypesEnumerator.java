@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
 
 /**
  * Strategies to enumerate a type hierarchy.
@@ -43,7 +44,8 @@ enum SuperTypesEnumerator {
 
     /**
      * All direct strict supertypes, starting with the superclass if
-     * it exists.
+     * it exists. This does not include Object if the search starts
+     * on an interface.
      */
     DIRECT_STRICT_SUPERTYPES {
         @Override
@@ -76,7 +78,8 @@ enum SuperTypesEnumerator {
 
     /**
      * Restriction of {@link #ALL_SUPERTYPES_INCLUDING_SELF} to just the
-     * strict supertypes.
+     * strict supertypes. This includes Object if the search starts
+     * on an interface.
      */
     ALL_STRICT_SUPERTYPES {
         @Override
@@ -88,17 +91,17 @@ enum SuperTypesEnumerator {
     },
 
     /**
-     * Walks supertypes depth-first, without duplicates. For example
-     * for the following:
+     * Walks supertypes depth-first, without duplicates.  This includes
+     * Object if the search starts on an interface. For example for the following:
      * <pre>{@code
      *
-     * interface I1 { } // yields I1
+     * interface I1 { } // yields I1, Object
      *
-     * interface I2 extends I1 { }  // yields I2, I1
+     * interface I2 extends I1 { }  // yields I2, I1, Object
      *
-     * class Sup implements I2 { }  // yields Sup, I2, I1
+     * class Sup implements I2 { }  // yields Sup, I2, I1, Object
      *
-     * class Sub extends Sup implements I1 { } // yields Sub, I1, Sup, I2
+     * class Sub extends Sup implements I1 { } // yields Sub, I1, Sup, I2, Object
      *
      * }</pre>
      *
@@ -108,11 +111,17 @@ enum SuperTypesEnumerator {
         @Override
         public Iterator<JClassSymbol> iterator(JClassSymbol t) {
             final Set<JClassSymbol> seenInterfaces = new HashSet<>();
-            return IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
+            Iterator<JClassSymbol> baseIter = IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
                 final Set<JClassSymbol> currentInterfaces = new LinkedHashSet<>();
                 walkInterfaces(seenInterfaces, currentInterfaces, type);
                 return currentInterfaces.iterator();
             });
+
+            if (t.isInterface()) {
+                // then we need to add Object, otherwise it's already somewhere
+                return IteratorUtil.concat(baseIter, IteratorUtil.singletonIterator(ReflectSymInternals.OBJECT_SYM));
+            }
+            return baseIter;
         }
 
         private void walkInterfaces(final Set<JClassSymbol> seen, final Set<JClassSymbol> addTo, final JClassSymbol c) {
