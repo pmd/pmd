@@ -8,11 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Iterates over a {@link ShadowGroup} chain to find a given name. This
+ * Iterates over a {@link ShadowChain} chain to find a given name. This
  * can be used to find all shadowed declarations for a given name, or to
  * find the reason why a declaration is in scope {@link #getScopeTag()}.
  */
-public interface ShadowChainIterator<S, I> extends Iterator<ShadowGroup<S, I>> {
+public interface ShadowChainIterator<S, I> extends Iterator<ShadowChain<S, I>> {
 
     @Override
     boolean hasNext();
@@ -26,7 +26,7 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowGroup<S, I>> {
      * symbols, in which case there are eg duplicate imports).
      */
     @Override
-    ShadowGroup<S, I> next();
+    ShadowChain<S, I> next();
 
 
     /**

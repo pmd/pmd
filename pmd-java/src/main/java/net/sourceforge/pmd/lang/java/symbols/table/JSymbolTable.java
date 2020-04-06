@@ -9,8 +9,8 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroup;
 
 // @formatter:off
 /**
@@ -48,13 +48,13 @@ public interface JSymbolTable {
     }
 
 
-    ShadowGroup<JVariableSymbol, ScopeInfo> variables();
+    ShadowChain<JVariableSymbol, ScopeInfo> variables();
 
 
-    ShadowGroup<JTypeDeclSymbol, ScopeInfo> types();
+    ShadowChain<JTypeDeclSymbol, ScopeInfo> types();
 
 
-    ShadowGroup<JMethodSymbol, ScopeInfo> methods();
+    ShadowChain<JMethodSymbol, ScopeInfo> methods();
 
 
 }

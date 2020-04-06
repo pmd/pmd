@@ -13,7 +13,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Name resolvers are strategies backing {@link ShadowGroup}s. They have
+ * Name resolvers are strategies backing {@link ShadowChain}s. They have
  * no information about outer context, instead the structure of the shadow
  * group chain handles that.
  *

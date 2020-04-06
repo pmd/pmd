@@ -14,13 +14,13 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 class ShadowChainIteratorImpl<S, I>
-    extends IteratorUtil.AbstractPausingIterator<ShadowGroup<S, I>>
+    extends IteratorUtil.AbstractPausingIterator<ShadowChain<S, I>>
     implements ShadowChainIterator<S, I> {
 
-    private ShadowGroup<S, I> nextGroupToTest;
+    private ShadowChain<S, I> nextGroupToTest;
     private final String name;
 
-    ShadowChainIteratorImpl(ShadowGroup<S, I> firstInclusive, String name) {
+    ShadowChainIteratorImpl(ShadowChain<S, I> firstInclusive, String name) {
         this.nextGroupToTest = firstInclusive;
         this.name = name;
     }
@@ -29,7 +29,7 @@ class ShadowChainIteratorImpl<S, I>
 
     @Override
     protected void computeNext() {
-        ShadowGroup<S, I> next = nextGroupThatKnows(nextGroupToTest, name);
+        ShadowChain<S, I> next = nextGroupThatKnows(nextGroupToTest, name);
         if (next == null) {
             done();
             return;
@@ -39,8 +39,8 @@ class ShadowChainIteratorImpl<S, I>
 
 
     @Override
-    protected void prepareViewOn(ShadowGroup<S, I> current) {
-        if (current instanceof SimpleShadowGroup) {
+    protected void prepareViewOn(ShadowChain<S, I> current) {
+        if (current instanceof ShadowChainNode) {
             nextGroupToTest = current.getParent();
         } else {
             throw new IllegalStateException("Root group is empty " + current);
@@ -49,7 +49,7 @@ class ShadowChainIteratorImpl<S, I>
 
     @Override
     public I getScopeTag() {
-        return ((SimpleShadowGroup<S, I>) getCurrentValue()).getScopeTag();
+        return ((ShadowChainNode<S, I>) getCurrentValue()).getScopeTag();
     }
 
     @Override
@@ -59,25 +59,25 @@ class ShadowChainIteratorImpl<S, I>
 
     // inclusive of the parameter
     // @Contract("null -> null")
-    private @Nullable ShadowGroup<S, I> nextGroupThatKnows(@Nullable ShadowGroup<S, I> group, String name) {
-        ShadowGroup<S, I> parent = group;
+    private @Nullable ShadowChain<S, I> nextGroupThatKnows(@Nullable ShadowChain<S, I> group, String name) {
+        ShadowChain<S, I> parent = group;
         while (parent != null && !definitelyKnows(parent, name)) {
             parent = parent.getParent();
         }
         return parent;
     }
 
-    private static boolean definitelyKnows(@NonNull ShadowGroup<?, ?> group, String name) {
-        if (group instanceof SimpleShadowGroup) {
-            OptionalBool opt = ((SimpleShadowGroup<?, ?>) group).knowsSymbol(name);
+    private static boolean definitelyKnows(@NonNull ShadowChain<?, ?> group, String name) {
+        if (group instanceof ShadowChainNode) {
+            OptionalBool opt = ((ShadowChainNode<?, ?>) group).knowsSymbol(name);
             return opt.isKnown()
                    ? opt.isTrue()
                    // Note that we bypass the shadow group to call directly the resolver
                    // This is to bypass the cache of cached resolvers, which stores declarations
                    // of enclosing groups
-                   : ((SimpleShadowGroup<?, ?>) group).resolver.resolveFirst(name) != null;
+                   : ((ShadowChainNode<?, ?>) group).resolver.resolveFirst(name) != null;
         } else {
-            assert group instanceof RootShadowGroup : "Not a root shadow group? " + group;
+            assert group instanceof ShadowChainRoot : "Not a root shadow group? " + group;
             return false;
         }
     }

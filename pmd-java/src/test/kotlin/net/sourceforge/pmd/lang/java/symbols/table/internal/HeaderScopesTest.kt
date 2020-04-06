@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroup
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo.*
 
 /**
@@ -46,14 +46,14 @@ class HeaderScopesTest : ProcessorTestSpec({
     fun JSymbolTable.resolveField(s: String): JFieldSymbol = variables().resolveFirst(s).shouldBeA()
     fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = methods().resolve(s)
 
-    fun ShadowGroup<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
+    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.shouldResolveToClass(simpleName: String, qualName: String) {
         resolveFirst(simpleName).shouldBeA<JClassSymbol> {
             it::getBinaryName shouldBe qualName
             it::getSimpleName shouldBe simpleName
         }
     }
 
-    fun ShadowGroup<JTypeDeclSymbol, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
+    fun ShadowChain<JTypeDeclSymbol, ScopeInfo>.typeShadowSequence(simpleName: String): List<Pair<ScopeInfo, String>> {
         return sequence {
             val iter = iterateResults(simpleName)
             while (iter.hasNext()) {

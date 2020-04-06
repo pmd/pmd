@@ -10,17 +10,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
-class SimpleShadowGroup<S, I> implements ShadowGroup<S, I> {
+class ShadowChainNode<S, I> implements ShadowChain<S, I> {
 
     protected final NameResolver<S> resolver;
-    protected final @NonNull ShadowGroup<S, I> parent;
+    protected final @NonNull ShadowChain<S, I> parent;
     private final boolean shadowBarrier;
     private final I scopeTag;
 
-    SimpleShadowGroup(@NonNull ShadowGroup<S, I> parent,
-                      boolean shadowBarrier,
-                      I scopeTag,
-                      NameResolver<S> resolver) {
+    ShadowChainNode(@NonNull ShadowChain<S, I> parent,
+                    boolean shadowBarrier,
+                    I scopeTag,
+                    NameResolver<S> resolver) {
         this.parent = parent;
         this.scopeTag = scopeTag;
         this.shadowBarrier = shadowBarrier;
@@ -33,7 +33,7 @@ class SimpleShadowGroup<S, I> implements ShadowGroup<S, I> {
     }
 
     @Override
-    public @NonNull ShadowGroup<S, I> getParent() {
+    public @NonNull ShadowChain<S, I> getParent() {
         return parent;
     }
 

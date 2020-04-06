@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
-class CachedShadowGroup<S, I> extends SimpleShadowGroup<S, I> {
+class CachedShadowGroup<S, I> extends ShadowChainNode<S, I> {
 
     private final Map<String, List<S>> cache;
 
@@ -21,7 +21,7 @@ class CachedShadowGroup<S, I> extends SimpleShadowGroup<S, I> {
     // result when asked for it
     private final Map<String, OptionalBool> keysThatIKnow = new HashMap<>();
 
-    protected CachedShadowGroup(@NonNull ShadowGroup<S, I> parent,
+    protected CachedShadowGroup(@NonNull ShadowChain<S, I> parent,
                                 Map<String, List<S>> known,
                                 NameResolver<S> resolver,
                                 boolean shadowBarrier,

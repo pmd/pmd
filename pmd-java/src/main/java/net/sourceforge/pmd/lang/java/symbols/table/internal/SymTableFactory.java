@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroup;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowGroupBuilder;
 
 final class SymTableFactory {
@@ -103,9 +103,9 @@ final class SymTableFactory {
 
     @NonNull
     private JSymbolTable buildTable(JSymbolTable parent,
-                                    ShadowGroup<JVariableSymbol, ScopeInfo> vars,
-                                    ShadowGroup<JMethodSymbol, ScopeInfo> methods,
-                                    ShadowGroup<JTypeDeclSymbol, ScopeInfo> types) {
+                                    ShadowChain<JVariableSymbol, ScopeInfo> vars,
+                                    ShadowChain<JMethodSymbol, ScopeInfo> methods,
+                                    ShadowChain<JTypeDeclSymbol, ScopeInfo> types) {
         if (vars == parent.variables() && methods == parent.methods() && types == parent.types()) {
             return parent;
         } else {
@@ -126,9 +126,9 @@ final class SymTableFactory {
 
         fillImportOnDemands(importsOnDemand, importedTypes, importedFields, importedMethods, lazyImportedPackagesAndTypes);
 
-        ShadowGroup<JVariableSymbol, ScopeInfo> vars = VARS.shadow(parent.variables(), ScopeInfo.IMPORT_ON_DEMAND, importedFields);
-        ShadowGroup<JMethodSymbol, ScopeInfo> methods = METHODS.shadow(parent.methods(), ScopeInfo.IMPORT_ON_DEMAND, importedMethods);
-        ShadowGroup<JTypeDeclSymbol, ScopeInfo> types;
+        ShadowChain<JVariableSymbol, ScopeInfo> vars = VARS.shadow(parent.variables(), ScopeInfo.IMPORT_ON_DEMAND, importedFields);
+        ShadowChain<JMethodSymbol, ScopeInfo> methods = METHODS.shadow(parent.methods(), ScopeInfo.IMPORT_ON_DEMAND, importedMethods);
+        ShadowChain<JTypeDeclSymbol, ScopeInfo> types;
         if (lazyImportedPackagesAndTypes.isEmpty()) {
             // then we don't need to use the lazy impl
             types = TYPES.shadow(parent.types(), ScopeInfo.IMPORT_ON_DEMAND, importedTypes);
@@ -287,17 +287,17 @@ final class SymTableFactory {
 
         Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inherited = JavaResolvers.inheritedMembersResolvers(sym);
 
-        ShadowGroup<JTypeDeclSymbol, ScopeInfo> types = parent.types();
+        ShadowChain<JTypeDeclSymbol, ScopeInfo> types = parent.types();
         types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, sym);                                                // self name
         types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                                     // inherited classes (note they shadow the enclosing type)
         types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(sym.getDeclaredClasses())); // inner classes declared here
         types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters()));             // type parameters
 
-        ShadowGroup<JVariableSymbol, ScopeInfo> fields = parent.variables();
+        ShadowChain<JVariableSymbol, ScopeInfo> fields = parent.variables();
         fields = VARS.shadow(fields, ScopeInfo.INHERITED, inherited.getRight());
         fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(sym.getDeclaredFields()));
 
-        ShadowGroup<JMethodSymbol, ScopeInfo> methods = parent.methods();
+        ShadowChain<JMethodSymbol, ScopeInfo> methods = parent.methods();
         // notice this is a shadow barrier
         methods = METHODS.augmentWithCache(methods, true, ScopeInfo.INHERITED, JavaResolvers.methodResolver(sym, true));
         // and not this one
