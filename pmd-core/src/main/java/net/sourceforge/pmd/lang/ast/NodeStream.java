@@ -110,7 +110,10 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * of the receiver stream. This extends to methods defined in terms of map or flatMap, e.g.
  * {@link #descendants()} or {@link #children()}.
  *
- * @param <T> Type of nodes this stream contains
+ * @param <T> Type of nodes this stream contains. This parameter is
+ *           covariant, which means for maximum flexibility, methods
+ *           taking a node stream argument should declare it with an
+ *           "extends" wildcard.
  *
  * @author Clément Fournier
  * @implNote Choosing to wrap a stream instead of extending the interface is to
@@ -432,7 +435,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#children(Class)
      */
-    default <R extends Node> NodeStream<R> children(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> children(Class<? extends R> rClass) {
         return flatMap(it -> it.children(rClass));
     }
 
@@ -449,7 +452,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @see Node#children(Class)
      */
-    default <R extends Node> NodeStream<R> firstChild(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> firstChild(Class<? extends R> rClass) {
         return flatMap(it -> it.children(rClass).take(1));
     }
 
@@ -469,7 +472,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#descendants(Class)
      */
-    <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass);
+    <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass);
 
 
     /**
@@ -486,7 +489,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filterIs(Class)
      * @see Node#ancestors(Class)
      */
-    default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> ancestors(Class<? extends R> rClass) {
         return flatMap(it -> it.ancestors(rClass));
     }
 
@@ -545,7 +548,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #filter(Predicate)
      */
     @SuppressWarnings("unchecked")
-    default <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
+    default <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
         return (NodeStream<R>) filter(rClass::isInstance);
     }
 
@@ -732,7 +735,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #first()
      * @see #first(Predicate)
      */
-    default <R extends Node> @Nullable R first(Class<R> rClass) {
+    default <R extends Node> @Nullable R first(Class<? extends R> rClass) {
         return filterIs(rClass).first();
     }
 
@@ -758,7 +761,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @see #last()
      */
-    default <R extends Node> @Nullable R last(Class<R> rClass) {
+    default <R extends Node> @Nullable R last(Class<? extends R> rClass) {
         return filterIs(rClass).last();
     }
 
@@ -864,7 +867,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @return A new node stream
      */
-    static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+    static <T extends Node> NodeStream<T> fromIterable(Iterable<? extends @Nullable T> iterable) {
         return StreamImpl.fromIterable(iterable);
     }
 
@@ -880,8 +883,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @see #of(Node)
      */
-    static <T extends Node> NodeStream<T> ofOptional(Optional<T> optNode) {
-        return optNode.map(StreamImpl::singleton).orElseGet(StreamImpl::empty);
+    static <T extends Node> NodeStream<T> ofOptional(Optional<? extends T> optNode) {
+        return optNode.map(StreamImpl::<T>singleton).orElseGet(StreamImpl::empty);
     }
 
 
@@ -956,7 +959,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @return A merged node stream
      */
     @SafeVarargs // this method is static because of the generic varargs
-    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<T> upstream,
+    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<? extends T> upstream,
                                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
                                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
                                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {

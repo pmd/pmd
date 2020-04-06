@@ -70,7 +70,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
+    public <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
         return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.isInstance(rClass)));
     }
 
@@ -85,7 +85,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R extends Node> DescendantNodeStream<R> descendants(Class<R> rClass) {
+    public <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass) {
         return flatMapDescendants(node -> node.descendants(rClass));
     }
 
@@ -199,7 +199,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R extends Node> @Nullable R first(Class<R> r1Class) {
+    public <R extends Node> @Nullable R first(Class<? extends R> r1Class) {
         for (T t : this) {
             if (r1Class.isInstance(t)) {
                 return r1Class.cast(t);

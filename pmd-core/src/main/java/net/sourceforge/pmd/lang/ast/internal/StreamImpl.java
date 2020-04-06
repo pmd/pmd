@@ -42,9 +42,9 @@ public final class StreamImpl {
         return new SingletonNodeStream<>(node);
     }
 
-    public static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+    public static <T extends Node> NodeStream<T> fromIterable(Iterable<? extends @Nullable T> iterable) {
         if (iterable instanceof Collection) {
-            Collection<@Nullable T> coll = (Collection<T>) iterable;
+            Collection<? extends @Nullable T> coll = (Collection<T>) iterable;
             if (coll.isEmpty()) {
                 return empty();
             } else if (coll.size() == 1) {
@@ -70,7 +70,7 @@ public final class StreamImpl {
         return EMPTY;
     }
 
-    public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
+    public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<? extends R> target) {
         return sliceChildren(node, Filtermap.isInstance(target), 0, node.getNumChildren());
     }
 
@@ -82,7 +82,7 @@ public final class StreamImpl {
         return node.getNumChildren() == 0 ? empty() : new DescendantStream(node, TreeWalker.DEFAULT);
     }
 
-    public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
+    public static <R extends Node> DescendantNodeStream<R> descendants(@NonNull Node node, Class<? extends R> rClass) {
         return node.getNumChildren() == 0 ? empty()
                                              : new FilteredDescendantStream<>(node, TreeWalker.DEFAULT, Filtermap.isInstance(rClass));
     }
@@ -110,7 +110,7 @@ public final class StreamImpl {
         return sliceChildren(parent, Filtermap.NODE_IDENTITY, 0, node.getIndexInParent());
     }
 
-    static <T extends Node> NodeStream<T> sliceChildren(Node parent, Filtermap<Node, T> filtermap, int from, int length) {
+    static <T extends Node> NodeStream<T> sliceChildren(Node parent, Filtermap<Node, ? extends T> filtermap, int from, int length) {
         // these assertions are just for tests
         assert parent != null;
         assert from >= 0 && from <= parent.getNumChildren() : "from should be a valid index";
@@ -139,7 +139,7 @@ public final class StreamImpl {
         return ancestorsOrSelf(node, Filtermap.NODE_IDENTITY);
     }
 
-    static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, T> target) {
+    static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, ? extends T> target) {
         if (node == null) {
             return empty();
         } else if (node.getParent() == null) {
@@ -154,11 +154,11 @@ public final class StreamImpl {
         return ancestorsOrSelf(node.getParent());
     }
 
-    static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Filtermap<Node, R> target) {
+    static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Filtermap<Node, ? extends R> target) {
         return ancestorsOrSelf(node.getParent(), target);
     }
 
-    public static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Class<R> target) {
+    public static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Class<? extends R> target) {
         return ancestorsOrSelf(node.getParent(), Filtermap.isInstance(target));
     }
 
