@@ -978,7 +978,35 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return upstream.cached().flatMap(aggregate);
     }
 
+    /**
+     * Filters the input stream down to those nodes that are instances
+     * of any of the specified classes.
+     *
+     * @param input Input node stream
+     * @param c1    First type to test
+     * @param rest  Other types to test
+     * @param <N>   Type of the returned stream
+     *
+     * @return A filtered node stream
+     */
+    @SafeVarargs // this method is static because of the generic varargs
+    @SuppressWarnings("unchecked")
+    static <N extends Node> NodeStream<N> filterIsAny(NodeStream<?> input, Class<? extends N> c1, Class<? extends N>... rest) {
+        return (NodeStream<N>) input.filter(
+            node -> {
+                if (c1.isInstance(node)) {
+                    return true;
+                }
 
+                for (Class<? extends N> aClass : rest) {
+                    if (aClass.isInstance(node)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        );
+    }
 
     /**
      * A specialization of {@link NodeStream} that allows configuring
