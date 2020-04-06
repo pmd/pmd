@@ -1497,10 +1497,28 @@ Also EJB’s might be moved between machines in a cluster and only managed resou
 <span class="o">}</span>
 
 <span class="c1">// Neither this,</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OtherThread</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
-    <span class="c1">// Nor this ...</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methode</span><span class="o">()</span> <span class="o">{</span>
-        <span class="nc">Runnable</span> <span class="n">thread</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">();</span> <span class="n">thread</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingExecutorService</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodX</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">ExecutorService</span> <span class="n">executorService</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Nor this,</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="kd">implements</span> <span class="nc">ExecutorService</span> <span class="o">{</span>
+
+<span class="o">}</span>
+
+<span class="c1">// Nor this,</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="kd">extends</span> <span class="nc">AbstractExecutorService</span> <span class="o">{</span>
+
+<span class="o">}</span>
+
+<span class="c1">// Nor this</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UsingExecutors</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">methodX</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Executors</span><span class="o">.</span><span class="na">newSingleThreadExecutor</span><span class="o">().</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello!"</span><span class="o">));</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1862,7 +1880,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 4, 2020 <br />
+ Site last generated: Apr 6, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
