@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.filterIsAny;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -198,12 +200,10 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
             final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
             // look if the message is defined locally in a method/constructor, initializer block or lambda expression
             final NodeStream<ASTVariableDeclarator> parentBlock =
-                NodeStream.filterIsAny(node.ancestors(),
-                                       ASTMethodOrConstructorDeclaration.class,
-                                       ASTInitializer.class,
-                                       ASTLambdaExpression.class)
-                          .take(1)
-                          .descendants(ASTVariableDeclarator.class);
+                node.ancestors()
+                    .map(filterIsAny(ASTMethodOrConstructorDeclaration.class, ASTInitializer.class, ASTLambdaExpression.class))
+                    .take(1)
+                    .descendants(ASTVariableDeclarator.class);
 
             count = getAmountOfExpectedArguments(variableName, parentBlock);
 
@@ -211,10 +211,11 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 // look if the message is defined in a field
                 // only look for ASTVariableDeclarator that are Fields
                 final NodeStream<ASTVariableDeclarator> fields =
-                    NodeStream.filterIsAny(node.ancestors(), ASTClassOrInterfaceBody.class, ASTEnumBody.class)
-                              .take(1)
-                              .descendants(ASTFieldDeclaration.class)
-                              .firstChild(ASTVariableDeclarator.class);
+                    node.ancestors()
+                        .map(filterIsAny(ASTClassOrInterfaceBody.class, ASTEnumBody.class))
+                        .take(1)
+                        .descendants(ASTFieldDeclaration.class)
+                        .firstChild(ASTVariableDeclarator.class);
                 count = getAmountOfExpectedArguments(variableName, fields);
             }
         }

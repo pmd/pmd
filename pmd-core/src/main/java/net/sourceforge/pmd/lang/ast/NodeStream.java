@@ -546,6 +546,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @return A filtered node stream
      *
      * @see #filter(Predicate)
+     * @see #filterIsAny(Class, Class[])
      */
     @SuppressWarnings("unchecked")
     default <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
@@ -979,33 +980,38 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     }
 
     /**
-     * Filters the input stream down to those nodes that are instances
-     * of any of the specified classes.
+     * Returns a map function, that checks whether the parameter is an
+     * instance of any of the given classes. If so, it returns the parameter,
+     * otherwise it returns null.
      *
-     * @param input Input node stream
-     * @param c1    First type to test
-     * @param rest  Other types to test
-     * @param <N>   Type of the returned stream
+     * <p>This may be used to filter a node stream to those specific
+     * classes, but this should be done with the {@link #map(Function) map}
+     * function, not {@link #filter(Predicate) filter}. For example:
      *
-     * @return A filtered node stream
+     * <pre>{@code
+     *     NodeStream<ASTExpression> exprs = someStream.map(filterIsAny(ASTInfixExpression.class, ASTCastExpression.class));
+     * }</pre>
+     *
+     * @param c1   First type to test
+     * @param rest Other types to test
+     * @param <I>  Type of input (the function doesn't care about it)
+     * @param <O>  Output type
      */
     @SafeVarargs // this method is static because of the generic varargs
     @SuppressWarnings("unchecked")
-    static <N extends Node> NodeStream<N> filterIsAny(NodeStream<?> input, Class<? extends N> c1, Class<? extends N>... rest) {
-        return (NodeStream<N>) input.filter(
-            node -> {
-                if (c1.isInstance(node)) {
-                    return true;
-                }
-
-                for (Class<? extends N> aClass : rest) {
-                    if (aClass.isInstance(node)) {
-                        return true;
-                    }
-                }
-                return false;
+    static <I, O> Function<? super I, ? extends @Nullable O> filterIsAny(Class<? extends O> c1, Class<? extends O>... rest) {
+        return i -> {
+            if (c1.isInstance(i)) {
+                return (O) i;
             }
-        );
+
+            for (Class<? extends O> aClass : rest) {
+                if (aClass.isInstance(i)) {
+                    return (O) i;
+                }
+            }
+            return null;
+        };
     }
 
     /**
