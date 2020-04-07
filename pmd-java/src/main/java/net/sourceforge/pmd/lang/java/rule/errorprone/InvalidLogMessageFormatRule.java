@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import static net.sourceforge.pmd.lang.ast.NodeStream.filterIsAny;
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,7 +201,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
             // look if the message is defined locally in a method/constructor, initializer block or lambda expression
             final NodeStream<ASTVariableDeclarator> parentBlock =
                 node.ancestors()
-                    .map(filterIsAny(ASTMethodOrConstructorDeclaration.class, ASTInitializer.class, ASTLambdaExpression.class))
+                    .map(asInstanceOf(ASTMethodOrConstructorDeclaration.class, ASTInitializer.class, ASTLambdaExpression.class))
                     .take(1)
                     .descendants(ASTVariableDeclarator.class);
 
@@ -212,7 +212,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 // only look for ASTVariableDeclarator that are Fields
                 final NodeStream<ASTVariableDeclarator> fields =
                     node.ancestors()
-                        .map(filterIsAny(ASTClassOrInterfaceBody.class, ASTEnumBody.class))
+                        .map(asInstanceOf(ASTClassOrInterfaceBody.class, ASTEnumBody.class))
                         .take(1)
                         .descendants(ASTFieldDeclaration.class)
                         .firstChild(ASTVariableDeclarator.class);

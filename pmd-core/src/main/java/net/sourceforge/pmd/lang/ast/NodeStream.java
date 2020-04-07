@@ -546,7 +546,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @return A filtered node stream
      *
      * @see #filter(Predicate)
-     * @see #filterIsAny(Class, Class[])
+     * @see #asInstanceOf(Class, Class[])
      */
     @SuppressWarnings("unchecked")
     default <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
@@ -985,29 +985,39 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * otherwise it returns null.
      *
      * <p>This may be used to filter a node stream to those specific
-     * classes, but this should be done with the {@link #map(Function) map}
-     * function, not {@link #filter(Predicate) filter}. For example:
+     * classes, for example:
      *
      * <pre>{@code
-     *     NodeStream<ASTExpression> exprs = someStream.map(filterIsAny(ASTInfixExpression.class, ASTCastExpression.class));
+     *     NodeStream<ASTExpression> exprs = someStream.map(asInstanceOf(ASTInfixExpression.class, ASTCastExpression.class));
+     * }</pre>
+     *
+     * Using this in the middle of a call chain might require passing
+     * explicit type arguments:
+     *
+     * <pre>{@code
+     *
+     *    NodeStream<ASTAnyTypeDeclaration> ts =
+     *       node.ancestors()
+     *       .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
+     *       .map(t -> t); // would not compile without the explicit type arguments
      * }</pre>
      *
      * @param c1   First type to test
      * @param rest Other types to test
-     * @param <I>  Type of input (the function doesn't care about it)
+     * @param <I>  Input type (this method does not care about it)
      * @param <O>  Output type
      */
     @SafeVarargs // this method is static because of the generic varargs
     @SuppressWarnings("unchecked")
-    static <I, O> Function<? super I, ? extends @Nullable O> filterIsAny(Class<? extends O> c1, Class<? extends O>... rest) {
-        return i -> {
-            if (c1.isInstance(i)) {
-                return (O) i;
+    static <I, O> Function<? super @Nullable I, ? extends @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
+        return obj -> {
+            if (c1.isInstance(obj)) {
+                return (O) obj;
             }
 
             for (Class<? extends O> aClass : rest) {
-                if (aClass.isInstance(i)) {
-                    return (O) i;
+                if (aClass.isInstance(obj)) {
+                    return (O) obj;
                 }
             }
             return null;
