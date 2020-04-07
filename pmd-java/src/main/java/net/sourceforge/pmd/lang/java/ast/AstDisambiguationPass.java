@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger
  * This is because we don't have full access to types yet. This is the next
  * step.
  */
-public final class AstDisambiguationPass {
+final class AstDisambiguationPass {
 
     private AstDisambiguationPass() {
         // façade

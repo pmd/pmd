@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -50,6 +52,10 @@ public final class InternalApiBridge {
         } else {
             throw new AssertionError("Cannot set symbol " + symbol + " on node " + node);
         }
+    }
+
+    public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes) {
+        AstDisambiguationPass.disambig(processor, nodes);
     }
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {

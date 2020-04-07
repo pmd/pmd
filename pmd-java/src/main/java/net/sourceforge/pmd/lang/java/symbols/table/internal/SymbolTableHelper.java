@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -38,7 +38,7 @@ final class SymbolTableHelper {
     }
 
     public void earlyDisambig(NodeStream<? extends JavaNode> nodes) {
-        AstDisambiguationPass.disambig(processor, nodes);
+        InternalApiBridge.disambig(processor, nodes);
     }
 
     void pushCtxType(JClassSymbol t) {
