@@ -14,14 +14,15 @@ public enum XPathVersion {
     /**
      * XPath 1.0.
      *
-     * @deprecated not supported anymore
+     * @deprecated Will become unsupported in 7.0.0
      */
     @Deprecated
     XPATH_1_0(XPathRuleQuery.XPATH_1_0),
+
     /**
      * XPath 1.0 compatibility mode.
      *
-     * @deprecated Not supported any more.
+     * @deprecated Will become unsupported in 7.0.0
      */
     @Deprecated
     XPATH_1_0_COMPATIBILITY(XPathRuleQuery.XPATH_1_0_COMPATIBILITY),
@@ -61,9 +62,7 @@ public enum XPathVersion {
      *
      * @param version A version string
      *
-     * @return An XPath version
-     *
-     * @return Null if the argument is not a valid version
+     * @return An XPath version, or null if the argument is not a valid version
      */
     public static XPathVersion ofId(String version) {
         return BY_NAME.get(version);

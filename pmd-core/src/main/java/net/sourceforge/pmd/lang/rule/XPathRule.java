@@ -107,6 +107,21 @@ public class XPathRule extends AbstractRule {
     }
 
     /**
+     * Returns the version for this rule. Returns null if this is not
+     * set or invalid.
+     */
+    public XPathVersion getVersion() {
+        return XPathVersion.ofId(getProperty(VERSION_DESCRIPTOR));
+    }
+
+    /**
+     * Returns the XPath expression that implements this rule.
+     */
+    public String getXPathExpression() {
+        return getProperty(XPATH_DESCRIPTOR);
+    }
+
+    /**
      * @deprecated Use the constructor {@link #XPathRule(XPathVersion, String)},
      *     don't set the expression after the fact.
      */
@@ -156,13 +171,21 @@ public class XPathRule extends AbstractRule {
      * engine in which the query will be run it looks at the XPath version.
      */
     private void initXPathRuleQuery() {
-        String xpath = getProperty(XPATH_DESCRIPTOR);
-        String version = getProperty(VERSION_DESCRIPTOR);
+        String xpath = getXPathExpression();
+        XPathVersion version = getVersion();
 
-        initRuleQueryBasedOnVersion(version);
+        if (version == null) {
+            throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
+        }
+
+        if (version.equals(XPathVersion.XPATH_1_0)) {
+            xpathRuleQuery = new JaxenXPathRuleQuery();
+        } else {
+            xpathRuleQuery = new SaxonXPathRuleQuery();
+        }
 
         xpathRuleQuery.setXPath(xpath);
-        xpathRuleQuery.setVersion(version);
+        xpathRuleQuery.setVersion(version.getXmlName());
         xpathRuleQuery.setProperties(getPropertiesByPropertyDescriptor());
     }
 
@@ -173,10 +196,6 @@ public class XPathRule extends AbstractRule {
      */
     private boolean xPathRuleQueryNeedsInitialization() {
         return xpathRuleQuery == null;
-    }
-
-    private void initRuleQueryBasedOnVersion(final String version) {
-        xpathRuleQuery = XPATH_1_0.equals(version) ? new JaxenXPathRuleQuery() : new SaxonXPathRuleQuery();
     }
 
     @Override
@@ -193,10 +212,11 @@ public class XPathRule extends AbstractRule {
 
     @Override
     public String dysfunctionReason() {
-        return hasXPathExpression() ? null : "Missing xPath expression";
-    }
-
-    private boolean hasXPathExpression() {
-        return StringUtils.isNotBlank(getProperty(XPATH_DESCRIPTOR));
+        if (getVersion() == null) {
+            return "Invalid XPath version '" + getProperty(VERSION_DESCRIPTOR) + "'";
+        } else if (StringUtils.isBlank(getXPathExpression())) {
+            return "Missing XPath expression";
+        }
+        return null;
     }
 }
