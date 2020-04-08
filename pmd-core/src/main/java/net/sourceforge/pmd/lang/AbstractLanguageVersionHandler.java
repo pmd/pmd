@@ -26,7 +26,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
     @Override
     public XPathHandler getXPathHandler() {
-        return XPathHandler.DEFAULT;
+        return XPathHandler.DUMMY;
     }
 
     @Override

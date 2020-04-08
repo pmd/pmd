@@ -17,7 +17,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
@@ -32,7 +31,7 @@ import net.sourceforge.pmd.properties.StringProperty;
 public class XPathRule extends AbstractRule {
 
     /**
-     * @deprecated Use {@link XPathHandler#newXPathRule(XPathVersion, String)}
+     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
     public static final StringProperty XPATH_DESCRIPTOR = StringProperty.named("xpath")
@@ -53,7 +52,7 @@ public class XPathRule extends AbstractRule {
 
 
     /**
-     * @deprecated Use {@link XPathHandler#newXPathRule(XPathVersion, String)}
+     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = EnumeratedProperty.<String>named("version")
