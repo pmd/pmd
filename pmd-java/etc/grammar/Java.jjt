@@ -305,7 +305,7 @@ class JavaParserImpl {
   private boolean mayStartExprAfterYield(final int offset) {
       // based off of https://hg.openjdk.java.net/jdk/jdk/file/bc3da0226ffa/src/jdk.compiler/share/classes/com/sun/tools/javac/parser/JavacParser.java#l2580
       // please don't sue me
-      Token token = getToken(offset);
+      JavaccToken token = getToken(offset);
       if (token == null) return false; // eof
       switch (token.kind) {
            case PLUS: case MINUS: case STRING_LITERAL: case CHARACTER_LITERAL:
@@ -318,7 +318,7 @@ class JavaParserImpl {
            case LPAREN:
                int lookahead = offset + 1;
                int balance = 1;
-               Token t;
+               JavaccToken t;
                while ((t = getToken(lookahead)) != null && balance > 0) {
                    switch (t.kind) {
                        case LPAREN: balance++; break;
@@ -1914,7 +1914,7 @@ boolean LambdaParameterType() #void :
 }
 
 void Literal() #void :
-{ JavaccToken t;}
+{}
 {
   NumericLiteral()
 | StringLiteral()
@@ -2233,7 +2233,7 @@ void DoStatement() :
 }
 
 void ForStatement() #void:
-{Token t;}
+{JavaccToken t;}
 {
   t="for" "("
 (
@@ -2484,8 +2484,8 @@ void AnnotationMethodDeclaration() #MethodDeclaration:
 {}
 {
   Type() #ResultType
-  <IDENTIFIER> {setLastTokenImage(jjtThis);}
-  ("(" ")") #FormalParameters(true)
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  ("(" ")") #FormalParameters
   [ Dims() ]
   [ DefaultValue() ] ";"
 }
@@ -2521,39 +2521,29 @@ void ModuleDirective():
   | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> Name() ("," Name() )* ";" )
 }
 
-// Similar to Name()
 void ModuleName():
+{ String name; }
 {
-  StringBuilder s = new StringBuilder();
-  JavaccToken t;
-}
-{
-  t=<IDENTIFIER> { s.append(t.getImage()); }
-  ( "." t=<IDENTIFIER> {s.append('.').append(t.getImage());} )*
-  {jjtThis.setImage(s.toString());}
+  name=VoidName() { jjtThis.setImage(name); }
 }
 
 void Name():
-{String image;}
+{ String name; }
 {
-    image=VoidName()
-    {jjtThis.setImage(image); }
+  name=VoidName() { jjtThis.setImage(name); }
 }
-
 
 void AmbiguousName():
-{String image;}
+{ String name; }
 {
-    image=VoidName()
-    {jjtThis.setImage(image); }
+  name=VoidName() { jjtThis.setImage(name); }
 }
-
 
 String VoidName() #void:
 /*
  * A lookahead of 2 is required below since "Name" can be followed
  * by a ".*" when used in the context of an "ImportDeclaration",
- * or with "this" or "super" in PrimaryPrefix.
+ * or with "this" or "super" in PrimaryPrefix (AmbiguousName).
  */
 {
   StringBuilder s = new StringBuilder();
@@ -2561,7 +2551,7 @@ String VoidName() #void:
 }
 {
   t=<IDENTIFIER>                    { s.append(t.getImage()); }
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.getImage());}
+  ( LOOKAHEAD(2) "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
   )*
   {return s.toString();}
 }
