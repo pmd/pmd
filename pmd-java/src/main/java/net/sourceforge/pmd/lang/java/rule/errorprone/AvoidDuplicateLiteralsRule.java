@@ -43,46 +43,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                                           + "A literal is ignored if its image can be found in this list. "
                                           + "Components of this list should not be surrounded by double quotes.")
                          .defaultValue(Collections.emptyList())
+                         .delim(',')
                          .build();
-
-    /** @deprecated This ad-hoc solution will be integrated into the global properties framework somehow */
-    @Deprecated
-    public static class ExceptionParser {
-
-        private static final char ESCAPE_CHAR = '\\';
-        private char delimiter;
-
-        public ExceptionParser(char delimiter) {
-            this.delimiter = delimiter;
-        }
-
-        public Set<String> parse(String s) {
-            Set<String> result = new HashSet<>();
-            StringBuilder currentToken = new StringBuilder();
-            boolean inEscapeMode = false;
-            for (int i = 0; i < s.length(); i++) {
-                if (inEscapeMode) {
-                    inEscapeMode = false;
-                    currentToken.append(s.charAt(i));
-                    continue;
-                }
-                if (s.charAt(i) == ESCAPE_CHAR) {
-                    inEscapeMode = true;
-                    continue;
-                }
-                if (s.charAt(i) == delimiter) {
-                    result.add(currentToken.toString());
-                    currentToken = new StringBuilder();
-                } else {
-                    currentToken.append(s.charAt(i));
-                }
-            }
-            if (currentToken.length() > 0) {
-                result.add(currentToken.toString());
-            }
-            return result;
-        }
-    }
 
     private Map<String, List<ASTLiteral>> literals = new HashMap<>();
     private Set<String> exceptions = new HashSet<>();

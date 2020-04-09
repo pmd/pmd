@@ -111,17 +111,15 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-exception list and separator properties
-     ]]></description>
-        <rule-property name="exceptionList">Howdy:foo</rule-property>
-        <rule-property name="separator">:</rule-property>
+        <description>exception list with escape</description>
+        <rule-property name="exceptionList">Howdy\,foo</rule-property>
+        <rule-property name="maxDuplicateLiterals">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  private void bar() {
-    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
-    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+    buz("Howdy,foo");
+    buz("Howdy,foo");
  }
 }
      ]]></code>
