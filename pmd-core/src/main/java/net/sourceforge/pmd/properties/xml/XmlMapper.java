@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.properties.xml;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -51,30 +50,24 @@ public abstract class XmlMapper<T> {
         return false;
     }
 
+    /**
+     * Returns the constraints that this mapper applies to values
+     * after parsing them. This may be used for documentation, or
+     * to check a constraint on a value that was not parsed from
+     * XML.
+     *
+     * @implNote See {@link ConstraintDecorator}
+     */
     public List<PropertyConstraint<? super T>> getConstraints() {
         return Collections.emptyList();
     }
 
     /**
-     * Returns a new XML mapper with the given constraint.
+     * Returns a new XML mapper that will check parsed values with
+     * the given constraint.
      */
     public XmlMapper<T> withConstraint(PropertyConstraint<? super T> t) {
         return new ConstraintDecorator<>(this, Collections.singletonList(t));
-    }
-
-    /**
-     * Checks the result of the constraints defined by this mapper on
-     * the given element.
-     */
-    public List<String> checkConstraints(T t) {
-        List<String> failures = new ArrayList<>();
-        for (PropertyConstraint<? super T> constraint : getConstraints()) {
-            String validationResult = constraint.validate(t);
-            if (validationResult != null) {
-                failures.add(validationResult);
-            }
-        }
-        return failures;
     }
 
     /**
@@ -110,8 +103,8 @@ public abstract class XmlMapper<T> {
      * Returns some examples for what XML output this strategy produces.
      * For example, {@code <value>1</value>}.
      */
-    public final List<String> examples() {
-        return examples("", "    ");
+    public final List<String> getExamples() {
+        return examplesImpl("", "    ");
     }
 
     /**
@@ -120,11 +113,11 @@ public abstract class XmlMapper<T> {
      * @param curIndent  Indentation of the current level
      * @param baseIndent Base indentation string, adding one indent level concats this with the [curIndent]
      */
-    protected abstract List<String> examples(String curIndent, String baseIndent);
+    protected abstract List<String> examplesImpl(String curIndent, String baseIndent);
 
     @Override
     public String toString() {
-        return examples().get(0);
+        return getExamples().get(0);
     }
 
     abstract static class StableXmlMapper<T> extends XmlMapper<T> {

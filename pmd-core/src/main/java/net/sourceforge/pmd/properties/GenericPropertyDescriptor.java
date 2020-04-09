@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
 /**
@@ -38,10 +37,11 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
         this.parser = parser;
         this.typeId = typeId;
 
-        List<String> strings = parser.checkConstraints(defaultValue);
-        if (!strings.isEmpty()) {
-            throw new IllegalArgumentException("Constraint violated " + strings);
-        }
+        XmlSyntaxUtils.checkConstraintsThrow(
+            defaultValue,
+            parser.getConstraints(),
+            s -> new IllegalArgumentException("Constraint violated " + s)
+        );
     }
 
     @Override

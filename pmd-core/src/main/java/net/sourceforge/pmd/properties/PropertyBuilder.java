@@ -232,8 +232,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * with value type {@code <C>}. The validators already added are
          * converted to collection validators. The default value cannot
          * have previously been set. The returned builder will support
-         * conversion to and from a delimited string if this property
-         * supports direct mapping to/from a string without delimiters.
+         * conversion to and from a delimited string if this property does.
          * Otherwise it will only support the {@code <seq>} syntax.
          *
          * <p>Example usage:
@@ -252,24 +251,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *                     .to(Collectors.toSet())
          *                     .emptyDefaultValue()
          *                     .build();
-         *
-         * // this can be set only with the <seq> syntax,
-         * // otherwise the delimiter would be ambiguous:
-         * // <seq>
-         * //   <seq>
-         * //     <value>a</value>
-         * //   </seq>
-         * //   <seq/>
-         * // </seq>
-         * PropertyDescriptor<List<Set<String>>> whitelistSet =
-         *      PropertyFactory.stringProperty("whitelist")
-         *                     .desc(...)
-         *                     .to(Collectors.toSet())
-         *                     .to(Collectors.toList())
-         *                     .emptyDefaultValue()
-         *                     .build();
-         *
-         * }</pre>
          *
          * @return A new list property builder
          *
@@ -512,7 +493,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         @Override
         public PropertyDescriptor<C> build() {
-            XmlMapper<C> syntax = itemParser.supportsStringMapping() && !itemParser.isStringParserDelimited()
+            XmlMapper<C> syntax = itemParser.supportsStringMapping()
                                   ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, multiValueDelimiter)
                                   : XmlSyntaxUtils.onlySeq(itemParser, collector);
 

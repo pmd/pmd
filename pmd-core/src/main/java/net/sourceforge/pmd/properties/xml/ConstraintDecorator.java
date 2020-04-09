@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.properties.xml;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -15,9 +14,16 @@ import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Decorates an XmlMapper with a {@link PropertyConstraint},
- * that is checked when the value is parsed. This is used to
+ * Decorates an XmlMapper with some {@link PropertyConstraint}s.
+ * Those are checked when the value is parsed. This is used to
  * report errors on the most specific failing element.
+ *
+ * <p>Note that this is the only XmlMapper that *applies* constraints
+ * in {@link #fromXml(Element, XmlErrorReporter)}. A {@link SeqSyntax}
+ * or {@link OptionalSyntax} may return some constraints in {@link #getConstraints()}
+ * that are derived from the constraints of the item, yet not check them
+ * on elements (they will be applied on each element by the {@link XmlMapper}
+ * they wrap).
  */
 class ConstraintDecorator<T> extends XmlMapper<T> {
 
@@ -33,10 +39,13 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
     @Override
     public T fromXml(Element element, XmlErrorReporter err) {
         T t = xmlMapper.fromXml(element, err);
-        List<String> failures = checkConstraints(t);
-        if (!failures.isEmpty()) {
-            throw err.error(element, XmlErrorMessages.CONSTRAINT_NOT_SATISFIED, failures);
-        }
+
+        XmlSyntaxUtils.checkConstraintsThrow(
+            t,
+            constraints,
+            s -> err.error(element, XmlErrorMessages.CONSTRAINT_NOT_SATISFIED, s)
+        );
+
         return t;
     }
 
@@ -69,12 +78,8 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
 
 
     @Override
-    protected List<String> examples(String curIndent, String baseIndent) {
-        return xmlMapper.examples(curIndent, baseIndent);
-    }
-
-    public XmlMapper<T> getXmlMapper() {
-        return xmlMapper;
+    protected List<String> examplesImpl(String curIndent, String baseIndent) {
+        return xmlMapper.examplesImpl(curIndent, baseIndent);
     }
 
     @Override
@@ -102,14 +107,4 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
         return xmlMapper.toString();
     }
 
-    static <T> ConstraintDecorator<T> constrain(XmlMapper<T> mapper, PropertyConstraint<? super T> constraint) {
-        List<PropertyConstraint<? super T>> constraints;
-        if (mapper instanceof ConstraintDecorator) {
-            constraints = CollectionUtil.plus(((ConstraintDecorator<T>) mapper).constraints, constraint);
-        } else {
-            constraints = Collections.singletonList(constraint);
-        }
-
-        return new ConstraintDecorator<>(mapper, constraints);
-    }
 }

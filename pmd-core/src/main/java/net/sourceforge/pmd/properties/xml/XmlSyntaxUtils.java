@@ -67,6 +67,32 @@ public final class XmlSyntaxUtils {
         return new OptionalSyntax<>(itemSyntax);
     }
 
+
+    /**
+     * Checks the result of the constraints defined by this mapper on
+     * the given element. Returns all failures as a list of strings.
+     */
+    public static <T> List<String> checkConstraints(T t, List<? extends PropertyConstraint<? super T>> constraints) {
+        List<String> failures = new ArrayList<>();
+        for (PropertyConstraint<? super T> constraint : constraints) {
+            String validationResult = constraint.validate(t);
+            if (validationResult != null) {
+                failures.add(validationResult);
+            }
+        }
+        return failures;
+    }
+
+    public static <T> void checkConstraintsThrow(T t,
+                                                 List<? extends PropertyConstraint<? super T>> constraints,
+                                                 Function<String, ? extends RuntimeException> exceptionMaker) {
+        List<String> failures = checkConstraints(t, constraints);
+
+        if (failures.isEmpty()) {
+            throw exceptionMaker.apply(String.join(", ", failures));
+        }
+    }
+
     public static <T> XmlMapper<T> withAllConstraints(XmlMapper<T> mapper, List<PropertyConstraint<? super T>> constraints) {
         XmlMapper<T> result = mapper;
         for (PropertyConstraint<? super T> constraint : constraints) {

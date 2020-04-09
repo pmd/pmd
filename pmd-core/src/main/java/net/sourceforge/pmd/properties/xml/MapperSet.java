@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -102,6 +103,11 @@ final class MapperSet<T> extends XmlMapper<T> {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public List<PropertyConstraint<? super T>> getConstraints() {
+        return readIndex.values().iterator().next().getConstraints();
+    }
+
     private Collection<XmlMapper<T>> supportedReadStrategies() {
         return readIndex.values();
     }
@@ -134,7 +140,7 @@ final class MapperSet<T> extends XmlMapper<T> {
 
 
     @Override
-    protected List<String> examples(String curIndent, String baseIndent) {
-        return readIndex.values().stream().flatMap(it -> it.examples(curIndent, baseIndent).stream()).collect(Collectors.toList());
+    protected List<String> examplesImpl(String curIndent, String baseIndent) {
+        return readIndex.values().stream().flatMap(it -> it.examplesImpl(curIndent, baseIndent).stream()).collect(Collectors.toList());
     }
 }

@@ -31,5 +31,4 @@ public interface XmlErrorReporter {
         return new IllegalArgumentException(ex);
     }
 
-
 }

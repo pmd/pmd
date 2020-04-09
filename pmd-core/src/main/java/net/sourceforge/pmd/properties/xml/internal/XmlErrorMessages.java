@@ -14,6 +14,7 @@ public final class XmlErrorMessages {
     public static final String PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE = "The type {0} does not support the attribute syntax.\nUse a nested element, e.g. {1}";
     public static final String DEPRECATED_USE_OF_ATTRIBUTE = "The use of the '{0}' attribute is deprecated. Use a nested element, e.g. {1}";
     public static final String CONSTRAINT_NOT_SATISFIED = "Property constraint(s) not satisfied: {0}";
+    public static final String LIST_CONSTRAINT_NOT_SATISFIED = "Property constraint(s) not satisfied on items";
 
     private XmlErrorMessages() {
         // utility class

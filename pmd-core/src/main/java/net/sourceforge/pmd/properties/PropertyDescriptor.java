@@ -83,8 +83,7 @@ public interface PropertyDescriptor<T> {
      * Returns the type ID which was used to define this property. Returns
      * null if this property was defined in Java code and not in XML.
      *
-     * TODO this replaces isDefinedExternally for the RulesetWriter.
-     * I still don't like it.
+     * <p>This replaces isDefinedExternally for the RulesetWriter.
      */
     @InternalApi
     default @Nullable PropertyTypeId getTypeId() {

@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.properties.xml;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
+
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Serialize an optional value. If the value is itself an {@code Optional<S>},
@@ -46,6 +49,13 @@ final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
     }
 
     @Override
+    public List<PropertyConstraint<? super Optional<T>>> getConstraints() {
+        return itemSyntax.getConstraints().stream()
+                         .map(PropertyConstraint::toOptionalConstraint)
+                         .collect(Collectors.toList());
+    }
+
+    @Override
     public void toXml(Element container, Optional<T> value) {
         if (value.isPresent()) {
             itemSyntax.toXml(container, value.get());
@@ -77,9 +87,7 @@ final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
     }
 
     @Override
-    protected List<String> examples(String curIndent, String baseIndent) {
-        ArrayList<String> list = new ArrayList<>(itemSyntax.examples(curIndent, baseIndent));
-        list.add(curIndent + "<none/>");
-        return list;
+    protected List<String> examplesImpl(String curIndent, String baseIndent) {
+        return CollectionUtil.plus(itemSyntax.examplesImpl(curIndent, baseIndent), curIndent + "<none/>");
     }
 }

@@ -8,10 +8,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 
 /**
@@ -43,18 +46,40 @@ final class SeqSyntax<T, C extends Iterable<T>> extends StableXmlMapper<C> {
 
     @Override
     public C fromXml(Element element, XmlErrorReporter err) {
-        return XmlUtils.getElementChildren(element)
-                       .map(child -> XmlUtils.expectElement(err, child, itemSyntax))
-                       .filter(Objects::nonNull)
-                       .collect(collector);
+        RuntimeException aggregateEx = err.error(element, XmlErrorMessages.LIST_CONSTRAINT_NOT_SATISFIED);
+
+        C result = XmlUtils.getElementChildren(element)
+                           .map(child -> {
+                               try {
+                                   return XmlUtils.expectElement(err, child, itemSyntax);
+                               } catch (Exception e) {
+                                   aggregateEx.addSuppressed(e);
+                                   return null;
+                               }
+                           })
+                           .filter(Objects::nonNull)
+                           .collect(collector);
+
+        if (aggregateEx.getSuppressed().length > 0) {
+            throw aggregateEx;
+        } else {
+            return result;
+        }
     }
 
     @Override
-    protected List<String> examples(String curIndent, String baseIndent) {
+    public List<PropertyConstraint<? super C>> getConstraints() {
+        return itemSyntax.getConstraints().stream()
+                         .map(PropertyConstraint::toCollectionConstraint)
+                         .collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<String> examplesImpl(String curIndent, String baseIndent) {
         String newIndent = curIndent + baseIndent;
         return Collections.singletonList(
             curIndent + "<seq>\n"
-                + newIndent + String.join("\n", itemSyntax.examples(newIndent, baseIndent)) + "\n"
+                + newIndent + String.join("\n", itemSyntax.examplesImpl(newIndent, baseIndent)) + "\n"
                 + newIndent + "..."
                 + curIndent + "</seq>"
         );

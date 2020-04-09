@@ -363,13 +363,13 @@ public class RuleFactory {
                 throw err.error(attrNode,
                                 XmlErrorMessages.PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE,
                                 typeId,
-                                String.join("\nor\n", syntax.examples()));
+                                String.join("\nor\n", syntax.getExamples()));
             }
             // the attribute syntax is deprecated.
             err.warn(attrNode,
                      XmlErrorMessages.DEPRECATED_USE_OF_ATTRIBUTE,
                      PROPERTY_VALUE.attributeName(),
-                     String.join("\nor\n", syntax.examples()));
+                     String.join("\nor\n", syntax.getExamples()));
         } else {
             Element child = XmlUtils.getSingleChildIn(propertyElement, err, syntax.getReadElementNames());
             // this will report the correct error if any

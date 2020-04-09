@@ -77,7 +77,7 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
     }
 
     @Override
-    protected List<String> examples(String curIndent, String baseIndent) {
+    protected List<String> examplesImpl(String curIndent, String baseIndent) {
         return Collections.singletonList(curIndent + "<value>data</value>");
     }
 
