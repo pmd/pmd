@@ -70,7 +70,6 @@ public class EcmascriptParserOptionsTest {
 
     @Test
     public void testEqualsHashcode() throws Exception {
-        @SuppressWarnings("unchecked")
         List<PropertyDescriptor<Boolean>> properties = listOf(EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
                                                               EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
 
