@@ -88,11 +88,6 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
     }
 
     @Override
-    public boolean isStringParserDelimited() {
-        return xmlMapper.isStringParserDelimited();
-    }
-
-    @Override
     public T fromString(String attributeData) {
         return xmlMapper.fromString(attributeData);
     }

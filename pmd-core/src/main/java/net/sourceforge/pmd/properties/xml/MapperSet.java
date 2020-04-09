@@ -119,11 +119,6 @@ final class MapperSet<T> extends XmlMapper<T> {
     }
 
     @Override
-    public boolean isStringParserDelimited() {
-        return supportedReadStrategies().stream().anyMatch(XmlMapper::isStringParserDelimited);
-    }
-
-    @Override
     public T fromXml(Element element, XmlErrorReporter err) {
         XmlMapper<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {

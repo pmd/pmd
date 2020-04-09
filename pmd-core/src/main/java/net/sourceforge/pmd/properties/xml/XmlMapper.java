@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties.xml;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -46,10 +48,6 @@ public abstract class XmlMapper<T> {
         return false;
     }
 
-    public boolean isStringParserDelimited() {
-        return false;
-    }
-
     /**
      * Returns the constraints that this mapper applies to values
      * after parsing them. This may be used for documentation, or
@@ -58,9 +56,7 @@ public abstract class XmlMapper<T> {
      *
      * @implNote See {@link ConstraintDecorator}
      */
-    public List<PropertyConstraint<? super T>> getConstraints() {
-        return Collections.emptyList();
-    }
+    public abstract List<PropertyConstraint<? super T>> getConstraints();
 
     /**
      * Returns a new XML mapper that will check parsed values with
@@ -120,18 +116,15 @@ public abstract class XmlMapper<T> {
         return getExamples().get(0);
     }
 
+    /**
+     * A mapper that has a single name for read and write.
+     */
     abstract static class StableXmlMapper<T> extends XmlMapper<T> {
 
         private final String eltName;
-        private final Set<String> readNames;
 
         /* package */ StableXmlMapper(String eltName) {
-            this(eltName, Collections.singleton(eltName));
-        }
-
-        /* package */ StableXmlMapper(String eltName, Set<String> readNames) {
             this.eltName = eltName;
-            this.readNames = readNames;
         }
 
         @Override
@@ -141,7 +134,7 @@ public abstract class XmlMapper<T> {
 
         @Override
         public Set<String> getReadElementNames() {
-            return readNames;
+            return setOf(eltName);
         }
     }
 }

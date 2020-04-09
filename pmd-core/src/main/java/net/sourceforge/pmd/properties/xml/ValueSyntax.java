@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
 
 /**
@@ -47,8 +48,8 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
     }
 
     @Override
-    public boolean isStringParserDelimited() {
-        return delimited;
+    public List<PropertyConstraint<? super T>> getConstraints() {
+        return Collections.emptyList();
     }
 
     @Override

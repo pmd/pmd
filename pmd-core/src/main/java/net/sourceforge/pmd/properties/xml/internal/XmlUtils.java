@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties.xml.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,6 +43,18 @@ public final class XmlUtils {
         return getElementChildren(parent).filter(e -> names.contains(e.getTagName()));
     }
 
+    public static Stream<Element> getElementChildrenNamedReportOthers(Element parent, Set<String> names, XmlErrorReporter err) {
+        return getElementChildren(parent)
+            .map(it -> {
+                if (names.contains(it.getTagName())) {
+                    return it;
+                } else {
+                    err.warn(it, XmlErrorMessages.IGNORED_UNEXPECTED_CHILD_ELEMENT, it.getTagName(), formatPossibleNames(names));
+                    return null;
+                }
+            }).filter(Objects::nonNull);
+    }
+
     public static Stream<Element> getElementChildrenNamed(Element parent, String name) {
         return getElementChildren(parent).filter(e -> name.equals(e.getTagName()));
     }
@@ -55,6 +68,15 @@ public final class XmlUtils {
         }
 
         return null;
+    }
+
+
+    public static List<Element> getChildrenExpectSingleName(Element elt, String name, XmlErrorReporter err) {
+        return XmlUtils.getElementChildren(elt).peek(it -> {
+            if (!it.getTagName().equals(name)) {
+                err.warn(it, XmlErrorMessages.IGNORED_UNEXPECTED_CHILD_ELEMENT, it.getTagName(), name);
+            }
+        }).collect(Collectors.toList());
     }
 
     public static Element getSingleChildIn(Element elt, XmlErrorReporter err, Set<String> names) {
@@ -85,5 +107,29 @@ public final class XmlUtils {
         } else {
             return "one of " + names.stream().map(it -> "'" + it + "'").collect(Collectors.joining(", "));
         }
+    }
+
+    /**
+     * Parse a String from a textually type node.
+     *
+     * @param node The node.
+     *
+     * @return The String.
+     */
+    public static String parseTextNode(Node node) {
+        final int nodeCount = node.getChildNodes().getLength();
+        if (nodeCount == 0) {
+            return "";
+        }
+
+        StringBuilder buffer = new StringBuilder();
+
+        for (int i = 0; i < nodeCount; i++) {
+            Node childNode = node.getChildNodes().item(i);
+            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
+                buffer.append(childNode.getNodeValue());
+            }
+        }
+        return buffer.toString();
     }
 }

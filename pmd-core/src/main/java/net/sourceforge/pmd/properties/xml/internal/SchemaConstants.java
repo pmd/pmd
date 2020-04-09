@@ -29,13 +29,26 @@ public enum SchemaConstants {
     /** The description of the property. */
     DESCRIPTION("description"),
     /** The default value. */
-    PROPERTY_VALUE("value");
+    PROPERTY_VALUE("value"),
+
+    PROPERTY_ELT("property"),
+
+    PROPERTIES("properties"),
+    DEPRECATED("deprecated"),
+
+    ;
 
     private final String name;
 
 
     SchemaConstants(String name) {
         this.name = name;
+    }
+
+
+    public boolean getAsBooleanAttr(Element e, boolean defaultValue) {
+        String attr = e.getAttribute(name);
+        return attr != null ? Boolean.parseBoolean(attr) : defaultValue;
     }
 
     @NonNull
@@ -60,7 +73,13 @@ public enum SchemaConstants {
     }
 
     public List<Element> getChildrenIn(Element elt) {
-        return XmlUtils.getElementChildrenNamed(elt, name).collect(Collectors.toList());
+        return XmlUtils.getElementChildrenNamed(elt, name)
+                       .collect(Collectors.toList());
+    }
+
+    public List<Element> getElementChildrenNamedReportOthers(Element elt, XmlErrorReporter err) {
+        return XmlUtils.getElementChildrenNamedReportOthers(elt, setOf(name), err)
+                       .collect(Collectors.toList());
     }
 
     public Element getSingleChildIn(Element elt, XmlErrorReporter err) {
@@ -76,14 +95,14 @@ public enum SchemaConstants {
      *
      * @return The attribute's name
      */
-    public String attributeName() {
+    public String xmlName() {
         return name;
     }
 
 
     @Override
     public String toString() {
-        return attributeName();
+        return xmlName();
     }
 
 

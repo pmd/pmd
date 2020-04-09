@@ -5,18 +5,20 @@
 package net.sourceforge.pmd.rules;
 
 import static net.sourceforge.pmd.properties.xml.internal.SchemaConstants.PROPERTY_VALUE;
+import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.formatPossibleNames;
+import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.getSingleChildIn;
+import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.parseTextNode;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -36,7 +38,6 @@ import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
 import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
-import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -127,7 +128,7 @@ public class RuleFactory {
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
                     break;
                 case PROPERTIES:
-                    setPropertyValues(ruleReference, (Element) node);
+                    setPropertyValues(ruleReference, (Element) node, dummyErrorReporter());
                     break;
                 default:
                     throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
@@ -175,7 +176,7 @@ public class RuleFactory {
 
         builder.message(ruleElement.getAttribute(MESSAGE));
         builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
-        builder.setDeprecated(hasAttributeSetTrue(ruleElement, DEPRECATED));
+        builder.setDeprecated(SchemaConstants.DEPRECATED.getAsBooleanAttr(ruleElement, false));
 
         Element propertiesElement = null;
 
@@ -216,7 +217,7 @@ public class RuleFactory {
         }
 
         if (propertiesElement != null) {
-            setPropertyValues(rule, propertiesElement);
+            setPropertyValues(rule, propertiesElement, dummyErrorReporter());
         }
 
         return rule;
@@ -230,27 +231,6 @@ public class RuleFactory {
                 throw new IllegalArgumentException("Missing '" + att + "' attribute");
             }
         }
-    }
-
-    /**
-     * Parses a properties element looking only for the values of the properties defined or overridden.
-     *
-     * @param propertiesNode Node to parse
-     *
-     * @return A map of property names to their value
-     */
-    private Map<String, String> getPropertyValuesFrom(Element propertiesNode) {
-        Map<String, String> overriddenProperties = new HashMap<>();
-
-        for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
-            Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())) {
-                Entry<String, String> overridden = getPropertyValue((Element) node);
-                overriddenProperties.put(overridden.getKey(), overridden.getValue());
-            }
-        }
-
-        return overriddenProperties;
     }
 
     /**
@@ -272,39 +252,41 @@ public class RuleFactory {
     }
 
     /**
-     * Gets a mapping of property name to its value from the given property element.
-     *
-     * @param propertyElement Property element
-     *
-     * @return An entry of property name to its value
-     */
-    private Entry<String, String> getPropertyValue(Element propertyElement) {
-        String name = propertyElement.getAttribute(SchemaConstants.NAME.attributeName());
-        return new SimpleEntry<>(name, valueFrom(propertyElement));
-    }
-
-    /**
      * Overrides the rule's properties with the values defined in the element.
      *
      * @param rule          The rule
      * @param propertiesElt The {@literal <properties>} element
      */
-    private void setPropertyValues(Rule rule, Element propertiesElt) {
-        Map<String, String> overridden = getPropertyValuesFrom(propertiesElt);
+    private void setPropertyValues(Rule rule, Element propertiesElt, XmlErrorReporter err) {
+        Set<String> overridden = new HashSet<>();
 
-        for (Entry<String, String> e : overridden.entrySet()) {
-            PropertyDescriptor<?> descriptor = rule.getPropertyDescriptor(e.getKey());
-            if (descriptor == null) {
-                throw new IllegalArgumentException(
-                        "Cannot set non-existent property '" + e.getKey() + "' on Rule " + rule.getName());
+        for (Element element : SchemaConstants.PROPERTY_ELT.getElementChildrenNamedReportOthers(propertiesElt, err)) {
+            String name = SchemaConstants.NAME.getAttributeOrThrow(element, err);
+            if (!overridden.add(name)) {
+                err.warn(element, XmlErrorMessages.DUPLICATE_PROPERTY_SETTER, name);
+                continue;
             }
 
-            setRulePropertyCapture(rule, descriptor, e.getValue());
+            PropertyDescriptor<?> desc = rule.getPropertyDescriptor(name);
+            if (desc == null) {
+                err.warn(element, XmlErrorMessages.PROPERTY_DOES_NOT_EXIST, name, rule.getName(), knownPropertiesOf(rule));
+                continue;
+            }
+            setRulePropertyCapture(rule, desc, element, err);
         }
     }
 
-    private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, String value) {
-        rule.setProperty(descriptor, descriptor.valueFrom(value));
+    private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, Element propertyElt, XmlErrorReporter err) {
+        T value = parsePropertyValue(propertyElt, err, descriptor.xmlMapper());
+        rule.setProperty(descriptor, value);
+    }
+
+    @Nullable
+    private String knownPropertiesOf(Rule rule) {
+        Set<String> set = rule.getPropertyDescriptors().stream()
+                              .map(PropertyDescriptor::name)
+                              .collect(Collectors.toSet());
+        return formatPossibleNames(set);
     }
 
     /**
@@ -315,7 +297,7 @@ public class RuleFactory {
      * @return True if this element defines a new property, false if this is just stating a value
      */
     private static boolean isPropertyDefinition(Element node) {
-        return node.hasAttribute(SchemaConstants.TYPE.attributeName());
+        return node.hasAttribute(SchemaConstants.TYPE.xmlName());
     }
 
     /**
@@ -326,7 +308,7 @@ public class RuleFactory {
      * @return The property descriptor
      */
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
-        XmlErrorReporter err = new XmlErrorReporter() {}; // TODO this is a fake instance, should be provided by context
+        XmlErrorReporter err = dummyErrorReporter();
 
         String typeId = SchemaConstants.TYPE.getAttributeOrThrow(propertyElement, err);
 
@@ -335,12 +317,11 @@ public class RuleFactory {
             throw new IllegalArgumentException("No property descriptor factory for type: " + typeId);
         }
 
-        return propertyDefCapture(propertyElement, err, typeId, factory.getBuilderUtils());
+        return propertyDefCapture(propertyElement, err, factory.getBuilderUtils());
     }
 
     private static <T> PropertyDescriptor<T> propertyDefCapture(Element propertyElement,
                                                                 XmlErrorReporter err,
-                                                                String typeId,
                                                                 BuilderAndMapper<T> factory) {
 
         String name = SchemaConstants.NAME.getAttributeOrThrow(propertyElement, err);
@@ -350,31 +331,8 @@ public class RuleFactory {
 
         // parse the value
         final XmlMapper<T> syntax = factory.getXmlMapper();
-        final T defaultValue;
 
-        @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElement);
-        if (defaultAttr != null) {
-            Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElement);
-            try {
-                defaultValue = syntax.fromString(defaultAttr);
-            } catch (IllegalArgumentException e) {
-                throw err.error(attrNode, e);
-            } catch (UnsupportedOperationException e) {
-                throw err.error(attrNode,
-                                XmlErrorMessages.PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE,
-                                typeId,
-                                String.join("\nor\n", syntax.getExamples()));
-            }
-            // the attribute syntax is deprecated.
-            err.warn(attrNode,
-                     XmlErrorMessages.DEPRECATED_USE_OF_ATTRIBUTE,
-                     PROPERTY_VALUE.attributeName(),
-                     String.join("\nor\n", syntax.getExamples()));
-        } else {
-            Element child = XmlUtils.getSingleChildIn(propertyElement, err, syntax.getReadElementNames());
-            // this will report the correct error if any
-            defaultValue = syntax.fromXml(child, err);
-        }
+        final T defaultValue = parsePropertyValue(propertyElement, err, syntax);
 
         builder.defaultValue(defaultValue);
 
@@ -383,51 +341,40 @@ public class RuleFactory {
         return builder.build();
     }
 
+    private static <T> T parsePropertyValue(Element propertyElt, XmlErrorReporter err, XmlMapper<T> syntax) {
+        @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElt);
+        if (defaultAttr != null) {
+            Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
 
-    /** Gets the string value from a property node. */
-    private static String valueFrom(Element propertyNode) {
-        String strValue = propertyNode.getAttribute(PROPERTY_VALUE.attributeName());
+            // the attribute syntax is deprecated.
+            err.warn(attrNode,
+                     XmlErrorMessages.DEPRECATED_USE_OF_ATTRIBUTE,
+                     PROPERTY_VALUE.xmlName(),
+                     String.join("\nor\n", syntax.getExamples()));
 
-        if (StringUtils.isNotBlank(strValue)) {
-            return strValue;
-        }
-
-        final NodeList nodeList = propertyNode.getChildNodes();
-
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && "value".equals(node.getNodeName())) {
-                return parseTextNode(node);
+            try {
+                return syntax.fromString(defaultAttr);
+            } catch (IllegalArgumentException e) {
+                throw err.error(attrNode, e);
+            } catch (UnsupportedOperationException e) {
+                throw err.error(attrNode,
+                                XmlErrorMessages.PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE,
+                                String.join("\nor\n", syntax.getExamples()));
             }
+
+        } else {
+            Element child = getSingleChildIn(propertyElt, err, syntax.getReadElementNames());
+            // this will report the correct error if any
+            return syntax.fromXml(child, err);
         }
-        return null;
     }
 
-    private static boolean hasAttributeSetTrue(Element element, String attributeId) {
-        return element.hasAttribute(attributeId) && "true".equalsIgnoreCase(element.getAttribute(attributeId));
-    }
 
-    /**
-     * Parse a String from a textually type node.
-     *
-     * @param node The node.
-     *
-     * @return The String.
-     */
-    private static String parseTextNode(Node node) {
-        final int nodeCount = node.getChildNodes().getLength();
-        if (nodeCount == 0) {
-            return "";
-        }
-
-        StringBuilder buffer = new StringBuilder();
-
-        for (int i = 0; i < nodeCount; i++) {
-            Node childNode = node.getChildNodes().item(i);
-            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(childNode.getNodeValue());
-            }
-        }
-        return buffer.toString();
+    @Deprecated
+    @NonNull
+    private static XmlErrorReporter dummyErrorReporter() {
+        // TODO this is a fake instance, should be provided by context
+        //  I'm only doing this to not make the change too contagious for now
+        return new XmlErrorReporter() {};
     }
 }
