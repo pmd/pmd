@@ -41,7 +41,7 @@ public class XPathMetricFunctionTest {
 
 
     private Rule makeXpathRuleFromXPath(String xpath) {
-        XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, xpath);
+        XPathRule rule = new XPathRule(XPathVersion.XPATH_1_0, xpath);
         rule.setMessage(VIOLATION_MESSAGE);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         return rule;

@@ -99,6 +99,7 @@ public class XPathRule extends AbstractRule {
      * @throws NullPointerException If any of the arguments is null
      */
     public XPathRule(XPathVersion version, String expression) {
+        this();
         Objects.requireNonNull(version, "XPath version is null");
         Objects.requireNonNull(expression, "XPath expression is null");
         setXPath(expression);
