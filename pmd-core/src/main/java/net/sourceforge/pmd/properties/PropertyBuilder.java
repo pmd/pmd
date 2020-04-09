@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
+import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -54,7 +53,6 @@ import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
-    private final Set<PropertyConstraint<? super T>> validators = new LinkedHashSet<>();
     private final String name;
     private String description;
     private T defaultValue;
@@ -70,12 +68,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
         this.name = name;
     }
-
-
-    Set<PropertyConstraint<? super T>> getConstraints() {
-        return validators;
-    }
-
 
     String getDescription() {
         if (!isDescriptionSet()) {
@@ -147,10 +139,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @see net.sourceforge.pmd.properties.constraints.NumericConstraints
      */
     @SuppressWarnings("unchecked")
-    public B require(PropertyConstraint<? super T> constraint) {
-        validators.add(constraint);
-        return (B) this;
-    }
+    public abstract B require(PropertyConstraint<? super T> constraint);
 
 
     /**
@@ -203,7 +192,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look clumsy
     abstract static class BaseSinglePropertyBuilder<B extends PropertyBuilder<B, T>, T> extends PropertyBuilder<B, T> {
 
-        private final XmlMapper<T> parser;
+        private XmlMapper<T> parser;
 
 
         // Class is not final but a package-private constructor restricts inheritance
@@ -217,6 +206,12 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return parser;
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
+        public B require(PropertyConstraint<? super T> constraint) {
+            parser = parser.withConstraint(constraint);
+            return (B) this;
+        }
 
         /**
          * Returns a new builder that can be used to build a property
@@ -292,10 +287,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                 result.desc(getDescription());
             }
 
-            for (PropertyConstraint<? super T> validator : getConstraints()) {
-                result.require(validator.toCollectionConstraint());
-            }
-
             return result;
         }
 
@@ -318,10 +309,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                 result.desc(getDescription());
             }
 
-            for (PropertyConstraint<? super T> validator : getConstraints()) {
-                result.require(validator.toOptionalConstraint());
-            }
-
             return result;
         }
 
@@ -332,7 +319,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                 getName(),
                 getDescription(),
                 getDefaultValue(),
-                getConstraints(),
                 parser,
                 typeId
             );
@@ -423,19 +409,20 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      */
     public static final class GenericCollectionPropertyBuilder<V, C extends Iterable<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
 
-        private final XmlMapper<V> parser;
+        private XmlMapper<V> itemParser;
         private final Collector<? super V, ?, ? extends C> collector;
         private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
+        private final List<PropertyConstraint<? super C>> collectionConstraints = new ArrayList<>();
 
 
         /**
          * Builds a new builder for a collection type. Package-private.
          */
         GenericCollectionPropertyBuilder(String name,
-                                         XmlMapper<V> parser,
+                                         XmlMapper<V> itemParser,
                                          Collector<? super V, ?, ? extends C> collector) {
             super(name);
-            this.parser = parser;
+            this.itemParser = itemParser;
             this.collector = collector;
         }
 
@@ -444,6 +431,11 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return IteratorUtil.stream(list).collect(collector);
         }
 
+        @Override
+        public GenericCollectionPropertyBuilder<V, C> require(PropertyConstraint<? super C> constraint) {
+            collectionConstraints.add(constraint);
+            return this;
+        }
 
         /**
          * Specify a default value. This will be converted to type
@@ -480,7 +472,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return The same builder
          */
         public GenericCollectionPropertyBuilder<V, C> emptyDefaultValue() {
-            return this.defaultValue(Collections.emptyList());
+            return this.defaultValue(emptyList());
         }
 
 
@@ -494,7 +486,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return The same builder
          */
         public GenericCollectionPropertyBuilder<V, C> requireEach(PropertyConstraint<? super V> constraint) {
-            return super.require(constraint.toCollectionConstraint());
+            this.itemParser = itemParser.withConstraint(constraint);
+            return this;
         }
 
 
@@ -519,15 +512,16 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         @Override
         public PropertyDescriptor<C> build() {
-            XmlMapper<C> syntax = parser.supportsStringMapping() && !parser.isStringParserDelimited()
-                                  ? XmlSyntaxUtils.seqAndDelimited(parser, collector, false, multiValueDelimiter)
-                                  : XmlSyntaxUtils.onlySeq(parser, collector);
+            XmlMapper<C> syntax = itemParser.supportsStringMapping() && !itemParser.isStringParserDelimited()
+                                  ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, multiValueDelimiter)
+                                  : XmlSyntaxUtils.onlySeq(itemParser, collector);
+
+            syntax = XmlSyntaxUtils.withAllConstraints(syntax, collectionConstraints);
 
             return new GenericPropertyDescriptor<>(
                 getName(),
                 getDescription(),
                 getDefaultValue(),
-                getConstraints(),
                 syntax,
                 typeId
             );

@@ -279,6 +279,21 @@ public final class CollectionUtil {
     }
 
     /**
+     * Produce a new list with the elements of the first, and one additional
+     * element. The returned list may be unmodifiable.
+     */
+    public static <V> List<V> plus(List<? extends V> m, V v) {
+        if (m.isEmpty()) {
+            return Collections.singletonList(v);
+        }
+
+        List<V> vs = new ArrayList<>(m.size() + 1);
+        vs.addAll(m);
+        vs.add(v);
+        return vs;
+    }
+
+    /**
      * Produce a new map with the mappings of the first, and one additional
      * mapping. The returned map may be unmodifiable.
      */

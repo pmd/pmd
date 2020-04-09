@@ -6,16 +6,19 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enumerationParser;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 //@formatter:off
@@ -310,10 +313,11 @@ public final class PropertyFactory {
     // the builder, even if it wasn't registered in the constants
     // This is fixed in the framework refactoring
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
-        // TODO find solution to document the set of possible values
-        // At best, map that requirement to a constraint (eg make parser return null if not found, and
-        // add a non-null constraint with the right description.)
-        return new GenericPropertyBuilder<>(name, enumerationParser(nameToValue));
+        XmlMapper<T> parser = enumerationParser(
+            nameToValue,
+            t -> nameToValue.entrySet().stream().filter(it -> it.getValue().equals(t)).map(Entry::getKey).findFirst().get()
+        );
+        return new GenericPropertyBuilder<>(name, parser);
     }
 
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
@@ -321,12 +325,13 @@ public final class PropertyFactory {
     }
 
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
-        Map<String, T> labels = new HashMap<>();
-        for (T constant : enumClass.getEnumConstants()) {
-            labels.put(labelMaker.apply(constant), constant);
-        }
 
-        return new GenericPropertyBuilder<>(name, enumerationParser(labels));
+        // don't use a merge function, so that it throws if multiple
+        // values have the same key
+        Map<String, T> labelsToValues = Arrays.stream(enumClass.getEnumConstants())
+                                              .collect(Collectors.toMap(labelMaker, t -> t));
+
+        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, labelMaker));
     }
 
 

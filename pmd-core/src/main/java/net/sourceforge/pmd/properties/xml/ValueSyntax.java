@@ -25,16 +25,16 @@ import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
  * <pre>This class is special because it enables compatibility with the
  * pre 7.0.0 XML syntax.
  */
-final class ValueSyntax<T> extends StableXmlMapper<T> {
+class ValueSyntax<T> extends StableXmlMapper<T> {
 
     private static final String VALUE_NAME = "value";
     private final Function<? super T, String> toString;
     private final Function<String, ? extends T> fromString;
     private final boolean delimited;
 
-    private ValueSyntax(Function<? super T, String> toString,
-                        Function<String, ? extends T> fromString,
-                        boolean delimited) {
+    ValueSyntax(Function<? super T, String> toString,
+                Function<String, ? extends T> fromString,
+                boolean delimited) {
         super(VALUE_NAME);
         this.toString = toString;
         this.fromString = fromString;

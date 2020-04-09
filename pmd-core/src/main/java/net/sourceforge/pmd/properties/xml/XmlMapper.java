@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.properties.xml;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 
 /**
@@ -24,7 +27,12 @@ public abstract class XmlMapper<T> {
     /* package */ XmlMapper() {
     }
 
-    /** Extract the value from an XML element. */
+    /**
+     * Extract the value from an XML element. If an error occurs, throws
+     * an exception with {@link XmlErrorReporter#error(Node, Throwable)}
+     * on the most specific node (the type of exception is unspecified).
+     * This will check property constraints if any.
+     */
     public abstract T fromXml(Element element, XmlErrorReporter err);
 
 
@@ -41,6 +49,32 @@ public abstract class XmlMapper<T> {
 
     public boolean isStringParserDelimited() {
         return false;
+    }
+
+    public List<PropertyConstraint<? super T>> getConstraints() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Returns a new XML mapper with the given constraint.
+     */
+    public XmlMapper<T> withConstraint(PropertyConstraint<? super T> t) {
+        return new ConstraintDecorator<>(this, Collections.singletonList(t));
+    }
+
+    /**
+     * Checks the result of the constraints defined by this mapper on
+     * the given element.
+     */
+    public List<String> checkConstraints(T t) {
+        List<String> failures = new ArrayList<>();
+        for (PropertyConstraint<? super T> constraint : getConstraints()) {
+            String validationResult = constraint.validate(t);
+            if (validationResult != null) {
+                failures.add(validationResult);
+            }
+        }
+        return failures;
     }
 
     /**

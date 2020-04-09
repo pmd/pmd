@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties.xml.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,23 +60,11 @@ public enum SchemaConstants {
     }
 
     public List<Element> getChildrenIn(Element elt) {
-        return XmlUtils.getElementChildren(elt)
-                       .filter(it -> it.getTagName().equals(name))
-                       .collect(Collectors.toList());
+        return XmlUtils.getElementChildrenNamed(elt, name).collect(Collectors.toList());
     }
 
     public Element getSingleChildIn(Element elt, XmlErrorReporter err) {
-        List<Element> children = getChildrenIn(elt);
-        if (children.size() == 1) {
-            return children.get(0);
-        } else if (children.size() == 0) {
-            throw err.error(elt, XmlErrorMessages.MISSING_REQUIRED_ELEMENT, name);
-        } else {
-            for (int i = 1; i < children.size(); i++) {
-                err.warn(children.get(i), XmlErrorMessages.IGNORED_DUPLICATE_CHILD_ELEMENT, name);
-            }
-            return children.get(0);
-        }
+        return XmlUtils.getSingleChildIn(elt, err, setOf(name));
     }
 
     public void setOn(Element element, String value) {

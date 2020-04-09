@@ -5,21 +5,22 @@
 package net.sourceforge.pmd.properties.xml;
 
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.internal.util.PredicateUtil;
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 /**
  * This is internal API and shouldn't be used directly by clients.
@@ -64,6 +65,15 @@ public final class XmlSyntaxUtils {
 
     public static <T> XmlMapper<Optional<T>> toOptional(XmlMapper<T> itemSyntax) {
         return new OptionalSyntax<>(itemSyntax);
+    }
+
+    public static <T> XmlMapper<T> withAllConstraints(XmlMapper<T> mapper, List<PropertyConstraint<? super T>> constraints) {
+        XmlMapper<T> result = mapper;
+        for (PropertyConstraint<? super T> constraint : constraints) {
+            result = result.withConstraint(constraint);
+        }
+
+        return result;
     }
 
     /**
@@ -164,28 +174,30 @@ public final class XmlSyntaxUtils {
     }
 
 
-    @Nullable
-    public static String formatPossibilities(Set<String> names) {
-        if (names.isEmpty()) {
-            return null;
-        } else if (names.size() == 1) {
-            return "'" + names.iterator().next() + "'";
-        } else {
-            return "one of " + names.stream().map(it -> "'" + it + "'").collect(Collectors.joining(", "));
-        }
-    }
-
-    public static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings) {
+    public static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings, Function<? super T, String> reverseFun) {
 
         if (mappings.containsValue(null)) {
             throw new IllegalArgumentException("Map may not contain entries with null values");
         }
 
-        return ValueSyntax.createNonDelimited(value -> {
-            if (!mappings.containsKey(value)) {
-                throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
+        PropertyConstraint<T> constraint =
+            PropertyConstraint.fromPredicate(PredicateUtil.always(), "Should be in set " + mappings.keySet());
+
+        return new ValueSyntax<T>(
+            reverseFun,
+            value -> {
+                if (!mappings.containsKey(value)) {
+                    throw new IllegalArgumentException("Value is not in the set " + mappings.keySet());
+                }
+                return mappings.get(value);
+            },
+            false
+        ) {
+            @Override
+            public List<PropertyConstraint<? super T>> getConstraints() {
+                return listOf(constraint);
             }
-            return mappings.get(value);
-        });
+        };
+
     }
 }

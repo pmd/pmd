@@ -32,10 +32,11 @@ import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
-import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
+import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
+import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -364,12 +365,14 @@ public class RuleFactory {
                                 typeId,
                                 String.join("\nor\n", syntax.examples()));
             }
+            // the attribute syntax is deprecated.
             err.warn(attrNode,
                      XmlErrorMessages.DEPRECATED_USE_OF_ATTRIBUTE,
                      PROPERTY_VALUE.attributeName(),
                      String.join("\nor\n", syntax.examples()));
         } else {
-            Element child = PROPERTY_VALUE.getSingleChildIn(propertyElement, err);
+            Element child = XmlUtils.getSingleChildIn(propertyElement, err, syntax.getReadElementNames());
+            // this will report the correct error if any
             defaultValue = syntax.fromXml(child, err);
         }
 
