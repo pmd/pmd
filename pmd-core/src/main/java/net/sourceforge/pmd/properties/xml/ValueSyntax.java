@@ -30,23 +30,25 @@ final class ValueSyntax<T> extends StableXmlMapper<T> {
     private static final String VALUE_NAME = "value";
     private final Function<? super T, String> toString;
     private final Function<String, ? extends T> fromString;
+    private final boolean delimited;
 
-    ValueSyntax(Function<? super T, String> toString,
-                Function<String, ? extends T> fromString) {
+    private ValueSyntax(Function<? super T, String> toString,
+                        Function<String, ? extends T> fromString,
+                        boolean delimited) {
         super(VALUE_NAME);
         this.toString = toString;
         this.fromString = fromString;
-    }
-
-    ValueSyntax(Function<String, ? extends T> fromString) {
-        super(VALUE_NAME);
-        this.toString = Objects::toString;
-        this.fromString = fromString;
+        this.delimited = delimited;
     }
 
     @Override
     public boolean supportsStringMapping() {
         return true;
+    }
+
+    @Override
+    public boolean isStringParserDelimited() {
+        return delimited;
     }
 
     @Override
@@ -77,5 +79,14 @@ final class ValueSyntax<T> extends StableXmlMapper<T> {
     @Override
     protected List<String> examples(String curIndent, String baseIndent) {
         return Collections.singletonList(curIndent + "<value>data</value>");
+    }
+
+    static <T> ValueSyntax<T> createNonDelimited(Function<String, ? extends T> fromString) {
+        return new ValueSyntax<>(Objects::toString, fromString, false);
+    }
+
+    static <T> ValueSyntax<T> createDelimited(Function<? super T, String> toString,
+                                              Function<String, ? extends T> fromString) {
+        return new ValueSyntax<>(toString, fromString, true);
     }
 }

@@ -14,6 +14,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -436,6 +437,10 @@ public final class IteratorUtil {
 
     public static <T> Stream<T> toStream(Iterator<? extends T> iter) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, 0), false);
+    }
+
+    public static <T> Stream<T> stream(Iterable<T> iter) {
+        return StreamSupport.stream(iter.spliterator(), false);
     }
 
     public abstract static class AbstractIterator<T> implements Iterator<T> {

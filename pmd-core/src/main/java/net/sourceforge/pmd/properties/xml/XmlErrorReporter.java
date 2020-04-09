@@ -6,8 +6,6 @@ package net.sourceforge.pmd.properties.xml;
 
 import java.util.logging.Logger;
 
-import org.w3c.dom.Node;
-
 /**
  * Reports errors in an XML document. Implementations have a way to
  * associate nodes with their location in the document.
@@ -18,17 +16,17 @@ public interface XmlErrorReporter {
 
     Logger LOGGER = Logger.getLogger(XmlErrorReporter.class.getName());
 
-    default void warn(Node node, String message, Object... args) {
+    default void warn(org.w3c.dom.Node node, String message, Object... args) {
         LOGGER.warning(String.format(message, args));
     }
 
 
-    default RuntimeException error(Node node, String message, Object... args) {
+    default RuntimeException error(org.w3c.dom.Node node, String message, Object... args) {
         return new IllegalArgumentException(String.format(message, args));
     }
 
 
-    default RuntimeException error(Node node, Throwable ex) {
+    default RuntimeException error(org.w3c.dom.Node node, Throwable ex) {
         return new IllegalArgumentException(ex);
     }
 

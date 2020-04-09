@@ -4,20 +4,21 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
@@ -228,13 +229,64 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @throws IllegalStateException if the default value has already been set
          */
         /* package private */ GenericCollectionPropertyBuilder<T, List<T>> toList() {
+            return to(Collectors.toList());
+        }
+
+        /**
+         * Returns a new builder that can be used to build a property
+         * with value type {@code <C>}. The validators already added are
+         * converted to collection validators. The default value cannot
+         * have previously been set. The returned builder will support
+         * conversion to and from a delimited string if this property
+         * supports direct mapping to/from a string without delimiters.
+         * Otherwise it will only support the {@code <seq>} syntax.
+         *
+         * <p>Example usage:
+         * <pre>{@code
+         *
+         * // this can be set both with
+         * // <value>a,b,c</value>
+         * // and
+         * // <seq>
+         * //  <value>a</value>
+         * //  <value>b</value>
+         * // </seq>
+         * PropertyDescriptor<Set<String>> whitelistSet =
+         *      PropertyFactory.stringProperty("whitelist")
+         *                     .desc(...)
+         *                     .to(Collectors.toSet())
+         *                     .emptyDefaultValue()
+         *                     .build();
+         *
+         * // this can be set only with the <seq> syntax,
+         * // otherwise the delimiter would be ambiguous:
+         * // <seq>
+         * //   <seq>
+         * //     <value>a</value>
+         * //   </seq>
+         * //   <seq/>
+         * // </seq>
+         * PropertyDescriptor<List<Set<String>>> whitelistSet =
+         *      PropertyFactory.stringProperty("whitelist")
+         *                     .desc(...)
+         *                     .to(Collectors.toSet())
+         *                     .to(Collectors.toList())
+         *                     .emptyDefaultValue()
+         *                     .build();
+         *
+         * }</pre>
+         *
+         * @return A new list property builder
+         *
+         * @throws IllegalStateException if the default value has already been set
+         */
+        public <C extends Iterable<T>> GenericCollectionPropertyBuilder<T, C> to(Collector<? super T, ?, ? extends C> collector) {
 
             if (isDefaultValueSet()) {
                 throw new IllegalStateException("The default value is already set!");
             }
 
-            GenericCollectionPropertyBuilder<T, List<T>> result =
-                new GenericCollectionPropertyBuilder<>(getName(), getParser(), ArrayList::new);
+            GenericCollectionPropertyBuilder<T, C> result = new GenericCollectionPropertyBuilder<>(getName(), getParser(), collector);
 
             if (isDescriptionSet()) {
                 result.desc(getDescription());
@@ -245,7 +297,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             }
 
             return result;
-
         }
 
         /**
@@ -357,7 +408,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     /**
      * Generic builder for a collection-valued property.
-     * This class adds methods related to {@link #defaultValue(Collection)}
+     * This class adds methods related to {@link #defaultValue(Iterable)}
      * to make its use more flexible. See e.g. {@link #defaultValues(Object, Object[])}.
      *
      * <p>Note: this is designed to support arbitrary collections.
@@ -370,10 +421,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @author Clément Fournier
      * @since 6.10.0
      */
-    public static final class GenericCollectionPropertyBuilder<V, C extends Collection<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
+    public static final class GenericCollectionPropertyBuilder<V, C extends Iterable<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
 
         private final XmlMapper<V> parser;
-        private final Supplier<C> emptyCollSupplier;
+        private final Collector<? super V, ?, ? extends C> collector;
         private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
 
 
@@ -382,29 +433,27 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         GenericCollectionPropertyBuilder(String name,
                                          XmlMapper<V> parser,
-                                         Supplier<C> emptyCollSupplier) {
+                                         Collector<? super V, ?, ? extends C> collector) {
             super(name);
             this.parser = parser;
-            this.emptyCollSupplier = emptyCollSupplier;
+            this.collector = collector;
         }
 
 
-        private C getDefaultValue(Collection<? extends V> list) {
-            C coll = emptyCollSupplier.get();
-            coll.addAll(list);
-            return coll;
+        private C getDefaultValue(Iterable<? extends V> list) {
+            return IteratorUtil.stream(list).collect(collector);
         }
 
 
         /**
-         * Specify a default value.
+         * Specify a default value. This will be converted to type
+         * {@code <C>} with the supplied collector.
          *
          * @param val List of values
          *
          * @return The same builder
          */
-        @SuppressWarnings("unchecked")
-        public GenericCollectionPropertyBuilder<V, C> defaultValue(Collection<? extends V> val) {
+        public GenericCollectionPropertyBuilder<V, C> defaultValue(Iterable<? extends V> val) {
             super.defaultValue(getDefaultValue(val));
             return this;
         }
@@ -421,10 +470,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         @SuppressWarnings("unchecked")
         public GenericCollectionPropertyBuilder<V, C> defaultValues(V head, V... tail) {
-            List<V> tmp = new ArrayList<>(tail.length + 1);
-            tmp.add(head);
-            tmp.addAll(Arrays.asList(tail));
-            return super.defaultValue(getDefaultValue(tmp));
+            return this.defaultValue(listOf(head, tail));
         }
 
 
@@ -434,7 +480,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return The same builder
          */
         public GenericCollectionPropertyBuilder<V, C> emptyDefaultValue() {
-            return super.defaultValue(getDefaultValue(Collections.<V>emptyList()));
+            return this.defaultValue(Collections.emptyList());
         }
 
 
@@ -473,9 +519,9 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         @Override
         public PropertyDescriptor<C> build() {
-            XmlMapper<C> syntax = parser.supportsStringMapping()
-                                  ? XmlSyntaxUtils.seqAndDelimited(parser, emptyCollSupplier, false, multiValueDelimiter)
-                                  : XmlSyntaxUtils.onlySeq(parser, emptyCollSupplier);
+            XmlMapper<C> syntax = parser.supportsStringMapping() && !parser.isStringParserDelimited()
+                                  ? XmlSyntaxUtils.seqAndDelimited(parser, collector, false, multiValueDelimiter)
+                                  : XmlSyntaxUtils.onlySeq(parser, collector);
 
             return new GenericPropertyDescriptor<>(
                 getName(),

@@ -10,11 +10,14 @@ import java.util.Set;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
- * Strategy to serialize a value to and from XML.
- *
- * @author Clément Fournier
+ * Strategy to serialize a value to and from XML. Some strategies support
+ * mapping to and from a string, without XML structure. They can be identified
+ * with {@link #supportsStringMapping()}. All the standard properties
+ * provided by {@link PropertyFactory} do.
  */
 public abstract class XmlMapper<T> {
 
@@ -33,6 +36,10 @@ public abstract class XmlMapper<T> {
      * from and to a simple string, without XML.
      */
     public boolean supportsStringMapping() {
+        return false;
+    }
+
+    public boolean isStringParserDelimited() {
         return false;
     }
 

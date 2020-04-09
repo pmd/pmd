@@ -6,7 +6,6 @@ package net.sourceforge.pmd.properties.xml;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,13 +101,19 @@ final class MapperSet<T> extends XmlMapper<T> {
         throw new UnsupportedOperationException();
     }
 
-    public Set<XmlMapper<T>> supportedReadStrategies() {
-        return new LinkedHashSet<>(readIndex.values());
+    private Collection<XmlMapper<T>> supportedReadStrategies() {
+        return readIndex.values();
     }
 
     @Override
     public boolean supportsStringMapping() {
-        return supportedReadStrategies().stream().anyMatch(XmlMapper::supportsStringMapping);
+        return supportedReadStrategies().stream().anyMatch(XmlMapper::supportsStringMapping)
+            && forWrite.supportsStringMapping();
+    }
+
+    @Override
+    public boolean isStringParserDelimited() {
+        return supportedReadStrategies().stream().anyMatch(XmlMapper::isStringParserDelimited);
     }
 
     @Override

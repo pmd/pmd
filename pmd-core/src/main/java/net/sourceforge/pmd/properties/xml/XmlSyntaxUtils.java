@@ -6,20 +6,20 @@ package net.sourceforge.pmd.properties.xml;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 /**
  * This is internal API and shouldn't be used directly by clients.
@@ -27,19 +27,19 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 public final class XmlSyntaxUtils {
 
-    public static final ValueSyntax<String> STRING = new ValueSyntax<>(Function.identity());
-    public static final ValueSyntax<Character> CHARACTER = new ValueSyntax<>(value -> {
+    public static final ValueSyntax<String> STRING = ValueSyntax.createNonDelimited(Function.identity());
+    public static final ValueSyntax<Character> CHARACTER = ValueSyntax.createNonDelimited(value -> {
         if (value == null || value.length() != 1) {
             throw new IllegalArgumentException("missing/ambiguous character value for string \"" + value + "\"");
         }
         return value.charAt(0);
     });
 
-    public static final ValueSyntax<Pattern> REGEX = new ValueSyntax<>(Pattern::compile);
-    public static final ValueSyntax<Integer> INTEGER = new ValueSyntax<>(Integer::valueOf);
-    public static final ValueSyntax<Long> LONG = new ValueSyntax<>(Long::valueOf);
-    public static final ValueSyntax<Boolean> BOOLEAN = new ValueSyntax<>(Boolean::valueOf);
-    public static final ValueSyntax<Double> DOUBLE = new ValueSyntax<>(Double::valueOf);
+    public static final ValueSyntax<Pattern> REGEX = ValueSyntax.createNonDelimited(Pattern::compile);
+    public static final ValueSyntax<Integer> INTEGER = ValueSyntax.createNonDelimited(Integer::valueOf);
+    public static final ValueSyntax<Long> LONG = ValueSyntax.createNonDelimited(Long::valueOf);
+    public static final ValueSyntax<Boolean> BOOLEAN = ValueSyntax.createNonDelimited(Boolean::valueOf);
+    public static final ValueSyntax<Double> DOUBLE = ValueSyntax.createNonDelimited(Double::valueOf);
 
 
     public static final XmlMapper<List<Integer>> INTEGER_LIST = numberList(INTEGER);
@@ -49,20 +49,17 @@ public final class XmlSyntaxUtils {
     public static final XmlMapper<List<Character>> CHAR_LIST = otherList(CHARACTER);
     public static final XmlMapper<List<String>> STRING_LIST = otherList(STRING);
 
-    public static final XmlMapper<List<Pattern>> REGEX_LIST = new SeqSyntax<>(REGEX, ArrayList::new);
-
-
     private XmlSyntaxUtils() {
 
     }
 
 
     private static <T extends Number> XmlMapper<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, ArrayList::new, true, ',');
+        return seqAndDelimited(valueSyntax, Collectors.toList(), true, ',');
     }
 
     private static <T> XmlMapper<List<T>> otherList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, ArrayList::new, true /* for now */, '|');
+        return seqAndDelimited(valueSyntax, Collectors.toList(), true /* for now */, '|');
     }
 
     public static <T> XmlMapper<Optional<T>> toOptional(XmlMapper<T> itemSyntax) {
@@ -73,50 +70,46 @@ public final class XmlSyntaxUtils {
      * Builds an XML syntax that understands a {@code <seq>} syntax and
      * a delimited {@code <value>} syntax.
      *
-     * @param itemSyntax        Serializer for the items, must support string mapping
-     * @param emptyCollSupplier Supplier for the collection
-     * @param preferOldSyntax   If true, the property will be written with {@code <value>},
-     *                          otherwise with {@code <seq>}.
-     * @param delimiter         Delimiter for the {@code <value>} syntax
-     * @param <T>               Type of items
-     * @param <C>               Type of collection to handle
+     * @param itemSyntax      Serializer for the items, must support string mapping
+     * @param collector       Collector to create the collection from strings
+     * @param preferOldSyntax If true, the property will be written with {@code <value>},
+     *                        otherwise with {@code <seq>}.
+     * @param delimiter       Delimiter for the {@code <value>} syntax
+     * @param <T>             Type of items
+     * @param <C>             Type of collection to handle
      *
      * @throws IllegalArgumentException If the item syntax doesn't support string mapping
      */
-    public static <T, C extends Collection<T>> XmlMapper<C> seqAndDelimited(XmlMapper<T> itemSyntax,
-                                                                            Supplier<C> emptyCollSupplier,
+    public static <T, C extends Iterable<T>> XmlMapper<C> seqAndDelimited(XmlMapper<T> itemSyntax,
+                                                                            Collector<? super T, ?, ? extends C> collector,
                                                                             boolean preferOldSyntax,
                                                                             char delimiter) {
         if (!itemSyntax.supportsStringMapping()) {
             throw new IllegalArgumentException("Item syntax does not support string mapping " + itemSyntax);
         }
         return new MapperSet<>(
-            new SeqSyntax<>(itemSyntax, emptyCollSupplier),
-            delimitedString(itemSyntax::toString, itemSyntax::fromString, delimiter, emptyCollSupplier),
+            new SeqSyntax<>(itemSyntax, collector),
+            delimitedString(itemSyntax::toString, itemSyntax::fromString, delimiter, collector),
             preferOldSyntax
         );
     }
 
-    public static <T, C extends Collection<T>> XmlMapper<C> onlySeq(XmlMapper<T> itemSyntax,
-                                                                    Supplier<C> emptyCollSupplier) {
-        return new SeqSyntax<>(itemSyntax, emptyCollSupplier);
+    public static <T, C extends Iterable<T>> XmlMapper<C> onlySeq(XmlMapper<T> itemSyntax,
+                                                                    Collector<? super T, ?, ? extends C> collector) {
+        return new SeqSyntax<>(itemSyntax, collector);
     }
 
 
-    private static <T, C extends Collection<T>> ValueSyntax<C> delimitedString(
+    private static <T, C extends Iterable<T>> ValueSyntax<C> delimitedString(
         Function<? super T, String> toString,
         Function<String, ? extends T> fromString,
         char delimiter,
-        Supplier<C> emptyCollSupplier
+        Collector<? super T, ?, ? extends C> collector
     ) {
         String delim = "" + delimiter;
-        return new ValueSyntax<>(
-            coll -> coll.stream().map(toString).collect(Collectors.joining(delim)),
-            string -> {
-                C coll = emptyCollSupplier.get();
-                coll.addAll(parseListWithEscapes(string, delimiter, fromString));
-                return coll;
-            }
+        return ValueSyntax.createDelimited(
+            coll -> IteratorUtil.stream(coll.iterator()).map(toString).collect(Collectors.joining(delim)),
+            string -> parseListWithEscapes(string, delimiter, fromString).stream().collect(collector)
         );
     }
 
@@ -188,7 +181,7 @@ public final class XmlSyntaxUtils {
             throw new IllegalArgumentException("Map may not contain entries with null values");
         }
 
-        return new ValueSyntax<>(value -> {
+        return ValueSyntax.createNonDelimited(value -> {
             if (!mappings.containsKey(value)) {
                 throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
             }

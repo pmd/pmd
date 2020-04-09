@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.intProperty;
-import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -37,12 +38,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             booleanProperty("skipAnnotations")
                     .desc("Skip literals within annotations").defaultValue(false).build();
 
-    private static final PropertyDescriptor<List<String>> EXCEPTION_LIST_DESCRIPTOR
-        = stringListProperty("exceptionList")
+    private static final PropertyDescriptor<Set<String>> EXCEPTION_LIST_DESCRIPTOR
+        = stringProperty("exceptionList")
                          .desc("List of literals to ignore. "
                                           + "A literal is ignored if its image can be found in this list. "
                                           + "Components of this list should not be surrounded by double quotes.")
-                         .defaultValue(Collections.emptyList())
+                         .to(Collectors.toSet())
+                         .defaultValue(Collections.emptySet())
                          .delim(',')
                          .build();
 
@@ -62,7 +64,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         literals.clear();
 
         if (getProperty(EXCEPTION_LIST_DESCRIPTOR) != null) {
-            exceptions = new HashSet<>(getProperty(EXCEPTION_LIST_DESCRIPTOR));
+            exceptions = getProperty(EXCEPTION_LIST_DESCRIPTOR);
         }
 
         minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);

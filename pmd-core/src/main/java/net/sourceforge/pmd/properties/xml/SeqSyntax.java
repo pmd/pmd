@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.properties.xml;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Objects;
+import java.util.stream.Collector;
 
 import org.w3c.dom.Element;
 
@@ -21,15 +21,15 @@ import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
  *  <seq>1</seq>
  * }</pre>
  */
-final class SeqSyntax<T, C extends Collection<T>> extends StableXmlMapper<C> {
+final class SeqSyntax<T, C extends Iterable<T>> extends StableXmlMapper<C> {
 
     private final XmlMapper<T> itemSyntax;
-    private final Supplier<C> emptyCollSupplier;
+    private final Collector<? super T, ?, ? extends C> collector;
 
-    SeqSyntax(XmlMapper<T> itemSyntax, Supplier<C> emptyCollSupplier) {
+    SeqSyntax(XmlMapper<T> itemSyntax, Collector<? super T, ?, ? extends C> collector) {
         super("seq");
         this.itemSyntax = itemSyntax;
-        this.emptyCollSupplier = emptyCollSupplier;
+        this.collector = collector;
     }
 
     @Override
@@ -43,15 +43,10 @@ final class SeqSyntax<T, C extends Collection<T>> extends StableXmlMapper<C> {
 
     @Override
     public C fromXml(Element element, XmlErrorReporter err) {
-        C result = emptyCollSupplier.get();
-
-        XmlUtils.getElementChildren(element).forEach(child -> {
-            T item = XmlUtils.expectElement(err, child, itemSyntax);
-            if (item != null) {
-                result.add(item);
-            }
-        });
-        return result;
+        return XmlUtils.getElementChildren(element)
+                       .map(child -> XmlUtils.expectElement(err, child, itemSyntax))
+                       .filter(Objects::nonNull)
+                       .collect(collector);
     }
 
     @Override
