@@ -26,7 +26,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 class MostlySingularMultimap<K, V> {
 
     @SuppressWarnings("rawtypes")
-    private static final MostlySingularMultimap EMPTY = new MostlySingularMultimap(Collections.emptyMap());
+    private static final MostlySingularMultimap EMPTY = new MostlySingularMultimap<>(Collections.emptyMap());
 
     private final Map<K, Object> map;
 

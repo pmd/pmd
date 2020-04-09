@@ -9,10 +9,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnu
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.JUST_SELF;
 
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -144,7 +141,7 @@ class JavaResolvers {
         ShadowChainBuilder<JTypeDeclSymbol, ScopeInfo>.ResolverBuilder types = SymTableFactory.TYPES.new ResolverBuilder();
 
         for (JClassSymbol next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
-            walkSelf(next, nestRoot, fields, types, new HashMap<>(), HashTreePSet.empty(), HashTreePSet.empty());
+            walkSelf(next, nestRoot, fields, types, HashTreePSet.empty(), HashTreePSet.empty());
         }
 
         // Note that if T is an interface, Object won't have been visited
@@ -158,31 +155,23 @@ class JavaResolvers {
                                  JClassSymbol nestRoot, // context
                                  ShadowChainBuilder<JVariableSymbol, ?>.ResolverBuilder fields,
                                  ShadowChainBuilder<JTypeDeclSymbol, ?>.ResolverBuilder types,
-                                 // map from symbol to set of paths taken to reach that symbol
-                                 Map<JClassSymbol, Set<Pair<Set<String>, Set<String>>>> paths,
                                  // persistent because may change in every path of the recursion
                                  final PSet<String> hiddenFields,
                                  final PSet<String> hiddenTypes) {
-
-        Pair<Set<String>, Set<String>> hiddenPair = Pair.of(hiddenFields, hiddenTypes);
-        if (!paths.computeIfAbsent(t, k -> new HashSet<>()).add(hiddenPair)) {
-            // equivalent path was already taken, we don't need to recurse further
-            return;
-        }
 
         // Note that it is possible that this process recurses several
         // times into the same interface (if it is reachable from several paths)
         // This is because the set of hidden declarations depends on the
         // full path, and may be different each time.
-        // I don't know how prevalent this case happens, if it causes
-        // performance problems we can always add a recursion guard
+        // Profiling shows that this doesn't occur very often, and adding
+        // a recursion guard is counter-productive performance-wise
 
         PSet<String> hiddenTypesInSup = processDeclarations(nestRoot, types, hiddenTypes, t.getDeclaredClasses());
         PSet<String> hiddenFieldsInSup = processDeclarations(nestRoot, fields, hiddenFields, t.getDeclaredFields());
 
         // depth first
         for (JClassSymbol next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
-            walkSelf(next, nestRoot, fields, types, paths, hiddenFieldsInSup, hiddenTypesInSup);
+            walkSelf(next, nestRoot, fields, types, hiddenFieldsInSup, hiddenTypesInSup);
         }
     }
 
