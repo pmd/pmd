@@ -81,9 +81,9 @@ public final class XmlSyntaxUtils {
      * @throws IllegalArgumentException If the item syntax doesn't support string mapping
      */
     public static <T, C extends Iterable<T>> XmlMapper<C> seqAndDelimited(XmlMapper<T> itemSyntax,
-                                                                            Collector<? super T, ?, ? extends C> collector,
-                                                                            boolean preferOldSyntax,
-                                                                            char delimiter) {
+                                                                          Collector<? super T, ?, ? extends C> collector,
+                                                                          boolean preferOldSyntax,
+                                                                          char delimiter) {
         if (!itemSyntax.supportsStringMapping()) {
             throw new IllegalArgumentException("Item syntax does not support string mapping " + itemSyntax);
         }
@@ -95,7 +95,7 @@ public final class XmlSyntaxUtils {
     }
 
     public static <T, C extends Iterable<T>> XmlMapper<C> onlySeq(XmlMapper<T> itemSyntax,
-                                                                    Collector<? super T, ?, ? extends C> collector) {
+                                                                  Collector<? super T, ?, ? extends C> collector) {
         return new SeqSyntax<>(itemSyntax, collector);
     }
 

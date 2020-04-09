@@ -71,8 +71,27 @@ public enum PropertyTypeId {
         this.factory = factory;
     }
 
-    public XmlMapper<?> getXmlMapper() {
-        return xmlMapper;
+    // this is provided so that the mapper and the factory may be related
+    // through the same type parameter, so that capture works well
+    public interface BuilderAndMapper<T> {
+
+        XmlMapper<T> getXmlMapper();
+
+        PropertyBuilder<?, T> newBuilder(String name);
+    }
+
+    public BuilderAndMapper<?> getBuilderUtils() {
+        return new BuilderAndMapper() {
+            @Override
+            public XmlMapper<?> getXmlMapper() {
+                return xmlMapper;
+            }
+
+            @Override
+            public PropertyBuilder<?, ?> newBuilder(String name) {
+                return factory.apply(name);
+            }
+        };
     }
 
 
@@ -83,11 +102,6 @@ public enum PropertyTypeId {
      */
     public String getStringId() {
         return stringId;
-    }
-
-
-    public PropertyBuilder<?, ?> newBuilder(String name) {
-        return factory.apply(name);
     }
 
 

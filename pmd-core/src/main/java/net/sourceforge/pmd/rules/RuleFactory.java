@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
 import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
@@ -324,7 +325,7 @@ public class RuleFactory {
      * @return The property descriptor
      */
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
-        XmlErrorReporter err = new XmlErrorReporter() { }; // TODO this is a fake instance, should be provided by context
+        XmlErrorReporter err = new XmlErrorReporter() {}; // TODO this is a fake instance, should be provided by context
 
         String typeId = SchemaConstants.TYPE.getAttributeOrThrow(propertyElement, err);
 
@@ -333,28 +334,22 @@ public class RuleFactory {
             throw new IllegalArgumentException("No property descriptor factory for type: " + typeId);
         }
 
-        PropertyBuilder<?, ?> builder =
-            factory.newBuilder(SchemaConstants.NAME.getAttributeOrThrow(propertyElement, err));
-
-        builder.desc(SchemaConstants.DESCRIPTION.getAttributeOrThrow(propertyElement, err));
-
-        propertyValueCapture(propertyElement, typeId, factory.getXmlMapper(), builder, err);
-
-        // TODO support constraints like numeric range
-
-        return builder.build();
+        return propertyDefCapture(propertyElement, err, typeId, factory.getBuilderUtils());
     }
 
+    private static <T> PropertyDescriptor<T> propertyDefCapture(Element propertyElement,
+                                                                XmlErrorReporter err,
+                                                                String typeId,
+                                                                BuilderAndMapper<T> factory) {
 
-    private static <T> void propertyValueCapture(Element propertyElement,
-                                                 String typeId,
-                                                 XmlMapper<?> baseSyntax,
-                                                 PropertyBuilder<?, T> builder,
-                                                 XmlErrorReporter err) {
-        @SuppressWarnings("unchecked")
-        XmlMapper<T> syntax = (XmlMapper<T>) baseSyntax;
-        T defaultValue;
+        String name = SchemaConstants.NAME.getAttributeOrThrow(propertyElement, err);
+        String description = SchemaConstants.DESCRIPTION.getAttributeOrThrow(propertyElement, err);
 
+        final PropertyBuilder<?, T> builder = factory.newBuilder(name).desc(description);
+
+        // parse the value
+        final XmlMapper<T> syntax = factory.getXmlMapper();
+        final T defaultValue;
 
         @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElement);
         if (defaultAttr != null) {
@@ -379,6 +374,10 @@ public class RuleFactory {
         }
 
         builder.defaultValue(defaultValue);
+
+        // TODO support constraints like numeric range
+
+        return builder.build();
     }
 
 

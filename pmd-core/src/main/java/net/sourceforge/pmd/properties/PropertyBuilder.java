@@ -55,7 +55,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
     private final Set<PropertyConstraint<? super T>> validators = new LinkedHashSet<>();
-    private String name;
+    private final String name;
     private String description;
     private T defaultValue;
     protected PropertyTypeId typeId;
