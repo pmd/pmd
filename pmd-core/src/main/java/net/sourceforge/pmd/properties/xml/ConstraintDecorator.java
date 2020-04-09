@@ -44,7 +44,7 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
         XmlSyntaxUtils.checkConstraintsThrow(
             t,
             constraints,
-            s -> err.error(element, XmlErrorMessages.CONSTRAINT_NOT_SATISFIED, s)
+            s -> err.error(element, XmlErrorMessages.ERR__CONSTRAINT_NOT_SATISFIED, s)
         );
 
         return t;

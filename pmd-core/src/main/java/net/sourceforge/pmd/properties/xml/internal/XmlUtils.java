@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.properties.xml.internal;
 
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +53,7 @@ public final class XmlUtils {
                 if (names.contains(it.getTagName())) {
                     return it;
                 } else {
-                    err.warn(it, XmlErrorMessages.IGNORED_UNEXPECTED_CHILD_ELEMENT, it.getTagName(), formatPossibleNames(names));
+                    err.warn(it, IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), formatPossibleNames(names));
                     return null;
                 }
             }).filter(Objects::nonNull);
@@ -74,7 +78,7 @@ public final class XmlUtils {
     public static List<Element> getChildrenExpectSingleName(Element elt, String name, XmlErrorReporter err) {
         return XmlUtils.getElementChildren(elt).peek(it -> {
             if (!it.getTagName().equals(name)) {
-                err.warn(it, XmlErrorMessages.IGNORED_UNEXPECTED_CHILD_ELEMENT, it.getTagName(), name);
+                err.warn(it, IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), name);
             }
         }).collect(Collectors.toList());
     }
@@ -84,15 +88,11 @@ public final class XmlUtils {
         if (children.size() == 1) {
             return children.get(0);
         } else if (children.size() == 0) {
-            if (names.size() > 1) {
-                throw err.error(elt, XmlErrorMessages.MISSING_REQUIRED_ELEMENT_EITHER, formatPossibleNames(names));
-            } else {
-                throw err.error(elt, XmlErrorMessages.MISSING_REQUIRED_ELEMENT, names.iterator().next());
-            }
+            throw err.error(elt, ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
         } else {
             for (int i = 1; i < children.size(); i++) {
                 Element child = children.get(i);
-                err.warn(child, XmlErrorMessages.IGNORED_DUPLICATE_CHILD_ELEMENT, child.getTagName());
+                err.warn(child, IGNORED__DUPLICATE_CHILD_ELEMENT, child.getTagName());
             }
             return children.get(0);
         }

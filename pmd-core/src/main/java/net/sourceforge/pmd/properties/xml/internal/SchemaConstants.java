@@ -55,7 +55,7 @@ public enum SchemaConstants {
     public String getAttributeOrThrow(Element element, XmlErrorReporter err) {
         String attribute = element.getAttribute(name);
         if (attribute == null) {
-            throw err.error(element, XmlErrorMessages.MISSING_REQUIRED_ATTRIBUTE, name);
+            throw err.error(element, XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
         }
 
         return attribute;

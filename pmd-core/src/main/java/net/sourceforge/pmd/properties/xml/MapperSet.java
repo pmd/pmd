@@ -123,7 +123,7 @@ final class MapperSet<T> extends XmlMapper<T> {
     public T fromXml(Element element, XmlErrorReporter err) {
         XmlMapper<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {
-            throw err.error(element, XmlErrorMessages.UNEXPECTED_ELEMENT, element.getTagName(), XmlUtils.formatPossibleNames(readIndex.keySet()));
+            throw err.error(element, XmlErrorMessages.ERR__UNEXPECTED_ELEMENT, element.getTagName(), XmlUtils.formatPossibleNames(readIndex.keySet()));
         } else {
             return syntax.fromXml(element, err);
         }

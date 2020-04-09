@@ -5,7 +5,10 @@
 package net.sourceforge.pmd.rules;
 
 import static net.sourceforge.pmd.properties.xml.internal.SchemaConstants.PROPERTY_VALUE;
-import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.formatPossibleNames;
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
+import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.WARN__DEPRECATED_USE_OF_ATTRIBUTE;
 import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.getSingleChildIn;
 import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.parseTextNode;
 
@@ -16,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -37,7 +39,6 @@ import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
-import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -263,14 +264,14 @@ public class RuleFactory {
         for (Element element : SchemaConstants.PROPERTY_ELT.getElementChildrenNamedReportOthers(propertiesElt, err)) {
             String name = SchemaConstants.NAME.getAttributeOrThrow(element, err);
             if (!overridden.add(name)) {
-                err.warn(element, XmlErrorMessages.DUPLICATE_PROPERTY_SETTER, name);
+                err.warn(element, IGNORED__DUPLICATE_PROPERTY_SETTER, name);
                 continue;
             }
 
             PropertyDescriptor<?> desc = rule.getPropertyDescriptor(name);
             if (desc == null) {
-                err.warn(element, XmlErrorMessages.PROPERTY_DOES_NOT_EXIST, name, rule.getName(), knownPropertiesOf(rule));
-                continue;
+                // todo just warn and ignore
+                throw err.error(element, ERR__PROPERTY_DOES_NOT_EXIST, name, rule.getName());
             }
             setRulePropertyCapture(rule, desc, element, err);
         }
@@ -279,14 +280,6 @@ public class RuleFactory {
     private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, Element propertyElt, XmlErrorReporter err) {
         T value = parsePropertyValue(propertyElt, err, descriptor.xmlMapper());
         rule.setProperty(descriptor, value);
-    }
-
-    @Nullable
-    private String knownPropertiesOf(Rule rule) {
-        Set<String> set = rule.getPropertyDescriptors().stream()
-                              .map(PropertyDescriptor::name)
-                              .collect(Collectors.toSet());
-        return formatPossibleNames(set);
     }
 
     /**
@@ -348,7 +341,7 @@ public class RuleFactory {
 
             // the attribute syntax is deprecated.
             err.warn(attrNode,
-                     XmlErrorMessages.DEPRECATED_USE_OF_ATTRIBUTE,
+                     WARN__DEPRECATED_USE_OF_ATTRIBUTE,
                      PROPERTY_VALUE.xmlName(),
                      String.join("\nor\n", syntax.getExamples()));
 
@@ -358,7 +351,7 @@ public class RuleFactory {
                 throw err.error(attrNode, e);
             } catch (UnsupportedOperationException e) {
                 throw err.error(attrNode,
-                                XmlErrorMessages.PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE,
+                                ERR__UNSUPPORTED_VALUE_ATTRIBUTE,
                                 String.join("\nor\n", syntax.getExamples()));
             }
 

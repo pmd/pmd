@@ -399,7 +399,7 @@ public class RuleSetFactoryTest {
     @Test
     public void testExternalReferenceOverrideNonExistent() throws RuleSetNotFoundException {
         ex.expect(IllegalArgumentException.class);
-        ex.expectMessage("Cannot set non-existent property 'test4' on Rule TestNameOverride");
+        ex.expectMessage("Cannot set non-existent property 'test4' on rule TestNameOverride");
         loadFirstRule(REF_OVERRIDE_NONEXISTENT);
     }
 

@@ -46,7 +46,7 @@ final class SeqSyntax<T, C extends Iterable<T>> extends StableXmlMapper<C> {
 
     @Override
     public C fromXml(Element element, XmlErrorReporter err) {
-        RuntimeException aggregateEx = err.error(element, XmlErrorMessages.LIST_CONSTRAINT_NOT_SATISFIED);
+        RuntimeException aggregateEx = err.error(element, XmlErrorMessages.ERR__LIST_CONSTRAINT_NOT_SATISFIED);
 
         C result = XmlUtils.getElementChildren(element)
                            .map(child -> {
