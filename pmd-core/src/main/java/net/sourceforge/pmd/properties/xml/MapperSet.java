@@ -15,9 +15,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
+import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
+import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
-import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -123,7 +124,7 @@ final class MapperSet<T> extends XmlMapper<T> {
     public T fromXml(Element element, XmlErrorReporter err) {
         XmlMapper<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {
-            throw err.error(element, XmlErrorMessages.ERR__UNEXPECTED_ELEMENT, element.getTagName(), XmlUtils.formatPossibleNames(readIndex.keySet()));
+            throw err.error(element, XmlErrorMessages.ERR__UNEXPECTED_ELEMENT, element.getTagName(), XmlUtil.formatPossibleNames(readIndex.keySet()));
         } else {
             return syntax.fromXml(element, err);
         }

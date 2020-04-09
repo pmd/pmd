@@ -79,13 +79,12 @@ public interface PropertyConstraint<T> {
      * @return A collection validator
      */
     default PropertyConstraint<Iterable<? extends T>> toCollectionConstraint() {
-        final PropertyConstraint<T> thisValidator = PropertyConstraint.this;
         return new PropertyConstraint<Iterable<? extends T>>() {
             @Override
             public @Nullable String validate(Iterable<? extends T> value) {
                 List<String> errors = new ArrayList<>();
                 for (T t : value) {
-                    String compValidation = thisValidator.validate(t);
+                    String compValidation = PropertyConstraint.this.validate(t);
                     if (compValidation != null) {
                         errors.add(compValidation);
                     }
@@ -96,7 +95,7 @@ public interface PropertyConstraint<T> {
 
             @Override
             public String getConstraintDescription() {
-                return "Components " + StringUtils.uncapitalize(thisValidator.getConstraintDescription());
+                return "Components " + StringUtils.uncapitalize(PropertyConstraint.this.getConstraintDescription());
             }
         };
     }

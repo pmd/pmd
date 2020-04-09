@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml.internal;
+package net.sourceforge.pmd.internal.util.xml;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -13,8 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 
 
 /**
@@ -36,7 +34,7 @@ public enum SchemaConstants {
     PROPERTIES("properties"),
     DEPRECATED("deprecated"),
 
-    ;
+    ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
     private final String name;
 
@@ -73,17 +71,17 @@ public enum SchemaConstants {
     }
 
     public List<Element> getChildrenIn(Element elt) {
-        return XmlUtils.getElementChildrenNamed(elt, name)
-                       .collect(Collectors.toList());
+        return XmlUtil.getElementChildrenNamed(elt, name)
+                      .collect(Collectors.toList());
     }
 
     public List<Element> getElementChildrenNamedReportOthers(Element elt, XmlErrorReporter err) {
-        return XmlUtils.getElementChildrenNamedReportOthers(elt, setOf(name), err)
-                       .collect(Collectors.toList());
+        return XmlUtil.getElementChildrenNamedReportOthers(elt, setOf(name), err)
+                      .collect(Collectors.toList());
     }
 
     public Element getSingleChildIn(Element elt, XmlErrorReporter err) {
-        return XmlUtils.getSingleChildIn(elt, err, setOf(name));
+        return XmlUtil.getSingleChildIn(elt, err, setOf(name));
     }
 
     public void setOn(Element element, String value) {

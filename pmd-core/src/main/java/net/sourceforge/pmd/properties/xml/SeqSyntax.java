@@ -12,10 +12,11 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
+import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
+import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
-import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
-import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -48,17 +49,17 @@ final class SeqSyntax<T, C extends Iterable<T>> extends StableXmlMapper<C> {
     public C fromXml(Element element, XmlErrorReporter err) {
         RuntimeException aggregateEx = err.error(element, XmlErrorMessages.ERR__LIST_CONSTRAINT_NOT_SATISFIED);
 
-        C result = XmlUtils.getElementChildren(element)
-                           .map(child -> {
-                               try {
-                                   return XmlUtils.expectElement(err, child, itemSyntax);
-                               } catch (Exception e) {
-                                   aggregateEx.addSuppressed(e);
-                                   return null;
-                               }
-                           })
-                           .filter(Objects::nonNull)
-                           .collect(collector);
+        C result = XmlUtil.getElementChildren(element)
+                          .map(child -> {
+                              try {
+                                  return XmlUtil.expectElement(err, child, itemSyntax);
+                              } catch (Exception e) {
+                                  aggregateEx.addSuppressed(e);
+                                  return null;
+                              }
+                          })
+                          .filter(Objects::nonNull)
+                          .collect(collector);
 
         if (aggregateEx.getSuppressed().length > 0) {
             throw aggregateEx;

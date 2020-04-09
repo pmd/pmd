@@ -2,11 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml.internal;
+package net.sourceforge.pmd.internal.util.xml;
 
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 
-public final class XmlUtils {
+public final class XmlUtil {
 
-    private XmlUtils() {
+    private XmlUtil() {
 
     }
 
@@ -76,7 +75,7 @@ public final class XmlUtils {
 
 
     public static List<Element> getChildrenExpectSingleName(Element elt, String name, XmlErrorReporter err) {
-        return XmlUtils.getElementChildren(elt).peek(it -> {
+        return XmlUtil.getElementChildren(elt).peek(it -> {
             if (!it.getTagName().equals(name)) {
                 err.warn(it, IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), name);
             }
@@ -87,7 +86,7 @@ public final class XmlUtils {
         List<Element> children = getElementChildrenNamed(elt, names).collect(Collectors.toList());
         if (children.size() == 1) {
             return children.get(0);
-        } else if (children.size() == 0) {
+        } else if (children.isEmpty()) {
             throw err.error(elt, ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
         } else {
             for (int i = 1; i < children.size(); i++) {

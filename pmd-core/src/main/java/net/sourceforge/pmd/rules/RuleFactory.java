@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.rules;
 
-import static net.sourceforge.pmd.properties.xml.internal.SchemaConstants.PROPERTY_VALUE;
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
-import static net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages.WARN__DEPRECATED_USE_OF_ATTRIBUTE;
-import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.getSingleChildIn;
-import static net.sourceforge.pmd.properties.xml.internal.XmlUtils.parseTextNode;
+import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_VALUE;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.WARN__DEPRECATED_USE_OF_ATTRIBUTE;
+import static net.sourceforge.pmd.internal.util.xml.XmlUtil.getSingleChildIn;
+import static net.sourceforge.pmd.internal.util.xml.XmlUtil.parseTextNode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,14 +31,14 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
+import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
-import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
-import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -368,6 +368,6 @@ public class RuleFactory {
     private static XmlErrorReporter dummyErrorReporter() {
         // TODO this is a fake instance, should be provided by context
         //  I'm only doing this to not make the change too contagious for now
-        return new XmlErrorReporter() {};
+        return new XmlErrorReporter() { };
     }
 }

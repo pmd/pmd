@@ -47,7 +47,7 @@ public enum PropertyTypeId {
     LONG_LIST("List[Long]", XmlSyntaxUtils.LONG_LIST, PropertyFactory::longIntListProperty),
     DOUBLE("Double", XmlSyntaxUtils.DOUBLE, PropertyFactory::doubleProperty),
     DOUBLE_LIST("List[Double]", XmlSyntaxUtils.DOUBLE_LIST, PropertyFactory::doubleListProperty),
-    ;
+    ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;

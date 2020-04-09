@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
@@ -26,7 +27,9 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  */
 public abstract class XmlMapper<T> {
 
-    /* package */ XmlMapper() {
+    XmlMapper() {
+        // package private, we want to control available mappers to
+        // put them into the ruleset schema
     }
 
     /**

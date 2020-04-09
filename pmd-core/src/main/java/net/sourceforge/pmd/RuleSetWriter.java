@@ -30,12 +30,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
@@ -131,10 +131,6 @@ public class RuleSetWriter {
 
     private Element createPropertyValueElement(String name) {
         return document.createElementNS(RULESET_2_0_0_NS_URI, name);
-    }
-
-    private Element createPropertyDefaultElement() {
-        return document.createElementNS(RULESET_2_0_0_NS_URI, "default");
     }
 
     private Element createExcludePatternElement(String excludePattern) {

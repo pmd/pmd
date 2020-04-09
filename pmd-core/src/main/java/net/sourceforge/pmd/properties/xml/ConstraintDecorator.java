@@ -10,8 +10,9 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
+import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.internal.XmlErrorMessages;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
