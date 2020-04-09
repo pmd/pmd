@@ -9,17 +9,17 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class XmlXPathRule extends XPathRule {
 
-    public static final BooleanProperty COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
-    public static final BooleanProperty EXPAND_ENTITY_REFERENCES_DESCRIPTOR = XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR;
-    public static final BooleanProperty IGNORING_COMMENTS_DESCRIPTOR = XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR;
-    public static final BooleanProperty IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR;
-    public static final BooleanProperty NAMESPACE_AWARE_DESCRIPTOR = XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR;
-    public static final BooleanProperty VALIDATING_DESCRIPTOR = XmlParserOptions.VALIDATING_DESCRIPTOR;
-    public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> EXPAND_ENTITY_REFERENCES_DESCRIPTOR = XmlParserOptions.EXPAND_ENTITY_REFERENCES_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> IGNORING_COMMENTS_DESCRIPTOR = XmlParserOptions.IGNORING_COMMENTS_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR = XmlParserOptions.IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> NAMESPACE_AWARE_DESCRIPTOR = XmlParserOptions.NAMESPACE_AWARE_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> VALIDATING_DESCRIPTOR = XmlParserOptions.VALIDATING_DESCRIPTOR;
+    public static final PropertyDescriptor<Boolean> XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public XmlXPathRule() {
         super.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));

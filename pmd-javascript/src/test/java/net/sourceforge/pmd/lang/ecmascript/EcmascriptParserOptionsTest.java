@@ -15,7 +15,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class EcmascriptParserOptionsTest {
 
@@ -67,12 +67,11 @@ public class EcmascriptParserOptionsTest {
 
     @Test
     public void testEqualsHashcode() throws Exception {
-        BooleanProperty[] properties = {EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
-                                        EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR, };
+        @SuppressWarnings("unchecked")
+        PropertyDescriptor<Boolean>[] properties = new PropertyDescriptor[] {EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
+                                           EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR,};
 
-        for (int i = 0; i < properties.length; i++) {
-            BooleanProperty property = properties[i];
-
+        for (PropertyDescriptor<Boolean> property : properties) {
             MyRule rule = new MyRule();
             rule.setProperty(property, true);
             ParserOptions options1 = rule.getParserOptions();
