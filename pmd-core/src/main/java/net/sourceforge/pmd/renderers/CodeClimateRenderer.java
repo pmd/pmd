@@ -161,7 +161,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 if (propertyValue == null) {
                     propertyValue = "";
                 }
-                propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
+                propertyValue = propertyValue.replaceAll("\\R", "\\\\n");
 
                 result.append(propertyName).append(" | ").append(propertyValue).append(" | ").append(property.description()).append("\\n");
             }

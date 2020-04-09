@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.properties.xml.XmlMapper;
@@ -73,5 +75,24 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
     @Override
     public PropertyTypeId getTypeId() {
         return typeId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PropertyDescriptor)) {
+            return false;
+        }
+        PropertyDescriptor<?> that = (PropertyDescriptor<?>) o;
+        return Objects.equals(name, that.name())
+            && defaultValue.equals(that.defaultValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, defaultValue);
     }
 }
