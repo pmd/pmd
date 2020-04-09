@@ -119,10 +119,9 @@ public interface PropertyConstraint<T> {
     static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription) {
         return new PropertyConstraint<U>() {
 
-            // TODO message could be better, eg include name of the property
             @Override
             public String validate(U value) {
-                return pred.test(value) ? null :  value + " " + StringUtils.uncapitalize(constraintDescription);
+                return pred.test(value) ? null : "'" + value + "' " + StringUtils.uncapitalize(constraintDescription);
             }
 
             @Override

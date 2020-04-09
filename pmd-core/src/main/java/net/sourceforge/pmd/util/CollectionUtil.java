@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -282,13 +284,14 @@ public final class CollectionUtil {
      * Produce a new list with the elements of the first, and one additional
      * element. The returned list may be unmodifiable.
      */
-    public static <V> List<V> plus(List<? extends V> m, V v) {
-        if (m.isEmpty()) {
+    public static <V> List<V> plus(List<? extends V> list, V v) {
+        AssertionUtil.requireParamNotNull("list", list);
+        if (list.isEmpty()) {
             return Collections.singletonList(v);
         }
 
-        List<V> vs = new ArrayList<>(m.size() + 1);
-        vs.addAll(m);
+        List<V> vs = new ArrayList<>(list.size() + 1);
+        vs.addAll(list);
         vs.add(v);
         return vs;
     }
@@ -298,6 +301,7 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        AssertionUtil.requireParamNotNull("map", m);
         if (m instanceof PMap) {
             return ((PMap<K, V>) m).plus(k, v);
         }
@@ -307,6 +311,29 @@ public final class CollectionUtil {
         HashMap<K, V> newM = new HashMap<>(m);
         newM.put(k, v);
         return newM;
+    }
+
+    /**
+     * Returns the key that corresponds to the given value in the map,
+     * or null if it is not contained in the map.
+     *
+     * @param m   Map
+     * @param v   Value
+     * @param <K> Type of keys
+     * @param <V> Type of values
+     *
+     * @throws NullPointerException If the entry is found, but the key
+     *                              is null
+     * @throws NullPointerException If the map is null
+     */
+    public static <@NonNull K, V> @Nullable K getKeyOfValue(Map<K, V> m, V v) {
+        AssertionUtil.requireParamNotNull("map", m);
+        for (Entry<K, V> it : m.entrySet()) {
+            if (it.getValue().equals(v)) {
+                return Objects.requireNonNull(it.getKey(), "This method uses null as a sentinel value");
+            }
+        }
+        return null;
     }
 
 

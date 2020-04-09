@@ -4,13 +4,17 @@
 
 package net.sourceforge.pmd.properties.xml;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
 
@@ -29,17 +33,19 @@ import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
 class ValueSyntax<T> extends StableXmlMapper<T> {
 
     private static final String VALUE_NAME = "value";
-    private final Function<? super T, String> toString;
-    private final Function<String, ? extends T> fromString;
-    private final boolean delimited;
+    private final Function<? super T, @NonNull String> toString;
+    private final Function<@NonNull String, ? extends T> fromString;
+
+    // these are not applied, just used to document the possible values
+    private final List<PropertyConstraint<? super T>> docConstraints;
 
     ValueSyntax(Function<? super T, String> toString,
-                Function<String, ? extends T> fromString,
-                boolean delimited) {
+                Function<@NonNull String, ? extends T> fromString,
+                List<PropertyConstraint<? super T>> docConstraints) {
         super(VALUE_NAME);
         this.toString = toString;
         this.fromString = fromString;
-        this.delimited = delimited;
+        this.docConstraints = docConstraints;
     }
 
     @Override
@@ -49,16 +55,16 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
 
     @Override
     public List<PropertyConstraint<? super T>> getConstraints() {
-        return Collections.emptyList();
+        return docConstraints;
     }
 
     @Override
-    public T fromString(String attributeData) {
+    public T fromString(@NonNull String attributeData) {
         return fromString.apply(attributeData);
     }
 
     @Override
-    public String toString(T data) {
+    public @NonNull String toString(T data) {
         return toString.apply(data);
     }
 
@@ -82,12 +88,39 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
         return Collections.singletonList(curIndent + "<value>data</value>");
     }
 
-    static <T> ValueSyntax<T> createNonDelimited(Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(Objects::toString, fromString, false);
+    /**
+     * Creates a value syntax that cannot parse just any string, but
+     * which only applies the fromString parser if a precondition holds.
+     * The precondition is represented by a constraint on strings, and
+     * is documented as a constraint on the returned XML mapper.
+     */
+    static <T> ValueSyntax<T> partialFunction(Function<? super T, @NonNull String> toString,
+                                              Function<@NonNull String, ? extends T> fromString,
+                                              PropertyConstraint<? super @NonNull String> checker) {
+        PropertyConstraint<T> docConstraint = PropertyConstraint.fromPredicate(
+            PredicateUtil.always(),
+            checker.getConstraintDescription()
+        );
+
+        return new ValueSyntax<>(
+            toString,
+            s -> {
+                String error = checker.validate(s);
+                if (error != null) {
+                    throw new IllegalArgumentException(error);
+                }
+                return fromString.apply(s);
+            },
+            listOf(docConstraint)
+        );
     }
 
-    static <T> ValueSyntax<T> createDelimited(Function<? super T, String> toString,
-                                              Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(toString, fromString, true);
+    static <T> ValueSyntax<T> withDefaultToString(Function<String, ? extends T> fromString) {
+        return new ValueSyntax<>(Objects::toString, fromString, Collections.emptyList());
+    }
+
+    static <T> ValueSyntax<T> create(Function<? super T, String> toString,
+                                     Function<String, ? extends T> fromString) {
+        return new ValueSyntax<>(toString, fromString, Collections.emptyList());
     }
 }

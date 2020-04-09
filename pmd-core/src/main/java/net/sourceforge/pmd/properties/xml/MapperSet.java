@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
@@ -80,7 +81,7 @@ final class MapperSet<T> extends XmlMapper<T> {
     }
 
     @Override
-    public @Nullable T fromString(String string) {
+    public @Nullable T fromString(@NonNull String string) {
 
         for (XmlMapper<T> syntax : supportedReadStrategies()) {
             if (syntax.supportsStringMapping()) {
@@ -92,7 +93,7 @@ final class MapperSet<T> extends XmlMapper<T> {
     }
 
     @Override
-    public String toString(T value) {
+    public @NonNull String toString(T value) {
 
         for (XmlMapper<T> syntax : supportedReadStrategies()) {
             if (syntax.supportsStringMapping()) {

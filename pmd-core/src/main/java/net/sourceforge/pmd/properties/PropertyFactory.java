@@ -9,9 +9,11 @@ import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enumerationParse
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
@@ -20,6 +22,7 @@ import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 //@formatter:off
 /**
@@ -307,6 +310,8 @@ public final class PropertyFactory {
      * @param nameToValue Map of labels to values. The null key is ignored.
      * @param <T>         Value type of the property
      *
+     * @throws IllegalArgumentException If the map contains a null value or key
+     *
      * @return A new builder
      */
     // Note: there is a bug, whereby the default value can be set on
@@ -315,17 +320,43 @@ public final class PropertyFactory {
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         XmlMapper<T> parser = enumerationParser(
             nameToValue,
-            t -> nameToValue.entrySet().stream().filter(it -> it.getValue().equals(t)).map(Entry::getKey).findFirst().get()
+            t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t))
         );
         return new GenericPropertyBuilder<>(name, parser);
     }
 
+    /**
+     * Returns a builder for an enumerated property for the given enum
+     * class, using the name of its enum constants as labels.
+     *
+     * @param name      Property name
+     * @param enumClass Enum class
+     * @param <T>       Type of the enum class
+     *
+     * @return A new builder
+     */
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
         return enumProperty(name, enumClass, Enum::name);
     }
 
-    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
-
+    /**
+     * Returns a builder for an enumerated property for the given enum
+     * class, using the given function to label its constants.
+     *
+     * @param name       Property name
+     * @param enumClass  Enum class
+     * @param labelMaker Function that labels each constant
+     * @param <T>        Type of the enum class
+     *
+     * @return A new builder
+     *
+     * @throws NullPointerException     If any of the arguments is null
+     * @throws IllegalArgumentException If the label maker returns null on some constant
+     * @throws IllegalStateException    If the label maker maps two constants to the same label
+     */
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name,
+                                                                             Class<T> enumClass,
+                                                                             Function<? super T, @NonNull String> labelMaker) {
         // don't use a merge function, so that it throws if multiple
         // values have the same key
         Map<String, T> labelsToValues = Arrays.stream(enumClass.getEnumConstants())

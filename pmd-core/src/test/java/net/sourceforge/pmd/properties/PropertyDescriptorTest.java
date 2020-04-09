@@ -8,7 +8,6 @@ import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 
@@ -298,7 +297,7 @@ public class PropertyDescriptorTest {
                 .defaultValue(SampleEnum.B)
                 .build();
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Value was not in the set [TEST_A, TEST_B, TEST_C]");
+        thrown.expectMessage("'InvalidEnumValue' should be one of 'TEST_A', 'TEST_B', 'TEST_C'");
         descriptor.valueFrom("InvalidEnumValue");
     }
 

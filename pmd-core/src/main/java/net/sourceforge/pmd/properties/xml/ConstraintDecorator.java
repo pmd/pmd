@@ -7,6 +7,7 @@ package net.sourceforge.pmd.properties.xml;
 import java.util.List;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
@@ -88,12 +89,12 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
     }
 
     @Override
-    public T fromString(String attributeData) {
+    public T fromString(@NonNull String attributeData) {
         return xmlMapper.fromString(attributeData);
     }
 
     @Override
-    public String toString(T value) {
+    public @NonNull String toString(T value) {
         return xmlMapper.toString(value);
     }
 

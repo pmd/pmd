@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
@@ -38,12 +39,12 @@ final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
     }
 
     @Override
-    public String toString(Optional<T> value) {
+    public @NonNull String toString(Optional<T> value) {
         return value.map(itemSyntax::toString).orElse("");
     }
 
     @Override
-    public Optional<T> fromString(String attributeData) {
+    public Optional<T> fromString(@NonNull String attributeData) {
         return attributeData.isEmpty() ? Optional.empty()
                                        : Optional.ofNullable(itemSyntax.fromString(attributeData));
     }

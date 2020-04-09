@@ -16,7 +16,7 @@ public class NumericConstraintsTest {
         Assert.assertNull(constraint.validate(5));
         Assert.assertNull(constraint.validate(10));
         Assert.assertNotNull(constraint.validate(0));
-        Assert.assertEquals("-1 should be between 1 and 10", constraint.validate(-1));
+        Assert.assertEquals("'-1' should be between 1 and 10", constraint.validate(-1));
         Assert.assertNotNull(constraint.validate(11));
         Assert.assertNotNull(constraint.validate(100));
     }
@@ -41,7 +41,7 @@ public class NumericConstraintsTest {
         Assert.assertNull(constraint.validate(1.5d));
         Assert.assertNull(constraint.validate(100));
         Assert.assertNotNull(constraint.validate(0));
-        Assert.assertEquals("0.1 should be positive", constraint.validate(0.1f));
+        Assert.assertEquals("'0.1' should be positive", constraint.validate(0.1f));
         Assert.assertNotNull(constraint.validate(0.9d));
         Assert.assertNotNull(constraint.validate(-1));
         Assert.assertNotNull(constraint.validate(-100));

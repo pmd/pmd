@@ -60,6 +60,11 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
     }
 
     @Override
+    public String errorFor(T value) {
+        return XmlSyntaxUtils.checkConstraintsJoin(value, parser.getConstraints());
+    }
+
+    @Override
     public XmlMapper<T> xmlMapper() {
         return parser;
     }

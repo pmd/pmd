@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.properties.xml;
 
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,10 +15,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 
 /**
  * This is internal API and shouldn't be used directly by clients.
@@ -28,19 +28,21 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 @InternalApi
 public final class XmlSyntaxUtils {
 
-    public static final ValueSyntax<String> STRING = ValueSyntax.createNonDelimited(Function.identity());
-    public static final ValueSyntax<Character> CHARACTER = ValueSyntax.createNonDelimited(value -> {
-        if (value == null || value.length() != 1) {
-            throw new IllegalArgumentException("missing/ambiguous character value for string \"" + value + "\"");
-        }
-        return value.charAt(0);
-    });
+    public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(Function.identity());
+    public static final ValueSyntax<Character> CHARACTER =
+        ValueSyntax.partialFunction(
+            c -> Character.toString(c),
+            s -> s.charAt(0),
+            PropertyConstraint.fromPredicate(
+                s -> s.length() == 1,
+                "Should be exactly one character in length"
+            ));
 
-    public static final ValueSyntax<Pattern> REGEX = ValueSyntax.createNonDelimited(Pattern::compile);
-    public static final ValueSyntax<Integer> INTEGER = ValueSyntax.createNonDelimited(Integer::valueOf);
-    public static final ValueSyntax<Long> LONG = ValueSyntax.createNonDelimited(Long::valueOf);
-    public static final ValueSyntax<Boolean> BOOLEAN = ValueSyntax.createNonDelimited(Boolean::valueOf);
-    public static final ValueSyntax<Double> DOUBLE = ValueSyntax.createNonDelimited(Double::valueOf);
+    public static final ValueSyntax<Pattern> REGEX = ValueSyntax.withDefaultToString(Pattern::compile);
+    public static final ValueSyntax<Integer> INTEGER = ValueSyntax.withDefaultToString(Integer::valueOf);
+    public static final ValueSyntax<Long> LONG = ValueSyntax.withDefaultToString(Long::valueOf);
+    public static final ValueSyntax<Boolean> BOOLEAN = ValueSyntax.withDefaultToString(Boolean::valueOf);
+    public static final ValueSyntax<Double> DOUBLE = ValueSyntax.withDefaultToString(Double::valueOf);
 
 
     public static final XmlMapper<List<Integer>> INTEGER_LIST = numberList(INTEGER);
@@ -83,13 +85,22 @@ public final class XmlSyntaxUtils {
         return failures;
     }
 
+    @Nullable
+    public static <T> String checkConstraintsJoin(T t, List<? extends PropertyConstraint<? super T>> constraints) {
+        List<String> failures = checkConstraints(t, constraints);
+        if (!failures.isEmpty()) {
+            return String.join(", ", failures);
+        }
+        return null;
+    }
+
     public static <T> void checkConstraintsThrow(T t,
                                                  List<? extends PropertyConstraint<? super T>> constraints,
                                                  Function<String, ? extends RuntimeException> exceptionMaker) {
-        List<String> failures = checkConstraints(t, constraints);
 
-        if (failures.isEmpty()) {
-            throw exceptionMaker.apply(String.join(", ", failures));
+        String failures = checkConstraintsJoin(t, constraints);
+        if (failures != null) {
+            throw exceptionMaker.apply(failures);
         }
     }
 
@@ -143,7 +154,7 @@ public final class XmlSyntaxUtils {
         Collector<? super T, ?, ? extends C> collector
     ) {
         String delim = "" + delimiter;
-        return ValueSyntax.createDelimited(
+        return ValueSyntax.create(
             coll -> IteratorUtil.stream(coll.iterator()).map(toString).collect(Collectors.joining(delim)),
             string -> parseListWithEscapes(string, delimiter, fromString).stream().collect(collector)
         );
@@ -206,24 +217,13 @@ public final class XmlSyntaxUtils {
             throw new IllegalArgumentException("Map may not contain entries with null values");
         }
 
-        PropertyConstraint<T> constraint =
-            PropertyConstraint.fromPredicate(PredicateUtil.always(), "Should be in set " + mappings.keySet());
-
-        return new ValueSyntax<T>(
+        return ValueSyntax.partialFunction(
             reverseFun,
-            value -> {
-                if (!mappings.containsKey(value)) {
-                    throw new IllegalArgumentException("Value is not in the set " + mappings.keySet());
-                }
-                return mappings.get(value);
-            },
-            false
-        ) {
-            @Override
-            public List<PropertyConstraint<? super T>> getConstraints() {
-                return listOf(constraint);
-            }
-        };
-
+            mappings::get,
+            PropertyConstraint.fromPredicate(
+                mappings::containsKey,
+                "Should be " + XmlUtils.formatPossibleNames(mappings.keySet())
+            )
+        );
     }
 }

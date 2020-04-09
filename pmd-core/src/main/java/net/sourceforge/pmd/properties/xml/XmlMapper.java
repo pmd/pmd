@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -72,7 +73,7 @@ public abstract class XmlMapper<T> {
      * @throws UnsupportedOperationException if unsupported, see {@link #supportsStringMapping()}
      * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
      */
-    public T fromString(String attributeData) {
+    public T fromString(@NonNull String attributeData) {
         throw new UnsupportedOperationException("Check #supportsStringMapping()");
     }
 
@@ -82,6 +83,7 @@ public abstract class XmlMapper<T> {
      * @throws UnsupportedOperationException if unsupported, see {@link #supportsStringMapping()}
      * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
      */
+    @NonNull
     public String toString(T value) {
         throw new UnsupportedOperationException("Check #supportsStringMapping()");
     }

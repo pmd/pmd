@@ -66,17 +66,16 @@ public interface PropertyDescriptor<T> {
 
 
     /**
-     * TODO
-     *  this needs to go away. Property constraints should be checked
-     *  at the time the ruleset is parsed, to report error messages
-     *  targeted on each node. They could simply decorate the XmlMapper.
+     * TODO this needs to go away. Property constraints are now checked at
+     *  the time the ruleset is parsed, to report errors on the specific
+     *  XML nodes. Other than that, constraints should be checked when
+     *  calling {@link PropertySource#setProperty(PropertyDescriptor, Object)}
+     *  for fail-fast behaviour.
      *
      * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
      */
     @Deprecated
-    default String errorFor(T value) {
-        return null;
-    }
+    String errorFor(T value);
 
 
     /**
