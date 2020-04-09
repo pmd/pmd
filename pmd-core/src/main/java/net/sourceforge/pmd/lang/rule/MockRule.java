@@ -10,7 +10,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 
@@ -27,12 +26,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 @Deprecated
 public class MockRule extends AbstractRule {
 
-    private static final PropertyDescriptor<Integer> PROPERTY_DESCRIPTOR = PropertyFactory.intProperty("testIntProperty").desc("testIntProperty").require(inRange(1, 100)).defaultValue(1).build();;
-
     public MockRule() {
         super();
         setLanguage(LanguageRegistry.getLanguage("Dummy"));
-        definePropertyDescriptor(PROPERTY_DESCRIPTOR);
+        definePropertyDescriptor(PropertyFactory.intProperty("testIntProperty").desc("testIntProperty").require(inRange(1, 100)).defaultValue(1).build());
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
