@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.objectweb.asm.ClassReader;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
 import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
 
 /*
@@ -36,7 +37,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
  */
 @InternalApi
 @Deprecated
-public final class PMDASMClassLoader extends ClassLoader {
+public final class PMDASMClassLoader extends ClassLoader implements NullableClassLoader {
 
     private static PMDASMClassLoader cachedPMDASMClassLoader;
     private static ClassLoader cachedClassLoader;
@@ -81,6 +82,7 @@ public final class PMDASMClassLoader extends ClassLoader {
      * Not throwing CNFEs to represent failure makes a huge performance
      * difference. Typeres as a whole is 2x faster.
      */
+    @Override
     public Class<?> loadClassOrNull(String name) {
         if (dontBother.containsKey(name)) {
             return null;

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Does not warn if there are no methods</description>
+        <expected-problems>0</expected-problems>
+        <code>
+<![CDATA[
+class Foo {
+    public Integer thisIsOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Does warn if a field is after a method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
+        <code>
+<![CDATA[
+class Foo {
+    public void someMethod() {}
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Warns if field is after constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'someField' should be before method declarations in its class</message>
+        </expected-messages>
+        <code>
+<![CDATA[
+class Foo {
+    public Foo(Integer someValue) {
+        someField = someValue;
+    }
+
+    private Integer someField;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Warns only for fields after the first method declaration</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisFieldIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
+        <code>
+<![CDATA[
+class Foo {
+    private Integer thisFieldIsOkay;
+
+    public Foo(Integer someValue) {
+        someField = someValue;
+    }
+
+    private Integer thisFieldIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Warns for fields defined on the same line after a method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisFieldIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
+        <code>
+<![CDATA[
+class Foo {
+    public Foo(Integer someValue) { someField = someValue; } private Integer thisFieldIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Does not warn for fields defined on the same line before a method</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+class Foo {
+    private Integer thisFieldIsOkay; public Foo(Integer someValue) { someField = someValue; }
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Allows nested classes to have fields</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+class Foo {
+    void bar() { }
+
+    private class InnerFoo {
+        public Integer thisIsOkay;
+    }
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Allows nested classes to have fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code>
+            <![CDATA[
+class Foo {
+    void bar() { }
+
+    private class InnerFoo {
+        public Integer thisIsOkay;
+
+        public void bar() {}
+
+        public Integer thisIsNotOkay;
+    }
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Fields should go before inner classes too</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code>
+<![CDATA[
+class Foo {
+    private class InnerFoo {}
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Fields should go before properties too</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code>
+            <![CDATA[
+class Foo {
+    public Integer someProperty { get; }
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Fields should go before block statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+class Foo {
+    {
+        System.debug('Hello');
+    }
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Fields should go before static block statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+class Foo {
+    static {
+        System.debug('Hello');
+    }
+
+    public Integer thisIsNotOkay;
+}
+]]>
+        </code>
+    </test-code>
+</test-data>
