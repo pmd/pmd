@@ -123,6 +123,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc !!core::lang.TokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
+*   {% jdoc !!core::cpd.token.AntlrToken#getType() %} - use `getKind()` instead.
 
 ### External Contributions
 

@@ -50,7 +50,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
         }
 
         private void skipPackageAndImport(final AntlrToken currentToken) {
-            final int type = currentToken.getType();
+            final int type = currentToken.getKind();
             if (type == Kotlin.PACKAGE || type == Kotlin.IMPORT) {
                 discardingPackageAndImport = true;
             } else if (discardingPackageAndImport && (type == Kotlin.SEMICOLON || type == Kotlin.NL)) {
@@ -59,7 +59,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == Kotlin.NL;
+            discardingNL = currentToken.getKind() == Kotlin.NL;
         }
 
         @Override
