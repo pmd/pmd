@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 /**
  * Represents a partial order on a type {@code <T>}. This is used to
- * create {@link LatticeRelation}s.
+ * generate the internal data structure of {@link LatticeRelation}s.
  */
 interface TopoOrder<T> {
 
@@ -42,8 +42,9 @@ interface TopoOrder<T> {
 
     /**
      * Returns all nodes that directly follow this node.
-     * The returned nodes may be pruned by the filter of
-     * the lattice. The iterator must terminate.
+     * The returned nodes may be pruned by the key selector of
+     * the lattice. Successive invocation of this method must
+     * at some point terminate.
      */
     Iterator<T> directSuccessors(T node);
 

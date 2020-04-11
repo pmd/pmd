@@ -661,4 +661,16 @@ public final class CollectionUtil {
     public static <N> boolean none(@Nullable Iterable<? extends N> list, Predicate<? super N> predicate) {
         return list == null || IteratorUtil.noneMatch(list.iterator(), predicate);
     }
+
+    /**
+     * If the set has a single element, returns it, otherwise returns null.
+     * Obviously the set should not contain null elements.
+     */
+    public static <@NonNull T> @Nullable T asSingle(Set<T> set) {
+        if (set.size() == 1) {
+            return set.iterator().next();
+        } else {
+            return null;
+        }
+    }
 }

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.internal.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -140,24 +141,14 @@ public final class IteratorUtil {
 
     @SafeVarargs
     public static <T> Iterator<T> iterate(T... elements) {
-        return new AbstractIterator<T>() {
-            private int i = 0;
-
-            @Override
-            protected void computeNext() {
-                if (i < elements.length) {
-                    setNext(elements[i]);
-                    i++;
-                } else {
-                    done();
-                }
-            }
-        };
+        return Arrays.asList(elements).iterator();
     }
 
     public static <T> Iterator<T> concat(Iterator<? extends T> as, Iterator<? extends T> bs) {
         if (!as.hasNext()) {
             return (Iterator<T>) bs;
+        } else if (!bs.hasNext()) {
+            return (Iterator<T>) as;
         }
         return new Iterator<T>() {
 
