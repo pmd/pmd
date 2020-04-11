@@ -268,14 +268,14 @@ public class LatticeRelationTest {
 
         TopoOrder<String> cyclicOrder = str -> {
             int i = cycle.indexOf(str);
-            return i < 0 ? emptyList()
-                         : singletonList(cycle.get((i + 1) % cycle.size()));
+            return singletonList(cycle.get((i + 1) % cycle.size()));
         };
 
         LatticeRelation<String, String, Set<String>> lattice =
             new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString, Collectors.toSet());
 
         expect.expect(IllegalStateException.class);
+        expect.expectMessage("a -> b -> c -> d -> a");
 
         lattice.put("a", "1");
 
