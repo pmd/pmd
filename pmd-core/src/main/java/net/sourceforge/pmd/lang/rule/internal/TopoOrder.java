@@ -4,18 +4,15 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import static java.util.Collections.emptyIterator;
-import static net.sourceforge.pmd.internal.util.IteratorUtil.concat;
-import static net.sourceforge.pmd.internal.util.IteratorUtil.iterate;
-import static net.sourceforge.pmd.internal.util.IteratorUtil.singletonIterator;
-
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Represents a partial order on a type {@code <T>}. This is used to
+ * Represents a partial order on a type {@code <K>}. This is used to
  * generate the internal data structure of {@link LatticeRelation}s.
  */
-interface TopoOrder<T> {
+interface TopoOrder<K> {
 
     /**
      * Partial order on classes. The direct successors of a class are
@@ -24,29 +21,33 @@ interface TopoOrder<T> {
     TopoOrder<Class<?>> TYPE_HIERARCHY_ORDERING = node -> {
         if (node == Object.class || node.isPrimitive()) {
             // Object
-            return emptyIterator();
+            return Collections.emptyList();
         }
+
+        List<Class<?>> succs = new ArrayList<>();
+
 
         Class<?> superclass = node.getSuperclass();
-        Iterator<Class<?>> iter = superclass != null ? singletonIterator(superclass)
-                                                     : emptyIterator();
+        if (superclass != null) {
+            succs.add(superclass);
+        }
+        Collections.addAll(succs, node.getInterfaces());
 
-        iter = concat(iter, iterate(node.getInterfaces()));
         if (node.isInterface() && node.getInterfaces().length == 0) {
-            iter = concat(iter, singletonIterator(Object.class));
+            succs.add(Object.class);
         }
 
-        return iter;
+        return succs;
     };
 
 
     /**
-     * Returns all nodes that directly follow this node.
-     * The returned nodes may be pruned by the key selector of
-     * the lattice. Successive invocation of this method must
-     * at some point terminate.
+     * Returns the strict direct successors of the given value.
+     * Successive invocation of this method must at some point
+     * terminate, also each invocation must yield the same result
+     * for the same argument.
      */
-    Iterator<T> directSuccessors(T node);
+    Iterable<K> directSuccessors(K key);
 
 
 }

@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
-import static net.sourceforge.pmd.internal.util.IteratorUtil.singletonIterator;
+import static java.util.Collections.singletonList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 
@@ -268,8 +268,8 @@ public class LatticeRelationTest {
 
         TopoOrder<String> cyclicOrder = str -> {
             int i = cycle.indexOf(str);
-            return i < 0 ? emptyIterator()
-                         : singletonIterator(cycle.get((i + 1) % cycle.size()));
+            return i < 0 ? emptyList()
+                         : singletonList(cycle.get((i + 1) % cycle.size()));
         };
 
         LatticeRelation<String, String, Set<String>> lattice =
@@ -315,7 +315,7 @@ public class LatticeRelationTest {
                 successors.add(minus);
             }
 
-            return successors.iterator();
+            return successors;
         };
     }
 
@@ -328,8 +328,8 @@ public class LatticeRelationTest {
      * }</pre>
      */
     private static TopoOrder<String> stringTopoOrder() {
-        return str -> str.isEmpty() ? emptyIterator()
-                                    : singletonIterator(str.substring(1));
+        return str -> str.isEmpty() ? emptyList()
+                                    : singletonList(str.substring(1));
     }
 
 

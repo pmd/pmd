@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Indexes data of type {@code <V>} with keys of type {@code <K>}, where
  * a partial order exists between the keys. Values are accumulated into
  * a type {@code <C>} (can be an arbitrary collection). The value associated
- * to a key is the recursive union of the values of all its predecessors
+ * to a key is the recursive union of the values of all its *predecessors*
  * according to the partial order.
  *
  * <p>For example if your type of keys is {@link Class}, and you use
@@ -35,7 +35,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * added for all its subtypes.
  *
  * <p>The internal structure only allows <i>some</i> keys to be queried
- * among all keys encountered. This optimises the structure
+ * among all keys encountered. This optimises the structure, because it
+ * allows accumulate values nobody cares about. This is configured by
+ * a predicate given to the constructor.
  *
  * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
  *            must be suitable for use as a map key (immutable, consistent
@@ -61,7 +63,7 @@ class LatticeRelation<K, @NonNull V, C> {
      * the same keys over and over. If the node has no query node successor, then
      * {@link LNode#addValue(Object)} is a noop for it.
      */
-    private final Map<K, LNode> leaves = new HashMap<>();
+    private final Map<K, LNode> otherNodes = new HashMap<>();
 
     /**
      * Creates a new relation with the given configuration.
@@ -127,9 +129,9 @@ class LatticeRelation<K, @NonNull V, C> {
         }
 
         { // keep the scope of leaf small, outside of this it would be null anyway
-            LNode leaf = leaves.get(k);
-            if (leaf != null) {
-                leaf.addValue(val); // propagate new val to all query node successors
+            LNode n = otherNodes.get(k);
+            if (n != null) {
+                n.addValue(val); // propagate new val to all query node successors
                 return;
             }
         }
@@ -151,18 +153,18 @@ class LatticeRelation<K, @NonNull V, C> {
         PSet<K> newSeen = seen.plus(k);
 
         keyOrder.directSuccessors(k)
-                .forEachRemaining(next -> addSucc(newPreds, next, val, newSeen));
+                .forEach(next -> addSucc(newPreds, next, val, newSeen));
     }
 
     @NonNull
-    private LeafNode newLeafNode(K k) {
-        LeafNode n = new LeafNode(k);
-        leaves.put(k, n);
+    private LNode newLeafNode(K k) {
+        NormalNode n = new NormalNode(k);
+        otherNodes.put(k, n);
         return n;
     }
 
     @NonNull
-    private QueryNode<?> newQnode(@NonNull PSet<LNode> pred, K k) {
+    private LNode newQnode(@NonNull PSet<LNode> pred, K k) {
         QueryNode<?> n = new QueryNode<>(k);
         qNodes.put(k, n);
         linkTransitive(pred, n);
@@ -181,7 +183,7 @@ class LatticeRelation<K, @NonNull V, C> {
 
     // test only
     Set<K> transitiveQuerySuccs(K key) {
-        LNode lNode = leaves.get(key);
+        LNode lNode = otherNodes.get(key);
         if (lNode == null) {
             lNode = qNodes.get(key);
         }
@@ -246,7 +248,7 @@ class LatticeRelation<K, @NonNull V, C> {
     }
 
     private Set<LNode> allNodes() {
-        return CollectionUtil.union(qNodes.values(), leaves.values());
+        return CollectionUtil.union(qNodes.values(), otherNodes.values());
     }
 
     private abstract class LNode { // "Lattice Node"
@@ -331,9 +333,9 @@ class LatticeRelation<K, @NonNull V, C> {
         }
     }
 
-    private final class LeafNode extends LNode {
+    private final class NormalNode extends LNode {
 
-        LeafNode(@NonNull K key) {
+        NormalNode(@NonNull K key) {
             super(key);
         }
 
