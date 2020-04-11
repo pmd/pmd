@@ -8,6 +8,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.ast.GenericToken
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.Assertions
 
 /**
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.test.Assertions
  */
 class TokenUtilsTest : FunSpec({
 
-    fun setup1(assertions: Assertions<List<GenericToken>>) {
+    fun setup1(assertions: Assertions<List<JavaccToken>>) {
 
 
         val decl =
