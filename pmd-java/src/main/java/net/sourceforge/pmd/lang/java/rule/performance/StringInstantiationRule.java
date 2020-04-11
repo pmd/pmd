@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -48,7 +50,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return data;
         }
 
-        if (node.hasDescendantOfAnyType(ASTArrayDimsAndInits.class, ASTAdditiveExpression.class)) {
+        if (node.descendants().map(asInstanceOf(ASTArrayDimsAndInits.class, ASTAdditiveExpression.class)).nonEmpty()) {
             return data;
         }
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
      * Exclude blocks that have these things as part of an inner class.
      */
     private boolean hasExit(ASTBlockStatement block) {
-        return block.hasDescendantOfAnyType(ASTThrowStatement.class, ASTReturnStatement.class);
+        return block.descendants().map(asInstanceOf(ASTThrowStatement.class, ASTReturnStatement.class)).nonEmpty();
     }
 
 

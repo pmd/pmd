@@ -69,7 +69,9 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
- * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.</li>
+ * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt></li>
+ * <li><tt>node.{@link Node#getFirstParentOfAnyType(Class[]) getFirstParentOfAnyType(c1, c2)} ===  node.{@link Node#ancestors() ancestors()}.{@link #firstNonNull(Function) firstNonNull}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)})</tt></li>
+ * <li><tt>node.{@link AbstractNode#hasDescendantOfAnyType(Class[]) hasDescendantOfAnyType(c1, c2)} ===  node.{@link Node#descendants() descendants()}.{@link #map(Function) map}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)}).{@link #nonEmpty()}</tt></li>
  * </ul>
  * The new way to write those is as efficient as the old way.
  *
@@ -742,6 +744,26 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
 
     /**
+     * Returns the first element of this stream for which the mapping function
+     * returns a non-null result. Returns null if there is no such element.
+     * This is a convenience method to use with {@link #asInstanceOf(Class, Class[])},
+     * because using just {@link #map(Function) map} followed by {@link #first()}
+     * will lose the type information and mentioning explicit type arguments
+     * would be needed.
+     *
+     * @param nullableFun Mapper function
+     * @param <R>         Result type
+     *
+     * @return A node, or null
+     *
+     * @see #asInstanceOf(Class, Class[])
+     */
+    default <R extends Node> @Nullable R firstNonNull(Function<? super @NonNull T, ? extends @Nullable R> nullableFun) {
+        return map(nullableFun).first();
+    }
+
+
+    /**
      * Returns the last element of this stream, or {@code null} if the
      * stream is empty. This may or may not require traversing all the
      * elements of the stream.
@@ -995,21 +1017,33 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * explicit type arguments:
      *
      * <pre>{@code
-     *
      *    NodeStream<ASTAnyTypeDeclaration> ts =
      *       node.ancestors()
      *       .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
-     *       .map(t -> t); // would not compile without the explicit type arguments
+     *       .first(); // would not compile without the explicit type arguments
+     * }</pre>
+     *
+     * <p>For this use case the {@link #firstNonNull(Function)} method
+     * may be used, which reduces the above to
+     *
+     * <pre>{@code
+     *    NodeStream<ASTAnyTypeDeclaration> ts =
+     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class));
      * }</pre>
      *
      * @param c1   First type to test
      * @param rest Other types to test
      * @param <I>  Input type (this method does not care about it)
      * @param <O>  Output type
+     *
+     * @see #firstNonNull(Function)
      */
     @SafeVarargs // this method is static because of the generic varargs
     @SuppressWarnings("unchecked")
     static <I, O> Function<? super @Nullable I, ? extends @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
+        if (rest.length == 0) {
+            return obj -> c1.isInstance(obj) ? (O) obj : null;
+        }
         return obj -> {
             if (c1.isInstance(obj)) {
                 return (O) obj;

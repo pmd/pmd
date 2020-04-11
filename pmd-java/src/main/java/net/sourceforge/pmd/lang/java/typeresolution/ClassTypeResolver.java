@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArugments;
@@ -263,7 +264,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         String typeName = node.getImage();
 
         if (node.isAnonymousClass()) {
-            JavaQualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
+            JavaQualifiableNode parent = node.ancestors().firstNonNull(asInstanceOf(ASTAllocationExpression.class, ASTEnumConstant.class));
 
             if (parent != null) {
                 typeName = parent.getQualifiedName().toString();

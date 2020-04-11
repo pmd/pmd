@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @deprecated See {@link JavaQualifiedName}
  */
 @Deprecated
-public interface JavaQualifiableNode {
+public interface JavaQualifiableNode extends JavaNode {
 
     /**
      * Returns a qualified name for this node.
