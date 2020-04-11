@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -32,6 +33,10 @@ public final class InternalApiBridge {
 
     private InternalApiBridge() {
 
+    }
+
+    public static JavaccTokenDocument javaTokenDoc(String fullText) {
+        return new JavaTokenDocument(fullText);
     }
 
     public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {

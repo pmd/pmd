@@ -108,10 +108,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
                     return node;
                 }
 
-                @Override
-                protected TokenManager createTokenManager(Reader source) {
-                    return null;
-                }
             };
         }
     }

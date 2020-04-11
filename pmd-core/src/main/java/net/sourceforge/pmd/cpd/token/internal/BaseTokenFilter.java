@@ -18,9 +18,9 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  * A generic filter for PMD token managers that allows to use comments
  * to enable / disable analysis of parts of the stream
  */
-public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFilter {
+public abstract class BaseTokenFilter<T extends GenericToken<T>> implements TokenFilter<T> {
 
-    private final TokenManager tokenManager;
+    private final TokenManager<T> tokenManager;
     private final LinkedList<T> unprocessedTokens; // NOPMD - used both as Queue and List
     private final Iterable<T> remainingTokens;
     private boolean discardingSuppressing;
@@ -30,7 +30,7 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
      * Creates a new BaseTokenFilter
      * @param tokenManager The token manager from which to retrieve tokens to be filtered
      */
-    public BaseTokenFilter(final TokenManager tokenManager) {
+    public BaseTokenFilter(final TokenManager<T> tokenManager) {
         this.tokenManager = tokenManager;
         this.unprocessedTokens = new LinkedList<>();
         this.remainingTokens = new RemainingTokens();
@@ -42,7 +42,7 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
         if (!unprocessedTokens.isEmpty()) {
             currentToken = unprocessedTokens.poll();
         } else {
-            currentToken = (T) tokenManager.getNextToken();
+            currentToken = tokenManager.getNextToken();
         }
         while (!shouldStopProcessing(currentToken)) {
             analyzeToken(currentToken);
@@ -56,7 +56,7 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
             if (!unprocessedTokens.isEmpty()) {
                 currentToken = unprocessedTokens.poll();
             } else {
-                currentToken = (T) tokenManager.getNextToken();
+                currentToken = tokenManager.getNextToken();
             }
         }
 
@@ -69,7 +69,7 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
 
     private void processCPDSuppression(final T currentToken) {
         // Check if a comment is altering the suppression state
-        GenericToken comment = currentToken.getPreviousComment();
+        T comment = currentToken.getPreviousComment();
         while (comment != null) {
             if (comment.getImage().contains("CPD-OFF")) {
                 discardingSuppressing = true;
@@ -119,9 +119,12 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
      * Extension point for subclasses to indicate when to stop filtering tokens.
      *
      * @param currentToken The token to be analyzed
+     *
      * @return True if the token filter has finished consuming all tokens, false otherwise
      */
-    protected abstract boolean shouldStopProcessing(T currentToken);
+    protected boolean shouldStopProcessing(T currentToken) {
+        return currentToken.isEof();
+    }
 
     private class RemainingTokens implements Iterable<T> {
 
@@ -148,7 +151,7 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
                 if (index < unprocessedTokens.size()) {
                     setNext(unprocessedTokens.get(index++));
                 } else {
-                    final T nextToken = (T) tokenManager.getNextToken();
+                    final T nextToken = tokenManager.getNextToken();
                     if (shouldStopProcessing(nextToken)) {
                         done();
                         return;

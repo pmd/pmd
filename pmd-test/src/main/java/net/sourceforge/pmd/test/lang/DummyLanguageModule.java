@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -84,10 +83,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
                     return node;
                 }
 
-                @Override
-                protected TokenManager createTokenManager(Reader source) {
-                    return null;
-                }
             };
         }
     }

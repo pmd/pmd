@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd.token;
+package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
@@ -12,10 +12,11 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 /**
  * Generic Antlr representation of a token.
  */
-public class AntlrToken implements GenericToken {
+public class AntlrToken implements GenericToken<AntlrToken> {
 
     private final Token token;
     private final AntlrToken previousComment;
+    AntlrToken next;
 
     /**
      * Constructor
@@ -29,19 +30,23 @@ public class AntlrToken implements GenericToken {
     }
 
     @Override
-    public GenericToken getNext() {
-        // Antlr implementation does not require this
-        return null;
+    public AntlrToken getNext() {
+        return next;
     }
 
     @Override
-    public GenericToken getPreviousComment() {
+    public AntlrToken getPreviousComment() {
         return previousComment;
     }
 
     @Override
     public String getImage() {
         return token.getText();
+    }
+
+    @Override
+    public boolean isEof() {
+        return getKind() == Token.EOF;
     }
 
     @Override
@@ -64,7 +69,7 @@ public class AntlrToken implements GenericToken {
         return token.getCharPositionInLine() + token.getStopIndex() - token.getStartIndex();
     }
 
-    public int getType() {
+    public int getKind() {
         return token.getType();
     }
 
