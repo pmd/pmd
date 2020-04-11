@@ -198,5 +198,5 @@ Example:
 ## Available Report Formats
 
 PMD comes with many different renderers.
-All formats are described at [PMD Report formats](pmd_userdos_report_formats.html)
+All formats are described at [PMD Report formats](pmd_userdocs_report_formats.html)
 
