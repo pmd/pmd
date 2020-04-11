@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
  *
  * @author Andreas Dangel
  */
-class CppCharStream extends SimpleCharStream {
+public class CppCharStream extends SimpleCharStream {
 
     private static final Pattern CONTINUATION = Pattern.compile("\\\\\\n|\\\\\\r\\n");
     private static final char BACKSLASH = '\\';

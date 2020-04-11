@@ -8,6 +8,7 @@ import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldNotBe
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -41,8 +42,8 @@ fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : M
             Result(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
 }
 
-fun JavaNode.tokenList(): List<GenericToken> {
-    val lst = mutableListOf<GenericToken>()
+fun JavaNode.tokenList(): List<JavaccToken> {
+    val lst = mutableListOf<JavaccToken>()
     var t = jjtGetFirstToken()
     lst += t
     while (t != jjtGetLastToken()) {

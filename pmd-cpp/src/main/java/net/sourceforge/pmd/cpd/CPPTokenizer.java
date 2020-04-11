@@ -6,13 +6,17 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.cpp.ast.CppTokenManager;
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.cpp.ast.CppCharStream;
+import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -20,9 +24,13 @@ import net.sourceforge.pmd.util.IOUtil;
  */
 public class CPPTokenizer extends JavaCCTokenizer {
 
-    private boolean skipBlocks = true;
+    private boolean skipBlocks;
     private String skipBlocksStart;
     private String skipBlocksEnd;
+
+    public CPPTokenizer() {
+        setProperties(new Properties()); // set the defaults
+    }
 
     /**
      * Sets the possible options for the C++ tokenizer.
@@ -71,13 +79,22 @@ public class CPPTokenizer extends JavaCCTokenizer {
         }
     }
 
+
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        try {
-            StringBuilder buffer = sourceCode.getCodeBuffer();
-            return new CppTokenManager(IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString()))));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected CharStream makeCharStream(Reader sourceCode) {
+        return CppCharStream.newCppCharStream(sourceCode);
+    }
+
+    @Override
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return CppTokenKinds.newTokenManager(sourceCode);
+    }
+
+    @SuppressWarnings("PMD.CloseResource")
+    @Override
+    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
+        Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(sourceCode.getCodeBuffer().toString())));
+        CharStream charStream = makeCharStream(reader);
+        return makeLexerImpl(charStream);
     }
 }

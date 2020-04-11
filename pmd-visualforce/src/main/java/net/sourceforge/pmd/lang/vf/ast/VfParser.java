@@ -4,12 +4,9 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import java.io.Reader;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -22,11 +19,6 @@ public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     public VfParser(ParserOptions parserOptions) {
         super(parserOptions);
-    }
-
-    @Override
-    public TokenManager createTokenManager(Reader source) {
-        return new VfTokenManager(source);
     }
 
     @Override

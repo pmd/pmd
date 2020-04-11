@@ -7,8 +7,8 @@ package net.sourceforge.pmd.cpd;
 import org.antlr.v4.runtime.CharStream;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
-import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
 
@@ -51,7 +51,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
         }
 
         private void skipPackageAndImport(final AntlrToken currentToken) {
-            final int type = currentToken.getType();
+            final int type = currentToken.getKind();
             if (type == Kotlin.PACKAGE || type == Kotlin.IMPORT) {
                 discardingPackageAndImport = true;
             } else if (discardingPackageAndImport && (type == Kotlin.SEMICOLON || type == Kotlin.NL)) {
@@ -60,7 +60,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == Kotlin.NL;
+            discardingNL = currentToken.getKind() == Kotlin.NL;
         }
 
         @Override

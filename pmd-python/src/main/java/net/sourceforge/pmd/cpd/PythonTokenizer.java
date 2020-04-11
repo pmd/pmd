@@ -4,27 +4,47 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.python.ast.PythonTokenKinds;
-import net.sourceforge.pmd.lang.python.ast.PythonTokenManager;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * The Python tokenizer.
  */
-public class PythonTokenizer extends JavaCCTokenizer<JavaccToken> {
+public class PythonTokenizer extends JavaCCTokenizer {
 
     private static final Pattern STRING_NL_ESCAPE = Pattern.compile("\\\\\\r?\\n");
 
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
-        return new PythonTokenManager(IOUtil.skipBOM(new StringReader(buffer.toString())));
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return PythonTokenKinds.newTokenManager(sourceCode);
+    }
+
+    @Override
+    protected CharStream makeCharStream(Reader sourceCode) {
+        return CharStreamFactory.simpleCharStream(sourceCode, PythonTokenDocument::new);
+    }
+
+    private static class PythonTokenDocument extends JavaccTokenDocument {
+
+        PythonTokenDocument(String fullText) {
+            super(fullText);
+        }
+
+        @Override
+        protected @Nullable String describeKindImpl(int kind) {
+            return PythonTokenKinds.describe(kind);
+        }
+
     }
 
     @Override

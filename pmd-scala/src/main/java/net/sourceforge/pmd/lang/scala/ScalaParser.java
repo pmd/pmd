@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 
@@ -52,11 +51,6 @@ public class ScalaParser extends AbstractParser {
         }
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         return (ASTSource) new ScalaTreeBuilder().build(src);
-    }
-
-    @Override
-    protected TokenManager createTokenManager(Reader source) {
-        return null;
     }
 
 }
