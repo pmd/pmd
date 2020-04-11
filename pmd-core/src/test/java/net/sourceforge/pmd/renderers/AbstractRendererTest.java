@@ -61,7 +61,7 @@ public abstract class AbstractRendererTest {
         getRenderer().renderFileReport(null);
     }
 
-    private Report reportOneViolation() {
+    protected Report reportOneViolation() {
         Report report = new Report();
         report.addRuleViolation(newRuleViolation(1));
         return report;

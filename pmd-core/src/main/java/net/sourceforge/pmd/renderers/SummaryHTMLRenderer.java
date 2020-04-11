@@ -24,6 +24,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         // Renderer
         definePropertyDescriptor(HTMLRenderer.LINK_PREFIX);
         definePropertyDescriptor(HTMLRenderer.LINE_PREFIX);
+        definePropertyDescriptor(HTMLRenderer.HTML_EXTENSION);
     }
 
     @Override
@@ -41,6 +42,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         HTMLRenderer htmlRenderer = new HTMLRenderer();
         htmlRenderer.setProperty(HTMLRenderer.LINK_PREFIX, getProperty(HTMLRenderer.LINK_PREFIX));
         htmlRenderer.setProperty(HTMLRenderer.LINE_PREFIX, getProperty(HTMLRenderer.LINE_PREFIX));
+        htmlRenderer.setProperty(HTMLRenderer.HTML_EXTENSION, getProperty(HTMLRenderer.HTML_EXTENSION));
         htmlRenderer.setShowSuppressedViolations(showSuppressedViolations);
         htmlRenderer.setUseShortNames(inputPathPrefixes);
         htmlRenderer.renderBody(writer, report);
