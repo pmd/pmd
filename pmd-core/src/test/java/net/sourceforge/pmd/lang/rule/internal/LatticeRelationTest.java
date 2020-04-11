@@ -70,7 +70,8 @@ public class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get(setOf(5)));
         assertEquals(setOf("1", "12", "3"), lattice.get(emptySet()));
 
-        lattice.makeWritableAndClear();
+        lattice.makeWritable();
+        lattice.clearValues();
         lattice.makeReadable();
 
         assertEquals(emptySet(), lattice.get(setOf(2)));
@@ -226,6 +227,34 @@ public class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get("d"));
     }
 
+    @Test
+    public void testTransitiveSucc() {
+
+        LatticeRelation<String, String> lattice =
+            stringLattice(s -> s.equals("c") || s.equals("bc"));
+
+        lattice.put("abc", "val");
+        lattice.put("bc", "v2");
+
+        // We have "abc" <: "bc" <: "c" <: ""
+        lattice.makeReadable();
+
+        assertEquals(emptySet(), lattice.transitiveQuerySuccs(""));
+        assertEquals(emptySet(), lattice.get(""));
+
+        assertEquals(setOf("c", "bc"), lattice.transitiveQuerySuccs("abc"));
+        assertEquals(emptySet(), lattice.get("abc"));
+
+        assertEquals(setOf("c"), lattice.transitiveQuerySuccs("bc"));
+        assertEquals(setOf("val", "v2"), lattice.get("bc"));
+
+        assertEquals(emptySet(), lattice.transitiveQuerySuccs("c"));
+        assertEquals(setOf("val", "v2"), lattice.get("c"));
+
+        assertEquals(emptySet(), lattice.transitiveQuerySuccs("d"));
+        assertEquals(emptySet(), lattice.get("d"));
+    }
+
 
     @Test
     public void testToString() {
@@ -239,15 +268,18 @@ public class LatticeRelationTest {
         //    \   /
         //     { }
 
+        // all {1}, {2}, and { } are query nodes, not {1,2}
+
         assertEquals("strict digraph {\n"
                          + "n0 [ shape=box, color=green, label=\"[]\" ];\n"
                          + "n1 [ shape=box, color=green, label=\"[1]\" ];\n"
                          + "n2 [ shape=box, color=green, label=\"[2]\" ];\n"
                          + "n3 [ shape=box, color=black, label=\"[1, 2]\" ];\n"
-                         + "n1 -> n0;\n"
-                         + "n2 -> n0;\n"
-                         + "n3 -> n1;\n"
-                         + "n3 -> n2;\n"
+                         + "n1 -> n0;\n" // {1}   -> { }
+                         + "n2 -> n0;\n" // {2}   -> { }
+                         + "n3 -> n0;\n" // {1,2} -> { }
+                         + "n3 -> n1;\n" // {1,2} -> {1}
+                         + "n3 -> n2;\n" // {1,2} -> {2}
                          + "}", lattice.toString());
     }
 

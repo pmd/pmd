@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -42,21 +41,41 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 class LatticeRelation<K, @NonNull V> {
 
+    /*
+        Each lattice node stores *all* its transitive successors.
+        This makes it so, that each #put operation adds the value to
+        all transitive successors at once, and each #get operation is
+        constant time.
+
+        In a previous iteration, nodes just stored direct successors,
+        and query nodes computed their value from their predecessors
+        on each #get.
+        That was clumsy because then, that procedure needed to care about
+        diamond situations explicitly. And while that optimises the #put
+        operation, it makes #get possibly very costly (because one has to
+        recurse on all predecessors).
+
+        By contrast, optimising the #get operation works well with the
+        assumption that all query nodes will be queried at some point,
+        which will be the case for rulechain application.
+     */
+
     private final Predicate<? super K> queryKeySelector;
     private final TopoOrder<K> keyOrder;
     private final Function<? super K, String> keyToString;
 
-    /** Those nodes that can be queried (match the filter). */
+    /**
+     * Those nodes that can be queried (match {@link #queryKeySelector}).
+     */
     private final Map<K, QueryNode> qNodes = new HashMap<>();
 
     /**
      * Those nodes that were added explicitly through #put, but may not be queried.
      * These can be fetched efficiently, which is nice since we're trying to index
-     * the same keys over and over. If the node has no query node parent, then it's
-     * mapped to the {@link #blackHole}, which ignores incoming values.
+     * the same keys over and over. If the node has no query node successor, then
+     * {@link LNode#addValue(Object)} is a noop for it.
      */
     private final Map<K, LNode> leaves = new HashMap<>();
-    private final LNode blackHole = new BlackHoleNode();
 
     private State state = State.WRITE_ALLOWED;
 
@@ -89,14 +108,8 @@ class LatticeRelation<K, @NonNull V> {
         this.keyToString = keyToString;
 
         for (K k : querySet) {
-            put(k, null);
+            putInternal(k, null);
         }
-
-        // Since we know in advance which nodes are in the lattice, we
-        // can perform this optimisation.
-        // This reduces the number of edges, so improves the number of
-        // values that can be cached immediately (removes some diamond situations).
-        transitiveReduction();
     }
 
     /**
@@ -111,7 +124,7 @@ class LatticeRelation<K, @NonNull V> {
      *
      * @param pred Predecessor node (in recursive calls, this is set,
      *             to link the predecessors to the node for the key to add)
-     * @param k  Key to add
+     * @param k    Key to add
      * @param val  Proper value to add to the given key (if null, nothing is to be added)
      * @param seen Recursion guard: if we see a node twice in the same recursion,
      *             there is a cycle
@@ -123,18 +136,16 @@ class LatticeRelation<K, @NonNull V> {
 
         LNode leaf = leaves.get(k);
         if (leaf != null) {
-            leaf.addProperVal(val); // TODO needs to add this to all successor query nodes
+            leaf.addValue(val); // propagate new val to all query node successors
             return;
         }
 
         { // keep the scope of n small, outside of this it would be null anyway
             QueryNode n = qNodes.get(k);
             if (n != null) { // already exists
-
-                //                if (pred == null) { // TODO needs to add this to all successor query nodes
-                    n.addProperVal(val); // propagate new val to all successors, only if it was pruned
-                //                }
-                link(pred, n); // make sure the predecessor is linked
+                // propagate new val to all successors
+                n.addValue(val);
+                linkTransitive(pred, n);
                 return;
             }
         }
@@ -142,108 +153,55 @@ class LatticeRelation<K, @NonNull V> {
         if (queryKeySelector.test(k)) { // needs a new query node
             // (3)
             QueryNode n = new QueryNode(k);
-            n.addProperVal(val);
             qNodes.put(k, n);
-            link(pred, n);
+            n.addValue(val);
+            linkTransitive(pred, n);
 
             PSet<LNode> newPreds = pred.plus(n);
             PSet<K> newSeen = seen.plus(k);
+
             keyOrder.directSuccessors(k)
                     .forEachRemaining(next -> addSucc(newPreds, next, val, newSeen));
         } else {
-            final @NonNull PSet<LNode> pred2;
-            if (pred.isEmpty()) {
-                // This is a leaf (for now, there may be predecessors added later)
-                LeafNode leafOfK = new LeafNode(k);
-                leafOfK.addProperVal(val);
-                pred2 = pred.plus(leafOfK);
-                leaves.put(k, leafOfK);
-            } else {
-                pred2 = pred;
-            }
+            // This is a leaf, we need to check its successors. If any
+            // are query nodes, then it will be linked to them. Otherwise
+            // its successors will remain empty, and addValue will be a
+            // noop for it.
+            LeafNode leafOfK = new LeafNode(k);
+            leafOfK.addValue(val);
+            leaves.put(k, leafOfK);
 
-            // Otherwise the node for this key is an inner node, but
-            // since it cannot be queried, we'll directly link the
-            // predecessor to the successors (skipping this key).
-            // Eg
-            // A -> B -> C -> D      (where none are query nodes)
-            // Then when calling put(A, v) for the first time, we'll first recurse with
-            //      addSucc(pred: null, _, key: A, val: v)
-            // Then, seeing pred == null above, we create a leaf for A, leaf(A)
-
-            // The second recursion (marker (1) below) will be
-            //      addSucc(pred: leaf(A), _, key: B, val: v)
-            // Seeing the key B is not a query node, but since pred == leaf(A) != null,
-            // we don't have to create a node for B. The next recursion
-            // is
-            //      addSucc(pred: leaf(A), _, key: C, val: v)
-            // So this is the edge A -> C (skipping B)
-            // Same thing happens once more on C:
-            //      addSucc(pred: leaf(A), _, key: D, val: v)
-            // So this is the longer edge A -> D
-
-            // At this point D has no more successors, so it's handled
-            // at marker (2) below: we just link A to the blackhole.
-            // Since any incoming value for A do not interest any known
-            // query node, they'll just be ignored: the next call to put(A, v')
-            // will get the blackhole node from the leaf map for A
-
-            // If instead, eg C was queryable, then on the third recursion:
-            //      addSucc(pred: leaf(A), _, key: C, val: v)
-            // We would fall in the branch for marker (3) above. We'd
-            // create a new query node for C, qnode(C), add an edge leaf(A) -> qnode(C),
-            // and change pred in the next recursion:
-            //      addSucc(pred: qnode(C), _, key: D, val: null)
-
-
-            // (2)
-            Iterator<K> successors = keyOrder.directSuccessors(k);
-            if (!successors.hasNext()) {
-                LNode onlyPred = CollectionUtil.asSingle(pred2);
-                if (onlyPred != null) {
-                    // delete the leaf (replaced by the sink)
-                    leaves.put(onlyPred.key, blackHole);
-                    return;
-                }
-                // otherwise fallthrough
-            }
-
-            // (1)
+            @NonNull PSet<LNode> predWithK = pred.plus(leafOfK);
             PSet<K> nextSeen = seen.plus(k);
-            successors.forEachRemaining(next -> addSucc(pred2, next, val, nextSeen));
+
+            keyOrder.directSuccessors(k)
+                    .forEachRemaining(next -> addSucc(predWithK, next, val, nextSeen));
         }
     }
 
-    private void transitiveReduction() {
-
-        // look for chains i -> j -> k, and delete i -> k if it exists
-        // note, that this is not optimal at all, but since we do it only
-        // upon construction it doesn't matter
-
-        for (QueryNode j : qNodes.values()) {
-            for (LNode i : j.preds) {
-                if (!i.equals(j)) {
-                    for (QueryNode k : j.succ) {
-                        // i -> j -> k
-                        if (!k.equals(j)) {
-                            if (i.succ.contains(k)) {
-                                // i -> k
-                                i.succ = i.succ.minus(k);
-                                k.preds = k.preds.minus(i);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    private void link(Set<LNode> preds, QueryNode succ) {
+    private void linkTransitive(Set<LNode> preds, QueryNode succ) {
         if (succ == null) {
             return;
         }
-        preds.forEach(pred -> pred.succ = pred.succ.plus(succ));
+        for (LNode pred : preds) {
+            pred.transitiveSuccs.add(succ);
+            pred.transitiveSuccs.addAll(succ.transitiveSuccs);
+        }
+    }
+
+    // test only
+    Set<K> transitiveQuerySuccs(K key) {
+        LNode lNode = leaves.get(key);
+        if (lNode == null) {
+            lNode = qNodes.get(key);
+        }
+        if (lNode == null) {
+            return Collections.emptySet();
+        } else {
+            Set<K> succKeys = new LinkedHashSet<>();
+            lNode.transitiveSuccs.forEach(s -> succKeys.add(s.key));
+            return succKeys;
+        }
     }
 
     /**
@@ -251,10 +209,14 @@ class LatticeRelation<K, @NonNull V> {
      * values of all keys inferior to it when calling {@link #get(Object)}.
      *
      * @throws IllegalStateException If the order has a cycle
+     * @throws NullPointerException  If
      */
-    public void put(K key, V value) {
-        AssertionUtil.requireParamNotNull("key", key);
-        state.ensureWritable();
+    public void put(@NonNull K key, @NonNull V value) {
+        state.validatePut(key, value);
+        putInternal(key, value);
+    }
+
+    private void putInternal(@NonNull K key, @Nullable V value) {
         addSucc(HashTreePSet.empty(), key, value, HashTreePSet.empty());
     }
 
@@ -267,38 +229,25 @@ class LatticeRelation<K, @NonNull V> {
      */
     @NonNull
     public Set<V> get(K key) {
-        AssertionUtil.requireParamNotNull("key", key);
-        state.ensureReadable();
+        state.validateGet(key);
         QueryNode n = qNodes.get(key);
         return n == null ? HashTreePSet.empty() : n.computeValue();
     }
 
     void makeWritable() {
         state = State.WRITE_ALLOWED;
-        // just invalidate
-        for (LNode n : qNodes.values()) {
-            n.invalidate();
-        }
-        for (LNode n : leaves.values()) {
-            n.invalidate();
-        }
-    }
-
-    void makeWritableAndClear() {
-        state = State.WRITE_ALLOWED;
-        // also resets proper values
-        for (LNode n : qNodes.values()) {
-            n.resetValue();
-        }
-        for (LNode n : leaves.values()) {
-            n.resetValue();
-        }
     }
 
     void makeReadable() {
         state = State.READ_ALLOWED;
     }
 
+    void clearValues() {
+        state.validateMutation();
+        for (QueryNode n : qNodes.values()) {
+            n.resetValue();
+        }
+    }
 
     @Override
     public String toString() {
@@ -306,7 +255,7 @@ class LatticeRelation<K, @NonNull V> {
         // Visualize eg at http://webgraphviz.com/
         return GraphUtils.toDot(
             allNodes(),
-            n -> n.succ,
+            n -> n.transitiveSuccs,
             n -> n.getClass() == QueryNode.class ? DotColor.GREEN : DotColor.BLACK,
             LNode::describe
         );
@@ -320,13 +269,20 @@ class LatticeRelation<K, @NonNull V> {
         WRITE_ALLOWED,
         READ_ALLOWED;
 
-        void ensureWritable() {
+        void validateMutation() {
             if (this != WRITE_ALLOWED) {
                 throw new IllegalStateException("Lattice may not be mutated");
             }
         }
 
-        void ensureReadable() {
+        <K, V> void validatePut(K key, V value) {
+            AssertionUtil.requireParamNotNull("key", key);
+            AssertionUtil.requireParamNotNull("value", value);
+            validateMutation();
+        }
+
+        <K> void validateGet(K key) {
+            AssertionUtil.requireParamNotNull("key", key);
             if (this != READ_ALLOWED) {
                 throw new IllegalStateException("Lattice is not ready to be read");
             }
@@ -336,54 +292,37 @@ class LatticeRelation<K, @NonNull V> {
     private abstract class LNode { // "Lattice Node"
 
         // note the key is non-null except in BlackHoleNode,
-        // so it must override all this.
+        // so that class must override methods that use the key
         protected final @NonNull K key;
-        /** Proper value associated with this node (independent of topology). */
-        protected @NonNull Set<V> properVal = new LinkedHashSet<>();
-        PSet<QueryNode> succ = HashTreePSet.empty();
+
+        /**
+         * These are all the transitive strict successors, not just the direct
+         * ones. Each time a value is added to this node, it is added to
+         * all these successors too.
+         */
+        final Set<QueryNode> transitiveSuccs = new LinkedHashSet<>();
 
         private LNode(@NonNull K key) {
             this.key = key;
         }
 
         /**
-         * Add a value to the node. This will be combined with the values
-         * of successors. The blackhole node ignores the value, because
-         * it will never be queried, so we save space.
+         * Add a value to this node and all its transitive successors.
          */
-        void addProperVal(V v) {
+        void addValue(@Nullable V v) {
             if (v == null) {
                 return;
             }
-            properVal.add(v);
+            this.addValueNonRecursive(v);
+            transitiveSuccs.forEach(s -> s.addValueNonRecursive(v));
         }
 
-        /**
-         * Invalidate the *computed* value, because the topology might
-         * change. The proper value is not touched.
-         */
-        protected void invalidate() {
-            // to be overridden
-        }
-
-        /**
-         * Compute the value of this node by accumulating it with its
-         * successors. Only query nodes do this.
-         */
-        Set<V> computeValue() {
-            return properVal;
-        }
-
-        /** Reset the proper value (and the combined value). */
-        protected void resetValue() {
-            properVal = new LinkedHashSet<>();
-        }
+        abstract void addValueNonRecursive(@NonNull V v);
 
         /** Describe the key. */
         protected String describe() {
             return keyToString.apply(key);
         }
-
     }
 
     /**
@@ -391,87 +330,29 @@ class LatticeRelation<K, @NonNull V> {
      */
     private final class QueryNode extends LNode {
 
-        PSet<LNode> preds = HashTreePSet.empty();
-
-        private LinkedHashSet<V> value;
-
-        /** Cached value */
-        private @Nullable PSet<V> combinedVal;
-        private boolean isValueUpToDate = false;
+        /** Value associated with this node. */
+        private @NonNull Set<V> properVal = new LinkedHashSet<>();
 
         QueryNode(@NonNull K key) {
             super(key);
         }
 
         @Override
-        protected void invalidate() {
-            super.invalidate();
-            isValueUpToDate = false;
+        void addValueNonRecursive(@NonNull V v) {
+            properVal.add(v);
         }
 
-        @Override
-        PSet<V> computeValue() {
-            if (combinedVal != null && isValueUpToDate) {
-                return combinedVal;
-            }
-
-            PSet<V> value = reduceSuccessors(new HashSet<>());
-            combinedVal = value;
-            isValueUpToDate = true;
-            return value;
+        private Set<V> computeValue() {
+            return properVal;
         }
 
-        /**
-         * Recurses on the successors. Uses the parameter to avoid
-         * visiting the same successor twice (this may happen if we
-         * have a diamond situation in the lattice). Since this computes
-         * the value recursively, some values may be set on the visited
-         * successors as up-to-date (but this requires that all transitive
-         * successors of a node are visited, which may not be the case
-         * if we have a diamond).
-         */
-        private PSet<V> reduceSuccessors(Set<LNode> seen) {
-            if (combinedVal != null && isValueUpToDate) {
-                return combinedVal;
-            }
-
-            isValueUpToDate = true;
-
-            PSet<V> val = HashTreePSet.from(properVal);
-
-            for (LNode child : preds) {
-                if (seen.add(child)) {
-                    if (child.getClass() == getClass()) { // illegal to cast to generic type
-                        val = val.plusAll(((QueryNode) child).reduceSuccessors(seen));
-                        isValueUpToDate &= ((QueryNode) child).isValueUpToDate;
-                    } else {
-                        // leaf
-                        val = val.plusAll(child.computeValue());
-                    }
-                } else {
-                    // some predecessor was already visited, in which
-                    // case its value is reachable from several paths.
-                    isValueUpToDate = false;
-                }
-            }
-
-            if (isValueUpToDate) {
-                this.combinedVal = val;
-            }
-
-            return val;
-        }
-
-        @Override
-        protected void resetValue() {
-            super.resetValue();
-            combinedVal = null;
-            isValueUpToDate = false;
+        void resetValue() {
+            properVal = new LinkedHashSet<>();
         }
 
         @Override
         public String toString() {
-            return "node(" + key + ')';
+            return "qnode(" + key + ')';
         }
     }
 
@@ -482,36 +363,14 @@ class LatticeRelation<K, @NonNull V> {
         }
 
         @Override
+        void addValueNonRecursive(@NonNull V v) {
+            // do nothing, leaf nodes do not store values,
+            // they just forward to their transitive QNode successors
+        }
+
+        @Override
         public String toString() {
             return "leaf(" + key + ')';
         }
     }
-
-    private final class BlackHoleNode extends LNode {
-
-        BlackHoleNode() {
-            super(null);
-        }
-
-        @Override
-        protected String describe() {
-            return "<blackhole>";
-        }
-
-        @Override
-        void addProperVal(V v) {
-            // do nothing
-        }
-
-        @Override
-        protected void resetValue() {
-            // do nothing
-        }
-
-        @Override
-        public String toString() {
-            return "<blackHole>";
-        }
-    }
-
 }

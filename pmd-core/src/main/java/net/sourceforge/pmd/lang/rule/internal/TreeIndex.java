@@ -50,7 +50,8 @@ public class TreeIndex {
     }
 
     void prepare() {
-        byClass.makeWritableAndClear();
+        byClass.makeWritable();
+        byClass.clearValues();
         byName.clear();
     }
 
