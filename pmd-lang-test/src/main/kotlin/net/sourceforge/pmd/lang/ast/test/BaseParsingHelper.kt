@@ -35,11 +35,17 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
             @JvmStatic
             val defaultNoProcess = Params(false, null, null, "")
+
             @JvmStatic
             val defaultProcess = Params(true, null, null, "")
 
         }
     }
+
+    internal val resourceLoader: Class<*>
+        get() = params.resourceLoader ?: javaClass
+
+    internal val resourcePrefix: String get() = params.resourcePrefix
 
     /**
      * Returns the language version with the given version string.
@@ -138,10 +144,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             parse(readClassSource(clazz), version)
 
     protected fun readResource(resourceName: String): String {
-        val rloader = params.resourceLoader ?: javaClass
 
-        val input = rloader.getResourceAsStream(params.resourcePrefix + resourceName)
-                ?: throw IllegalArgumentException("Unable to find resource file ${params.resourcePrefix + resourceName} from $rloader")
+        val input = resourceLoader.getResourceAsStream(params.resourcePrefix + resourceName)
+                ?: throw IllegalArgumentException("Unable to find resource file ${params.resourcePrefix + resourceName} from $resourceLoader")
+
         return consume(input)
     }
 

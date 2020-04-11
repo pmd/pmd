@@ -1,0 +1,90 @@
++- Source
+   +- Pkg
+      +- TermSelect
+      |  +- TermName
+      |  +- TermName
+      +- PkgObject
+         +- TermName
+         +- Template
+            +- Self
+            |  +- NameAnonymous
+            +- DefnType
+            |  +- TypeName
+            |  +- TypeSelect
+            |     +- TermSelect
+            |     |  +- TermName
+            |     |  +- TermName
+            |     +- TypeName
+            +- DefnVal
+            |  +- PatVar
+            |  |  +- TermName
+            |  +- TermSelect
+            |     +- TermSelect
+            |     |  +- TermName
+            |     |  +- TermName
+            |     +- TermName
+            +- DefnType
+            |  +- TypeName
+            |  +- TypeSelect
+            |     +- TermSelect
+            |     |  +- TermName
+            |     |  +- TermName
+            |     +- TypeName
+            +- DefnVal
+            |  +- PatVar
+            |  |  +- TermName
+            |  +- TermSelect
+            |     +- TermSelect
+            |     |  +- TermName
+            |     |  +- TermName
+            |     +- TermName
+            +- DefnType
+            |  +- ModAnnot
+            |  |  +- Init
+            |  |     +- TypeName
+            |  |     +- NameAnonymous
+            |  |     +- LitString
+            |  |     +- LitString
+            |  +- TypeName
+            |  +- TypeParam
+            |  |  +- ModCovariant
+            |  |  +- TypeName
+            |  |  +- TypeBounds
+            |  +- TypeApply
+            |     +- TypeName
+            |     +- TypeName
+            +- DefnVal
+            |  +- ModAnnot
+            |  |  +- Init
+            |  |     +- TypeName
+            |  |     +- NameAnonymous
+            |  |     +- LitString
+            |  |     +- LitString
+            |  +- PatVar
+            |  |  +- TermName
+            |  +- TermName
+            +- DefnType
+               +- ModAnnot
+               |  +- Init
+               |     +- TypeName
+               |     +- NameAnonymous
+               |     +- LitString
+               |     +- LitString
+               +- TypeName
+               +- TypeParam
+               |  +- TypeName
+               |  +- TypeBounds
+               +- TypeParam
+               |  +- ModCovariant
+               |  +- TypeName
+               |  +- TypeBounds
+               +- TypeApply
+                  +- TypeSelect
+                  |  +- TermSelect
+                  |  |  +- TermSelect
+                  |  |  |  +- TermName
+                  |  |  |  +- TermName
+                  |  |  +- TermName
+                  |  +- TypeName
+                  +- TypeName
+                  +- TypeName
