@@ -144,32 +144,29 @@ class LatticeRelation<K, @NonNull V, C> {
             }
         }
 
-        if (queryKeySelector.test(k)) { // needs a new query node
-            QueryNode<?> n = new QueryNode<>(k);
-            qNodes.put(k, n);
-            n.addValue(val);
-            linkTransitive(pred, n);
+        final LNode n = queryKeySelector.test(k) ? newQnode(pred, k) : newLeafNode(k);
 
-            PSet<LNode> newPreds = pred.plus(n);
-            PSet<K> newSeen = seen.plus(k);
+        n.addValue(val);
+        PSet<LNode> newPreds = pred.plus(n);
+        PSet<K> newSeen = seen.plus(k);
 
-            keyOrder.directSuccessors(k)
-                    .forEachRemaining(next -> addSucc(newPreds, next, val, newSeen));
-        } else {
-            // This is a leaf, we need to check its successors. If any
-            // are query nodes, then it will be linked to them. Otherwise
-            // its successors will remain empty, and addValue will be a
-            // noop for it.
-            LeafNode leafOfK = new LeafNode(k);
-            leafOfK.addValue(val);
-            leaves.put(k, leafOfK);
+        keyOrder.directSuccessors(k)
+                .forEachRemaining(next -> addSucc(newPreds, next, val, newSeen));
+    }
 
-            @NonNull PSet<LNode> predWithK = pred.plus(leafOfK);
-            PSet<K> nextSeen = seen.plus(k);
+    @NonNull
+    private LeafNode newLeafNode(K k) {
+        LeafNode n = new LeafNode(k);
+        leaves.put(k, n);
+        return n;
+    }
 
-            keyOrder.directSuccessors(k)
-                    .forEachRemaining(next -> addSucc(predWithK, next, val, nextSeen));
-        }
+    @NonNull
+    private QueryNode<?> newQnode(@NonNull PSet<LNode> pred, K k) {
+        QueryNode<?> n = new QueryNode<>(k);
+        qNodes.put(k, n);
+        linkTransitive(pred, n);
+        return n;
     }
 
     private void linkTransitive(Set<LNode> preds, QueryNode<?> succ) {
