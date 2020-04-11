@@ -41,8 +41,8 @@ import net.sourceforge.pmd.lang.rule.internal.GraphUtils.DotColor;
  * added for all its subtypes.
  *
  * <p>The internal structure only allows <i>some</i> keys to be queried
- * among all keys encountered. This optimises the structure, because it
- * allows accumulate values nobody cares about. This is configured by
+ * among all keys encountered. This optimises the structure, because we
+ * don't accumulate values nobody cares about. This is configured by
  * a predicate given to the constructor.
  *
  * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
@@ -69,6 +69,7 @@ class LatticeRelation<K, @NonNull V, C> {
      *                         through {@link #get(Object)}
      * @param keyToString      Strategy to render keys when dumping the lattice to a graph
      * @param collector        Collector used to accumulate values
+     *                         
      * @param <A>              Internal accumulator type of the collector
      */
     <A> LatticeRelation(TopoOrder<K> keyOrder,
@@ -109,20 +110,14 @@ class LatticeRelation<K, @NonNull V, C> {
     }
 
     /**
-     * Adds the val to the node corresponding to the [key], creating it
-     * if needed. If the key matches the filter, a QueryNode is created.
-     * Otherwise, either a LeafNode (if there is some QueryNode that cares),
-     * or the key is linked to the black hole. This is only done the first
-     * time we encounter the key, which means subsequently, #get and #put
-     * access will be "constant time" (uses one of the maps).
+     * Adds the val to the node corresponding to the [key], and all its
+     * successors, creating them if needed. If the key matches the filter,
+     * a QueryNode is created.
      *
-     * <p>All successors of the key are recursively added to the structure.
-     *
-     * @param preds Predecessor node (in recursive calls, this is set,
-     *              to link them to the given key). This also is used
-     *              to check for cycles
+     * @param preds Predecessors to which the given key must be linked
      * @param k     Key to add
-     * @param val   Proper value to add to the given key (if null, nothing is to be added)
+     * @param val   Proper value to add to the given key (if null, nothing
+     *              is to be added, we just create the topology)
      */
     private void addSucc(@Nullable Deque<LNode> preds, final K k, final @Nullable V val) {
         if (any(preds, n -> n.key.equals(k))) {

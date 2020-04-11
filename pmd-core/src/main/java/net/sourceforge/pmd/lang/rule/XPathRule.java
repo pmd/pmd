@@ -166,7 +166,7 @@ public class XPathRule extends AbstractRule {
      * @param node The Node that to be checked.
      * @param data The RuleContext.
      *
-     * @deprecated Use {@link #apply(List, RuleContext)}
+     * @deprecated Use {@link #apply(Node, RuleContext)}
      */
     @Deprecated
     public void evaluate(final Node node, final RuleContext data) {
