@@ -1,6 +1,7 @@
 ---
 title: Report formats for CPD
 tags: [cpd, userdocs]
+keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for CPD"
 permalink: pmd_userdocs_cpd_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>

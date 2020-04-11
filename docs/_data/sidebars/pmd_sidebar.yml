@@ -55,6 +55,9 @@ entries:
     - title: PMD CLI reference
       url: /pmd_userdocs_cli_reference.html
       output: web, pdf
+    - title: PMD Report formats
+      url: /pmd_userdocs_report_formats.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
