@@ -37,13 +37,10 @@ public class RuleApplicator {
 
 
     public void index(Collection<? extends Node> nodes) {
-        idx.prepare();
-
+        idx.reset();
         for (Node root : nodes) {
             indexTree(root, idx);
         }
-
-        idx.complete();
     }
 
     public void apply(Collection<? extends Rule> rules, RuleContext ctx) {

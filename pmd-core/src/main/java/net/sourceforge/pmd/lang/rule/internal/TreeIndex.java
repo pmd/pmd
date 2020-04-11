@@ -45,12 +45,7 @@ public class TreeIndex {
         byClass.put(n.getClass(), n);
     }
 
-    void complete() {
-        byClass.makeReadable();
-    }
-
-    void prepare() {
-        byClass.makeWritable();
+    void reset() {
         byClass.clearValues();
         byName.clear();
     }

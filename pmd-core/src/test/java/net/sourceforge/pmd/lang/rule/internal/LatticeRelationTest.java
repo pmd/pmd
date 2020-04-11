@@ -43,8 +43,6 @@ public class LatticeRelationTest {
 
         // http://bit.ly/39J3KOu
 
-        lattice.makeReadable();
-
         assertEquals(setOf("123"), lattice.get(setOf(1, 2, 3)));
         assertEquals(setOf("4", "43"), lattice.get(setOf(4)));
         assertEquals(setOf("43", "123"), lattice.get(setOf(3)));
@@ -61,8 +59,6 @@ public class LatticeRelationTest {
         lattice.put(setOf(1), "1");
         lattice.put(setOf(3), "3");
 
-        lattice.makeReadable();
-
         assertEquals(setOf("12"), lattice.get(setOf(2)));
         assertEquals(setOf("12", "1"), lattice.get(setOf(1)));
         assertEquals(setOf("12"), lattice.get(setOf(1, 2)));
@@ -70,9 +66,7 @@ public class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get(setOf(5)));
         assertEquals(setOf("1", "12", "3"), lattice.get(emptySet()));
 
-        lattice.makeWritable();
         lattice.clearValues();
-        lattice.makeReadable();
 
         assertEquals(emptySet(), lattice.get(setOf(2)));
         assertEquals(emptySet(), lattice.get(setOf(1)));
@@ -107,18 +101,12 @@ public class LatticeRelationTest {
 
         // http://bit.ly/2SxejyC
 
-        lattice.makeReadable();
-
         assertEquals(setOf("123"), lattice.get(setOf(1, 2, 3)));
         assertEquals(setOf("4", "43", "435"), lattice.get(setOf(4)));
         assertEquals(setOf("123", "43", "435"), lattice.get(setOf(3)));
         assertEquals(setOf("123", "4", "43", "435"), lattice.get(emptySet()));
 
-        lattice.makeWritable();
-
         lattice.put(setOf(4, 3, 6), "436");
-
-        lattice.makeReadable();
 
         assertEquals(setOf("4", "43", "435", "436"), lattice.get(setOf(4)));
     }
@@ -140,8 +128,6 @@ public class LatticeRelationTest {
         lattice.put(setOf(2, 3, 4), "234");
         lattice.put(setOf(4, 3, 5, 6), "435");
 
-        lattice.makeReadable();
-
         assertEquals(setOf("123"), lattice.get(setOf(1, 2, 3)));
         assertEquals(setOf("12", "123"), lattice.get(setOf(1, 2)));
         assertEquals(setOf("123", "234"), lattice.get(setOf(2, 3)));
@@ -151,11 +137,7 @@ public class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get(setOf(4, 5))); // not in initial set
         assertEquals(emptySet(), lattice.get(setOf(2, 3, 4))); // not in initial set
 
-        lattice.makeWritable();
-
         lattice.put(setOf(2, 3, 4), "234*");
-
-        lattice.makeReadable();
 
         assertEquals(setOf("123", "234", "234*"), lattice.get(setOf(2, 3))); // value "43" has been pruned
     }
@@ -179,7 +161,6 @@ public class LatticeRelationTest {
         // Goal is to assert, that when we ask first for the value of { },
         // the value of every node is correctly computed, even if they're
         // reachable from several paths
-        lattice.makeReadable();
 
         assertEquals(setOf("12"), lattice.get(emptySet()));
         assertEquals(setOf("12"), lattice.get(setOf(1)));
@@ -197,7 +178,6 @@ public class LatticeRelationTest {
         lattice.put("abc", "val");
 
         // We have "abc" <: "bc" <: "c" <: ""
-        lattice.makeReadable();
 
         assertEquals(setOf("val"), lattice.get(""));
         assertEquals(setOf("val"), lattice.get("abc"));
@@ -218,8 +198,6 @@ public class LatticeRelationTest {
         // We filter out both "bc" and "c"
         // "abc" should still be connected to ""
 
-        lattice.makeReadable();
-
         assertEquals(setOf("val"), lattice.get(""));
         assertEquals(setOf("val"), lattice.get("abc"));
         assertEquals(emptySet(), lattice.get("bc"));
@@ -237,7 +215,6 @@ public class LatticeRelationTest {
         lattice.put("bc", "v2");
 
         // We have "abc" <: "bc" <: "c" <: ""
-        lattice.makeReadable();
 
         assertEquals(emptySet(), lattice.transitiveQuerySuccs(""));
         assertEquals(emptySet(), lattice.get(""));

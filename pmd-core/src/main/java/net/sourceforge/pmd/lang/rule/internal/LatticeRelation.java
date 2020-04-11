@@ -30,10 +30,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * <p>The internal structure only allows <i>some</i> keys to be queried
  * among all keys encountered.
  *
- * <p>An instance can be in either write-only or read-only mode, toggled
- * by {@link #makeReadable()} and {@link #makeWritable()}. This avoids
- * doing the invalidation every time we index a node, we do it in bulk.
- *
  * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
  *            must be suitable for use as a map key (immutable, consistent
  *            equals/hashcode)
@@ -76,8 +72,6 @@ class LatticeRelation<K, @NonNull V> {
      * {@link LNode#addValue(Object)} is a noop for it.
      */
     private final Map<K, LNode> leaves = new HashMap<>();
-
-    private State state = State.WRITE_ALLOWED;
 
     /**
      * Creates a new relation with the given configuration.
@@ -209,10 +203,11 @@ class LatticeRelation<K, @NonNull V> {
      * values of all keys inferior to it when calling {@link #get(Object)}.
      *
      * @throws IllegalStateException If the order has a cycle
-     * @throws NullPointerException  If
+     * @throws NullPointerException  If any of the parameter is null
      */
     public void put(@NonNull K key, @NonNull V value) {
-        state.validatePut(key, value);
+        AssertionUtil.requireParamNotNull("key", key);
+        AssertionUtil.requireParamNotNull("value", value);
         putInternal(key, value);
     }
 
@@ -226,24 +221,17 @@ class LatticeRelation<K, @NonNull V> {
      * can be queried, if that is not the case, then this will return
      * the empty set even if some values were {@link #put(Object, Object)}
      * for it.
+     *
+     * @throws NullPointerException If the key is null
      */
     @NonNull
-    public Set<V> get(K key) {
-        state.validateGet(key);
+    public Set<V> get(@NonNull K key) {
+        AssertionUtil.requireParamNotNull("key", key);
         QueryNode n = qNodes.get(key);
         return n == null ? HashTreePSet.empty() : n.computeValue();
     }
 
-    void makeWritable() {
-        state = State.WRITE_ALLOWED;
-    }
-
-    void makeReadable() {
-        state = State.READ_ALLOWED;
-    }
-
     void clearValues() {
-        state.validateMutation();
         for (QueryNode n : qNodes.values()) {
             n.resetValue();
         }
@@ -263,30 +251,6 @@ class LatticeRelation<K, @NonNull V> {
 
     private Set<LNode> allNodes() {
         return CollectionUtil.union(qNodes.values(), leaves.values());
-    }
-
-    private enum State {
-        WRITE_ALLOWED,
-        READ_ALLOWED;
-
-        void validateMutation() {
-            if (this != WRITE_ALLOWED) {
-                throw new IllegalStateException("Lattice may not be mutated");
-            }
-        }
-
-        <K, V> void validatePut(K key, V value) {
-            AssertionUtil.requireParamNotNull("key", key);
-            AssertionUtil.requireParamNotNull("value", value);
-            validateMutation();
-        }
-
-        <K> void validateGet(K key) {
-            AssertionUtil.requireParamNotNull("key", key);
-            if (this != READ_ALLOWED) {
-                throw new IllegalStateException("Lattice is not ready to be read");
-            }
-        }
     }
 
     private abstract class LNode { // "Lattice Node"
