@@ -241,8 +241,8 @@ class LatticeRelation<K, @NonNull V> {
         // Visualize eg at http://webgraphviz.com/
         return GraphUtils.toDot(
             allNodes(),
-            n->n.succ,
-            n-> n.getClass() == QueryNode.class ? DotColor.GREEN: DotColor.BLACK,
+            n -> n.succ,
+            n -> n.getClass() == QueryNode.class ? DotColor.GREEN : DotColor.BLACK,
             LNode::describe
         );
     }

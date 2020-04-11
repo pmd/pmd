@@ -50,7 +50,7 @@ public final class GraphUtils {
               .append(colorFun.apply(node).toDot())
               .append(", label=\"")
               .append(escapeDotString(labelFun.apply(node)))
-              .append("\" ];\n");
+                .append("\" ];\n");
         }
 
         List<String> edges = new ArrayList<>();
