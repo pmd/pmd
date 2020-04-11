@@ -3079,7 +3079,7 @@ This rule will also find unused on demand imports, i.e. import com.foo.*.</p>
     <span class="kt">void</span> <span class="nf">testCode</span><span class="o">()</span> <span class="o">{</span>
         <span class="nc">Object</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">;</span>
         <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">));</span>                    <span class="c1">// bad usage</span>
-        <span class="n">assertEquals</span><span class="o">(?</span><span class="n">a</span> <span class="n">should</span> <span class="n">equals</span> <span class="n">b</span><span class="o">?,</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">);</span>    <span class="c1">// good usage</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="s">"a should equals b"</span><span class="o">,</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">);</span>    <span class="c1">// good usage</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
