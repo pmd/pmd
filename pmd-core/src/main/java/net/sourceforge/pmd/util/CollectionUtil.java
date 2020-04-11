@@ -23,6 +23,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -671,6 +673,14 @@ public final class CollectionUtil {
             return set.iterator().next();
         } else {
             return null;
+        }
+    }
+
+    public static <V, A, C> C finish(Collector<? super V, A, ? extends C> collector, A acc) {
+        if (collector.characteristics().contains(Characteristics.IDENTITY_FINISH)) {
+            return (C) acc;
+        } else {
+            return collector.finisher().apply(acc);
         }
     }
 }

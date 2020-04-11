@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,47 +24,36 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Indexes data of type {@code <V>} with keys of type {@code <K>}, where
- * a partial order exists between the keys. The internal representation
- * is a directed acyclic graph on {@code <K>}. The value associated to
- * a key is the recursive union of the values of all the keys it covers.
+ * a partial order exists between the keys. Values are accumulated into
+ * a type {@code <C>} (can be an arbitrary collection). The value associated
+ * to a key is the recursive union of the values of all its predecessors
+ * according to the partial order.
+ *
+ * <p>For example if your type of keys is {@link Class}, and you use
+ * subtyping as a partial order, then the value associated to a class C
+ * will be the union of the individual values added for C, and those
+ * added for all its subtypes.
  *
  * <p>The internal structure only allows <i>some</i> keys to be queried
- * among all keys encountered.
+ * among all keys encountered. This optimises the structure
  *
  * @param <K> Type of keys, must have a corresponding {@link TopoOrder},
  *            must be suitable for use as a map key (immutable, consistent
  *            equals/hashcode)
  * @param <V> Type of values
+ * @param <C> Type of output value. Values are accumulated using a collector
  */
-class LatticeRelation<K, @NonNull V> {
-
-    /*
-        Each lattice node stores *all* its transitive successors.
-        This makes it so, that each #put operation adds the value to
-        all transitive successors at once, and each #get operation is
-        constant time.
-
-        In a previous iteration, nodes just stored direct successors,
-        and query nodes computed their value from their predecessors
-        on each #get.
-        That was clumsy because then, that procedure needed to care about
-        diamond situations explicitly. And while that optimises the #put
-        operation, it makes #get possibly very costly (because one has to
-        recurse on all predecessors).
-
-        By contrast, optimising the #get operation works well with the
-        assumption that all query nodes will be queried at some point,
-        which will be the case for rulechain application.
-     */
+class LatticeRelation<K, @NonNull V, C> {
 
     private final Predicate<? super K> queryKeySelector;
     private final TopoOrder<K> keyOrder;
     private final Function<? super K, String> keyToString;
 
-    /**
-     * Those nodes that can be queried (match {@link #queryKeySelector}).
-     */
-    private final Map<K, QueryNode> qNodes = new HashMap<>();
+    private final Collector<? super V, ?, ? extends C> collector;
+    private final C emptyValue; // empty value of the collector
+
+    /** Those nodes that can be queried (match {@link #queryKeySelector}). */
+    private final Map<K, QueryNode<?>> qNodes = new HashMap<>();
 
     /**
      * Those nodes that were added explicitly through #put, but may not be queried.
@@ -80,13 +70,18 @@ class LatticeRelation<K, @NonNull V> {
      * @param queryKeySelector Filter determining which keys can be queried
      *                         through {@link #get(Object)}
      * @param keyToString      Strategy to render keys when dumping the lattice to a graph
+     * @param collector        Collector used to accumulate values
+     * @param <A>              Internal accumulator type of the collector
      */
-    LatticeRelation(TopoOrder<K> keyOrder,
-                    Predicate<? super K> queryKeySelector,
-                    Function<? super K, String> keyToString) {
+    <A> LatticeRelation(TopoOrder<K> keyOrder,
+                        Predicate<? super K> queryKeySelector,
+                        Function<? super K, String> keyToString,
+                        Collector<? super V, A, ? extends C> collector) {
         this.keyOrder = keyOrder;
         this.queryKeySelector = queryKeySelector;
         this.keyToString = keyToString;
+        this.collector = collector;
+        this.emptyValue = CollectionUtil.finish(collector, collector.supplier().get());
     }
 
     /**
@@ -94,12 +89,15 @@ class LatticeRelation<K, @NonNull V> {
      * in the given query set. This means, only keys that are in this
      * set may be queried.
      */
-    LatticeRelation(TopoOrder<K> keyOrder,
-                    Set<? extends K> querySet,
-                    Function<? super K, String> keyToString) {
+    <A> LatticeRelation(TopoOrder<K> keyOrder,
+                        Set<? extends K> querySet,
+                        Function<? super K, String> keyToString,
+                        Collector<? super V, A, ? extends C> collector) {
         this.keyOrder = keyOrder;
         this.queryKeySelector = querySet::contains;
         this.keyToString = keyToString;
+        this.collector = collector;
+        this.emptyValue = CollectionUtil.finish(collector, collector.supplier().get());
 
         for (K k : querySet) {
             putInternal(k, null);
@@ -128,14 +126,16 @@ class LatticeRelation<K, @NonNull V> {
             throw new IllegalStateException("Cycle in graph generated by " + keyOrder);
         }
 
-        LNode leaf = leaves.get(k);
-        if (leaf != null) {
-            leaf.addValue(val); // propagate new val to all query node successors
-            return;
+        { // keep the scope of leaf small, outside of this it would be null anyway
+            LNode leaf = leaves.get(k);
+            if (leaf != null) {
+                leaf.addValue(val); // propagate new val to all query node successors
+                return;
+            }
         }
 
         { // keep the scope of n small, outside of this it would be null anyway
-            QueryNode n = qNodes.get(k);
+            QueryNode<?> n = qNodes.get(k);
             if (n != null) { // already exists
                 // propagate new val to all successors
                 n.addValue(val);
@@ -145,8 +145,7 @@ class LatticeRelation<K, @NonNull V> {
         }
 
         if (queryKeySelector.test(k)) { // needs a new query node
-            // (3)
-            QueryNode n = new QueryNode(k);
+            QueryNode<?> n = new QueryNode<>(k);
             qNodes.put(k, n);
             n.addValue(val);
             linkTransitive(pred, n);
@@ -173,7 +172,7 @@ class LatticeRelation<K, @NonNull V> {
         }
     }
 
-    private void linkTransitive(Set<LNode> preds, QueryNode succ) {
+    private void linkTransitive(Set<LNode> preds, QueryNode<?> succ) {
         if (succ == null) {
             return;
         }
@@ -225,14 +224,14 @@ class LatticeRelation<K, @NonNull V> {
      * @throws NullPointerException If the key is null
      */
     @NonNull
-    public Set<V> get(@NonNull K key) {
+    public C get(@NonNull K key) {
         AssertionUtil.requireParamNotNull("key", key);
-        QueryNode n = qNodes.get(key);
-        return n == null ? HashTreePSet.empty() : n.computeValue();
+        QueryNode<?> n = qNodes.get(key);
+        return n == null ? emptyValue : n.computeValue();
     }
 
-    void clearValues() {
-        for (QueryNode n : qNodes.values()) {
+    public void clearValues() {
+        for (QueryNode<?> n : qNodes.values()) {
             n.resetValue();
         }
     }
@@ -264,7 +263,7 @@ class LatticeRelation<K, @NonNull V> {
          * ones. Each time a value is added to this node, it is added to
          * all these successors too.
          */
-        final Set<QueryNode> transitiveSuccs = new LinkedHashSet<>();
+        final Set<QueryNode<?>> transitiveSuccs = new LinkedHashSet<>();
 
         private LNode(@NonNull K key) {
             this.key = key;
@@ -291,32 +290,47 @@ class LatticeRelation<K, @NonNull V> {
 
     /**
      * A node that may be queried with {@link #get(Object)}.
+     *
+     * @param <A> Internal accumulator type of the collector, this is
+     *            the second type argument of the collector of the lattice,
+     *            it doesn't matter outside of this class
      */
-    private final class QueryNode extends LNode {
+    private final class QueryNode<A> extends LNode {
 
         /** Value associated with this node. */
-        private @NonNull Set<V> properVal = new LinkedHashSet<>();
+        private A accumulator;
+        private C finished;
 
         QueryNode(@NonNull K key) {
             super(key);
+            resetValue();
         }
 
         @Override
         void addValueNonRecursive(@NonNull V v) {
-            properVal.add(v);
+            collector().accumulator().accept(accumulator, v);
         }
 
-        private Set<V> computeValue() {
-            return properVal;
+        C computeValue() {
+            if (finished == null) {
+                this.finished = CollectionUtil.finish(collector(), accumulator);
+            }
+            return this.finished;
         }
 
         void resetValue() {
-            properVal = new LinkedHashSet<>();
+            accumulator = collector().supplier().get();
+            finished = null;
         }
 
         @Override
         public String toString() {
             return "qnode(" + key + ')';
+        }
+
+        @SuppressWarnings("unchecked")
+        private Collector<? super V, A, ? extends C> collector() {
+            return (Collector<? super V, A, ? extends C>) collector;
         }
     }
 

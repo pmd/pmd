@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Rule;
@@ -34,7 +35,7 @@ public class LatticeRelationTest {
     @Test
     public void testCustomTopo() {
 
-        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
 
 
         lattice.put(setOf(1, 2, 3), "123");
@@ -53,7 +54,7 @@ public class LatticeRelationTest {
     @Test
     public void testClearing() {
 
-        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
 
         lattice.put(setOf(1, 2), "12");
         lattice.put(setOf(1), "1");
@@ -85,7 +86,7 @@ public class LatticeRelationTest {
         // goal of the test is to ensure, that their predecessors (sets with size > 2)
         // are still connected to successors (size < 2)
 
-        LatticeRelation<Set<Integer>, String> lattice = setLattice(it -> it.size() != 2);
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(it -> it.size() != 2);
 
 
         lattice.put(setOf(1, 2, 3), "123");
@@ -115,11 +116,12 @@ public class LatticeRelationTest {
     @Test
     public void testInitialSetFilter() {
 
-        LatticeRelation<Set<Integer>, String> lattice =
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice =
             new LatticeRelation<>(
                 setTopoOrder(),
                 setOf(setOf(1, 2), setOf(1, 2, 3), setOf(2, 3), emptySet()),
-                Objects::toString
+                Objects::toString,
+                Collectors.toSet()
             );
 
         lattice.put(setOf(1, 2, 3), "123");
@@ -146,7 +148,7 @@ public class LatticeRelationTest {
     @Test
     public void testDiamond() {
 
-        LatticeRelation<Set<Integer>, String> lattice = setLattice(PredicateUtil.always());
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
 
         lattice.put(setOf(1, 2), "12");
 
@@ -173,7 +175,7 @@ public class LatticeRelationTest {
     public void testFilterOnChainSetup() {
         // setup for the next test (difference here is no filter)
 
-        LatticeRelation<String, String> lattice = stringLattice(PredicateUtil.always());
+        LatticeRelation<String, String, Set<String>> lattice = stringLattice(PredicateUtil.always());
 
         lattice.put("abc", "val");
 
@@ -189,7 +191,7 @@ public class LatticeRelationTest {
     @Test
     public void testFilterOnChain() {
 
-        LatticeRelation<String, String> lattice = stringLattice(s -> s.length() != 2 && s.length() != 1);
+        LatticeRelation<String, String, Set<String>> lattice = stringLattice(s -> s.length() != 2 && s.length() != 1);
 
         lattice.put("abc", "val");
 
@@ -208,7 +210,7 @@ public class LatticeRelationTest {
     @Test
     public void testTransitiveSucc() {
 
-        LatticeRelation<String, String> lattice =
+        LatticeRelation<String, String, Set<String>> lattice =
             stringLattice(s -> s.equals("c") || s.equals("bc"));
 
         lattice.put("abc", "val");
@@ -235,7 +237,7 @@ public class LatticeRelationTest {
 
     @Test
     public void testToString() {
-        LatticeRelation<Set<Integer>, String> lattice = setLattice(set -> set.size() < 2);
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(set -> set.size() < 2);
 
         lattice.put(setOf(1, 2), "12");
 
@@ -270,7 +272,8 @@ public class LatticeRelationTest {
                          : singletonIterator(cycle.get((i + 1) % cycle.size()));
         };
 
-        LatticeRelation<String, String> lattice = new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString);
+        LatticeRelation<String, String, Set<String>> lattice =
+            new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString, Collectors.toSet());
 
         expect.expect(IllegalStateException.class);
 
@@ -279,14 +282,14 @@ public class LatticeRelationTest {
     }
 
     @NonNull
-    private LatticeRelation<String, String> stringLattice(Predicate<String> filter) {
-        return new LatticeRelation<>(stringTopoOrder(), filter, Objects::toString);
+    private LatticeRelation<String, String, Set<String>> stringLattice(Predicate<String> filter) {
+        return new LatticeRelation<>(stringTopoOrder(), filter, Objects::toString, Collectors.toSet());
     }
 
 
     @NonNull
-    private LatticeRelation<Set<Integer>, String> setLattice(Predicate<Set<Integer>> filter) {
-        return new LatticeRelation<>(setTopoOrder(), filter, Objects::toString);
+    private LatticeRelation<Set<Integer>, String, Set<String>> setLattice(Predicate<Set<Integer>> filter) {
+        return new LatticeRelation<>(setTopoOrder(), filter, Objects::toString, Collectors.toSet());
     }
 
     /**
