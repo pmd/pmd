@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,12 +27,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.Language;
@@ -41,6 +42,15 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
+
+import com.github.oowekyala.ooxml.DomUtils;
+import com.github.oowekyala.ooxml.messages.AccumulatingErrorReporter;
+import com.github.oowekyala.ooxml.messages.LoggerMessageHandler;
+import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
+import com.github.oowekyala.ooxml.messages.XmlException;
+import com.github.oowekyala.ooxml.messages.XmlException.Severity;
+import com.github.oowekyala.ooxml.messages.XmlMessageUtils;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
@@ -230,7 +240,7 @@ public class RuleSetFactory {
 
     private RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
-        return parseRuleSetNode(ruleSetReferenceId, withDeprecatedRuleReferences);
+        return readDocument(ruleSetReferenceId, withDeprecatedRuleReferences);
     }
 
     /**
@@ -358,21 +368,21 @@ public class RuleSetFactory {
     /**
      * Parse a ruleset node to construct a RuleSet.
      *
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param withDeprecatedRuleReferences
-     *            whether rule references that are deprecated should be ignored
-     *            or not
+     * @param ruleSetReferenceId           The RuleSetReferenceId of the RuleSet being parsed.
+     * @param withDeprecatedRuleReferences whether rule references that are deprecated should be ignored
+     *                                     or not
+     *
      * @return The new RuleSet.
      */
-    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
-            throws RuleSetNotFoundException {
-        try (CheckedInputStream inputStream = new CheckedInputStream(
-                ruleSetReferenceId.getInputStream(resourceLoader), new Adler32());) {
+    private RuleSet readDocument(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
+        throws RuleSetNotFoundException {
+        try (CheckedInputStream inputStream = new CheckedInputStream(ruleSetReferenceId.getInputStream(resourceLoader), new Adler32());) {
             if (!ruleSetReferenceId.isExternal()) {
                 throw new IllegalArgumentException(
-                        "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
+                    "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
             }
+
+            LoggerMessageHandler handler = new LoggerMessageHandler(LOG, false);
             DocumentBuilder builder = createDocumentBuilder();
             InputSource inputSource;
             if (compatibilityFilter != null) {
@@ -380,73 +390,102 @@ public class RuleSetFactory {
             } else {
                 inputSource = new InputSource(inputStream);
             }
-            Document document = builder.parse(inputSource);
-            Element ruleSetElement = document.getDocumentElement();
+            inputSource.setSystemId(ruleSetReferenceId.getRuleSetFileName());
 
-            RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue())
-                    .withFileName(ruleSetReferenceId.getRuleSetFileName());
+            PositionedXmlDoc parsed = XmlMessageUtils.getInstance().parse(builder, inputSource, handler);
 
-            if (ruleSetElement.hasAttribute("name")) {
-                ruleSetBuilder.withName(ruleSetElement.getAttribute("name"));
-            } else {
-                LOG.warning("RuleSet name is missing. Future versions of PMD will require it.");
-                ruleSetBuilder.withName("Missing RuleSet Name");
+            AccumulatingErrorReporter err = makeReporter(handler, parsed);
+            try {
+                RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue()).withFileName(ruleSetReferenceId.getRuleSetFileName());
+
+                RuleSet ruleSet = parseRulesetNode(ruleSetReferenceId, withDeprecatedRuleReferences, parsed, ruleSetBuilder, err);
+                err.close(Severity.WARNING, Severity.ERROR);
+                return ruleSet;
+            } catch (XmlException e) {
+                err.close(e.getSeverity(), Severity.ERROR);
+                throw e;
             }
-
-            Set<String> rulesetReferences = new HashSet<>();
-
-            NodeList nodeList = ruleSetElement.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    String nodeName = node.getNodeName();
-                    String text = parseTextNode(node);
-                    if (DESCRIPTION.equals(nodeName)) {
-                        ruleSetBuilder.withDescription(text);
-                    } else if ("include-pattern".equals(nodeName)) {
-                        final Pattern pattern = parseRegex(text);
-                        if (pattern == null) {
-                            continue;
-                        }
-                        ruleSetBuilder.withFileInclusions(pattern);
-                    } else if ("exclude-pattern".equals(nodeName)) {
-                        final Pattern pattern = parseRegex(text);
-                        if (pattern == null) {
-                            continue;
-                        }
-                        ruleSetBuilder.withFileExclusions(pattern);
-                    } else if ("rule".equals(nodeName)) {
-                        parseRuleNode(ruleSetReferenceId, ruleSetBuilder, node, withDeprecatedRuleReferences, rulesetReferences);
-                    } else {
-                        throw new IllegalArgumentException(UNEXPECTED_ELEMENT + node.getNodeName()
-                                + "> encountered as child of <ruleset> element.");
-                    }
-                }
+        } catch (ParserConfigurationException | IOException | XmlException ex) {
+            if (!(ex instanceof XmlException)) { // would already have been reported
+                ex.printStackTrace();
             }
-
-            if (!ruleSetBuilder.hasDescription()) {
-                LOG.warning("RuleSet description is missing. Future versions of PMD will require it.");
-                ruleSetBuilder.withDescription("Missing description");
-            }
-
-            ruleSetBuilder.filterRulesByPriority(minimumPriority);
-
-            return ruleSetBuilder.build();
-        } catch (ReflectiveOperationException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Couldn't find the class " + ex.getMessage(), ex);
-        } catch (ParserConfigurationException | IOException | SAXException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Couldn't read the ruleset " + ruleSetReferenceId + ": " + ex.getMessage(), ex);
+            throw new RuntimeException("Couldn't read the ruleset " + ruleSetReferenceId, ex);
         }
     }
 
-    private Pattern parseRegex(String text) {
+    @NonNull
+    private AccumulatingErrorReporter makeReporter(LoggerMessageHandler handler, PositionedXmlDoc parsed) {
+        return new AccumulatingErrorReporter(handler, parsed.getPositioner(), Severity.WARNING) {
+            @Override
+            protected String template(String message, Object... args) {
+                return MessageFormat.format(message, args);
+            }
+        };
+    }
+
+    private RuleSet parseRulesetNode(RuleSetReferenceId ruleSetReferenceId,
+                                     boolean withDeprecatedRuleReferences,
+                                     PositionedXmlDoc parsed,
+                                     RuleSetBuilder builder,
+                                     XmlErrorReporter err) throws RuleSetNotFoundException {
+        Element ruleSetElement = parsed.getDocument().getDocumentElement();
+
+        if (ruleSetElement.hasAttribute("name")) {
+            builder.withName(ruleSetElement.getAttribute("name"));
+        } else {
+            err.warn(ruleSetElement, "RuleSet name is missing. Future versions of PMD will require it.");
+            builder.withName("Missing RuleSet Name");
+        }
+
+        Set<String> rulesetReferences = new HashSet<>();
+
+        for (Element node : DomUtils.elementsIn(ruleSetElement)) {
+            String nodeName = node.getNodeName();
+            String text = parseTextNode(node);
+            switch (nodeName) {
+            case DESCRIPTION:
+                builder.withDescription(text);
+                break;
+            case "include-pattern": {
+                final Pattern pattern = parseRegex(node, text, err);
+                if (pattern == null) {
+                    continue;
+                }
+                builder.withFileInclusions(pattern);
+                break;
+            }
+            case "exclude-pattern": {
+                final Pattern pattern = parseRegex(node, text, err);
+                if (pattern == null) {
+                    continue;
+                }
+                builder.withFileExclusions(pattern);
+                break;
+            }
+            case "rule":
+                parseRuleNode(ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
+                break;
+            default:
+                throw err.error(node, "Unexpected element as child of <ruleset>");
+            }
+        }
+
+        if (!builder.hasDescription()) {
+            err.warn(ruleSetElement, "RuleSet description is missing. Future versions of PMD will require it.");
+            builder.withDescription("Missing description");
+        }
+
+        builder.filterRulesByPriority(minimumPriority);
+
+        return builder.build();
+    }
+
+    private Pattern parseRegex(Element node, String text, XmlErrorReporter err) {
         final Pattern pattern;
         try {
             pattern = Pattern.compile(text);
         } catch (PatternSyntaxException pse) {
-            LOG.warning(pse.getMessage());
+            err.error(node, pse);
             return null;
         }
         return pattern;
@@ -493,28 +532,28 @@ public class RuleSetFactory {
     /**
      * Parse a rule node.
      *
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param ruleSetBuilder
-     *            The RuleSet being constructed.
-     * @param ruleNode
-     *            Must be a rule element node.
-     * @param withDeprecatedRuleReferences
-     *            whether rule references that are deprecated should be ignored
-     *            or not
-     * @param rulesetReferences keeps track of already processed complete ruleset references in order to log a warning
+     * @param ruleSetReferenceId           The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder               The RuleSet being constructed.
+     * @param ruleNode                     Must be a rule element node.
+     * @param withDeprecatedRuleReferences whether rule references that are deprecated should be ignored
+     *                                     or not
+     * @param rulesetReferences            keeps track of already processed complete ruleset references in order to log
+     *                                     a warning
      */
-    private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder, Node ruleNode,
-            boolean withDeprecatedRuleReferences, Set<String> rulesetReferences)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, RuleSetNotFoundException {
+    private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId,
+                               RuleSetBuilder ruleSetBuilder,
+                               Node ruleNode,
+                               boolean withDeprecatedRuleReferences,
+                               Set<String> rulesetReferences,
+                               XmlErrorReporter err) throws RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
             parseRuleSetReferenceNode(ruleSetBuilder, ruleElement, ref, rulesetReferences);
         } else if (StringUtils.isBlank(ref)) {
-            parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode);
+            parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, err);
         } else {
-            parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, withDeprecatedRuleReferences);
+            parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, withDeprecatedRuleReferences, err);
         }
     }
 
@@ -606,15 +645,15 @@ public class RuleSetFactory {
      * Parse a rule node as a single Rule. The Rule has been fully defined
      * within the context of the current RuleSet.
      *
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param ruleSetBuilder
-     *            The RuleSet being constructed.
-     * @param ruleNode
-     *            Must be a rule element node.
+     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder     The RuleSet being constructed.
+     * @param ruleNode           Must be a rule element node.
+     * @param err                Error reporter
      */
-    private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
-            Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId,
+                                     RuleSetBuilder ruleSetBuilder,
+                                     Node ruleNode,
+                                     XmlErrorReporter err) {
         Element ruleElement = (Element) ruleNode;
 
         // Stop if we're looking for a particular Rule, and this element is not
@@ -623,7 +662,7 @@ public class RuleSetFactory {
             && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-        Rule rule = new RuleFactory(resourceLoader).buildRule(ruleElement);
+        Rule rule = new RuleFactory(resourceLoader).buildRule(ruleElement, err);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (warnDeprecated && StringUtils.isBlank(ruleElement.getAttribute("language"))) {
@@ -641,26 +680,25 @@ public class RuleSetFactory {
      * which comes from another RuleSet with some of it's attributes potentially
      * overridden.
      *
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param ruleSetBuilder
-     *            The RuleSet being constructed.
-     * @param ruleNode
-     *            Must be a rule element node.
-     * @param ref
-     *            A reference to a Rule.
-     * @param withDeprecatedRuleReferences
-     *            whether rule references that are deprecated should be ignored
-     *            or not
+     * @param ruleSetReferenceId           The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder               The RuleSet being constructed.
+     * @param ruleNode                     Must be a rule element node.
+     * @param ref                          A reference to a Rule.
+     * @param withDeprecatedRuleReferences whether rule references that are deprecated should be ignored
+     * @param err                          Error reporter
      */
-    private void parseRuleReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
-            Node ruleNode, String ref, boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
+    private void parseRuleReferenceNode(RuleSetReferenceId ruleSetReferenceId,
+                                        RuleSetBuilder ruleSetBuilder,
+                                        Node ruleNode,
+                                        String ref,
+                                        boolean withDeprecatedRuleReferences,
+                                        XmlErrorReporter err) throws RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
+            && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
 
@@ -716,7 +754,7 @@ public class RuleSetFactory {
 
         RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
-        RuleReference ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleElement);
+        RuleReference ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleElement, err);
 
         if (warnDeprecated && ruleReference.isDeprecated() && !isSameRuleSet) {
             if (LOG.isLoggable(Level.WARNING)) {

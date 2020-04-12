@@ -14,9 +14,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 
 /**

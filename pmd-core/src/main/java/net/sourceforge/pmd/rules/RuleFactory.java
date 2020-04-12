@@ -17,22 +17,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
+import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -40,6 +36,9 @@ import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.util.ResourceLoader;
+
+import com.github.oowekyala.ooxml.DomUtils;
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 
 /**
@@ -51,8 +50,6 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @InternalApi
 @Deprecated
 public class RuleFactory {
-
-    private static final Logger LOG = Logger.getLogger(RuleFactory.class.getName());
 
     private static final String DEPRECATED = "deprecated";
     private static final String NAME = "name";
@@ -93,49 +90,39 @@ public class RuleFactory {
      * <p>Declaring a property in the overriding element throws an exception (the property must exist in the referenced
      * rule).
      *
-     * @param referencedRule Referenced rule
+     * @param referencedRule   Referenced rule
      * @param ruleSetReference the ruleset, where the referenced rule is defined
-     * @param ruleElement    Element overriding some metadata about the rule
+     * @param ruleElement      Element overriding some metadata about the rule
+     * @param err              Error reporter
      *
      * @return A rule reference to the referenced rule
      */
-    public RuleReference decorateRule(Rule referencedRule, RuleSetReference ruleSetReference, Element ruleElement) {
+    public RuleReference decorateRule(Rule referencedRule, RuleSetReference ruleSetReference, Element ruleElement, XmlErrorReporter err) {
         RuleReference ruleReference = new RuleReference(referencedRule, ruleSetReference);
 
-        if (ruleElement.hasAttribute(DEPRECATED)) {
-            ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute(DEPRECATED)));
-        }
-        if (ruleElement.hasAttribute(NAME)) {
-            ruleReference.setName(ruleElement.getAttribute(NAME));
-        }
-        if (ruleElement.hasAttribute(MESSAGE)) {
-            ruleReference.setMessage(ruleElement.getAttribute(MESSAGE));
-        }
-        if (ruleElement.hasAttribute(EXTERNAL_INFO_URL)) {
-            ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
-        }
+        DomUtils.getAttributeOpt(ruleElement, DEPRECATED).map(Boolean::parseBoolean).ifPresent(ruleReference::setDeprecated);
+        DomUtils.getAttributeOpt(ruleElement, NAME).ifPresent(ruleReference::setName);
+        DomUtils.getAttributeOpt(ruleElement, MESSAGE).ifPresent(ruleReference::setMessage);
+        DomUtils.getAttributeOpt(ruleElement, EXTERNAL_INFO_URL).ifPresent(ruleReference::setExternalInfoUrl);
 
-        for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
-            Node node = ruleElement.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                switch (node.getNodeName()) {
-                case DESCRIPTION:
-                    ruleReference.setDescription(parseTextNode(node));
-                    break;
-                case EXAMPLE:
-                    ruleReference.addExample(parseTextNode(node));
-                    break;
-                case PRIORITY:
-                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
-                    break;
-                case PROPERTIES:
-                    setPropertyValues(ruleReference, (Element) node, dummyErrorReporter());
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
-                                                       + "> encountered as child of <rule> element for Rule "
-                                                       + ruleReference.getName());
-                }
+        for (Element node : DomUtils.elementsIn(ruleElement)) {
+            switch (node.getNodeName()) {
+            case DESCRIPTION:
+                ruleReference.setDescription(parseTextNode(node));
+                break;
+            case EXAMPLE:
+                ruleReference.addExample(parseTextNode(node));
+                break;
+            case PRIORITY:
+                ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
+                break;
+            case PROPERTIES:
+                setPropertyValues(ruleReference, node, err);
+                break;
+            default:
+                throw err.error(node,
+                                XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN,
+                                "rule " + ruleReference.getName());
             }
         }
 
@@ -151,29 +138,22 @@ public class RuleFactory {
      * @param ruleElement The rule element to parse
      *
      * @return A new instance of the rule described by this element
+     *
      * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
-    public Rule buildRule(Element ruleElement) {
+    public Rule buildRule(Element ruleElement, XmlErrorReporter err) {
         checkRequiredAttributesArePresent(ruleElement);
 
-        String name = ruleElement.getAttribute(NAME);
+        RuleBuilder builder = new RuleBuilder(
+            ruleElement.getAttribute(NAME),
+            resourceLoader,
+            ruleElement.getAttribute(CLASS),
+            ruleElement.getAttribute("language")
+        );
 
-        RuleBuilder builder = new RuleBuilder(name,
-                                              resourceLoader,
-                                              ruleElement.getAttribute(CLASS),
-                                              ruleElement.getAttribute("language"));
-
-        if (ruleElement.hasAttribute(MINIMUM_LANGUAGE_VERSION)) {
-            builder.minimumLanguageVersion(ruleElement.getAttribute(MINIMUM_LANGUAGE_VERSION));
-        }
-
-        if (ruleElement.hasAttribute(MAXIMUM_LANGUAGE_VERSION)) {
-            builder.maximumLanguageVersion(ruleElement.getAttribute(MAXIMUM_LANGUAGE_VERSION));
-        }
-
-        if (ruleElement.hasAttribute(SINCE)) {
-            builder.since(ruleElement.getAttribute(SINCE));
-        }
+        DomUtils.getAttributeOpt(ruleElement, MINIMUM_LANGUAGE_VERSION).ifPresent(builder::minimumLanguageVersion);
+        DomUtils.getAttributeOpt(ruleElement, MAXIMUM_LANGUAGE_VERSION).ifPresent(builder::maximumLanguageVersion);
+        DomUtils.getAttributeOpt(ruleElement, SINCE).ifPresent(builder::since);
 
         builder.message(ruleElement.getAttribute(MESSAGE));
         builder.externalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
@@ -181,13 +161,8 @@ public class RuleFactory {
 
         Element propertiesElement = null;
 
-        final NodeList nodeList = ruleElement.getChildNodes();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
 
+        for (Element node : DomUtils.elementsIn(ruleElement)) {
             switch (node.getNodeName()) {
             case DESCRIPTION:
                 builder.description(parseTextNode(node));
@@ -199,13 +174,13 @@ public class RuleFactory {
                 builder.priority(Integer.parseInt(parseTextNode(node).trim()));
                 break;
             case PROPERTIES:
-                parsePropertiesForDefinitions(builder, node);
-                propertiesElement = (Element) node;
+                parsePropertiesForDefinitions(builder, node, err);
+                propertiesElement = node;
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
-                                                   + "> encountered as child of <rule> element for Rule "
-                                                   + name);
+                throw err.error(node,
+                                XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN,
+                                "rule " + ruleElement.getAttribute(NAME));
             }
         }
 
@@ -213,12 +188,11 @@ public class RuleFactory {
         try {
             rule = builder.build();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            LOG.log(Level.SEVERE, "Error instantiating a rule", e);
-            throw new RuntimeException(e);
+            throw err.fatal(ruleElement, e);
         }
 
         if (propertiesElement != null) {
-            setPropertyValues(rule, propertiesElement, dummyErrorReporter());
+            setPropertyValues(rule, propertiesElement, err);
         }
 
         return rule;
@@ -240,14 +214,12 @@ public class RuleFactory {
      *
      * @param builder        Rule builder
      * @param propertiesNode Node to parse
+     * @param err            Error reporter
      */
-    private void parsePropertiesForDefinitions(RuleBuilder builder, Node propertiesNode) {
-        for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
-            Node node = propertiesNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())
-                && isPropertyDefinition((Element) node)) {
-                PropertyDescriptor<?> descriptor = parsePropertyDefinition((Element) node);
-                builder.defineProperty(descriptor);
+    private void parsePropertiesForDefinitions(RuleBuilder builder, Element propertiesNode, @NonNull XmlErrorReporter err) {
+        for (Element child : SchemaConstants.PROPERTY_ELT.getElementChildrenNamedReportOthers(propertiesNode, err)) {
+            if (isPropertyDefinition(child)) {
+                builder.defineProperty(parsePropertyDefinition(child, err));
             }
         }
     }
@@ -297,11 +269,11 @@ public class RuleFactory {
      * Parses a property definition node and returns the defined property descriptor.
      *
      * @param propertyElement Property node to parse
+     * @param err             Error reporter
      *
      * @return The property descriptor
      */
-    private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
-        XmlErrorReporter err = dummyErrorReporter();
+    private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement, XmlErrorReporter err) {
 
         String typeId = SchemaConstants.TYPE.getAttributeOrThrow(propertyElement, err);
 
@@ -360,14 +332,5 @@ public class RuleFactory {
             // this will report the correct error if any
             return syntax.fromXml(child, err);
         }
-    }
-
-
-    @Deprecated
-    @NonNull
-    private static XmlErrorReporter dummyErrorReporter() {
-        // TODO this is a fake instance, should be provided by context
-        //  I'm only doing this to not make the change too contagious for now
-        return new XmlErrorReporter() { };
     }
 }

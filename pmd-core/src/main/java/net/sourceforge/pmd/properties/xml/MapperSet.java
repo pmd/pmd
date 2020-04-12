@@ -16,10 +16,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
 import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.CollectionUtil;
+
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 /**
  * A set of syntaxes for read and write. One special syntax is designated

@@ -15,9 +15,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 /**
  * Serialize to and from a simple string. Examples:

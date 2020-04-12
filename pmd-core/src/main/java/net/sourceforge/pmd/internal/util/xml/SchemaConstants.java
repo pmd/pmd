@@ -14,6 +14,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
+
 
 /**
  * Constants of the ruleset schema.

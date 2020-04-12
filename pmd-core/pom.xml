@@ -114,6 +114,11 @@
             <groupId>org.pcollections</groupId>
             <artifactId>pcollections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.oowekyala.ooxml</groupId>
+            <artifactId>nice-xml-messages</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.github.tomakehurst</groupId>

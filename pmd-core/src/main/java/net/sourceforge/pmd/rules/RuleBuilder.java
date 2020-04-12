@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
  * Builds a rule, validating its parameters throughout. The builder can define property descriptors, but not override
- * them. For that, use {@link RuleFactory#decorateRule(Rule, RuleSetReference, Element)}.
+ * them. For that, use {@link RuleFactory#decorateRule(Rule, RuleSetReference, Element, com.github.oowekyala.ooxml.messages.XmlErrorReporter)}.
  *
  * @author Clément Fournier
  * @since 6.0.0

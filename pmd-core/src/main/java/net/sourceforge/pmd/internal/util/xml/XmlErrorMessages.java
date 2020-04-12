@@ -9,6 +9,7 @@ public final class XmlErrorMessages {
     private static final String THIS_WILL_BE_IGNORED = ", this will be ignored";
 
     public static final String ERR__UNEXPECTED_ELEMENT = "Unexpected element ''{0}'', expecting {1}";
+    public static final String ERR__UNEXPECTED_ELEMENT_IN = "Unexpected element ''{0}'' in {1}, expecting {1}";
     public static final String ERR__MISSING_REQUIRED_ATTRIBUTE = "Required attribute ''{0}'' is missing";
     public static final String ERR__MISSING_REQUIRED_ELEMENT = "Required child element named {0} is missing";
 

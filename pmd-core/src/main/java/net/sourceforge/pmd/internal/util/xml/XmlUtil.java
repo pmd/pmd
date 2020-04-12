@@ -22,6 +22,8 @@ import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 
+import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
+
 public final class XmlUtil {
 
     private XmlUtil() {
