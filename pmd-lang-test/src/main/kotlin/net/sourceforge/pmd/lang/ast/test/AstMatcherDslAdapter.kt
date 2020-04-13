@@ -18,6 +18,8 @@ object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
     override fun nodeName(type: Class<out Node>): String = type.simpleName.removePrefix("AST")
 
     override fun getParent(node: Node): Node? = node.parent
+
+    override fun getChild(node: Node, index: Int): Node? = node.safeGetChild(index)
 }
 
 /** A [NodeSpec] that returns a value. */
