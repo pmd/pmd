@@ -19,7 +19,7 @@ class ASTTypeTest : ParserTestSpec({
                     it::getTypeImage shouldBe "java.util.List"
                     it::getImage shouldBe "List"
                     it::getTypeArguments shouldBe null
-                    it::getLhsType shouldBe null
+                    it::getQualifier shouldBe null
 
                     it::getAmbiguousLhs shouldBe child {
                         it::getName shouldBe "java.util"
@@ -30,7 +30,7 @@ class ASTTypeTest : ParserTestSpec({
             "java.util.List<F>" should parseAs {
                 classType("List") {
 
-                    it::getLhsType shouldBe null
+                    it::getQualifier shouldBe null
                     it::getImage shouldBe "List"
 
                     it::getAmbiguousLhs shouldBe child {
@@ -51,7 +51,7 @@ class ASTTypeTest : ParserTestSpec({
                     it::getImage shouldBe "foo"
 
                     it::getAmbiguousLhs shouldBe null
-                    it::getLhsType shouldBe null
+                    it::getQualifier shouldBe null
                 }
             }
         }
@@ -73,8 +73,8 @@ class ASTTypeTest : ParserTestSpec({
             "@B @H java.util.@C @K Map" should parseAs {
 
                 classType("Map") {
-                    it::getLhsType shouldBe classType("util") {
-                        it::getLhsType shouldBe classType("java") {
+                    it::getQualifier shouldBe classType("util") {
+                        it::getQualifier shouldBe classType("java") {
                             annotation("B")
                             annotation("H")
                         }
@@ -92,7 +92,7 @@ class ASTTypeTest : ParserTestSpec({
                 classType("Entry") {
                     it::getTypeImage shouldBe "java.util.Map.Entry"
 
-                    it::getLhsType shouldBe null
+                    it::getQualifier shouldBe null
 
                     it::getAmbiguousLhs shouldBe child {
                         it::getTypeImage shouldBe "java.util.Map"
@@ -106,12 +106,12 @@ class ASTTypeTest : ParserTestSpec({
 
                         classType("K") {
                             it::getTypeArguments shouldBe null
-                            it::getLhsType shouldBe null
+                            it::getQualifier shouldBe null
                         }
 
                         classType("V") {
                             it::getTypeArguments shouldBe null
-                            it::getLhsType shouldBe null
+                            it::getQualifier shouldBe null
                         }
                     }
                 }
@@ -122,11 +122,11 @@ class ASTTypeTest : ParserTestSpec({
 
                     it::getTypeImage shouldBe "Foo.Bar.Brew"
 
-                    it::getLhsType shouldBe classType("Bar") {
+                    it::getQualifier shouldBe classType("Bar") {
                         it::getTypeImage shouldBe "Foo.Bar"
                         it::getTypeArguments shouldBe null
 
-                        it::getLhsType shouldBe classType("Foo") {
+                        it::getQualifier shouldBe classType("Foo") {
                             it::getTypeImage shouldBe "Foo"
 
                             it::getTypeArguments shouldBe typeArgList {
@@ -141,7 +141,7 @@ class ASTTypeTest : ParserTestSpec({
                     it::getTypeArguments shouldBe child {
                         classType("V") {
                             it::getTypeArguments shouldBe null
-                            it::getLhsType shouldBe null
+                            it::getQualifier shouldBe null
                         }
                     }
                 }

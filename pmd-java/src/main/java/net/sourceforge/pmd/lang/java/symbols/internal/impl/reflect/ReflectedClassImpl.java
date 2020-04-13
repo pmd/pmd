@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -162,6 +163,16 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
     @Override
     public JClassSymbol getEnclosingClass() {
         return enclosing;
+    }
+
+    @Override
+    public @Nullable JExecutableSymbol getEnclosingMethod() {
+        // TODO implement for completeness
+        //  this is not strictly needed for typeres though,
+        //  since this would only return non-null for a local class,
+        //  which are always represented by AST symbols (since they're
+        //  only visible in the local scope they're declared in)
+        return null;
     }
 
     @Override

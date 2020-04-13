@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 
-class LocalScopesTest : ParserTestSpec({
+class LocalTypeScopesTest : ParserTestSpec({
 
 
     parserTest("Scoping of types in a compilation unit") {
@@ -138,7 +138,7 @@ class LocalScopesTest : ParserTestSpec({
                 result::getCanonicalName shouldBe "myTest.Foo.Inner"
 
                 contributor.shouldBeA<ASTClassOrInterfaceDeclaration> {
-                    it::getSymbol shouldBe result
+                    it::getSymbol shouldBe foo.symbol
                 }
             }
 

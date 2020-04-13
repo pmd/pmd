@@ -27,7 +27,9 @@ class AstSymbolTests : ParserTestSpec({
 
             package com.foo;
 
-            public final class Foo extends java.util.List {
+            import java.util.ArrayList;
+
+            public final class Foo extends ArrayList<String> {
 
                 void bar() {
 
@@ -42,12 +44,14 @@ class AstSymbolTests : ParserTestSpec({
 
                 enum EE {
                     A,
-                    B
+                    B;
+
+                    public class InnerC {}
                 }
             }
         """)
 
-        val (fooClass, innerItf, innerEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+        val (fooClass, innerItf, innerEnum, innerClass) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
 
         val (barM, ohioM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
 
@@ -56,6 +60,7 @@ class AstSymbolTests : ParserTestSpec({
         doTest("should reflect their modifiers") {
             fooClass::getModifiers shouldBe (Modifier.PUBLIC or Modifier.FINAL)
             innerItf::getModifiers shouldBe (Modifier.PRIVATE or Modifier.ABSTRACT or Modifier.STATIC)
+            innerClass::getModifiers shouldBe (Modifier.PUBLIC)
             innerEnum::getModifiers shouldBe (Modifier.FINAL or Modifier.STATIC)
         }
 
@@ -63,12 +68,14 @@ class AstSymbolTests : ParserTestSpec({
             fooClass::getSimpleName shouldBe "Foo"
             innerItf::getSimpleName shouldBe "Inner"
             innerEnum::getSimpleName shouldBe "EE"
+            innerClass::getSimpleName shouldBe "InnerC"
         }
 
         doTest("should reflect their canonical names properly") {
             fooClass::getCanonicalName shouldBe "com.foo.Foo"
             innerItf::getCanonicalName shouldBe "com.foo.Foo.Inner"
             innerEnum::getCanonicalName shouldBe "com.foo.Foo.EE"
+            innerClass::getCanonicalName shouldBe "com.foo.Foo.EE.InnerC"
         }
 
         doTest("should reflect their methods") {
@@ -80,22 +87,24 @@ class AstSymbolTests : ParserTestSpec({
         }
 
         doTest("should reflect their super class") {
-            // Postponed
-            // fooClass::getSuperclass shouldBe testSymFactory.getClassSymbol(java.util.List::class.java)
-
+            fooClass::getSuperclass shouldBe testSymFactory.getClassSymbol(java.util.ArrayList::class.java)
+            innerItf::getSuperclass shouldBe null
+            innerClass::getSuperclass shouldBe ReflectSymInternals.OBJECT_SYM
             innerEnum::getSuperclass shouldBe ReflectSymInternals.ENUM_SYM
         }
 
         doTest("should reflect their member types") {
             fooClass.declaredClasses shouldBe listOf(innerItf, innerEnum)
-            innerEnum.declaredClasses shouldBe emptyList()
+            innerEnum.declaredClasses shouldBe listOf(innerClass)
             innerItf.declaredClasses shouldBe emptyList()
+            innerClass.declaredClasses shouldBe emptyList()
         }
 
         doTest("should reflect their declaring type") {
             fooClass::getEnclosingClass shouldBe null
             innerEnum::getEnclosingClass shouldBe fooClass
             innerItf::getEnclosingClass shouldBe fooClass
+            innerClass::getEnclosingClass shouldBe innerEnum
         }
 
         doTest("(enums) should reflect enum constants as fields") {
@@ -225,6 +234,10 @@ class AstSymbolTests : ParserTestSpec({
 
         doTest("Enum constants with bodies should be static") {
             enumAnon::getModifiers shouldBe Modifier.STATIC
+        }
+
+        doTest("Enum constants with bodies should reflect their superclass properly") {
+            enumAnon::getSuperclass shouldBe enum2
         }
     }
 

@@ -12,7 +12,9 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -106,6 +108,7 @@ public final class JavaAstProcessor {
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        bench("AST disambiguation", () -> InternalApiBridge.disambig(this, NodeStream.of(acu)));
 
     }
 
@@ -162,13 +165,13 @@ public final class JavaAstProcessor {
         );
     }
 
-    private static void bench(String label, Runnable runnable) {
+    public static void bench(String label, Runnable runnable) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             runnable.run();
         }
     }
 
-    private static <T> T bench(String label, Supplier<T> runnable) {
+    public static <T> T bench(String label, Supplier<T> runnable) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             return runnable.get();
         }

@@ -5,7 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.TypeOnlySymTable.nestedClassesOf;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.formalsOf;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.VarOnlySymTable.varsOfInit;
 
@@ -15,10 +14,14 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -36,7 +39,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
@@ -56,6 +58,16 @@ public final class SymbolTableResolver {
         // façade
     }
 
+    /**
+     * Resolve symbol tables in the given file. After this, each node's
+     * {@link JavaNode#getSymbolTable()} returns a non-null value, which
+     * is used for AST disambiguation.
+     *
+     * This pass needs to disambiguate some type nodes early, namely those
+     * in the "extends" or "implements" clause of type declarations. This
+     * is because members inherited from supertypes need to be part of the
+     * symbol tables, and so they influence disambiguation too.
+     */
     public static void traverse(JavaAstProcessor processor, ASTCompilationUnit root) {
         SymbolTableHelper helper = new SymbolTableHelper(root.getPackageName(), processor);
         new MyVisitor(root, helper).traverse();
@@ -79,12 +91,12 @@ public final class SymbolTableResolver {
     private static class MyVisitor extends SideEffectingVisitorAdapter<Void> {
 
         private final ASTCompilationUnit root;
-        private final SymbolTableHelper myResolveHelper;
+        private final SymbolTableHelper helper;
         private JSymbolTable myStackTop;
 
         MyVisitor(ASTCompilationUnit root, SymbolTableHelper helper) {
             this.root = root;
-            myResolveHelper = helper;
+            this.helper = helper;
             // this is the only place pushOnStack can be circumvented
             myStackTop = EmptySymbolTable.getInstance();
         }
@@ -102,6 +114,7 @@ public final class SymbolTableResolver {
             assert myStackTop instanceof EmptySymbolTable
                 : "Unbalanced stack push/pop! Top is " + myStackTop;
         }
+
 
         @Override
         public void visit(ASTModifierList node, Void data) {
@@ -121,23 +134,32 @@ public final class SymbolTableResolver {
             // types declared inside the compilation unit
             pushed += pushOnStack(TypeOnlySymTable::new, node.getTypeDeclarations());
 
+            setTopSymbolTable(node);
+
+            for (ASTAnyTypeDeclaration td : node.getTypeDeclarations()) {
+                // preprocess all sibling types
+                processTypeHeader(td);
+            }
+
             // All of the header symbol tables belong to the CompilationUnit
-            setTopSymbolTableAndRecurse(node);
+            visitSubtree(node);
+
+
             popStack(pushed);
         }
 
 
-        @Override
-        public void visit(ASTAnyTypeDeclaration node, Void data) {
+        private void processTypeHeader(ASTAnyTypeDeclaration node) {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = 0;
             pushed += pushOnStack(TypeOnlySymTable::new, node); // pushes its own name, overrides type params of enclosing type
 
+            NodeStream<? extends JavaNode> notBody = node.children().take(node.getNumChildren() - 1).drop(1);
+
             if (pushOnStack(TypeOnlySymTable::new, node.getTypeParameters()) > 0) {
                 // there are type parameters: the extends/implements/type parameter section know about them
 
-                NodeStream<? extends JavaNode> notBody = node.children().drop(1).filterNot(it -> it instanceof ASTTypeBody);
                 for (JavaNode it : notBody) {
                     setTopSymbolTable(it);
                 }
@@ -145,14 +167,58 @@ public final class SymbolTableResolver {
                 popStack();
             }
 
+            // resolve the supertypes, necessary for TypeMemberSymTable
+            helper.earlyDisambig(notBody); // extends/implements
+
+            setTopSymbolTable(node);
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTAnyTypeDeclaration node, Void data) {
+            int pushed = restoreStack(node.getSymbolTable());
+
             // the following is just for the body
+            helper.pushCtxType(node.getSymbol());
 
             pushed += pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
-            pushed += pushOnStack(TypeOnlySymTable::new, nestedClassesOf(node)); // declared classes
             pushed += pushOnStack(TypeOnlySymTable::new, node.getTypeParameters()); // shadow type names of the former 2
+
+            setTopSymbolTable(node.getBody());
+
+            // preprocess siblings
+            node.getDeclarations()
+                .filterIs(ASTAnyTypeDeclaration.class)
+                .forEach(this::processTypeHeader);
+
+
+            // process fields first, their type is needed for JSymbolTable#resolveValue
+            helper.earlyDisambig(node.getDeclarations()
+                                     .filterIs(ASTFieldDeclaration.class)
+                                     .map(ASTFieldDeclaration::getTypeNode));
+
+
+            visitSubtree(node.getBody());
+
+            helper.popCtxType();
+
+            popStack(pushed);
+        }
+
+        @Override
+        public void visit(ASTAnonymousClassDeclaration node, Void data) {
+
+            // the supertype node, should be disambiguated to access members of the type
+            helper.earlyDisambig(node.asStream().parents()
+                                     .filterIs(ASTConstructorCall.class)
+                                     .map(ASTConstructorCall::getTypeNode));
+
+            helper.pushCtxType(node.getSymbol());
+            int pushed = pushOnStack(TypeMemberSymTable::new, node); // methods & fields & inherited classes
 
             setTopSymbolTableAndRecurse(node.getBody());
 
+            helper.popCtxType();
             popStack(pushed);
         }
 
@@ -219,7 +285,9 @@ public final class SymbolTableResolver {
                 if (st instanceof ASTLocalVariableDeclaration) {
                     pushed += pushOnStack(VarOnlySymTable::new, ((ASTLocalVariableDeclaration) st).getVarIds());
                 } else if (st instanceof ASTLocalClassStatement) {
-                    pushed += pushOnStack(TypeOnlySymTable::new, ((ASTLocalClassStatement) st).getDeclaration());
+                    ASTClassOrInterfaceDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
+                    pushed += pushOnStack(TypeOnlySymTable::new, local);
+                    processTypeHeader(local);
                 }
 
 
@@ -295,7 +363,6 @@ public final class SymbolTableResolver {
         }
 
 
-
         /**
          * Create a new symbol table using {@link TableLinker#createAndLink(JSymbolTable, SymbolTableHelper, Object)},
          * linking it to the top of the stack as its parent.
@@ -308,7 +375,7 @@ public final class SymbolTableResolver {
          * @return 1 if the table was pushed, 0 if not
          */
         private <T> int pushOnStack(TableLinker<T> tableLinker, T data) {
-            AbstractSymbolTable created = tableLinker.createAndLink(peekStack(), myResolveHelper, data);
+            AbstractSymbolTable created = tableLinker.createAndLink(peekStack(), helper, data);
             return pushOnStack(created) ? 1 : 0;
         }
 
@@ -319,6 +386,23 @@ public final class SymbolTableResolver {
             }
             this.myStackTop = table;
             return true;
+        }
+
+        private int restoreStack(final JSymbolTable leaf) {
+            assert leaf != null : "Table not set";
+
+            final JSymbolTable curTop = this.myStackTop;
+            int i = 0;
+            JSymbolTable parent = leaf;
+            while (parent != null && parent != curTop) {  // NOPMD - intentional check for reference equality
+                i++;
+                parent = parent.getParent();
+            }
+
+            assert parent != null : "Sibling left dangling tables on the stack";
+
+            this.myStackTop = leaf;
+            return i;
         }
 
         private JSymbolTable popStack() {

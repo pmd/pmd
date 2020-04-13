@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
  * </pre>
  */
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner {
+
     ASTFieldAccess(int id) {
         super(id);
     }
@@ -28,6 +30,15 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssigna
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         this.jjtAddChild(lhs, 0);
         this.setImage(fieldName);
+    }
+
+    ASTFieldAccess(ASTExpression lhs, JavaccToken identifier) {
+        super(JavaParserImplTreeConstants.JJTFIELDACCESS);
+        TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
+        this.jjtAddChild(lhs, 0);
+        this.setImage(identifier.getImage());
+        this.jjtSetFirstToken(lhs.jjtGetFirstToken());
+        this.jjtSetLastToken(identifier);
     }
 
 

@@ -15,7 +15,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -32,6 +35,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.impl.reflect.ReflectSymInternals;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class AstClassSym
@@ -106,7 +110,7 @@ final class AstClassSym
             }
         }
 
-        if (myCtors.isEmpty() && isClass()) {
+        if (myCtors.isEmpty() && isClass() && !isAnonymousClass()) {
             myCtors.add(ImplicitMemberSymbols.defaultCtor(this));
         }
 
@@ -186,25 +190,59 @@ final class AstClassSym
         return declaredFields;
     }
 
-
     @Override
     public @Nullable JClassSymbol getSuperclass() {
+        // notice this relies on the fact that the extends clause
+        // (or the type node of the constructor call, for an anonymous class),
+        // was disambiguated early
+
         if (isEnum()) {
             return ReflectSymInternals.ENUM_SYM;
-        } else if (node instanceof ASTClassOrInterfaceDeclaration) {
-            // This is TODO, needs symbol table
+        } else if (isAnonymousClass()) {
+
+            if (node.getParent() instanceof ASTEnumConstant) {
+
+                return node.getEnclosingType().getSymbol();
+
+            } else if (node.getParent() instanceof ASTConstructorCall) {
+
+                JTypeDeclSymbol sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getReferencedSym();
+
+                return sym instanceof JClassSymbol && !sym.isInterface()
+                       ? (JClassSymbol) sym
+                       : ReflectSymInternals.OBJECT_SYM;
+
+            }
+
+        } else if (isRecord()) {
+            // TODO, maybe not on the classpath.
+            return ReflectSymInternals.OBJECT_SYM;
+        } else if (isClass()) {
+            ASTClassOrInterfaceType sup = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
+            if (sup == null) {
+                return ReflectSymInternals.OBJECT_SYM;
+            } else if (sup.getReferencedSym() instanceof JClassSymbol) {
+                return (JClassSymbol) sup.getReferencedSym();
+            } else {
+                return null;
+            }
         }
+        // TODO records
         return null;
     }
 
-    // those casts only succeed if the program compiles, it relies on
-    // the fact that only classes can be super interfaces, ie not String[]
-    // or some type var
-
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        // TODO needs symbol table
-        return Collections.emptyList();
+        return CollectionUtil.mapNotNull(
+            node.getSuperInterfaceTypeNodes(),
+            n -> {
+                // we play safe here, but the symbol is either a JClassSymbol
+                // or a JTypeParameterSymbol, with the latter case being a
+                // compile-time error
+                JTypeDeclSymbol sym = n.getReferencedSym();
+                return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+            }
+        );
     }
 
     @Override
