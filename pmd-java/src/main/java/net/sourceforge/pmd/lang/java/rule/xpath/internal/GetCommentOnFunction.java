@@ -1,8 +1,12 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.xpath;
+package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.List;
 
@@ -28,6 +32,8 @@ import net.sf.saxon.value.StringValue;
  */
 public class GetCommentOnFunction extends BaseJavaXPathFunction {
 
+
+    public static final GetCommentOnFunction INSTANCE = new GetCommentOnFunction();
 
     protected GetCommentOnFunction() {
         super("getCommentOn");

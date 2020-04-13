@@ -1,8 +1,12 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.xpath;
+package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Locale;
 import java.util.Map;
@@ -37,6 +41,7 @@ import net.sf.saxon.value.SequenceType;
  */
 public class MetricFunction extends BaseJavaXPathFunction {
 
+    public static final MetricFunction INSTANCE = new MetricFunction();
 
     private static final Map<String, JavaClassMetricKey> CLASS_METRIC_KEY_MAP = EnumUtils.getEnumMap(JavaClassMetricKey.class);
     private static final Map<String, JavaOperationMetricKey> OPERATION_METRIC_KEY_MAP = EnumUtils.getEnumMap(JavaOperationMetricKey.class);

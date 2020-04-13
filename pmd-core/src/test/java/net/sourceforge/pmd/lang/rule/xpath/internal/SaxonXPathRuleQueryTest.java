@@ -1,8 +1,7 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
-package net.sourceforge.pmd.lang.rule.xpath;
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +13,8 @@ import org.junit.Test;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.DummyNodeWithListAndEnum;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -176,7 +177,7 @@ public class SaxonXPathRuleQueryTest {
             xpath,
             XPathVersion.XPATH_2_0,
             props,
-            XPathHandler.getHandlerForFunctionDefs()
+            XPathHandler.noFunctionDefinitions()
         );
     }
 }

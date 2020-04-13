@@ -1,28 +1,27 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
-package net.sourceforge.pmd.lang.rule.xpath;
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AstDocument;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DomainConversion;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -40,26 +39,13 @@ import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathStaticContext;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.AtomicValue;
-import net.sf.saxon.value.BigIntegerValue;
-import net.sf.saxon.value.BooleanValue;
-import net.sf.saxon.value.DoubleValue;
-import net.sf.saxon.value.EmptySequence;
-import net.sf.saxon.value.FloatValue;
-import net.sf.saxon.value.Int64Value;
-import net.sf.saxon.value.SequenceExtent;
-import net.sf.saxon.value.StringValue;
-import net.sf.saxon.value.UntypedAtomicValue;
 
 
 /**
  * This is a Saxon based XPathRule query.
- *
- * @deprecated Internal API
  */
-@Deprecated
-@InternalApi
-public class SaxonXPathRuleQuery  {
+public class SaxonXPathRuleQuery {
+
     /**
      * Special nodeName that references the root expression.
      */
@@ -70,7 +56,7 @@ public class SaxonXPathRuleQuery  {
     private static final NamePool NAME_POOL = new NamePool();
 
     /** Cache key for the wrapped tree for saxon. */
-    private static final SimpleDataKey<DocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
+    private static final SimpleDataKey<AstDocument> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
     private final String xpathExpr;
     private final XPathVersion version;
@@ -123,7 +109,6 @@ public class SaxonXPathRuleQuery  {
     }
 
 
-    @SuppressWarnings("unchecked")
     public List<Node> evaluate(final Node node, final RuleContext data) {
         initializeXPathExpression();
 
@@ -189,7 +174,7 @@ public class SaxonXPathRuleQuery  {
             final String variableName = xpathVariable.getVariableQName().getLocalPart();
             for (final Map.Entry<PropertyDescriptor<?>, Object> entry : properties.entrySet()) {
                 if (variableName.equals(entry.getKey().name())) {
-                    final Sequence valueRepresentation = getRepresentation(entry.getKey(), entry.getValue());
+                    final Sequence valueRepresentation = getRepresentation(entry.getValue());
                     dynamicContext.setVariable(xpathVariable, valueRepresentation);
                 }
             }
@@ -198,9 +183,9 @@ public class SaxonXPathRuleQuery  {
     }
 
 
-    private Sequence getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
-        if (descriptor.isMultiValue()) {
-            return getSequenceRepresentation((List<?>) value);
+    private Sequence getRepresentation(final Object value) {
+        if (value instanceof Collection) {
+            return DomainConversion.getSequenceRepresentation((Collection<?>) value);
         } else {
             return DomainConversion.getAtomicRepresentation(value);
         }
@@ -217,7 +202,7 @@ public class SaxonXPathRuleQuery  {
      * @return the DocumentNode representing the whole AST
      */
     private AstDocument getDocumentNodeForRootNode(final Node node) {
-        final Node root = getRootNode(node);
+        final RootNode root = node.getRoot();
 
         DataMap<DataKey<?, ?>> userMap = root.getUserMap();
         AstDocument docNode = userMap.get(SAXON_TREE_CACHE_KEY);
@@ -229,24 +214,9 @@ public class SaxonXPathRuleQuery  {
     }
 
 
-    /**
-     * Traverse the AST until the root node is found.
-     *
-     * @param node the node from where to start traversing the tree
-     *
-     * @return the root node
-     */
-    private Node getRootNode(final Node node) {
-        Node root = node;
-        while (root.getParent() != null) {
-            root = root.getParent();
-        }
-        return root;
-    }
-
     private void addExpressionForNode(String nodeName, Expression expression) {
         if (!nodeNameToXPaths.containsKey(nodeName)) {
-            nodeNameToXPaths.put(nodeName, new LinkedList<Expression>());
+            nodeNameToXPaths.put(nodeName, new LinkedList<>());
         }
         nodeNameToXPaths.get(nodeName).add(expression);
     }
@@ -328,59 +298,4 @@ public class SaxonXPathRuleQuery  {
         addExpressionForNode(AST_ROOT, xpathExpression.getInternalExpression());
     }
 
-    /**
-     * Gets the Saxon representation of the parameter, if its type corresponds
-     * to an XPath 2.0 atomic datatype.
-     *
-     * @param value The value to convert
-     *
-     * @return The converted AtomicValue
-     */
-    public static AtomicValue getAtomicRepresentation(final Object value) {
-
-        /*
-        FUTURE When supported, we should consider refactor this implementation to use Pattern Matching
-        (see http://openjdk.java.net/jeps/305) so that it looks clearer.
-        */
-        if (value == null) {
-            return UntypedAtomicValue.ZERO_LENGTH_UNTYPED;
-        } else if (value instanceof Enum) {
-            // enums use their toString
-            return new StringValue(value.toString());
-        } else if (value instanceof String) {
-            return new StringValue((String) value);
-        } else if (value instanceof Boolean) {
-            return BooleanValue.get((Boolean) value);
-        } else if (value instanceof Integer) {
-            return Int64Value.makeIntegerValue((Integer) value);
-        } else if (value instanceof Long) {
-            return new BigIntegerValue((Long) value);
-        } else if (value instanceof Double) {
-            return new DoubleValue((Double) value);
-        } else if (value instanceof Character) {
-            return new StringValue(value.toString());
-        } else if (value instanceof Float) {
-            return new FloatValue((Float) value);
-        } else if (value instanceof Pattern) {
-            return new StringValue(String.valueOf(value));
-        } else {
-            // We could maybe use UntypedAtomicValue
-            throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());
-        }
-    }
-
-    public static Sequence getSequenceRepresentation(List<?> list) {
-        if (list == null || list.isEmpty()) {
-            return EmptySequence.getInstance();
-        }
-        final Item[] converted = new Item[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            converted[i] = getAtomicRepresentation(list.get(i));
-        }
-        return new SequenceExtent(converted);
-    }
-
-    public static NamePool getNamePool() {
-        return NAME_POOL;
-    }
 }

@@ -1,8 +1,12 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.xpath;
+package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
@@ -26,6 +30,7 @@ import net.sf.saxon.value.SequenceType;
  */
 public class TypeIsExactlyFunction extends BaseJavaXPathFunction {
 
+    public static final TypeIsExactlyFunction INSTANCE = new TypeIsExactlyFunction();
 
     protected TypeIsExactlyFunction() {
         super("typeIsExactly");

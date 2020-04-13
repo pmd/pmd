@@ -4,23 +4,27 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.internal;
 
+import java.util.Collection;
 import java.util.regex.Pattern;
 
+import net.sf.saxon.om.Item;
+import net.sf.saxon.om.Sequence;
 import net.sf.saxon.type.BuiltInAtomicType;
 import net.sf.saxon.type.SchemaType;
 import net.sf.saxon.value.AtomicValue;
 import net.sf.saxon.value.BigIntegerValue;
 import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.DoubleValue;
+import net.sf.saxon.value.EmptySequence;
 import net.sf.saxon.value.FloatValue;
 import net.sf.saxon.value.Int64Value;
+import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
 
 
 /**
- * @author Clément Fournier
- * @since 7.0.0
+ * Converts Java values into XPath values.
  */
 public final class DomainConversion {
 
@@ -45,6 +49,16 @@ public final class DomainConversion {
         default:
             return BuiltInAtomicType.UNTYPED_ATOMIC;
         }
+    }
+
+    public static Sequence getSequenceRepresentation(Collection<?> list) {
+        if (list == null || list.isEmpty()) {
+            return EmptySequence.getInstance();
+        }
+        Item[] items = list.stream()
+                           .map(DomainConversion::getAtomicRepresentation)
+                           .toArray(Item[]::new);
+        return new SequenceExtent(items);
     }
 
 

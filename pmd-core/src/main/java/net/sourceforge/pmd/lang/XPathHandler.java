@@ -18,6 +18,10 @@ import net.sf.saxon.lib.ExtensionFunctionDefinition;
  */
 public interface XPathHandler {
 
+    /**
+     * Returns the set of extension functions for this language module.
+     * These are the additional functions available in XPath queries.
+     */
     Set<ExtensionFunctionDefinition> getRegisteredExtensionFunctions();
 
 
