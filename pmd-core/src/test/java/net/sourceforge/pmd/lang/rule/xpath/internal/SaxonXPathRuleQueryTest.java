@@ -13,12 +13,20 @@ import org.junit.Test;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
 import net.sourceforge.pmd.lang.rule.xpath.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.XPathContext;
+import net.sf.saxon.lib.ExtensionFunctionCall;
+import net.sf.saxon.om.Sequence;
+import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.value.BooleanValue;
+import net.sf.saxon.value.SequenceType;
 
 public class SaxonXPathRuleQueryTest {
 
@@ -66,7 +74,7 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void ruleChainVisitsCustomFunctions() {
-        SaxonXPathRuleQuery query = createQuery("//dummyNode[pmd-dummy:typeIs(@Image)]");
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
@@ -132,8 +140,8 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (self::node()[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))", query.nodeNameToXPaths.get("dummyNode").get(0));
-        assertExpression("LetExpression(LazyExpression(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer($testClassPattern))))), (((/)/descendant::element(dummyNode, xs:anyType))[matches(CardinalityChecker(ItemChecker(UntypedAtomicConverter(Atomizer(attribute::attribute(SimpleName, xs:anyAtomicType))))), $zz:zz952562199)]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exactly-one(convertUntyped(data($testClassPattern)))) treat as xs:string return (self::node()[matches(convertUntyped(data(@SimpleName)), $Q{http://saxon.sf.net/generated-variable}v0, \"\")])", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exactly-one(convertUntyped(data($testClassPattern)))) treat as xs:string return (((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), $Q{http://saxon.sf.net/generated-variable}v0, \"\")])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     @Test
@@ -177,7 +185,28 @@ public class SaxonXPathRuleQueryTest {
             xpath,
             XPathVersion.XPATH_2_0,
             props,
-            XPathHandler.noFunctionDefinitions()
+            XPathHandler.getHandlerForFunctionDefs(new AbstractXPathFunctionDef("imageIs", "dummy") {
+                @Override
+                public SequenceType[] getArgumentTypes() {
+                    return new SequenceType[] {SequenceType.SINGLE_STRING};
+                }
+
+                @Override
+                public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+                    return SequenceType.SINGLE_BOOLEAN;
+                }
+
+                @Override
+                public ExtensionFunctionCall makeCallExpression() {
+                    return new ExtensionFunctionCall() {
+                        @Override
+                        public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+                            Node contextNode = ((AstNodeWrapper) context.getContextItem()).getUnderlyingNode();
+                            return BooleanValue.get(arguments[0].head().getStringValue().equals(contextNode.getImage()));
+                        }
+                    };
+                }
+            })
         );
     }
 }

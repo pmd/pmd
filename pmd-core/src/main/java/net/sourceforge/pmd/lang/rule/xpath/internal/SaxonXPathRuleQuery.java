@@ -29,10 +29,13 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
+import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.om.SequenceIterator;
+import net.sf.saxon.om.StructuredQName;
+import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
@@ -236,9 +239,12 @@ public class SaxonXPathRuleQuery {
             this.configuration = xpathStaticContext.getConfiguration();
 
 
-            // TODO ((IndependentContext) xpathStaticContext).declareNamespace();
+            for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
+                StructuredQName qname = fun.getFunctionQName();
+                ((IndependentContext) xpathStaticContext).declareNamespace(qname.getPrefix(), qname.getURI());
 
-            xPathHandler.getRegisteredExtensionFunctions().forEach(configuration::registerExtensionFunction);
+                configuration.registerExtensionFunction(fun);
+            }
 
 
             /*

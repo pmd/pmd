@@ -9,8 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class DummyNodeWithListAndEnum extends DummyNode {
+public class DummyNodeWithListAndEnum extends DummyNode implements RootNode {
     public DummyNodeWithListAndEnum(int id) {
         super(id);
         beginLine = 1;
