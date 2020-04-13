@@ -64,6 +64,11 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
+*   {% jdoc core::lang.rule.xpath.AbstractXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.JaxenXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.SaxonXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.XPathRuleQuery %}
+
 ##### In ASTs
 
 As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
@@ -119,6 +124,9 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc !!core::lang.TokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
+*   {% jdoc core::lang.rule.ImmutableLanguage %}
+*   {% jdoc core::lang.rule.MockRule %}
+*   Multiple fields, constructors and methods in {% jdoc core::lang.rule.XPathRule %}. See javadoc for details.
 
 ### External Contributions
 
