@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
@@ -32,7 +33,8 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void testListAttribute() {
-        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        DummyRoot dummy = new DummyRoot();
+        dummy.jjtAddChild(new DummyNodeWithListAndEnum(1), 0);
 
         assertQuery(1, "//dummyNode[@List = \"A\"]", dummy);
         assertQuery(1, "//dummyNode[@List = \"B\"]", dummy);
@@ -93,21 +95,21 @@ public class SaxonXPathRuleQueryTest {
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
         Assert.assertEquals(1, query.nodeNameToXPaths.size());
-        assertExpression("LetExpression(LazyExpression(((/)/descendant::element(ClassOrInterfaceType, xs:anyType))), (((/)/descendant::element(dummyNode, xs:anyType))[$zz:zz771775563]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (/)/descendant::element(Q{}ClassOrInterfaceType) return (((/)/descendant::element(Q{}dummyNode))[exists($Q{http://saxon.sf.net/generated-variable}v0)])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
 
         // second sample, more complex
         query = createQuery("//dummyNode[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType]]");
         ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
         Assert.assertEquals(1, query.nodeNameToXPaths.size());
-        assertExpression("LetExpression(LazyExpression(((/)/descendant::element(ClassOrInterfaceType, xs:anyType))), (((/)/descendant::element(dummyNode, xs:anyType))[(ancestor::element(ClassOrInterfaceDeclaration, xs:anyType)[$zz:zz106374177])]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (/)/descendant::element(Q{}ClassOrInterfaceType) return (((/)/descendant::element(Q{}dummyNode))[exists(ancestor::element(Q{}ClassOrInterfaceDeclaration)[exists($Q{http://saxon.sf.net/generated-variable}v0)])])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
 
         // third example, with boolean expr
         query = createQuery("//dummyNode[//ClassOrInterfaceType or //OtherNode]");
         ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
         Assert.assertEquals(1, query.nodeNameToXPaths.size());
-        assertExpression("LetExpression(LazyExpression((((/)/descendant::element(ClassOrInterfaceType, xs:anyType)) or ((/)/descendant::element(OtherNode, xs:anyType)))), (((/)/descendant::element(dummyNode, xs:anyType))[$zz:zz1364913072]))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exists((/)/descendant::element(Q{}ClassOrInterfaceType))) or (exists((/)/descendant::element(Q{}OtherNode))) return (((/)/descendant::element(Q{}dummyNode))[$Q{http://saxon.sf.net/generated-variable}v0])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     @Test

@@ -64,12 +64,6 @@ abstract class SaxonExprVisitor {
         result.setSlotNumber(e.getLocalSlotNumber());
         return result;
     }
-//
-//    public Expression visit(LazyExpression e) {
-//        Expression base = visit(e.getBaseExpression());
-//        ExpressionTool.lazyEvaluate()
-//        return LazyExpression.makeLazyExpression(base);
-//    }
 
     public Expression visit(BooleanExpression e) {
         Expression operand0 = visit(e.getLhsExpression());
@@ -97,8 +91,6 @@ abstract class SaxonExprVisitor {
             result = visit((QuantifiedExpression) expr);
         } else if (expr instanceof LetExpression) {
             result = visit((LetExpression) expr);
-            //        } else if (expr instanceof LazyExpression) {
-            //            result = visit((LazyExpression) expr);
         } else if (expr instanceof BooleanExpression) {
             result = visit((BooleanExpression) expr);
         } else {

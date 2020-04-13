@@ -13,6 +13,7 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
+import net.sf.saxon.expr.LetExpression;
 import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.expr.SlashExpression;
 import net.sf.saxon.expr.sort.DocumentSorter;
@@ -37,15 +38,15 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     private final Configuration configuration;
     private String rootElement;
     private boolean rootElementReplaced;
-    private boolean insideLazyExpression;
-    private boolean foundPathInsideLazy;
+    private boolean insideExpensiveExpr;
+    private boolean foundPathInsideExpensive;
 
     public RuleChainAnalyzer(Configuration currentConfiguration) {
         this.configuration = currentConfiguration;
     }
 
     public String getRootElement() {
-        if (!foundPathInsideLazy && rootElementReplaced) {
+        if (!foundPathInsideExpensive && rootElementReplaced) {
             return rootElement;
         }
         return null;
@@ -60,7 +61,7 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
 
     @Override
     public Expression visit(SlashExpression e) {
-        if (!insideLazyExpression && rootElement == null) {
+        if (!insideExpensiveExpr && rootElement == null) {
             Expression result = super.visit(e);
             if (rootElement != null && !rootElementReplaced) {
                 if (result instanceof SlashExpression) {
@@ -84,8 +85,8 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
             }
             return result;
         } else {
-            if (insideLazyExpression) {
-                foundPathInsideLazy = true;
+            if (insideExpensiveExpr) {
+                foundPathInsideExpensive = true;
             }
             return super.visit(e);
         }
@@ -103,15 +104,29 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         }
         return super.visit(e);
     }
-//
-//    @Override
-//    public Expression visit(LazyExpression e) {
-//        boolean prevCtx = insideLazyExpression;
-//        insideLazyExpression = true;
-//        Expression result = super.visit(e);
-//        insideLazyExpression = prevCtx;
-//        return result;
-//    }
+
+    @Override
+    public Expression visit(LetExpression e) {
+        // lazy expressions are not a thing in saxon HE
+        // instead saxon hoists expensive subexpressions into LetExpressions
+        // Eg //A[//B]
+        // is transformed to let bs := //B in //A
+        // so that the //B is done only once.
+
+        // The cost of an expr is an abstract measure of its expensiveness,
+        // Eg the cost of //A or //* is 40, the cost of //A//B is 820
+        // (a path expr multiplies the cost of its lhs and rhs)
+
+        if (e.getSequence().getCost() >= 20) {
+            boolean prevCtx = insideExpensiveExpr;
+            insideExpensiveExpr = true;
+            Expression result = super.visit(e);
+            insideExpensiveExpr = prevCtx;
+            return result;
+        } else {
+            return super.visit(e);
+        }
+    }
 
     public static Comparator<Node> documentOrderComparator() {
         return DocumentSorterX.INSTANCE;
