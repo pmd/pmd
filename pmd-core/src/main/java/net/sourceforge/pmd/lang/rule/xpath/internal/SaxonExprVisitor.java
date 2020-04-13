@@ -81,10 +81,9 @@ abstract class SaxonExprVisitor {
 
     public Expression visit(Expression expr) {
         Expression result;
-        //        if (expr instanceof DocumentSorter) {
-        //            result = visit((DocumentSorter) expr);
-        //        } else
-        if (expr instanceof SlashExpression) {
+        if (expr instanceof DocumentSorter) {
+            result = visit((DocumentSorter) expr);
+        } else if (expr instanceof SlashExpression) {
             result = visit((SlashExpression) expr);
         } else if (expr instanceof RootExpression) {
             result = visit((RootExpression) expr);
