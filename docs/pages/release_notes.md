@@ -51,6 +51,7 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
 *   java-codestyle
+    *   [#1164](https://github.com/pmd/pmd/issues/1164): \[java] ClassNamingConventions suggests to add Util for class containing only static constants
     *   [#1723](https://github.com/pmd/pmd/issues/1723): \[java] UseDiamondOperator false-positive inside lambda
 *   java-design
     *   [#2390](https://github.com/pmd/pmd/issues/2390): \[java] AbstractClassWithoutAnyMethod: missing violation for nested classes
@@ -135,6 +136,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2397](https://github.com/pmd/pmd/pull/2397): \[apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - [Kieran Black](https://github.com/kieranlblack)
 *   [#2401](https://github.com/pmd/pmd/pull/2401): \[doc] Update DoNotUseThreads rule documentation - [Saikat Sengupta](https://github.com/s4ik4t)
 *   [#2403](https://github.com/pmd/pmd/pull/2403): \[java] #2402 fix false-positives on Primitive Streams - [Bernd Farka](https://github.com/BerndFarkaDyna)
+*   [#2409](https://github.com/pmd/pmd/pull/2409): \[java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - [Binu R J](https://github.com/binu-r)
 
 {% endtocmaker %}
 
