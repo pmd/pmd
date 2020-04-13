@@ -8,12 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DummyNode extends AbstractNode {
+
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
 
     public DummyNode(int id) {
         this(id, false);
+    }
+
+    public DummyNode(String xpathName) {
+        super(0);
+        this.findBoundary = false;
+        this.xpathName = xpathName;
     }
 
     public DummyNode() {
@@ -38,11 +45,12 @@ public class DummyNode extends AbstractNode {
         beginLine = i;
     }
 
-    public void setCoords(int bline, int bcol, int eline, int ecol) {
+    public DummyNode setCoords(int bline, int bcol, int eline, int ecol) {
         beginLine = bline;
         beginColumn = bcol;
         endLine = eline;
         endColumn = ecol;
+        return this;
     }
 
     @Override

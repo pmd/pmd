@@ -77,6 +77,9 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
         return (AstDocument) super.getTreeInfo();
     }
 
+    List<AstNodeWrapper> getChildren() {
+        return children;
+    }
 
     @Override
     public Node getUnderlyingNode() {
