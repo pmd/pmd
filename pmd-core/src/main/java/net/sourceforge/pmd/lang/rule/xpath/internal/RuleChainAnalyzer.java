@@ -13,12 +13,11 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
-import net.sf.saxon.expr.LazyExpression;
-import net.sf.saxon.expr.PathExpression;
 import net.sf.saxon.expr.RootExpression;
-import net.sf.saxon.om.Axis;
+import net.sf.saxon.expr.SlashExpression;
+import net.sf.saxon.expr.sort.DocumentSorter;
+import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.pattern.NameTest;
-import net.sf.saxon.sort.DocumentSorter;
 import net.sf.saxon.type.Type;
 
 /**
@@ -60,26 +59,26 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     }
 
     @Override
-    public Expression visit(PathExpression e) {
+    public Expression visit(SlashExpression e) {
         if (!insideLazyExpression && rootElement == null) {
             Expression result = super.visit(e);
             if (rootElement != null && !rootElementReplaced) {
-                if (result instanceof PathExpression) {
-                    PathExpression newPath = (PathExpression) result;
-                    if (newPath.getStepExpression() instanceof FilterExpression) {
-                        FilterExpression filterExpression = (FilterExpression) newPath.getStepExpression();
-                        result = new FilterExpression(new AxisExpression(Axis.SELF, null), filterExpression.getFilter());
+                if (result instanceof SlashExpression) {
+                    SlashExpression newPath = (SlashExpression) result;
+                    if (newPath.getStep() instanceof FilterExpression) {
+                        FilterExpression filterExpression = (FilterExpression) newPath.getStep();
+                        result = new FilterExpression(new AxisExpression(AxisInfo.SELF, null), filterExpression.getFilter());
                         rootElementReplaced = true;
-                    } else if (newPath.getStepExpression() instanceof AxisExpression) {
-                        if (newPath.getStartExpression() instanceof RootExpression) {
-                            result = new AxisExpression(Axis.SELF, null);
+                    } else if (newPath.getStep() instanceof AxisExpression) {
+                        if (newPath.getStart() instanceof RootExpression) {
+                            result = new AxisExpression(AxisInfo.SELF, null);
                         } else {
-                            result = new PathExpression(newPath.getStartExpression(), new AxisExpression(Axis.SELF, null));
+                            result = new SlashExpression(newPath.getStart(), new AxisExpression(AxisInfo.SELF, null));
                         }
                         rootElementReplaced = true;
                     }
                 } else {
-                    result = new AxisExpression(Axis.DESCENDANT_OR_SELF, null);
+                    result = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, null);
                     rootElementReplaced = true;
                 }
             }
@@ -96,26 +95,26 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     public Expression visit(AxisExpression e) {
         if (rootElement == null && e.getNodeTest() instanceof NameTest) {
             NameTest test = (NameTest) e.getNodeTest();
-            if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.DESCENDANT) {
+            if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == AxisInfo.DESCENDANT) {
                 rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
-            } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == Axis.CHILD) {
+            } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == AxisInfo.CHILD) {
                 rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
             }
         }
         return super.visit(e);
     }
-
-    @Override
-    public Expression visit(LazyExpression e) {
-        boolean prevCtx = insideLazyExpression;
-        insideLazyExpression = true;
-        Expression result = super.visit(e);
-        insideLazyExpression = prevCtx;
-        return result;
-    }
+//
+//    @Override
+//    public Expression visit(LazyExpression e) {
+//        boolean prevCtx = insideLazyExpression;
+//        insideLazyExpression = true;
+//        Expression result = super.visit(e);
+//        insideLazyExpression = prevCtx;
+//        return result;
+//    }
 
     public static Comparator<Node> documentOrderComparator() {
-        return net.sourceforge.pmd.lang.rule.xpath.internal.DocumentSorter.INSTANCE;
+        return DocumentSorterX.INSTANCE;
     }
 
     /**

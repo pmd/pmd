@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import static net.sourceforge.pmd.lang.rule.xpath.XPathVersion.XPATH_2_0;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +19,10 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
@@ -32,23 +34,21 @@ public class XPathRule extends AbstractRule {
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
-    public static final StringProperty XPATH_DESCRIPTOR = StringProperty.named("xpath")
-            .desc("XPath expression")
-            .defaultValue("")
-            .uiOrder(1.0f)
-            .build();
+    public static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
+        PropertyFactory.stringProperty("xpath")
+                       .desc("XPath expression")
+                       .defaultValue("")
+                       .build();
 
     /**
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
-    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = EnumeratedProperty.<String>named("version")
-            .desc("XPath specification version")
-            .mappings(getXPathVersions())
-            .defaultValue(XPathVersion.XPATH_2_0)
-            .type(XPathVersion.class)
-            .uiOrder(2.0f)
-            .build();
+    public static final PropertyDescriptor<XPathVersion> VERSION_DESCRIPTOR =
+        PropertyFactory.enumProperty("version", getXPathVersions())
+                       .desc("XPath specification version")
+                       .defaultValue(XPATH_2_0)
+                       .build();
     /**
      * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} or {@link #getRuleChainVisits()}.
      */
@@ -109,7 +109,7 @@ public class XPathRule extends AbstractRule {
      * set or invalid.
      */
     public XPathVersion getVersion() {
-        return XPathVersion.ofId(getProperty(VERSION_DESCRIPTOR));
+        return getProperty(VERSION_DESCRIPTOR);
     }
 
     /**
@@ -134,7 +134,7 @@ public class XPathRule extends AbstractRule {
      */
     @Deprecated
     public void setVersion(final String version) {
-        setProperty(XPathRule.VERSION_DESCRIPTOR, XPathVersion.fromString(version));
+        setProperty(XPathRule.VERSION_DESCRIPTOR, XPathVersion.ofId(version));
     }
 
 

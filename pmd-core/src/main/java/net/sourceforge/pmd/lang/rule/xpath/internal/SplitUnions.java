@@ -5,11 +5,13 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.saxon.expr.Expression;
-import net.sf.saxon.expr.Token;
+import net.sf.saxon.expr.parser.Token;
 import net.sf.saxon.expr.VennExpression;
 
 /**
@@ -23,7 +25,7 @@ class SplitUnions extends SaxonExprVisitor {
     @Override
     public Expression visit(VennExpression e) {
         if (e.getOperator() == Token.UNION) {
-            for (Expression operand : e.getOperands()) {
+            for (Expression operand : listOf(e.getLhsExpression(), e.getRhsExpression())) {
                 if (operand instanceof VennExpression) {
                     visit(operand);
                 } else {
