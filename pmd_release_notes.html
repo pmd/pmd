@@ -1436,6 +1436,7 @@ local variables.</p>
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1164">#1164</a>: [java] ClassNamingConventions suggests to add Util for class containing only static constants</li>
       <li><a href="https://github.com/pmd/pmd/issues/1723">#1723</a>: [java] UseDiamondOperator false-positive inside lambda</li>
     </ul>
   </li>
@@ -1464,6 +1465,13 @@ local variables.</p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/xpath/AbstractXPathRuleQuery.html#"><code>AbstractXPathRuleQuery</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQuery.html#"><code>JaxenXPathRuleQuery</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/xpath/SaxonXPathRuleQuery.html#"><code>SaxonXPathRuleQuery</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/xpath/XPathRuleQuery.html#"><code>XPathRuleQuery</code></a></li>
+</ul>
 
 <h5 id="in-asts">In ASTs</h5>
 
@@ -1533,6 +1541,9 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/ast/AbstractTokenManager.html#setFileName(java.lang.String)"><code>AbstractTokenManager#setFileName</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/ast/AbstractTokenManager.html#getFileName(java.lang.String)"><code>AbstractTokenManager#getFileName</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/cpd/token/AntlrToken.html#getType()"><code>AntlrToken#getType</code></a> - use <code class="highlighter-rouge">getKind()</code> instead.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/ImmutableLanguage.html#"><code>ImmutableLanguage</code></a></li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/MockRule.html#"><code>MockRule</code></a></li>
+  <li>Multiple fields, constructors and methods in <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.23.0/net/sourceforge/pmd/lang/rule/XPathRule.html#"><code>XPathRule</code></a>. See javadoc for details.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1547,6 +1558,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://github.com/pmd/pmd/pull/2397">#2397</a>: [apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - <a href="https://github.com/kieranlblack">Kieran Black</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2401">#2401</a>: [doc] Update DoNotUseThreads rule documentation - <a href="https://github.com/s4ik4t">Saikat Sengupta</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2403">#2403</a>: [java] #2402 fix false-positives on Primitive Streams - <a href="https://github.com/BerndFarkaDyna">Bernd Farka</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2409">#2409</a>: [java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - <a href="https://github.com/binu-r">Binu R J</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2411">#2411</a>: [java] Fix UseAssertEqualsInsteadOfAssertTrue Example - <a href="https://github.com/Blightbuster">Moritz Scheve</a></li>
 </ul>
 
@@ -1566,7 +1578,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 11, 2020 <br />
+ Site last generated: Apr 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
