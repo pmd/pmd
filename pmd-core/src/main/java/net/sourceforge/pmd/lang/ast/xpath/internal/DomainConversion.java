@@ -51,6 +51,13 @@ public final class DomainConversion {
         }
     }
 
+    public static Sequence convert(Object obj) {
+        if (obj instanceof Collection) {
+            return getSequenceRepresentation((Collection<?>) obj);
+        }
+        return getAtomicRepresentation(obj);
+    }
+
     public static Sequence getSequenceRepresentation(Collection<?> list) {
         if (list == null || list.isEmpty()) {
             return EmptySequence.getInstance();
@@ -93,7 +100,7 @@ public final class DomainConversion {
             return new StringValue(value.toString());
         } else if (value instanceof Float) {
             return new FloatValue((Float) value);
-        } else if (value instanceof Pattern) {
+        } else if (value instanceof Pattern || value instanceof Enum) {
             return new StringValue(String.valueOf(value));
         } else {
             // We could maybe use UntypedAtomicValue

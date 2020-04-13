@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import net.sourceforge.pmd.lang.ast.xpath.internal.TypedAttributeGetter;
+
 import net.sf.saxon.expr.AndExpression;
+import net.sf.saxon.expr.AttributeGetter;
 import net.sf.saxon.expr.AxisExpression;
+import net.sf.saxon.expr.BinaryExpression;
 import net.sf.saxon.expr.BooleanExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
@@ -46,6 +50,13 @@ abstract class SaxonExprVisitor {
     public Expression visit(FilterExpression e) {
         Expression base = visit(e.getLhsExpression());
         Expression filter = visit(e.getFilter());
+        return new FilterExpression(base, filter);
+    }
+
+    public Expression visit(BinaryExpression e) {
+        Expression base = visit(e.getLhsExpression());
+        Expression filter = visit(e.getRhsExpression());
+
         return new FilterExpression(base, filter);
     }
 
@@ -93,6 +104,8 @@ abstract class SaxonExprVisitor {
             result = visit((LetExpression) expr);
         } else if (expr instanceof BooleanExpression) {
             result = visit((BooleanExpression) expr);
+        } else if (expr instanceof AttributeGetter) {
+            return new TypedAttributeGetter(((AttributeGetter) expr).getAttributeName());
         } else {
             result = expr;
         }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.internal;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
 import net.sf.saxon.Configuration;
@@ -28,6 +30,24 @@ public final class AstDocument extends GenericTreeInfo {
     public AstDocument(Node node, Configuration configuration) {
         super(configuration);
         setRootNode(new AstNodeWrapper(this, new IdGenerator(), null, node));
+    }
+
+    public AstNodeWrapper findWrapperFor(Node node) {
+        List<Integer> indices = node.ancestorsOrSelf().toList(Node::getIndexInParent);
+        AstNodeWrapper cur = getRootNode();
+        for (int i = 1; i < indices.size(); i++) { // note we skip the first, who is the root
+            Integer idx = indices.get(i);
+            if (idx >= cur.getChildren().size()) {
+                throw new IllegalArgumentException("Node is not part of this tree " + node);
+            }
+
+            cur = cur.getChildren().get(idx);
+        }
+        if (cur.getUnderlyingNode() != node) {
+            // may happen with the root
+            throw new IllegalArgumentException("Node is not part of this tree " + node);
+        }
+        return cur;
     }
 
 

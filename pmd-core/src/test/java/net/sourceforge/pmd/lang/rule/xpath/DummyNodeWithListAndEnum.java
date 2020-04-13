@@ -8,12 +8,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 
-public class DummyNodeWithListAndEnum extends DummyNode implements RootNode {
-    public DummyNodeWithListAndEnum(int id) {
-        super(id);
+public class DummyNodeWithListAndEnum extends DummyRoot {
+    public DummyNodeWithListAndEnum() {
+        super();
         beginLine = 1;
         beginColumn = 1;
         endLine = 1;

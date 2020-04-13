@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.om.Sequence;
 import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
@@ -144,6 +145,11 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
         return attributeWrapper == null ? null : attributeWrapper.getStringValue();
     }
 
+    public Sequence getTypedAttributeValue(String uri, String local) {
+        AstAttributeWrapper attributeWrapper = attributes.get(local);
+        return attributeWrapper == null ? null : attributeWrapper.getTypedValue();
+    }
+
 
     @Override
     protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
@@ -159,7 +165,7 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
     @Override
     public int getNodeKind() {
-        return parent == null ? Type.DOCUMENT : Type.ELEMENT;
+        return Type.ELEMENT;
     }
 
 

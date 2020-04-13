@@ -12,8 +12,8 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
 import net.sourceforge.pmd.lang.rule.xpath.DummyNodeWithListAndEnum;
@@ -33,8 +33,7 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void testListAttribute() {
-        DummyRoot dummy = new DummyRoot();
-        dummy.jjtAddChild(new DummyNodeWithListAndEnum(1), 0);
+        RootNode dummy = new DummyNodeWithListAndEnum();
 
         assertQuery(1, "//dummyNode[@List = \"A\"]", dummy);
         assertQuery(1, "//dummyNode[@List = \"B\"]", dummy);

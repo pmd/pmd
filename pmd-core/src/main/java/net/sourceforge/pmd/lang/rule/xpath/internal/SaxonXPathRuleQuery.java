@@ -122,7 +122,7 @@ public class SaxonXPathRuleQuery {
             // Map AST Node -> Saxon Node
             final AstNodeWrapper rootElementNode = documentNode.getRootNode();
             assert rootElementNode != null : "Cannot find " + node;
-            final XPathDynamicContext xpathDynamicContext = createDynamicContext(rootElementNode);
+            final XPathDynamicContext xpathDynamicContext = createDynamicContext(documentNode.findWrapperFor(node));
 
             final List<AstNodeWrapper> nodes = new ArrayList<>();
             List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
