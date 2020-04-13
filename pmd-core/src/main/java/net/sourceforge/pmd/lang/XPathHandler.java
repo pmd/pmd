@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang;
 import org.jaxen.Navigator;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import net.sf.saxon.sxpath.IndependentContext;
@@ -20,7 +19,6 @@ import net.sf.saxon.sxpath.IndependentContext;
 @Deprecated
 public interface XPathHandler {
 
-    XPathHandler DUMMY = new DefaultASTXPathHandler();
     /**
      * Initialize. This is intended to be called by {@link Initializer} to
      * perform Language specific initialization.
