@@ -178,7 +178,7 @@ public class XPathRule extends AbstractRule {
             throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
         }
 
-        if (version.equals(XPathVersion.XPATH_1_0)) {
+        if (version == XPathVersion.XPATH_1_0) {
             xpathRuleQuery = new JaxenXPathRuleQuery();
         } else {
             xpathRuleQuery = new SaxonXPathRuleQuery();
