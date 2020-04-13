@@ -4,20 +4,28 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.internal;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
+import net.sf.saxon.tree.iter.EmptyIterator;
+import net.sf.saxon.tree.iter.ListIterator;
+import net.sf.saxon.tree.iter.ListIterator.OfNodes;
+import net.sf.saxon.tree.iter.LookaheadIterator;
+import net.sf.saxon.tree.iter.ReverseListIterator;
+import net.sf.saxon.tree.iter.SingleNodeIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
@@ -46,10 +54,10 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
         this.wrappedNode = wrappedNode;
         this.id = idGenerator.getNextId();
 
-        this.children = new ArrayList<>(wrappedNode.jjtGetNumChildren());
+        this.children = new ArrayList<>(wrappedNode.getNumChildren());
 
-        for (int i = 0; i < wrappedNode.jjtGetNumChildren(); i++) {
-            children.add(new AstNodeWrapper(document, idGenerator, this, wrappedNode.jjtGetChild(i)));
+        for (int i = 0; i < wrappedNode.getNumChildren(); i++) {
+            children.add(new AstNodeWrapper(document, idGenerator, this, wrappedNode.getChild(i)));
         }
 
         Map<String, AstAttributeWrapper> atts = new HashMap<>();
@@ -87,109 +95,42 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
         return Integer.compare(id, ((AstNodeWrapper) other).id);
     }
 
-
-    private <T> AxisIterator mapIterator(Iterator<? extends T> it, Function<? super T, NodeInfo> map, NodeTest nodeTest) {
-        AxisIterator axisIterator = new AxisIterator() {
-            @Override
-            public NodeInfo next() {
-                return it.hasNext() ? map.apply(it.next()) : null;
-            }
-
-
-            @Override
-            public void close() {
-                // nothing to do
-            }
-
-
-            @Override
-            public int getProperties() {
-                return 0;
-            }
-        };
-
-        return nodeTest != null ? new AxisFilter(axisIterator, nodeTest) : axisIterator;
-    }
-
-
     @Override
     protected AxisIterator iterateAttributes(NodeTest nodeTest) {
-        return mapIterator(attributes.values().iterator(), Function.identity(), nodeTest);
+        if (nodeTest instanceof NameTest) {
+            String local = ((NameTest) nodeTest).getLocalPart();
+            return SingleNodeIterator.makeIterator(attributes.get(local));
+        }
+
+        return filter(nodeTest, new IteratorAdapter(attributes.values().iterator()));
     }
 
 
     @Override
     protected AxisIterator iterateChildren(NodeTest nodeTest) {
-        return mapIterator(children.iterator(), Function.identity(), nodeTest);
-    }
-
-
-    private AxisIterator empty() {
-        return new AxisIterator() {
-            @Override
-            public NodeInfo next() {
-                return null;
-            }
-
-
-            @Override
-            public void close() {
-                // nothing to do
-            }
-
-
-            @Override
-            public int getProperties() {
-                return 0;
-            }
-        };
+        return filter(nodeTest, new OfNodes(children));
     }
 
 
     @Override
     protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
-        int startIdx = wrappedNode.getIndexInParent() + (forwards ? +1 : -1);
-
         if (parent == null) {
-            return empty();
+            return EmptyIterator.OfNodes.THE_INSTANCE;
         }
 
-        AxisIterator siblings = new AxisIterator() {
+        List<? extends NodeInfo> siblingsList =
+            forwards ? CollectionUtil.drop(parent.children, wrappedNode.getIndexInParent())
+                     : CollectionUtil.take(parent.children, wrappedNode.getIndexInParent());
 
-            int curIdx = startIdx;
+        AxisIterator iter =
+            forwards ? new ListIterator.OfNodes(siblingsList)
+                     : new RevListAxisIterator(siblingsList);
 
-
-            @Override
-            public NodeInfo next() {
-                if (!forwards && startIdx < 0
-                        || forwards && startIdx > parent.wrappedNode.jjtGetNumChildren()) {
-                    return null;
-                }
-
-                AstNodeWrapper next = parent.children.get(curIdx);
-                curIdx += forwards ? +1 : -1;
-                return next;
-            }
-
-
-            @Override
-            public void close() {
-                // nothing to do
-            }
-
-
-            @Override
-            public int getProperties() {
-                return 0;
-            }
-        };
-
-        return nodeTest != null ? new AxisFilter(siblings, nodeTest) : siblings;
+        return filter(nodeTest, iter);
     }
 
-
-    private Stream<AstNodeWrapper> streamDescendants() {
-        return Stream.concat(Stream.of(this), children.stream().flatMap(AstNodeWrapper::streamDescendants));
+    private static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
+        return nodeTest != null ? new AxisFilter(iter, nodeTest) : iter;
     }
 
 
@@ -203,14 +144,7 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
     @Override
     protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
-        AxisIterator descendants = mapIterator(streamDescendants().iterator(), Function.identity(), null);
-
-        if (!includeSelf) {
-            // skip one
-            descendants.next();
-        }
-
-        return nodeTest != null ? new AxisFilter(descendants, nodeTest) : descendants;
+        return filter(nodeTest, new DescendantIter(includeSelf));
     }
 
 
@@ -276,5 +210,86 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
     @Override
     public String toString() {
         return "Wrapper[" + getLocalPart() + "]@" + hashCode();
+    }
+
+    private class DescendantIter implements AxisIterator, LookaheadIterator {
+
+        private final Deque<AstNodeWrapper> todo;
+
+        public DescendantIter(boolean includeSelf) {
+            todo = new ArrayDeque<>();
+            if (includeSelf) {
+                todo.addLast(AstNodeWrapper.this);
+            } else {
+                todo.addAll(children);
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !todo.isEmpty();
+        }
+
+        @Override
+        public NodeInfo next() {
+            if (todo.isEmpty()) {
+                return null;
+            }
+            AstNodeWrapper first = todo.getFirst();
+            todo.addAll(first.children);
+            return first;
+        }
+
+        @Override
+        public void close() {
+            todo.clear();
+        }
+
+        @Override
+        public int getProperties() {
+            return LOOKAHEAD;
+        }
+    }
+
+    private static class RevListAxisIterator extends ReverseListIterator implements AxisIterator {
+
+        public RevListAxisIterator(List<? extends NodeInfo> list) {
+            super(list);
+        }
+
+        @Override
+        public NodeInfo next() {
+            return (NodeInfo) super.next();
+        }
+    }
+
+    private static class IteratorAdapter implements AxisIterator, LookaheadIterator {
+
+        private final Iterator<? extends NodeInfo> it;
+
+        public IteratorAdapter(Iterator<? extends NodeInfo> it) {
+            this.it = it;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public NodeInfo next() {
+            return it.hasNext() ? it.next() : null;
+        }
+
+        @Override
+        public void close() {
+            // nothing to do
+        }
+
+
+        @Override
+        public int getProperties() {
+            return LOOKAHEAD;
+        }
     }
 }

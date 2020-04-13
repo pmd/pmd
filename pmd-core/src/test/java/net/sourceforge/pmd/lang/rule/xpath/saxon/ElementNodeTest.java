@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AstDocument;
+import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 
@@ -30,8 +31,8 @@ public class ElementNodeTest {
         final XPathEvaluator xpathEvaluator = new XPathEvaluator();
         AstDocument document = new AstDocument(node, xpathEvaluator.getConfiguration());
 
-        ElementNode elementFoo1 = document.nodeToElementNode.get(foo1);
-        ElementNode elementFoo2 = document.nodeToElementNode.get(foo2);
+        AstNodeWrapper elementFoo1 = document.nodeToElementNode.get(foo1);
+        AstNodeWrapper elementFoo2 = document.nodeToElementNode.get(foo2);
 
         Assert.assertFalse(elementFoo1.isSameNodeInfo(elementFoo2));
         Assert.assertFalse(elementFoo2.isSameNodeInfo(elementFoo1));

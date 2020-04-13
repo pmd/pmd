@@ -17,13 +17,9 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Dummy language used for testing PMD.
@@ -69,26 +65,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         public Handler() {
             super(DummyAstStages.class);
-        }
-
-        public static class TestFunctions {
-            public static boolean typeIs(final XPathContext context, final String fullTypeName) {
-                return false;
-            }
-        }
-
-        @Override
-        public XPathHandler getXPathHandler() {
-            return new DefaultASTXPathHandler() {
-                @Override
-                public void initialize(IndependentContext context) {
-                    super.initialize(context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME), TestFunctions.class);
-                }
-
-                @Override
-                public void initialize() {
-                }
-            };
         }
 
         @Override
