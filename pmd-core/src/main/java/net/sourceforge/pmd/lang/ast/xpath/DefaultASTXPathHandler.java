@@ -12,6 +12,7 @@ import net.sf.saxon.sxpath.IndependentContext;
 @Deprecated
 @InternalApi
 public class DefaultASTXPathHandler extends AbstractASTXPathHandler {
+
     @Override
     public void initialize() {
         // override if needed

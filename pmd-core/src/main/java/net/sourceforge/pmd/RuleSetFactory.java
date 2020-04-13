@@ -305,7 +305,7 @@ public class RuleSetFactory {
     public RuleSet createSingleRuleRuleSet(final Rule rule) { // TODO make static?
         final long checksum;
         if (rule instanceof XPathRule) {
-            checksum = rule.getProperty(XPathRule.XPATH_DESCRIPTOR).hashCode();
+            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
         } else {
             // TODO : Is this good enough? all properties' values + rule name
             checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();

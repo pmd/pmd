@@ -56,6 +56,7 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
 *   java-codestyle
+    *   [#1164](https://github.com/pmd/pmd/issues/1164): \[java] ClassNamingConventions suggests to add Util for class containing only static constants
     *   [#1723](https://github.com/pmd/pmd/issues/1723): \[java] UseDiamondOperator false-positive inside lambda
 *   java-design
     *   [#2390](https://github.com/pmd/pmd/issues/2390): \[java] AbstractClassWithoutAnyMethod: missing violation for nested classes
@@ -72,6 +73,11 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc core::lang.rule.xpath.AbstractXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.JaxenXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.SaxonXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.XPathRuleQuery %}
 
 ##### In ASTs
 
@@ -129,6 +135,9 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
 *   {% jdoc !!core::cpd.token.AntlrToken#getType() %} - use `getKind()` instead.
+*   {% jdoc core::lang.rule.ImmutableLanguage %}
+*   {% jdoc core::lang.rule.MockRule %}
+*   Multiple fields, constructors and methods in {% jdoc core::lang.rule.XPathRule %}. See javadoc for details.
 
 ### External Contributions
 
@@ -141,6 +150,8 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2397](https://github.com/pmd/pmd/pull/2397): \[apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - [Kieran Black](https://github.com/kieranlblack)
 *   [#2401](https://github.com/pmd/pmd/pull/2401): \[doc] Update DoNotUseThreads rule documentation - [Saikat Sengupta](https://github.com/s4ik4t)
 *   [#2403](https://github.com/pmd/pmd/pull/2403): \[java] #2402 fix false-positives on Primitive Streams - [Bernd Farka](https://github.com/BerndFarkaDyna)
+*   [#2409](https://github.com/pmd/pmd/pull/2409): \[java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - [Binu R J](https://github.com/binu-r)
+*   [#2411](https://github.com/pmd/pmd/pull/2411): \[java] Fix UseAssertEqualsInsteadOfAssertTrue Example - [Moritz Scheve](https://github.com/Blightbuster)
 
 {% endtocmaker %}
 

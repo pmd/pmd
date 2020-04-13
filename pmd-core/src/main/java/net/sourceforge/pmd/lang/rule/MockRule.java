@@ -20,7 +20,12 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * functional Rule is not needed. For example, during unit testing, or as an
  * editable surrogate used by IDE plugins. The Language of this Rule defaults to
  * Java.
+ *
+ * @deprecated This is not a supported API. You need the pmd-test module
+ *     on your classpath, or pmd-core's test sources. This will be removed
+ *     in 7.0.0
  */
+@Deprecated
 public class MockRule extends AbstractRule {
 
     public MockRule() {
