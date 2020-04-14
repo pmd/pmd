@@ -72,7 +72,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <classesDirectory>${project.build.directory}/dokka</classesDirectory>
+                            <classesDirectory>${project.build.directory}/dokka/pmd-lang-test</classesDirectory>
                             <classifier>javadoc</classifier>
                         </configuration>
                     </execution>
