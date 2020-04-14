@@ -96,7 +96,7 @@
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
+        <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -278,17 +278,6 @@
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
-                        <additionalJOptions>
-                            <additionalJOption>-html5</additionalJOption>
-                        </additionalJOptions>
-                        <additionalDependencies>
-                            <!-- TODO: this is only needed to make javadoc happy -->
-                            <additionalDependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant</artifactId>
-                                <version>${ant.version}</version>
-                            </additionalDependency>
-                        </additionalDependencies>
                         <detectOfflineLinks>false</detectOfflineLinks>
                     </configuration>
                 </plugin>
