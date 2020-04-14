@@ -1017,17 +1017,17 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * explicit type arguments:
      *
      * <pre>{@code
-     *    NodeStream<ASTAnyTypeDeclaration> ts =
+     *    ASTAnyTypeDeclaration ts =
      *       node.ancestors()
-     *       .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
-     *       .first(); // would not compile without the explicit type arguments
+     *           .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
+     *           .first(); // would not compile without the explicit type arguments
      * }</pre>
      *
      * <p>For this use case the {@link #firstNonNull(Function)} method
      * may be used, which reduces the above to
      *
      * <pre>{@code
-     *    NodeStream<ASTAnyTypeDeclaration> ts =
+     *    ASTAnyTypeDeclaration ts =
      *       node.ancestors().firstNonNull(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class));
      * }</pre>
      *
