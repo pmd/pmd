@@ -278,6 +278,7 @@
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
+                        <excludePackageNames>*.internal</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <offlineLinks>
                             <offlineLink>
