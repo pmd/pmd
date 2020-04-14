@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.ast.xpath.internal;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
+import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.om.Sequence;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
@@ -25,14 +25,13 @@ public class AstAttributeWrapper extends AbstractNodeWrapper {
 
     private final AstNodeWrapper parent;
     private final Attribute attribute;
-    private final Sequence value;
+    private  AtomicSequence value;
     private final SchemaType schemaType;
 
 
     AstAttributeWrapper(AstNodeWrapper parent, Attribute attribute) {
         this.parent = parent;
         this.attribute = attribute;
-        this.value = DomainConversion.convert(attribute.getValue());
         this.schemaType = DomainConversion.buildType(attribute.getType());
     }
 
@@ -60,6 +59,14 @@ public class AstAttributeWrapper extends AbstractNodeWrapper {
         return null;
     }
 
+
+    @Override
+    public AtomicSequence atomize() {
+        if (value == null) {
+            value = DomainConversion.convert(attribute.getValue());
+        }
+        return value;
+    }
 
     @Override
     public SchemaType getSchemaType() {
@@ -115,10 +122,6 @@ public class AstAttributeWrapper extends AbstractNodeWrapper {
         buffer.append(Integer.toString(hashCode()));
     }
 
-
-    public Sequence getTypedValue() {
-        return value;
-    }
 
     @Override
     public CharSequence getStringValueCS() {

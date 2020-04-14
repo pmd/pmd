@@ -4,21 +4,24 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
-import net.sf.saxon.om.Item;
-import net.sf.saxon.om.Sequence;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sf.saxon.om.AtomicArray;
+import net.sf.saxon.om.AtomicSequence;
+import net.sf.saxon.om.EmptyAtomicSequence;
 import net.sf.saxon.type.BuiltInAtomicType;
 import net.sf.saxon.type.SchemaType;
 import net.sf.saxon.value.AtomicValue;
 import net.sf.saxon.value.BigIntegerValue;
 import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.DoubleValue;
-import net.sf.saxon.value.EmptySequence;
 import net.sf.saxon.value.FloatValue;
 import net.sf.saxon.value.Int64Value;
-import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
 
@@ -51,21 +54,33 @@ public final class DomainConversion {
         }
     }
 
-    public static Sequence convert(Object obj) {
+    @NonNull
+    public static AtomicSequence convert(Object obj) {
         if (obj instanceof Collection) {
             return getSequenceRepresentation((Collection<?>) obj);
         }
         return getAtomicRepresentation(obj);
     }
 
-    public static Sequence getSequenceRepresentation(Collection<?> list) {
+    public static AtomicSequence getSequenceRepresentation(Collection<?> list) {
         if (list == null || list.isEmpty()) {
-            return EmptySequence.getInstance();
+            return EmptyAtomicSequence.getInstance();
         }
-        Item[] items = list.stream()
-                           .map(DomainConversion::getAtomicRepresentation)
-                           .toArray(Item[]::new);
-        return new SequenceExtent(items);
+        List<AtomicValue> vs = new ArrayList<>(list.size());
+        flattenInto(list, vs);
+        return new AtomicArray(vs);
+    }
+
+    // sequences cannot be nested, this takes care of list of lists,
+    // just in case
+    private static void flattenInto(Collection<?> list, List<AtomicValue> values) {
+        for (Object o : list) {
+            if (o instanceof Collection) {
+                flattenInto((Collection<?>) o, values);
+            } else {
+                values.add(getAtomicRepresentation(o));
+            }
+        }
     }
 
 
@@ -77,6 +92,7 @@ public final class DomainConversion {
      *
      * @return The converted AtomicValue
      */
+    @NonNull
     public static AtomicValue getAtomicRepresentation(final Object value) {
 
         /*

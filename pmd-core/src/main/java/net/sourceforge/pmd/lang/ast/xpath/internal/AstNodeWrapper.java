@@ -147,7 +147,7 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
     public Sequence getTypedAttributeValue(String uri, String local) {
         AstAttributeWrapper attributeWrapper = attributes.get(local);
-        return attributeWrapper == null ? null : attributeWrapper.getTypedValue();
+        return attributeWrapper == null ? null : attributeWrapper.atomize();
     }
 
 
