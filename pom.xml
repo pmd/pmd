@@ -279,6 +279,17 @@
                         <quiet>true</quiet>
                         <doclint>none</doclint>
                         <detectOfflineLinks>false</detectOfflineLinks>
+                        <offlineLinks>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-test/target/apidocs</location>
+                                <url>../../pmd-test/${project.version}</url>
+                            </offlineLink>
+                            <!-- core needs to be last, because the package "net.sourceforge.pmd.lang" is both in pmd-core and pmd-test -->
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                                <url>../../pmd-core/${project.version}</url>
+                            </offlineLink>
+                        </offlineLinks>
                     </configuration>
                 </plugin>
                 <plugin>
