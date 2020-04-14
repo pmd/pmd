@@ -52,6 +52,8 @@ function pmd_code_uploadJavadoc() {
         pmd_code_uploadJavadocModule "$pmdVersion" "$i"
     done
 
+    pmd_code_fixPmdLangTestStyle "${basePath}"
+
     # make sure https://docs.pmd-code.org/apidocs/ shows directory index
     ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd ${PMD_CODE_DOCS_PATH}/apidocs && \
         echo 'Options +Indexes' > .htaccess"
@@ -72,6 +74,14 @@ function pmd_code_uploadJavadocModule() {
             unzip -qo -d apidocs/${module}/${pmdVersion} ${moduleJavadocJarBasename} && \
             rm ${moduleJavadocJarBasename}"
     log_info "JavaDoc for $module uploaded: https://docs.pmd-code.org/apidocs/${module}/${pmdVersion}/"
+}
+
+function pmd_code_fixPmdLangTestStyle {
+    local basePath="$1"
+
+    log_debug "$FUNCNAME basePath=$basePath"
+    scp "${basePath}/pmd-lang-test/target/dokka/style.css" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}/apidocs/pmd-lang-test/
+    log_info "Fixed style for https://docs.pmd-code.org/apidocs/pmd-lang-test/*/"
 }
 
 function pmd_code_removeJavadoc() {
