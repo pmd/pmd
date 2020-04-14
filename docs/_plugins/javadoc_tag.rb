@@ -151,13 +151,13 @@ class JavadocTag < Liquid::Tag
     api_version = var_ctx["site.pmd." + (@use_previous_api_version ? "previous_version" : "version")]
 
 
-    markup_link(visible_name, doclink(artifact_name, api_version, @type_fqcn, @member_suffix))
+    markup_link(visible_name, doclink(var_ctx["site.javadoc_url_prefix"], artifact_name, api_version, @type_fqcn, @member_suffix))
   end
 
   private
 
-  def doclink(artifact, api_version, type_name, member_suffix)
-    "https://javadoc.io/page/net.sourceforge.pmd/#{artifact}/#{api_version}/#{type_name.gsub("\.", "/")}.html##{member_suffix}"
+  def doclink(url_prefix, artifact, api_version, type_name, member_suffix)
+    "#{url_prefix}/#{artifact}/#{api_version}/#{type_name.gsub("\.", "/")}.html##{member_suffix}"
   end
 
   def markup_link(rname, link)
