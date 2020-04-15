@@ -41,7 +41,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     @Override
     public final Iterator<T> iterator() {
-        return Filtermap.apply(baseIterator(), filter);
+        return Filtermap.applyIterator(baseIterator(), filter);
     }
 
     protected abstract Iterator<Node> baseIterator();

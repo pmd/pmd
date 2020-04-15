@@ -44,10 +44,10 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
     /** Filter an iterator. */
     default Iterator<O> filterMap(Iterator<? extends I> iter) {
-        return apply(iter, this);
+        return applyIterator(iter, this);
     }
 
-    static <I, O> Iterator<O> apply(Iterator<? extends I> iter, Filtermap<? super I, ? extends O> filtermap) {
+    static <I, O> Iterator<O> applyIterator(Iterator<? extends I> iter, Filtermap<? super I, ? extends O> filtermap) {
         return IteratorUtil.mapNotNull(iter, filtermap);
     }
 
