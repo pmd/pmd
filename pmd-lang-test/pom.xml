@@ -132,7 +132,7 @@
         <dependency>
             <groupId>com.github.oowekyala.treeutils</groupId>
             <artifactId>tree-matchers</artifactId>
-            <version>2.0.1</version>
+            <version>2.1.0</version>
             <scope>compile</scope>
         </dependency>
 

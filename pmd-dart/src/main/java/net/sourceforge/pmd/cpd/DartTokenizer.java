@@ -52,7 +52,7 @@ public class DartTokenizer extends AntlrTokenizer {
         }
 
         private void skipLibraryAndImport(final AntlrToken currentToken) {
-            final int type = currentToken.getType();
+            final int type = currentToken.getKind();
             if (type == Dart2Lexer.LIBRARY || type == Dart2Lexer.IMPORT) {
                 discardingLibraryAndImport = true;
             } else if (discardingLibraryAndImport && (type == Dart2Lexer.SEMICOLON || type == Dart2Lexer.NEWLINE)) {
@@ -61,11 +61,11 @@ public class DartTokenizer extends AntlrTokenizer {
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == Dart2Lexer.NEWLINE;
+            discardingNL = currentToken.getKind() == Dart2Lexer.NEWLINE;
         }
 
         private void skipSemicolons(final AntlrToken currentToken) {
-            discardingSemicolon = currentToken.getType() == Dart2Lexer.SEMICOLON;
+            discardingSemicolon = currentToken.getKind() == Dart2Lexer.SEMICOLON;
         }
 
         @Override

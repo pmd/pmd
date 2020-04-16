@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.xpath.MetricFunction;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * @author Clément Fournier
@@ -42,8 +43,7 @@ public class XPathMetricFunctionTest {
 
 
     private Rule makeXpathRuleFromXPath(String xpath) {
-        XPathRule rule = new XPathRule();
-        rule.setXPath(xpath);
+        XPathRule rule = new XPathRule(XPathVersion.XPATH_1_0, xpath);
         rule.setMessage(VIOLATION_MESSAGE);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         return rule;

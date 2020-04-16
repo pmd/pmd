@@ -284,7 +284,7 @@ public interface Node {
      * @return List of all children of type targetType. Returns an empty list if
      *         none found.
      */
-    <T> List<T> findDescendantsOfType(Class<T> targetType);
+    <T> List<T> findDescendantsOfType(Class<? extends T> targetType);
 
     /**
      * Traverses down the tree to find all the descendant instances of type

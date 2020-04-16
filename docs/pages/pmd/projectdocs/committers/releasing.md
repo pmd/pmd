@@ -1,5 +1,5 @@
 ---
-title: Releasing
+title: Release process
 permalink: pmd_projectdocs_committers_releasing.html
 author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <adangel@users.sourceforge.net>
 ---

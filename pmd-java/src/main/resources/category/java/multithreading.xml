@@ -151,10 +151,28 @@ public class UsingThread extends Thread {
 }
 
 // Neither this,
-public class OtherThread implements Runnable {
-    // Nor this ...
-    public void methode() {
-        Runnable thread = new Thread(); thread.run();
+public class UsingExecutorService {
+
+    public void methodX() {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+    }
+}
+
+// Nor this,
+public class Example implements ExecutorService {
+
+}
+
+// Nor this,
+public class Example extends AbstractExecutorService {
+
+}
+
+// Nor this
+public class UsingExecutors {
+
+    public void methodX() {
+        Executors.newSingleThreadExecutor().submit(() -> System.out.println("Hello!"));
     }
 }
 ]]>
