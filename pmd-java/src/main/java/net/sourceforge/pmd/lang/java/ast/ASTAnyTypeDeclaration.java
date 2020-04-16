@@ -133,7 +133,7 @@ public interface ASTAnyTypeDeclaration
      * Returns the record components declared by this class. If this is not
      * a record declaration, returns null.
      */
-    default @Nullable ASTRecordComponentList getRecordComponentList() {
+    default @Nullable ASTRecordComponentList getRecordComponents() {
         return null;
     }
 

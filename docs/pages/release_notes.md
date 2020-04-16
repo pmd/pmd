@@ -137,6 +137,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc !!core::cpd.token.AntlrToken#getType() %} - use `getKind()` instead.
 *   {% jdoc core::lang.rule.ImmutableLanguage %}
 *   {% jdoc core::lang.rule.MockRule %}
+*   {% jdoc !!java::lang.java.ast.ASTRecordDeclaration#getComponentList() %}
 *   Multiple fields, constructors and methods in {% jdoc core::lang.rule.XPathRule %}. See javadoc for details.
 
 ### External Contributions
