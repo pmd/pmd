@@ -53,6 +53,16 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
         return getImage();
     }
 
+
+    /**
+     * Returns the record component list, or null if this is not a record
+     * declaration.
+     */
+    // @Nullable // TODO pull up to ASTAnyTypeDecl on 7.0.x
+    public ASTRecordComponentList getRecordComponents() {
+        return getFirstChildOfType(ASTRecordComponentList.class);
+    }
+
     /**
      * Returns true if the enclosing type of this type declaration
      * is any of the given kinds. If this declaration is a top-level
