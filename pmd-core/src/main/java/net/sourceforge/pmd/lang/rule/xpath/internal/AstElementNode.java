@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -28,22 +30,24 @@ import net.sf.saxon.tree.iter.LookaheadIterator;
 import net.sf.saxon.tree.iter.ReverseListIterator;
 import net.sf.saxon.tree.iter.SingleNodeIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
+import net.sf.saxon.tree.util.Navigator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
+import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.Type;
 
 
 /**
  * A wrapper for Saxon around a Node.
  */
-public final class AstElementNode extends AbstractNodeWrapper {
+public final class AstElementNode extends AbstractNodeWrapper implements SiblingCountingNode {
 
     private final AstElementNode parent;
     private final Node wrappedNode;
     private final int id;
 
     private final List<AstElementNode> children;
-    private final Map<String, AstAttributeNode> attributes;
+    private @Nullable Map<String, AstAttributeNode> attributes;
 
 
     public AstElementNode(AstDocumentNode document,
@@ -60,18 +64,27 @@ public final class AstElementNode extends AbstractNodeWrapper {
         for (int i = 0; i < wrappedNode.getNumChildren(); i++) {
             children.add(new AstElementNode(document, idGenerator, this, wrappedNode.getChild(i)));
         }
+    }
 
+    public Map<String, AstAttributeNode> makeAttributes(Node wrappedNode) {
         Map<String, AstAttributeNode> atts = new HashMap<>();
         Iterator<Attribute> it = wrappedNode.getXPathAttributesIterator();
 
+        int attrIdx = 0;
         while (it.hasNext()) {
             Attribute next = it.next();
-            atts.put(next.getName(), new AstAttributeNode(this, next));
+            atts.put(next.getName(), new AstAttributeNode(this, next, attrIdx++));
         }
 
-        this.attributes = atts;
+        return atts;
     }
 
+    public Map<String, AstAttributeNode> getAttributes() {
+        if (attributes == null) {
+            attributes = makeAttributes(getUnderlyingNode());
+        }
+        return attributes;
+    }
 
     @Override
     public AstDocumentNode getTreeInfo() {
@@ -87,26 +100,35 @@ public final class AstElementNode extends AbstractNodeWrapper {
         return wrappedNode;
     }
 
-
     @Override
     public int getColumnNumber() {
         return wrappedNode.getBeginColumn();
     }
 
+    @Override
+    public int getSiblingPosition() {
+        AstElementNode parent = getParent();
+        return parent == null ? 0 : id - parent.id;
+    }
 
     @Override
     public int compareOrder(NodeInfo other) {
-        return Integer.compare(id, ((AstElementNode) other).id);
+        if (other instanceof AstElementNode) {
+            return Integer.compare(this.id, ((AstElementNode) other).id);
+        } else if (other instanceof SiblingCountingNode) {
+            return Navigator.compareOrder(this, (SiblingCountingNode) other);
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected AxisIterator iterateAttributes(NodeTest nodeTest) {
         if (nodeTest instanceof NameTest) {
             String local = ((NameTest) nodeTest).getLocalPart();
-            return SingleNodeIterator.makeIterator(attributes.get(local));
+            return SingleNodeIterator.makeIterator(getAttributes().get(local));
         }
 
-        return filter(nodeTest, new IteratorAdapter(attributes.values().iterator()));
+        return filter(nodeTest, new IteratorAdapter(getAttributes().values().iterator()));
     }
 
 
@@ -180,12 +202,6 @@ public final class AstElementNode extends AbstractNodeWrapper {
         buffer.append(Integer.toString(hashCode()));
     }
 
-
-    public int getId() {
-        return id;
-    }
-
-
     @Override
     public String getLocalPart() {
         return wrappedNode.getXPathNodeName();
@@ -205,10 +221,9 @@ public final class AstElementNode extends AbstractNodeWrapper {
 
 
     @Override
-    public NodeInfo getParent() {
+    public AstElementNode getParent() {
         return parent;
     }
-
 
     @Override
     public CharSequence getStringValueCS() {

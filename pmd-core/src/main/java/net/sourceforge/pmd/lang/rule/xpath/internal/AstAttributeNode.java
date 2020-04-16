@@ -11,7 +11,9 @@ import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
+import net.sf.saxon.tree.util.Navigator;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
+import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.SchemaType;
 import net.sf.saxon.type.Type;
 
@@ -20,21 +22,27 @@ import net.sf.saxon.type.Type;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class AstAttributeNode extends AbstractNodeWrapper {
+public class AstAttributeNode extends AbstractNodeWrapper implements SiblingCountingNode {
 
 
     private final AstElementNode parent;
     private final Attribute attribute;
-    private  AtomicSequence value;
+    private AtomicSequence value;
     private final SchemaType schemaType;
+    private final int siblingPosition;
 
 
-    AstAttributeNode(AstElementNode parent, Attribute attribute) {
+    AstAttributeNode(AstElementNode parent, Attribute attribute, int siblingPosition) {
         this.parent = parent;
         this.attribute = attribute;
         this.schemaType = DomainConversion.buildType(attribute.getType());
+        this.siblingPosition = siblingPosition;
     }
 
+    @Override
+    public int getSiblingPosition() {
+        return siblingPosition;
+    }
 
     @Override
     protected AxisIterator iterateAttributes(NodeTest nodeTest) {
@@ -88,8 +96,10 @@ public class AstAttributeNode extends AbstractNodeWrapper {
 
     @Override
     public int compareOrder(NodeInfo other) {
-        // attributes have no order in the xdm
-        return 0;
+        if (other instanceof SiblingCountingNode) {
+            return Navigator.compareOrder(this, (SiblingCountingNode) other);
+        }
+        throw new UnsupportedOperationException();
     }
 
 
