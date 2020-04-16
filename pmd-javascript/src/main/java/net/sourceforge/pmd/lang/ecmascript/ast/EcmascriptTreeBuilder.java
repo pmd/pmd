@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.ast.ArrayComprehension;
 import org.mozilla.javascript.ast.ArrayComprehensionLoop;
 import org.mozilla.javascript.ast.ArrayLiteral;
@@ -71,6 +72,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 public final class EcmascriptTreeBuilder implements NodeVisitor {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static String trailingCommaLocalizedMessage = null;
 
     static {
         register(ArrayComprehension.class, ASTArrayComprehension.class);
@@ -221,12 +223,19 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
             int nodeStart = node.getNode().getAbsolutePosition();
             int nodeEnd = nodeStart + node.getNode().getLength() - 1;
             for (ParseProblem parseProblem : parseProblems) {
+
+                if (trailingCommaLocalizedMessage == null) {
+                    // This will fetch the localized message, at most once, and only if there are
+                    // some problems (so we avoid parsing the message bundle for nothing)
+                    // See https://github.com/pmd/pmd/issues/384
+                    trailingCommaLocalizedMessage = ScriptRuntime.getMessage0("msg.extra.trailing.comma");
+                }
+
                 // The node overlaps the comma (i.e. end of the problem)?
                 int problemStart = parseProblem.getFileOffset();
                 int commaPosition = problemStart + parseProblem.getLength() - 1;
                 if (nodeStart <= commaPosition && commaPosition <= nodeEnd) {
-                    if ("Trailing comma is not legal in an ECMA-262 object initializer"
-                            .equals(parseProblem.getMessage())) {
+                    if (trailingCommaLocalizedMessage.equals(parseProblem.getMessage())) {
                         // Report on the shortest code block containing the
                         // problem (i.e. inner most code in nested structures).
                         EcmascriptNode<?> currentNode = (EcmascriptNode<?>) parseProblemToNode.get(parseProblem);
