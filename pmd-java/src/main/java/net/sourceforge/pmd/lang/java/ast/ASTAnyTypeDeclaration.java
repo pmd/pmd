@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Locale;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
@@ -91,6 +93,16 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      */
     default boolean isLocal() {
         return getParent() instanceof ASTBlockStatement;
+    }
+
+
+    /**
+     * Returns the record component list, or null if this is not a record
+     * declaration.
+     */
+    @Nullable
+    default ASTRecordComponentList getRecordComponents() {
+        return getFirstChildOfType(ASTRecordComponentList.class);
     }
 
 

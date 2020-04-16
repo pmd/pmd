@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -57,7 +59,9 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return isNested();
     }
 
-    public ASTRecordComponentList getComponentList() {
+    @NonNull
+    @Override
+    public ASTRecordComponentList getRecordComponents() {
         return getFirstChildOfType(ASTRecordComponentList.class);
     }
 }

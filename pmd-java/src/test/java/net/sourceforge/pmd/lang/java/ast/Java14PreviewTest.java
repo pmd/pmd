@@ -148,7 +148,7 @@ public class Java14PreviewTest {
 
         ASTRecordDeclaration range = recordDecls.get(2);
         Assert.assertEquals("Range", range.getSimpleName());
-        Assert.assertEquals(2, range.getComponentList().size());
+        Assert.assertEquals(2, range.getRecordComponents().size());
         List<ASTRecordConstructorDeclaration> rangeConstructors = range.findDescendantsOfType(ASTRecordConstructorDeclaration.class);
         Assert.assertEquals(1, rangeConstructors.size());
         Assert.assertEquals("Range", rangeConstructors.get(0).getImage());
@@ -169,7 +169,7 @@ public class Java14PreviewTest {
 
         ASTRecordDeclaration emptyRec = recordDecls.get(5);
         Assert.assertEquals("EmptyRec", emptyRec.getSimpleName());
-        Assert.assertEquals(0, emptyRec.getComponentList().size());
+        Assert.assertEquals(0, emptyRec.getRecordComponents().size());
 
         ASTRecordDeclaration personRec = recordDecls.get(6);
         Assert.assertEquals("PersonRecord", personRec.getSimpleName());
@@ -178,7 +178,7 @@ public class Java14PreviewTest {
     }
 
     private ASTRecordComponent getComponent(ASTRecordDeclaration arrayRec, int index) {
-        return (ASTRecordComponent) arrayRec.getComponentList().getChild(index);
+        return (ASTRecordComponent) arrayRec.getRecordComponents().getChild(index);
     }
 
 
