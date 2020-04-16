@@ -72,7 +72,6 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 public final class EcmascriptTreeBuilder implements NodeVisitor {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
-    private static String trailingCommaLocalizedMessage = null;
 
     static {
         register(ArrayComprehension.class, ASTArrayComprehension.class);
@@ -222,14 +221,12 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
             TrailingCommaNode trailingCommaNode = (TrailingCommaNode) node;
             int nodeStart = node.getNode().getAbsolutePosition();
             int nodeEnd = nodeStart + node.getNode().getLength() - 1;
-            for (ParseProblem parseProblem : parseProblems) {
 
-                if (trailingCommaLocalizedMessage == null) {
-                    // This will fetch the localized message, at most once, and only if there are
-                    // some problems (so we avoid parsing the message bundle for nothing)
-                    // See https://github.com/pmd/pmd/issues/384
-                    trailingCommaLocalizedMessage = ScriptRuntime.getMessage0("msg.extra.trailing.comma");
-                }
+            // This will fetch the localized message
+            // See https://github.com/pmd/pmd/issues/384
+            String trailingCommaLocalizedMessage = ScriptRuntime.getMessage0("msg.extra.trailing.comma");
+
+            for (ParseProblem parseProblem : parseProblems) {
 
                 // The node overlaps the comma (i.e. end of the problem)?
                 int problemStart = parseProblem.getFileOffset();
