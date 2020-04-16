@@ -2719,27 +2719,12 @@ public class Foo {        // perfect, both methods provided
           language="java"
           since="1.4"
           message="Object clone() should be implemented with super.clone()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ProperCloneImplementationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#propercloneimplementation">
         <description>
 Object clone() should be implemented with super.clone().
         </description>
         <priority>2</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
-[@Name = 'clone']
-[@Arity = 0]
-[Block
-  [.//AllocationExpression[ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]]]
-]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo{
