@@ -2,7 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath.internal;
+
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,13 +26,13 @@ public class ElementNodeTest {
 
         Configuration configuration = new XPathEvaluator().getStaticContext().getConfiguration();
 
-        AstDocument document = new AstDocument(node, configuration);
+        AstDocumentNode document = new AstDocumentNode(node, configuration);
         Assert.assertSame(node, document.getRootNode().getUnderlyingNode());
 
-        AstNodeWrapper elementFoo1 = document.getRootNode().getChildren().get(0);
+        AstElementNode elementFoo1 = document.getRootNode().getChildren().get(0);
         Assert.assertSame(foo1, elementFoo1.getUnderlyingNode());
 
-        AstNodeWrapper elementFoo2 = document.getRootNode().getChildren().get(1);
+        AstElementNode elementFoo2 = document.getRootNode().getChildren().get(1);
         Assert.assertSame(foo2, elementFoo2.getUnderlyingNode());
 
         Assert.assertFalse(elementFoo1.isSameNodeInfo(elementFoo2));

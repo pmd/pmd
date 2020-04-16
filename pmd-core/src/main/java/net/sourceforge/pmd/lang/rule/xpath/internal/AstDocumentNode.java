@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath.internal;
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import net.sf.saxon.om.GenericTreeInfo;
 /**
  * A wrapper around the root node of an AST, implementing {@link net.sf.saxon.om.TreeInfo}.
  */
-public final class AstDocument extends GenericTreeInfo {
+public final class AstDocumentNode extends GenericTreeInfo {
 
     private DeprecatedAttrLogger logger;
 
@@ -25,16 +25,16 @@ public final class AstDocument extends GenericTreeInfo {
      * @param node          The root AST Node.
      * @param configuration Configuration of the run
      *
-     * @see AstNodeWrapper
+     * @see AstElementNode
      */
-    public AstDocument(Node node, Configuration configuration) {
+    public AstDocumentNode(Node node, Configuration configuration) {
         super(configuration);
-        setRootNode(new AstNodeWrapper(this, new IdGenerator(), null, node));
+        setRootNode(new AstElementNode(this, new IdGenerator(), null, node));
     }
 
-    public AstNodeWrapper findWrapperFor(Node node) {
+    public AstElementNode findWrapperFor(Node node) {
         List<Integer> indices = node.ancestorsOrSelf().toList(Node::getIndexInParent);
-        AstNodeWrapper cur = getRootNode();
+        AstElementNode cur = getRootNode();
         for (int i = 1; i < indices.size(); i++) { // note we skip the first, who is the root
             Integer idx = indices.get(i);
             if (idx >= cur.getChildren().size()) {
@@ -52,8 +52,8 @@ public final class AstDocument extends GenericTreeInfo {
 
 
     @Override
-    public AstNodeWrapper getRootNode() {
-        return (AstNodeWrapper) super.getRootNode();
+    public AstElementNode getRootNode() {
+        return (AstElementNode) super.getRootNode();
     }
 
     public void setAttrCtx(DeprecatedAttrLogger attrCtx) {

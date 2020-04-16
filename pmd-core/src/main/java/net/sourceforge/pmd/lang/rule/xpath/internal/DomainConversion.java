@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath.internal;
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath.internal;
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -36,19 +36,19 @@ import net.sf.saxon.type.Type;
 /**
  * A wrapper for Saxon around a Node.
  */
-public final class AstNodeWrapper extends AbstractNodeWrapper {
+public final class AstElementNode extends AbstractNodeWrapper {
 
-    private final AstNodeWrapper parent;
+    private final AstElementNode parent;
     private final Node wrappedNode;
     private final int id;
 
-    private final List<AstNodeWrapper> children;
-    private final Map<String, AstAttributeWrapper> attributes;
+    private final List<AstElementNode> children;
+    private final Map<String, AstAttributeNode> attributes;
 
 
-    public AstNodeWrapper(AstDocument document,
+    public AstElementNode(AstDocumentNode document,
                           IdGenerator idGenerator,
-                          AstNodeWrapper parent,
+                          AstElementNode parent,
                           Node wrappedNode) {
         this.treeInfo = document;
         this.parent = parent;
@@ -58,15 +58,15 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
         this.children = new ArrayList<>(wrappedNode.getNumChildren());
 
         for (int i = 0; i < wrappedNode.getNumChildren(); i++) {
-            children.add(new AstNodeWrapper(document, idGenerator, this, wrappedNode.getChild(i)));
+            children.add(new AstElementNode(document, idGenerator, this, wrappedNode.getChild(i)));
         }
 
-        Map<String, AstAttributeWrapper> atts = new HashMap<>();
+        Map<String, AstAttributeNode> atts = new HashMap<>();
         Iterator<Attribute> it = wrappedNode.getXPathAttributesIterator();
 
         while (it.hasNext()) {
             Attribute next = it.next();
-            atts.put(next.getName(), new AstAttributeWrapper(this, next));
+            atts.put(next.getName(), new AstAttributeNode(this, next));
         }
 
         this.attributes = atts;
@@ -74,11 +74,11 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
 
     @Override
-    public AstDocument getTreeInfo() {
-        return (AstDocument) super.getTreeInfo();
+    public AstDocumentNode getTreeInfo() {
+        return (AstDocumentNode) super.getTreeInfo();
     }
 
-    List<AstNodeWrapper> getChildren() {
+    List<AstElementNode> getChildren() {
         return children;
     }
 
@@ -96,7 +96,7 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
     @Override
     public int compareOrder(NodeInfo other) {
-        return Integer.compare(id, ((AstNodeWrapper) other).id);
+        return Integer.compare(id, ((AstElementNode) other).id);
     }
 
     @Override
@@ -140,13 +140,13 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
     @Override
     public String getAttributeValue(String uri, String local) {
-        AstAttributeWrapper attributeWrapper = attributes.get(local);
+        AstAttributeNode attributeWrapper = attributes.get(local);
 
         return attributeWrapper == null ? null : attributeWrapper.getStringValue();
     }
 
     public Sequence getTypedAttributeValue(String uri, String local) {
-        AstAttributeWrapper attributeWrapper = attributes.get(local);
+        AstAttributeNode attributeWrapper = attributes.get(local);
         return attributeWrapper == null ? null : attributeWrapper.atomize();
     }
 
@@ -223,12 +223,12 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
 
     private class DescendantIter implements AxisIterator, LookaheadIterator {
 
-        private final Deque<AstNodeWrapper> todo;
+        private final Deque<AstElementNode> todo;
 
         public DescendantIter(boolean includeSelf) {
             todo = new ArrayDeque<>();
             if (includeSelf) {
-                todo.addLast(AstNodeWrapper.this);
+                todo.addLast(AstElementNode.this);
             } else {
                 todo.addAll(children);
             }
@@ -244,7 +244,7 @@ public final class AstNodeWrapper extends AbstractNodeWrapper {
             if (todo.isEmpty()) {
                 return null;
             }
-            AstNodeWrapper first = todo.getFirst();
+            AstElementNode first = todo.getFirst();
             todo.addAll(first.children);
             return first;
         }

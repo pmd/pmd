@@ -14,7 +14,7 @@ import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
+import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
@@ -73,7 +73,7 @@ public class MetricFunction extends BaseJavaXPathFunction {
         return new ExtensionFunctionCall() {
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node contextNode = ((AstNodeWrapper) context.getContextItem()).getUnderlyingNode();
+                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String metricKey = arguments[0].head().getStringValue();
 
                 return new BigDecimalValue(getMetric(contextNode, metricKey));

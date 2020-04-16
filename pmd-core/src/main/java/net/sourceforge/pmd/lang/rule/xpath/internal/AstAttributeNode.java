@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.xpath.internal;
+package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
@@ -20,16 +20,16 @@ import net.sf.saxon.type.Type;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class AstAttributeWrapper extends AbstractNodeWrapper {
+public class AstAttributeNode extends AbstractNodeWrapper {
 
 
-    private final AstNodeWrapper parent;
+    private final AstElementNode parent;
     private final Attribute attribute;
     private  AtomicSequence value;
     private final SchemaType schemaType;
 
 
-    AstAttributeWrapper(AstNodeWrapper parent, Attribute attribute) {
+    AstAttributeNode(AstElementNode parent, Attribute attribute) {
         this.parent = parent;
         this.attribute = attribute;
         this.schemaType = DomainConversion.buildType(attribute.getType());

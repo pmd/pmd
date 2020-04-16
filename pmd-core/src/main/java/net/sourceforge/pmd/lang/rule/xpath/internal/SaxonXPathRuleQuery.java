@@ -17,9 +17,6 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AstDocument;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DomainConversion;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -59,7 +56,7 @@ public class SaxonXPathRuleQuery {
     private static final NamePool NAME_POOL = new NamePool();
 
     /** Cache key for the wrapped tree for saxon. */
-    private static final SimpleDataKey<AstDocument> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
+    private static final SimpleDataKey<AstDocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
     private final String xpathExpr;
     private final XPathVersion version;
@@ -80,7 +77,7 @@ public class SaxonXPathRuleQuery {
 
     /**
      * Holds the static context later used to match the variables in the dynamic context in
-     * {@link #createDynamicContext(AstNodeWrapper)}. Created at {@link #initializeXPathExpression()}
+     * {@link #createDynamicContext(AstElementNode)}. Created at {@link #initializeXPathExpression()}
      * using the properties descriptors in {@link #properties}.
      */
     private List<XPathVariable> xpathVariables;
@@ -116,7 +113,7 @@ public class SaxonXPathRuleQuery {
         initializeXPathExpression();
 
         try {
-            final AstDocument documentNode = getDocumentNodeForRootNode(node);
+            final AstDocumentNode documentNode = getDocumentNodeForRootNode(node);
             documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
@@ -124,13 +121,13 @@ public class SaxonXPathRuleQuery {
             assert rootElementNode != null : "Cannot find " + node;
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(documentNode.findWrapperFor(node));
 
-            final List<AstNodeWrapper> nodes = new ArrayList<>();
+            final List<AstElementNode> nodes = new ArrayList<>();
             List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
-                while (current instanceof AstNodeWrapper) {
-                    nodes.add((AstNodeWrapper) current);
+                while (current instanceof AstElementNode) {
+                    nodes.add((AstElementNode) current);
                     current = iterator.next();
                 }
             }
@@ -140,7 +137,7 @@ public class SaxonXPathRuleQuery {
              (i.e. violation found)
               */
             final List<Node> results = new ArrayList<>(nodes.size());
-            for (final AstNodeWrapper elementNode : nodes) {
+            for (final AstElementNode elementNode : nodes) {
                 results.add(elementNode.getUnderlyingNode());
             }
             results.sort(RuleChainAnalyzer.documentOrderComparator());
@@ -169,7 +166,7 @@ public class SaxonXPathRuleQuery {
      *                        variable, when setting up the dynamic context; or if the supplied value contains a node that does not belong to
      *                        this Configuration (or another Configuration that shares the same namePool)
      */
-    private XPathDynamicContext createDynamicContext(final AstNodeWrapper elementNode) throws XPathException {
+    private XPathDynamicContext createDynamicContext(final AstElementNode elementNode) throws XPathException {
         final XPathDynamicContext dynamicContext = xpathExpression.createDynamicContext(elementNode);
 
         // Set variable values on the dynamic context
@@ -204,7 +201,7 @@ public class SaxonXPathRuleQuery {
      *
      * @return the DocumentNode representing the whole AST
      */
-    private AstDocument getDocumentNodeForRootNode(final Node node) {
+    private AstDocumentNode getDocumentNodeForRootNode(final Node node) {
         final RootNode root = node.getRoot();
 
         DataMap<DataKey<?, ?>> userMap = root.getUserMap();

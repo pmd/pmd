@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
 import net.sourceforge.pmd.lang.rule.xpath.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -202,7 +201,7 @@ public class SaxonXPathRuleQueryTest {
                     return new ExtensionFunctionCall() {
                         @Override
                         public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                            Node contextNode = ((AstNodeWrapper) context.getContextItem()).getUnderlyingNode();
+                            Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                             return BooleanValue.get(arguments[0].head().getStringValue().equals(contextNode.getImage()));
                         }
                     };

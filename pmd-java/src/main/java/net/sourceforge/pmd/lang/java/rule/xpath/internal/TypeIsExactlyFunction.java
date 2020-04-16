@@ -9,7 +9,7 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
+import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
@@ -58,7 +58,7 @@ public class TypeIsExactlyFunction extends BaseJavaXPathFunction {
         return new ExtensionFunctionCall() {
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node contextNode = ((AstNodeWrapper) context.getContextItem()).getUnderlyingNode();
+                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
                 String fullTypeName = arguments[0].head().getStringValue();
 
                 if (contextNode instanceof TypeNode) {

@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.AstNodeWrapper;
+import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 
@@ -62,7 +62,7 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
         return new ExtensionFunctionCall() {
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) {
-                Node contextNode = ((AstNodeWrapper) context.getContextItem()).getUnderlyingNode();
+                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
 
                 int codeBeginLine = contextNode.getBeginLine();
                 int codeEndLine = contextNode.getEndLine();

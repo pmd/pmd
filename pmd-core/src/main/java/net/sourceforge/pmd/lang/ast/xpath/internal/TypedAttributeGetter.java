@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.internal;
 
+import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
+
 import net.sf.saxon.expr.AttributeGetter;
 import net.sf.saxon.expr.ContextItemExpression;
 import net.sf.saxon.expr.Expression;
@@ -73,9 +75,9 @@ public class TypedAttributeGetter extends Expression {
     @Override
     public SequenceIterator iterate(XPathContext context) throws XPathException {
         Item item = context.getContextItem();
-        if (item instanceof AstNodeWrapper) {
+        if (item instanceof AstElementNode) {
             // fast path
-            Sequence typed = ((AstNodeWrapper) item).getTypedAttributeValue(attributeName.getURI(), attributeName.getLocalPart());
+            Sequence typed = ((AstElementNode) item).getTypedAttributeValue(attributeName.getURI(), attributeName.getLocalPart());
             return typed == null ? EmptySequence.getInstance().iterate() : typed.iterate();
         }
 
