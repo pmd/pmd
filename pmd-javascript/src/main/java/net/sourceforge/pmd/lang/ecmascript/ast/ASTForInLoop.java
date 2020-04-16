@@ -11,9 +11,6 @@ public class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
         super(forInLoop);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -33,5 +30,9 @@ public class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
 
     public boolean isForEach() {
         return node.isForEach();
+    }
+
+    public boolean isForOf() {
+        return node.isForOf();
     }
 }
