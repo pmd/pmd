@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> {
@@ -62,11 +63,6 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
         return scopeTag;
     }
 
-    @Override
-    public ShadowChainIterator<S, I> iterateResults(String name) {
-        return new ShadowChainIteratorImpl<>(this, name);
-    }
-
     /** Doesn't ask the parents. */
     @Override
     public OptionalBool knowsSymbol(String simpleName) {
@@ -84,7 +80,7 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
             // A successful search ends on the first node that is a
             // shadow barrier, inclusive
             // A failed search continues regardless
-            return ConsList.cons(res, getParent().asChain().resolve(name));
+            return CollectionUtil.concatView(res, getParent().asChain().resolve(name));
         }
         return res;
     }

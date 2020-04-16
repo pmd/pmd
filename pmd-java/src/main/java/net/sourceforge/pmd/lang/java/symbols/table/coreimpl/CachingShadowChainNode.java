@@ -18,7 +18,8 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
     private final Map<String, List<S>> cache;
 
     // contains YES/NO depending on whether *this* name resolver knew a
-    // result when asked for it
+    // result when asked for it. The cache also contains entries for parents
+    // that knew results
     private final Map<String, OptionalBool> keysThatIKnow = new HashMap<>();
 
     protected CachingShadowChainNode(@NonNull ShadowChainNode<S, I> parent,

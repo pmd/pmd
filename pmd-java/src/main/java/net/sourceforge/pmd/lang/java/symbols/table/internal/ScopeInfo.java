@@ -13,17 +13,18 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
  */
 public enum ScopeInfo {
 
-    /** Declared in an enclosing class, and not inherited. */
+    /** An enclosing class. */
     ENCLOSING_TYPE,
-    /** Member of an enclosing type, that is not inherited. */
+    /** Member of an enclosing class, that is not inherited. */
     ENCLOSING_TYPE_MEMBER,
     /** Inherited by some enclosing class. */
     INHERITED,
-    /** Type parameter of some enclosing class. */
+    /** A type parameter of some enclosing class. */
     TYPE_PARAM,
-    /** Local var, including lambda parameters and lambda parameters. */
+    /** Local var, including lambda parameters and catch parameters. */
     LOCAL,
 
+    // import-likes
     IMPORT_ON_DEMAND,
     SAME_PACKAGE,
     JAVA_LANG,
@@ -31,7 +32,6 @@ public enum ScopeInfo {
 
     /** Sibling types in the same file, that are not nested into one another. */
     SAME_FILE,
-
     /** Method or constructor formal parameter (lambdas are treated as locals). */
     FORMAL_PARAM
 

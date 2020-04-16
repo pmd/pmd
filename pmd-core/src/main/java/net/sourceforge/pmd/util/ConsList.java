@@ -2,10 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
+package net.sourceforge.pmd.util;
 
 import java.util.AbstractList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,18 +14,14 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 final class ConsList<T> extends AbstractList<T> {
 
-    private final List<T> head;
-    private final List<T> tail;
+    private final List<? extends T> head;
+    private final List<? extends T> tail;
     private final int size;
 
-    ConsList(List<T> head, List<T> tail) {
+    ConsList(List<? extends T> head, List<? extends T> tail) {
         this.head = head;
         this.tail = tail;
-        size = head.size() + tail.size();
-    }
-
-    ConsList(T head, List<T> tail) {
-        this(Collections.singletonList(head), tail);
+        this.size = head.size() + tail.size();
     }
 
     @Override
@@ -46,14 +41,5 @@ final class ConsList<T> extends AbstractList<T> {
     @Override
     public int size() {
         return size;
-    }
-
-    static <T> List<T> cons(List<T> head, List<T> tail) {
-        if (head.isEmpty()) {
-            return tail;
-        } else if (tail.isEmpty()) {
-            return head;
-        }
-        return new ConsList<>(head, tail);
     }
 }

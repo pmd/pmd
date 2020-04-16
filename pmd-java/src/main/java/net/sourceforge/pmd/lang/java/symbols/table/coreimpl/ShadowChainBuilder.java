@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * <p>Implementing this framework means implementing {@link NameResolver}s for
  * each relevant way that a declaration may be brought in scope, then figuring
- * out the correct way these resolvers should be linked into a ShadowGroup chain.
+ * out the correct way these resolvers should be linked into a ShadowChain.
  * Shadow chain builders just give some utility methods to make the linking
  * process more straightforward.
  *
