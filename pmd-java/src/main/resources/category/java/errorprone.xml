@@ -288,23 +288,13 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
-[ClassOrInterfaceType[@Image="BigDecimal"]]
-[Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+//AllocationExpression[pmd-java:typeIs('java.math.BigDecimal')]
+[Arguments/ArgumentList/Expression/PrimaryExpression
     [
-        Literal[(not(ends-with(@Image,'"')))][contains(@Image,".")]
-        or
-        Name[ancestor::Block[1]/BlockStatement/LocalVariableDeclaration
-                [Type[PrimitiveType[@Image='double' or @Image='float']
-                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
-                /VariableDeclarator/VariableDeclaratorId/@Image = @Image
-            ]
-        or
-        Name[ancestor::MethodDeclaration[1]/MethodDeclarator/FormalParameters/FormalParameter
-                [Type[PrimitiveType[@Image='double' or @Image='float']
-                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
-                /VariableDeclaratorId/@Image = @Image
-            ]
+        pmd-java:typeIs('float') or
+        pmd-java:typeIs('java.lang.Float') or
+        pmd-java:typeIs('double') or
+        pmd-java:typeIs('java.lang.Double')
     ]
 ]
 ]]>
