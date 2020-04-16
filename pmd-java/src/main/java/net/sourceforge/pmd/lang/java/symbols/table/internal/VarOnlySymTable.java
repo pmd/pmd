@@ -55,7 +55,7 @@ final class VarOnlySymTable extends AbstractSymbolTable {
         super(parent, helper);
 
         List<JFormalParamSymbol> formals = recordCtor.getSymbol().getFormalParameters();
-        List<ASTRecordComponent> components = recordCtor.getEnclosingType().getRecordComponentList().toList();
+        List<ASTRecordComponent> components = recordCtor.getEnclosingType().getRecordComponents().toList();
         assert components.size() == formals.size()
             : "Mismatched formals " + formals + " for record components " + components;
 

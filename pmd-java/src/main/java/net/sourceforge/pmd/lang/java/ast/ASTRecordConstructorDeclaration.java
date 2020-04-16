@@ -54,6 +54,6 @@ public final class ASTRecordConstructorDeclaration extends AbstractJavaNode impl
 
     @Override
     public JConstructorSymbol getSymbol() {
-        return getEnclosingType().getRecordComponentList().getSymbol();
+        return getEnclosingType().getRecordComponents().getSymbol();
     }
 }

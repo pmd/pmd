@@ -83,7 +83,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         if (getArity() != 0) {
             return null;
         }
-        ASTRecordComponentList components = getEnclosingType().getRecordComponentList();
+        ASTRecordComponentList components = getEnclosingType().getRecordComponents();
         if (components == null) {
             return null;
         }

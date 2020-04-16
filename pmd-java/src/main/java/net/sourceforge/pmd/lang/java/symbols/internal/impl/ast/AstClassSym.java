@@ -64,7 +64,7 @@ final class AstClassSym
 
         final List<JFieldSymbol> recordComponents;
         if (isRecord()) {
-            ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponentList(),
+            ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
                                                                        "Null component list for " + node);
             recordComponents = mapComponentsToMutableList(factory, components);
             myFields.addAll(recordComponents);
