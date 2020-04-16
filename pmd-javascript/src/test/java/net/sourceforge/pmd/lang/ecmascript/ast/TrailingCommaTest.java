@@ -17,18 +17,18 @@ public class TrailingCommaTest extends EcmascriptParserTestBase {
 
 
     @Test
-    public void testTrailingComma_DefaultLocale() {
+    public void testTrailingCommaDefaultLocale() {
         testTrailingComma();
     }
 
     @Test
-    public void testTrailingComma_FrFr() {
+    public void testTrailingCommaFrFr() {
         defaultLocale.set(Locale.FRANCE);
         testTrailingComma();
     }
 
     @Test
-    public void testTrailingComma_RootLocale() {
+    public void testTrailingCommaRootLocale() {
         defaultLocale.set(Locale.ROOT);
         testTrailingComma();
     }
