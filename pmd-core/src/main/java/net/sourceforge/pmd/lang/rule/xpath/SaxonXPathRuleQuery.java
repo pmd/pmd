@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
@@ -73,7 +74,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     /** Cache key for the wrapped tree for saxon. */
     private static final SimpleDataKey<DocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
-
     /**
      * Contains for each nodeName a sub expression, used for implementing rule chain.
      */
@@ -91,6 +91,17 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
      */
     private List<XPathVariable> xpathVariables;
 
+    private final DeprecatedAttrLogger attrCtx;
+
+    @Deprecated
+    public SaxonXPathRuleQuery() {
+        this(DeprecatedAttrLogger.noop());
+    }
+
+    public SaxonXPathRuleQuery(DeprecatedAttrLogger attrCtx) {
+        this.attrCtx = attrCtx;
+    }
+
     @Override
     public boolean isSupportedVersion(String version) {
         return XPATH_1_0_COMPATIBILITY.equals(version) || XPATH_2_0.equals(version);
@@ -102,9 +113,11 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
         try {
             final DocumentNode documentNode = getDocumentNodeForRootNode(node);
+            documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
             final ElementNode rootElementNode = documentNode.nodeToElementNode.get(node);
+            assert rootElementNode != null : "Cannot find " + node;
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(rootElementNode);
 
             final List<ElementNode> nodes = new LinkedList<>();

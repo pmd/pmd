@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
 import net.sf.saxon.om.NodeInfo;
@@ -47,8 +48,19 @@ public class AttributeNode extends BaseNodeInfo {
         return attribute.getName();
     }
 
+    private DeprecatedAttrLogger getAttrCtx() {
+        return parent == null ? DeprecatedAttrLogger.noop()
+                              : parent.document.getAttrCtx();
+    }
+
+    @Override
+    public ElementNode getParent() {
+        return parent;
+    }
+
     @Override
     public Value atomize() {
+        getAttrCtx().recordUsageOf(attribute);
         if (value == null) {
             Object data = attribute.getValue();
             if (data instanceof List) {
@@ -72,6 +84,7 @@ public class AttributeNode extends BaseNodeInfo {
 
     @Override
     public int compareOrder(NodeInfo other) {
+
         return Integer.signum(this.id - ((AttributeNode) other).id);
     }
 }

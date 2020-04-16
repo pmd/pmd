@@ -9,10 +9,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -29,11 +25,6 @@ import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
  * @author daniels
  */
 public class Attribute {
-
-
-    private static final Logger LOG = Logger.getLogger(Attribute.class.getName());
-    static final ConcurrentMap<String, Boolean> DETECTED_DEPRECATED_ATTRIBUTES = new ConcurrentHashMap<>();
-
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
     private final Node parent;
@@ -73,20 +64,14 @@ public class Attribute {
         return method == null ? String.class : method.getReturnType();
     }
 
-    private boolean isAttributeDeprecated() {
+    public boolean isAttributeDeprecated() {
         return method != null && (method.isAnnotationPresent(Deprecated.class)
-                || method.isAnnotationPresent(DeprecatedAttribute.class));
+            || method.isAnnotationPresent(DeprecatedAttribute.class));
     }
 
     public Object getValue() {
         if (value != null) {
             return value.get(0);
-        }
-
-        if (LOG.isLoggable(Level.WARNING) && isAttributeDeprecated()
-                && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getLoggableAttributeName(), Boolean.TRUE) == null) {
-            // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
-            LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in XPath query");
         }
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
@@ -127,11 +112,6 @@ public class Attribute {
     @Override
     public int hashCode() {
         return Objects.hash(parent, name);
-    }
-
-
-    private String getLoggableAttributeName() {
-        return parent.getXPathNodeName() + "/@" + name;
     }
 
     @Override
