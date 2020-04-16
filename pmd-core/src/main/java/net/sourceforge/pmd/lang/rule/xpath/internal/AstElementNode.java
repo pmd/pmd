@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.pattern.NameTest;
@@ -44,7 +45,10 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
 
     private final AstElementNode parent;
     private final Node wrappedNode;
+    /** The index of the node in the tree according to document order */
     private final int id;
+    /** Name in the name pool. */
+    private final int fingerprint;
 
     private final List<AstElementNode> children;
     private @Nullable Map<String, AstAttributeNode> attributes;
@@ -53,16 +57,18 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
     public AstElementNode(AstDocumentNode document,
                           IdGenerator idGenerator,
                           AstElementNode parent,
-                          Node wrappedNode) {
+                          Node wrappedNode,
+                          Configuration configuration) {
         this.treeInfo = document;
         this.parent = parent;
         this.wrappedNode = wrappedNode;
         this.id = idGenerator.getNextId();
+        fingerprint = configuration.getNamePool().allocateFingerprint("", wrappedNode.getXPathNodeName());
 
         this.children = new ArrayList<>(wrappedNode.getNumChildren());
 
         for (int i = 0; i < wrappedNode.getNumChildren(); i++) {
-            children.add(new AstElementNode(document, idGenerator, this, wrappedNode.getChild(i)));
+            children.add(new AstElementNode(document, idGenerator, this, wrappedNode.getChild(i), configuration));
         }
     }
 
@@ -109,6 +115,11 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
     public int getSiblingPosition() {
         AstElementNode parent = getParent();
         return parent == null ? 0 : id - parent.id;
+    }
+
+    @Override
+    public int comparePosition(NodeInfo other) {
+        return super.comparePosition(other);
     }
 
     @Override
@@ -230,6 +241,15 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
         return getStringValue();
     }
 
+    @Override
+    public boolean hasFingerprint() {
+        return true;
+    }
+
+    @Override
+    public int getFingerprint() {
+        return fingerprint;
+    }
 
     @Override
     public String toString() {

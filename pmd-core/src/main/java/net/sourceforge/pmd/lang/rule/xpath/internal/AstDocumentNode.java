@@ -29,7 +29,7 @@ public final class AstDocumentNode extends GenericTreeInfo {
      */
     public AstDocumentNode(Node node, Configuration configuration) {
         super(configuration);
-        setRootNode(new AstElementNode(this, new IdGenerator(), null, node));
+        setRootNode(new AstElementNode(this, new IdGenerator(), null, node, configuration));
     }
 
     public AstElementNode findWrapperFor(Node node) {
