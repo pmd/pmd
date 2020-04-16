@@ -58,6 +58,9 @@ public interface NameResolver<S> {
         return OptionalBool.UNKNOWN;
     }
 
+    default boolean isDefinitelyEmpty() {
+        return false;
+    }
 
     /** Please implement toString to ease debugging. */
     @Override

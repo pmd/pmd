@@ -66,6 +66,11 @@ final class CoreResolvers {
         }
 
         @Override
+        public boolean isDefinitelyEmpty() {
+            return map.isEmpty();
+        }
+
+        @Override
         public @NonNull OptionalBool knows(String simpleName) {
             return OptionalBool.definitely(map.containsKey(simpleName));
         }
@@ -92,6 +97,11 @@ final class CoreResolvers {
         @Override
         public @NonNull OptionalBool knows(String simpleName) {
             return OptionalBool.definitely(map.containsKey(simpleName));
+        }
+
+        @Override
+        public boolean isDefinitelyEmpty() {
+            return map.isEmpty();
         }
 
         @Override
@@ -131,6 +141,11 @@ final class CoreResolvers {
         @Override
         public @NonNull OptionalBool knows(String simpleName) {
             return OptionalBool.NO;
+        }
+
+        @Override
+        public boolean isDefinitelyEmpty() {
+            return true;
         }
 
         @Override

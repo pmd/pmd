@@ -175,10 +175,11 @@ class JavaResolvers {
         }
     }
 
-    private static <S extends JAccessibleElementSymbol> PSet<String> processDeclarations(JClassSymbol nestRoot,
-                                                                                         ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
-                                                                                         PSet<String> hidden,
-                                                                                         List<S> syms) {
+    private static <S extends JAccessibleElementSymbol>
+    PSet<String> processDeclarations(JClassSymbol nestRoot,
+                                     ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
+                                     PSet<String> hidden,
+                                     List<S> syms) {
         for (S inner : syms) {
             String simpleName = inner.getSimpleName();
             if (hidden.contains(simpleName)) {

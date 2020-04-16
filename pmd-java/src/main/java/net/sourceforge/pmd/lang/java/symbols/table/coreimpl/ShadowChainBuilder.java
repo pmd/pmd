@@ -63,14 +63,23 @@ public abstract class ShadowChainBuilder<S, I> {
     // #augment overloads wrap a resolver into a new chain node
 
     public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, ResolverBuilder symbols) {
-        if (symbols.isEmpty() && !shadowBarrier) {
+        if (isPrunable(parent, shadowBarrier, symbols.isEmpty())) {
             return parent;
         }
         return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, symbols.build());
     }
 
     public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<S> resolver) {
+        if (isPrunable(parent, shadowBarrier, resolver.isDefinitelyEmpty())) {
+            return parent;
+        }
         return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, resolver);
+    }
+
+    // prunes empty nodes if doing so will not alter results
+    private boolean isPrunable(ShadowChainNode<S, I> parent, boolean shadowBarrier, boolean definitelyEmpty) {
+        return definitelyEmpty && (!shadowBarrier
+            || parent.getResolver().isDefinitelyEmpty() && parent.isShadowBarrier());
     }
 
     public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, S symbol) {
