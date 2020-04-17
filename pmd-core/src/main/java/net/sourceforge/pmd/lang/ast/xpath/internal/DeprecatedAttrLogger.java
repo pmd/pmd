@@ -64,12 +64,17 @@ public abstract class DeprecatedAttrLogger {
 
         @Override
         public void recordUsageOf(Attribute attribute) {
-            if (attribute.isAttributeDeprecated()) {
+            String replacement = attribute.replacementIfDeprecated();
+            if (replacement != null) {
                 String name = getLoggableAttributeName(attribute);
                 Boolean b = deprecated.putIfAbsent(name, Boolean.TRUE);
                 if (b == null) {
                     // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
-                    LOG.warning("Use of deprecated attribute '" + name + "' by rule " + ruleToString());
+                    String msg = "Use of deprecated attribute '" + name + "' by rule " + ruleToString();
+                    if (!replacement.isEmpty()) {
+                        msg += ", please use " + replacement + " instead";
+                    }
+                    LOG.warning(msg);
                 }
             }
         }

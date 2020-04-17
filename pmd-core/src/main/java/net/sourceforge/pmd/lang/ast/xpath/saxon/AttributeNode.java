@@ -54,11 +54,6 @@ public class AttributeNode extends BaseNodeInfo {
     }
 
     @Override
-    public ElementNode getParent() {
-        return parent;
-    }
-
-    @Override
     public Value atomize() {
         getAttrCtx().recordUsageOf(attribute);
         if (value == null) {

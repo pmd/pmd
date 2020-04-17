@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
@@ -64,9 +65,28 @@ public class Attribute {
         return method == null ? String.class : method.getReturnType();
     }
 
+    @InternalApi
     public boolean isAttributeDeprecated() {
         return method != null && (method.isAnnotationPresent(Deprecated.class)
             || method.isAnnotationPresent(DeprecatedAttribute.class));
+    }
+
+    /**
+     * Returns null for "not deprecated", empty string for "deprecated for removal",
+     * otherwise name of replacement attribute.
+     */
+    @InternalApi
+    public String replacementIfDeprecated() {
+        if (method == null) {
+            return null;
+        } else {
+            DeprecatedAttribute annot = method.getAnnotation(DeprecatedAttribute.class);
+            if (annot == null) {
+                return method.isAnnotationPresent(Deprecated.class) ? DeprecatedAttribute.NO_REPLACEMENT
+                                                                    : null;
+            }
+            return annot.replaceWith();
+        }
     }
 
     public Object getValue() {
