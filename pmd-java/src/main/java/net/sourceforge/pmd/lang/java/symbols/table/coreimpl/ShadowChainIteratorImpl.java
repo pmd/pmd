@@ -34,6 +34,7 @@ class ShadowChainIteratorImpl<S, I>
             done();
             return;
         }
+        assert !next.getResolver().resolveHere(name).isEmpty() : "Shadow iterator stopped on wrong node";
         setNext(next);
     }
 

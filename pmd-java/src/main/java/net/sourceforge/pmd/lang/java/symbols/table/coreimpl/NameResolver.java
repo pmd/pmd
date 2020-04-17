@@ -46,21 +46,20 @@ public interface NameResolver<S> {
 
     /**
      * Returns whether this resolver knows if it has a declaration for
-     * the given name. The following invariant must hold for the result
-     * of this method:
-     * <pre>{@code
-     *
-     * knows(name).isKnown() implies (resolveFirst(name) == null) == (knows(name) == NO)
-     *
-     * }</pre>
+     * the given name. If the result is NO, then resolveFirst MUST be null,
+     * if the result is YES, then resolveFirst MUST be non-null. Otherwise
+     * we don't know.
      */
     default @NonNull OptionalBool knows(String simpleName) {
         return OptionalBool.UNKNOWN;
     }
 
+
+    /** Returns true if this resolver knows it cannot resolve anything. */
     default boolean isDefinitelyEmpty() {
         return false;
     }
+
 
     /** Please implement toString to ease debugging. */
     @Override

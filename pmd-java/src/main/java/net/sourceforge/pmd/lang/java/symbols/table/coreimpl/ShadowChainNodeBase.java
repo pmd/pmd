@@ -91,9 +91,9 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
 
     @Override
     public S resolveFirst(String name) {
-        S s = resolver.resolveFirst(name);
-        handleResolverKnows(name, name != null);
-        return s != null ? s : getParent().asChain().resolveFirst(name);
+        S sym = resolver.resolveFirst(name);
+        handleResolverKnows(name, sym != null);
+        return sym != null ? sym : getParent().asChain().resolveFirst(name);
     }
 
     @Override

@@ -132,7 +132,7 @@ class JavaResolvers {
      * methods that way, because there may be duplicates and the equals
      * of {@link JMethodSymbol} is not reliable for now (cannot differentiate
      * overloads). But also, usually a subset of methods is used in a subclass,
-     * and it's ok performance-wise to process them lazily.
+     * and it's ok performance-wise to process them on-demand.
      */
     static Pair<NameResolver<JTypeDeclSymbol>, NameResolver<JVariableSymbol>> inheritedMembersResolvers(JClassSymbol t) {
         JClassSymbol nestRoot = t.getNestRoot();

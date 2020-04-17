@@ -44,7 +44,7 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
 
     @Override
     protected void handleResolverKnows(String name, boolean resolverKnows) {
-        keysThatIKnow.put(name, OptionalBool.definitely(resolverKnows));
+        keysThatIKnow.putIfAbsent(name, OptionalBool.definitely(resolverKnows));
     }
 
     @Override

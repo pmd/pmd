@@ -14,8 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * declarations of a single kind, corresponding to a namespace (eg types
  * or methods).
  *
- * <h3>API usage</h3>
- *
  * <p>Basic usage:
  * <pre>{@code
  *   List<JVariableSymbol> foo = chain.resolve("foo");
