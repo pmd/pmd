@@ -26,6 +26,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.om.Item;
+import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NamespaceConstant;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.ValueRepresentation;
@@ -57,12 +58,15 @@ import net.sf.saxon.value.Value;
 @Deprecated
 @InternalApi
 public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
+
     /**
      * Special nodeName that references the root expression.
      */
     static final String AST_ROOT = "_AST_ROOT_";
 
     private static final Logger LOG = Logger.getLogger(SaxonXPathRuleQuery.class.getName());
+
+    private static final NamePool NAME_POOL = NamePool.getDefaultNamePool();
 
     private static final int MAX_CACHE_SIZE = 20;
     private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
@@ -97,7 +101,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Node> evaluate(final Node node, final RuleContext data) {
         initializeXPathExpression();
 
@@ -191,7 +194,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         synchronized (CACHE) {
             documentNode = CACHE.get(root);
             if (documentNode == null) {
-                documentNode = new DocumentNode(root);
+                documentNode = new DocumentNode(root, NAME_POOL);
                 CACHE.put(root, documentNode);
             }
         }
@@ -229,6 +232,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         try {
             final XPathEvaluator xpathEvaluator = new XPathEvaluator();
             final XPathStaticContext xpathStaticContext = xpathEvaluator.getStaticContext();
+            xpathStaticContext.getConfiguration().setNamePool(NAME_POOL);
 
             // Enable XPath 1.0 compatibility
             if (XPATH_1_0_COMPATIBILITY.equals(version)) {
@@ -353,5 +357,9 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     public List<String> getRuleChainVisits() {
         initializeXPathExpression();
         return super.getRuleChainVisits();
+    }
+
+    public static NamePool getNamePool() {
+        return NAME_POOL;
     }
 }

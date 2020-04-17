@@ -6,11 +6,13 @@ package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
 import net.sf.saxon.om.Axis;
 import net.sf.saxon.om.AxisIterator;
 import net.sf.saxon.om.DocumentInfo;
 import net.sf.saxon.om.EmptyIterator;
+import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.Navigator;
 import net.sf.saxon.om.NodeArrayIterator;
 import net.sf.saxon.om.NodeInfo;
@@ -28,7 +30,7 @@ import net.sf.saxon.value.Value;
  */
 @Deprecated
 @InternalApi
-public class ElementNode extends AbstractNodeInfo {
+public class ElementNode extends BaseNodeInfo {
 
     protected final DocumentNode document;
     protected final ElementNode parent;
@@ -37,17 +39,29 @@ public class ElementNode extends AbstractNodeInfo {
     protected final int siblingPosition;
     protected final NodeInfo[] children;
 
-    public ElementNode(DocumentNode document, IdGenerator idGenerator, ElementNode parent, Node node,
-            int siblingPosition) {
+    @Deprecated
+    public ElementNode(DocumentNode document, IdGenerator idGenerator, ElementNode parent, Node node, int siblingPosition) {
+        this(document, idGenerator, parent, node, siblingPosition, SaxonXPathRuleQuery.getNamePool());
+    }
+
+    public ElementNode(DocumentNode document,
+                       IdGenerator idGenerator,
+                       ElementNode parent,
+                       Node node,
+                       int siblingPosition,
+                       NamePool namePool) {
+        super(Type.ELEMENT, namePool, node.getXPathNodeName(), parent);
+
         this.document = document;
         this.parent = parent;
         this.node = node;
         this.id = idGenerator.getNextId();
         this.siblingPosition = siblingPosition;
+
         if (node.getNumChildren() > 0) {
             this.children = new NodeInfo[node.getNumChildren()];
             for (int i = 0; i < children.length; i++) {
-                children[i] = new ElementNode(document, idGenerator, this, node.getChild(i), i);
+                children[i] = new ElementNode(document, idGenerator, this, node.getChild(i), i, namePool);
             }
         } else {
             this.children = null;
@@ -81,11 +95,6 @@ public class ElementNode extends AbstractNodeInfo {
     }
 
     @Override
-    public int getNodeKind() {
-        return Type.ELEMENT;
-    }
-
-    @Override
     public DocumentInfo getDocumentRoot() {
         return document;
     }
@@ -95,15 +104,6 @@ public class ElementNode extends AbstractNodeInfo {
         return node.getXPathNodeName();
     }
 
-    @Override
-    public String getURI() {
-        return "";
-    }
-
-    @Override
-    public NodeInfo getParent() {
-        return parent;
-    }
 
     @Override
     public SequenceIterator getTypedValue() {
