@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.xpath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,9 @@ import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.om.Item;
@@ -68,15 +70,9 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final NamePool NAME_POOL = NamePool.getDefaultNamePool();
 
-    private static final int MAX_CACHE_SIZE = 20;
-    private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
-        private static final long serialVersionUID = -7653916493967142443L;
+    /** Cache key for the wrapped tree for saxon. */
+    private static final SimpleDataKey<DocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
-        @Override
-        protected boolean removeEldestEntry(final Map.Entry<Node, DocumentNode> eldest) {
-            return size() > MAX_CACHE_SIZE;
-        }
-    };
 
     /**
      * Contains for each nodeName a sub expression, used for implementing rule chain.
@@ -190,15 +186,13 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     private DocumentNode getDocumentNodeForRootNode(final Node node) {
         final Node root = getRootNode(node);
 
-        DocumentNode documentNode;
-        synchronized (CACHE) {
-            documentNode = CACHE.get(root);
-            if (documentNode == null) {
-                documentNode = new DocumentNode(root, NAME_POOL);
-                CACHE.put(root, documentNode);
-            }
+        DataMap<DataKey<?, ?>> userMap = root.getUserMap();
+        DocumentNode docNode = userMap.get(SAXON_TREE_CACHE_KEY);
+        if (docNode == null) {
+            docNode = new DocumentNode(root, getNamePool());
+            userMap.set(SAXON_TREE_CACHE_KEY, docNode);
         }
-        return documentNode;
+        return docNode;
     }
 
     /**
