@@ -1,10 +1,11 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 
@@ -13,6 +14,8 @@ import apex.jorje.semantic.ast.member.Method;
 public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {
 
+    @Deprecated
+    @InternalApi
     public ASTMethod(Method method) {
         super(method);
     }

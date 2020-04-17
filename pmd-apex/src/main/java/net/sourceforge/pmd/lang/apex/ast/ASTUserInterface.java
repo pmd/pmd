@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
@@ -17,6 +18,8 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
 
     private ApexQualifiedName qname;
 
+    @Deprecated
+    @InternalApi
     public ASTUserInterface(UserInterface userInterface) {
         super(userInterface);
     }

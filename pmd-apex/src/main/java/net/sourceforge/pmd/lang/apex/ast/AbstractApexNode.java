@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -54,6 +54,8 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         // default implementation does nothing
     }
 
+    @Deprecated
+    @InternalApi
     @Override
     public T getNode() {
         return node;
