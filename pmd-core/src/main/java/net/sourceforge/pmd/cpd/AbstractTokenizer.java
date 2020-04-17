@@ -117,14 +117,14 @@ public abstract class AbstractTokenizer implements Tokenizer {
             loc++;
         }
         // Handling multiple lines string
-        if (!done && // ... we didn't find the end of the string
-                loc >= currentLine.length() && // ... we have reach the end of
+        if (!done // ... we didn't find the end of the string
+                && loc >= currentLine.length() // ... we have reach the end of
                 // the line ( the String is
                 // incomplete, for the moment at
                 // least)
-                spanMultipleLinesString && // ... the language allow multiple
+                && spanMultipleLinesString // ... the language allow multiple
                 // line span Strings
-                lineNumber < code.size() - 1 // ... there is still more lines to
+                && lineNumber < code.size() - 1 // ... there is still more lines to
         // parse
         ) {
             // removes last character, if it is the line continuation (e.g.
