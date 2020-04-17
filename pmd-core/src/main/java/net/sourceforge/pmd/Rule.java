@@ -255,7 +255,11 @@ public interface Rule extends PropertySource {
      * should return a new instance on each call.
      *
      * @return the parser options
+     *
+     * @deprecated This was never implemented and will never be. PMD
+     *     cannot parse files once per rule.
      */
+    @Deprecated
     ParserOptions getParserOptions();
 
     /**
