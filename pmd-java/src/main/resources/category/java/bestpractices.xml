@@ -13,7 +13,7 @@ Rules which enforce generally accepted best practices.
           language="java"
           since="3.0"
           message="This abstract class does not have any abstract methods"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod">
         <description>
 The abstract class does not contain any abstract methods. An abstract class suggests
@@ -22,20 +22,6 @@ abstract methods. If the class is intended to be used as a base class only (not 
 directly) a protected constructor can be provided prevent direct instantiation.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration
-  [@Abstract= true()]
-  [not(ImplementsList)]
-  [not(ExtendsList)]
-  [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Abstract= true()])]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public abstract class Foo {
