@@ -68,7 +68,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final Logger LOG = Logger.getLogger(SaxonXPathRuleQuery.class.getName());
 
-    private static final NamePool NAME_POOL = NamePool.getDefaultNamePool();
+    private static final NamePool NAME_POOL = new NamePool();
 
     /** Cache key for the wrapped tree for saxon. */
     private static final SimpleDataKey<DocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
@@ -226,14 +226,14 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         try {
             final XPathEvaluator xpathEvaluator = new XPathEvaluator();
             final XPathStaticContext xpathStaticContext = xpathEvaluator.getStaticContext();
-            xpathStaticContext.getConfiguration().setNamePool(NAME_POOL);
+            xpathStaticContext.getConfiguration().setNamePool(getNamePool());
 
             // Enable XPath 1.0 compatibility
             if (XPATH_1_0_COMPATIBILITY.equals(version)) {
                 ((AbstractStaticContext) xpathStaticContext).setBackwardsCompatibilityMode(true);
             }
 
-            ((IndependentContext) xpathEvaluator.getStaticContext()).declareNamespace("fn", NamespaceConstant.FN);
+            ((IndependentContext) xpathStaticContext).declareNamespace("fn", NamespaceConstant.FN);
 
             // Register PMD functions
             Initializer.initialize((IndependentContext) xpathStaticContext);
