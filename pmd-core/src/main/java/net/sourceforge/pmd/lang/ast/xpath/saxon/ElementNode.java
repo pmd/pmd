@@ -250,9 +250,6 @@ public class ElementNode extends BaseNodeInfo {
 
         private final Iterator<AttributeNode> iter = getAttributes().values().iterator();
 
-        public AttributeEnumeration() {
-        }
-
         @Override
         public void advance() {
             if (iter.hasNext()) {
