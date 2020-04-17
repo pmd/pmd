@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
 import net.sf.saxon.om.Axis;
@@ -14,11 +19,14 @@ import net.sf.saxon.om.DocumentInfo;
 import net.sf.saxon.om.EmptyIterator;
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.Navigator;
+import net.sf.saxon.om.Navigator.BaseEnumeration;
 import net.sf.saxon.om.NodeArrayIterator;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.SingleNodeIterator;
 import net.sf.saxon.om.SingletonIterator;
+import net.sf.saxon.pattern.NameTest;
+import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.type.Type;
 import net.sf.saxon.value.AtomicValue;
 import net.sf.saxon.value.StringValue;
@@ -38,6 +46,8 @@ public class ElementNode extends BaseNodeInfo {
     protected final int id;
     protected final int siblingPosition;
     protected final NodeInfo[] children;
+
+    private Map<Integer, AttributeNode> attributes;
 
     @Deprecated
     public ElementNode(DocumentNode document, IdGenerator idGenerator, ElementNode parent, Node node, int siblingPosition) {
@@ -67,6 +77,20 @@ public class ElementNode extends BaseNodeInfo {
             this.children = null;
         }
         document.nodeToElementNode.put(node, this);
+    }
+
+    private Map<Integer, AttributeNode> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<>();
+            Iterator<Attribute> iter = node.getXPathAttributesIterator();
+            int idx = 0;
+            while (iter.hasNext()) {
+                Attribute next = iter.next();
+                AttributeNode attrNode = new AttributeNode(this, next, idx++);
+                attributes.put(attrNode.getFingerprint(), attrNode);
+            }
+        }
+        return attributes;
     }
 
     @Override
@@ -156,16 +180,33 @@ public class ElementNode extends BaseNodeInfo {
     }
 
 
+    @Override
+    public AxisIterator iterateAxis(byte axisNumber, NodeTest nodeTest) {
+        if (axisNumber == Axis.ATTRIBUTE) {
+            if (nodeTest instanceof NameTest) {
+                if ((nodeTest.getNodeKindMask() & (1 << Type.ATTRIBUTE)) == 0) {
+                    return EmptyIterator.getInstance();
+                } else {
+                    int fp = nodeTest.getFingerprint();
+                    if (fp != -1) {
+                        return SingleNodeIterator.makeIterator(getAttributes().get(fp));
+                    }
+                }
+            }
+        }
+        return super.iterateAxis(axisNumber, nodeTest);
+    }
+
     @SuppressWarnings("PMD.MissingBreakInSwitch")
     @Override
-    public AxisIterator iterateAxis(byte axisNumber) {
+    public AxisIterator iterateAxis(final byte axisNumber) {
         switch (axisNumber) {
         case Axis.ANCESTOR:
             return new Navigator.AncestorEnumeration(this, false);
         case Axis.ANCESTOR_OR_SELF:
             return new Navigator.AncestorEnumeration(this, true);
         case Axis.ATTRIBUTE:
-            return new AttributeAxisIterator(this);
+            return new AttributeEnumeration();
         case Axis.CHILD:
             if (children == null) {
                 return EmptyIterator.getInstance();
@@ -205,4 +246,25 @@ public class ElementNode extends BaseNodeInfo {
         }
     }
 
+    private class AttributeEnumeration extends BaseEnumeration {
+
+        private final Iterator<AttributeNode> iter = getAttributes().values().iterator();
+
+        public AttributeEnumeration() {
+        }
+
+        @Override
+        public void advance() {
+            if (iter.hasNext()) {
+                current = iter.next();
+            } else {
+                current = null;
+            }
+        }
+
+        @Override
+        public SequenceIterator getAnother() {
+            return new AttributeEnumeration();
+        }
+    }
 }
