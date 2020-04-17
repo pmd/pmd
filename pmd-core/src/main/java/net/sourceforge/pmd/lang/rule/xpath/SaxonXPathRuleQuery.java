@@ -66,7 +66,14 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final Logger LOG = Logger.getLogger(SaxonXPathRuleQuery.class.getName());
 
-    private static final NamePool NAME_POOL = NamePool.getDefaultNamePool();
+    // Name pools are thread local to avoid contention
+    // (allocation *and* access are synchronized in this version of saxon)
+    private static final ThreadLocal<NamePool> NAME_POOL = new ThreadLocal<NamePool>() {
+        @Override
+        protected NamePool initialValue() {
+            return new NamePool();
+        }
+    };
 
     private static final int MAX_CACHE_SIZE = 20;
     private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
@@ -194,7 +201,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         synchronized (CACHE) {
             documentNode = CACHE.get(root);
             if (documentNode == null) {
-                documentNode = new DocumentNode(root, NAME_POOL);
+                documentNode = new DocumentNode(root, getNamePool());
                 CACHE.put(root, documentNode);
             }
         }
@@ -232,7 +239,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         try {
             final XPathEvaluator xpathEvaluator = new XPathEvaluator();
             final XPathStaticContext xpathStaticContext = xpathEvaluator.getStaticContext();
-            xpathStaticContext.getConfiguration().setNamePool(NAME_POOL);
+            xpathStaticContext.getConfiguration().setNamePool(getNamePool());
 
             // Enable XPath 1.0 compatibility
             if (XPATH_1_0_COMPATIBILITY.equals(version)) {
@@ -360,6 +367,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
     public static NamePool getNamePool() {
-        return NAME_POOL;
+        return NAME_POOL.get();
     }
 }
