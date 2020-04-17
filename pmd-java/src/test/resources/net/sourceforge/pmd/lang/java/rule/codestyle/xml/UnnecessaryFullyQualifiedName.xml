@@ -389,7 +389,7 @@ public class CauseProblem {
         <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: without import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing implicit import 'java.lang.*'</message>
+            <message>Unnecessary qualifier 'java.lang': 'String' is accessible by simple name because it is declared in java.lang</message>
         </expected-messages>
         <code><![CDATA[
 public class JavaLang {
@@ -405,7 +405,7 @@ public class JavaLang {
         <description>#1186 [java] UnnecessaryFullyQualifiedName doesn't detect java.lang FQ names as violations: with import</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'java.lang.String' due to existing import 'java.lang.String'</message>
+            <message>Unnecessary qualifier 'java.lang': 'String' is accessible by simple name because it is imported in this file</message>
         </expected-messages>
         <code><![CDATA[
 import java.lang.String;
@@ -492,11 +492,14 @@ public class TestArrayType {
         <description>#1199 false negative for same package FQCN</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'ArrayList' is accessible by simple name because it is declared in the same package</message>
+        </expected-messages>
         <code><![CDATA[
-package org.foo;
+package java.util;
 
 public class SamePackage {
-    public void convert(org.foo.Bar s) { // violation
+    public void convert(java.util.ArrayList s) { // violation
     }
 }
         ]]></code>
@@ -541,7 +544,7 @@ class length {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary use of fully qualified name 'threads.length.foo' due to existing same package import 'threads.*'</message>
+            <message>Unnecessary qualifier 'threads': 'length' is accessible by simple name because it is declared in the same package</message>
         </expected-messages>
         <code><![CDATA[
 package threads;
@@ -644,23 +647,37 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
         <description>False-Negative when referencing inner class</description>
         <expected-problems>7</expected-problems>
         <expected-linenumbers>3,4,6,7,8,9,12</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is accessible by simple name because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'Builder' is accessible by simple name because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
+            <message>Unnecessary qualifier 'com.example.ClassOne': 'MyException' is accessible by simple name because it is declared in an enclosing type</message>
+            <message>Unnecessary qualifier 'com.example': 'ClassTwo' is accessible by simple name because it is declared in the same package</message>
+        </expected-messages>
         <code><![CDATA[
 package com.example;
 
-public class ClassOne extends com.example.ClassTwo {
-    com.example.ClassTwo.Builder builder = null;
+public class ClassOne extends com.example.ClassTwo { // 3
+    com.example.ClassTwo.Builder builder = null;     // 4
 
-    public void run() throws com.example.ClassOne.MyException {
-        com.example.ClassOne.Builder builder = null;
-        com.example.ClassTwo.Builder builder2 = null;
-        throw new com.example.ClassOne.MyException();
+    public void run() throws com.example.ClassOne.MyException { // 6
+        com.example.ClassOne.Builder builder = null;            // 7
+        com.example.ClassTwo.Builder builder2 = null;           // 8
+        throw new com.example.ClassOne.MyException();           // 9
     }
 
-    public class Builder extends com.example.ClassTwo.Builder {
+    public class Builder extends com.example.ClassTwo.Builder { // 12
     }
 
     public static class MyException extends Exception { }
 }
+
+class ClassTwo {
+    class Builder { }
+}
+
         ]]></code>
     </test-code>
 
