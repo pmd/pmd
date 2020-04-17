@@ -2172,37 +2172,12 @@ public class JumbledIncrementerRule1 {
           language="java"
           since="1.0"
           message="You may have misspelled a JUnit framework method (setUp or tearDown)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitSpellingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitspelling">
         <description>
 Some JUnit framework methods are easy to misspell.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//MethodDeclaration[(not(@Name = 'setUp')
- and translate(@Name, 'SETuP', 'setUp') = 'setUp')
- or (not(@Name = 'tearDown')
- and translate(@Name, 'TEARdOWN', 'tearDown') = 'tearDown')]
- [@Arity = 0]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 import junit.framework.*;
