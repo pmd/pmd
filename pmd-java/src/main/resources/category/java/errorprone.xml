@@ -140,7 +140,7 @@ Use of the term 'assert' will conflict with newer versions of Java since it is a
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Image='assert']</value>
+                <value>//VariableDeclaratorId[@Name='assert']</value>
             </property>
         </properties>
         <example>
@@ -347,7 +347,7 @@ Use of the term 'enum' will conflict with newer versions of Java since it is a r
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Image='enum']</value>
+                <value>//VariableDeclaratorId[@Name='enum']</value>
             </property>
         </properties>
         <example>
@@ -546,15 +546,15 @@ only add to code size.  Either remove the invocation, or use the return result.
 <![CDATA[
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name
 [
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getMessage')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getMessage')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getLocalizedMessage')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getLocalizedMessage')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getCause')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getCause')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getStackTrace')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getStackTrace')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.toString')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.toString')
 ]
 ]]>
                 </value>
@@ -1487,7 +1487,7 @@ or reported.
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
- [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
+ [FormalParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]]
 ]]>
                 </value>
             </property>
@@ -2147,7 +2147,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
   [
     ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
     =
-    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
   ]
 ]]>
                 </value>
@@ -2702,8 +2702,8 @@ with the restriction that the logger needs to be passed into the constructor.
     (: check modifiers :)
     (@Private = false() or @Final = false())
     (: check logger name :)
-    or (@Static and VariableDeclarator/VariableDeclaratorId[@Image != $staticLoggerName])
-    or (@Static = false() and VariableDeclarator/VariableDeclaratorId[@Image != $loggerName])
+    or (@Static and VariableDeclarator/VariableDeclaratorId[@Name != $staticLoggerName])
+    or (@Static = false() and VariableDeclarator/VariableDeclaratorId[@Name != $loggerName])
 
     (: check logger argument type matches class or enum name :)
     or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@SimpleName]
@@ -2717,7 +2717,7 @@ with the restriction that the logger needs to be passed into the constructor.
      ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
         [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
         [AssignmentOperator[@Image = '=']]
-        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Image]]
+        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]]
         [not(.//AllocationExpression)]
   )
 ]
