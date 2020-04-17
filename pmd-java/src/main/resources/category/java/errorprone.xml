@@ -3380,12 +3380,16 @@ To make sure the full stacktrace is printed out, use the logging statement with 
                 <value>
 <![CDATA[
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression
-/PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
-concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-[Type//ClassOrInterfaceType[@Image='Log']]
-/VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
-[PrimarySuffix/Arguments[@Size= 1]]
-[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
+    /PrimaryExpression
+        [PrimaryPrefix/Name
+            [starts-with(@Image,
+             concat((ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+                [Type//ClassOrInterfaceType[@Image='Log']]
+                /VariableDeclarator/VariableDeclaratorId/@Image)[1], '.'))
+            ]
+        ]
+        [PrimarySuffix/Arguments[@Size= 1]]
+        [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
 ]]>
                 </value>
             </property>
