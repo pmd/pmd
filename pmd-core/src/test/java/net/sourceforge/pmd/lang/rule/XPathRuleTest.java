@@ -68,8 +68,8 @@ public class XPathRuleTest {
         assertEquals(1, ctx.getReport().size());
 
         String log = loggingRule.getLog();
-        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by rule SomeRule"));
-        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by rule SomeRule"));
+        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'SomeRule'"));
+        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'SomeRule', please use @Image instead"));
 
 
         loggingRule.clear();
@@ -93,8 +93,8 @@ public class XPathRuleTest {
         assertEquals(4, ctx.getReport().size());
 
         log = loggingRule.getLog();
-        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by rule rset.xml/OtherRule"));
-        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by rule rset.xml/OtherRule"));
+        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'OtherRule' (in ruleset 'rset.xml')"));
+        assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'OtherRule' (in ruleset 'rset.xml'), please use @Image instead"));
 
     }
 

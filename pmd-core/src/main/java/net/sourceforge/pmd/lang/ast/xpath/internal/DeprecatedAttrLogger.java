@@ -70,14 +70,11 @@ public abstract class DeprecatedAttrLogger {
                 Boolean b = deprecated.putIfAbsent(name, Boolean.TRUE);
                 if (b == null) {
                     // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
-                    String msg = "Use of deprecated attribute '" + name + "' by rule " + ruleToString();
+                    String msg = "Use of deprecated attribute '" + name + "' by XPath rule " + ruleToString();
                     if (!replacement.isEmpty()) {
                         msg += ", please use " + replacement + " instead";
                     }
-                    // ok this circumvents the logger, because otherwise
-                    // messages get lost in ugly header lines
-                    System.err.println("WARNING: " + msg);
-                    // LOG.warning(msg);
+                    LOG.warning(msg);
                 }
             }
         }
@@ -85,9 +82,9 @@ public abstract class DeprecatedAttrLogger {
         public String ruleToString() {
             // we can't compute that beforehand because the name is set
             // outside of the rule constructor
-            String name = rule.getName();
+            String name = "'" + rule.getName() + "'";
             if (rule.getRuleSetName() != null) {
-                name = rule.getRuleSetName() + "/" + name;
+                name += " (in ruleset '" + rule.getRuleSetName() + "')";
             }
             return name;
         }

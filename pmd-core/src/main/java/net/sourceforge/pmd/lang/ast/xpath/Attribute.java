@@ -65,14 +65,8 @@ public class Attribute {
         return method == null ? String.class : method.getReturnType();
     }
 
-    @InternalApi
-    public boolean isAttributeDeprecated() {
-        return method != null && (method.isAnnotationPresent(Deprecated.class)
-            || method.isAnnotationPresent(DeprecatedAttribute.class));
-    }
-
     /**
-     * Returns null for "not deprecated", empty string for "deprecated for removal",
+     * Returns null for "not deprecated", empty string for "deprecated without replacement",
      * otherwise name of replacement attribute.
      */
     @InternalApi
@@ -81,11 +75,11 @@ public class Attribute {
             return null;
         } else {
             DeprecatedAttribute annot = method.getAnnotation(DeprecatedAttribute.class);
-            if (annot == null) {
-                return method.isAnnotationPresent(Deprecated.class) ? DeprecatedAttribute.NO_REPLACEMENT
-                                                                    : null;
-            }
-            return annot.replaceWith();
+            return annot != null
+                   ? annot.replaceWith()
+                   : method.isAnnotationPresent(Deprecated.class)
+                     ? DeprecatedAttribute.NO_REPLACEMENT
+                     : null;
         }
     }
 
