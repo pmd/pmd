@@ -14,6 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PMD adopts Contributor Code of Conduct
+
+To facilitate healthy and constructive community behavior PMD adopts
+[Contributor Convenant](https://www.contributor-covenant.org/) as its code of
+conduct.
+
+Please note that this project is released with a Contributor Code of Conduct.
+By participating in this project you agree to abide by its terms.
+
+You can find the code of conduct in the file [code_of_conduct.md](https://github.com/pmd/pmd/blob/master/code_of_conduct.md)
+in our repository.
+
 #### Performance improvements for XPath 2.0 rules
 
 XPath rules written with XPath 2.0 now support conversion to a rulechain rule, which
@@ -48,6 +60,7 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 *   core
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
+    *   [#2357](https://github.com/pmd/pmd/issues/2357): Add code of conduct: Contributor Covenant
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
 *   java-codestyle
