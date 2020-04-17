@@ -30,6 +30,10 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
         return node.getMethodInfo().getName();
     }
 
+    public String getCanonicalName() {
+        return node.getMethodInfo().getCanonicalName();
+    }
+
     @Override
     public int getEndLine() {
         ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
@@ -82,6 +86,10 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     }
 
     public String getReturnType() {
-        return node.getReturnTypeRef().toString();
+        return node.getMethodInfo().getEmitSignature().getReturnType().getApexName();
+    }
+
+    public int getArity() {
+        return node.getMethodInfo().getParameterTypes().size();
     }
 }

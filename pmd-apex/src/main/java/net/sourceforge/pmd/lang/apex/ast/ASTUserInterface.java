@@ -31,7 +31,7 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
 
     @Override
     public String getImage() {
-        String apexName = node.getDefiningType().getApexName();
+        String apexName = getDefiningType();
         return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 

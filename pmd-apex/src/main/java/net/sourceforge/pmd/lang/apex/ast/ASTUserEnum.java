@@ -23,7 +23,7 @@ public class ASTUserEnum extends ApexRootNode<UserEnum> {
 
     @Override
     public String getImage() {
-        String apexName = node.getDefiningType().getApexName();
+        String apexName = getDefiningType();
         return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 

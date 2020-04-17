@@ -81,4 +81,20 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
             return "no location";
         }
     }
+
+    @Override
+    public String getDefiningType() {
+        if (node.getDefiningType() != null) {
+            return node.getDefiningType().getApexName();
+        }
+        return null;
+    }
+
+    @Override
+    public String getNamespace() {
+        if (node.getDefiningType() != null) {
+            return node.getDefiningType().getNamespace().toString();
+        }
+        return null;
+    }
 }

@@ -55,4 +55,8 @@ public interface ApexNode<T extends AstNode> extends Node {
     ApexNode<?> getParent();
 
     boolean hasRealLoc();
+
+    String getDefiningType();
+
+    String getNamespace();
 }

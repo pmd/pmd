@@ -22,6 +22,10 @@ public class ASTSoqlExpression extends AbstractApexNode<SoqlExpression> {
     }
 
     public String getQuery() {
-        return getNode().getRawQuery();
+        return node.getRawQuery();
+    }
+
+    public String getCanonicalQuery() {
+        return node.getCanonicalQuery();
     }
 }

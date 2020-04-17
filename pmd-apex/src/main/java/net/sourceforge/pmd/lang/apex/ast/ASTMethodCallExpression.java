@@ -11,8 +11,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
-public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
 
+public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
     @Deprecated
     @InternalApi
     public ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
@@ -35,5 +35,9 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
             typeName.append(it.next().getValue()).append('.');
         }
         return typeName.toString() + methodName;
+    }
+
+    public int getInputParametersSize() {
+        return node.getInputParameters().size();
     }
 }

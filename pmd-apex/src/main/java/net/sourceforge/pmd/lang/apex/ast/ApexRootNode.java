@@ -35,6 +35,6 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
      * @return the apex version
      */
     public double getApexVersion() {
-        return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+        return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
 }

@@ -20,4 +20,8 @@ public class ASTIfElseBlockStatement extends AbstractApexNode<IfElseBlockStateme
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public boolean hasElseStatement() {
+        return node.hasElseStatement();
+    }
 }

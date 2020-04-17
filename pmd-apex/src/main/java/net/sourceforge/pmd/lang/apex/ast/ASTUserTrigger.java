@@ -27,7 +27,7 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
     @Override
     public String getImage() {
-        return node.getDefiningType().getApexName();
+        return getDefiningType();
     }
 
     public ASTModifierNode getModifiers() {
