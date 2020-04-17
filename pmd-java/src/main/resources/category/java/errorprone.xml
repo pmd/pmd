@@ -2172,37 +2172,12 @@ public class JumbledIncrementerRule1 {
           language="java"
           since="1.0"
           message="You may have misspelled a JUnit framework method (setUp or tearDown)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitSpellingRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitspelling">
         <description>
 Some JUnit framework methods are easy to misspell.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//MethodDeclaration[(not(@Name = 'setUp')
- and translate(@Name, 'SETuP', 'setUp') = 'setUp')
- or (not(@Name = 'tearDown')
- and translate(@Name, 'TEARdOWN', 'tearDown') = 'tearDown')]
- [@Arity = 0]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 import junit.framework.*;
@@ -2219,36 +2194,13 @@ public class Foo extends TestCase {
           language="java"
           since="1.0"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitStaticSuiteRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitstaticsuite">
         <description>
 The suite() method in a JUnit test needs to be both public and static.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//Name[parent::MarkerAnnotation][
-           pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[not(@Static= true()) or not(@Public= true())]
-[@Name='suite']
-[@Arity = 0]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 import junit.framework.*;
@@ -3405,12 +3357,16 @@ To make sure the full stacktrace is printed out, use the logging statement with 
                 <value>
 <![CDATA[
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression
-/PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
-concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-[Type//ClassOrInterfaceType[@Image='Log']]
-/VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
-[PrimarySuffix/Arguments[@Size= 1]]
-[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
+    /PrimaryExpression
+        [PrimaryPrefix/Name
+            [starts-with(@Image,
+             concat((ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+                [Type//ClassOrInterfaceType[@Image='Log']]
+                /VariableDeclarator/VariableDeclaratorId/@Image)[1], '.'))
+            ]
+        ]
+        [PrimarySuffix/Arguments[@Size= 1]]
+        [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
 ]]>
                 </value>
             </property>

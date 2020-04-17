@@ -13,7 +13,7 @@ Rules which enforce generally accepted best practices.
           language="java"
           since="3.0"
           message="This abstract class does not have any abstract methods"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod">
         <description>
 The abstract class does not contain any abstract methods. An abstract class suggests
@@ -22,20 +22,6 @@ abstract methods. If the class is intended to be used as a base class only (not 
 directly) a protected constructor can be provided prevent direct instantiation.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration
-  [@Abstract= true()]
-  [not(ImplementsList)]
-  [not(ExtendsList)]
-  [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Abstract= true()])]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public abstract class Foo {
@@ -1029,36 +1015,13 @@ String name,
           language="java"
           since="5.1"
           message="Position literals first in String comparisons for EqualsIgnoreCase"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInCaseInsensitiveComparisonsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons">
         <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//PrimaryExpression[
-        PrimaryPrefix[Name
-                [
-    (ends-with(@Image, '.equalsIgnoreCase'))
-                ]
-        ]
-        [
-                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal)
-    and
-    ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
-        ]
-]
-[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
-[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo {
@@ -1074,32 +1037,13 @@ class Foo {
           language="java"
           since="3.3"
           message="Position literals first in String comparisons"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInComparisonsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons">
         <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//PrimaryExpression[
-    PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
-        [
-            (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral= true()])
-            and
-            ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
-        ]
-]
-[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
-[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo {
