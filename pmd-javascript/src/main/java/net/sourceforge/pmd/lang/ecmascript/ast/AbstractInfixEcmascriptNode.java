@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,8 +8,12 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.InfixExpression;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
 
+    @Deprecated
+    @InternalApi
     public AbstractInfixEcmascriptNode(T infixExpression) {
         this(infixExpression, true);
     }
