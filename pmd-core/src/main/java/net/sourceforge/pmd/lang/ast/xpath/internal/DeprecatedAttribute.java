@@ -27,7 +27,7 @@ public @interface DeprecatedAttribute {
 
 
     /**
-     * The simple name of the attribute to use for replacement.
+     * The simple name of the attribute to use for replacement (with '@' prefix).
      * If empty, then the attribute is deprecated for removal.
      */
     String replaceWith() default NO_REPLACEMENT;

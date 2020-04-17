@@ -74,7 +74,10 @@ public abstract class DeprecatedAttrLogger {
                     if (!replacement.isEmpty()) {
                         msg += ", please use " + replacement + " instead";
                     }
-                    LOG.warning(msg);
+                    // ok this circumvents the logger, because otherwise
+                    // messages get lost in ugly header lines
+                    System.err.println("WARNING: " + msg);
+                    // LOG.warning(msg);
                 }
             }
         }
