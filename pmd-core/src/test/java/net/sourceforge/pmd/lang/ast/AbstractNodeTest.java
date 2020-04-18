@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -228,7 +228,6 @@ public class AbstractNodeTest {
         assertEquals(0, grandChild.getNumChildren());
     }
 
-
     @Test
     public void testDeprecatedAttributeXPathQuery() throws JaxenException {
         class MyRootNode extends DummyNode implements RootNode {
@@ -247,6 +246,5 @@ public class AbstractNodeTest {
         assertTrue(log.contains("attribute"));
         assertTrue(log.contains("dummyNode/@Size"));
     }
-
 
 }
