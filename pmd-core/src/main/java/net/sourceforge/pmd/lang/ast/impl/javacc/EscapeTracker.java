@@ -23,6 +23,7 @@ class EscapeTracker {
 
     private static final int[] EMPTY = new int[0];
     private static final int RECORD_SIZE = 3;
+    static final EOFException EOF = new EOFException();
 
     /*
      * Offsets in the input buffer where a unicode escape occurred.
@@ -70,22 +71,22 @@ class EscapeTracker {
         escapeRecords[nextFreeIdx++] = offsetInInput + lengthInOutput;
     }
 
-    private int inOff(int idx) {
+    int inOff(int idx) {
         assert idx < nextFreeIdx;
         return escapeRecords[idx];
     }
 
-    private int inLen(int idx) {
+    int inLen(int idx) {
         assert idx < nextFreeIdx;
         return escapeRecords[idx + 1];
     }
 
-    private int invalidIdx(int idx) {
+    int invalidIdx(int idx) {
         assert idx < nextFreeIdx;
         return escapeRecords[idx + 2];
     }
 
-    private int indexAfter(int idx) {
+    int indexAfter(int idx) {
         return inOff(idx) + inLen(idx);
     }
 
@@ -163,7 +164,7 @@ class EscapeTracker {
 
         public char next() throws EOFException {
             if (pos == buf.length()) {
-                throw new EOFException();
+                throw EOF;
             }
             char c;
 
@@ -216,7 +217,11 @@ class EscapeTracker {
                         break;
                     }
                 }
-                pos = newOff - numChars; // numChars is the remainder
+                if (numChars < 0) {
+                    pos = newOff; // newOff was already clipped
+                } else {
+                    pos = newOff - numChars; // numChars is the remainder
+                }
             }
         }
 
@@ -233,39 +238,33 @@ class EscapeTracker {
 
             if (markEscape == nextEscape) {
                 // no escape in the marked range
-                sb.append(buf, pos - suffixLen, pos);
+                buf.appendChars(sb, pos - suffixLen, suffixLen);
             } else {
-                if (suffixLen == markLength()) {
-                    appendMark(sb);
-                } else {
-                    // fallback inefficient implementation
-                    StringBuilder tmp = new StringBuilder();
-                    appendMark(tmp);
-                    sb.append(tmp, tmp.length() - suffixLen, tmp.length());
-                }
+                // fallback inefficient implementation
+                getMarkImage().appendChars(sb, markLength() - suffixLen, suffixLen);
             }
         }
 
-        public void appendMark(StringBuilder sb) {
+        public Chars getMarkImage() {
             if (markEscape == nextEscape) {
                 // no escape in the marked range
-                sb.append(buf, mark, pos);
-                return;
+                return buf.slice(mark, markLength());
             }
 
-            sb.ensureCapacity(markLength());
+            StringBuilder sb = new StringBuilder(markLength());
             int prevLength = sb.length();
 
             int cur = mark;
             int esc = markEscape;
             while (cur < pos && esc < nextEscape) {
-                sb.append(buf, cur, invalidIdx(esc));
+                buf.appendChars(sb, cur, invalidIdx(esc) - cur);
                 cur = indexAfter(esc);
                 esc += RECORD_SIZE;
             }
             // no more escape in the range, append everything until the pos
-            sb.append(buf, cur, pos);
+            buf.appendChars(sb, cur, pos - cur);
             assert sb.length() - prevLength == markLength() : sb + " should have length " + markLength();
+            return Chars.wrap(sb, true);
         }
 
         private void ensureMarked() {

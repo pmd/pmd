@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import java.io.EOFException;
 import java.io.IOException;
 
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -64,9 +65,15 @@ public final class CharStream {
      * to the current buffer position.
      */
     public String getTokenImage() {
-        StringBuilder sb = new StringBuilder();
-        cursor.appendMark(sb);
-        return sb.toString();
+        return getTokenImageCs().toString();
+    }
+
+    /**
+     * Returns a string made up of characters from the token mark up to
+     * to the current buffer position.
+     */
+    public Chars getTokenImageCs() {
+        return cursor.getMarkImage();
     }
 
 

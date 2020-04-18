@@ -110,7 +110,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     public JavaccToken createToken(int kind, CharStream cs, @Nullable String image) {
         return new JavaccToken(
             kind,
-            image == null ? cs.getTokenImage() : image,
+            image == null ? cs.getTokenImageCs() : image,
             cs.getStartOffset(),
             cs.getEndOffset(),
             this

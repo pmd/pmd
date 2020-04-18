@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextRegion;
@@ -139,6 +141,10 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return image;
     }
 
+    public boolean imageEquals(CharSequence charSequence) {
+        return StringUtils.equals(image, charSequence);
+    }
+
     @Override
     public TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
@@ -178,14 +184,14 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public JavaccToken replaceImage(CharStream charStream) {
         return new JavaccToken(
             this.kind,
-            charStream.getTokenImage(),
+            charStream.getTokenImageCs(),
             this.startOffset,
             charStream.getEndOffset(),
             this.document
         );
     }
 
-    public JavaccToken withImage(String image) {
+    public JavaccToken withImage(CharSequence image) {
         return new JavaccToken(
             this.kind,
             image,

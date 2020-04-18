@@ -84,6 +84,22 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
+    public void testUnicodeEscapes() {
+        java8.parse("public class Foo { String[] s = { \"Ven\\u00E4j\\u00E4\" }; }");
+    }
+
+    @Test
+    public void testUnicodeEscapes2() {
+        java.parse("\n"
+                        + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
+                        + "\n"
+                        + "        String ACT[] = new String[] {\"Acre \\u6642\\u9593\", \"ACT\",\n"
+                        + "                                     \"Acre \\u590f\\u4ee4\\u6642\\u9593\", \"ACST\",\n"
+                        + "                                     \"Acre \\u6642\\u9593\", \"ACT\"};"
+                        + "}");
+    }
+
+    @Test
     public final void testGetFirstASTNameImageNull() {
         java4.parse(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
     }
