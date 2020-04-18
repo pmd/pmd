@@ -1486,7 +1486,7 @@ usage is likely a bug, or at best poor style.</p>
 Global variables can lead to side-effects that are hard to debug.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Assignment</span><span class="p">[</span><span class="nt">Name</span><span class="err">/</span><span class="na">@GlobalName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'true'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Assignment</span><span class="p">[</span><span class="nt">Name</span><span class="err">/</span><span class="na">@GlobalName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

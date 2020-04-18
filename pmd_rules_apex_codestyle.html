@@ -1648,9 +1648,9 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ForLoopStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ForLoopStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">ForEachStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+</span><span class="o">//</span><span class="nt">ForEachStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1793,9 +1793,9 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfBlockStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="s1">'false'</span><span class="p">][</span><span class="nf">count</span><span class="p">(</span><span class="kn">child::</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfBlockStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()][</span><span class="nf">count</span><span class="p">(</span><span class="kn">child::</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">IfElseBlockStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="s1">'false'</span><span class="p">][</span><span class="nf">count</span><span class="p">(</span><span class="kn">child::</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
+</span><span class="o">//</span><span class="nt">IfElseBlockStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()][</span><span class="nf">count</span><span class="p">(</span><span class="kn">child::</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1858,7 +1858,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfBlockStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfBlockStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2410,7 +2410,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">WhileLoopStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">WhileLoopStatement</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="na">@CurlyBrace</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

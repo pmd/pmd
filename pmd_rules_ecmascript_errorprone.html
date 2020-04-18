@@ -1384,9 +1384,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ObjectLiteral</span><span class="p">[</span><span class="nv">$allowObjectLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"false"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@TrailingComma</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'true'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ObjectLiteral</span><span class="p">[</span><span class="nv">$allowObjectLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@TrailingComma</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">ArrayLiteral</span><span class="p">[</span><span class="nv">$allowArrayLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"false"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@TrailingComma</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'true'</span><span class="p">]</span><span class="w">
+</span><span class="o">//</span><span class="nt">ArrayLiteral</span><span class="p">[</span><span class="nv">$allowArrayLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@TrailingComma</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1450,11 +1450,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 same type. The === operator avoids the casting.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">InfixExpression</span><span class="p">[(</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"=="</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"!="</span><span class="p">)</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">InfixExpression</span><span class="p">[</span><span class="w">
+  </span><span class="p">(</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"=="</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"!="</span><span class="p">)</span><span class="w">
   </span><span class="ow">and</span><span class="w">
- </span><span class="p">(</span><span class="kn">child::</span><span class="nt">KeywordLiteral</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"true"</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"false"</span><span class="p">]</span><span class="w">
- </span><span class="ow">or</span><span class="w">
- </span><span class="kn">child::</span><span class="nt">NumberLiteral</span><span class="p">)</span><span class="w">
+  </span><span class="p">(</span><span class="nt">KeywordLiteral</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'true'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">NumberLiteral</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -1492,7 +1491,7 @@ same type. The === operator avoids the casting.</p>
 precision in a floating point number.  This may result in numeric calculations being in error.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">NumberLiteral</span><span class="p">[</span><span class="na">@NormalizedImage</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="na">@Number</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">NumberLiteral</span><span class="p">[</span><span class="na">@NormalizedImage</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nf">string</span><span class="p">(</span><span class="na">@Number</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

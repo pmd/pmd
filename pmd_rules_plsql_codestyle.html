@@ -1543,13 +1543,13 @@ on a separate line.</li>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CursorForLoopStatement</span><span class="p">[</span><span class="w">
-    </span><span class="nv">$allowSimpleLoops</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="nv">$allowSimpleLoops</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w">
     </span><span class="p">(</span><span class="nt">Statement</span><span class="o">//</span><span class="nt">CursorForLoopStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">CursorForLoopStatement</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span><span class="o">/</span><span class="nt">ForIndex</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nf">matches</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nv">$cursorPattern</span><span class="p">))]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">ForStatement</span><span class="p">[</span><span class="w">
-    </span><span class="nv">$allowSimpleLoops</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="w"> </span><span class="ow">or</span><span class="w">
+    </span><span class="nv">$allowSimpleLoops</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w">
     </span><span class="p">(</span><span class="nt">Statement</span><span class="o">//</span><span class="nt">ForStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">ForStatement</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span><span class="o">/</span><span class="nt">ForIndex</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nf">matches</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nv">$indexPattern</span><span class="p">))]</span><span class="w">

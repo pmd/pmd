@@ -1386,7 +1386,7 @@ Block-level synchronization helps to ensure that only the code that needs synchr
 gets it.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Synchronized</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Synchronized</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1458,7 +1458,7 @@ a good expertise of the Java Memory Model. Moreover, its range of action is some
 the volatile keyword should not be used for maintenance purpose and portability.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Volatile</span><span class="p">,</span><span class="s1">'true'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Volatile</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1840,7 +1840,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'0'</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="w">
         </span><span class="p">.</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'.notify'</span><span class="p">)]</span><span class="w">
