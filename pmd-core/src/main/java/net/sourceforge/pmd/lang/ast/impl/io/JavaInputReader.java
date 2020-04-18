@@ -51,11 +51,14 @@ public final class JavaInputReader extends EscapeAwareReader {
         }
 
         int bslashCount = off - firstBslashOff;
-        // this condition is "is there an escape at offset firstBslashOff"
-        if ((bslashCount & 1) == 1    // odd number of backslashes
-            && off < input.length() - 4 // at least 5 chars to form the escape ('u' + 4 hex digits)
-            && input.charAt(off) == 'u') {   // the char after the last backslash is a 'u'
-
+        // is there an escape at offset firstBslashOff?
+        if ((bslashCount & 1) == 1 // odd number of backslashes
+            && off < input.length() && input.charAt(off) == 'u') { // at least one 'u'
+            // odd number of backslashes, this is enough to expect an escape or throw an exception
+            while (off < input.length() && input.charAt(off) == 'u') {
+                // consume all the 'u's
+                off++;
+            }
             replaceFirstBackslashWithEscape(firstBslashOff, off);
             this.savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
             return recordEscape(firstBslashOff, off + 5 - firstBslashOff, 1);
@@ -79,8 +82,8 @@ public final class JavaInputReader extends EscapeAwareReader {
                     | hexVal(input.charAt(++offOfTheU))
                     );
             input.set(posOfFirstBackSlash, c); // replace the start char of the backslash
-        } catch (NumberFormatException e) {
 
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             String message = "Invalid escape sequence at line "
                 + getLine(posOfFirstBackSlash) + ", column "
                 + getColumn(posOfFirstBackSlash);
