@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.scala.ast.ASTCase;
 import net.sourceforge.pmd.lang.scala.ast.ASTCtorPrimary;
@@ -166,6 +167,7 @@ import scala.meta.Type;
  * Translates Scala's AST to a PMD-compatible AST.
  *
  */
+@InternalApi
 class ScalaTreeBuilder {
 
     private static final Map<Class<? extends Tree>, Constructor<? extends ScalaNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();

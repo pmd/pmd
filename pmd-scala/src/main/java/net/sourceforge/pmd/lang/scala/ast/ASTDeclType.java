@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Decl;
 
@@ -11,12 +13,8 @@ import scala.meta.Decl;
  */
 public class ASTDeclType extends AbstractScalaNode<Decl.Type> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTDeclType(Decl.Type scalaNode) {
         super(scalaNode);
     }
