@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.cpp.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.BackslashEscapeReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.BackslashEscapeReader;
 import net.sourceforge.pmd.util.document.Chars;
 
 public class CppEscapeReader extends BackslashEscapeReader {

@@ -2,11 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
-package net.sourceforge.pmd.lang.ast.impl.javacc;
+package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import static java.lang.Integer.max;
 
@@ -134,7 +130,7 @@ class EscapeTracker {
         return res.append('}').toString();
     }
 
-    /** Backend for a CharStream. */
+    /** Backend for a CharStream. Maintains a current position and a mark. */
     class Cursor {
 
         /**

@@ -8,8 +8,8 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLTokenKinds;
 
 public class PLSQLTokenizer extends JavaCCTokenizer {

@@ -17,7 +17,7 @@ PARSER_BEGIN(PythonParserImpl)
 
 package net.sourceforge.pmd.lang.python.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PythonParserImpl {

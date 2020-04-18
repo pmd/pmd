@@ -6,11 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeReader;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeAwareReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeReader;
 import net.sourceforge.pmd.lang.jsp.ast.JspTokenKinds;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;

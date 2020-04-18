@@ -21,7 +21,7 @@ options {
 PARSER_BEGIN(MatlabParserImpl)
 package net.sourceforge.pmd.lang.matlab.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class MatlabParserImpl {

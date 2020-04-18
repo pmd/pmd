@@ -14,11 +14,11 @@ import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.WHITESPACE;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeReader;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeAwareReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeReader;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
