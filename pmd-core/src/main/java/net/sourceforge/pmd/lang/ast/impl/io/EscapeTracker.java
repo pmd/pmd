@@ -181,7 +181,7 @@ class EscapeTracker {
                 pos -= numChars; // then there were no escapes before the 'pos'
             } else {
                 int inoff = pos;
-                for (int i = nextEscape - RECORD_SIZE; i >= 0 && numChars > 0; i -= RECORD_SIZE) {
+                for (int i = maxEscape() - RECORD_SIZE; i >= 0 && numChars > 0; i -= RECORD_SIZE) {
                     int esc = inOff(i);
                     if (esc == inoff) {
                         inoff -= inLen(i);

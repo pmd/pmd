@@ -59,9 +59,9 @@ public final class JavaInputReader extends EscapeAwareReader {
                 // consume all the 'u's
                 off++;
             }
-            replaceFirstBackslashWithEscape(firstBslashOff, off);
+            int end = replaceFirstBackslashWithEscape(firstBslashOff, off - 1);
             this.savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
-            return recordEscape(firstBslashOff, off + 5 - firstBslashOff, 1);
+            return recordEscape(firstBslashOff, end - firstBslashOff, 1);
         } else {
             // not an escape sequence
             int min = min(maxOff, off);
@@ -73,7 +73,7 @@ public final class JavaInputReader extends EscapeAwareReader {
         }
     }
 
-    private void replaceFirstBackslashWithEscape(int posOfFirstBackSlash, int offOfTheU) throws IOException {
+    private int replaceFirstBackslashWithEscape(int posOfFirstBackSlash, int offOfTheU) throws IOException {
         try {
             char c = (char)
                     ( hexVal(input.charAt(++offOfTheU)) << 12
@@ -82,7 +82,7 @@ public final class JavaInputReader extends EscapeAwareReader {
                     | hexVal(input.charAt(++offOfTheU))
                     );
             input.set(posOfFirstBackSlash, c); // replace the start char of the backslash
-
+            return offOfTheU + 1;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             String message = "Invalid escape sequence at line "
                 + getLine(posOfFirstBackSlash) + ", column "

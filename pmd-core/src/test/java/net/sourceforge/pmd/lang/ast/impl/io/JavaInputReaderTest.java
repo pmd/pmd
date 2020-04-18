@@ -113,6 +113,26 @@ public class JavaInputReaderTest {
     }
 
     @Test
+    public void testSeveralEscapes() throws IOException {
+
+        String input = "abc\\\\\\u00a0d\\uu00a0ede";
+        try (JavaInputReader r = readString(input)) {
+
+            char[] chars = new char[20];
+
+            int read = r.read(chars, 0, 5);
+
+            Assert.assertEquals(5, read);
+            assertBufferIsJust("abc\u00a0d", chars, 0);
+
+            read = r.read(chars, 5, 4);
+
+            Assert.assertEquals(4, read);
+            assertBufferIsJust("abc\u00a0d\u00a0ede", chars, 0);
+        }
+    }
+
+    @Test
     public void testAnEscapeInsideBlock() throws IOException {
 
         String input = "abc\\\\\\u00a0dede\\u00a0";
