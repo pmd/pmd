@@ -14,10 +14,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.io.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.io.JavaInputReader;
-import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -139,11 +135,11 @@ public class CharStreamImplTest {
     }
 
     public static CharStream simpleCharStream(String abcd) throws IOException {
-        return NewCharStream.open(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)));
+        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)));
     }
 
     public static CharStream javaCharStream(String abcd) throws IOException {
-        return NewCharStream.open(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)) {
+        return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)) {
             @Override
             public EscapeAwareReader newReader(Chars text) {
                 return new JavaInputReader(text);

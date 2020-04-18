@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaInputReader;
 import net.sourceforge.pmd.util.document.Chars;
 
 

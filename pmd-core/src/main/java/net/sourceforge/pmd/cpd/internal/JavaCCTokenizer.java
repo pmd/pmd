@@ -13,9 +13,8 @@ import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -27,7 +26,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
         TextDocument textDocument = TextDocument.create(TextFile.cpdCompat(sourceCode));
         JavaccTokenDocument tokenDoc = newTokenDoc(textDocument);
-        return makeLexerImpl(NewCharStream.open(tokenDoc));
+        return makeLexerImpl(CharStream.create(tokenDoc));
     }
 
     protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {

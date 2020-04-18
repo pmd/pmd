@@ -2,7 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl.io;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import static java.lang.Integer.max;
 
@@ -122,7 +126,6 @@ class EscapeTracker {
     /** Backend for a CharStream. */
     class Cursor {
 
-
         /**
          * This is the index in buf of the next char to read, it always
          * holds that buf[pos] is a valid character.
@@ -158,7 +161,7 @@ class EscapeTracker {
             this.buf = buf;
         }
 
-        char next() throws EOFException {
+        public char next() throws EOFException {
             if (pos == buf.length()) {
                 throw new EOFException();
             }
@@ -178,7 +181,7 @@ class EscapeTracker {
         }
 
 
-        void backup(int numChars) {
+        public void backup(int numChars) {
             ensureMarked();
             if (numChars > markLength()) {
                 throw new IllegalArgumentException(
@@ -217,13 +220,13 @@ class EscapeTracker {
             }
         }
 
-        void mark() {
+        public void mark() {
             this.mark = pos;
             this.markEscape = nextEscape;
             this.markOutOffset = outOffset;
         }
 
-        void markToString(StringBuilder sb) {
+        public void markToString(StringBuilder sb) {
             ensureMarked();
 
             int prevLength = sb.length();
@@ -256,15 +259,15 @@ class EscapeTracker {
             assert markEscape <= escapeRecords.length : "Wrong escape mark";
         }
 
-        int curOutOffset() {
+        public int curOutOffset() {
             return outOffset;
         }
 
-        int markOutOffset() {
+        public int markOutOffset() {
             return markOutOffset;
         }
 
-        int markLength() {
+        public int markLength() {
             return outOffset - markOutOffset;
         }
     }

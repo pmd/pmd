@@ -11,15 +11,14 @@ import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public class CppCharStreamTest {
 
     @NonNull
     public CharStream charStreamFor(String source) throws IOException {
-        return NewCharStream.open(new CPPTokenizer().newTokenDoc(TextDocument.readOnlyString(source)));
+        return CharStream.create(new CPPTokenizer().newTokenDoc(TextDocument.readOnlyString(source)));
     }
 
     @Test

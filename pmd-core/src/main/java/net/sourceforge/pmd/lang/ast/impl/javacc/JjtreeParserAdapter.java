@@ -7,11 +7,9 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import java.io.IOException;
 
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -34,7 +32,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         JavaccTokenDocument doc = newDocumentImpl(task.getTextDocument());
 
         try {
-            CharStream charStream = NewCharStream.open(doc);
+            CharStream charStream = CharStream.create(doc);
             return parseImpl(charStream, task);
         } catch (IOException e) {
             throw new TokenMgrError(-1, -1, task.getFileDisplayName(), "IO error", e);

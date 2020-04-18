@@ -8,7 +8,7 @@ import static java.lang.Integer.min;
 
 import java.io.IOException;
 
-import net.sourceforge.pmd.lang.ast.impl.io.EscapeAwareReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.EscapeAwareReader;
 import net.sourceforge.pmd.util.document.Chars;
 
 public class CppEscapeReader extends EscapeAwareReader {
