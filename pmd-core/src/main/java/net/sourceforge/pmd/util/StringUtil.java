@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -143,6 +144,21 @@ public final class StringUtil {
             next = c;
         }
         return col;
+    }
+
+    /**
+     * Like {@link StringBuilder#append(CharSequence)}, but uses an optimized
+     * implementation if the charsequence happens to be a {@link Chars}. {@link StringBuilder}
+     * already optimises the cases where the charseq is a string, a StringBuilder,
+     * or a stringBuffer. This is especially useful in parsers.
+     */
+    public static StringBuilder append(StringBuilder sb, CharSequence charSeq) {
+        if (charSeq instanceof Chars) {
+            ((Chars) charSeq).appendChars(sb, 0, charSeq.length());
+            return sb;
+        } else {
+            return sb.append(charSeq);
+        }
     }
 
     /**

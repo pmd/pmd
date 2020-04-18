@@ -15,9 +15,14 @@ import java.io.EOFException;
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
- * Records where escapes occurred in the input document. This is quite
- * an inefficient way to deal with it, yet in the common case where there
- * are few/no escapes, it's enough I think.
+ * Records where escapes occurred in the input document. This is optimal
+ * for the case where there are few/no escapes.
+ *
+ * <p>This implementation can handle arbitrary length differences between
+ * the escape and its translation, provided the translation is always smaller
+ * than the escape.
+ * - C++ translates newline escapes (1 or 2 chars) to zero chars (an important corner case)
+ * - Java translates arbitrary-length unicode escapes (>= 6 chars) to 1 char
  */
 class EscapeTracker {
 
@@ -26,20 +31,20 @@ class EscapeTracker {
     static final EOFException EOF = new EOFException();
 
     /*
-     * Offsets in the input buffer where a unicode escape occurred.
-     * Represented as tuples (off, len, invalid) where
+     * Escapes are encoded as tuples (off, after, invalid) where
      * - off is the offset in the source file where the escape occurred
-     * - len is the length of the escape in the input file, eg for \ u 00a0 will be 6
+     * - after is the index of the char following the escape in the input file
      * - invalid is the last offset in the buffer which contains the translated chars (exclusive)
      *
-     * Eg for "a\u00a0b" (translates as "a b"), the buffer looks like
-     * [a u00a0b]
-     *   ^       (off)                 this char has been replaced with the translated value of the escape
-     *    ^^^^^  (off + len - invalid) these characters are only present in the input, we jump over them when reading
-     *    ^      (invalid)
-     *         ^ (off + len)
+     * Eg for "_\u00a0_" (translates as "_ _"), the buffer looks like
+     * [_ u00a0_]
+     *   ^       (off)               this char has been replaced with the translated value of the escape
+     *    ^^^^^  (after - invalid)   these characters are only present in the input, we jump over them when reading
+     *    ^      (invalid)           offset at which to jump to 'after'
+     *         ^ (after)             first char after the escape
+     *   ^^^^^^  (after - off)       total length of the escape in the input
      *
-     * The escape record is (1,6,2)
+     * The escape record is (1,7,2)
      *
      * When reading the buffer we'll copy two blocks
      * * "a "
@@ -60,14 +65,14 @@ class EscapeTracker {
      */
     void recordEscape(int offsetInInput, int lengthInInput, int lengthInOutput) {
         if (nextFreeIdx + 1 >= escapeRecords.length) {
-            // add 1 to not stay stuck at zero
+            // add 1 to not stay stuck at zero, needs to remain a multiple of RECORD_SIZE
             int[] newOffsets = new int[(escapeRecords.length + 1) * RECORD_SIZE];
             System.arraycopy(escapeRecords, 0, newOffsets, 0, escapeRecords.length);
             this.escapeRecords = newOffsets;
         }
 
         escapeRecords[nextFreeIdx++] = offsetInInput;
-        escapeRecords[nextFreeIdx++] = lengthInInput;
+        escapeRecords[nextFreeIdx++] = offsetInInput + lengthInInput;
         escapeRecords[nextFreeIdx++] = offsetInInput + lengthInOutput;
     }
 
@@ -76,18 +81,20 @@ class EscapeTracker {
         return escapeRecords[idx];
     }
 
-    int inLen(int idx) {
+    int indexAfter(int idx) {
         assert idx < nextFreeIdx;
         return escapeRecords[idx + 1];
     }
+
 
     int invalidIdx(int idx) {
         assert idx < nextFreeIdx;
         return escapeRecords[idx + 2];
     }
 
-    int indexAfter(int idx) {
-        return inOff(idx) + inLen(idx);
+    int inLen(int idx) {
+        assert idx < nextFreeIdx;
+        return indexAfter(idx) - inOff(idx);
     }
 
     /**
@@ -193,6 +200,15 @@ class EscapeTracker {
 
             if (nextEscape <= 0) {
                 pos -= numChars; // then there were no escapes before the 'pos'
+            } else if (numChars == 1) {
+                // fast path, very common
+                int esc = nextEscape - RECORD_SIZE; // >= 0 because of condition above
+                if (indexAfter(esc) == pos) {       // jump back over the escape
+                    pos = invalidIdx(esc) - 1;
+                    nextEscape = esc;
+                } else {
+                    pos--;
+                }
             } else {
                 int newOff = pos;
                 for (int i = nextEscape - RECORD_SIZE; i >= 0 && numChars > 0; i -= RECORD_SIZE) {
@@ -247,12 +263,11 @@ class EscapeTracker {
 
         public Chars getMarkImage() {
             if (markEscape == nextEscape) {
-                // no escape in the marked range
+                // no escape in the marked range, this is the fast path
                 return buf.slice(mark, markLength());
             }
 
             StringBuilder sb = new StringBuilder(markLength());
-            int prevLength = sb.length();
 
             int cur = mark;
             int esc = markEscape;
@@ -263,7 +278,7 @@ class EscapeTracker {
             }
             // no more escape in the range, append everything until the pos
             buf.appendChars(sb, cur, pos - cur);
-            assert sb.length() - prevLength == markLength() : sb + " should have length " + markLength();
+            assert sb.length() == markLength() : sb + " should have length " + markLength();
             return Chars.wrap(sb, true);
         }
 
