@@ -91,11 +91,14 @@ and unintentional empty constructors.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorDeclaration[@Private='false']
-                        [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+//ConstructorDeclaration[@Private= false()]
+                        [@containsComment = false()]
+                        [not(BlockStatement)]
+                        [$ignoreExplicitConstructorInvocation = true() or not(ExplicitConstructorInvocation)]
                         [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('javax.inject.Inject')])]
 ]]>
                 </value>
@@ -125,10 +128,11 @@ empty methods.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
+//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = false()]
 ]]>
                 </value>
             </property>

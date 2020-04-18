@@ -20,6 +20,7 @@ TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-v
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -60,6 +61,7 @@ TO_DATE without date format- use TO_DATE(expression, date-format)
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -112,6 +114,7 @@ TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.xpath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +22,13 @@ import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 import net.sourceforge.pmd.lang.rule.xpath.internal.RuleChainAnalyzer;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.om.Item;
+import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NamespaceConstant;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.ValueRepresentation;
@@ -57,6 +60,7 @@ import net.sf.saxon.value.Value;
 @Deprecated
 @InternalApi
 public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
+
     /**
      * Special nodeName that references the root expression.
      */
@@ -64,15 +68,11 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final Logger LOG = Logger.getLogger(SaxonXPathRuleQuery.class.getName());
 
-    private static final int MAX_CACHE_SIZE = 20;
-    private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
-        private static final long serialVersionUID = -7653916493967142443L;
+    private static final NamePool NAME_POOL = new NamePool();
 
-        @Override
-        protected boolean removeEldestEntry(final Map.Entry<Node, DocumentNode> eldest) {
-            return size() > MAX_CACHE_SIZE;
-        }
-    };
+    /** Cache key for the wrapped tree for saxon. */
+    private static final SimpleDataKey<DocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
+
 
     /**
      * Contains for each nodeName a sub expression, used for implementing rule chain.
@@ -97,7 +97,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Node> evaluate(final Node node, final RuleContext data) {
         initializeXPathExpression();
 
@@ -187,15 +186,13 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     private DocumentNode getDocumentNodeForRootNode(final Node node) {
         final Node root = getRootNode(node);
 
-        DocumentNode documentNode;
-        synchronized (CACHE) {
-            documentNode = CACHE.get(root);
-            if (documentNode == null) {
-                documentNode = new DocumentNode(root);
-                CACHE.put(root, documentNode);
-            }
+        DataMap<DataKey<?, ?>> userMap = root.getUserMap();
+        DocumentNode docNode = userMap.get(SAXON_TREE_CACHE_KEY);
+        if (docNode == null) {
+            docNode = new DocumentNode(root, getNamePool());
+            userMap.set(SAXON_TREE_CACHE_KEY, docNode);
         }
-        return documentNode;
+        return docNode;
     }
 
     /**
@@ -229,13 +226,14 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         try {
             final XPathEvaluator xpathEvaluator = new XPathEvaluator();
             final XPathStaticContext xpathStaticContext = xpathEvaluator.getStaticContext();
+            xpathStaticContext.getConfiguration().setNamePool(getNamePool());
 
             // Enable XPath 1.0 compatibility
             if (XPATH_1_0_COMPATIBILITY.equals(version)) {
                 ((AbstractStaticContext) xpathStaticContext).setBackwardsCompatibilityMode(true);
             }
 
-            ((IndependentContext) xpathEvaluator.getStaticContext()).declareNamespace("fn", NamespaceConstant.FN);
+            ((IndependentContext) xpathStaticContext).declareNamespace("fn", NamespaceConstant.FN);
 
             // Register PMD functions
             Initializer.initialize((IndependentContext) xpathStaticContext);
@@ -353,5 +351,9 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     public List<String> getRuleChainVisits() {
         initializeXPathExpression();
         return super.getRuleChainVisits();
+    }
+
+    public static NamePool getNamePool() {
+        return NAME_POOL;
     }
 }

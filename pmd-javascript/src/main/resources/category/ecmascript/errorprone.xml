@@ -20,12 +20,13 @@ This rule helps improve code portability due to differences in browser treatment
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
+//ObjectLiteral[$allowObjectLiteral = false() and @TrailingComma = true()]
 |
-//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
+//ArrayLiteral[$allowArrayLiteral = false() and @TrailingComma = true()]
 ]]>
                 </value>
             </property>
@@ -57,14 +58,14 @@ same type. The === operator avoids the casting.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//InfixExpression[(@Image = "==" or @Image = "!=")
+//InfixExpression[
+  (@Image = "==" or @Image = "!=")
   and
- (child::KeywordLiteral[@Image = "true" or @Image = "false"]
- or
- child::NumberLiteral)
+  (KeywordLiteral[@Image='true' or @Image = 'false'] or NumberLiteral)
 ]
 ]]>
                 </value>
@@ -104,10 +105,11 @@ precision in a floating point number.  This may result in numeric calculations b
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//NumberLiteral[@NormalizedImage != @Number]
+//NumberLiteral[@NormalizedImage != string(@Number)]
 ]]>
                 </value>
             </property>
