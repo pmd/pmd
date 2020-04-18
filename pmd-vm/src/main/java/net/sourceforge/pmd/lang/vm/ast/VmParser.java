@@ -42,7 +42,7 @@ public class VmParser extends JjtreeParserAdapter<ASTTemplate> {
 
         @Override
         public JavaccToken createToken(int kind, CharStream cs, @Nullable String image) {
-            String realImage = image == null ? cs.GetImage() : image;
+            String realImage = image == null ? cs.getTokenImage() : image;
             if (kind == VmTokenKinds.ESCAPE_DIRECTIVE) {
                 realImage = escapedDirective(realImage);
             }

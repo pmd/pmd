@@ -102,7 +102,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
      * @param cs    Char stream of the file. This can be used to get text
      *              coordinates and the image
      * @param image Shared instance of the image token. If this is non-null,
-     *              then no call to {@link CharStream#GetImage()} should be
+     *              then no call to {@link CharStream#getTokenImage()} should be
      *              issued.
      *
      * @return A new token
@@ -110,7 +110,7 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     public JavaccToken createToken(int kind, CharStream cs, @Nullable String image) {
         return new JavaccToken(
             kind,
-            image == null ? cs.GetImage() : image,
+            image == null ? cs.getTokenImage() : image,
             cs.getStartOffset(),
             cs.getEndOffset(),
             this

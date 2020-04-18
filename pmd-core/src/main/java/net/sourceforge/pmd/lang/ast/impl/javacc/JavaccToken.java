@@ -178,7 +178,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public JavaccToken replaceImage(CharStream charStream) {
         return new JavaccToken(
             this.kind,
-            charStream.GetImage(),
+            charStream.getTokenImage(),
             this.startOffset,
             charStream.getEndOffset(),
             this.document

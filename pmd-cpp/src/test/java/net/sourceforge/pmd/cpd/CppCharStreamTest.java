@@ -42,13 +42,15 @@ public class CppCharStreamTest {
     }
 
     private void assertStream(CharStream stream, String token) throws IOException {
-        char c = stream.BeginToken();
+        char c = stream.markTokenStart();
         assertEquals(token.charAt(0), c);
         for (int i = 1; i < token.length(); i++) {
             c = stream.readChar();
             assertEquals(token + " char at " + i + ": " + token.charAt(i) + " != " + c, token.charAt(i), c);
         }
-        assertEquals(token, stream.GetImage());
-        assertEquals(token, new String(stream.GetSuffix(token.length())));
+        assertEquals(token, stream.getTokenImage());
+        StringBuilder sb = new StringBuilder();
+        stream.appendSuffix(sb, token.length());
+        assertEquals(token, sb.toString());
     }
 }

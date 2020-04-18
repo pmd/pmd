@@ -60,7 +60,7 @@
 
     <!-- This will be moved to impl package when all language modules have been ported   -->
     <property name="base-tokenmgr" value="${ast-api-package}.AbstractTokenManager"/>
-    <property name="charstream-itf" value="${ast-api-package}.CharStream"/>
+    <property name="charstream-itf" value="${ast-impl-package}.CharStream"/>
 
 
     <property name="tokenmgr-name" value="${parser-name}TokenManager" />
@@ -274,6 +274,25 @@
             <file name="${tokenmgr-file}" />
             <regexp pattern="protected Token jjFillToken.*?(?=int curLexState = )" />
             <substitution expression="protected Token jjFillToken() {return input_stream.getTokenDocument().createToken(jjmatchedKind, input_stream, jjstrLiteralImages[jjmatchedKind]);}" />
+        </replaceregexp>
+
+        <!-- Renamed CharStream methods       -->
+        <replaceregexp flags="g">
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="image.append\(input_stream.GetSuffix\(" />
+            <substitution expression="input_stream.appendSuffix(image,(" />
+        </replaceregexp>
+
+        <replaceregexp flags="g">
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="input_stream.GetImage" />
+            <substitution expression="input_stream.getTokenImage" />
+        </replaceregexp>
+
+        <replaceregexp flags="g">
+            <file name="${tokenmgr-file}" />
+            <regexp pattern="input_stream.BeginToken" />
+            <substitution expression="input_stream.markTokenStart" />
         </replaceregexp>
 
         <!-- This is used to allow for tokens to be immutable. The lexical actions

@@ -89,12 +89,12 @@ public class CharStreamImplTest {
 
         CharStream stream = simpleCharStream("abcd");
 
-        assertEquals('a', stream.BeginToken());
+        assertEquals('a', stream.markTokenStart());
         assertEquals('b', stream.readChar());
         assertEquals('c', stream.readChar());
         assertEquals('d', stream.readChar());
 
-        assertEquals("abcd", stream.GetImage());
+        assertEquals("abcd", stream.getTokenImage());
 
         stream.backup(2);
         assertEquals('c', stream.readChar());
@@ -110,25 +110,25 @@ public class CharStreamImplTest {
 
         CharStream stream = javaCharStream("__\\u00a0_\\u00a0_");
 
-        assertEquals('_', stream.BeginToken());
+        assertEquals('_', stream.markTokenStart());
         assertEquals('_', stream.readChar());
         assertEquals('\u00a0', stream.readChar());
         assertEquals('_', stream.readChar());
 
-        assertEquals("__\u00a0_", stream.GetImage());
+        assertEquals("__\u00a0_", stream.getTokenImage());
 
         stream.backup(2);
         assertEquals('\u00a0', stream.readChar());
         assertEquals('_', stream.readChar());
         assertEquals('\u00a0', stream.readChar());
 
-        assertEquals("__\u00a0_\u00a0", stream.GetImage());
+        assertEquals("__\u00a0_\u00a0", stream.getTokenImage());
         assertEquals('_', stream.readChar());
         stream.backup(2);
-        assertEquals('\u00a0', stream.BeginToken());
+        assertEquals('\u00a0', stream.markTokenStart());
         assertEquals('_', stream.readChar());
 
-        assertEquals("\u00a0_", stream.GetImage());
+        assertEquals("\u00a0_", stream.getTokenImage());
 
         expect.expect(EOFException.class);
         stream.readChar();
@@ -154,7 +154,7 @@ public class CharStreamImplTest {
 
         assertEquals('a', stream.readChar());
         assertEquals('b', stream.readChar());
-        assertEquals('c', stream.BeginToken());
+        assertEquals('c', stream.markTokenStart());
         assertEquals('d', stream.readChar());
 
         expect.expect(IllegalArgumentException.class);
@@ -166,7 +166,7 @@ public class CharStreamImplTest {
 
         CharStream stream = simpleCharStream("abcd");
 
-        assertEquals('a', stream.BeginToken());
+        assertEquals('a', stream.markTokenStart());
         assertEquals('b', stream.readChar());
         assertEquals('c', stream.readChar());
         assertEquals('d', stream.readChar());

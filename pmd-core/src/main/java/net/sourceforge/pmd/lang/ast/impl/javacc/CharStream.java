@@ -57,7 +57,7 @@ public final class CharStream {
      * the buffer between two successive calls to this method to implement
      * backup correctly.
      */
-    public char BeginToken() throws EOFException {
+    public char markTokenStart() throws EOFException {
         cursor.mark();
         return cursor.next();
     }
@@ -67,7 +67,7 @@ public final class CharStream {
      * Returns a string made up of characters from the token mark up to
      * to the current buffer position.
      */
-    public String GetImage() {
+    public String getTokenImage() {
         StringBuilder sb = new StringBuilder();
         cursor.markToString(sb);
         return sb.toString();
@@ -75,31 +75,16 @@ public final class CharStream {
 
 
     /**
-     * Returns an array of characters that make up the suffix of length 'len' for
-     * the current token. This is used to build up the matched string
-     * for use in actions in the case of MORE. A simple and inefficient
-     * implementation of this is as follows :
-     *
-     * <pre>{@code
-     * String t = tokenImage();
-     * return t.substring(t.length() - len).toCharArray();
-     * }</pre>
+     * Appends the suffix of length 'len' of the current token to the given
+     * string builder. This is used to build up the matched string
+     * for use in actions in the case of MORE.
      *
      * @param len Length of the returned array
      *
-     * @return The suffix
-     *
-     * @throws IndexOutOfBoundsException If len is greater than the length of the
-     *                                   current token
+     * @throws IndexOutOfBoundsException If len is greater than the length of the current token
      */
-    public char[] GetSuffix(int len) {
-        String t = GetImage();
-        return t.substring(t.length() - len).toCharArray();
-    }
-
-
     public void appendSuffix(StringBuilder sb, int len) {
-        String t = GetImage();
+        String t = getTokenImage();
         sb.append(t, t.length() - len, t.length());
     }
 
