@@ -52,10 +52,12 @@ public class EscapeAwareReader extends Reader {
     }
 
     /**
-     * Translate all the characters in the buffer.
+     * Translate all the input (in-place) in the buffer. This is fed to a
+     * cursor initialized to zero.
      */
-    public int translate() throws IOException {
-        return readUnchecked(null, 0, Integer.MAX_VALUE);
+    EscapeTracker.Cursor translate() throws IOException {
+        readUnchecked(null, 0, Integer.MAX_VALUE);
+        return escapes.new Cursor(input);
     }
 
 

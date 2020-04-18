@@ -31,8 +31,7 @@ public final class CharStream {
      */
     public static CharStream create(JavaccTokenDocument doc) throws IOException {
         try (EscapeAwareReader reader = doc.newReader(doc.getTextDocument().getText())) {
-            reader.translate();
-            return new CharStream(doc, reader.escapes.new Cursor(reader.input));
+            return new CharStream(doc, reader.translate());
         }
     }
 
