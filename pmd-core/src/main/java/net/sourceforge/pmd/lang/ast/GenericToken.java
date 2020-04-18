@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.document.Reportable;
 import net.sourceforge.pmd.util.document.TextRegion;
@@ -31,16 +33,31 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
     T getPreviousComment();
 
     /**
-     * Returns the token's text.
+     * Returns the token's text as a string.
      */
     default String getImage() {
         return getImageCs().toString();
     }
 
+
     /**
-     * Returns the image as a {@link CharSequence}.
+     * Returns the text of the token as a char sequence.
+     * This should be preferred when you can use eg {@link StringUtils}
+     * to do some processing, without having to create a string.
      */
     CharSequence getImageCs();
+
+
+    /**
+     * Returns true if the image of this token equals
+     * the given charsequence. This does not create a
+     * string.
+     *
+     * @param charSeq A character sequence
+     */
+    default boolean imageEquals(CharSequence charSeq) {
+        return StringUtils.equals(getImageCs(), charSeq);
+    }
 
 
     /** Returns a text region with the coordinates of this token. */
@@ -51,6 +68,7 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      * last token of token sequences that have been fully lexed.
      */
     boolean isEof();
+
 
     /**
      * Returns true if this token is implicit, ie was inserted artificially
