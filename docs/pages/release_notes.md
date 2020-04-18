@@ -50,6 +50,8 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
+*   java-bestpractices
+    *   [#2398](https://github.com/pmd/pmd/issues/2398): \[java] AbstractClassWithoutAbstractMethod false negative with inner abstract classes
 *   java-codestyle
     *   [#1164](https://github.com/pmd/pmd/issues/1164): \[java] ClassNamingConventions suggests to add Util for class containing only static constants
     *   [#1723](https://github.com/pmd/pmd/issues/1723): \[java] UseDiamondOperator false-positive inside lambda
@@ -59,6 +61,8 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2402](https://github.com/pmd/pmd/issues/2402): \[java] CloseResource possible false positive with Primitive Streams
 *   java-multithreading
     *   [#2313](https://github.com/pmd/pmd/issues/2313): \[java] Documenation for DoNotUseThreads is outdated
+*   javascript-errorprone
+    *   [#384](https://github.com/pmd/pmd/issues/384): \[javascript] Trailing commas not detected on French default locale
 
 ### API Changes
 
@@ -148,6 +152,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2403](https://github.com/pmd/pmd/pull/2403): \[java] #2402 fix false-positives on Primitive Streams - [Bernd Farka](https://github.com/BerndFarkaDyna)
 *   [#2409](https://github.com/pmd/pmd/pull/2409): \[java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - [Binu R J](https://github.com/binu-r)
 *   [#2411](https://github.com/pmd/pmd/pull/2411): \[java] Fix UseAssertEqualsInsteadOfAssertTrue Example - [Moritz Scheve](https://github.com/Blightbuster)
+*   [#2423](https://github.com/pmd/pmd/pull/2423): \[core] Fix Checkstyle OperatorWrap in AbstractTokenizer - [Harsh Kukreja](https://github.com/harsh-kukreja)
 
 {% endtocmaker %}
 
