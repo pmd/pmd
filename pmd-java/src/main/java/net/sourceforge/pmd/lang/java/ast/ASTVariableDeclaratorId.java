@@ -107,12 +107,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     @DeprecatedAttribute(replaceWith = "@Name")
     @Deprecated
     public String getImage() {
-        return super.getImage();
+        return getName();
     }
 
     /** Returns the name of the variable. */
     public String getName() {
-        return getImage();
+        return super.getImage();
     }
 
     /**

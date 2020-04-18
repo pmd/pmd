@@ -71,7 +71,7 @@ public class AttributeAxisIteratorTest {
         assertFalse(atts.containsKey("NodeList"));
     }
 
-    public Map<String, Attribute> toMap(AttributeAxisIterator it) {
+    private Map<String, Attribute> toMap(AttributeAxisIterator it) {
         Map<String, Attribute> atts = new HashMap<>();
         while (it.hasNext()) {
             Attribute attribute = it.next();

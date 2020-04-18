@@ -48,13 +48,13 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode {
     @Deprecated
     @DeprecatedAttribute(replaceWith = "@Operator")
     public String getImage() {
-        return super.getImage();
+        return getOperator();
     }
 
     /**
      * Returns the image of the operator, i.e. "+" or "-".
      */
     public String getOperator() {
-        return getImage();
+        return super.getImage();
     }
 }
