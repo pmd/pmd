@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.nio.CharBuffer;
 
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A reader that optionally escapes its input text. It records where
@@ -34,27 +35,16 @@ public class EscapeAwareReader extends Reader {
      * replace the first char with a backslash. We can report unnecessary
      * escapes that way.
      */
-    protected char[] input;
+    protected Chars input;
     /** Position of the next char to read in the input. */
     protected int bufpos;
     /** Keep track of adjustments to make to the offsets, caused by unicode escapes. */
     final EscapeTracker escapes = new EscapeTracker();
 
-    public EscapeAwareReader(CharSequence input, int startIdxInclusive, int endIdxExclusive) {
+    public EscapeAwareReader(Chars input) {
         assert input != null;
-        assert startIdxInclusive >= 0;
-        assert endIdxExclusive >= 0;
-        assert endIdxExclusive >= startIdxInclusive;
-
-        int len = endIdxExclusive - startIdxInclusive;
-
-        this.input = new char[len];
-        input.toString().getChars(startIdxInclusive, endIdxExclusive, this.input, 0);
+        this.input = input.mutableCopy();
         bufpos = 0;
-    }
-
-    public EscapeAwareReader(CharSequence input) {
-        this(input, 0, input.length());
     }
 
     /**
@@ -68,12 +58,12 @@ public class EscapeAwareReader extends Reader {
     @Override
     public int read(final char[] cbuf, final int off, final int len) throws IOException {
         ensureOpen();
-        if (this.bufpos == input.length) {
+        if (this.bufpos == input.length()) {
             return -1;
         }
 
         int readChars = 0;
-        while (readChars < len && this.bufpos < input.length) {
+        while (readChars < len && this.bufpos < input.length()) {
             int bpos = this.bufpos;
             int nextJump = gobbleMaxWithoutEscape(bpos, len - readChars);
             int newlyReadChars = nextJump - bpos;
@@ -82,9 +72,9 @@ public class EscapeAwareReader extends Reader {
 
             if (newlyReadChars != 0) {
                 if (cbuf != null) {
-                    System.arraycopy(input, bpos, cbuf, off + readChars, newlyReadChars);
+                    input.getChars(bpos, cbuf, off + readChars, newlyReadChars);
                 }
-            } else if (nextJump == input.length) {
+            } else if (nextJump == input.length()) {
                 // eof
                 break;
             }
@@ -100,7 +90,7 @@ public class EscapeAwareReader extends Reader {
      * the bufpos to where we should start the next jump.
      */
     protected int gobbleMaxWithoutEscape(final int bufpos, final int maxReadahead) throws IOException {
-        return this.bufpos = min(bufpos + maxReadahead, input.length);
+        return this.bufpos = min(bufpos + maxReadahead, input.length());
     }
 
     protected void recordEscape(final int startOffsetInclusive, int length) {

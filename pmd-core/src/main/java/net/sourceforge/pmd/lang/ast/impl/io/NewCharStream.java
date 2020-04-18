@@ -15,15 +15,17 @@ public class NewCharStream implements CharStream {
     private final JavaccTokenDocument document;
     private final Cursor cursor;
 
-    public NewCharStream(JavaccTokenDocument document, EscapeTracker.Cursor cursor) {
+    private NewCharStream(JavaccTokenDocument document, EscapeTracker.Cursor cursor) {
         this.document = document;
         this.cursor = cursor;
     }
 
-    public static CharStream consume(EscapeAwareReader reader, JavaccTokenDocument doc) throws IOException {
-        try (EscapeAwareReader r = reader) {
+    public static CharStream open(JavaccTokenDocument doc) {
+        try (EscapeAwareReader reader = doc.newReader(doc.getTextDocument().getText())) {
             reader.translate();
             return new NewCharStream(doc, reader.escapes.new Cursor(reader.input));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

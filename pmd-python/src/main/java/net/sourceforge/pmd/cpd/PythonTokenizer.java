@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.Reader;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -12,7 +11,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.python.ast.PythonTokenKinds;
@@ -31,8 +29,8 @@ public class PythonTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) {
-        return CharStreamFactory.simpleCharStream(sourceCode, PythonTokenDocument::new);
+    protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
+        return new PythonTokenDocument(textDoc);
     }
 
     private static class PythonTokenDocument extends JavaccTokenDocument {

@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.cpd.internal;
 
 import java.io.IOException;
-import java.io.Reader;
-
-import org.apache.commons.io.input.CharSequenceReader;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -18,20 +15,23 @@ import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.io.TextFile;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
-        Reader reader = IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer()));
-        return makeLexerImpl(makeCharStream(reader));
+        TextDocument textDocument = TextDocument.create(TextFile.cpdCompat(sourceCode));
+        JavaccTokenDocument tokenDoc = newTokenDoc(textDocument);
+        return makeLexerImpl(NewCharStream.open(tokenDoc));
     }
 
-    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
-        return CharStreamFactory.simpleCharStream(sourceCode);
+    protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
+        return new JavaccTokenDocument(textDoc);
     }
 
     protected abstract TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode);

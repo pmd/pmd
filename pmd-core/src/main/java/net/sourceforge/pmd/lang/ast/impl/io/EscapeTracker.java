@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.io;
 
+import net.sourceforge.pmd.util.document.Chars;
+
 /**
  * Records where escapes occurred in the input document. This is quite
  * an inefficient way to deal with it, yet in the common case where there
@@ -94,18 +96,18 @@ class EscapeTracker {
          * identified by the {@link #escapeRecords}. It must hold
          * that buf.length is the original source length.
          */
-        private final char[] buf;
+        private final Chars buf;
 
         private int mark = Integer.MAX_VALUE;
         private int markEscape;
         private int markOutOffset;
 
-        Cursor(char[] buf) {
+        Cursor(Chars buf) {
             this.buf = buf;
         }
 
         char next() {
-            char c = buf[pos];
+            char c = buf.charAt(pos);
 
             if (nextEscape < escapeRecords.length && pos == escapeRecords[nextEscape]) {
                 pos += escapeRecords[nextEscape + 1]; // add escape length

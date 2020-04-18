@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -15,10 +14,11 @@ import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class JavaTokenizer extends JavaCCTokenizer {
 
@@ -44,8 +44,8 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) {
-        return CharStreamFactory.javaCharStream(sourceCode, InternalApiBridge::javaTokenDoc);
+    protected JavaccTokenDocument newTokenDoc(TextDocument textDoc) {
+        return InternalApiBridge.javaTokenDoc(textDoc);
     }
 
     @Override

@@ -2,38 +2,47 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.cpp.ast;
+package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.StringReader;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class CppCharStreamTest {
 
+    @NonNull
+    public CharStream charStreamFor(String source) {
+        return NewCharStream.open(new CPPTokenizer().newTokenDoc(TextDocument.readOnlyString(source)));
+    }
+
     @Test
     public void testContinuationUnix() throws IOException {
-        CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\\nb"));
+        CharStream stream = charStreamFor("a\\\nb");
         assertStream(stream, "ab");
     }
 
     @Test
     public void testContinuationWindows() throws IOException {
         // note that the \r is normalized to a \n by the TextFile
-        CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\\r\nb"));
+        CharStream stream = charStreamFor("a\\\r\nb");
         assertStream(stream, "ab");
     }
 
     @Test
     public void testBackup() throws IOException {
         // note that the \r is normalized to a \n by the TextFile
-        CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\b\\qc"));
+        CharStream stream = charStreamFor("a\\b\\\rc");
         assertStream(stream, "a\\b\\qc");
     }
 
-    private void assertStream(CppCharStream stream, String token) throws IOException {
+    private void assertStream(CharStream stream, String token) throws IOException {
         char c = stream.BeginToken();
         assertEquals(token.charAt(0), c);
         for (int i = 1; i < token.length(); i++) {
