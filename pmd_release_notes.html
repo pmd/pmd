@@ -1425,6 +1425,7 @@ local variables.</p>
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2019">#2019</a>: [core] Insufficient deprecation warnings for XPath attributes</li>
       <li><a href="https://github.com/pmd/pmd/issues/2355">#2355</a>: [doc] Improve documentation about incremental analysis</li>
       <li><a href="https://github.com/pmd/pmd/issues/2356">#2356</a>: [doc] Add missing doc about pmd.github.io</li>
     </ul>
@@ -1541,6 +1542,14 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-javascript/6.23.0/net/sourceforge/pmd/lang/ecmascript5/Ecmascript5TokenManager.html#"><code>Ecmascript5TokenManager</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.23.0/net/sourceforge/pmd/lang/matlab/MatlabTokenManager.html#"><code>MatlabTokenManager</code></a></li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.23.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCTokenManager.html#"><code>ObjectiveCTokenManager</code></a></li>
+</ul>
+
+<p>In the <strong>Java AST</strong> the following attributes are deprecated and will issue a warning when used in XPath rules:</p>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.23.0/net/sourceforge/pmd/lang/java/ast/ASTAdditiveExpression.html#getImage()"><code>ASTAdditiveExpression#getImage</code></a> - use <code class="highlighter-rouge">getOperator()</code> instead</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.23.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getImage()"><code>ASTVariableDeclaratorId#getImage</code></a> - use <code class="highlighter-rouge">getName()</code> instead</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.23.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getVariableName()"><code>ASTVariableDeclaratorId#getVariableName</code></a> - use <code class="highlighter-rouge">getName()</code> instead</li>
 </ul>
 
 <h5 id="for-removal">For removal</h5>

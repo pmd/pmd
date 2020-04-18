@@ -1575,7 +1575,7 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#formalparametern
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="w">
-        </span><span class="nn">pmd:</span><span class="nf">matches</span><span class="p">(</span><span class="na">@VariableName</span><span class="p">,</span><span class="s1">'^in[A-Z].*'</span><span class="p">,</span><span class="s1">'^out[A-Z].*'</span><span class="p">,</span><span class="s1">'^in$'</span><span class="p">,</span><span class="s1">'^out$'</span><span class="p">)</span><span class="w">
+        </span><span class="nn">pmd:</span><span class="nf">matches</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'^in[A-Z].*'</span><span class="p">,</span><span class="s1">'^out[A-Z].*'</span><span class="p">,</span><span class="s1">'^in$'</span><span class="p">,</span><span class="s1">'^out$'</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -3148,7 +3148,7 @@ properties.</p>
 <p>Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3363,7 +3363,7 @@ by the more general rule
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="w">
-</span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'m_'</span><span class="p">)]</span><span class="w">
+</span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'m_'</span><span class="p">)]</span><span class="w">
 </span><span class="p">[</span><span class="ow">not</span><span class="w"> </span><span class="p">(..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -3671,7 +3671,7 @@ by the more general rule
 <p>Fields, local variables, or parameter names that are very short are not helpful to the reader.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
  </span><span class="c">(: ForStatement :)</span><span class="w">
  </span><span class="p">[</span><span class="ow">not</span><span class="p">(..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..[</span><span class="kn">self::</span><span class="nt">ForInit</span><span class="p">])]</span><span class="w">
  </span><span class="c">(: Foreach statement :)</span><span class="w">
@@ -3749,7 +3749,7 @@ by the more general rule <a href="pmd_rules_java_codestyle.html#fieldnamingconve
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
  </span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="w">
   </span><span class="p">[</span><span class="na">@Final</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
-  </span><span class="p">[</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">upper-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="err">=</span><span class="na">@Image</span><span class="p">]]</span><span class="w">
+  </span><span class="p">[</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">upper-case</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="err">=</span><span class="na">@Name</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4140,7 +4140,7 @@ which makes the code also more readable.</p>
   </span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="w">
     </span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">CastExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
-    </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">AdditiveExpression</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'-'</span><span class="p">])</span><span class="w"> </span><span class="ow">and</span><span class="w">
+    </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">AdditiveExpression</span><span class="p">[</span><span class="na">@Operator</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'-'</span><span class="p">])</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ShiftExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">RelationalExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
     </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">InstanceOfExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
