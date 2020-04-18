@@ -6,10 +6,8 @@ package net.sourceforge.pmd.lang.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.jaxen.JaxenException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -227,25 +225,5 @@ public class AbstractNodeTest {
         // Check that this node still does not have any children
         assertEquals(0, grandChild.getNumChildren());
     }
-
-
-    @Test
-    public void testDeprecatedAttributeXPathQuery() throws JaxenException {
-        class MyRootNode extends DummyNode implements RootNode {
-
-            private MyRootNode(int id) {
-                super(id);
-            }
-        }
-
-        addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
-
-        String log = loggingRule.getLog();
-
-        assertTrue(log.contains("deprecated"));
-        assertTrue(log.contains("attribute"));
-        assertTrue(log.contains("dummyNode/@Size"));
-    }
-
 
 }
