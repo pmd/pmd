@@ -16,43 +16,77 @@ import net.sourceforge.pmd.util.document.Chars;
 class EscapeTracker {
 
     private static final int[] EMPTY = new int[0];
+    private static final int RECORD_SIZE = 3;
 
-    /**
+    /*
      * Offsets in the input buffer where a unicode escape occurred.
-     * Represented as pairs [off, len] where
+     * Represented as tuples (off, len, invalid) where
      * - off is the offset in the source file where the escape occurred
-     * - len is the length in characters of the escape (which is translated to a single char).
+     * - len is the length of the escape in the input file, eg for \ u 00a0 will be 6
+     * - invalid is the last offset in the buffer which contains the translated chars (exclusive)
+     *
+     * Eg for "a\u00a0b" (translates as "a b"), the buffer looks like
+     * [a u00a0b]
+     *   ^       this char has been replaced with the translated value of the escape
+     *    ^^^^^  these characters are only present in the input, we jump over them when reading
+     *   ^       off
+     *    ^      invalid
+     *         ^ off + len
+     *
+     * The escape record is (1,6,2)
+     *
+     * When reading the buffer we'll copy two blocks
+     * * "a "
+     * * then jump over "u00a0" and copy "b"
+     *
+     * In general to read until an escape means reading until its 'invalid'
+     * field, and once that is reached, jump to off + len.
+     *
      */
     private int[] escapeRecords = EMPTY;
     /** Index of the next write in the {@link #escapeRecords}. */
     private int nextFreeIdx = 0;
 
+
     /**
      * Calls to this method must occur in source order (ie param
      * offsetInInput increases monotonically).
      */
-    void recordEscape(int offsetInInput, int len) {
+    void recordEscape(int offsetInInput, int lengthInInput, int lengthInOutput) {
         if (nextFreeIdx + 1 >= escapeRecords.length) {
-            // double capacity, add 1 to not stay stuck at zero
-            int[] newOffsets = new int[(escapeRecords.length + 1) * 2];
+            // add 1 to not stay stuck at zero
+            int[] newOffsets = new int[(escapeRecords.length + 1) * RECORD_SIZE];
             System.arraycopy(escapeRecords, 0, newOffsets, 0, escapeRecords.length);
             this.escapeRecords = newOffsets;
         }
 
         escapeRecords[nextFreeIdx++] = offsetInInput;
-        escapeRecords[nextFreeIdx++] = len - 1; // -1 because the translated escape has length 1
+        escapeRecords[nextFreeIdx++] = lengthInInput;
+        escapeRecords[nextFreeIdx++] = offsetInInput + lengthInOutput;
+    }
+
+    private int inOff(int idx) {
+        return escapeRecords[idx];
+    }
+
+    private int inLen(int idx) {
+        return escapeRecords[idx + 1];
+    }
+
+    private int invalidIdx(int idx) {
+        return escapeRecords[idx + 2];
     }
 
     /**
      * Convert an offset in the translated file into an offset in
      * the untranslated input.
      */
-    public int inputOffsetAt(int translatedOffset) {
+    int inputOffsetAt(int translatedOffset) {
         // basically accumulate the lengths of all escapes occurring before the given translatedOffset
         int sum = translatedOffset;
-        for (int i = 0; i < nextFreeIdx; i += 2) {
-            if (escapeRecords[i] < sum) {
-                sum += escapeRecords[i + 1];
+        for (int i = 0; i < maxEscape(); i += RECORD_SIZE) {
+            if (inOff(i) < sum) {
+                sum += inLen(i);
             } else {
                 break;
             }
@@ -60,16 +94,24 @@ class EscapeTracker {
         return sum;
     }
 
+    int maxEscape() {
+        return nextFreeIdx;
+    }
+
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder("Escape set {");
-        for (int i = 0; i < nextFreeIdx; i += 2) {
-            res.append("(at=").append(escapeRecords[i]).append(", len=").append(escapeRecords[i + 1]).append("), ");
+        for (int i = 0; i < maxEscape(); i += RECORD_SIZE) {
+            res.append("(at=").append(inOff(i))
+               .append(", inlen=").append(inLen(i))
+               .append(", invalidAt=").append(invalidIdx(i))
+               .append("), ");
         }
 
         return res.append('}').toString();
     }
 
+    /** Backend for a CharStream. */
     class Cursor {
 
 
@@ -112,13 +154,14 @@ class EscapeTracker {
             if (pos == buf.length()) {
                 throw new EOFException();
             }
+            char c;
 
-            char c = buf.charAt(pos);
-
-            if (nextEscape < escapeRecords.length && pos == escapeRecords[nextEscape]) {
-                pos += escapeRecords[nextEscape + 1]; // add escape length
-                this.nextEscape += 2;
+            if (nextEscape < maxEscape() && pos == invalidIdx(nextEscape)) {
+                pos += inLen(nextEscape); // add escape length
+                c = buf.charAt(pos);
+                this.nextEscape += RECORD_SIZE;
             } else {
+                c = buf.charAt(pos);
                 pos++;
             }
             outOffset++;
@@ -137,20 +180,20 @@ class EscapeTracker {
             if (nextEscape <= 0) {
                 pos -= numChars; // then there were no escapes before the 'pos'
             } else {
-                int off = pos;
-                for (int i = nextEscape - 2; i >= 0 && numChars > 0; i -= 2) {
-                    int esc = escapeRecords[i];
-                    if (esc == off) {
-                        off -= escapeRecords[i + 1];
-                    } else if (esc > off) {
+                int inoff = pos;
+                for (int i = nextEscape - RECORD_SIZE; i >= 0 && numChars > 0; i -= RECORD_SIZE) {
+                    int esc = inOff(i);
+                    if (esc == inoff) {
+                        inoff -= inLen(i);
+                    } else if (esc > inoff) {
                         // then the current escape was before what we're looking at
                         break;
                     } else {
-                        off--;
+                        inoff--;
                     }
                     numChars--;
                 }
-                pos = off - numChars;
+                pos = inoff - numChars;
             }
         }
 
@@ -174,15 +217,13 @@ class EscapeTracker {
                 int cur = mark;
                 int esc = markEscape;
                 while (cur < pos && esc < nextEscape) {
-                    int escapeOff = escapeRecords[esc];
-                    assert escapeOff < pos;
-                    sb.append(buf, cur, escapeOff + 1);
-                    cur = escapeOff + escapeRecords[esc + 1];
-                    esc += 2;
+                    sb.append(buf, cur, invalidIdx(esc));
+                    cur = inOff(esc) + inLen(esc);
+                    esc += RECORD_SIZE;
                 }
                 // no more escape in the range, append everything until the pos
                 sb.append(buf, cur, pos + 1);
-                assert sb.length() - prevLength == markLength();
+                assert sb.length() - prevLength == markLength() : sb + " should have length " + markLength();
             }
         }
 

@@ -32,12 +32,11 @@ public final class JavaInputReader extends EscapeAwareReader {
     }
 
     @Override
-    protected int gobbleMaxWithoutEscape(final int bufpos, final int maxReadahead) throws IOException {
-        int off = bufpos;
-        int max = min(bufpos + maxReadahead, input.length());
+    protected int gobbleMaxWithoutEscape(final int maxOff) throws IOException {
+        int off = this.bufpos;
         boolean noBackSlash = false;
         int notEscapeEnd = this.savedNotEscapeSpecialEnd;
-        while (off < max && (noBackSlash = input.charAt(off) != '\\' || notEscapeEnd < off)) {
+        while (off < maxOff && (noBackSlash = input.charAt(off) != '\\' || notEscapeEnd < off)) {
             off++;
         }
 
@@ -59,12 +58,10 @@ public final class JavaInputReader extends EscapeAwareReader {
 
             replaceFirstBackslashWithEscape(firstBslashOff, off);
             this.savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
-            this.bufpos = off + 5;
-            this.recordEscape(firstBslashOff, off + 5 - firstBslashOff);
-            return firstBslashOff + 1;
+            return recordEscape(firstBslashOff, off + 5 - firstBslashOff, 1);
         } else {
             // not an escape sequence
-            int min = min(bufpos + maxReadahead, off);
+            int min = min(maxOff, off);
             // save the number of backslashes that are part of the escape,
             // might have been cut in half by the maxReadahead
             this.savedNotEscapeSpecialEnd = min < off ? off : Integer.MAX_VALUE;

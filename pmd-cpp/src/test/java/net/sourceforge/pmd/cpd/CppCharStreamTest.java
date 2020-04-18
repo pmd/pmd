@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.document.TextDocument;
 public class CppCharStreamTest {
 
     @NonNull
-    public CharStream charStreamFor(String source) {
+    public CharStream charStreamFor(String source) throws IOException {
         return NewCharStream.open(new CPPTokenizer().newTokenDoc(TextDocument.readOnlyString(source)));
     }
 

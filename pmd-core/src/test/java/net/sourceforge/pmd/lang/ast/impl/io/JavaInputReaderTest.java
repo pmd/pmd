@@ -85,7 +85,7 @@ public class JavaInputReaderTest {
             Assert.assertEquals(1, read);
             assertBufferIsJust("abc\\\\", chars, 0);
 
-            read = r.read(chars, 5, 8);
+            read = r.read(chars, 5, chars.length - 5);
 
             Assert.assertEquals(5, read);
             assertBufferIsJust("abc\\\\\\dede", chars, 0);
@@ -125,7 +125,7 @@ public class JavaInputReaderTest {
             Assert.assertEquals(9, read);
             assertBufferIsJust("abc\u00a0dede\u00a0", chars, 0);
 
-            read = r.read(chars, 9, 10);
+            read = r.read(chars, 9, chars.length - 9);
 
             Assert.assertEquals(-1, read);
             assertBufferIsJust("abc\u00a0dede\u00a0", chars, 0);

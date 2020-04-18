@@ -23,35 +23,30 @@ public class CppEscapeReader extends EscapeAwareReader {
     }
 
     @Override
-    protected int gobbleMaxWithoutEscape(int bufpos, int maxReadahead) throws IOException {
-        int off = bufpos;
-        int max = min(bufpos + maxReadahead, input.length());
+    protected int gobbleMaxWithoutEscape(final int maxOff) throws IOException {
+        int off = this.bufpos;
         boolean noBackSlash = false;
         int notEscapeEnd = this.savedNotEscapeSpecialEnd;
-        while (off < max && (noBackSlash = input.charAt(off) != '\\' || notEscapeEnd < off)) {
+        while (off < maxOff && (noBackSlash = input.charAt(off) != '\\' || notEscapeEnd < off)) {
             off++;
         }
 
-        if (noBackSlash) {
+        if (noBackSlash || off == maxOff) {
             this.bufpos = off;
             return off;
         }
 
         final int backSlackOff = off++;
         if (input.charAt(off) == NEWLINE) {
-            recordEscape(backSlackOff, 2);
-            this.bufpos = off + 2;
-            return backSlackOff;
+            return recordEscape(backSlackOff, 2, 0);
         } else if (input.charAt(off) == CARRIAGE_RETURN) {
             if (input.charAt(++off) == NEWLINE) {
-                recordEscape(backSlackOff, 3);
-                this.bufpos = off + 3;
-                return backSlackOff;
+                return recordEscape(backSlackOff, 3, 0);
             }
         }
 
         // not an escape sequence
-        int min = min(bufpos + maxReadahead, off);
+        int min = min(maxOff, off);
         // save the number of backslashes that are part of the escape,
         // might have been cut in half by the maxReadahead
         this.savedNotEscapeSpecialEnd = min < off ? off : Integer.MAX_VALUE;

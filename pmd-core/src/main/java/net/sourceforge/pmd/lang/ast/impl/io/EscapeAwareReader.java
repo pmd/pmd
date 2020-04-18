@@ -13,11 +13,11 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
- * A reader that optionally escapes its input text. It records where
+ * A reader that can interpret escapes in its input text. It records where
  * escapes occurred, and can translate an offset in the translated
  * input document to a line+column position in the original input.
  *
- * <p>The default implementation does not perform any escaping.
+ * <p>The default implementation does not perform any escape translation.
  */
 @SuppressWarnings("PMD.AssignmentInOperand")
 public class EscapeAwareReader extends Reader {
@@ -27,12 +27,6 @@ public class EscapeAwareReader extends Reader {
      * first backslash is replaced with the translated value of the
      * escape. The bufpos is updated so that we read the next char
      * after the escape.
-     *
-     * <p>This makes it so that 1. we don't need an additional buffer for
-     * translated chars, and 2. the full escape is preserved, just use
-     * the {@link EscapeTracker} to get the position of the escape and
-     * replace the first char with a backslash. We can report unnecessary
-     * escapes that way.
      */
     protected Chars input;
     /** Position of the next char to read in the input. */
@@ -50,21 +44,30 @@ public class EscapeAwareReader extends Reader {
      * Translate all the characters in the buffer.
      */
     public int translate() throws IOException {
-        return read(null, 0, Integer.MAX_VALUE);
+        return readUnchecked(null, 0, Integer.MAX_VALUE);
     }
 
 
     @Override
-    public int read(final char[] cbuf, final int off, final int len) throws IOException {
+    public int read(final char[] cbuf, final int off, int len) throws IOException {
+        if (off < 0 || len < 0 || len + off > cbuf.length) {
+            throw new IndexOutOfBoundsException("cbuf len=" + cbuf.length + " off=" + off + " len=" + len);
+        }
+        return readUnchecked(cbuf, off, len);
+    }
+
+    private int readUnchecked(char[] cbuf, int off, int len) throws IOException {
         ensureOpen();
         if (this.bufpos == input.length()) {
             return -1;
         }
 
+        len = min(len, input.length()); // remove Integer.MAX_VALUE
+
         int readChars = 0;
         while (readChars < len && this.bufpos < input.length()) {
             int bpos = this.bufpos;
-            int nextJump = gobbleMaxWithoutEscape(bpos, len - readChars);
+            int nextJump = gobbleMaxWithoutEscape(min(input.length(), bpos + len - readChars));
             int newlyReadChars = nextJump - bpos;
 
             assert newlyReadChars >= 0 && (readChars + newlyReadChars) <= len;
@@ -82,18 +85,20 @@ public class EscapeAwareReader extends Reader {
         return readChars;
     }
 
-
     /**
      * Returns the max offset, EXclusive, with which we can cut the input
      * array from the bufpos to dump it into the output array. This sets
      * the bufpos to where we should start the next jump.
      */
-    protected int gobbleMaxWithoutEscape(final int bufpos, final int maxReadahead) throws IOException {
-        return this.bufpos = min(bufpos + maxReadahead, input.length());
+    protected int gobbleMaxWithoutEscape(int maxOff) throws IOException {
+        return this.bufpos = maxOff;
     }
 
-    protected void recordEscape(final int startOffsetInclusive, int length) {
-        this.escapes.recordEscape(startOffsetInclusive, length);
+    protected int recordEscape(final int startOffsetInclusive, int lengthInSource, int translatedLength) {
+        assert lengthInSource > 0 && startOffsetInclusive >= 0;
+        this.escapes.recordEscape(startOffsetInclusive, lengthInSource, translatedLength);
+        this.bufpos = startOffsetInclusive + lengthInSource;
+        return startOffsetInclusive + translatedLength;
     }
 
     @Override
