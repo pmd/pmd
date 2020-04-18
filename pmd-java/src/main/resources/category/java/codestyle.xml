@@ -164,7 +164,7 @@ by the more general rule {% rule java/codestyle/FormalParameterNamingConventions
                 <value>
 <![CDATA[
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
-        pmd:matches(@VariableName,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
+        pmd:matches(@Name,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
 ]
 ]]>
                 </value>
@@ -1364,7 +1364,7 @@ by the more general rule
                 <value>
 <![CDATA[
 //VariableDeclaratorId
-[starts-with(@Image, 'm_')]
+[starts-with(@Name, 'm_')]
 [not (../../../FieldDeclaration)]
 ]]>
                 </value>
@@ -1758,7 +1758,7 @@ by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
 //ClassOrInterfaceDeclaration[@Interface= false()]
  /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
   [@Final= false()]
-  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Name)=@Name]]
 ]]>
                 </value>
             </property>
@@ -2067,7 +2067,7 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
   /PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
-    not(./AdditiveExpression[@Image = '-']) and
+    not(./AdditiveExpression[@Operator = '-']) and
     not(./ShiftExpression) and
     not(./RelationalExpression) and
     not(./InstanceOfExpression) and

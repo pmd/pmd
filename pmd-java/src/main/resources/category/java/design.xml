@@ -133,7 +133,7 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
                 <value>
 <![CDATA[
 //CatchStatement[FormalParameter
- /VariableDeclaratorId/@Image = Block/BlockStatement/Statement
+ /VariableDeclaratorId/@Name = Block/BlockStatement/Statement
  /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
  and count(Block/BlockStatement/Statement) =1]
 ]]>
