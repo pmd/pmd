@@ -226,28 +226,46 @@ class EscapeTracker {
             this.markOutOffset = outOffset;
         }
 
-        public void markToString(StringBuilder sb) {
+        public void appendMarkSuffix(StringBuilder sb, int suffixLen) {
             ensureMarked();
+            assert suffixLen <= markLength();
 
-            int prevLength = sb.length();
 
             if (markEscape == nextEscape) {
                 // no escape in the marked range
-                sb.append(buf, mark, pos);
+                sb.append(buf, pos - suffixLen, pos);
             } else {
-                sb.ensureCapacity(markLength());
-
-                int cur = mark;
-                int esc = markEscape;
-                while (cur < pos && esc < nextEscape) {
-                    sb.append(buf, cur, invalidIdx(esc));
-                    cur = indexAfter(esc);
-                    esc += RECORD_SIZE;
+                if (suffixLen == markLength()) {
+                    appendMark(sb);
+                } else {
+                    // fallback inefficient implementation
+                    StringBuilder tmp = new StringBuilder();
+                    appendMark(tmp);
+                    sb.append(tmp, tmp.length() - suffixLen, tmp.length());
                 }
-                // no more escape in the range, append everything until the pos
-                sb.append(buf, cur, pos);
-                assert sb.length() - prevLength == markLength() : sb + " should have length " + markLength();
             }
+        }
+
+        public void appendMark(StringBuilder sb) {
+            if (markEscape == nextEscape) {
+                // no escape in the marked range
+                sb.append(buf, mark, pos);
+                return;
+            }
+
+            sb.ensureCapacity(markLength());
+            int prevLength = sb.length();
+
+            int cur = mark;
+            int esc = markEscape;
+            while (cur < pos && esc < nextEscape) {
+                sb.append(buf, cur, invalidIdx(esc));
+                cur = indexAfter(esc);
+                esc += RECORD_SIZE;
+            }
+            // no more escape in the range, append everything until the pos
+            sb.append(buf, cur, pos);
+            assert sb.length() - prevLength == markLength() : sb + " should have length " + markLength();
         }
 
         private void ensureMarked() {

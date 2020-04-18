@@ -32,7 +32,7 @@ options {
 PARSER_BEGIN(CppParserImpl)
 package net.sourceforge.pmd.lang.cpp.ast;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public final class CppParserImpl {

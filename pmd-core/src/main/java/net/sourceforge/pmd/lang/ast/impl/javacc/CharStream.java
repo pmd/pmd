@@ -13,10 +13,6 @@ import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * PMD flavour of character streams used by JavaCC parsers.
- *
- * TODO for when all JavaCC languages are aligned:
- * * rename methods to match decent naming conventions
- * * move to impl.javacc package
  */
 public final class CharStream {
 
@@ -69,7 +65,7 @@ public final class CharStream {
      */
     public String getTokenImage() {
         StringBuilder sb = new StringBuilder();
-        cursor.markToString(sb);
+        cursor.appendMark(sb);
         return sb.toString();
     }
 
@@ -84,8 +80,7 @@ public final class CharStream {
      * @throws IndexOutOfBoundsException If len is greater than the length of the current token
      */
     public void appendSuffix(StringBuilder sb, int len) {
-        String t = getTokenImage();
-        sb.append(t, t.length() - len, t.length());
+        cursor.appendMarkSuffix(sb, len);
     }
 
 
@@ -105,13 +100,19 @@ public final class CharStream {
         cursor.backup(amount);
     }
 
-    /** Returns the column number of the last character for the current token. */
+    /**
+     * Returns the column number of the last character for the current token.
+     * This is only used for parse exceptions and is very inefficient.
+     */
     public int getEndColumn() {
         return endLocation().getEndColumn();
     }
 
 
-    /** Returns the line number of the last character for current token. */
+    /**
+     * Returns the line number of the last character for current token.
+     * This is only used for parse exceptions and is very inefficient.
+     */
     public int getEndLine() {
         return endLocation().getEndLine();
     }
