@@ -23,6 +23,9 @@ import net.sourceforge.pmd.util.document.Chars;
  * than the escape.
  * - C++ translates newline escapes (1 or 2 chars) to zero chars (an important corner case)
  * - Java translates arbitrary-length unicode escapes (>= 6 chars) to 1 char
+ *
+ * <p>This class is tightly coupled to what {@link EscapeAwareReader}
+ * does with its buffer.
  */
 class EscapeTracker {
 

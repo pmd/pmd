@@ -10,16 +10,27 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import static java.lang.Integer.min;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
- * A reader that can interpret escapes in its input text. It records where
- * escapes occurred, and can translate an offset in the translated
- * input document to a line+column position in the original input.
+ * A reader that may interpret escapes in its input text. It records
+ * where escapes occurred, and can translate an offset in the translated
+ * document (the "output") to a line/column/offset coordinates in the
+ * original input. It uses a single char buffer to store both input and
+ * translated output, and is overall very optimised for the case where
+ * there are very few escapes. {@link CharStream} is the API to navigate
+ * on a translated document (with arbitrary backtrack abilities).
+ *
+ * <p>This is useful to back a {@link CharStream} for JavaCC implementation,
+ * but can also be used as a plain {@link Reader} if using other parser/lexer
+ * implementations. The reader behaviour is optimised for block IO and has
+ * poor char-by-char performance. Use a {@link BufferedReader} if you need it.
  *
  * <p>The default implementation does not perform any escape translation.
  */
@@ -39,7 +50,7 @@ public class EscapeAwareReader extends Reader {
     final EscapeTracker escapes = new EscapeTracker();
 
     public EscapeAwareReader(Chars input) {
-        assert input != null;
+        AssertionUtil.requireParamNotNull("input", input);
         this.input = input.mutableCopy();
         bufpos = 0;
     }
@@ -91,15 +102,17 @@ public class EscapeAwareReader extends Reader {
 
     /**
      * Returns the max offset, EXclusive, with which we can cut the input
-     * array from the bufpos to dump it into the output array. This sets
-     * the bufpos to where we should start the next jump.
+     * array from the bufpos to dump it into the output array. This must
+     * set the {@link #bufpos} to where we should start reading next (INclusive).
+     * If applicable, it must also replace in the buffer the start of
+     * the escape with its translation.
      */
     protected int gobbleMaxWithoutEscape(int maxOff) throws IOException {
         return this.bufpos = maxOff;
     }
 
     protected int recordEscape(final int startOffsetInclusive, int lengthInSource, int translatedLength) {
-        assert lengthInSource > 0 && startOffsetInclusive >= 0;
+        assert lengthInSource > 0 && lengthInSource >= translatedLength && startOffsetInclusive >= 0;
         this.escapes.recordEscape(startOffsetInclusive, lengthInSource, translatedLength);
         this.bufpos = startOffsetInclusive + lengthInSource;
         return startOffsetInclusive + translatedLength;
@@ -142,10 +155,20 @@ public class EscapeAwareReader extends Reader {
         return escapes.inputOffsetAt(outputOffset);
     }
 
+    /**
+     * The parameter is an *input* offset, if you got this offset from
+     * somewhere else than the input buffer you must first translate it
+     * back with {@link #inputOffset(int)}. This implementation is very
+     * inefficient but currently is only used for error messages (which
+     * obviously are exceptional).
+     */
     public int getLine(int idxInInput) {
         return StringUtil.lineNumberAt(input, idxInInput);
     }
 
+    /**
+     * @see #getLine(int)
+     */
     public int getColumn(int idxInInput) {
         return StringUtil.columnNumberAt(input, idxInInput);
     }

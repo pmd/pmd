@@ -8,53 +8,29 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import static java.lang.Integer.min;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
- * An implementation of java.io.Reader that translates Java unicode escapes.
- * This implementation has efficient block IO but poor char-by-char performance.
- * If this is required, wrap it into a {@link BufferedReader}.
+ * An implementation of {@link EscapeAwareReader} that translates Java
+ * unicode escapes.
  */
 @SuppressWarnings("PMD.AssignmentInOperand")
-public final class JavaInputReader extends EscapeAwareReader {
-
-    /**
-     * An offset until which we read backslashes and decided they were not
-     * an escape. The read procedure may cut off in the middle of the escape,
-     * and turn an even num of backslashes into an odd one, so until we crossed
-     * this offset, backslashes are not treated specially.
-     */
-    private int savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
+public final class JavaInputReader extends BackslashEscapeReader {
 
     public JavaInputReader(Chars input) {
         super(input);
     }
 
     @Override
-    protected int gobbleMaxWithoutEscape(final int maxOff) throws IOException {
-        int off = this.bufpos;
-        boolean noBackSlash = false;
-        int notEscapeEnd = this.savedNotEscapeSpecialEnd;
-        while (off < maxOff && (noBackSlash = input.charAt(off) != '\\' || notEscapeEnd < off)) {
-            off++;
-        }
-
-        if (noBackSlash) {
-            this.bufpos = off;
-            return off;
-        }
-
-        final int firstBslashOff = off;
+    protected int handleBackslash(final int maxOff, final int firstBackslashOff) throws IOException {
+        int off = firstBackslashOff;
         while (off < input.length() && input.charAt(off) == '\\') {
             off++;
         }
 
-        int bslashCount = off - firstBslashOff;
+        int bslashCount = off - firstBackslashOff;
         // is there an escape at offset firstBslashOff?
         if ((bslashCount & 1) == 1 // odd number of backslashes
             && off < input.length() && input.charAt(off) == 'u') { // at least one 'u'
@@ -63,17 +39,10 @@ public final class JavaInputReader extends EscapeAwareReader {
                 // consume all the 'u's
                 off++;
             }
-            int end = replaceFirstBackslashWithEscape(firstBslashOff, off - 1);
-            this.savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
-            return recordEscape(firstBslashOff, end - firstBslashOff, 1);
+            int end = replaceFirstBackslashWithEscape(firstBackslashOff, off - 1);
+            return recordEscape(firstBackslashOff, end - firstBackslashOff, 1);
         } else {
-            // not an escape sequence
-            int min = min(maxOff, off);
-            // save the number of backslashes that are part of the escape,
-            // might have been cut in half by the maxReadahead
-            this.savedNotEscapeSpecialEnd = min < off ? off : Integer.MAX_VALUE;
-            this.bufpos = min;
-            return min;
+            return abortEscape(off, maxOff);
         }
     }
 
