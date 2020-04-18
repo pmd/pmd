@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 
+import java.io.EOFException;
 import java.io.IOException;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -13,8 +14,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
  * PMD flavour of character streams used by JavaCC parsers.
  *
  * TODO for when all JavaCC languages are aligned:
- *   * rename methods to match decent naming conventions
- *   * move to impl.javacc package
+ * * rename methods to match decent naming conventions
+ * * move to impl.javacc package
  */
 public interface CharStream {
 
@@ -24,7 +25,8 @@ public interface CharStream {
      *
      * @return The next character
      *
-     * @throws IOException  If the underlying char stream throws
+     * @throws EOFException Upon EOF
+     * @throws IOException  If the underlying char stream throws EOF
      */
     char readChar() throws IOException;
 
@@ -35,14 +37,14 @@ public interface CharStream {
      * the buffer between two successive calls to this method to implement
      * backup correctly.
      */
-    char BeginToken() throws IOException; // SUPPRESS CHECKSTYLE we'll rename it later
+    char BeginToken() throws IOException;
 
 
     /**
      * Returns a string made up of characters from the token mark up to
      * to the current buffer position.
      */
-    String GetImage(); // SUPPRESS CHECKSTYLE we'll rename it later
+    String GetImage();
 
 
     /**
@@ -53,7 +55,7 @@ public interface CharStream {
      *
      * <pre>{@code
      * String t = tokenImage();
-     * return t.substring(t.length() - len, t.length()).toCharArray();
+     * return t.substring(t.length() - len).toCharArray();
      * }</pre>
      *
      * @param len Length of the returned array
@@ -63,7 +65,16 @@ public interface CharStream {
      * @throws IndexOutOfBoundsException If len is greater than the length of the
      *                                   current token
      */
-    char[] GetSuffix(int len); // SUPPRESS CHECKSTYLE we'll rename it later
+    default char[] GetSuffix(int len) {
+        String t = GetImage();
+        return t.substring(t.length() - len).toCharArray();
+    }
+
+
+    default void appendSuffix(StringBuilder sb, int len) {
+        String t = GetImage();
+        sb.append(t, t.length() - len, t.length());
+    }
 
 
     /**
@@ -80,12 +91,6 @@ public interface CharStream {
      */
     void backup(int amount);
 
-    @Deprecated
-    int getBeginColumn();
-
-    @Deprecated
-    int getBeginLine();
-
 
     /** Returns the column number of the last character for the current token. */
     int getEndColumn();
@@ -94,7 +99,23 @@ public interface CharStream {
     /** Returns the line number of the last character for current token. */
     int getEndLine();
 
-    // These methods are added by PMD
+
+    default int getBeginColumn() {
+        return -1;
+    }
+
+
+    default int getBeginLine() {
+        return -1;
+    }
+
+
+    /** Returns the start offset of the current token (in the original source), inclusive. */
+    int getStartOffset();
+
+
+    /** Returns the end offset of the current token (in the original source), exclusive. */
+    int getEndOffset();
 
 
     /**
@@ -103,18 +124,6 @@ public interface CharStream {
      */
     default JavaccTokenDocument getTokenDocument() {
         return null; // for VelocityCharStream
-    }
-
-
-    /** Returns the start offset of the current token (in the original source), inclusive. */
-    default int getStartOffset() {
-        return -1;
-    }
-
-
-    /** Returns the end offset of the current token (in the original source), exclusive. */
-    default int getEndOffset() {
-        return -1;
     }
 
 }
