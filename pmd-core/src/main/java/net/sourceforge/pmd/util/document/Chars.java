@@ -21,6 +21,8 @@ import org.apache.commons.lang3.Validate;
  */
 public final class Chars implements CharSequence {
 
+    static final Chars EMPTY = new Chars(new char[0], 0, 0, true);
+
     private final char[] arr;
     private final int start;
     private final int len;

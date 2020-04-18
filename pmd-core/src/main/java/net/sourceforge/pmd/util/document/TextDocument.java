@@ -113,7 +113,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
      */
-    CharSequence slice(TextRegion region);
+    Chars slice(TextRegion region);
 
 
     /**

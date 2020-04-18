@@ -20,7 +20,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private SourceCodePositioner positioner;
     private Chars text;
-    private final StringPool stringPool = new StringPool();
 
     private final LanguageVersion langVersion;
 
@@ -121,11 +120,11 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
 
     @Override
-    public CharSequence slice(TextRegion region) {
+    public Chars slice(TextRegion region) {
         if (region.getLength() == 0) {
-            return "";
+            return Chars.EMPTY;
         }
-        return stringPool.pooledCharSeq(text.subSequence(region.getStartOffset(), region.getEndOffset()));
+        return text.subSequence(region.getStartOffset(), region.getEndOffset());
     }
 
 }
