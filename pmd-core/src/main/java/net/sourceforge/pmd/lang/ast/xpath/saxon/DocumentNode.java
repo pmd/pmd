@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
 import net.sf.saxon.om.Axis;
@@ -37,6 +38,8 @@ public class DocumentNode extends BaseNodeInfo implements DocumentInfo {
      * Mapping from AST Node to corresponding ElementNode.
      */
     public final Map<Node, ElementNode> nodeToElementNode = new HashMap<>();
+
+    private DeprecatedAttrLogger attrCtx;
 
     /**
      * Construct a DocumentNode, with the given AST Node serving as the root
@@ -94,5 +97,13 @@ public class DocumentNode extends BaseNodeInfo implements DocumentInfo {
         default:
             return super.iterateAxis(axisNumber);
         }
+    }
+
+    public DeprecatedAttrLogger getAttrCtx() {
+        return attrCtx == null ? DeprecatedAttrLogger.noop() : attrCtx;
+    }
+
+    public void setAttrCtx(DeprecatedAttrLogger attrCtx) {
+        this.attrCtx = attrCtx;
     }
 }

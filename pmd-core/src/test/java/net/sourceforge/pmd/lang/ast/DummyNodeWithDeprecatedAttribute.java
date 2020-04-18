@@ -25,7 +25,7 @@ public class DummyNodeWithDeprecatedAttribute extends DummyNode {
 
     // this is a attribute that is deprecated for xpath, because it will be removed.
     // it should still be available via Java.
-    @DeprecatedAttribute
+    @DeprecatedAttribute(replaceWith = "@Image")
     public String getName() {
         return "foo";
     }

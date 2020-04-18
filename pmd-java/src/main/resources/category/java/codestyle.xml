@@ -1236,7 +1236,7 @@ Fields, formal arguments, or local variable names that are too long can make the
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) > $minimum]
+//VariableDeclaratorId[string-length(@Name) > $minimum]
 ]]>
                 </value>
             </property>
@@ -1704,7 +1704,7 @@ Fields, local variables, or parameter names that are very short are not helpful 
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) < $minimum]
+//VariableDeclaratorId[string-length(@Name) < $minimum]
  (: ForStatement :)
  [not(../../..[self::ForInit])]
  (: Foreach statement :)

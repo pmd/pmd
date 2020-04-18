@@ -46,6 +46,7 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   core
+    *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
 *   java
@@ -126,6 +127,12 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
 *   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
 *   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
+
+In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
+
+*   {% jdoc !!java::lang.java.ast.ASTAdditiveExpression#getImage() %} - use `getOperator()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getImage() %} - use `getName()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getVariableName() %} - use `getName()` instead
 
 ##### For removal
 

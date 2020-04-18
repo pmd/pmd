@@ -26,6 +26,21 @@ public class DummyNode extends AbstractNode {
         this.xpathName = xpathName;
     }
 
+    public void setBeginColumn(int i) {
+        beginColumn = i;
+    }
+
+    public void setBeginLine(int i) {
+        beginLine = i;
+    }
+
+    public void setCoords(int bline, int bcol, int eline, int ecol) {
+        beginLine = bline;
+        beginColumn = bcol;
+        endLine = eline;
+        endColumn = ecol;
+    }
+
     @Override
     public String toString() {
         return xpathName;
