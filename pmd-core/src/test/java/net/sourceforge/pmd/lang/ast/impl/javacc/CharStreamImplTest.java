@@ -142,7 +142,7 @@ public class CharStreamImplTest {
         return CharStream.create(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)) {
             @Override
             public EscapeAwareReader newReader(Chars text) {
-                return new JavaInputReader(text);
+                return new JavaEscapeReader(text);
             }
         });
     }

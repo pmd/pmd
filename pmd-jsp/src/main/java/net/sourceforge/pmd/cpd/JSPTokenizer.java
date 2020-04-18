@@ -8,7 +8,7 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaInputReader;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeReader;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.jsp.ast.JspTokenKinds;
@@ -27,7 +27,7 @@ public class JSPTokenizer extends JavaCCTokenizer {
         return new JavaccTokenDocument(textDoc) {
             @Override
             public EscapeAwareReader newReader(Chars text) {
-                return new JavaInputReader(text);
+                return new JavaEscapeReader(text);
             }
         };
     }

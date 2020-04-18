@@ -17,9 +17,9 @@ import net.sourceforge.pmd.util.document.Chars;
  * unicode escapes.
  */
 @SuppressWarnings("PMD.AssignmentInOperand")
-public final class JavaInputReader extends BackslashEscapeReader {
+public final class JavaEscapeReader extends BackslashEscapeReader {
 
-    public JavaInputReader(Chars input) {
+    public JavaEscapeReader(Chars input) {
         super(input);
     }
 

@@ -12,11 +12,11 @@ import org.junit.Test;
 import net.sourceforge.pmd.util.document.Chars;
 
 
-public class JavaInputReaderTest {
+public class JavaEscapeReaderTest {
 
     @NonNull
-    public JavaInputReader readString(String input) {
-        return new JavaInputReader(Chars.wrap(input, true));
+    public JavaEscapeReader readString(String input) {
+        return new JavaEscapeReader(Chars.wrap(input, true));
     }
 
 
@@ -24,7 +24,7 @@ public class JavaInputReaderTest {
     public void testSimpleRead() throws IOException {
 
         String input = "abcdede";
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[12];
 
@@ -39,7 +39,7 @@ public class JavaInputReaderTest {
     public void testNotAnEscape1Read() throws IOException {
 
         String input = "abc\\dede";
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[12];
 
@@ -54,7 +54,7 @@ public class JavaInputReaderTest {
     public void testNotAnEscape1Read2() throws IOException {
 
         String input = "abc\\\\\\dede";
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[12];
 
@@ -70,7 +70,7 @@ public class JavaInputReaderTest {
 
         String input = "abc\\\\\\dede";
         //                   ^
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[12];
 
@@ -95,7 +95,7 @@ public class JavaInputReaderTest {
     public void testAnEscapeStopAtEnd() throws IOException {
 
         String input = "abc\\\\\\u00a0dede";
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[12];
 
@@ -115,7 +115,7 @@ public class JavaInputReaderTest {
     public void testSeveralEscapes() throws IOException {
 
         String input = "abc\\\\\\u00a0d\\uu00a0ede";
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[20];
 
@@ -135,7 +135,7 @@ public class JavaInputReaderTest {
     public void testAnEscapeInsideBlock() throws IOException {
 
         String input = "abc\\\\\\u00a0dede\\u00a0";
-        try (JavaInputReader r = readString(input)) {
+        try (JavaEscapeReader r = readString(input)) {
 
             char[] chars = new char[12];
 
