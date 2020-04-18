@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.io;
 
+import static java.lang.Integer.max;
+
 import java.io.EOFException;
 
 import net.sourceforge.pmd.util.document.Chars;
@@ -27,11 +29,10 @@ class EscapeTracker {
      *
      * Eg for "a\u00a0b" (translates as "a b"), the buffer looks like
      * [a u00a0b]
-     *   ^       this char has been replaced with the translated value of the escape
-     *    ^^^^^  these characters are only present in the input, we jump over them when reading
-     *   ^       off
-     *    ^      invalid
-     *         ^ off + len
+     *   ^       (off)                 this char has been replaced with the translated value of the escape
+     *    ^^^^^  (off + len - invalid) these characters are only present in the input, we jump over them when reading
+     *    ^      (invalid)
+     *         ^ (off + len)
      *
      * The escape record is (1,6,2)
      *
@@ -66,15 +67,22 @@ class EscapeTracker {
     }
 
     private int inOff(int idx) {
+        assert idx < nextFreeIdx;
         return escapeRecords[idx];
     }
 
     private int inLen(int idx) {
+        assert idx < nextFreeIdx;
         return escapeRecords[idx + 1];
     }
 
     private int invalidIdx(int idx) {
+        assert idx < nextFreeIdx;
         return escapeRecords[idx + 2];
+    }
+
+    private int indexAfter(int idx) {
+        return inOff(idx) + inLen(idx);
     }
 
     /**
@@ -157,8 +165,9 @@ class EscapeTracker {
             char c;
 
             if (nextEscape < maxEscape() && pos == invalidIdx(nextEscape)) {
-                pos += inLen(nextEscape); // add escape length
+                int pos = indexAfter(nextEscape); // jump past escape
                 c = buf.charAt(pos);
+                this.pos = pos + 1;
                 this.nextEscape += RECORD_SIZE;
             } else {
                 c = buf.charAt(pos);
@@ -167,6 +176,7 @@ class EscapeTracker {
             outOffset++;
             return c;
         }
+
 
         void backup(int numChars) {
             ensureMarked();
@@ -180,20 +190,30 @@ class EscapeTracker {
             if (nextEscape <= 0) {
                 pos -= numChars; // then there were no escapes before the 'pos'
             } else {
-                int inoff = pos;
-                for (int i = maxEscape() - RECORD_SIZE; i >= 0 && numChars > 0; i -= RECORD_SIZE) {
-                    int esc = inOff(i);
-                    if (esc == inoff) {
-                        inoff -= inLen(i);
-                    } else if (esc > inoff) {
-                        // then the current escape was before what we're looking at
+                int newOff = pos;
+                for (int i = nextEscape - RECORD_SIZE; i >= 0 && numChars > 0; i -= RECORD_SIZE) {
+                    // aa __|||bb
+                    //      ^    invalid
+                    //      ^^^  jumped
+                    //    ^      inOff
+                    //    ^^     translated
+
+                    int nc = numChars;
+                    numChars -= newOff - indexAfter(i);
+                    newOff = max(indexAfter(i), newOff - nc);
+                    if (numChars <= 0) { // skip "bb", ie everything after the escape
                         break;
-                    } else {
-                        inoff--;
                     }
+
+                    newOff = invalidIdx(i) - 1; // jump back over the escape |||
                     numChars--;
+                    nextEscape = i;
+
+                    if (numChars <= 0) {
+                        break;
+                    }
                 }
-                pos = inoff - numChars;
+                pos = newOff - numChars; // numChars is the remainder
             }
         }
 
@@ -218,11 +238,11 @@ class EscapeTracker {
                 int esc = markEscape;
                 while (cur < pos && esc < nextEscape) {
                     sb.append(buf, cur, invalidIdx(esc));
-                    cur = inOff(esc) + inLen(esc);
+                    cur = indexAfter(esc);
                     esc += RECORD_SIZE;
                 }
                 // no more escape in the range, append everything until the pos
-                sb.append(buf, cur, pos + 1);
+                sb.append(buf, cur, pos);
                 assert sb.length() - prevLength == markLength() : sb + " should have length " + markLength();
             }
         }

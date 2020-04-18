@@ -15,7 +15,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.io.EscapeAwareReader;
+import net.sourceforge.pmd.lang.ast.impl.io.JavaInputReader;
 import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 public class CharStreamImplTest {
@@ -26,7 +29,7 @@ public class CharStreamImplTest {
     @Test
     public void testReadZeroChars() throws IOException {
 
-        CharStream stream = getCharStream("");
+        CharStream stream = simpleCharStream("");
 
         expect.expect(EOFException.class);
 
@@ -42,7 +45,7 @@ public class CharStreamImplTest {
     @Test
     public void testReadEofChars() throws IOException {
 
-        CharStream stream = getCharStream("");
+        CharStream stream = simpleCharStream("");
 
         expect.expect(EOFException.class);
 
@@ -58,7 +61,7 @@ public class CharStreamImplTest {
     @Test
     public void testMultipleEofReads() throws IOException {
 
-        CharStream stream = getCharStream("");
+        CharStream stream = simpleCharStream("");
 
         for (int i = 0; i < 3; i++) {
             try {
@@ -74,7 +77,7 @@ public class CharStreamImplTest {
     @Test
     public void testReadStuff() throws IOException {
 
-        CharStream stream = getCharStream("abcd");
+        CharStream stream = simpleCharStream("abcd");
 
         assertEquals('a', stream.readChar());
         assertEquals('b', stream.readChar());
@@ -88,7 +91,7 @@ public class CharStreamImplTest {
     @Test
     public void testReadBacktrack() throws IOException {
 
-        CharStream stream = getCharStream("abcd");
+        CharStream stream = simpleCharStream("abcd");
 
         assertEquals('a', stream.BeginToken());
         assertEquals('b', stream.readChar());
@@ -106,14 +109,52 @@ public class CharStreamImplTest {
         stream.readChar();
     }
 
-    public CharStream getCharStream(String abcd) throws IOException {
+    @Test
+    public void testReadBacktrackWithEscapes() throws IOException {
+
+        CharStream stream = javaCharStream("__\\u00a0_\\u00a0_");
+
+        assertEquals('_', stream.BeginToken());
+        assertEquals('_', stream.readChar());
+        assertEquals('\u00a0', stream.readChar());
+        assertEquals('_', stream.readChar());
+
+        assertEquals("__\u00a0_", stream.GetImage());
+
+        stream.backup(2);
+        assertEquals('\u00a0', stream.readChar());
+        assertEquals('_', stream.readChar());
+        assertEquals('\u00a0', stream.readChar());
+
+        assertEquals("__\u00a0_\u00a0", stream.GetImage());
+        assertEquals('_', stream.readChar());
+        stream.backup(2);
+        assertEquals('\u00a0', stream.BeginToken());
+        assertEquals('_', stream.readChar());
+
+        assertEquals("\u00a0_", stream.GetImage());
+
+        expect.expect(EOFException.class);
+        stream.readChar();
+    }
+
+    public static CharStream simpleCharStream(String abcd) throws IOException {
         return NewCharStream.open(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)));
+    }
+
+    public static CharStream javaCharStream(String abcd) throws IOException {
+        return NewCharStream.open(new JavaccTokenDocument(TextDocument.readOnlyString(abcd)) {
+            @Override
+            public EscapeAwareReader newReader(Chars text) {
+                return new JavaInputReader(text);
+            }
+        });
     }
 
     @Test
     public void testBacktrackTooMuch() throws IOException {
 
-        CharStream stream = getCharStream("abcd");
+        CharStream stream = simpleCharStream("abcd");
 
         assertEquals('a', stream.readChar());
         assertEquals('b', stream.readChar());
@@ -127,7 +168,7 @@ public class CharStreamImplTest {
     @Test
     public void testBacktrackTooMuch2() throws IOException {
 
-        CharStream stream = getCharStream("abcd");
+        CharStream stream = simpleCharStream("abcd");
 
         assertEquals('a', stream.BeginToken());
         assertEquals('b', stream.readChar());

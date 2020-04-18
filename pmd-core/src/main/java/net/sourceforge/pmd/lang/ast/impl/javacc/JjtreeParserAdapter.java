@@ -37,7 +37,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
             CharStream charStream = NewCharStream.open(doc);
             return parseImpl(charStream, task);
         } catch (IOException e) {
-            throw new TokenMgrError(-1, -1, fileName, "IO error", e);
+            throw new TokenMgrError(-1, -1, task.getFileDisplayName(), "IO error", e);
         } catch (TokenMgrError tme) {
             throw tme.setFileName(task.getFileDisplayName());
         }
