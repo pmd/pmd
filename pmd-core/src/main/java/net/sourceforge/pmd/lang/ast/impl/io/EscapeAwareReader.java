@@ -8,7 +8,6 @@ import static java.lang.Integer.min;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.CharBuffer;
 
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
@@ -135,11 +134,11 @@ public class EscapeAwareReader extends Reader {
     }
 
     public int getLine(int idxInInput) {
-        return StringUtil.lineNumberAt(CharBuffer.wrap(input), idxInInput);
+        return StringUtil.lineNumberAt(input, idxInInput);
     }
 
     public int getColumn(int idxInInput) {
-        return StringUtil.columnNumberAt(CharBuffer.wrap(input), idxInInput);
+        return StringUtil.columnNumberAt(input, idxInInput);
     }
 
 }

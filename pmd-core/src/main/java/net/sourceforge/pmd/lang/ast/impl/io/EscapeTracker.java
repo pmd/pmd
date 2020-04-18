@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.io;
 
+import java.io.EOFException;
+
 import net.sourceforge.pmd.util.document.Chars;
 
 /**
@@ -106,7 +108,11 @@ class EscapeTracker {
             this.buf = buf;
         }
 
-        char next() {
+        char next() throws EOFException {
+            if (pos == buf.length()) {
+                throw new EOFException();
+            }
+
             char c = buf.charAt(pos);
 
             if (nextEscape < escapeRecords.length && pos == escapeRecords[nextEscape]) {
@@ -120,6 +126,12 @@ class EscapeTracker {
         }
 
         void backup(int numChars) {
+            ensureMarked();
+            if (numChars > markLength()) {
+                throw new IllegalArgumentException(
+                    "Cannot backup " + numChars + " chars, only " + markLength() + " are saved");
+            }
+
             outOffset -= numChars;
 
             if (nextEscape <= 0) {
@@ -149,8 +161,7 @@ class EscapeTracker {
         }
 
         void markToString(StringBuilder sb) {
-            assert mark <= pos : "Wrong mark";
-            assert markEscape <= nextEscape : "Wrong mark";
+            ensureMarked();
 
             int prevLength = sb.length();
 
@@ -173,6 +184,15 @@ class EscapeTracker {
                 sb.append(buf, cur, pos + 1);
                 assert sb.length() - prevLength == markLength();
             }
+        }
+
+        private void ensureMarked() {
+            if (mark == Integer.MAX_VALUE) {
+                throw new IllegalStateException("Mark is not set");
+            }
+            assert mark <= pos : "Wrong mark";
+            assert markEscape <= nextEscape : "Wrong mark";
+            assert markEscape <= escapeRecords.length : "Wrong escape mark";
         }
 
         int curOutOffset() {

@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.io.EscapeAwareReader;
-import net.sourceforge.pmd.lang.ast.impl.io.NewCharStream;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -29,10 +28,6 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 
     public EscapeAwareReader newReader(Chars text) {
         return new EscapeAwareReader(text);
-    }
-
-    public CharStream newCharStream() {
-        return NewCharStream.open(this);
     }
 
 

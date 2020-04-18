@@ -4,28 +4,28 @@
 
 package net.sourceforge.pmd.lang.ast.impl.io;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.io.EscapeTracker.Cursor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class NewCharStream implements CharStream {
 
     private final JavaccTokenDocument document;
-    private final Cursor cursor;
+    private final EscapeTracker.Cursor cursor;
 
     private NewCharStream(JavaccTokenDocument document, EscapeTracker.Cursor cursor) {
         this.document = document;
         this.cursor = cursor;
     }
 
-    public static CharStream open(JavaccTokenDocument doc) {
+    public static CharStream open(JavaccTokenDocument doc) throws IOException {
         try (EscapeAwareReader reader = doc.newReader(doc.getTextDocument().getText())) {
             reader.translate();
             return new NewCharStream(doc, reader.escapes.new Cursor(reader.input));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -35,15 +35,14 @@ public class NewCharStream implements CharStream {
     }
 
     @Override
-    public char readChar() {
+    public char readChar() throws EOFException {
         return cursor.next();
     }
 
     @Override
-    public char BeginToken() {
-        char c = cursor.next();
+    public char BeginToken() throws EOFException {
         cursor.mark();
-        return c;
+        return cursor.next();
     }
 
     @Override
@@ -60,12 +59,17 @@ public class NewCharStream implements CharStream {
 
     @Override
     public int getEndColumn() {
-        return 0; // TODO
+        return endLocation().getEndColumn();
     }
 
     @Override
     public int getEndLine() {
-        return 0; // TODO
+        return endLocation().getEndLine();
+    }
+
+    private FileLocation endLocation() {
+        TextDocument textDoc = document.getTextDocument();
+        return textDoc.toLocation(textDoc.createRegion(getEndOffset(), 0));
     }
 
     @Override

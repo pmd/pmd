@@ -31,11 +31,6 @@ public final class JavaInputReader extends EscapeAwareReader {
         super(input);
     }
 
-    /**
-     * Returns the max offset, EXclusive, with which we can cut the input
-     * array from the bufpos to dump it into the output array. This sets
-     * the bufpos to where we should start the next jump.
-     */
     @Override
     protected int gobbleMaxWithoutEscape(final int bufpos, final int maxReadahead) throws IOException {
         int off = bufpos;
