@@ -35,6 +35,14 @@ public abstract class DeprecatedAttrLogger {
         }
     }
 
+    public static DeprecatedAttrLogger createAdHocLogger() {
+        if (LOG.isLoggable(Level.WARNING)) {
+            return new AdhocLoggerImpl();
+        } else {
+            return noop();
+        }
+    }
+
     public static Noop noop() {
         return Noop.INSTANCE;
     }
@@ -87,6 +95,23 @@ public abstract class DeprecatedAttrLogger {
                 name += " (in ruleset '" + rule.getRuleSetName() + "')";
             }
             return name;
+        }
+    }
+
+    private static class AdhocLoggerImpl extends DeprecatedAttrLogger {
+        @Override
+        public void recordUsageOf(Attribute attribute) {
+            String replacement = attribute.replacementIfDeprecated();
+            if (replacement != null) {
+                String name = getLoggableAttributeName(attribute);
+                // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
+                String msg = "Use of deprecated attribute '" + name + "' in a findChildNodesWithXPath navigation";
+                if (!replacement.isEmpty()) {
+                    msg += ", please use " + replacement + " instead";
+                }
+                // log with execption stack trace to help figure out where exactly the xpath is used.
+                LOG.log(Level.WARNING, msg, new RuntimeException(msg));
+            }
         }
     }
 }

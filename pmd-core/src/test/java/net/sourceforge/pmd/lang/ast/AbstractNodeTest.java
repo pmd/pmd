@@ -238,7 +238,8 @@ public class AbstractNodeTest {
             }
         }
 
-        addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
+        Node root = addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2));
+        root.findChildNodesWithXPath("//dummyNode[@Size=1]");
 
         String log = loggingRule.getLog();
 
