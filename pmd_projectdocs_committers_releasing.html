@@ -1420,6 +1420,24 @@ changes from the current release notes to this document: <code class="highlighte
 Update property <code class="highlighter-rouge">pmd-designer.version</code> in <strong>pom.xml</strong> to reference the latest pmd-designer release.
 See <a href="https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&amp;core=gav">https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&amp;core=gav</a> for the available releases.</p>
 
+<p>Starting with PMD 6.23.0 we’ll provide small statistics for every release. This needs to be added
+to the release notes as the last section. To count the closed issues and pull requests, the milestone
+on github with the title of the new release is searched. Make sure, there is a milestone
+on <a href="https://github.com/pmd/pmd/milestones">https://github.com/pmd/pmd/milestones</a>. The following snippet will
+create the numbers, that can be attached to the release notes as a last section:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LAST_VERSION</span><span class="o">=</span>6.22.0
+<span class="nv">NEW_VERSION</span><span class="o">=</span>6.23.0
+<span class="nv">NEW_VERSION_COMMITISH</span><span class="o">=</span>HEAD
+
+<span class="nb">echo</span> <span class="s2">"### Stats"</span>
+<span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>git log pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span>..<span class="k">${</span><span class="nv">NEW_VERSION_COMMITISH</span><span class="k">}</span> <span class="nt">--oneline</span> <span class="nt">--no-merges</span> |wc <span class="nt">-l</span><span class="si">)</span><span class="s2"> commits"</span>
+<span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>curl <span class="nt">-s</span> https://api.github.com/repos/pmd/pmd/milestones|jq <span class="s2">".[] | select(.title == </span><span class="se">\"</span><span class="nv">$NEW_VERSION</span><span class="se">\"</span><span class="s2">) | .closed_issues"</span><span class="si">)</span><span class="s2"> closed tickets &amp; PRs"</span>
+<span class="nb">echo</span> <span class="s2">"* Days since last release: </span><span class="k">$((</span> <span class="o">(</span> <span class="si">$(</span><span class="nb">date</span> +%s<span class="si">)</span> <span class="o">-</span> <span class="si">$(</span>git log <span class="nt">--max-count</span><span class="o">=</span>1 <span class="nt">--format</span><span class="o">=</span><span class="s2">"%at"</span> pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span><span class="si">)</span> <span class="o">)</span> <span class="o">/</span> <span class="m">86400</span><span class="k">))</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>Note: this part is also integrated into <code class="highlighter-rouge">do-release.sh</code>.</p>
+
 <p>Check in all (version) changes to branch master or any other branch, from which the release takes place:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit -a -m "Prepare pmd release &lt;version&gt;"
