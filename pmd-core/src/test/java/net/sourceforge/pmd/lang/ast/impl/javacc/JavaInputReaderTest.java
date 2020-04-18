@@ -1,8 +1,7 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
-package net.sourceforge.pmd.lang.ast.impl.io;
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.io.IOException;
 
@@ -10,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaInputReader;
 import net.sourceforge.pmd.util.document.Chars;
 
 

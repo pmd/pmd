@@ -23,7 +23,12 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         super(textDocument);
     }
 
-
+    /**
+     * Create new (possibly) escaping reader for the given text. The default
+     * implementation doesn't do any escaping.
+     *
+     * @param text Source doc
+     */
     public EscapeAwareReader newReader(Chars text) {
         return new EscapeAwareReader(text);
     }
