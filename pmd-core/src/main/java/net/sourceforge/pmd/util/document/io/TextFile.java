@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -44,7 +45,7 @@ public interface TextFile extends Closeable {
 
     /**
      * Returns true if this file cannot be written to. In that case,
-     * {@link #writeContents(CharSequence)} will throw an exception.
+     * {@link #writeContents(Chars)} will throw an exception.
      * In the general case, nothing prevents this method's result from
      * changing from one invocation to another.
      */
@@ -60,7 +61,7 @@ public interface TextFile extends Closeable {
      * @throws IOException           If an error occurs
      * @throws ReadOnlyFileException If this text source is read-only
      */
-    void writeContents(CharSequence charSequence) throws IOException;
+    void writeContents(Chars charSequence) throws IOException;
 
 
     /**
@@ -71,7 +72,7 @@ public interface TextFile extends Closeable {
      * @throws IOException If this instance is closed
      * @throws IOException If reading causes an IOException
      */
-    CharSequence readContents() throws IOException;
+    Chars readContents() throws IOException;
 
 
     /**
@@ -114,6 +115,14 @@ public interface TextFile extends Closeable {
      */
     static TextFile readOnlyString(String source, String name, LanguageVersion lv) {
         return new StringTextFile(source, name, lv);
+    }
+
+
+    /**
+     * Wraps the given {@link SourceCode} (provided for compatibility).
+     */
+    static TextFile cpdCompat(SourceCode sourceCode) {
+        return new StringTextFile(sourceCode.getCodeBuffer(), sourceCode.getFileName());
     }
 
     // </editor-fold>

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,20 +14,20 @@ import java.util.Map;
  */
 public final class StringPool {
 
-    private final Map<CharBuffer, String> pool = new HashMap<>();
+    private final Map<Chars, String> pool = new HashMap<>();
 
-    public CharSequence pooledCharSeq(CharBuffer seq) {
+    public CharSequence pooledCharSeq(Chars seq) {
         return new PooledCharSeq(seq);
     }
 
 
     class PooledCharSeq implements CharSequence {
 
-        private final CharBuffer seq;
+        private final Chars seq;
         private String toString;
 
 
-        PooledCharSeq(CharBuffer seq) {
+        PooledCharSeq(Chars seq) {
             this.seq = seq;
         }
 

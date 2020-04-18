@@ -45,7 +45,7 @@ public interface TextDocument extends Closeable {
      * Returns the current text of this document. Note that this doesn't take
      * external modifications to the {@link TextFile} into account.
      */
-    CharSequence getText();
+    Chars getText();
 
 
     /**
@@ -144,9 +144,5 @@ public interface TextDocument extends Closeable {
             throw new AssertionError("String text file should never throw IOException", e);
         }
     }
-
-    // </editor-fold>
-
-
 
 }

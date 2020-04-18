@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.document.io;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
@@ -11,10 +13,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
@@ -47,17 +51,19 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
-    public void writeContents(CharSequence charSequence) throws IOException {
+    public void writeContents(Chars chars) throws IOException {
         ensureOpen();
-        byte[] bytes = charSequence.toString().getBytes(charset);
-        Files.write(path, bytes);
+        try (BufferedWriter bw = Files.newBufferedWriter(path, charset)) {
+            chars.writeFully(bw);
+        }
     }
 
     @Override
-    public CharSequence readContents() throws IOException {
+    public Chars readContents() throws IOException {
         ensureOpen();
-        byte[] bytes = Files.readAllBytes(path);
-        return new String(bytes, charset);
+        try (BufferedReader br = Files.newBufferedReader(path, charset)) {
+            return Chars.wrap(IOUtils.toCharArray(br), true);
+        }
     }
 
     @Override
