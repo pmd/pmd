@@ -52,7 +52,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
                     | hexVal(input.charAt(++offOfTheU))
                     );
 
-            return Chars.wrap(new char[] { c });
+            return Chars.wrap(Character.toString(c));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             String message = "Invalid escape sequence at line "
                 + getLine(posOfFirstBackSlash) + ", column "

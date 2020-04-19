@@ -37,7 +37,9 @@ final class FragmentedDocBuilder {
 
         Fragment last = lastFragment;
         int prevLen = startInInput - curOffInInput;
-        last = new Fragment(last, prevLen, mainBuf.slice(curOffInInput, prevLen));
+        if (prevLen != 0) {
+            last = new Fragment(last, prevLen, mainBuf.slice(curOffInInput, prevLen));
+        }
         last = new Fragment(last, inLength, translation);
         this.lastFragment = last;
         this.curOffInInput = endInInput;

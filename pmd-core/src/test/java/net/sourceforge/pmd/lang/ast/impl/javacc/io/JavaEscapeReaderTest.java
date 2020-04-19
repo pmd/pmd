@@ -17,7 +17,7 @@ public class JavaEscapeReaderTest {
 
     @NonNull
     public JavaEscapeReader readString(String input) {
-        return new JavaEscapeReader(Chars.wrap(input, true));
+        return new JavaEscapeReader(Chars.wrap(input));
     }
 
 

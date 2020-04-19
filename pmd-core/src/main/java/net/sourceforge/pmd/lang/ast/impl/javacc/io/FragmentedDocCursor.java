@@ -10,6 +10,8 @@ import net.sourceforge.pmd.util.document.Chars;
 
 final class FragmentedDocCursor {
 
+    private static final EOFException EOF = new EOFException();
+
     private Fragment cur;
     private int curOutPos;
 
@@ -28,8 +30,9 @@ final class FragmentedDocCursor {
         while (f != null && curOutPos >= f.outEnd()) {
             f = f.next;
         }
+
         if (f == null) {
-            throw new EOFException();
+            throw EOF;
         }
 
         cur = f;
@@ -103,11 +106,11 @@ final class FragmentedDocCursor {
         }
         f.appendAbs(sb, f.outStart(), curOutPos);
         assert sb.length() == markLength() : sb + " should have length " + markLength();
-        return Chars.wrap(sb, true);
+        return Chars.wrap(sb);
     }
 
 
-    static class Fragment {
+    static final class Fragment {
 
         private final Chars chars;
 

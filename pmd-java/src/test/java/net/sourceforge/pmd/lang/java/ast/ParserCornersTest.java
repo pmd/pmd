@@ -91,12 +91,34 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public void testUnicodeEscapes2() {
         java.parse("\n"
-                        + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
-                        + "\n"
-                        + "        String ACT[] = new String[] {\"Acre \\u6642\\u9593\", \"ACT\",\n"
-                        + "                                     \"Acre \\u590f\\u4ee4\\u6642\\u9593\", \"ACST\",\n"
-                        + "                                     \"Acre \\u6642\\u9593\", \"ACT\"};"
-                        + "}");
+                       + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
+                       + "\n"
+                       + "        String ACT[] = new String[] {\"Acre \\u6642\\u9593\", \"ACT\",\n"
+                       + "                                     \"Acre \\u590f\\u4ee4\\u6642\\u9593\", \"ACST\",\n"
+                       + "                                     \"Acre \\u6642\\u9593\", \"ACT\"};"
+                       + "}");
+    }
+
+    @Test
+    public void testUnicodeEscapesInComment() {
+        java.parse("class Foo {"
+                       + "\n"
+                       + "    /**\n"
+                       + "     * The constant value of this field is the smallest value of type\n"
+                       + "     * {@code char}, {@code '\\u005Cu0000'}.\n"
+                       + "     *\n"
+                       + "     * @since   1.0.2\n"
+                       + "     */\n"
+                       + "    public static final char MIN_VALUE = '\\u0000';\n"
+                       + "\n"
+                       + "    /**\n"
+                       + "     * The constant value of this field is the largest value of type\n"
+                       + "     * {@code char}, {@code '\\u005CuFFFF'}.\n"
+                       + "     *\n"
+                       + "     * @since   1.0.2\n"
+                       + "     */\n"
+                       + "    public static final char MAX_VALUE = '\\uFFFF';"
+                       + "}");
     }
 
     @Test
