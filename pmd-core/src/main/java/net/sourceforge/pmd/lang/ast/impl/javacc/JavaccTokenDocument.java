@@ -26,6 +26,16 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     }
 
     /**
+     * Returns true if the lexer should accumulate the image of MORE
+     * tokens into the StringBuilder jjimage. This is useless in our
+     * current implementations. The default returns false, which makes
+     * {@link CharStream#appendSuffix(StringBuilder, int)} a noop.
+     */
+    public boolean useMarkSuffix() {
+        return false;
+    }
+
+    /**
      * Create new (possibly) escaping reader for the given text. The default
      * implementation doesn't do any escaping.
      *

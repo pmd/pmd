@@ -20,10 +20,12 @@ public final class CharStream {
 
     private final JavaccTokenDocument tokenDoc;
     private final FragmentedDocCursor cursor;
+    private final boolean useMarkSuffix;
 
     private CharStream(JavaccTokenDocument tokenDoc, FragmentedDocCursor cursor) {
         this.tokenDoc = tokenDoc;
         this.cursor = cursor;
+        useMarkSuffix = tokenDoc.useMarkSuffix();
     }
 
     /**
@@ -87,7 +89,9 @@ public final class CharStream {
      * @throws IndexOutOfBoundsException If len is greater than the length of the current token
      */
     public void appendSuffix(StringBuilder sb, int len) {
-        cursor.appendMarkSuffix(sb, len);
+        if (useMarkSuffix) {
+            cursor.appendMarkSuffix(sb, len);
+        } // otherwise dead code, kept because Javacc's argument expressions do side effects
     }
 
 
