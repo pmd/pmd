@@ -125,7 +125,7 @@ final class FragmentedDocCursor {
             if (prev != null) {
                 prev.next = this;
                 this.outStart = prev.outEnd();
-                this.inStart = prev.inStart + prev.inLen();
+                this.inStart = prev.inEnd();
             } else {
                 this.outStart = this.inStart = 0;
             }
@@ -133,7 +133,7 @@ final class FragmentedDocCursor {
 
 
         void appendAbs(StringBuilder sb, int absOffset, int absEndOffset) {
-            chars.appendChars(sb, absOffset - outStart, absEndOffset - outStart);
+            chars.appendChars(sb, absOffset - outStart, absEndOffset - absOffset);
         }
 
 
@@ -167,6 +167,16 @@ final class FragmentedDocCursor {
 
         int outToIn(int outOffset) {
             return inStart() + (outOffset - outStart());
+        }
+
+        @Override
+        public String toString() {
+            return "Fragment{"
+                + "chars=" + chars
+                + ", outStart=" + outStart
+                + ", inStart=" + inStart
+                + ", inLength=" + inLength
+                + '}';
         }
     }
 }
