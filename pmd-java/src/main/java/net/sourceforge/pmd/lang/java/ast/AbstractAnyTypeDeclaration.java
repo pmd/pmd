@@ -23,13 +23,6 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         super(i);
     }
 
-    @Override
-    public final boolean isNested() {
-        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || getParent() instanceof ASTAnnotationTypeMemberDeclaration
-            || getParent() instanceof ASTRecordBody;
-    }
-
     /**
      * @deprecated Use {@link #getSimpleName()}
      */
