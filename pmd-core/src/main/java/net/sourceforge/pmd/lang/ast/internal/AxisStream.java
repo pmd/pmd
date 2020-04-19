@@ -31,9 +31,9 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     /** Spec of this field depends on the subclass. */
     protected final Node node;
     /** Filter, for no filter, this is {@link Filtermap#NODE_IDENTITY}. */
-    protected final Filtermap<Node, T> filter;
+    protected final Filtermap<Node, ? extends T> filter;
 
-    AxisStream(@NonNull Node root, Filtermap<Node, T> filter) {
+    AxisStream(@NonNull Node root, Filtermap<Node, ? extends T> filter) {
         super();
         this.node = root;
         this.filter = filter;
@@ -41,7 +41,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     @Override
     public final Iterator<T> iterator() {
-        return filter.filterMap(baseIterator());
+        return Filtermap.applyIterator(baseIterator(), filter);
     }
 
     protected abstract Iterator<Node> baseIterator();
@@ -58,7 +58,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     }
 
     @Override
-    public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
+    public <S extends Node> NodeStream<S> filterIs(Class<? extends S> r1Class) {
         return copyWithFilter(filter.thenCast(r1Class));
     }
 
@@ -76,7 +76,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         return IteratorUtil.last(iter);
     }
 
-    protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
+    protected <O> List<O> toListImpl(Filtermap<? super Node, ? extends O> filter) {
         Iterator<? extends O> iter = filter.filterMap(baseIterator());
         return IteratorUtil.toList(iter);
     }
@@ -87,7 +87,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     }
 
     @Override
-    public <R extends Node> @Nullable R first(Class<R> r1Class) {
+    public <R extends Node> @Nullable R first(Class<? extends R> r1Class) {
         return firstImpl(filter.thenCast(r1Class));
     }
 
@@ -113,7 +113,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     }
 
     @Override
-    public <R extends Node> @Nullable R last(Class<R> rClass) {
+    public <R extends Node> @Nullable R last(Class<? extends R> rClass) {
         return lastImpl(filter.thenCast(rClass));
     }
 
@@ -127,11 +127,11 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
      * Implementations of this method should not compose the given filter
      * with their current filter.
      */
-    protected abstract <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap);
+    protected abstract <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, ? extends S> filterMap);
 
     static class FilteredAncestorOrSelfStream<T extends Node> extends AxisStream<T> {
 
-        FilteredAncestorOrSelfStream(@NonNull Node node, Filtermap<Node, T> target) {
+        FilteredAncestorOrSelfStream(@NonNull Node node, Filtermap<Node, ? extends T> target) {
             super(node, target);
         }
 
@@ -156,7 +156,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
+        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, ? extends S> filterMap) {
             return new FilteredAncestorOrSelfStream<>(node, filterMap);
         }
 
@@ -199,12 +199,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         DescendantStreamBase(@NonNull Node root,
                              TreeWalker walker,
-                             Filtermap<Node, T> filter) {
+                             Filtermap<Node, ? extends T> filter) {
             super(root, filter);
             this.walker = walker;
         }
 
-        protected abstract <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, S> filterMap, TreeWalker walker);
+        protected abstract <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, ? extends S> filterMap, TreeWalker walker);
 
         @Override
         public DescendantNodeStream<T> crossFindBoundaries(boolean cross) {
@@ -214,7 +214,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
+        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, ? extends S> filterMap) {
             return copyWithWalker(filterMap, walker);
         }
     }
@@ -223,7 +223,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         FilteredDescendantStream(Node node,
                                  TreeWalker walker,
-                                 Filtermap<Node, T> target) {
+                                 Filtermap<Node, ? extends T> target) {
             super(node, walker, target);
         }
 
@@ -233,7 +233,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, S> filterMap, TreeWalker walker) {
+        protected <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, ? extends S> filterMap, TreeWalker walker) {
             return new FilteredDescendantStream<>(node, walker, filterMap);
         }
 
@@ -248,7 +248,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
+        protected <O> List<O> toListImpl(Filtermap<? super Node, ? extends O> filter) {
             return walker.findDescendantsMatching(node, filter);
         }
     }
@@ -275,7 +275,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         FilteredDescendantOrSelfStream(Node node,
                                        TreeWalker walker,
-                                       Filtermap<Node, T> filtermap) {
+                                       Filtermap<Node, ? extends T> filtermap) {
             super(node, walker, filtermap);
         }
 
@@ -285,12 +285,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, S> filterMap, TreeWalker walker) {
+        protected <S extends Node> DescendantNodeStream<S> copyWithWalker(Filtermap<Node, ? extends S> filterMap, TreeWalker walker) {
             return new FilteredDescendantOrSelfStream<>(node, walker, filterMap);
         }
 
         @Override
-        protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
+        protected <O> List<O> toListImpl(Filtermap<? super Node, ? extends O> filter) {
             List<O> result = new ArrayList<>();
             O top = filter.apply(node);
             if (top != null) {
@@ -333,7 +333,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         final int low; // inclusive
         final int len;
 
-        FilteredChildrenStream(@NonNull Node root, Filtermap<Node, T> filtermap, int low, int len) {
+        FilteredChildrenStream(@NonNull Node root, Filtermap<Node, ? extends T> filtermap, int low, int len) {
             super(root, filtermap);
             this.low = low;
             this.len = len;
@@ -349,7 +349,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap) {
+        protected <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, ? extends S> filterMap) {
             return new FilteredChildrenStream<>(node, filterMap, low, len);
         }
 
@@ -384,7 +384,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
-        protected <O> List<O> toListImpl(Filtermap<? super Node, O> filter) {
+        protected <O> List<O> toListImpl(Filtermap<? super Node, ? extends O> filter) {
             return TraversalUtils.findChildrenMatching(node, filter, low, len);
         }
 

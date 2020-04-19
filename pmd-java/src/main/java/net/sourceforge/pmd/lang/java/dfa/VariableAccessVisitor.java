@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.dfa;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,13 +88,11 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 List<SimpleEntry<Node, NameOccurrence>> occurrencesWithAssignmentExp = new ArrayList<>();
                 for (NameOccurrence occurrence : entry.getValue()) {
                     // find the nearest assignment, if any
-                    Node potentialAssignment = occurrence.getLocation().getFirstParentOfAnyType(ASTStatementExpression.class,
-                                                                                            ASTExpression.class);
+                    Node potentialAssignment = occurrence.getLocation().ancestors().firstNonNull(asInstanceOf(ASTStatementExpression.class, ASTExpression.class));
                     while (potentialAssignment != null
                             && (potentialAssignment.getNumChildren() < 2
                                     || !(potentialAssignment.getChild(1) instanceof ASTAssignmentOperator))) {
-                        potentialAssignment = potentialAssignment.getFirstParentOfAnyType(ASTStatementExpression.class,
-                                ASTExpression.class);
+                        potentialAssignment = potentialAssignment.ancestors().firstNonNull(asInstanceOf(ASTStatementExpression.class, ASTExpression.class));
                     }
                     // at this point, potentialAssignment is either a assignment or null
                     occurrencesWithAssignmentExp.add(new SimpleEntry<>(potentialAssignment, occurrence));

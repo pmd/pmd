@@ -18,6 +18,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Combined filter/map predicate. Cannot accept null values.
+ *
+ * @param <I> Input type, contravariant
+ * @param <O> Output type, covariant
  */
 @FunctionalInterface
 interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@NonNull I> {
@@ -41,7 +44,11 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
     /** Filter an iterator. */
     default Iterator<O> filterMap(Iterator<? extends I> iter) {
-        return IteratorUtil.mapNotNull(iter, this);
+        return applyIterator(iter, this);
+    }
+
+    static <I, O> Iterator<O> applyIterator(Iterator<? extends I> iter, Filtermap<? super I, ? extends O> filtermap) {
+        return IteratorUtil.mapNotNull(iter, filtermap);
     }
 
 
@@ -58,7 +65,7 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
 
-    default <R> Filtermap<I, R> thenCast(Class<R> rClass) {
+    default <R> Filtermap<I, R> thenCast(Class<? extends R> rClass) {
         return thenApply(isInstance(rClass));
     }
 
@@ -95,12 +102,12 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
 
-    static <I> Filtermap<I, I> filter(Predicate<? super @NonNull I> pred) {
+    static <I extends O, O> Filtermap<I, O> filter(Predicate<? super @NonNull I> pred) {
         return i -> i != null && pred.test(i) ? i : null;
     }
 
 
-    static <I, O> Filtermap<I, O> isInstance(Class<O> oClass) {
+    static <I, O> Filtermap<I, O> isInstance(Class<? extends O> oClass) {
         if (oClass == Node.class) {
             return (Filtermap<I, O>) NODE_IDENTITY;
         }

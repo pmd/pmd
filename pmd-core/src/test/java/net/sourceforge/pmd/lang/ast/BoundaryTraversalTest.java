@@ -59,6 +59,15 @@ public class BoundaryTraversalTest {
     }
 
     @Test
+    public void testSearchFromBoundaryFromNonOptimisedStream() {
+        addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
+
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).take(1).descendants(DummyNode.class).toList();
+        assertEquals(1, descendantsOfType.size());
+        assertFalse(descendantsOfType.get(0).isFindBoundary());
+    }
+
+    @Test
     public void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
