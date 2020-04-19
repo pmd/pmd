@@ -20,6 +20,7 @@
    </description>
    <priority>3</priority>
       <properties>
+          <property name="version" value="2.0"/>
           <property name="xpath">
               <value>
 <![CDATA[
@@ -49,6 +50,7 @@ public class Foo {
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //TypeDeclaration/ClassOrInterfaceDeclaration
@@ -93,6 +95,7 @@ public class Foo {
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -137,6 +140,7 @@ public class Foo {
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -181,6 +185,7 @@ public class Foo {
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -225,6 +230,7 @@ public class Foo {
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -278,6 +284,7 @@ application server should stop the JVM.
      ]]></description>
     	<priority>3</priority>
     	<properties>
+    		<property name="version" value="2.0"/>
     		<property name="xpath">
     			<value><![CDATA[
 //Name[starts-with(@Image,'System.exit')]
@@ -308,6 +315,7 @@ behavior especially when instances are distributed by the container on several J
     	</description>
     	<priority>3</priority>
     	<properties>
+    		<property name="version" value="2.0"/>
     		<property name="xpath">
     			<value><![CDATA[
 //ClassOrInterfaceDeclaration[
@@ -324,9 +332,9 @@ behavior especially when instances are distributed by the container on several J
     )
     and
     (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
-         (./FieldDeclaration[@Static = 'true'])
+         (./FieldDeclaration[@Static = true()])
          and
-         (./FieldDeclaration[@Final = 'false'])
+         (./FieldDeclaration[@Final = false()])
     ])
 ]
     		 ]]></value>
@@ -355,6 +363,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[

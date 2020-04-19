@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
@@ -55,6 +56,7 @@ public interface ASTAnyTypeDeclaration
      * @deprecated Use {@link #getSimpleName()}
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@SimpleName")
     @Override
     String getImage();
 

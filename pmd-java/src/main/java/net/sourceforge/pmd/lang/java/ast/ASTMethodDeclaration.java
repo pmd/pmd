@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 
@@ -63,6 +64,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
      * @deprecated Use {@link #getName()}
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getMethodName() {
         return getName();
     }

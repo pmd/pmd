@@ -22,4 +22,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface DeprecatedAttribute {
+
+    String NO_REPLACEMENT = "";
+
+
+    /**
+     * The simple name of the attribute to use for replacement (with '@' prefix).
+     * If empty, then the attribute is deprecated for removal.
+     */
+    String replaceWith() default NO_REPLACEMENT;
 }

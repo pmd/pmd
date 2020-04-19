@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 
@@ -23,16 +24,27 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
     }
 
     @Override
+    public final boolean isNested() {
+        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
+            || getParent() instanceof ASTAnnotationTypeMemberDeclaration
+            || getParent() instanceof ASTRecordBody;
+    }
+
+    /**
+     * @deprecated Use {@link #getSimpleName()}
+     */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@SimpleName")
+    @Override
     public String getImage() {
-        return super.getImage();
+        return getSimpleName();
     }
 
     @NonNull
     @Override
     public String getSimpleName() {
-        assert getImage() != null : "Null simple name";
-        return getImage();
+        assert super.getImage() != null : "Null simple name";
+        return super.getImage();
     }
 
     @NonNull

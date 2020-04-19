@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -53,7 +53,7 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testPluginname() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Image) < 3]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
         RuleViolation rv = report.iterator().next();
@@ -63,7 +63,7 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testXPathMultiProperty() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[@Image=$forbiddenNames]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<List<String>> varDescriptor
             = PropertyFactory.stringListProperty("forbiddenNames")
@@ -86,7 +86,7 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testVariables() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[@Image=$var]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$var]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<String> varDescriptor =
             PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").build();
@@ -99,7 +99,7 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testFnPrefixOnSaxon() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Image, 'fiddle')]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.iterator().next();
         assertEquals(3, rv.getBeginLine());
@@ -107,7 +107,7 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testNoFnPrefixOnSaxon() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Image, 'fiddle')]");
+        XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.iterator().next();
         assertEquals(3, rv.getBeginLine());

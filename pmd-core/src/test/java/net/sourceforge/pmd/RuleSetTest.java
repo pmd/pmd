@@ -402,7 +402,7 @@ public class RuleSetTest {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
+        rule.addRuleChainVisit("dummyRootNode");
         assertTrue("RuleChain rule", rule.isRuleChain());
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
                 .addRule(rule)
@@ -569,7 +569,7 @@ public class RuleSetTest {
     public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
             {
-                addRuleChainVisit("dummyNode");
+                addRuleChainVisit("dummyRootNode");
             }
 
             @Override
@@ -578,7 +578,7 @@ public class RuleSetTest {
             }
         }).addRule(new MockRule() {
             {
-                addRuleChainVisit("dummyNode");
+                addRuleChainVisit("dummyRootNode");
             }
 
             @Override

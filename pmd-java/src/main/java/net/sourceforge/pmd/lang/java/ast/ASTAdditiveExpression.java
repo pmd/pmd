@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+
 /**
  * Represents an addition operation on two or more values, or string concatenation.
  * This has a precedence greater than {@link ASTShiftExpression}, and lower
@@ -52,4 +54,20 @@ public final class ASTAdditiveExpression extends AbstractJavaExpr {
         visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Use {@link #getOperator()}
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Operator")
+    public String getImage() {
+        return getOperator();
+    }
+
+    /**
+     * Returns the image of the operator, i.e. "+" or "-".
+     */
+    public String getOperator() {
+        return super.getImage();
+    }
 }

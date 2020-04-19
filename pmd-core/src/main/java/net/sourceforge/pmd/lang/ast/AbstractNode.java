@@ -290,10 +290,7 @@ public abstract class AbstractNode implements Node {
      */
     public final boolean hasDescendantOfAnyType(final Class<? extends Node>... types) {
         // TODO consider implementing that with a single traversal!
-        // hasDescendantOfType could then be a special case of this one
-        // But to really share implementations, getFirstDescendantOfType's
-        // internal helper could have to give up some type safety to rely
-        // instead on a getFirstDescendantOfAnyType, then cast to the correct type
+        // -> this is done if you use node streams
         for (final Class<? extends Node> type : types) {
             if (hasDescendantOfType(type)) {
                 return true;

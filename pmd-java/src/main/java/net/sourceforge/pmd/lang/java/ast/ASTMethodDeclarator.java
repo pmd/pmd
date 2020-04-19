@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 
 /**
@@ -35,6 +36,7 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
     /**
      * @deprecated Use {@link ASTMethodDeclaration#getArity()}
      */
+    @DeprecatedAttribute(replaceWith = "MethodDeclaration/@Arity")
     @Deprecated
     public int getParameterCount() {
         return getFormalParameters().size();
@@ -48,6 +50,7 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
      * @deprecated Use {@link ASTMethodDeclaration#getName()}
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "MethodDeclaration/@Name")
     @Override
     public String getImage() {
         return super.getImage();

@@ -456,8 +456,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
-                                + "'unaryNumericPromotion']]//Expression[UnaryExpression]"),
+                        "//MethodDeclaration[@Name = 'unaryNumericPromotion']/Block//Expression[UnaryExpression]"),
                 ASTExpression.class);
         int index = 0;
 
@@ -479,8 +478,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
-                                + "'binaryNumericPromotion']]//Expression[AdditiveExpression]"),
+                        "//MethodDeclaration[@Name = 'binaryNumericPromotion']/Block//Expression[AdditiveExpression]"),
                 ASTExpression.class);
         int index = 0;
 
@@ -551,7 +549,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryStringPromotion']]//Expression"),
+                        "//MethodDeclaration[@Name = 'binaryStringPromotion']/Block//Expression"),
                 ASTExpression.class);
         int index = 0;
 
@@ -568,8 +566,11 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testUnaryLogicalOperators() throws JaxenException {
-        List<ASTExpression> expressions = selectNodes(Operators.class, ASTExpression.class,
-                                                      "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryLogicalOperators']]//Expression");
+        ASTCompilationUnit acu = java5.parseClass(Operators.class);
+        List<ASTExpression> expressions = convertList(
+                acu.findChildNodesWithXPath(
+                        "//MethodDeclaration[@Name = 'unaryLogicalOperators']/Block//Expression"),
+                ASTExpression.class);
         int index = 0;
 
         assertEquals(Boolean.TYPE, expressions.get(index++).getType());
@@ -585,7 +586,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryLogicalOperators']]//Expression"),
+                        "//MethodDeclaration[@Name = 'binaryLogicalOperators']/Block//Expression"),
                 ASTExpression.class);
         int index = 0;
 
@@ -612,10 +613,22 @@ public class ClassTypeResolverTest {
     public void testUnaryNumericOperators() throws JaxenException {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<TypeNode> expressions = new ArrayList<>();
+        final String baseXPath = "//MethodDeclaration[@Name = 'unaryNumericOperators']/Block";
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]"
-                                + "//*[self::Expression or self::PostfixExpression or self::PreIncrementExpression or self::PreDecrementExpression]"),
+                        baseXPath + "//Expression"),
+                TypeNode.class));
+        expressions.addAll(convertList(
+                acu.findChildNodesWithXPath(
+                        baseXPath + "//PostfixExpression"),
+                TypeNode.class));
+        expressions.addAll(convertList(
+                acu.findChildNodesWithXPath(
+                        baseXPath + "//PreIncrementExpression"),
+                TypeNode.class));
+        expressions.addAll(convertList(
+                acu.findChildNodesWithXPath(
+                        baseXPath + "//PreDecrementExpression"),
                 TypeNode.class));
 
         int index = 0;
@@ -636,7 +649,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryNumericOperators']]//Expression"),
+                        "//MethodDeclaration[@Name = 'binaryNumericOperators']/Block//Expression"),
                 ASTExpression.class);
         int index = 0;
 
@@ -659,8 +672,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = java5.parseClass(Operators.class);
         List<ASTStatementExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
-                                + "'assignmentOperators']]//StatementExpression"),
+                        "//MethodDeclaration[@Name = 'assignmentOperators']/Block//StatementExpression"),
                 ASTStatementExpression.class);
         int index = 0;
 
