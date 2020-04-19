@@ -59,7 +59,8 @@ final class FragmentedDocBuilder {
      */
     FragmentedDocCursor newCursor() {
         if (firstFragment == null) {
-            // no deltas in whole document, there's a single fragment
+            // No deltas in whole document, there's a single fragment
+            // This is the case for > 97% of Java files (source: OpenJDK)
             return new FragmentedDocCursor(new Fragment(null, mainBuf.length(), mainBuf));
         } else {
             if (curOffInInput < mainBuf.length()) {

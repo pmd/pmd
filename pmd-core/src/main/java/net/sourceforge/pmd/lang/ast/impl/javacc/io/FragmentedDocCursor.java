@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import java.io.EOFException;
+import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.document.Chars;
@@ -23,6 +25,7 @@ final class FragmentedDocCursor {
     FragmentedDocCursor(Fragment firstFragment) {
         cur = firstFragment;
         mark = firstFragment;
+        checkAssertions();
     }
 
 
@@ -30,7 +33,7 @@ final class FragmentedDocCursor {
         Fragment f = cur;
 
         while (f != null && curOutPos >= f.outEnd()) {
-            f = f.next;
+            f = f.next; // this is a loop to handle chained zero-length fragments
         }
 
         if (f == null) {
@@ -42,24 +45,68 @@ final class FragmentedDocCursor {
     }
 
     void backup(final int amount) {
+        final int posToRetreatTo = curOutPos - amount;
+        this.curOutPos = posToRetreatTo;
+        this.cur = findBackwards(posToRetreatTo);
+        checkAssertions();
+    }
+
+
+    void appendMarkSuffix(StringBuilder sb, final int suffixLen) {
+        assert suffixLen <= markLength() : "Suffix is greater than the mark length? " + suffixLen + " > " + markLength();
+
+        if (cur == mark || cur.outStart() <= curOutPos - suffixLen) {
+            // entire suffix is in the last fragment, fast path
+            cur.chars.appendChars(sb, curOutPos - cur.outStart - suffixLen, suffixLen);
+        } else {
+            int suffixStart = curOutPos - suffixLen;
+            Fragment f = findBackwards(suffixStart);
+            sb.ensureCapacity(sb.length() + suffixLen);
+            appendUntilCurPos(f, sb, suffixStart);
+        }
+    }
+
+    Chars getMarkImage() {
+        Fragment f = mark;
+        if (f == cur) { // same fragment, this is the fast path
+            return f.chars.slice(markOutPos - f.outStart(), markLength());
+        }
+
+        StringBuilder sb = new StringBuilder(markLength());
+        appendUntilCurPos(f, sb, markOutPos);
+        assert sb.length() == markLength() : sb + " should have length " + markLength();
+        return Chars.wrap(sb);
+    }
+
+    private void appendUntilCurPos(Fragment f, StringBuilder sb, int startOutPos) {
+        assert f != null && f != cur; // this won't work otherwise
+        assert f.outStart() <= startOutPos && startOutPos < f.outEnd();
+
+        // append the suffix of the first fragment after the start pos
+        f.appendAbs(sb, startOutPos, f.outEnd());
+        f = f.next;
+        while (f != cur) {
+            // append whole fragments
+            f.appendAbs(sb, f.outStart(), f.outEnd());
+            f = f.next;
+        }
+        // append the prefix of the last fragment until the current pos
+        f.appendAbs(sb, f.outStart(), curOutPos);
+    }
+
+
+    private void checkAssertions() {
+        assert mark != null && cur != null : "Null mark or current fragment";
+        assert cur.outStart() >= mark.outStart() : "Mark is after the current fragment";
+    }
+
+    // find the fragment that contains the given out offset
+    private @NonNull Fragment findBackwards(int posToRetreatTo) {
         Fragment f = cur;
-
-        int a = amount;
-        while (f != null && a > 0) {
-            if (a <= f.outLen()) {
-                break;
-            } else {
-                a -= f.outLen();
-                f = f.prev;
-            }
+        while (f != null && f.outStart() > posToRetreatTo) {
+            f = f.prev;
         }
-
-        if (f == null) {
-            throw new IllegalArgumentException("Cannot backup by " + amount + " chars");
-        }
-
-        this.curOutPos = curOutPos - amount;
-        this.cur = f;
+        return Objects.requireNonNull(f, "Cannot retreat to " + posToRetreatTo);
     }
 
     void mark() {
@@ -78,65 +125,6 @@ final class FragmentedDocCursor {
     int markLength() {
         return curOutPos - markOutPos;
     }
-
-
-    public void appendMarkSuffix(StringBuilder sb, final int suffixLen) {
-        assert suffixLen <= markLength();
-
-        if (cur == mark) {
-            // entire mark is in a single fragment, fast path 1
-            appendSuffix(sb, suffixLen);
-        } else {
-
-            // look backwards until we find the fragment that starts the suffix
-            Fragment f = cur;
-            int suffixStart = curOutPos - suffixLen;
-            while (f != null && f.outStart() > suffixStart) {
-                f = f.prev;
-            }
-            assert f != null;
-
-            if (f == cur) {
-                // entire suffix is in a single fragment, fast path 2
-                appendSuffix(sb, suffixLen);
-            }
-
-            sb.ensureCapacity(sb.length() + suffixLen);
-            appendUntilCurPos(f, sb, suffixStart);
-        }
-    }
-
-    public void appendSuffix(StringBuilder sb, int suffixLen) {
-        cur.chars.appendChars(sb, curOutPos - cur.outStart - suffixLen, suffixLen);
-    }
-
-    public Chars getMarkImage() {
-        Fragment f = mark;
-        if (f == cur) { // same fragment, this is the fast path
-            return f.chars.slice(markOutPos - f.outStart(), markLength());
-        }
-
-        StringBuilder sb = new StringBuilder(markLength());
-        appendUntilCurPos(f, sb, markOutPos);
-        assert sb.length() == markLength() : sb + " should have length " + markLength();
-        return Chars.wrap(sb);
-    }
-
-    public void appendUntilCurPos(Fragment f, StringBuilder sb, int startOutPos) {
-        assert f.outStart() <= startOutPos && startOutPos < f.outEnd();
-
-        // append the suffix of the first fragment after the start pos
-        f.appendAbs(sb, startOutPos, f.outEnd());
-        f = f.next;
-        while (f != cur) {
-            // append whole fragments
-            f.appendAbs(sb, f.outStart(), f.outEnd());
-            f = f.next;
-        }
-        // append the prefix of the last fragment until the current pos
-        f.appendAbs(sb, f.outStart(), curOutPos);
-    }
-
 
     static final class Fragment {
 
