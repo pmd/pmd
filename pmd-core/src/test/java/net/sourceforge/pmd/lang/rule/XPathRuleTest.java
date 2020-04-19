@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -91,8 +91,10 @@ public class XPathRuleTest {
     }
 
     public DummyNode newNode() {
+        DummyRoot root = new DummyRoot();
         DummyNode dummy = new DummyNodeWithDeprecatedAttribute(2);
         dummy.setCoords(1, 1, 1, 2);
-        return dummy;
+        root.jjtAddChild(dummy, 0);
+        return root;
     }
 }
