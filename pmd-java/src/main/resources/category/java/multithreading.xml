@@ -22,8 +22,9 @@ gets it.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized='true']</value>
+                <value>//MethodDeclaration[@Synchronized= true()]</value>
             </property>
         </properties>
         <example>
@@ -64,6 +65,7 @@ it contains methods that are not thread-safe.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -100,8 +102,9 @@ the volatile keyword should not be used for maintenance purpose and portability.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//FieldDeclaration[contains(@Volatile,'true')]</value>
+                <value>//FieldDeclaration[@Volatile = true()]</value>
             </property>
         </properties>
         <example>
@@ -127,6 +130,7 @@ Also EJB's might be moved between machines in a cluster and only managed resourc
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -184,6 +188,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -323,6 +328,7 @@ perform efficient map reads without blocking other threads.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -359,11 +365,12 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@Size = '0']]
+[PrimarySuffix/Arguments[@Size = 0]]
 [
     PrimaryPrefix[
         ./Name[@Image='notify' or ends-with(@Image,'.notify')]

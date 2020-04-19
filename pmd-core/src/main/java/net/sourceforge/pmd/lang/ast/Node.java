@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +23,8 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.ContextualizedNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.util.DataMap;
@@ -408,7 +411,8 @@ public interface Node {
     @Deprecated
     @SuppressWarnings("unchecked")
     default List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
-        return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
+        return new BaseXPath(xpathString, new ContextualizedNavigator(DeprecatedAttrLogger.createAdHocLogger()))
+                .selectNodes(this);
     }
 
     /**

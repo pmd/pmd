@@ -9,6 +9,7 @@ import java.util.Locale;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
@@ -34,6 +35,7 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      * @deprecated Use {@link #getSimpleName()}
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@SimpleName")
     @Override
     String getImage();
 

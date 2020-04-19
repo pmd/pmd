@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -25,9 +26,20 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     }
 
     @Override
+    public final boolean isNested() {
+        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
+            || getParent() instanceof ASTAnnotationTypeMemberDeclaration
+            || getParent() instanceof ASTRecordBody;
+    }
+
+    /**
+     * @deprecated Use {@link #getSimpleName()}
+     */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@SimpleName")
+    @Override
     public String getImage() {
-        return super.getImage();
+        return getSimpleName();
     }
 
     @Override
@@ -37,7 +49,7 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
 
     @Override
     public String getSimpleName() {
-        return getImage();
+        return super.getImage();
     }
 
     @Override

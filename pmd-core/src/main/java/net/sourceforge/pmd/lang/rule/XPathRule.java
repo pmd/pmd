@@ -16,9 +16,11 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
@@ -69,6 +71,9 @@ public class XPathRule extends AbstractRule {
      */
     private XPathRuleQuery xpathRuleQuery;
 
+    // this is shared with rules forked by deepCopy, used by the XPathRuleQuery
+    private DeprecatedAttrLogger attrLogger = DeprecatedAttrLogger.create(this);
+
     /**
      * Creates a new XPathRule without the corresponding XPath query.
      *
@@ -103,6 +108,14 @@ public class XPathRule extends AbstractRule {
         Objects.requireNonNull(expression, "XPath expression is null");
         setXPath(expression);
         setVersion(version.getXmlName());
+    }
+
+
+    @Override
+    public Rule deepCopy() {
+        XPathRule rule = (XPathRule) super.deepCopy();
+        rule.attrLogger = this.attrLogger;
+        return rule;
     }
 
     /**
@@ -178,9 +191,9 @@ public class XPathRule extends AbstractRule {
         }
 
         if (version == XPathVersion.XPATH_1_0) {
-            xpathRuleQuery = new JaxenXPathRuleQuery();
+            xpathRuleQuery = new JaxenXPathRuleQuery(attrLogger);
         } else {
-            xpathRuleQuery = new SaxonXPathRuleQuery();
+            xpathRuleQuery = new SaxonXPathRuleQuery(attrLogger);
         }
 
         xpathRuleQuery.setXPath(xpath);

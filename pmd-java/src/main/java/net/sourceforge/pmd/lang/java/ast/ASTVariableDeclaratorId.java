@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -99,6 +100,21 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return arrayDepth > 0;
     }
 
+    /**
+     * @deprecated Use {@link #getName()}
+     * @return
+     */
+    @Override
+    @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    public String getImage() {
+        return getName();
+    }
+
+    /** Returns the name of the variable. */
+    public String getName() {
+        return super.getImage();
+    }
 
     /**
      * Returns true if the declared variable has an array type.
@@ -162,9 +178,13 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
     /**
      * Returns the name of the variable.
+     *
+     * @deprecated Use {@link #getName()}
      */
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getVariableName() {
-        return getImage();
+        return getName();
     }
 
 
