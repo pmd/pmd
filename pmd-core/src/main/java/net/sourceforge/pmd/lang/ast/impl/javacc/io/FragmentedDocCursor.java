@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import java.io.EOFException;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -22,12 +21,28 @@ final class FragmentedDocCursor {
     private Fragment mark;
     private int markOutPos;
 
+    // We can reuse a stringbuilder
+    // This means, the byte[] buffer is shared, and doesn't need to be
+    // resized so often. StringBuilder::toString always does an array
+    // copy anyway.
+
+    // This also means that if we encounter some non-latin1 characters,
+    // all the following tokens will be coded as utf16. The string
+    // builder is only used for tokens that span several file fragments
+    // though, so that is a rare situation
+    private final StringBuilder strBuilder = new StringBuilder();
+
     FragmentedDocCursor(Fragment firstFragment) {
         cur = firstFragment;
         mark = firstFragment;
         checkAssertions();
     }
 
+    private StringBuilder freshStrBuilder(int minCap) {
+        strBuilder.setLength(0);
+        strBuilder.ensureCapacity(minCap);
+        return strBuilder;
+    }
 
     char next() throws EOFException {
         Fragment f = cur;
@@ -72,7 +87,7 @@ final class FragmentedDocCursor {
             return f.chars.slice(markOutPos - f.outStart(), markLength());
         }
 
-        StringBuilder sb = new StringBuilder(markLength());
+        StringBuilder sb = freshStrBuilder(markLength());
         appendUntilCurPos(f, sb, markOutPos);
         assert sb.length() == markLength() : sb + " should have length " + markLength();
         return Chars.wrap(sb);
@@ -106,7 +121,10 @@ final class FragmentedDocCursor {
         while (f != null && f.outStart() > posToRetreatTo) {
             f = f.prev;
         }
-        return Objects.requireNonNull(f, "Cannot retreat to " + posToRetreatTo);
+        if (f == null) {
+            throw new IllegalArgumentException("Cannot retreat to " + posToRetreatTo);
+        }
+        return f;
     }
 
     void mark() {
