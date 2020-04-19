@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
 import java.io.EOFException;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.util.document.Chars;
 
 final class FragmentedDocCursor {
@@ -18,9 +20,9 @@ final class FragmentedDocCursor {
     private Fragment mark;
     private int markOutPos;
 
-    FragmentedDocCursor(Fragment first) {
-        cur = first;
-        mark = first;
+    FragmentedDocCursor(Fragment firstFragment) {
+        cur = firstFragment;
+        mark = firstFragment;
     }
 
 
@@ -78,16 +80,34 @@ final class FragmentedDocCursor {
     }
 
 
-    public void appendMarkSuffix(StringBuilder sb, int suffixLen) {
+    public void appendMarkSuffix(StringBuilder sb, final int suffixLen) {
         assert suffixLen <= markLength();
 
         if (cur == mark) {
-            // no escape in the marked range
-            cur.chars.appendChars(sb, curOutPos - cur.outStart - suffixLen, suffixLen);
+            // entire mark is in a single fragment, fast path 1
+            appendSuffix(sb, suffixLen);
         } else {
-            // fallback inefficient implementation
-            getMarkImage().appendChars(sb, markLength() - suffixLen, suffixLen);
+
+            // look backwards until we find the fragment that starts the suffix
+            Fragment f = cur;
+            int suffixStart = curOutPos - suffixLen;
+            while (f != null && f.outStart() > suffixStart) {
+                f = f.prev;
+            }
+            assert f != null;
+
+            if (f == cur) {
+                // entire suffix is in a single fragment, fast path 2
+                appendSuffix(sb, suffixLen);
+            }
+
+            sb.ensureCapacity(sb.length() + suffixLen);
+            appendUntilCurPos(f, sb, suffixStart);
         }
+    }
+
+    public void appendSuffix(StringBuilder sb, int suffixLen) {
+        cur.chars.appendChars(sb, curOutPos - cur.outStart - suffixLen, suffixLen);
     }
 
     public Chars getMarkImage() {
@@ -97,16 +117,24 @@ final class FragmentedDocCursor {
         }
 
         StringBuilder sb = new StringBuilder(markLength());
+        appendUntilCurPos(f, sb, markOutPos);
+        assert sb.length() == markLength() : sb + " should have length " + markLength();
+        return Chars.wrap(sb);
+    }
 
-        f.appendAbs(sb, markOutPos, f.outEnd());
+    public void appendUntilCurPos(Fragment f, StringBuilder sb, int startOutPos) {
+        assert f.outStart() <= startOutPos && startOutPos < f.outEnd();
+
+        // append the suffix of the first fragment after the start pos
+        f.appendAbs(sb, startOutPos, f.outEnd());
         f = f.next;
         while (f != cur) {
+            // append whole fragments
             f.appendAbs(sb, f.outStart(), f.outEnd());
             f = f.next;
         }
+        // append the prefix of the last fragment until the current pos
         f.appendAbs(sb, f.outStart(), curOutPos);
-        assert sb.length() == markLength() : sb + " should have length " + markLength();
-        return Chars.wrap(sb);
     }
 
 
@@ -114,14 +142,14 @@ final class FragmentedDocCursor {
 
         private final Chars chars;
 
-        private final Fragment prev;
-        Fragment next;
+        final @Nullable Fragment prev;
+        @Nullable Fragment next;
 
         private final int outStart;
         private final int inStart;
         private final int inLength;
 
-        Fragment(Fragment prev, int inLength, Chars chars) {
+        Fragment(@Nullable Fragment prev, int inLength, Chars chars) {
             this.chars = chars;
             this.prev = prev;
             this.inLength = inLength;
@@ -134,11 +162,9 @@ final class FragmentedDocCursor {
             }
         }
 
-
         void appendAbs(StringBuilder sb, int absOffset, int absEndOffset) {
             chars.appendChars(sb, absOffset - outStart, absEndOffset - absOffset);
         }
-
 
         char charAt(int absPos) {
             return chars.charAt(absPos - outStart);
@@ -174,12 +200,7 @@ final class FragmentedDocCursor {
 
         @Override
         public String toString() {
-            return "Fragment{"
-                + "chars=" + chars
-                + ", outStart=" + outStart
-                + ", inStart=" + inStart
-                + ", inLength=" + inLength
-                + '}';
+            return "Fragment[" + inStart + ".." + outStart + "]\n" + chars;
         }
     }
 }

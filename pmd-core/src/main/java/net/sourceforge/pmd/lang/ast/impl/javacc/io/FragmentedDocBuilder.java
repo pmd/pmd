@@ -22,10 +22,19 @@ final class FragmentedDocBuilder {
     }
 
     /**
-     * Calls to this method must occur in source order (ie param
-     * offsetInInput increases monotonically).
+     * Add a new fragment.
+     *
+     * @param startInInput Start (inclusive) of the overwritten text in the source
+     * @param endInInput   End (exclusive) ...
+     * @param translation  Characters with which the range startInInput..endInInput are overwritten.
+     *                     This may be empty.
      */
     void recordDelta(int startInInput, int endInInput, Chars translation) {
+        assert curOffInInput <= startInInput
+            : "Already moved past " + curOffInInput + ", cannot add delta at " + startInInput;
+        assert startInInput <= endInInput : "Offsets must be ordered";
+        assert translation != null : "Translation cannot be null";
+
         int inLength = endInInput - startInInput;
         if (firstFragment == null) {
             assert lastFragment == null;
@@ -45,17 +54,20 @@ final class FragmentedDocBuilder {
         this.curOffInInput = endInInput;
     }
 
+    /**
+     * Finalize the construction process.
+     */
     FragmentedDocCursor newCursor() {
-        if (firstFragment == null) { // no deltas in whole document
-            Fragment whole = new Fragment(null, mainBuf.length(), mainBuf);
-            return new FragmentedDocCursor(whole);
+        if (firstFragment == null) {
+            // no deltas in whole document, there's a single fragment
+            return new FragmentedDocCursor(new Fragment(null, mainBuf.length(), mainBuf));
         } else {
             if (curOffInInput < mainBuf.length()) {
+                // there's some text left between the last fragment and the end of the doc
                 int remLen = mainBuf.length() - curOffInInput;
                 Chars remainder = mainBuf.slice(curOffInInput, remLen);
                 lastFragment = new Fragment(lastFragment, remLen, remainder);
             }
-
             return new FragmentedDocCursor(firstFragment);
         }
     }
