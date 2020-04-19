@@ -19,9 +19,9 @@ import net.sourceforge.pmd.util.document.TextDocument;
 public final class CharStream {
 
     private final JavaccTokenDocument tokenDoc;
-    private final EscapeTracker.Cursor cursor;
+    private final FragmentedDocCursor cursor;
 
-    private CharStream(JavaccTokenDocument tokenDoc, EscapeTracker.Cursor cursor) {
+    private CharStream(JavaccTokenDocument tokenDoc, FragmentedDocCursor cursor) {
         this.tokenDoc = tokenDoc;
         this.cursor = cursor;
     }
@@ -133,13 +133,13 @@ public final class CharStream {
 
     /** Returns the start offset of the current token (in the original source), inclusive. */
     public int getStartOffset() {
-        return cursor.markOutOffset();
+        return cursor.markInOffset();
     }
 
 
     /** Returns the end offset of the current token (in the original source), exclusive. */
     public int getEndOffset() {
-        return cursor.curOutOffset();
+        return cursor.curInOffset();
     }
 
 

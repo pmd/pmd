@@ -35,14 +35,15 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
                 // consume all the 'u's
                 off++;
             }
-            int end = replaceFirstBackslashWithEscape(firstBackslashOff, off - 1);
-            return recordEscape(firstBackslashOff, end - firstBackslashOff, 1);
+            Chars value = escapeValue(firstBackslashOff, off - 1);
+            int endOffset = off + 4; // + 4 hex digits
+            return recordEscape(firstBackslashOff, endOffset, value);
         } else {
             return abortEscape(off, maxOff);
         }
     }
 
-    private int replaceFirstBackslashWithEscape(int posOfFirstBackSlash, int offOfTheU) throws IOException {
+    private Chars escapeValue(int posOfFirstBackSlash, int offOfTheU) throws IOException {
         try {
             char c = (char)
                     ( hexVal(input.charAt(++offOfTheU)) << 12
@@ -50,8 +51,8 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
                     | hexVal(input.charAt(++offOfTheU)) << 4
                     | hexVal(input.charAt(++offOfTheU))
                     );
-            input.set(posOfFirstBackSlash, c); // replace the start char of the backslash
-            return offOfTheU + 1;
+
+            return Chars.wrap(new char[] { c }, true);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             String message = "Invalid escape sequence at line "
                 + getLine(posOfFirstBackSlash) + ", column "

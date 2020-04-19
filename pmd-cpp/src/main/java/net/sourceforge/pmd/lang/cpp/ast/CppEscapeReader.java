@@ -21,10 +21,10 @@ public class CppEscapeReader extends BackslashEscapeReader {
         int off = backSlashOff;
 
         if (input.charAt(off) == NEWLINE) {
-            return recordEscape(backSlashOff, 2, 0);
+            return recordEscape(backSlashOff, 2, Chars.EMPTY);
         } else if (input.charAt(off) == CARRIAGE_RETURN) {
             if (input.charAt(++off) == NEWLINE) {
-                return recordEscape(backSlashOff, 3, 0);
+                return recordEscape(backSlashOff, 3, Chars.EMPTY);
             }
         }
 

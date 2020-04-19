@@ -159,7 +159,6 @@ public class CharStreamImplTest {
         assertEquals('d', stream.readChar());
 
         expect.expect(IllegalArgumentException.class);
-        expect.expectMessage("only 2 are saved");
         stream.backup(10);
     }
     @Test
@@ -173,7 +172,6 @@ public class CharStreamImplTest {
         assertEquals('d', stream.readChar());
 
         expect.expect(IllegalArgumentException.class);
-        expect.expectMessage("only 4 are saved");
         stream.backup(10);
     }
 

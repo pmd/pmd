@@ -50,9 +50,9 @@ public abstract class BackslashEscapeReader extends EscapeAwareReader {
     protected abstract int handleBackslash(int maxOff, int firstBackslashOff) throws IOException;
 
     @Override
-    protected int recordEscape(int startOffsetInclusive, int lengthInSource, int translatedLength) {
+    protected int recordEscape(int startOffsetInclusive, int endOffsetExclusive, Chars translation) {
         this.savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
-        return super.recordEscape(startOffsetInclusive, lengthInSource, translatedLength);
+        return super.recordEscape(startOffsetInclusive, endOffsetExclusive, translation);
     }
 
     protected int abortEscape(int off, int maxOff) {

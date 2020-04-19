@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.document.Chars;
@@ -43,21 +45,25 @@ public class EscapeAwareReader extends Reader {
     /** Position of the next char to read in the input. */
     protected int bufpos;
     /** Keep track of adjustments to make to the offsets, caused by unicode escapes. */
-    final EscapeTracker escapes = new EscapeTracker();
+    final FragmentedDocBuilder escapes;
+
+    private Chars curEscape;
+    private int offInEscape;
 
     public EscapeAwareReader(Chars input) {
         AssertionUtil.requireParamNotNull("input", input);
-        this.input = input.mutableCopy();
+        this.input = input;
         bufpos = 0;
+        escapes = new FragmentedDocBuilder(input);
     }
 
     /**
      * Translate all the input (in-place) in the buffer. This is fed to a
      * cursor initialized to zero.
      */
-    EscapeTracker.Cursor translate() throws IOException {
+    FragmentedDocCursor translate() throws IOException {
         readUnchecked(null, 0, Integer.MAX_VALUE);
-        return escapes.new Cursor(input);
+        return escapes.newCursor();
     }
 
 
@@ -69,7 +75,8 @@ public class EscapeAwareReader extends Reader {
         return readUnchecked(cbuf, off, len);
     }
 
-    private int readUnchecked(char[] cbuf, int off, int len) throws IOException {
+    // if cbuf is null we just want to record escapes
+    private int readUnchecked(char @Nullable [] cbuf, int off, int len) throws IOException {
         ensureOpen();
         if (this.bufpos == input.length()) {
             return -1;
@@ -78,7 +85,24 @@ public class EscapeAwareReader extends Reader {
         len = min(len, input.length()); // remove Integer.MAX_VALUE
 
         int readChars = 0;
-        while (readChars < len && this.bufpos < input.length()) {
+        while (readChars < len && (this.bufpos < input.length() || curEscape != null)) {
+            if (curEscape != null) {
+                int toRead = min(len - readChars, curEscape.length() - offInEscape);
+
+                if (cbuf != null) {
+                    curEscape.getChars(0, cbuf, off + readChars, toRead);
+                }
+                readChars += toRead;
+                offInEscape += toRead;
+
+                if (curEscape.length() == offInEscape) {
+                    curEscape = null;
+                    continue;
+                } else {
+                    break; // len cut us off, we'll retry next time
+                }
+            }
+
             int bpos = this.bufpos;
             int nextJump = gobbleMaxWithoutEscape(min(input.length(), bpos + len - readChars));
             int newlyReadChars = nextJump - bpos;
@@ -109,11 +133,13 @@ public class EscapeAwareReader extends Reader {
         return this.bufpos = maxOff;
     }
 
-    protected int recordEscape(final int startOffsetInclusive, int lengthInSource, int translatedLength) {
-        assert lengthInSource > 0 && lengthInSource >= translatedLength && startOffsetInclusive >= 0;
-        this.escapes.recordEscape(startOffsetInclusive, lengthInSource, translatedLength);
-        this.bufpos = startOffsetInclusive + lengthInSource;
-        return startOffsetInclusive + translatedLength;
+    protected int recordEscape(final int startOffsetInclusive, int endOffsetExclusive, Chars translation) {
+        assert endOffsetExclusive > startOffsetInclusive && startOffsetInclusive >= 0;
+        this.escapes.recordDelta(startOffsetInclusive, endOffsetExclusive, translation);
+        this.bufpos = endOffsetExclusive;
+        this.curEscape = translation;
+        this.offInEscape = 0;
+        return startOffsetInclusive;
     }
 
     @Override
