@@ -33,7 +33,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public static final int REMEDIATION_POINTS_DEFAULT = 50000;
     public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[] {"Style"};
 
-    // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
+    // Note: required by https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
     protected static final List<String> INTERNAL_DEV_PROPERTIES = Arrays.asList("version", "xpath");
     private static final String PMD_PROPERTIES_URL = getPmdPropertiesURL();
@@ -146,9 +146,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     private <T> String getBody() {
         String result = "## " + rule.getName() + "\\n\\n" + "Since: PMD " + rule.getSince() + "\\n\\n" + "Priority: "
             + rule.getPriority() + "\\n\\n"
-            + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): "
+            + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): "
             + Arrays.toString(getCategories()).replaceAll("[\\[\\]]", "") + "\\n\\n"
-            + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): "
+            + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): "
             + getRemediationPoints() + "\\n\\n" + cleaned(rule.getDescription());
 
         if (!rule.getExamples().isEmpty()) {
