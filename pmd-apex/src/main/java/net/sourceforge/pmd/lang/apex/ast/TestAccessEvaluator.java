@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 // Note: taken from https://github.com/forcedotcom/idecore/blob/3083815933c2d015d03417986f57bd25786d58ce/com.salesforce.ide.apex.core/src/apex/jorje/semantic/common/TestAccessEvaluator.java
@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import apex.jorje.semantic.compiler.Namespace;
 import apex.jorje.semantic.compiler.StructuredVersion;
 import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
@@ -45,6 +47,8 @@ import com.google.common.collect.SetMultimap;
  *
  * @author jspagnola
  */
+@Deprecated
+@InternalApi
 public class TestAccessEvaluator implements AccessEvaluator {
 
     private final SetMultimap<Namespace, StructuredVersion> validPageVersions;

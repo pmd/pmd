@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -35,7 +35,11 @@ public interface ApexNode<T extends AstNode> extends Node {
 
     /**
      * Get the underlying AST node.
+     * @deprecated the underlying AST node should not be available outside of the AST node.
+     *      If information is needed from the underlying node, then PMD's AST node need to expose
+     *      this information.
      */
+    @Deprecated
     T getNode();
 
 
@@ -51,4 +55,8 @@ public interface ApexNode<T extends AstNode> extends Node {
     ApexNode<?> getParent();
 
     boolean hasRealLoc();
+
+    String getDefiningType();
+
+    String getNamespace();
 }

@@ -98,7 +98,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
-The following usages are now deprecated in the **Visualforce** and **PLSQL** ASTs:
+The following usages are now deprecated in the **Apex**, **Visualforce** and **PLSQL** ASTs:
 
 *   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
     marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
@@ -119,6 +119,7 @@ The following usages are now deprecated in the **Visualforce** and **PLSQL** AST
 
 These deprecations are added to the following language modules in this release.
 Please look at the package documentation to find out the full list of deprecations.
+* Apex: **{% jdoc_package apex::lang.apex.ast %}**
 * Visualforce: **{% jdoc_package visualforce::lang.vf.ast %}**
 * PL/SQL: **{% jdoc_package plsql::lang.plsql.ast %}**
 
@@ -131,17 +132,18 @@ following languages:
 Outside of these packages, these changes also concern the following TokenManager
 implementations, and their corresponding Parser if it exists (in the same package):
 
-*   {% jdoc vm::lang.vm.VmTokenManager %}
+*   {% jdoc cpp::lang.cpp.CppTokenManager %}
 *   {% jdoc java::lang.java.JavaTokenManager %}
+*   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
+*   {% jdoc jsp::lang.jsp.JspTokenManager %}
+*   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
+*   {% jdoc modelica::lang.modelica.ModelicaTokenManager %}
+*   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
+*   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
 *   {% jdoc python::lang.python.PythonTokenManager %}
 *   {% jdoc visualforce::lang.vf.VfTokenManager %}
-*   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
-*   {% jdoc jsp::lang.jsp.JspTokenManager %}
-*   {% jdoc modelica::lang.modelica.ModelicaTokenManager %}
-*   {% jdoc cpp::lang.cpp.CppTokenManager %}
-*   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
-*   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
-*   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
+*   {% jdoc vm::lang.vm.VmTokenManager %}
+
 
 In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
 
