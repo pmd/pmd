@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
