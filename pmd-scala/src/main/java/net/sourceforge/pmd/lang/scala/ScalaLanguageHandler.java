@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.scala;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.scala.ast.ScalaParser;
 
 import scala.meta.Dialect;
 

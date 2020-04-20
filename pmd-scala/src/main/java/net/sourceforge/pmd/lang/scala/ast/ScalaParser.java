@@ -2,7 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.scala;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.scala.ast;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -12,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 
 import scala.meta.Dialect;
 import scala.meta.Source;
@@ -24,7 +27,7 @@ import scala.meta.internal.parsers.ScalametaParser;
  * Scalameta. This parser then wraps all of ScalaMeta's Nodes in Java versions
  * for compatibility.
  */
-public class ScalaParser extends AbstractParser {
+public final class ScalaParser extends AbstractParser {
     private final Dialect dialect;
 
     /**
