@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo;
 
 // @formatter:off
 /**

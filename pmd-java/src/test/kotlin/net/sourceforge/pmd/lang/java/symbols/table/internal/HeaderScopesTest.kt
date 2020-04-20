@@ -23,8 +23,9 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo.*
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.*
 
 /**
  * Tests the scopes that dominate the whole compilation unit.

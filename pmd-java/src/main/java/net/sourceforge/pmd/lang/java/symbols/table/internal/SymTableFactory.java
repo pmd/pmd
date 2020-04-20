@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
 import static net.sourceforge.pmd.internal.util.AssertionUtil.isValidJavaPackageName;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo.FORMAL_PARAM;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.ScopeInfo.SAME_FILE;
+import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.FORMAL_PARAM;
+import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.SAME_FILE;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -39,6 +39,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainNode;
