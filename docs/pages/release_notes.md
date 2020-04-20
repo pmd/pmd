@@ -30,6 +30,12 @@ not change the result of your rules*, if it does, please report a bug at https:/
 Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 6.22.0.
 **We highly recommend that you upgrade your rules to XPath 2.0**. Please refer to the [migration guide](https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20).
 
+#### New JSON renderer
+
+PMD now supports a JSON renderer (use it with `-f json` on the CLI).
+
+TODO link to doc when the doc PR for renderers is updated & merged
+
 #### New Rules
 
 *   The new Apex rule {% rule "apex/codestyle/FieldDeclarationsShouldBeAtStart" %} (`apex-codestyle`)
@@ -46,6 +52,7 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   core
+    *   [#1286](https://github.com/pmd/pmd/issues/1286): \[core] Export Supporting JSON Format
     *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
