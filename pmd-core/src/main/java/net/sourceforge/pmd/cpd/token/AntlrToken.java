@@ -64,8 +64,16 @@ public class AntlrToken implements GenericToken {
         return token.getCharPositionInLine() + token.getStopIndex() - token.getStartIndex();
     }
 
-    public int getType() {
+    public int getKind() {
         return token.getType();
+    }
+
+    /**
+     * @deprecated use {@link #getKind()} instead.
+     */
+    @Deprecated
+    public int getType() {
+        return getKind();
     }
 
     public boolean isHidden() {

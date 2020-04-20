@@ -46,14 +46,24 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   core
+    *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
+*   java-bestpractices
+    *   [#2398](https://github.com/pmd/pmd/issues/2398): \[java] AbstractClassWithoutAbstractMethod false negative with inner abstract classes
 *   java-codestyle
+    *   [#1164](https://github.com/pmd/pmd/issues/1164): \[java] ClassNamingConventions suggests to add Util for class containing only static constants
     *   [#1723](https://github.com/pmd/pmd/issues/1723): \[java] UseDiamondOperator false-positive inside lambda
 *   java-design
     *   [#2390](https://github.com/pmd/pmd/issues/2390): \[java] AbstractClassWithoutAnyMethod: missing violation for nested classes
+*   java-errorprone
+    *   [#2402](https://github.com/pmd/pmd/issues/2402): \[java] CloseResource possible false positive with Primitive Streams
+*   java-multithreading
+    *   [#2313](https://github.com/pmd/pmd/issues/2313): \[java] Documenation for DoNotUseThreads is outdated
+*   javascript-errorprone
+    *   [#384](https://github.com/pmd/pmd/issues/384): \[javascript] Trailing commas not detected on French default locale
 
 ### API Changes
 
@@ -63,6 +73,11 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 
 Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc core::lang.rule.xpath.AbstractXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.JaxenXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.SaxonXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.XPathRuleQuery %}
 
 ##### In ASTs
 
@@ -113,12 +128,23 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
 *   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
 
+In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
+
+*   {% jdoc !!java::lang.java.ast.ASTAdditiveExpression#getImage() %} - use `getOperator()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getImage() %} - use `getName()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getVariableName() %} - use `getName()` instead
+
 ##### For removal
 
 *   {% jdoc !!core::lang.Parser#getTokenManager(java.lang.String,java.io.Reader) %}
 *   {% jdoc !!core::lang.TokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
 *   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
+*   {% jdoc !!core::cpd.token.AntlrToken#getType() %} - use `getKind()` instead.
+*   {% jdoc core::lang.rule.ImmutableLanguage %}
+*   {% jdoc core::lang.rule.MockRule %}
+*   {% jdoc !!java::lang.java.ast.ASTRecordDeclaration#getComponentList() %}
+*   Multiple fields, constructors and methods in {% jdoc core::lang.rule.XPathRule %}. See javadoc for details.
 
 ### External Contributions
 
@@ -129,6 +155,11 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2395](https://github.com/pmd/pmd/pull/2395): \[apex] New Rule: Unused local variables - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2396](https://github.com/pmd/pmd/pull/2396): \[apex] New rule: field declarations should be at start - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2397](https://github.com/pmd/pmd/pull/2397): \[apex] fixed WITH SECURITY_ENFORCED regex to recognise line break characters - [Kieran Black](https://github.com/kieranlblack)
+*   [#2401](https://github.com/pmd/pmd/pull/2401): \[doc] Update DoNotUseThreads rule documentation - [Saikat Sengupta](https://github.com/s4ik4t)
+*   [#2403](https://github.com/pmd/pmd/pull/2403): \[java] #2402 fix false-positives on Primitive Streams - [Bernd Farka](https://github.com/BerndFarkaDyna)
+*   [#2409](https://github.com/pmd/pmd/pull/2409): \[java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - [Binu R J](https://github.com/binu-r)
+*   [#2411](https://github.com/pmd/pmd/pull/2411): \[java] Fix UseAssertEqualsInsteadOfAssertTrue Example - [Moritz Scheve](https://github.com/Blightbuster)
+*   [#2423](https://github.com/pmd/pmd/pull/2423): \[core] Fix Checkstyle OperatorWrap in AbstractTokenizer - [Harsh Kukreja](https://github.com/harsh-kukreja)
 
 {% endtocmaker %}
 

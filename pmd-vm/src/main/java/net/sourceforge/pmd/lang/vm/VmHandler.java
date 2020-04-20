@@ -10,9 +10,7 @@ import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.VmRuleViolationFactory;
@@ -22,11 +20,6 @@ import net.sourceforge.pmd.lang.vm.rule.VmRuleViolationFactory;
  *
  */
 public class VmHandler extends AbstractLanguageVersionHandler {
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 
     @Override
     public RuleViolationFactory getRuleViolationFactory() {

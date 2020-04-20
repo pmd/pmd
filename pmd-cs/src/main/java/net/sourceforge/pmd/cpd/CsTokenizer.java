@@ -78,7 +78,7 @@ public class CsTokenizer extends AntlrTokenizer {
 
         private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
             if (ignoreUsings) {
-                final int type = currentToken.getType();
+                final int type = currentToken.getKind();
                 if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
                     discardingUsings = true;
                 } else if (type == CSharpLexer.SEMICOLON && discardingUsings) {
@@ -91,7 +91,7 @@ public class CsTokenizer extends AntlrTokenizer {
         private boolean isUsingDirective(final Iterable<AntlrToken> remainingTokens) {
             UsingState usingState = UsingState.KEYWORD;
             for (final AntlrToken token : remainingTokens) {
-                final int type = token.getType();
+                final int type = token.getKind();
                 if (usingState == UsingState.KEYWORD) {
                     // The previous token was a using keyword.
                     switch (type) {
@@ -147,7 +147,7 @@ public class CsTokenizer extends AntlrTokenizer {
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == CSharpLexer.NL;
+            discardingNL = currentToken.getKind() == CSharpLexer.NL;
         }
 
         @Override

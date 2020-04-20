@@ -57,7 +57,18 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return isNested();
     }
 
+    /**
+     * @deprecated Renamed to {@link #getRecordComponents()}
+     */
+    @Deprecated
     public ASTRecordComponentList getComponentList() {
+        return getRecordComponents();
+    }
+
+    /** Returns the record component list. */
+    // @NonNull
+    @Override
+    public ASTRecordComponentList getRecordComponents() {
         return getFirstChildOfType(ASTRecordComponentList.class);
     }
 }

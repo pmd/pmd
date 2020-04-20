@@ -23,6 +23,7 @@ cutting through 100% of the document.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
 <!-- the use of node() allow to target any node with an select attribute
      but also workaround the ambiguity of having the xsl namespace in the
@@ -38,7 +39,7 @@ cutting through 100% of the document.
   or
   contains(@select,'descendant-self::')
   or (
-    ($checkSelfDescendantAbreviation = 'true' )
+    ($checkSelfDescendantAbreviation = true() )
     and
     contains(@select,'//')
     )

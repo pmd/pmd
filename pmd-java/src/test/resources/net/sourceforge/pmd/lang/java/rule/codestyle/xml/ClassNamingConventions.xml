@@ -53,7 +53,7 @@
         <description>Utility class convention</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper)'</message>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -144,7 +144,7 @@
         <description>Class with only static members except constructors should be a utility class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper)'</message>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -249,6 +249,20 @@
                 private static final String foo = "FOOO";
 
                 public static void main(String[] args) {
+                    // whitelisted
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Utility class can have name constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MyConstants {
+                public static final String FOOO = "FOOO";
+
+                private MyConstants() {
                     // whitelisted
                 }
             }

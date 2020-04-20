@@ -102,7 +102,10 @@ public final class TreeRenderers {
 
 
     static {
-        REGISTRY.put(XML.id(), XML);
+        List<TreeRendererDescriptor> builtinDescriptors = Arrays.asList(XML, TextTreeRenderer.DESCRIPTOR);
+        for (TreeRendererDescriptor descriptor : builtinDescriptors) {
+            REGISTRY.put(descriptor.id(), descriptor);
+        }
     }
 
 
