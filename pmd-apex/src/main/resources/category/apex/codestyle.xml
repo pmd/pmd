@@ -45,12 +45,13 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
 |
-//IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
+//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
 ]]>
                 </value>
             </property>
@@ -82,10 +83,11 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace='false']
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -163,12 +165,13 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForLoopStatement/BlockStatement[@CurlyBrace='false']
+//ForLoopStatement/BlockStatement[@CurlyBrace= false()]
 |
-//ForEachStatement/BlockStatement[@CurlyBrace='false']
+//ForEachStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -272,6 +275,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -369,10 +373,11 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileLoopStatement/BlockStatement[@CurlyBrace='false']
+//WhileLoopStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>

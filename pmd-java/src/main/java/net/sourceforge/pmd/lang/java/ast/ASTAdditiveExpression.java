@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 /**
  * Represents an addition operation on two or more values, or string concatenation.
@@ -41,9 +42,19 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode {
 
 
     /**
+     * @deprecated Use {@link #getOperator()}
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Operator")
+    public String getImage() {
+        return getOperator();
+    }
+
+    /**
      * Returns the image of the operator, i.e. "+" or "-".
      */
     public String getOperator() {
-        return getImage();
+        return super.getImage();
     }
 }

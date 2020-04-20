@@ -14,6 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PMD adopts Contributor Code of Conduct
+
+To facilitate healthy and constructive community behavior PMD adopts
+[Contributor Convenant](https://www.contributor-covenant.org/) as its code of
+conduct.
+
+Please note that this project is released with a Contributor Code of Conduct.
+By participating in this project you agree to abide by its terms.
+
+You can find the code of conduct in the file [code_of_conduct.md](https://github.com/pmd/pmd/blob/master/code_of_conduct.md)
+in our repository.
+
 #### Performance improvements for XPath 2.0 rules
 
 XPath rules written with XPath 2.0 now support conversion to a rulechain rule, which
@@ -46,10 +58,16 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   core
+    *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
+    *   [#2357](https://github.com/pmd/pmd/issues/2357): Add code of conduct: Contributor Covenant
+*   doc
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
+    *   [#2413](https://github.com/pmd/pmd/issues/2413): \[doc] Improve documentation about the available renderers (PMD/CPD)
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
+*   java-bestpractices
+    *   [#2398](https://github.com/pmd/pmd/issues/2398): \[java] AbstractClassWithoutAbstractMethod false negative with inner abstract classes
 *   java-codestyle
     *   [#1164](https://github.com/pmd/pmd/issues/1164): \[java] ClassNamingConventions suggests to add Util for class containing only static constants
     *   [#1723](https://github.com/pmd/pmd/issues/1723): \[java] UseDiamondOperator false-positive inside lambda
@@ -127,6 +145,12 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   {% jdoc vm::lang.vm.VmTokenManager %}
 
 
+In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
+
+*   {% jdoc !!java::lang.java.ast.ASTAdditiveExpression#getImage() %} - use `getOperator()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getImage() %} - use `getName()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getVariableName() %} - use `getName()` instead
+
 ##### For removal
 
 *   {% jdoc !!core::lang.Parser#getTokenManager(java.lang.String,java.io.Reader) %}
@@ -152,6 +176,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
 *   [#2403](https://github.com/pmd/pmd/pull/2403): \[java] #2402 fix false-positives on Primitive Streams - [Bernd Farka](https://github.com/BerndFarkaDyna)
 *   [#2409](https://github.com/pmd/pmd/pull/2409): \[java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - [Binu R J](https://github.com/binu-r)
 *   [#2411](https://github.com/pmd/pmd/pull/2411): \[java] Fix UseAssertEqualsInsteadOfAssertTrue Example - [Moritz Scheve](https://github.com/Blightbuster)
+*   [#2423](https://github.com/pmd/pmd/pull/2423): \[core] Fix Checkstyle OperatorWrap in AbstractTokenizer - [Harsh Kukreja](https://github.com/harsh-kukreja)
 
 {% endtocmaker %}
 

@@ -59,6 +59,7 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
         </description>
         <priority>3</priority>
             <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -120,6 +121,7 @@ or reported.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -153,6 +155,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -186,10 +189,11 @@ Empty block statements serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method/ModifierNode[@Abstract!='true' and ../BlockStatement[count(*) = 0]]
+//Method/ModifierNode[@Abstract!= true() and ../BlockStatement[count(*) = 0]]
 | //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
 ]]>
                 </value>
@@ -221,6 +225,7 @@ Avoid empty try or finally blocks - what's the point?
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -267,6 +272,7 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

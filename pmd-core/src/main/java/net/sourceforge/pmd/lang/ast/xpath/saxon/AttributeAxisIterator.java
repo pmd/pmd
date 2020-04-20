@@ -42,7 +42,7 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
     public void advance() {
         if (this.iterator.hasNext()) {
             Attribute attribute = this.iterator.next();
-            super.current = new AttributeNode(attribute, super.position());
+            super.current = new AttributeNode(startNodeInfo, attribute, super.position());
         } else {
             super.current = null;
         }

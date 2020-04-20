@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # Make sure, everything is English...
@@ -15,7 +15,7 @@ if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
     exit 1
 fi
 
-
+LAST_VERSION=
 RELEASE_VERSION=
 DEVELOPMENT_VERSION=
 CURRENT_BRANCH=
@@ -33,11 +33,16 @@ PATCH=$(echo $RELEASE_VERSION | cut -d . -f 3)
 if [ "$PATCH" == "0" ]; then
     NEXT_MINOR=$(expr ${MINOR} + 1)
     NEXT_PATCH="0"
+    LAST_MINOR=$(expr ${MINOR} - 1)
+    LAST_PATCH="0"
 else
     # this is a bugfixing release
     NEXT_MINOR="${MINOR}"
     NEXT_PATCH=$(expr ${PATCH} + 1)
+    LAST_MINOR="${MINOR}"
+    LAST_PATCH=$(expr ${PATCH} - 1)
 fi
+LAST_VERSION="$MAJOR.$LAST_MINOR.$LAST_PATCH"
 DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
 DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
@@ -52,17 +57,18 @@ CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
 CURRENT_BRANCH=${CURRENT_BRANCH##refs/heads/}
 CURRENT_BRANCH=${CURRENT_BRANCH:-HEAD}
 
-echo "RELEASE_VERSION: ${RELEASE_VERSION}"
-echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION}"
+echo "LAST_VERSION: ${LAST_VERSION}"
+echo "RELEASE_VERSION: ${RELEASE_VERSION} (this release)"
+echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION} (the next version after the release)"
 echo "CURRENT_BRANCH: ${CURRENT_BRANCH}"
 
 echo
 echo "Is this correct?"
 echo
-echo "Press enter to continue..."
+echo "Press enter to continue... (or CTRL+C to cancel)"
 read
 
-
+export LAST_VERSION
 export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
@@ -88,6 +94,26 @@ echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a
 echo
 echo "Press enter to continue..."
 read
+
+
+# calculating stats for release notes
+
+STATS=$(
+echo "### Stats"
+echo "* $(git log pmd_releases/${LAST_VERSION}..HEAD --oneline --no-merges |wc -l) commits"
+echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/${LAST_VERSION}) ) / 86400))"
+)
+
+TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/$STATS$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
+echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
+
+echo
+echo "Updated stats in release notes:"
+echo "$STATS"
+echo
+echo
 
 # install bundles needed for rendering release notes
 bundle install --with=release_notes_preprocessing --path vendor/bundle
