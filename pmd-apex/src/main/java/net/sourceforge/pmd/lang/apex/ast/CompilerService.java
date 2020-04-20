@@ -59,8 +59,7 @@ class CompilerService {
      * @param queryValidator
      *            A way to validate your queries.
      */
-    public CompilerService(SymbolProvider symbolProvider, AccessEvaluator accessEvaluator,
-            QueryValidator queryValidator) {
+    CompilerService(SymbolProvider symbolProvider, AccessEvaluator accessEvaluator, QueryValidator queryValidator) {
         this.symbolProvider = symbolProvider;
         this.accessEvaluator = accessEvaluator;
         this.queryValidator = queryValidator;

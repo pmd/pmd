@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 abstract class AbstractApexNodeBase extends AbstractNode {
 
-    public AbstractApexNodeBase(Class<?> klass) {
+    protected AbstractApexNodeBase(Class<?> klass) {
         super(klass.hashCode());
     }
 

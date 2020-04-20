@@ -234,19 +234,19 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     // The nodes having children built.
-    private Stack<Node> nodes = new Stack<>();
+    private final Stack<Node> nodes = new Stack<>();
 
     // The Apex nodes with children to build.
-    private Stack<AstNode> parents = new Stack<>();
+    private final Stack<AstNode> parents = new Stack<>();
 
-    private AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
+    private final AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private List<ApexDocTokenLocation> apexDocTokenLocations;
-    private Map<Integer, String> suppressMap;
+    private final List<ApexDocTokenLocation> apexDocTokenLocations;
+    private final Map<Integer, String> suppressMap;
 
-    public ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
+    ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 
