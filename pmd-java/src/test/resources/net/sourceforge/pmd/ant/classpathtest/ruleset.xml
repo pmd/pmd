@@ -19,6 +19,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
      </description>
      <priority>3</priority>
      <properties>
+         <property name="version" value="2.0"/>
          <property name="xpath">
              <value>
  <![CDATA[

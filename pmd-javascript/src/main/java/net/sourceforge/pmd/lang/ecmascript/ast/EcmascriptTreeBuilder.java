@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.ast.ArrayComprehension;
 import org.mozilla.javascript.ast.ArrayComprehensionLoop;
 import org.mozilla.javascript.ast.ArrayLiteral;
@@ -220,13 +221,18 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
             TrailingCommaNode trailingCommaNode = (TrailingCommaNode) node;
             int nodeStart = node.getNode().getAbsolutePosition();
             int nodeEnd = nodeStart + node.getNode().getLength() - 1;
+
+            // This will fetch the localized message
+            // See https://github.com/pmd/pmd/issues/384
+            String trailingCommaLocalizedMessage = ScriptRuntime.getMessage0("msg.extra.trailing.comma");
+
             for (ParseProblem parseProblem : parseProblems) {
+
                 // The node overlaps the comma (i.e. end of the problem)?
                 int problemStart = parseProblem.getFileOffset();
                 int commaPosition = problemStart + parseProblem.getLength() - 1;
                 if (nodeStart <= commaPosition && commaPosition <= nodeEnd) {
-                    if ("Trailing comma is not legal in an ECMA-262 object initializer"
-                            .equals(parseProblem.getMessage())) {
+                    if (trailingCommaLocalizedMessage.equals(parseProblem.getMessage())) {
                         // Report on the shortest code block containing the
                         // problem (i.e. inner most code in nested structures).
                         EcmascriptNode<?> currentNode = (EcmascriptNode<?>) parseProblemToNode.get(parseProblem);

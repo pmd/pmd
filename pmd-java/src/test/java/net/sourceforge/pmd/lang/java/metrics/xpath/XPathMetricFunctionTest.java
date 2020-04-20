@@ -26,12 +26,15 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.xpath.MetricFunction;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
 public class XPathMetricFunctionTest {
+
+    // TODO 7.0 when removing jaxen these tests need to be updated to use pmd-java:metric
 
     private static final String VIOLATION_MESSAGE = "violation";
 
@@ -40,8 +43,7 @@ public class XPathMetricFunctionTest {
 
 
     private Rule makeXpathRuleFromXPath(String xpath) {
-        XPathRule rule = new XPathRule();
-        rule.setXPath(xpath);
+        XPathRule rule = new XPathRule(XPathVersion.XPATH_1_0, xpath);
         rule.setMessage(VIOLATION_MESSAGE);
         rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         return rule;
