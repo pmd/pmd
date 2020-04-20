@@ -22,20 +22,21 @@ indicative of the bug where the assignment operator '=' was used instead of the 
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-    //IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //IfStatement[$allowIf = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
 |
-    //WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //WhileLoop[$allowWhile = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
 |
-    //DoLoop[$allowWhile = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //DoLoop[$allowWhile = false()]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
 |
-    //ForLoop[$allowFor = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+    //ForLoop[$allowFor = false()]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
 |
-   //ConditionalExpression[$allowTernary = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+   //ConditionalExpression[$allowTernary = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
 |
-   //ConditionalExpression[$allowTernaryResults = "false"]/child::node()[position() = 2 or position() = 3]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+   //ConditionalExpression[$allowTernaryResults = false()]/child::node()[position() = 2 or position() = 3]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
 ]]>
                 </value>
             </property>
@@ -72,6 +73,7 @@ Avoid using 'for' statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -107,10 +109,11 @@ Avoid using if..else statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ExpressionStatement[parent::IfStatement[@Else = "true"]]
+//ExpressionStatement[parent::IfStatement[@Else = true()]]
    [not(child::Scope)]
    [not(child::IfStatement)]
 ]]>
@@ -146,10 +149,11 @@ Avoid using if statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else = "false" and not(child::Scope)]
+//IfStatement[@Else = false() and not(child::Scope)]
 ]]>
                 </value>
             </property>
@@ -182,10 +186,11 @@ See also: &lt;http://eslint.org/docs/rules/no-else-return>
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else="true"][Scope[1]/ReturnStatement]
+//IfStatement[@Else=true()][Scope[1]/ReturnStatement]
 ]]>
                 </value>
             </property>
@@ -221,6 +226,7 @@ be misleading.  Considering removing this unnecessary Block.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -256,6 +262,7 @@ if (bar) {
         <description>Unnecessary parentheses should be removed.</description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -285,6 +292,7 @@ will never execute.  This is a bug, or extremely poor style.
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -326,6 +334,7 @@ Avoid using 'while' statements without using curly braces.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

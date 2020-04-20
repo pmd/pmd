@@ -217,7 +217,7 @@ class Foo {
 			violation suppression xpath works, by name
 		]]>
 	</description>
-	<rule-property name="violationSuppressXPath">.[@Image = 'paramB']</rule-property>
+	<rule-property name="violationSuppressXPath">.[@Name = 'paramB']</rule-property>
 	<expected-problems>0</expected-problems>
 	<code>
 	<![CDATA[

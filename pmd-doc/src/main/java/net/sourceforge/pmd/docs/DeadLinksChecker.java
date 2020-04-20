@@ -177,6 +177,12 @@ public class DeadLinksChecker {
                         } else {
                             linkOk = linkTarget.isEmpty() || htmlPages.contains(linkTarget);
                         }
+
+                        // maybe a local file
+                        if (!linkOk) {
+                            Path localResource = docsDirectory.resolve(linkTarget);
+                            linkOk = Files.exists(localResource);
+                        }
                     }
 
                     if (!linkOk) {
