@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermApplyInfix node implementation.
  */
-public class ASTTermApplyInfix extends AbstractScalaNode<Term.ApplyInfix> {
+public final class ASTTermApplyInfix extends AbstractScalaNode<Term.ApplyInfix> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermApplyInfix(Term.ApplyInfix scalaNode) {
+    ASTTermApplyInfix(Term.ApplyInfix scalaNode) {
         super(scalaNode);
     }
 

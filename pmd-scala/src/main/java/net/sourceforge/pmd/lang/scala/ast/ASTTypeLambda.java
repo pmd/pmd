@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeLambda node implementation.
  */
-public class ASTTypeLambda extends AbstractScalaNode<Type.Lambda> {
+public final class ASTTypeLambda extends AbstractScalaNode<Type.Lambda> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeLambda(Type.Lambda scalaNode) {
+    ASTTypeLambda(Type.Lambda scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeAnd node implementation.
  */
-public class ASTTypeAnd extends AbstractScalaNode<Type.And> {
+public final class ASTTypeAnd extends AbstractScalaNode<Type.And> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeAnd(Type.And scalaNode) {
+    ASTTypeAnd(Type.And scalaNode) {
         super(scalaNode);
     }
 

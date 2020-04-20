@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatSeqWildcard node implementation.
  */
-public class ASTPatSeqWildcard extends AbstractScalaNode<Pat.SeqWildcard> {
+public final class ASTPatSeqWildcard extends AbstractScalaNode<Pat.SeqWildcard> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatSeqWildcard(Pat.SeqWildcard scalaNode) {
+    ASTPatSeqWildcard(Pat.SeqWildcard scalaNode) {
         super(scalaNode);
     }
 

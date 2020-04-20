@@ -11,11 +11,9 @@ import scala.meta.Pkg;
 /**
  * The ASTPkg node implementation.
  */
-public class ASTPkg extends AbstractScalaNode<Pkg> {
+public final class ASTPkg extends AbstractScalaNode<Pkg> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPkg(Pkg scalaNode) {
+    ASTPkg(Pkg scalaNode) {
         super(scalaNode);
     }
 

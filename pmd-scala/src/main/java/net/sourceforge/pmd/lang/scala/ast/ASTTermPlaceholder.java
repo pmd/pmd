@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermPlaceholder node implementation.
  */
-public class ASTTermPlaceholder extends AbstractScalaNode<Term.Placeholder> {
+public final class ASTTermPlaceholder extends AbstractScalaNode<Term.Placeholder> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermPlaceholder(Term.Placeholder scalaNode) {
+    ASTTermPlaceholder(Term.Placeholder scalaNode) {
         super(scalaNode);
     }
 

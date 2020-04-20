@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatTuple node implementation.
  */
-public class ASTPatTuple extends AbstractScalaNode<Pat.Tuple> {
+public final class ASTPatTuple extends AbstractScalaNode<Pat.Tuple> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatTuple(Pat.Tuple scalaNode) {
+    ASTPatTuple(Pat.Tuple scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatInterpolate node implementation.
  */
-public class ASTPatInterpolate extends AbstractScalaNode<Pat.Interpolate> {
+public final class ASTPatInterpolate extends AbstractScalaNode<Pat.Interpolate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatInterpolate(Pat.Interpolate scalaNode) {
+    ASTPatInterpolate(Pat.Interpolate scalaNode) {
         super(scalaNode);
     }
 

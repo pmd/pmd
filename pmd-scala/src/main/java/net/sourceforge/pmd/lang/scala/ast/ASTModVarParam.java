@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModVarParam node implementation.
  */
-public class ASTModVarParam extends AbstractScalaNode<Mod.VarParam> {
+public final class ASTModVarParam extends AbstractScalaNode<Mod.VarParam> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModVarParam(Mod.VarParam scalaNode) {
+    ASTModVarParam(Mod.VarParam scalaNode) {
         super(scalaNode);
     }
 

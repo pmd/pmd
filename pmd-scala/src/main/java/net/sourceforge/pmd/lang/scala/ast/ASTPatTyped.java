@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatTyped node implementation.
  */
-public class ASTPatTyped extends AbstractScalaNode<Pat.Typed> {
+public final class ASTPatTyped extends AbstractScalaNode<Pat.Typed> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatTyped(Pat.Typed scalaNode) {
+    ASTPatTyped(Pat.Typed scalaNode) {
         super(scalaNode);
     }
 

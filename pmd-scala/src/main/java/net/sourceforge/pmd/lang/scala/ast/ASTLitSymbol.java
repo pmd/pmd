@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitSymbol node implementation.
  */
-public class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
+public final class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitSymbol(Lit.Symbol scalaNode) {
+    ASTLitSymbol(Lit.Symbol scalaNode) {
         super(scalaNode);
     }
 

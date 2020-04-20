@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitNull node implementation.
  */
-public class ASTLitNull extends AbstractScalaNode<Lit.Null> {
+public final class ASTLitNull extends AbstractScalaNode<Lit.Null> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitNull(Lit.Null scalaNode) {
+    ASTLitNull(Lit.Null scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Importee;
 /**
  * The ASTImporteeWildcard node implementation.
  */
-public class ASTImporteeWildcard extends AbstractScalaNode<Importee.Wildcard> {
+public final class ASTImporteeWildcard extends AbstractScalaNode<Importee.Wildcard> {
 
-    @Deprecated
-    @InternalApi
-    public ASTImporteeWildcard(Importee.Wildcard scalaNode) {
+    ASTImporteeWildcard(Importee.Wildcard scalaNode) {
         super(scalaNode);
     }
 

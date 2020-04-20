@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermTry node implementation.
  */
-public class ASTTermTry extends AbstractScalaNode<Term.Try> {
+public final class ASTTermTry extends AbstractScalaNode<Term.Try> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermTry(Term.Try scalaNode) {
+    ASTTermTry(Term.Try scalaNode) {
         super(scalaNode);
     }
 

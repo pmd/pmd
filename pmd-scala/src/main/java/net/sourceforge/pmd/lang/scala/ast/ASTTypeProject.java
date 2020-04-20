@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeProject node implementation.
  */
-public class ASTTypeProject extends AbstractScalaNode<Type.Project> {
+public final class ASTTypeProject extends AbstractScalaNode<Type.Project> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeProject(Type.Project scalaNode) {
+    ASTTypeProject(Type.Project scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermWhile node implementation.
  */
-public class ASTTermWhile extends AbstractScalaNode<Term.While> {
+public final class ASTTermWhile extends AbstractScalaNode<Term.While> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermWhile(Term.While scalaNode) {
+    ASTTermWhile(Term.While scalaNode) {
         super(scalaNode);
     }
 

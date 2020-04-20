@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitString node implementation.
  */
-public class ASTLitString extends AbstractScalaNode<Lit.String> {
+public final class ASTLitString extends AbstractScalaNode<Lit.String> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitString(Lit.String scalaNode) {
+    ASTLitString(Lit.String scalaNode) {
         super(scalaNode);
     }
 

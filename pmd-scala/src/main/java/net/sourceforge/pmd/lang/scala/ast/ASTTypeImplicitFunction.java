@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeImplicitFunction node implementation.
  */
-public class ASTTypeImplicitFunction extends AbstractScalaNode<Type.ImplicitFunction> {
+public final class ASTTypeImplicitFunction extends AbstractScalaNode<Type.ImplicitFunction> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeImplicitFunction(Type.ImplicitFunction scalaNode) {
+    ASTTypeImplicitFunction(Type.ImplicitFunction scalaNode) {
         super(scalaNode);
     }
 

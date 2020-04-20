@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatVar node implementation.
  */
-public class ASTPatVar extends AbstractScalaNode<Pat.Var> {
+public final class ASTPatVar extends AbstractScalaNode<Pat.Var> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatVar(Pat.Var scalaNode) {
+    ASTPatVar(Pat.Var scalaNode) {
         super(scalaNode);
     }
 

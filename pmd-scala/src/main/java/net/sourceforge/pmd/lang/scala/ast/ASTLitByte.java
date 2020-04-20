@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitByte node implementation.
  */
-public class ASTLitByte extends AbstractScalaNode<Lit.Byte> {
+public final class ASTLitByte extends AbstractScalaNode<Lit.Byte> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitByte(Lit.Byte scalaNode) {
+    ASTLitByte(Lit.Byte scalaNode) {
         super(scalaNode);
     }
 

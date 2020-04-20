@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermIf node implementation.
  */
-public class ASTTermIf extends AbstractScalaNode<Term.If> {
+public final class ASTTermIf extends AbstractScalaNode<Term.If> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermIf(Term.If scalaNode) {
+    ASTTermIf(Term.If scalaNode) {
         super(scalaNode);
     }
 

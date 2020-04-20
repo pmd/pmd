@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermRepeated node implementation.
  */
-public class ASTTermRepeated extends AbstractScalaNode<Term.Repeated> {
+public final class ASTTermRepeated extends AbstractScalaNode<Term.Repeated> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermRepeated(Term.Repeated scalaNode) {
+    ASTTermRepeated(Term.Repeated scalaNode) {
         super(scalaNode);
     }
 

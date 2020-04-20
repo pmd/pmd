@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeApply node implementation.
  */
-public class ASTTypeApply extends AbstractScalaNode<Type.Apply> {
+public final class ASTTypeApply extends AbstractScalaNode<Type.Apply> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeApply(Type.Apply scalaNode) {
+    ASTTypeApply(Type.Apply scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermAscribe node implementation.
  */
-public class ASTTermAscribe extends AbstractScalaNode<Term.Ascribe> {
+public final class ASTTermAscribe extends AbstractScalaNode<Term.Ascribe> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermAscribe(Term.Ascribe scalaNode) {
+    ASTTermAscribe(Term.Ascribe scalaNode) {
         super(scalaNode);
     }
 

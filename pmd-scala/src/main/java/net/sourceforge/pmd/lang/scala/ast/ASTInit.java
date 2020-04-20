@@ -11,11 +11,9 @@ import scala.meta.Init;
 /**
  * The ASTInit node implementation.
  */
-public class ASTInit extends AbstractScalaNode<Init> {
+public final class ASTInit extends AbstractScalaNode<Init> {
 
-    @Deprecated
-    @InternalApi
-    public ASTInit(Init scalaNode) {
+    ASTInit(Init scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatAlternative node implementation.
  */
-public class ASTPatAlternative extends AbstractScalaNode<Pat.Alternative> {
+public final class ASTPatAlternative extends AbstractScalaNode<Pat.Alternative> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatAlternative(Pat.Alternative scalaNode) {
+    ASTPatAlternative(Pat.Alternative scalaNode) {
         super(scalaNode);
     }
 

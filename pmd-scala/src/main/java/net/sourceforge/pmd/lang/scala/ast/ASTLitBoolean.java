@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitBoolean node implementation.
  */
-public class ASTLitBoolean extends AbstractScalaNode<Lit.Boolean> {
+public final class ASTLitBoolean extends AbstractScalaNode<Lit.Boolean> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitBoolean(Lit.Boolean scalaNode) {
+    ASTLitBoolean(Lit.Boolean scalaNode) {
         super(scalaNode);
     }
 

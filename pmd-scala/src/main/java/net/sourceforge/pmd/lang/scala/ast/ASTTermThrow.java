@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermThrow node implementation.
  */
-public class ASTTermThrow extends AbstractScalaNode<Term.Throw> {
+public final class ASTTermThrow extends AbstractScalaNode<Term.Throw> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermThrow(Term.Throw scalaNode) {
+    ASTTermThrow(Term.Throw scalaNode) {
         super(scalaNode);
     }
 

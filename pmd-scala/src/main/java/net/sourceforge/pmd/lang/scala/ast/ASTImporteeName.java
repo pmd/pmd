@@ -11,11 +11,9 @@ import scala.meta.Importee;
 /**
  * The ASTImporteeName node implementation.
  */
-public class ASTImporteeName extends AbstractScalaNode<Importee.Name> {
+public final class ASTImporteeName extends AbstractScalaNode<Importee.Name> {
 
-    @Deprecated
-    @InternalApi
-    public ASTImporteeName(Importee.Name scalaNode) {
+    ASTImporteeName(Importee.Name scalaNode) {
         super(scalaNode);
     }
 

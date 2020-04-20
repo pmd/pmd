@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeAnnotate node implementation.
  */
-public class ASTTypeAnnotate extends AbstractScalaNode<Type.Annotate> {
+public final class ASTTypeAnnotate extends AbstractScalaNode<Type.Annotate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeAnnotate(Type.Annotate scalaNode) {
+    ASTTypeAnnotate(Type.Annotate scalaNode) {
         super(scalaNode);
     }
 

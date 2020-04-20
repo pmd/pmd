@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModPrivate node implementation.
  */
-public class ASTModPrivate extends AbstractScalaNode<Mod.Private> {
+public final class ASTModPrivate extends AbstractScalaNode<Mod.Private> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModPrivate(Mod.Private scalaNode) {
+    ASTModPrivate(Mod.Private scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeVar node implementation.
  */
-public class ASTTypeVar extends AbstractScalaNode<Type.Var> {
+public final class ASTTypeVar extends AbstractScalaNode<Type.Var> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeVar(Type.Var scalaNode) {
+    ASTTypeVar(Type.Var scalaNode) {
         super(scalaNode);
     }
 

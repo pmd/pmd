@@ -11,11 +11,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnTrait node implementation.
  */
-public class ASTDefnTrait extends AbstractScalaNode<Defn.Trait> {
+public final class ASTDefnTrait extends AbstractScalaNode<Defn.Trait> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDefnTrait(Defn.Trait scalaNode) {
+    ASTDefnTrait(Defn.Trait scalaNode) {
         super(scalaNode);
     }
 

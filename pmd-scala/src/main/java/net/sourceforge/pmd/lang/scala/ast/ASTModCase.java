@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModCase node implementation.
  */
-public class ASTModCase extends AbstractScalaNode<Mod.Case> {
+public final class ASTModCase extends AbstractScalaNode<Mod.Case> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModCase(Mod.Case scalaNode) {
+    ASTModCase(Mod.Case scalaNode) {
         super(scalaNode);
     }
 

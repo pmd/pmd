@@ -11,11 +11,9 @@ import scala.meta.Decl;
 /**
  * The ASTDeclType node implementation.
  */
-public class ASTDeclType extends AbstractScalaNode<Decl.Type> {
+public final class ASTDeclType extends AbstractScalaNode<Decl.Type> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDeclType(Decl.Type scalaNode) {
+    ASTDeclType(Decl.Type scalaNode) {
         super(scalaNode);
     }
 

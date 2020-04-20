@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatBind node implementation.
  */
-public class ASTPatBind extends AbstractScalaNode<Pat.Bind> {
+public final class ASTPatBind extends AbstractScalaNode<Pat.Bind> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatBind(Pat.Bind scalaNode) {
+    ASTPatBind(Pat.Bind scalaNode) {
         super(scalaNode);
     }
 

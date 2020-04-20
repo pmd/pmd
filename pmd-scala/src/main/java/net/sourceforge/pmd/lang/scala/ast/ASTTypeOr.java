@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeOr node implementation.
  */
-public class ASTTypeOr extends AbstractScalaNode<Type.Or> {
+public final class ASTTypeOr extends AbstractScalaNode<Type.Or> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeOr(Type.Or scalaNode) {
+    ASTTypeOr(Type.Or scalaNode) {
         super(scalaNode);
     }
 

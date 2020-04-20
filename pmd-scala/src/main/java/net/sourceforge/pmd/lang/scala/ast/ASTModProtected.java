@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModProtected node implementation.
  */
-public class ASTModProtected extends AbstractScalaNode<Mod.Protected> {
+public final class ASTModProtected extends AbstractScalaNode<Mod.Protected> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModProtected(Mod.Protected scalaNode) {
+    ASTModProtected(Mod.Protected scalaNode) {
         super(scalaNode);
     }
 

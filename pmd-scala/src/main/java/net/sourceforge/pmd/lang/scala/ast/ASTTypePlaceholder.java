@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypePlaceholder node implementation.
  */
-public class ASTTypePlaceholder extends AbstractScalaNode<Type.Placeholder> {
+public final class ASTTypePlaceholder extends AbstractScalaNode<Type.Placeholder> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypePlaceholder(Type.Placeholder scalaNode) {
+    ASTTypePlaceholder(Type.Placeholder scalaNode) {
         super(scalaNode);
     }
 

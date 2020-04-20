@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitFloat node implementation.
  */
-public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
+public final class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitFloat(Lit.Float scalaNode) {
+    ASTLitFloat(Lit.Float scalaNode) {
         super(scalaNode);
     }
 

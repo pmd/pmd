@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeApplyInfix node implementation.
  */
-public class ASTTypeApplyInfix extends AbstractScalaNode<Type.ApplyInfix> {
+public final class ASTTypeApplyInfix extends AbstractScalaNode<Type.ApplyInfix> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeApplyInfix(Type.ApplyInfix scalaNode) {
+    ASTTypeApplyInfix(Type.ApplyInfix scalaNode) {
         super(scalaNode);
     }
 

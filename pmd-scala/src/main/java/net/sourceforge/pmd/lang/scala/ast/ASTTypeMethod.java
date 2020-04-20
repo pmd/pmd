@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeMethod node implementation.
  */
-public class ASTTypeMethod extends AbstractScalaNode<Type.Method> {
+public final class ASTTypeMethod extends AbstractScalaNode<Type.Method> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeMethod(Type.Method scalaNode) {
+    ASTTypeMethod(Type.Method scalaNode) {
         super(scalaNode);
     }
 

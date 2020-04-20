@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermParam node implementation.
  */
-public class ASTTermParam extends AbstractScalaNode<Term.Param> {
+public final class ASTTermParam extends AbstractScalaNode<Term.Param> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermParam(Term.Param scalaNode) {
+    ASTTermParam(Term.Param scalaNode) {
         super(scalaNode);
     }
 

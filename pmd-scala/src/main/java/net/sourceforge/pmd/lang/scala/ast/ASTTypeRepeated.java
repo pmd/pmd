@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeRepeated node implementation.
  */
-public class ASTTypeRepeated extends AbstractScalaNode<Type.Repeated> {
+public final class ASTTypeRepeated extends AbstractScalaNode<Type.Repeated> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeRepeated(Type.Repeated scalaNode) {
+    ASTTypeRepeated(Type.Repeated scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnType node implementation.
  */
-public class ASTDefnType extends AbstractScalaNode<Defn.Type> {
+public final class ASTDefnType extends AbstractScalaNode<Defn.Type> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDefnType(Defn.Type scalaNode) {
+    ASTDefnType(Defn.Type scalaNode) {
         super(scalaNode);
     }
 

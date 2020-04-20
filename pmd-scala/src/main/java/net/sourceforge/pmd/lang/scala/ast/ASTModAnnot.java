@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModAnnot node implementation.
  */
-public class ASTModAnnot extends AbstractScalaNode<Mod.Annot> {
+public final class ASTModAnnot extends AbstractScalaNode<Mod.Annot> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModAnnot(Mod.Annot scalaNode) {
+    ASTModAnnot(Mod.Annot scalaNode) {
         super(scalaNode);
     }
 

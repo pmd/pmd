@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermApplyType node implementation.
  */
-public class ASTTermApplyType extends AbstractScalaNode<Term.ApplyType> {
+public final class ASTTermApplyType extends AbstractScalaNode<Term.ApplyType> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermApplyType(Term.ApplyType scalaNode) {
+    ASTTermApplyType(Term.ApplyType scalaNode) {
         super(scalaNode);
     }
 

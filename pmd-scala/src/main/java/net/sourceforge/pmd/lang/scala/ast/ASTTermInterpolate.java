@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermInterpolate node implementation.
  */
-public class ASTTermInterpolate extends AbstractScalaNode<Term.Interpolate> {
+public final class ASTTermInterpolate extends AbstractScalaNode<Term.Interpolate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermInterpolate(Term.Interpolate scalaNode) {
+    ASTTermInterpolate(Term.Interpolate scalaNode) {
         super(scalaNode);
     }
 

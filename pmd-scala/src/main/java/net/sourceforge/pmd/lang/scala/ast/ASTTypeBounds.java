@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeBounds node implementation.
  */
-public class ASTTypeBounds extends AbstractScalaNode<Type.Bounds> {
+public final class ASTTypeBounds extends AbstractScalaNode<Type.Bounds> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeBounds(Type.Bounds scalaNode) {
+    ASTTypeBounds(Type.Bounds scalaNode) {
         super(scalaNode);
     }
 

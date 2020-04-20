@@ -11,11 +11,9 @@ import scala.meta.Enumerator;
 /**
  * The ASTEnumeratorGuard node implementation.
  */
-public class ASTEnumeratorGuard extends AbstractScalaNode<Enumerator.Guard> {
+public final class ASTEnumeratorGuard extends AbstractScalaNode<Enumerator.Guard> {
 
-    @Deprecated
-    @InternalApi
-    public ASTEnumeratorGuard(Enumerator.Guard scalaNode) {
+    ASTEnumeratorGuard(Enumerator.Guard scalaNode) {
         super(scalaNode);
     }
 

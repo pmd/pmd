@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeExistential node implementation.
  */
-public class ASTTypeExistential extends AbstractScalaNode<Type.Existential> {
+public final class ASTTypeExistential extends AbstractScalaNode<Type.Existential> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeExistential(Type.Existential scalaNode) {
+    ASTTypeExistential(Type.Existential scalaNode) {
         super(scalaNode);
     }
 

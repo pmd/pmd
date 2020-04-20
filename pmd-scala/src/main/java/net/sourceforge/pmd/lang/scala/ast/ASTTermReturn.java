@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermReturn node implementation.
  */
-public class ASTTermReturn extends AbstractScalaNode<Term.Return> {
+public final class ASTTermReturn extends AbstractScalaNode<Term.Return> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermReturn(Term.Return scalaNode) {
+    ASTTermReturn(Term.Return scalaNode) {
         super(scalaNode);
     }
 

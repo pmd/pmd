@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermMatch node implementation.
  */
-public class ASTTermMatch extends AbstractScalaNode<Term.Match> {
+public final class ASTTermMatch extends AbstractScalaNode<Term.Match> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermMatch(Term.Match scalaNode) {
+    ASTTermMatch(Term.Match scalaNode) {
         super(scalaNode);
     }
 

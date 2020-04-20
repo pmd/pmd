@@ -11,11 +11,9 @@ import scala.meta.Name;
 /**
  * The ASTNameIndeterminate node implementation.
  */
-public class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> {
+public final class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNameIndeterminate(Name.Indeterminate scalaNode) {
+    ASTNameIndeterminate(Name.Indeterminate scalaNode) {
         super(scalaNode);
     }
 

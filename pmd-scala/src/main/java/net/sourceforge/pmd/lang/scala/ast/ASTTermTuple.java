@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermTuple node implementation.
  */
-public class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
+public final class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermTuple(Term.Tuple scalaNode) {
+    ASTTermTuple(Term.Tuple scalaNode) {
         super(scalaNode);
     }
 

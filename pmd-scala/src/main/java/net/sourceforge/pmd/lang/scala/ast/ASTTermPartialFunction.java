@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermPartialFunction node implementation.
  */
-public class ASTTermPartialFunction extends AbstractScalaNode<Term.PartialFunction> {
+public final class ASTTermPartialFunction extends AbstractScalaNode<Term.PartialFunction> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermPartialFunction(Term.PartialFunction scalaNode) {
+    ASTTermPartialFunction(Term.PartialFunction scalaNode) {
         super(scalaNode);
     }
 

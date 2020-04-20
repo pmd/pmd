@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeName node implementation.
  */
-public class ASTTypeName extends AbstractScalaNode<Type.Name> {
+public final class ASTTypeName extends AbstractScalaNode<Type.Name> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeName(Type.Name scalaNode) {
+    ASTTypeName(Type.Name scalaNode) {
         super(scalaNode);
     }
 

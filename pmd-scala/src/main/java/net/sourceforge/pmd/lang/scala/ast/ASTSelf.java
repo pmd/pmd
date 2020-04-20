@@ -11,11 +11,9 @@ import scala.meta.Self;
 /**
  * The ASTSelf node implementation.
  */
-public class ASTSelf extends AbstractScalaNode<Self> {
+public final class ASTSelf extends AbstractScalaNode<Self> {
 
-    @Deprecated
-    @InternalApi
-    public ASTSelf(Self scalaNode) {
+    ASTSelf(Self scalaNode) {
         super(scalaNode);
     }
 

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -18,7 +17,6 @@ import scala.meta.inputs.Position;
  * @param <T>
  *            the type of the Scala tree node
  */
-@InternalApi
 abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements ScalaNode<T> {
     protected final T node;
     private final Position pos;

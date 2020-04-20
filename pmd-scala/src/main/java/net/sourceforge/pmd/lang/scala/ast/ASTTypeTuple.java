@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeTuple node implementation.
  */
-public class ASTTypeTuple extends AbstractScalaNode<Type.Tuple> {
+public final class ASTTypeTuple extends AbstractScalaNode<Type.Tuple> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeTuple(Type.Tuple scalaNode) {
+    ASTTypeTuple(Type.Tuple scalaNode) {
         super(scalaNode);
     }
 

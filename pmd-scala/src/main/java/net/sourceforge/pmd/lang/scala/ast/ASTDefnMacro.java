@@ -11,11 +11,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnMacro node implementation.
  */
-public class ASTDefnMacro extends AbstractScalaNode<Defn.Macro> {
+public final class ASTDefnMacro extends AbstractScalaNode<Defn.Macro> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDefnMacro(Defn.Macro scalaNode) {
+    ASTDefnMacro(Defn.Macro scalaNode) {
         super(scalaNode);
     }
 

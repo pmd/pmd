@@ -11,11 +11,9 @@ import scala.meta.Importee;
 /**
  * The ASTImporteeUnimport node implementation.
  */
-public class ASTImporteeUnimport extends AbstractScalaNode<Importee.Unimport> {
+public final class ASTImporteeUnimport extends AbstractScalaNode<Importee.Unimport> {
 
-    @Deprecated
-    @InternalApi
-    public ASTImporteeUnimport(Importee.Unimport scalaNode) {
+    ASTImporteeUnimport(Importee.Unimport scalaNode) {
         super(scalaNode);
     }
 

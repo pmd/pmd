@@ -11,11 +11,9 @@ import scala.meta.Enumerator;
 /**
  * The ASTEnumeratorVal node implementation.
  */
-public class ASTEnumeratorVal extends AbstractScalaNode<Enumerator.Val> {
+public final class ASTEnumeratorVal extends AbstractScalaNode<Enumerator.Val> {
 
-    @Deprecated
-    @InternalApi
-    public ASTEnumeratorVal(Enumerator.Val scalaNode) {
+    ASTEnumeratorVal(Enumerator.Val scalaNode) {
         super(scalaNode);
     }
 

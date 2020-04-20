@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermForYield node implementation.
  */
-public class ASTTermForYield extends AbstractScalaNode<Term.ForYield> {
+public final class ASTTermForYield extends AbstractScalaNode<Term.ForYield> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermForYield(Term.ForYield scalaNode) {
+    ASTTermForYield(Term.ForYield scalaNode) {
         super(scalaNode);
     }
 

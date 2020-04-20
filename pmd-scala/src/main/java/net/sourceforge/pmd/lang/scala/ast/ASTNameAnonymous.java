@@ -11,11 +11,9 @@ import scala.meta.Name;
 /**
  * The ASTNameAnonymous node implementation.
  */
-public class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
+public final class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNameAnonymous(Name.Anonymous scalaNode) {
+    ASTNameAnonymous(Name.Anonymous scalaNode) {
         super(scalaNode);
     }
 

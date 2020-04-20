@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Ctor;
 
 /**
  * The ASTCtorSecondary node implementation.
  */
-public class ASTCtorSecondary extends AbstractScalaNode<Ctor.Secondary> {
+public final class ASTCtorSecondary extends AbstractScalaNode<Ctor.Secondary> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCtorSecondary(Ctor.Secondary scalaNode) {
+    ASTCtorSecondary(Ctor.Secondary scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnVar node implementation.
  */
-public class ASTDefnVar extends AbstractScalaNode<Defn.Var> {
+public final class ASTDefnVar extends AbstractScalaNode<Defn.Var> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDefnVar(Defn.Var scalaNode) {
+    ASTDefnVar(Defn.Var scalaNode) {
         super(scalaNode);
     }
 

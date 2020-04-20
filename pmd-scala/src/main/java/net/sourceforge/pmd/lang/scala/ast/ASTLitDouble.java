@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitDouble node implementation.
  */
-public class ASTLitDouble extends AbstractScalaNode<Lit.Double> {
+public final class ASTLitDouble extends AbstractScalaNode<Lit.Double> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitDouble(Lit.Double scalaNode) {
+    ASTLitDouble(Lit.Double scalaNode) {
         super(scalaNode);
     }
 

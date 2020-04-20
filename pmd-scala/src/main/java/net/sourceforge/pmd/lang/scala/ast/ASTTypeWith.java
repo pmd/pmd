@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeWith node implementation.
  */
-public class ASTTypeWith extends AbstractScalaNode<Type.With> {
+public final class ASTTypeWith extends AbstractScalaNode<Type.With> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeWith(Type.With scalaNode) {
+    ASTTypeWith(Type.With scalaNode) {
         super(scalaNode);
     }
 

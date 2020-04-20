@@ -11,11 +11,9 @@ import scala.meta.Ctor;
 /**
  * The ASTCtorPrimary node implementation.
  */
-public class ASTCtorPrimary extends AbstractScalaNode<Ctor.Primary> {
+public final class ASTCtorPrimary extends AbstractScalaNode<Ctor.Primary> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCtorPrimary(Ctor.Primary scalaNode) {
+    ASTCtorPrimary(Ctor.Primary scalaNode) {
         super(scalaNode);
     }
 

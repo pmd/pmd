@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeParam node implementation.
  */
-public class ASTTypeParam extends AbstractScalaNode<Type.Param> {
+public final class ASTTypeParam extends AbstractScalaNode<Type.Param> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeParam(Type.Param scalaNode) {
+    ASTTypeParam(Type.Param scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Template;
 /**
  * The ASTTemplate node implementation.
  */
-public class ASTTemplate extends AbstractScalaNode<Template> {
+public final class ASTTemplate extends AbstractScalaNode<Template> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTemplate(Template scalaNode) {
+    ASTTemplate(Template scalaNode) {
         super(scalaNode);
     }
 

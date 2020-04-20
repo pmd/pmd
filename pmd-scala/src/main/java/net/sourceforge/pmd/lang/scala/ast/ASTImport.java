@@ -11,11 +11,9 @@ import scala.meta.Import;
 /**
  * The ASTImport node implementation.
  */
-public class ASTImport extends AbstractScalaNode<Import> {
+public final class ASTImport extends AbstractScalaNode<Import> {
 
-    @Deprecated
-    @InternalApi
-    public ASTImport(Import scalaNode) {
+    ASTImport(Import scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModOverride node implementation.
  */
-public class ASTModOverride extends AbstractScalaNode<Mod.Override> {
+public final class ASTModOverride extends AbstractScalaNode<Mod.Override> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModOverride(Mod.Override scalaNode) {
+    ASTModOverride(Mod.Override scalaNode) {
         super(scalaNode);
     }
 

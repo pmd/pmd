@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermEta node implementation.
  */
-public class ASTTermEta extends AbstractScalaNode<Term.Eta> {
+public final class ASTTermEta extends AbstractScalaNode<Term.Eta> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermEta(Term.Eta scalaNode) {
+    ASTTermEta(Term.Eta scalaNode) {
         super(scalaNode);
     }
 

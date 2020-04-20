@@ -11,11 +11,9 @@ import scala.meta.Enumerator;
 /**
  * The ASTEnumeratorGenerator node implementation.
  */
-public class ASTEnumeratorGenerator extends AbstractScalaNode<Enumerator.Generator> {
+public final class ASTEnumeratorGenerator extends AbstractScalaNode<Enumerator.Generator> {
 
-    @Deprecated
-    @InternalApi
-    public ASTEnumeratorGenerator(Enumerator.Generator scalaNode) {
+    ASTEnumeratorGenerator(Enumerator.Generator scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModContravariant node implementation.
  */
-public class ASTModContravariant extends AbstractScalaNode<Mod.Contravariant> {
+public final class ASTModContravariant extends AbstractScalaNode<Mod.Contravariant> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModContravariant(Mod.Contravariant scalaNode) {
+    ASTModContravariant(Mod.Contravariant scalaNode) {
         super(scalaNode);
     }
 

@@ -12,11 +12,9 @@ import scala.meta.Source;
 /**
  * The ASTSource node implementation.
  */
-public class ASTSource extends AbstractScalaNode<Source> implements RootNode {
+public final class ASTSource extends AbstractScalaNode<Source> implements RootNode {
 
-    @Deprecated
-    @InternalApi
-    public ASTSource(Source scalaNode) {
+    ASTSource(Source scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermNewAnonymous node implementation.
  */
-public class ASTTermNewAnonymous extends AbstractScalaNode<Term.NewAnonymous> {
+public final class ASTTermNewAnonymous extends AbstractScalaNode<Term.NewAnonymous> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermNewAnonymous(Term.NewAnonymous scalaNode) {
+    ASTTermNewAnonymous(Term.NewAnonymous scalaNode) {
         super(scalaNode);
     }
 

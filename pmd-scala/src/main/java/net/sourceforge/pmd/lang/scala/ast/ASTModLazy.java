@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModLazy node implementation.
  */
-public class ASTModLazy extends AbstractScalaNode<Mod.Lazy> {
+public final class ASTModLazy extends AbstractScalaNode<Mod.Lazy> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModLazy(Mod.Lazy scalaNode) {
+    ASTModLazy(Mod.Lazy scalaNode) {
         super(scalaNode);
     }
 

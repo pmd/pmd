@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeRefine node implementation.
  */
-public class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
+public final class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeRefine(Type.Refine scalaNode) {
+    ASTTypeRefine(Type.Refine scalaNode) {
         super(scalaNode);
     }
 

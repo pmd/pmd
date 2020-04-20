@@ -11,11 +11,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatXml node implementation.
  */
-public class ASTPatXml extends AbstractScalaNode<Pat.Xml> {
+public final class ASTPatXml extends AbstractScalaNode<Pat.Xml> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatXml(Pat.Xml scalaNode) {
+    ASTPatXml(Pat.Xml scalaNode) {
         super(scalaNode);
     }
 

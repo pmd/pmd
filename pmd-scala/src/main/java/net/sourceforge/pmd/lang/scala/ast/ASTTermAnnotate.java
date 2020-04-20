@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermAnnotate node implementation.
  */
-public class ASTTermAnnotate extends AbstractScalaNode<Term.Annotate> {
+public final class ASTTermAnnotate extends AbstractScalaNode<Term.Annotate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermAnnotate(Term.Annotate scalaNode) {
+    ASTTermAnnotate(Term.Annotate scalaNode) {
         super(scalaNode);
     }
 

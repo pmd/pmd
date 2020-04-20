@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModCovariant node implementation.
  */
-public class ASTModCovariant extends AbstractScalaNode<Mod.Covariant> {
+public final class ASTModCovariant extends AbstractScalaNode<Mod.Covariant> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModCovariant(Mod.Covariant scalaNode) {
+    ASTModCovariant(Mod.Covariant scalaNode) {
         super(scalaNode);
     }
 

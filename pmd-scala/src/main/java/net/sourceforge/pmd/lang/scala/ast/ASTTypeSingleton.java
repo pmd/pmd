@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeSingleton node implementation.
  */
-public class ASTTypeSingleton extends AbstractScalaNode<Type.Singleton> {
+public final class ASTTypeSingleton extends AbstractScalaNode<Type.Singleton> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeSingleton(Type.Singleton scalaNode) {
+    ASTTypeSingleton(Type.Singleton scalaNode) {
         super(scalaNode);
     }
 

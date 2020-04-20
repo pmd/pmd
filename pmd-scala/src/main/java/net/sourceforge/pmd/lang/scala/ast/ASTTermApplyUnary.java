@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermApplyUnary node implementation.
  */
-public class ASTTermApplyUnary extends AbstractScalaNode<Term.ApplyUnary> {
+public final class ASTTermApplyUnary extends AbstractScalaNode<Term.ApplyUnary> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermApplyUnary(Term.ApplyUnary scalaNode) {
+    ASTTermApplyUnary(Term.ApplyUnary scalaNode) {
         super(scalaNode);
     }
 

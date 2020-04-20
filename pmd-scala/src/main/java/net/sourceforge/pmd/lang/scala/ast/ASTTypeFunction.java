@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeFunction node implementation.
  */
-public class ASTTypeFunction extends AbstractScalaNode<Type.Function> {
+public final class ASTTypeFunction extends AbstractScalaNode<Type.Function> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeFunction(Type.Function scalaNode) {
+    ASTTypeFunction(Type.Function scalaNode) {
         super(scalaNode);
     }
 

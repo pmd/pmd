@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermSuper node implementation.
  */
-public class ASTTermSuper extends AbstractScalaNode<Term.Super> {
+public final class ASTTermSuper extends AbstractScalaNode<Term.Super> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermSuper(Term.Super scalaNode) {
+    ASTTermSuper(Term.Super scalaNode) {
         super(scalaNode);
     }
 

@@ -11,11 +11,9 @@ import scala.meta.Mod;
 /**
  * The ASTModImplicit node implementation.
  */
-public class ASTModImplicit extends AbstractScalaNode<Mod.Implicit> {
+public final class ASTModImplicit extends AbstractScalaNode<Mod.Implicit> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModImplicit(Mod.Implicit scalaNode) {
+    ASTModImplicit(Mod.Implicit scalaNode) {
         super(scalaNode);
     }
 

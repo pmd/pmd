@@ -11,11 +11,9 @@ import scala.meta.Term;
 /**
  * The ASTTermSelect node implementation.
  */
-public class ASTTermSelect extends AbstractScalaNode<Term.Select> {
+public final class ASTTermSelect extends AbstractScalaNode<Term.Select> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermSelect(Term.Select scalaNode) {
+    ASTTermSelect(Term.Select scalaNode) {
         super(scalaNode);
     }
 

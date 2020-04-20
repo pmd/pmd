@@ -11,11 +11,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeSelect node implementation.
  */
-public class ASTTypeSelect extends AbstractScalaNode<Type.Select> {
+public final class ASTTypeSelect extends AbstractScalaNode<Type.Select> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeSelect(Type.Select scalaNode) {
+    ASTTypeSelect(Type.Select scalaNode) {
         super(scalaNode);
     }
 

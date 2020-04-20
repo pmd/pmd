@@ -11,11 +11,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitChar node implementation.
  */
-public class ASTLitChar extends AbstractScalaNode<Lit.Char> {
+public final class ASTLitChar extends AbstractScalaNode<Lit.Char> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitChar(Lit.Char scalaNode) {
+    ASTLitChar(Lit.Char scalaNode) {
         super(scalaNode);
     }
 

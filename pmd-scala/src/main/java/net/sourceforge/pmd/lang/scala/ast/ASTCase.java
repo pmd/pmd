@@ -11,11 +11,9 @@ import scala.meta.Case;
 /**
  * The ASTCase node implementation.
  */
-public class ASTCase extends AbstractScalaNode<Case> {
+public final class ASTCase extends AbstractScalaNode<Case> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCase(Case scalaNode) {
+    ASTCase(Case scalaNode) {
         super(scalaNode);
     }
 
