@@ -122,7 +122,6 @@ final class ReflectedClassImpl extends AbstractTypeParamOwnerSymbol<Class<?>> im
         return declaredClasses;
     }
 
-
     @Override
     public boolean isInterface() {
         return myClass.isInterface();

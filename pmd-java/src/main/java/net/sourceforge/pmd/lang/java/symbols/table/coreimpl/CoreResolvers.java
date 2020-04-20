@@ -16,9 +16,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.util.OptionalBool;
 
-final class CoreResolvers {
+public final class CoreResolvers {
 
-    static <S> NameResolver<S> singleton(String name, S symbol) {
+    private CoreResolvers() {
+        // util class
+    }
+
+    public static <S> NameResolver<S> singleton(String name, S symbol) {
         final List<S> single = singletonList(symbol);
         return new SingleNameResolver<S>() {
             @Override
@@ -47,7 +51,7 @@ final class CoreResolvers {
         return new MultimapResolver<>(symbols);
     }
 
-    static <S> SingleNameResolver<S> singularMapResolver(Map<String, S> singular) {
+    public static <S> SingleNameResolver<S> singularMapResolver(Map<String, S> singular) {
         return new SingularMapResolver<>(singular);
     }
 
@@ -119,7 +123,7 @@ final class CoreResolvers {
         }
     }
 
-    static <S> EmptyResolver<S> emptyResolver() {
+    public static <S> EmptyResolver<S> emptyResolver() {
         return EmptyResolver.INSTANCE;
     }
 

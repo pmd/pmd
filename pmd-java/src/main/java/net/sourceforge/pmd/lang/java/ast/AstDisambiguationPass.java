@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 
 /**
@@ -100,16 +101,16 @@ final class AstDisambiguationPass {
 
     @Nullable
     private static JFieldSymbol findStaticField(JTypeDeclSymbol classSym, String name) {
-        // todo check supertypes
-        return classSym instanceof JClassSymbol ? ((JClassSymbol) classSym).getDeclaredField(name)
-                                                : null;
+        return classSym instanceof JClassSymbol
+               ? JavaResolvers.getMemberFieldResolver((JClassSymbol) classSym, name).resolveFirst(name)
+               : null;
     }
 
     @Nullable
     private static JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name) {
-        // todo check supertypes
-        return classSym instanceof JClassSymbol ? ((JClassSymbol) classSym).getDeclaredClass(name)
-                                                : null;
+        return classSym instanceof JClassSymbol
+               ? JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, name).resolveFirst(name)
+               : null;
     }
 
     private static String unresolvedQualifier(JTypeDeclSymbol owner, String simpleName) {
