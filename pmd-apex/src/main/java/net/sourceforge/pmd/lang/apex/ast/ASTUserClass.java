@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
@@ -19,9 +18,7 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
 
     private ApexQualifiedName qname;
 
-    @Deprecated
-    @InternalApi
-    public ASTUserClass(UserClass userClass) {
+    ASTUserClass(UserClass userClass) {
         super(userClass);
     }
 

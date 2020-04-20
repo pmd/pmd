@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.NewListInitExpression;
 
 public class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
+    ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
         super(newListInitExpression);
     }
 

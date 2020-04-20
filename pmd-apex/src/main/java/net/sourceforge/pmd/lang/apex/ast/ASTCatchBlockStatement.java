@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.CatchBlockStatement;
 
 public class ASTCatchBlockStatement extends AbstractApexNode<CatchBlockStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCatchBlockStatement(CatchBlockStatement catchBlockStatement) {
+    ASTCatchBlockStatement(CatchBlockStatement catchBlockStatement) {
         super(catchBlockStatement);
     }
 

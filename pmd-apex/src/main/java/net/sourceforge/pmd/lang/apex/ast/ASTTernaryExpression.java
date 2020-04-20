@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.TernaryExpression;
 
 public class ASTTernaryExpression extends AbstractApexNode<TernaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTernaryExpression(TernaryExpression ternaryExpression) {
+    ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 

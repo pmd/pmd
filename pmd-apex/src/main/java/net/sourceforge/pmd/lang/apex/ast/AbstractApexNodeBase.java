@@ -4,17 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-/**
- * @deprecated Use {@link ApexNode}
- */
-@Deprecated
-@InternalApi
-public abstract class AbstractApexNodeBase extends AbstractNode {
+abstract class AbstractApexNodeBase extends AbstractNode {
 
     public AbstractApexNodeBase(Class<?> klass) {
         super(klass.hashCode());

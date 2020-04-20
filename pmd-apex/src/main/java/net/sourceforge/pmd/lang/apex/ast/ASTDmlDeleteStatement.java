@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.DmlDeleteStatement;
 
 public class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
+    ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
         super(dmlDeleteStatement);
     }
 

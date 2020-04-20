@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.ConstructorPreambleStatement;
 
 public class ASTConstructorPreambleStatement extends AbstractApexNode<ConstructorPreambleStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTConstructorPreambleStatement(ConstructorPreambleStatement constructorPreambleStatement) {
+    ASTConstructorPreambleStatement(ConstructorPreambleStatement constructorPreambleStatement) {
         super(constructorPreambleStatement);
     }
 

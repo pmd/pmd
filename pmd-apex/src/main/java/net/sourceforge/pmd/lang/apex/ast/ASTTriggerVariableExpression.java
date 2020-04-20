@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.TriggerVariableExpression;
 
 public class ASTTriggerVariableExpression extends AbstractApexNode<TriggerVariableExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTriggerVariableExpression(TriggerVariableExpression triggerVariableExpression) {
+    ASTTriggerVariableExpression(TriggerVariableExpression triggerVariableExpression) {
         super(triggerVariableExpression);
     }
 

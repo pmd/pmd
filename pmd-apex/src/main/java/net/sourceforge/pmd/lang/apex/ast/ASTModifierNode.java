@@ -4,16 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.modifier.ModifierNode;
 import apex.jorje.semantic.symbol.type.ModifierTypeInfos;
 
 public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements AccessNode {
 
-    @Deprecated
-    @InternalApi
-    public ASTModifierNode(ModifierNode modifierNode) {
+    ASTModifierNode(ModifierNode modifierNode) {
         super(modifierNode);
     }
 

@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.IllegalStoreExpression;
 
 public class ASTIllegalStoreExpression extends AbstractApexNode<IllegalStoreExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTIllegalStoreExpression(IllegalStoreExpression node) {
+    ASTIllegalStoreExpression(IllegalStoreExpression node) {
         super(node);
     }
 

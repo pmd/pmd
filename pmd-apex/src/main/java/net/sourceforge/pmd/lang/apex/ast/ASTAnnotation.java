@@ -9,15 +9,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.modifier.Annotation;
 
 public class ASTAnnotation extends AbstractApexNode<Annotation> {
 
-    @Deprecated
-    @InternalApi
-    public ASTAnnotation(Annotation annotation) {
+    ASTAnnotation(Annotation annotation) {
         super(annotation);
     }
 

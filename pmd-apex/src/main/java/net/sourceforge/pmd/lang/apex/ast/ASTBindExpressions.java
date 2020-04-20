@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.BindExpressions;
 
 public class ASTBindExpressions extends AbstractApexNode<BindExpressions> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBindExpressions(BindExpressions bindExpressions) {
+    ASTBindExpressions(BindExpressions bindExpressions) {
         super(bindExpressions);
     }
 

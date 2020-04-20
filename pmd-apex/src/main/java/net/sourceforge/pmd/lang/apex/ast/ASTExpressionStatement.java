@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.ExpressionStatement;
 
 public class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTExpressionStatement(ExpressionStatement expressionStatement) {
+    ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }
 

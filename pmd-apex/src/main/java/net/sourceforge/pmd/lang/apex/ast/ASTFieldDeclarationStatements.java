@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
@@ -20,9 +19,7 @@ import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
 public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements>
         implements CanSuppressWarnings {
 
-    @Deprecated
-    @InternalApi
-    public ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
+    ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
     }
 

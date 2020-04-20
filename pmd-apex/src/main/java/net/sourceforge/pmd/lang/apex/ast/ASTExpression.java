@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.Expression;
 
 public class ASTExpression extends AbstractApexNode<Expression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTExpression(Expression expression) {
+    ASTExpression(Expression expression) {
         super(expression);
     }
 

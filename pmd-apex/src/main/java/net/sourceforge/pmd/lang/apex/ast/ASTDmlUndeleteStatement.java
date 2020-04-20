@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.DmlUndeleteStatement;
 
 public class ASTDmlUndeleteStatement extends AbstractApexNode<DmlUndeleteStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDmlUndeleteStatement(DmlUndeleteStatement dmlUndeleteStatement) {
+    ASTDmlUndeleteStatement(DmlUndeleteStatement dmlUndeleteStatement) {
         super(dmlUndeleteStatement);
     }
 

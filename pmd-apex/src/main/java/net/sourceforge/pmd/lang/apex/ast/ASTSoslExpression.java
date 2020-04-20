@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.SoslExpression;
 
 public class ASTSoslExpression extends AbstractApexNode<SoslExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTSoslExpression(SoslExpression soslExpression) {
+    ASTSoslExpression(SoslExpression soslExpression) {
         super(soslExpression);
     }
 

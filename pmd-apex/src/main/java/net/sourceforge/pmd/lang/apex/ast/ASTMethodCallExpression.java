@@ -6,16 +6,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
 
 public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
+    ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
         super(methodCallExpression);
     }
 

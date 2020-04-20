@@ -15,7 +15,6 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -123,9 +122,7 @@ import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
 
-@Deprecated
-@InternalApi
-public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
+final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
@@ -228,8 +225,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType,
-            Class<? extends AbstractApexNode<T>> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {

@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.SoqlExpression;
 
 public class ASTSoqlExpression extends AbstractApexNode<SoqlExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTSoqlExpression(SoqlExpression soqlExpression) {
+    ASTSoqlExpression(SoqlExpression soqlExpression) {
         super(soqlExpression);
     }
 

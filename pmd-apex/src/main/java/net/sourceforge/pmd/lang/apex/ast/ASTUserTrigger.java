@@ -7,16 +7,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
 public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
-    @Deprecated
-    @InternalApi
-    public ASTUserTrigger(UserTrigger userTrigger) {
+    ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);
     }
 

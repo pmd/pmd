@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.NestedExpression;
 
 public class ASTNestedExpression extends AbstractApexNode<NestedExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNestedExpression(NestedExpression node) {
+    ASTNestedExpression(NestedExpression node) {
         super(node);
     }
 

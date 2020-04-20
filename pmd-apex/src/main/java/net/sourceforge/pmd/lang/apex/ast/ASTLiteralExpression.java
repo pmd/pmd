@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.LiteralType;
 import apex.jorje.semantic.ast.expression.LiteralExpression;
@@ -17,9 +15,7 @@ import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression.NameValueP
 
 public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLiteralExpression(LiteralExpression literalExpression) {
+    ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
     }
 

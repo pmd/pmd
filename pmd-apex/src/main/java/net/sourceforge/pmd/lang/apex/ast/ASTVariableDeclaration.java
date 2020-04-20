@@ -5,15 +5,12 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements CanSuppressWarnings {
 
-    @Deprecated
-    @InternalApi
-    public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
+    ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
     }
 

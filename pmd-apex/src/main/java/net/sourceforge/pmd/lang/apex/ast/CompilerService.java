@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.compiler.ApexCompiler;
@@ -38,9 +36,7 @@ import com.google.common.collect.ImmutableList;
  * @author nchen
  *
  */
-@Deprecated
-@InternalApi
-public class CompilerService {
+class CompilerService {
     public static final CompilerService INSTANCE = new CompilerService();
     private final SymbolProvider symbolProvider;
     private final AccessEvaluator accessEvaluator;

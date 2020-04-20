@@ -4,17 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.ast.PostfixOp;
 import apex.jorje.semantic.ast.expression.PostfixExpression;
 
 
 public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPostfixExpression(PostfixExpression postfixExpression) {
+    ASTPostfixExpression(PostfixExpression postfixExpression) {
         super(postfixExpression);
     }
 

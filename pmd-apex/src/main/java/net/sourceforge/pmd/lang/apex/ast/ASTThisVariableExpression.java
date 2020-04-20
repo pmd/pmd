@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.ThisVariableExpression;
 
 public class ASTThisVariableExpression extends AbstractApexNode<ThisVariableExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTThisVariableExpression(ThisVariableExpression thisVariableExpression) {
+    ASTThisVariableExpression(ThisVariableExpression thisVariableExpression) {
         super(thisVariableExpression);
     }
 

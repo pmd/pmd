@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.BreakStatement;
 
 public class ASTBreakStatement extends AbstractApexNode<BreakStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBreakStatement(BreakStatement breakStatement) {
+    ASTBreakStatement(BreakStatement breakStatement) {
         super(breakStatement);
     }
 

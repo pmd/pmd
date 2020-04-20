@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.NewMapLiteralExpression;
 
 public class ASTNewMapLiteralExpression extends AbstractApexNode<NewMapLiteralExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewMapLiteralExpression(NewMapLiteralExpression newMapLiteralExpression) {
+    ASTNewMapLiteralExpression(NewMapLiteralExpression newMapLiteralExpression) {
         super(newMapLiteralExpression);
     }
 

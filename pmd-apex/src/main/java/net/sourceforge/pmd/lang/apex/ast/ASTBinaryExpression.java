@@ -4,16 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.ast.BinaryOp;
 import apex.jorje.semantic.ast.expression.BinaryExpression;
 
 public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBinaryExpression(BinaryExpression binaryExpression) {
+    ASTBinaryExpression(BinaryExpression binaryExpression) {
         super(binaryExpression);
     }
 

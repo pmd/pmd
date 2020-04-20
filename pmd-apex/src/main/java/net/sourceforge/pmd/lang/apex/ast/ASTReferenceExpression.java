@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.IdentifierContext;
 import apex.jorje.semantic.ast.expression.ReferenceExpression;
@@ -18,9 +16,7 @@ import apex.jorje.semantic.ast.expression.ReferenceType;
 
 public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTReferenceExpression(ReferenceExpression referenceExpression) {
+    ASTReferenceExpression(ReferenceExpression referenceExpression) {
         super(referenceExpression);
     }
 

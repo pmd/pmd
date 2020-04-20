@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.MethodBlockStatement;
 
 public class ASTMethodBlockStatement extends AbstractApexNode<MethodBlockStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTMethodBlockStatement(MethodBlockStatement node) {
+    ASTMethodBlockStatement(MethodBlockStatement node) {
         super(node);
     }
 

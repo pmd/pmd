@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.compilation.UserClassMethods;
 
 public class ASTUserClassMethods extends AbstractApexNode<UserClassMethods> {
 
-    @Deprecated
-    @InternalApi
-    public ASTUserClassMethods(UserClassMethods userClassMethods) {
+    ASTUserClassMethods(UserClassMethods userClassMethods) {
         super(userClassMethods);
     }
 

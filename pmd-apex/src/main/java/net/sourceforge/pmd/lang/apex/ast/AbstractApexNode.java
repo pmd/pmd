@@ -13,12 +13,7 @@ import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
 
-/**
- * @deprecated Use {@link ApexNode}
- */
-@Deprecated
-@InternalApi
-public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNodeBase implements ApexNode<T> {
+abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNodeBase implements ApexNode<T> {
 
     protected final T node;
 

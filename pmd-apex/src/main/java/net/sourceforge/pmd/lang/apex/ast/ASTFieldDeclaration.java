@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.FieldDeclaration;
 
 public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
 
-    @Deprecated
-    @InternalApi
-    public ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
+    ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
         super(fieldDeclaration);
     }
 
