@@ -47,6 +47,13 @@ not change the result of your rules*, if it does, please report a bug at https:/
 Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 6.22.0.
 **We highly recommend that you upgrade your rules to XPath 2.0**. Please refer to the [migration guide](https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20).
 
+#### Javascript improvements for ES6
+
+PMD uses the [Rhino](https://github.com/mozilla/rhino) library to parse Javascript.
+The default version has been set to `ES6`, so that some ECMAScript 2015 features are
+supported. E.g. `let` statements and `for-of` loops are now parsed. However Rhino does
+not support all features.
+
 #### New Rules
 
 *   The new Apex rule {% rule "apex/codestyle/FieldDeclarationsShouldBeAtStart" %} (`apex-codestyle`)
@@ -82,6 +89,9 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2402](https://github.com/pmd/pmd/issues/2402): \[java] CloseResource possible false positive with Primitive Streams
 *   java-multithreading
     *   [#2313](https://github.com/pmd/pmd/issues/2313): \[java] Documenation for DoNotUseThreads is outdated
+*   javascript
+    *   [#1235](https://github.com/pmd/pmd/issues/1235): \[javascript] Use of let results in an Empty Statement in the AST
+    *   [#2379](https://github.com/pmd/pmd/issues/2379): \[javascript] Support for-of loop
 *   javascript-errorprone
     *   [#384](https://github.com/pmd/pmd/issues/384): \[javascript] Trailing commas not detected on French default locale
 

@@ -31,4 +31,8 @@ public final class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
     public boolean isForEach() {
         return node.isForEach();
     }
+
+    public boolean isForOf() {
+        return node.isForOf();
+    }
 }
