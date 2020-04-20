@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.util.Comparator;
-import java.util.Iterator;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -280,29 +278,6 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
                                offset,
                                offset,
                                document);
-    }
-
-
-    /**
-     * Returns an iterator that enumerates all (non-special) tokens
-     * between the two tokens (bounds included).
-     *
-     * @param from First token to yield (inclusive)
-     * @param to   Last token to yield (inclusive)
-     *
-     * @return An iterator
-     *
-     * @throws IllegalArgumentException If the first token does not come before the other token
-     */
-    // TODO move up to GenericToken when the interface is made generic
-    public static Iterator<JavaccToken> range(JavaccToken from, JavaccToken to) {
-        if (from.getStartInDocument() > to.getStartInDocument()) {
-            throw new IllegalArgumentException(
-                from + " (at " + from.getStartInDocument()
-                    + ") must come before " + to + " (at " + to.getStartInDocument() + ")"
-            );
-        }
-        return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }
 }
 

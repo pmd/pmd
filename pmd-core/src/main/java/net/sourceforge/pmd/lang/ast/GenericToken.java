@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Iterator;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
  */
@@ -92,6 +97,29 @@ public interface GenericToken<T extends GenericToken<T>> {
      */
     default boolean isImplicit() {
         return false;
+    }
+
+
+
+    /**
+     * Returns an iterator that enumerates all (non-special) tokens
+     * between the two tokens (bounds included).
+     *
+     * @param from First token to yield (inclusive)
+     * @param to   Last token to yield (inclusive)
+     *
+     * @return An iterator
+     *
+     * @throws IllegalArgumentException If the first token does not come before the other token
+     */
+    static Iterator<JavaccToken> range(JavaccToken from, JavaccToken to) {
+        if (from.getStartInDocument() > to.getStartInDocument()) {
+            throw new IllegalArgumentException(
+                from + " (at " + from.getStartInDocument()
+                    + ") must come before " + to + " (at " + to.getStartInDocument() + ")"
+            );
+        }
+        return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }
 
 }
