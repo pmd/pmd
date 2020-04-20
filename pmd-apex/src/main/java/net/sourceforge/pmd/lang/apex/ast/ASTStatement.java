@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.Statement;
 
-public class ASTStatement extends AbstractApexNode<Statement> {
+public final class ASTStatement extends AbstractApexNode<Statement> {
 
     ASTStatement(Statement statement) {
         super(statement);

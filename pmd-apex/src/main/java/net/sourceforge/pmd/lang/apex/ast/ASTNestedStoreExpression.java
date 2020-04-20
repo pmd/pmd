@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.NestedStoreExpression;
 
-public class ASTNestedStoreExpression extends AbstractApexNode<NestedStoreExpression> {
+public final class ASTNestedStoreExpression extends AbstractApexNode<NestedStoreExpression> {
 
     ASTNestedStoreExpression(NestedStoreExpression node) {
         super(node);

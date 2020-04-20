@@ -20,7 +20,7 @@ import apex.jorje.semantic.symbol.resolver.SymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 import apex.jorje.semantic.symbol.type.TypeInfos;
 
-public class ASTFormalComment extends AbstractApexNode<AstComment> {
+public final class ASTFormalComment extends AbstractApexNode<AstComment> {
 
     private final String image;
 

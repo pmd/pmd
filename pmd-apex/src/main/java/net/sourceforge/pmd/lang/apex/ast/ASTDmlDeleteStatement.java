@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.DmlDeleteStatement;
 
-public class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> {
+public final class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> {
 
     ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
         super(dmlDeleteStatement);

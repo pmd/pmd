@@ -12,7 +12,7 @@ import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.modifier.Annotation;
 
-public class ASTAnnotation extends AbstractApexNode<Annotation> {
+public final class ASTAnnotation extends AbstractApexNode<Annotation> {
 
     ASTAnnotation(Annotation annotation) {
         super(annotation);

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.BreakStatement;
 
-public class ASTBreakStatement extends AbstractApexNode<BreakStatement> {
+public final class ASTBreakStatement extends AbstractApexNode<BreakStatement> {
 
     ASTBreakStatement(BreakStatement breakStatement) {
         super(breakStatement);

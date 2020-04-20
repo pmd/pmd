@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
-public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements CanSuppressWarnings {
+public final class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements CanSuppressWarnings {
 
     ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);

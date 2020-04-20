@@ -8,7 +8,7 @@ import apex.jorje.data.ast.BooleanOp;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
 
 
-public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
+public final class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
 
     ASTBooleanExpression(BooleanExpression booleanExpression) {
         super(booleanExpression);

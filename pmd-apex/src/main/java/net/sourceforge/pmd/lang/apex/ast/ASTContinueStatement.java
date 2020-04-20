@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.ContinueStatement;
 
-public class ASTContinueStatement extends AbstractApexNode<ContinueStatement> {
+public final class ASTContinueStatement extends AbstractApexNode<ContinueStatement> {
 
     ASTContinueStatement(ContinueStatement continueStatement) {
         super(continueStatement);

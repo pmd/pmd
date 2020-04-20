@@ -10,7 +10,7 @@ import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
 
-public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
+public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
     ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
         super(methodCallExpression);
     }

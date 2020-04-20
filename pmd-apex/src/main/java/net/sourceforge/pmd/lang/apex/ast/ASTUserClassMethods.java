@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.compilation.UserClassMethods;
 
-public class ASTUserClassMethods extends AbstractApexNode<UserClassMethods> {
+public final class ASTUserClassMethods extends AbstractApexNode<UserClassMethods> {
 
     ASTUserClassMethods(UserClassMethods userClassMethods) {
         super(userClassMethods);

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.modifier.Modifier;
 
-public class ASTModifier extends AbstractApexNode<Modifier> {
+public final class ASTModifier extends AbstractApexNode<Modifier> {
 
     ASTModifier(Modifier node) {
         super(node);

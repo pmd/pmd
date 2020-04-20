@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.FieldDeclaration;
 
-public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
+public final class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
 
     ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
         super(fieldDeclaration);

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.Expression;
 
-public class ASTExpression extends AbstractApexNode<Expression> {
+public final class ASTExpression extends AbstractApexNode<Expression> {
 
     ASTExpression(Expression expression) {
         super(expression);

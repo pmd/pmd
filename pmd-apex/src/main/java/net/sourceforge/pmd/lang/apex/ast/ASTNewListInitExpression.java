@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.NewListInitExpression;
 
-public class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
+public final class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
 
     ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
         super(newListInitExpression);

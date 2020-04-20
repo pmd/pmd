@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.condition.StandardCondition;
 
-public class ASTStandardCondition extends AbstractApexNode<StandardCondition> {
+public final class ASTStandardCondition extends AbstractApexNode<StandardCondition> {
 
     ASTStandardCondition(StandardCondition standardCondition) {
         super(standardCondition);

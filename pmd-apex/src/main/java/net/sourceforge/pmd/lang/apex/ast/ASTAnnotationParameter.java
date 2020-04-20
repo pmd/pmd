@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 
-public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
+public final class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
     ASTAnnotationParameter(AnnotationParameter annotationParameter) {

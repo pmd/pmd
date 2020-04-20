@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import apex.jorje.data.ast.AssignmentOp;
 import apex.jorje.semantic.ast.expression.AssignmentExpression;
 
-public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpression> {
+public final class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpression> {
 
     ASTAssignmentExpression(AssignmentExpression assignmentExpression) {
         super(assignmentExpression);

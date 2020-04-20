@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.DoLoopStatement;
 
-public class ASTDoLoopStatement extends AbstractApexNode<DoLoopStatement> {
+public final class ASTDoLoopStatement extends AbstractApexNode<DoLoopStatement> {
 
     ASTDoLoopStatement(DoLoopStatement doLoopStatement) {
         super(doLoopStatement);

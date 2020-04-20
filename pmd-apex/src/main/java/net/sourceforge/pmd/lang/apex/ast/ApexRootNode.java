@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.services.Version;
 
-abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
+public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
 
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
 

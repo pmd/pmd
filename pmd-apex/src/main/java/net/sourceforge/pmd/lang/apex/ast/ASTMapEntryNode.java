@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.MapEntryNode;
 
-public class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
+public final class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
 
     ASTMapEntryNode(MapEntryNode mapEntryNode) {
         super(mapEntryNode);

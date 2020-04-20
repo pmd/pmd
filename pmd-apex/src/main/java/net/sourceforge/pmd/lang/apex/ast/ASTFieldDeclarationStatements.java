@@ -16,7 +16,7 @@ import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
 import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
 import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
 
-public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements>
+public final class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements>
         implements CanSuppressWarnings {
 
     ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {

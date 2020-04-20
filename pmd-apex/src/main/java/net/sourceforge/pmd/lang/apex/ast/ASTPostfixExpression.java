@@ -8,7 +8,7 @@ import apex.jorje.data.ast.PostfixOp;
 import apex.jorje.semantic.ast.expression.PostfixExpression;
 
 
-public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
+public final class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
 
     ASTPostfixExpression(PostfixExpression postfixExpression) {
         super(postfixExpression);

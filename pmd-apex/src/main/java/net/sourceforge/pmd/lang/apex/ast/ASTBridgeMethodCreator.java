@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
 
-public class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator> {
+public final class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator> {
 
     ASTBridgeMethodCreator(BridgeMethodCreator bridgeMethodCreator) {
         super(bridgeMethodCreator);

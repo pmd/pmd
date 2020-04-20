@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.member.Parameter;
 
-public class ASTParameter extends AbstractApexNode<Parameter> implements CanSuppressWarnings {
+public final class ASTParameter extends AbstractApexNode<Parameter> implements CanSuppressWarnings {
 
     ASTParameter(Parameter parameter) {
         super(parameter);

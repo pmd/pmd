@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.DmlInsertStatement;
 
-public class ASTDmlInsertStatement extends AbstractApexNode<DmlInsertStatement> {
+public final class ASTDmlInsertStatement extends AbstractApexNode<DmlInsertStatement> {
 
     ASTDmlInsertStatement(DmlInsertStatement dmlInsertStatement) {
         super(dmlInsertStatement);

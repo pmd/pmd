@@ -14,7 +14,7 @@ import apex.jorje.semantic.ast.expression.ReferenceExpression;
 import apex.jorje.semantic.ast.expression.ReferenceType;
 
 
-public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
+public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
 
     ASTReferenceExpression(ReferenceExpression referenceExpression) {
         super(referenceExpression);

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
-public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
+public final class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
     ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);

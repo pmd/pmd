@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.ConstructorPreambleStatement;
 
-public class ASTConstructorPreambleStatement extends AbstractApexNode<ConstructorPreambleStatement> {
+public final class ASTConstructorPreambleStatement extends AbstractApexNode<ConstructorPreambleStatement> {
 
     ASTConstructorPreambleStatement(ConstructorPreambleStatement constructorPreambleStatement) {
         super(constructorPreambleStatement);

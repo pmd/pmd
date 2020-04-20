@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.PackageVersionExpression;
 
-public class ASTPackageVersionExpression extends AbstractApexNode<PackageVersionExpression> {
+public final class ASTPackageVersionExpression extends AbstractApexNode<PackageVersionExpression> {
 
     ASTPackageVersionExpression(PackageVersionExpression packageVersionExpression) {
         super(packageVersionExpression);

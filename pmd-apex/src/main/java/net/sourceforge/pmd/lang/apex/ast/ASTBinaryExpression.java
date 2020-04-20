@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import apex.jorje.data.ast.BinaryOp;
 import apex.jorje.semantic.ast.expression.BinaryExpression;
 
-public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
+public final class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
 
     ASTBinaryExpression(BinaryExpression binaryExpression) {
         super(binaryExpression);

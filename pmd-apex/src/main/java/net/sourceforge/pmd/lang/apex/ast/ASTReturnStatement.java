@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.ReturnStatement;
 
-public class ASTReturnStatement extends AbstractApexNode<ReturnStatement> {
+public final class ASTReturnStatement extends AbstractApexNode<ReturnStatement> {
 
     ASTReturnStatement(ReturnStatement returnStatement) {
         super(returnStatement);

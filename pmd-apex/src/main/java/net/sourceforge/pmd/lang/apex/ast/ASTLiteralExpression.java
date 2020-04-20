@@ -13,7 +13,7 @@ import apex.jorje.semantic.ast.expression.LiteralExpression;
 import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression.NameValueParameter;
 
 
-public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
+public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
 
     ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);

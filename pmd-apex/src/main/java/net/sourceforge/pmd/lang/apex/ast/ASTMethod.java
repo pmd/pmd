@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
 
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
+public final class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {
 
     ASTMethod(Method method) {

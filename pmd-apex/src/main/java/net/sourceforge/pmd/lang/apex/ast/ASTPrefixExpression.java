@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import apex.jorje.data.ast.PrefixOp;
 import apex.jorje.semantic.ast.expression.PrefixExpression;
 
-public class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
+public final class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
 
     ASTPrefixExpression(PrefixExpression prefixExpression) {
         super(prefixExpression);

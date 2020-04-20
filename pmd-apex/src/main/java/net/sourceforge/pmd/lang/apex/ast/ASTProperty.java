@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.member.Property;
 
-public class ASTProperty extends AbstractApexNode<Property> {
+public final class ASTProperty extends AbstractApexNode<Property> {
 
     ASTProperty(Property property) {
         super(property);

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.JavaMethodCallExpression;
 
-public class ASTJavaMethodCallExpression extends AbstractApexNode<JavaMethodCallExpression> {
+public final class ASTJavaMethodCallExpression extends AbstractApexNode<JavaMethodCallExpression> {
 
     ASTJavaMethodCallExpression(JavaMethodCallExpression javaMethodCallExpression) {
         super(javaMethodCallExpression);

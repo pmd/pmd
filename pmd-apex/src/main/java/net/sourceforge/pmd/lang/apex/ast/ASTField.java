@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.member.Field;
 
-public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarnings {
+public final class ASTField extends AbstractApexNode<Field> implements CanSuppressWarnings {
 
     ASTField(Field field) {
         super(field);
