@@ -37,10 +37,10 @@ public class HTMLRendererTest extends AbstractRendererTest {
         return getExpected(null, null);
     }
 
-    private String getExpected(String linkPrefix, String linePrefix) {
+    private String getExpected(String linkPrefix, String lineAnchor) {
         String filename = getEscapedFilename();
         if (linkPrefix != null) {
-            filename = "<a href=\"" + linkPrefix + filename + "#" + linePrefix + "1\">"
+            filename = "<a href=\"" + linkPrefix + filename + "#" + lineAnchor + "\">"
                     + filename + "</a>";
         }
         return getHeader()
@@ -101,6 +101,19 @@ public class HTMLRendererTest extends AbstractRendererTest {
 
         Report rep = reportOneViolation();
         String actual = ReportTest.render(renderer, rep);
-        assertEquals(filter(getExpected(linkPrefix, linePrefix)), filter(actual));
+        assertEquals(filter(getExpected(linkPrefix, "L1")), filter(actual));
+    }
+
+    @Test
+    public void testLinePrefixNotSet() throws IOException {
+        final HTMLRenderer renderer = new HTMLRenderer();
+        final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
+        renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
+        // dont set line prefix renderer.setProperty(HTMLRenderer.LINE_PREFIX, linePrefix);
+        renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
+
+        Report rep = reportOneViolation();
+        String actual = ReportTest.render(renderer, rep);
+        assertEquals(filter(getExpected(linkPrefix, "")), filter(actual));
     }
 }
