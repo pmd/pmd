@@ -99,7 +99,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
     private int parseString(StringBuilder token, int loc, char stringDelimiter) {
         boolean escaped = false;
         boolean done = false;
-        char tok = ' '; // this will be replaced.
+        char tok;
         while (loc < currentLine.length() && !done) {
             tok = currentLine.charAt(loc);
             if (escaped && tok == stringDelimiter) { // Found an escaped string
@@ -107,30 +107,24 @@ public abstract class AbstractTokenizer implements Tokenizer {
             } else if (tok == stringDelimiter && token.length() > 0) {
                 // We are done, we found the end of the string...
                 done = true;
-            } else if (tok == '\\') { // Found an escaped char
-                escaped = true;
-            } else { // Adding char...
-                escaped = false;
+            } else {
+                // Found an escaped char?
+                escaped = tok == '\\';
             }
             // Adding char to String:" + token.toString());
             token.append(tok);
             loc++;
         }
         // Handling multiple lines string
-        if (!done && // ... we didn't find the end of the string
-                loc >= currentLine.length() && // ... we have reach the end of
-                // the line ( the String is
-                // incomplete, for the moment at
-                // least)
-                spanMultipleLinesString && // ... the language allow multiple
-                // line span Strings
-                lineNumber < code.size() - 1 // ... there is still more lines to
-        // parse
+        if (!done // ... we didn't find the end of the string (but the end of the line)
+            && spanMultipleLinesString // ... the language allow multiple line span Strings
+            && lineNumber < code.size() - 1 // ... there is still more lines to parse
         ) {
             // removes last character, if it is the line continuation (e.g.
             // backslash) character
-            if (spanMultipleLinesLineContinuationCharacter != null && token.length() > 0
-                    && token.charAt(token.length() - 1) == spanMultipleLinesLineContinuationCharacter.charValue()) {
+            if (spanMultipleLinesLineContinuationCharacter != null
+                && token.length() > 0
+                && token.charAt(token.length() - 1) == spanMultipleLinesLineContinuationCharacter) {
                 token.deleteCharAt(token.length() - 1);
             }
             // parsing new line

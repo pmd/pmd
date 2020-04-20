@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -228,7 +228,6 @@ public class AbstractNodeTest {
         assertEquals(0, grandChild.getNumChildren());
     }
 
-
     @Test
     public void testDeprecatedAttributeXPathQuery() throws JaxenException {
         class MyRootNode extends DummyNode implements RootNode {
@@ -238,7 +237,8 @@ public class AbstractNodeTest {
             }
         }
 
-        addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
+        Node root = addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2));
+        root.findChildNodesWithXPath("//dummyNode[@Size=1]");
 
         String log = loggingRule.getLog();
 
@@ -246,6 +246,5 @@ public class AbstractNodeTest {
         assertTrue(log.contains("attribute"));
         assertTrue(log.contains("dummyNode/@Size"));
     }
-
 
 }

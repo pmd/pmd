@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,11 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
-public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
 
+public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
+    @Deprecated
+    @InternalApi
     public ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
         super(methodCallExpression);
     }
@@ -31,5 +35,9 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
             typeName.append(it.next().getValue()).append('.');
         }
         return typeName.toString() + methodName;
+    }
+
+    public int getInputParametersSize() {
+        return node.getInputParameters().size();
     }
 }

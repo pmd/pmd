@@ -25,6 +25,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.ContextualizedNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -513,7 +515,8 @@ public abstract class AbstractNode implements Node {
     @Override
     @SuppressWarnings("unchecked")
     public List<Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
-        return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
+        return new BaseXPath(xpathString, new ContextualizedNavigator(DeprecatedAttrLogger.createAdHocLogger()))
+                .selectNodes(this);
     }
 
     @Override

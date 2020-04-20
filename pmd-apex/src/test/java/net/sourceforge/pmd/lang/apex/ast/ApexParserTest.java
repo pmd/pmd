@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -127,8 +126,6 @@ public class ApexParserTest extends ApexParserTestBase {
         ApexNode<?> comment = root.getChild(0);
         assertThat(comment, instanceOf(ASTFormalComment.class));
 
-        assertNotEquals(comment.getNode(), null);
-        assertThat(comment.getNode(), instanceOf(ASTFormalComment.AstComment.class));
         assertPosition(comment, 1, 9, 1, 31);
         assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken());
 

@@ -40,6 +40,15 @@ public class Foo {
   if((str == null) || (str.equals(""))) {
    str = "snafu";
   }
+  if(str == null || str.equals("")) {
+   str = "snafu";
+  }
+  if((str != null) && (str.equals(""))) {
+   str = "snafu";
+  }
+  if(str != null && str.equals("")) {
+   str = "snafu";
+  }
  }
 }
      ]]></code>

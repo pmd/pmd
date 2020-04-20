@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 
@@ -42,6 +43,7 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
      * @deprecated Use {@link #getName()}
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getMethodName() {
         return getName();
     }

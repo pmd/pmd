@@ -239,6 +239,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * csv_with_linecount_per_file
 * vs
 
+For details, see [CPD Report Formats](pmd_userdocs_cpd_report_formats.html).
 
 ## Ant task
 

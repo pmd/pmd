@@ -1,15 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.member.Field;
 
 public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarnings {
 
+    @Deprecated
+    @InternalApi
     public ASTField(Field field) {
         super(field);
     }

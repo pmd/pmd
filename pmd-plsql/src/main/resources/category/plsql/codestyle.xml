@@ -105,6 +105,7 @@ https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -146,17 +147,18 @@ In case you have loops please name the loop variables more meaningful.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //CursorForLoopStatement[
-    $allowSimpleLoops = 'false' or
+    $allowSimpleLoops = false() or
     (Statement//CursorForLoopStatement or ancestor::CursorForLoopStatement)
 ]
 /ForIndex[not(matches(@Image, $cursorPattern))]
 |
 //ForStatement[
-    $allowSimpleLoops = 'false' or
+    $allowSimpleLoops = false() or
     (Statement//ForStatement or ancestor::ForStatement)
 ]
 /ForIndex[not(matches(@Image, $indexPattern))]
