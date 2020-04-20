@@ -21,6 +21,12 @@ import com.google.gson.stream.JsonWriter;
 public class JsonRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "json";
 
+    // TODO do we make this public? It would make it possible to write eg
+    //  if (jsonObject.getInt("formatVersion") > JsonRenderer.FORMAT_VERSION)
+    //    /* handle unsupported version */
+    //  because the JsonRenderer.FORMAT_VERSION would be hardcoded by the compiler
+    private static final int FORMAT_VERSION = 0;
+
     private JsonWriter jsonWriter;
 
     public JsonRenderer() {
@@ -39,7 +45,8 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         jsonWriter.setIndent("  ");
 
         jsonWriter.beginObject();
-        jsonWriter.name("version").value(PMDVersion.VERSION);
+        jsonWriter.name("formatVersion").value(FORMAT_VERSION);
+        jsonWriter.name("pmdVersion").value(PMDVersion.VERSION);
         jsonWriter.name("timestamp").value(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
         jsonWriter.name("files").beginArray();
     }

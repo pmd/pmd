@@ -1,5 +1,6 @@
 {
-  "version": "unknown",
+  "formatVersion": 0,
+  "pmdVersion": "unknown",
   "timestamp": "2020-04-05T19:42:21.800+02:00",
   "files": [],
   "suppressedViolations": [
