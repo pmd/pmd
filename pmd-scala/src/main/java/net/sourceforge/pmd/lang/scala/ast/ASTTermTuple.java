@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Term;
 
@@ -11,12 +13,8 @@ import scala.meta.Term;
  */
 public class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTTermTuple(Term.Tuple scalaNode) {
         super(scalaNode);
     }

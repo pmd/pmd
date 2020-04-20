@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Term;
 
@@ -11,12 +13,8 @@ import scala.meta.Term;
  */
 public class ASTTermEta extends AbstractScalaNode<Term.Eta> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTTermEta(Term.Eta scalaNode) {
         super(scalaNode);
     }

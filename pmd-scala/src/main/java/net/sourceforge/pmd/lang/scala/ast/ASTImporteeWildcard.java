@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Importee;
 
@@ -11,12 +13,8 @@ import scala.meta.Importee;
  */
 public class ASTImporteeWildcard extends AbstractScalaNode<Importee.Wildcard> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTImporteeWildcard(Importee.Wildcard scalaNode) {
         super(scalaNode);
     }

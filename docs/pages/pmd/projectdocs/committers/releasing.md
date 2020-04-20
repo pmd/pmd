@@ -53,6 +53,25 @@ The designer lives at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
 Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release.
 See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases.
 
+Starting with PMD 6.23.0 we'll provide small statistics for every release. This needs to be added
+to the release notes as the last section. To count the closed issues and pull requests, the milestone
+on github with the title of the new release is searched. Make sure, there is a milestone
+on <https://github.com/pmd/pmd/milestones>. The following snippet will
+create the numbers, that can be attached to the release notes as a last section:
+
+```shell
+LAST_VERSION=6.22.0
+NEW_VERSION=6.23.0
+NEW_VERSION_COMMITISH=HEAD
+
+echo "### Stats"
+echo "* $(git log pmd_releases/${LAST_VERSION}..${NEW_VERSION_COMMITISH} --oneline --no-merges |wc -l) commits"
+echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$NEW_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/${LAST_VERSION}) ) / 86400))"
+```
+
+Note: this part is also integrated into `do-release.sh`.
+
 Check in all (version) changes to branch master or any other branch, from which the release takes place:
 
     $ git commit -a -m "Prepare pmd release <version>"

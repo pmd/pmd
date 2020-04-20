@@ -1,14 +1,18 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 
 public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
+    @Deprecated
+    @InternalApi
     public ASTAnnotationParameter(AnnotationParameter annotationParameter) {
         super(annotationParameter);
     }

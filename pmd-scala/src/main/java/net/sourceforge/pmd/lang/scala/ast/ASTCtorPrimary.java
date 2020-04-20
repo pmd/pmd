@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Ctor;
 
@@ -11,12 +13,8 @@ import scala.meta.Ctor;
  */
 public class ASTCtorPrimary extends AbstractScalaNode<Ctor.Primary> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTCtorPrimary(Ctor.Primary scalaNode) {
         super(scalaNode);
     }

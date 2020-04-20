@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.LabeledStatement;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTLabeledStatement extends AbstractEcmascriptNode<LabeledStatement> {
+    @Deprecated
+    @InternalApi
     public ASTLabeledStatement(LabeledStatement labeledStatement) {
         super(labeledStatement);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
