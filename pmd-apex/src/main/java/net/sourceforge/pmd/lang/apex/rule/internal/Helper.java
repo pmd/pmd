@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.rule.internal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -29,14 +28,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRef;
-import apex.jorje.semantic.ast.expression.MethodCallExpression;
-import apex.jorje.semantic.ast.expression.VariableExpression;
-import apex.jorje.semantic.ast.member.Field;
-import apex.jorje.semantic.ast.member.Parameter;
-import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 /**
  * Helper methods
@@ -60,7 +51,7 @@ public final class Helper {
             }
         }
 
-        final String className = node.getNode().getDefiningType().getApexName();
+        final String className = node.getDefiningType();
         return className.endsWith("Test");
     }
 
@@ -96,16 +87,12 @@ public final class Helper {
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
 
-        return reference != null && reference.getNode().getNames().size() == 1
-                && reference.getNode().getNames().get(0).getValue().equalsIgnoreCase(className)
+        return reference != null && reference.getNames().size() == 1
+                && reference.getNames().get(0).equalsIgnoreCase(className)
                 && (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName));
     }
 
     public static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {
-        return isMethodName(m.getNode(), methodName);
-    }
-
-    static boolean isMethodName(final MethodCallExpression m, final String methodName) {
         return m.getMethodName().equalsIgnoreCase(methodName);
     }
 
@@ -134,67 +121,54 @@ public final class Helper {
     public static String getFQVariableName(final ASTVariableExpression variable) {
         final ASTReferenceExpression ref = variable.getFirstChildOfType(ASTReferenceExpression.class);
         String objectName = "";
-        if (ref != null && ref.getNode().getNames().size() == 1) {
-            objectName = ref.getNode().getNames().get(0).getValue() + ".";
+        if (ref != null && ref.getNames().size() == 1) {
+            objectName = ref.getNames().get(0) + ".";
         }
 
-        VariableExpression n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objectName)
-                .append(n.getIdentifier().getValue());
+        StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":").append(objectName)
+                .append(variable.getImage());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTVariableDeclaration variable) {
-        VariableDeclaration n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
-                .append(n.getLocalInfo().getName());
+        StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":")
+                .append(variable.getImage());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTField variable) {
-        Field n = variable.getNode();
         StringBuilder sb = new StringBuilder()
-                .append(n.getDefiningType().getApexName()).append(":")
-                .append(n.getFieldInfo().getName());
+                .append(variable.getDefiningType()).append(":")
+                .append(variable.getName());
         return sb.toString();
     }
 
     static String getVariableType(final ASTField variable) {
-        Field n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
-                .append(n.getFieldInfo().getName());
+        StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":")
+                .append(variable.getName());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTFieldDeclaration variable) {
         StringBuilder sb = new StringBuilder()
-                .append(variable.getNode().getDefiningType().getApexName()).append(":")
+                .append(variable.getDefiningType()).append(":")
                 .append(variable.getImage());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
         StringBuilder sb = new StringBuilder()
-                .append(variable.getNode().getDefiningType().getApexName()).append(":")
+                .append(variable.getDefiningType()).append(":")
                 .append(variable.getType());
         return sb.toString();
     }
 
     public static boolean isSystemLevelClass(ASTUserClass node) {
-        List<TypeRef> interfaces = node.getNode().getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs();
-
-        for (TypeRef intObject : interfaces) {
-            if (isWhitelisted(intObject.getNames())) {
-                return true;
-            }
-        }
-
-        return false;
+        List<String> interfaces = node.getInterfaceNames();
+        return interfaces.stream().anyMatch(Helper::isWhitelisted);
     }
 
-    private static boolean isWhitelisted(List<Identifier> ids) {
-        String identifier = ids.stream().map(Identifier::getValue).collect(Collectors.joining("."));
-
+    private static boolean isWhitelisted(String identifier) {
         switch (identifier.toLowerCase(Locale.ROOT)) {
         case "queueable":
         case "database.batchable":
@@ -206,15 +180,9 @@ public final class Helper {
         return false;
     }
 
-    public static String getFQVariableName(Parameter p) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(p.getDefiningType()).append(":").append(p.getName().getValue());
-        return sb.toString();
-    }
-
     public static String getFQVariableName(ASTParameter p) {
         StringBuilder sb = new StringBuilder();
-        sb.append(p.getNode().getDefiningType()).append(":").append(p.getImage());
+        sb.append(p.getDefiningType()).append(":").append(p.getImage());
         return sb.toString();
     }
 

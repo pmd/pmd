@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,11 +7,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
 public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
+    @Deprecated
+    @InternalApi
     public ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);
     }
@@ -23,7 +27,7 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
     @Override
     public String getImage() {
-        return node.getDefiningType().getApexName();
+        return getDefiningType();
     }
 
     public ASTModifierNode getModifiers() {

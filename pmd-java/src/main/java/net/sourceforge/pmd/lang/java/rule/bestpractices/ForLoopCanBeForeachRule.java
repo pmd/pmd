@@ -229,7 +229,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                             + "/Name[matches(@Image,'\\w+\\.(size|length)')]"
                             + "|"
                             + "./RelationalExpression[@Image='<=']/AdditiveExpression[count(*)=2 and "
-                            + "@Image='-' and PrimaryExpression/PrimaryPrefix/Literal[@Image='1']]"
+                            + "@Operator='-' and PrimaryExpression/PrimaryPrefix/Literal[@Image='1']]"
                             + "/PrimaryExpression/PrimaryPrefix/Name[matches(@Image,'\\w+\\.(size|length)')]");
 
                     if (left.isEmpty()) {

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -66,12 +66,15 @@ import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
 import org.mozilla.javascript.ast.XmlString;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
+@Deprecated
+@InternalApi
 public final class EcmascriptTreeBuilder implements NodeVisitor {
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractEcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
         register(ArrayComprehension.class, ASTArrayComprehension.class);
@@ -127,7 +130,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
     }
 
     private List<ParseProblem> parseProblems;
-    private Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<>();
+    private Map<ParseProblem, AbstractEcmascriptNode<?>> parseProblemToNode = new HashMap<>();
 
     // The nodes having children built.
     private Stack<Node> nodes = new Stack<>();
@@ -143,7 +146,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
     }
 
     private static <T extends AstNode> void register(Class<T> nodeType,
-            Class<? extends EcmascriptNode<T>> nodeAdapterType) {
+            Class<? extends AbstractEcmascriptNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
@@ -151,12 +154,12 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         }
     }
 
-    static <T extends AstNode> EcmascriptNode<T> createNodeAdapter(T node) {
+    static <T extends AstNode> AbstractEcmascriptNode<T> createNodeAdapter(T node) {
         try {
-            // the register function makes sure only EcmascriptNode<T> can be
+            // the register function makes sure only AbstractEcmascriptNode<T> can be
             // added, where T is "T extends AstNode".
             @SuppressWarnings("unchecked")
-            Constructor<? extends EcmascriptNode<T>> constructor = (Constructor<? extends EcmascriptNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
+            Constructor<? extends AbstractEcmascriptNode<T>> constructor = (Constructor<? extends AbstractEcmascriptNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
                     .get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
@@ -176,8 +179,8 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         calculateLineNumbers(node);
 
         // Set all the trailing comma nodes
-        for (TrailingCommaNode trailingCommaNode : parseProblemToNode.values()) {
-            trailingCommaNode.setTrailingComma(true);
+        for (AbstractEcmascriptNode<?> trailingCommaNode : parseProblemToNode.values()) {
+            trailingCommaNode.setTrailingCommaExists(true);
         }
 
         return node;
@@ -185,7 +188,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 
     private <T extends AstNode> EcmascriptNode<T> buildInternal(T astNode) {
         // Create a Node
-        EcmascriptNode<T> node = createNodeAdapter(astNode);
+        AbstractEcmascriptNode<T> node = createNodeAdapter(astNode);
 
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
@@ -216,11 +219,10 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         }
     }
 
-    private void handleParseProblems(EcmascriptNode<? extends AstNode> node) {
+    private void handleParseProblems(AbstractEcmascriptNode<? extends AstNode> node) {
         if (node instanceof TrailingCommaNode) {
-            TrailingCommaNode trailingCommaNode = (TrailingCommaNode) node;
-            int nodeStart = node.getNode().getAbsolutePosition();
-            int nodeEnd = nodeStart + node.getNode().getLength() - 1;
+            int nodeStart = node.node.getAbsolutePosition();
+            int nodeEnd = nodeStart + node.node.getLength() - 1;
 
             // This will fetch the localized message
             // See https://github.com/pmd/pmd/issues/384
@@ -235,9 +237,9 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
                     if (trailingCommaLocalizedMessage.equals(parseProblem.getMessage())) {
                         // Report on the shortest code block containing the
                         // problem (i.e. inner most code in nested structures).
-                        EcmascriptNode<?> currentNode = (EcmascriptNode<?>) parseProblemToNode.get(parseProblem);
-                        if (currentNode == null || node.getNode().getLength() < currentNode.getNode().getLength()) {
-                            parseProblemToNode.put(parseProblem, trailingCommaNode);
+                        AbstractEcmascriptNode<?> currentNode = (AbstractEcmascriptNode<?>) parseProblemToNode.get(parseProblem);
+                        if (currentNode == null || node.node.getLength() < currentNode.node.getLength()) {
+                            parseProblemToNode.put(parseProblem, node);
                         }
                     }
                 }

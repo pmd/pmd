@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
@@ -18,6 +19,8 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
 
     private ApexQualifiedName qname;
 
+    @Deprecated
+    @InternalApi
     public ASTUserClass(UserClass userClass) {
         super(userClass);
     }
@@ -31,7 +34,7 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
 
     @Override
     public String getImage() {
-        String apexName = node.getDefiningType().getApexName();
+        String apexName = getDefiningType();
         return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 

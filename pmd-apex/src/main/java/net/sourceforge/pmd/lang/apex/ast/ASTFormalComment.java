@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.antlr.runtime.Token;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment.AstComment;
 
 import apex.jorje.data.Location;
@@ -50,6 +51,8 @@ public class ASTFormalComment extends AbstractApexNode<AstComment> {
     }
 
 
+    @Deprecated
+    @InternalApi
     public static final class AstComment implements AstNode {
 
         private final Location loc;

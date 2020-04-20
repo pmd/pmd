@@ -24,16 +24,17 @@ by {% rule java/codestyle/ClassNamingConventions %}.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration
- [@Abstract='true' and @Interface='false']
+ [@Abstract= true() and @Interface= false()]
  [not (starts-with(@SimpleName,'Abstract'))]
 |
 //ClassOrInterfaceDeclaration
- [@Abstract='false']
- [$strict='true']
+ [@Abstract= false()]
+ [$strict= true()]
  [starts-with(@SimpleName, 'Abstract')]
 ]]>
                 </value>
@@ -112,11 +113,12 @@ If the goal is to avoid defining constants in a scope smaller than the class, th
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //LocalVariableDeclaration[
-  @Final = 'true'
+  @Final = true()
   and not(../../ForStatement)
   and
   (
@@ -157,11 +159,12 @@ by the more general rule {% rule java/codestyle/FormalParameterNamingConventions
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
-        pmd:matches(@VariableName,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
+        pmd:matches(@Name,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
 ]
 ]]>
                 </value>
@@ -210,12 +213,13 @@ Clarify your intent by using private or package access modifiers instead.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final='true']
+//ClassOrInterfaceDeclaration[@Final= true()]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@Protected='true']
+/FieldDeclaration[@Protected= true()]
 ]]>
                 </value>
             </property>
@@ -244,12 +248,13 @@ visibility cannot be reduced). Clarify your intent by using private or package a
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
+//ClassOrInterfaceDeclaration[@Final= true() and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true' and @Name != 'finalize']
+/MethodDeclaration[@Protected=true() and @Name != 'finalize']
  ]]>
                 </value>
             </property>
@@ -276,6 +281,7 @@ and increases the maintenance burden.
         </description>
         <priority>2</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//Name[starts-with(@Image,'System.loadLibrary')]</value>
             </property>
@@ -313,12 +319,13 @@ prefix for these methods.
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //MethodDeclaration
     [starts-with(@Name, 'get')]
-    [@Arity = 0 or $checkParameterizedMethods = 'true']
+    [@Arity = 0 or $checkParameterizedMethods = true()]
     [
         ResultType/Type/PrimitiveType[@Image = 'boolean']
         and not(../Annotation//Name[@Image = 'Override'])
@@ -349,13 +356,14 @@ another constructor (such as an overloaded constructor) is called, this rule wil
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+//ClassOrInterfaceDeclaration[ExtendsList/*]
 /ClassOrInterfaceBody
  /ClassOrInterfaceBodyDeclaration
- /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+ /ConstructorDeclaration[ not(.//ExplicitConstructorInvocation) ]
 ]]>
                 </value>
             </property>
@@ -549,16 +557,17 @@ The rule allows methods and fields annotated with Guava's @VisibleForTesting.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
+//ClassOrInterfaceDeclaration[@Interface= false()]
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
 [not(Annotation//Name[ends-with(@Image, 'VisibleForTesting')])]
 [
-FieldDeclaration[@PackagePrivate='true']
-or MethodDeclaration[@PackagePrivate='true']
+FieldDeclaration[@PackagePrivate= true()]
+or MethodDeclaration[@PackagePrivate= true()]
 ]
 ]]>
                 </value>
@@ -620,23 +629,24 @@ usage by developers who should be implementing their own versions in the concret
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Abstract = 'true']
+//ClassOrInterfaceDeclaration[@Abstract = true()]
     /ClassOrInterfaceBody
     /ClassOrInterfaceBodyDeclaration
-    /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
+    /MethodDeclaration[@Abstract = false() and @Native = false()]
     [
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = true() )
         or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = 'true' )
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = true() )
         or
-        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = 'true' )
+        ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = true() )
         or
         (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
         or
-        ( count (./Block/*) = 0 )
+        ( not (./Block/*) )
     ]
 ]]>
                 </value>
@@ -666,6 +676,7 @@ public abstract class ShouldBeAbstract {
         <description>No need to explicitly extend Object.</description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -758,6 +769,7 @@ Some for loops can be simplified to while loops, this makes them more concise.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -798,6 +810,7 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//ForStatement[not(Statement/Block)]</value>
             </property>
@@ -860,13 +873,14 @@ Names for references to generic values should be limited to a single uppercase l
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
   string-length(@Image) > 1
   or
-  string:upper-case(@Image) != @Image
+  upper-case(@Image) != @Image
 ]
 ]]>
                 </value>
@@ -943,11 +957,12 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //Statement
- [parent::IfStatement[@Else='true']]
+ [parent::IfStatement[@Else= true()]]
  [not(child::Block)]
  [not(child::IfStatement)]
 ]]>
@@ -985,6 +1000,7 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1081,6 +1097,7 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1119,6 +1136,7 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1214,10 +1232,11 @@ Fields, formal arguments, or local variable names that are too long can make the
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" description="The variable length reporting threshold" min="1" max="100" value="17"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) > $minimum]
+//VariableDeclaratorId[string-length(@Name) > $minimum]
 ]]>
                 </value>
             </property>
@@ -1248,6 +1267,7 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1339,11 +1359,12 @@ by the more general rule
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //VariableDeclaratorId
-[starts-with(@Image, 'm_')]
+[starts-with(@Name, 'm_')]
 [not (../../../FieldDeclaration)]
 ]]>
                 </value>
@@ -1478,6 +1499,7 @@ Detects when a package definition contains uppercase characters.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//PackageDeclaration/Name[lower-case(@Image)!=@Image]</value>
             </property>
@@ -1531,6 +1553,7 @@ Remote Interface of a Session EJB should not have a suffix.
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1577,6 +1600,7 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
         </description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1616,6 +1640,7 @@ Short Classnames with fewer than e.g. five characters are not recommended.
         <priority>4</priority>
         <properties>
             <property name="minimum" type="Integer" value="5" min="1" max="100" description="Number of characters that are required as a minimum for a class name."/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1644,6 +1669,7 @@ Method names that are very short are not helpful to the reader.
         <priority>3</priority>
         <properties>
             <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a method name."/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1678,7 +1704,7 @@ Fields, local variables, or parameter names that are very short are not helpful 
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) < $minimum]
+//VariableDeclaratorId[string-length(@Name) < $minimum]
  (: ForStatement :)
  [not(../../..[self::ForInit])]
  (: Foreach statement :)
@@ -1725,13 +1751,14 @@ by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
+//ClassOrInterfaceDeclaration[@Interface= false()]
  /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-  [@Final='false']
-  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+  [@Final= false()]
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Name)=@Name]]
 ]]>
                 </value>
             </property>
@@ -1764,10 +1791,11 @@ which class a static member comes from (Sun 1.5 Language Guide).
         <properties>
             <property name="maximumStaticImports" type="Integer"
                       description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-.[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
+.[count(ImportDeclaration[@Static = true()]) > $maximumStaticImports]
 ]]>
                 </value>
             </property>
@@ -2003,6 +2031,7 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
         <description>Useless parentheses should be removed.</description>
         <priority>4</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2018,10 +2047,10 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
 |
 //Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    count(./CastExpression)=0 and
-    count(./EqualityExpression/MultiplicativeExpression)=0 and
-    count(./ConditionalExpression)=0 and
-    count(./ConditionalOrExpression)=0]
+    not(./CastExpression) and
+    not(./EqualityExpression/MultiplicativeExpression) and
+    not(./ConditionalExpression) and
+    not(./ConditionalOrExpression)]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
@@ -2034,11 +2063,11 @@ List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operat
     not(./CastExpression) and
     not(./EqualityExpression)]
 |
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral= true()])]
   /PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
-    not(./AdditiveExpression[@Image = '-']) and
+    not(./AdditiveExpression[@Operator = '-']) and
     not(./ShiftExpression) and
     not(./RelationalExpression) and
     not(./InstanceOfExpression) and
@@ -2091,14 +2120,15 @@ public class Foo {
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
-[PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
+[PrimarySuffix[@Arguments= false() and @ArrayDereference = false()]]
 [not(PrimarySuffix/MemberSelector)]
-[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
+[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass= false()]]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
@@ -2150,6 +2180,7 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
@@ -2212,6 +2243,7 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>//WhileStatement[not(Statement/Block)]</value>
             </property>
