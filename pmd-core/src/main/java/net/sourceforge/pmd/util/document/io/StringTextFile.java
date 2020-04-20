@@ -25,7 +25,7 @@ class StringTextFile implements TextFile {
         AssertionUtil.requireParamNotNull("source text", source);
         AssertionUtil.requireParamNotNull("file name", name);
 
-        this.buffer = Chars.wrap(source, true);
+        this.buffer = Chars.wrap(source);
         this.name = name;
     }
 

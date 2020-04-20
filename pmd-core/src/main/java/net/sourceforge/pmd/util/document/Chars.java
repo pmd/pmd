@@ -5,128 +5,84 @@
 package net.sourceforge.pmd.util.document;
 
 
-import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.CharBuffer;
 
+import org.apache.commons.io.input.CharSequenceReader;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Wraps a char array. {@link #subSequence(int, int) subsequence} does
- * not copy the array. Instances may be {@link #isReadOnly() read-only}.
- * This is easier to use than {@link CharBuffer}, and more predictable.
+ * View on a string which doesn't copy the array for subsequence operations.
+ * This view is immutable. Since it uses a string internally it benefits from
+ * Java 9's compacting feature, it also can efficiently created from a StringBuilder.
  */
 public final class Chars implements CharSequence {
 
-    static final Chars EMPTY = new Chars(new char[0], 0, 0, true);
+    public static final Chars EMPTY = wrap("");
 
-    private final char[] arr;
+    private final String str;
     private final int start;
     private final int len;
-    private final boolean readOnly;
 
-    private Chars(char[] arr, int start, int len, boolean readOnly) {
-        this.arr = arr;
+    private Chars(String str, int start, int len) {
+        this.str = str;
         this.start = start;
         this.len = len;
-        this.readOnly = readOnly;
-    }
-
-    public Chars(CharSequence cs, int start, int len, boolean readOnly) {
-        this.readOnly = readOnly;
-        this.start = 0;
-        this.len = len;
-        this.arr = new char[len];
-        cs.toString().getChars(start, start + len, arr, 0);
-    }
-
-    /**
-     * Wraps the given char array without copying it. The caller should
-     * take care that the original array doesn't leak.
-     */
-    public static Chars wrap(char[] chars, boolean readOnly) {
-        return new Chars(chars, 0, chars.length, readOnly);
-    }
-
-    /**
-     * Wraps the given char sequence (dumps its characters into a new array).
-     */
-    public static Chars wrap(CharSequence chars, boolean readOnly) {
-        if (chars instanceof Chars && readOnly && ((Chars) chars).readOnly) {
-            return (Chars) chars;
-        }
-        return new Chars(chars, 0, chars.length(), readOnly);
-    }
-
-    /**
-     * Returns a char buffer that is readonly, with the same contents
-     * as this one.
-     */
-    public Chars toReadOnly() {
-        return isReadOnly() ? this : copy(true);
-    }
-
-    /**
-     * Returns a mutable char buffer with the same contents as this one.
-     * This always copies the internal array.
-     */
-    public Chars mutableCopy() {
-        return copy(false);
-    }
-
-    private Chars copy(boolean readOnly) {
-        char[] chars = new char[length()];
-        System.arraycopy(this.arr, start, chars, 0, length());
-        return new Chars(chars, 0, length(), readOnly);
-    }
-
-    /**
-     * Write all characters of this buffer into the given writer.
-     */
-    public void writeFully(Writer writer) throws IOException {
-        writer.write(arr, start, length());
-    }
-
-    /**
-     * Reads 'len' characters from index 'from' into the given array at 'off'.
-     */
-    public void getChars(int from, char[] cbuf, int off, int len) {
-        System.arraycopy(arr, idx(from), cbuf, off, len);
-    }
-
-    /**
-     * Set the character at index 'off' to 'c'.
-     *
-     * @throws UnsupportedOperationException If this buffer is read only
-     */
-    public void set(int off, char c) {
-        if (isReadOnly()) {
-            throw new UnsupportedOperationException("Read only buffer");
-        }
-        Validate.validIndex(this, off);
-        arr[idx(off)] = c;
-    }
-
-
-    /**
-     * A read-only buffer does not support the {@link #set(int, char) set}
-     * operation. {@link #toReadOnly()} will not copy the char array.
-     */
-    public boolean isReadOnly() {
-        return readOnly;
     }
 
     private int idx(int off) {
         return this.start + off;
     }
 
-    public Reader newReader() {
-        return new CharArrayReader(arr, start, length());
+
+    /**
+     * Wraps the given char sequence.
+     */
+    public static Chars wrap(CharSequence chars) {
+        if (chars instanceof Chars) {
+            return (Chars) chars;
+        }
+        return new Chars(chars.toString(), 0, chars.length());
     }
 
+    /**
+     * Write all characters of this buffer into the given writer.
+     */
+    public void writeFully(Writer writer) throws IOException {
+        writer.write(str, start, length());
+    }
+
+    /**
+     * Reads 'len' characters from index 'from' into the given array at 'off'.
+     */
+    public void getChars(int from, char @NonNull [] cbuf, int off, int len) {
+        if (len == 0) {
+            return;
+        }
+        int start = idx(from);
+        str.getChars(start, start + len, cbuf, off);
+    }
+
+    /**
+     * Appends the character range identified by offset and length into
+     * the string builder.
+     */
+    public void appendChars(StringBuilder sb, int off, int len) {
+        if (len == 0) {
+            return;
+        }
+        int idx = idx(off);
+        sb.append(str, idx, idx + len);
+    }
+
+    /**
+     * Returns a new reader for the whole contents of this char sequence.
+     */
+    public Reader newReader() {
+        return new CharSequenceReader(this);
+    }
 
     @Override
     public int length() {
@@ -135,20 +91,34 @@ public final class Chars implements CharSequence {
 
     @Override
     public char charAt(int index) {
-        Validate.validIndex(this, index);
-        return arr[idx(index)];
+        return str.charAt(idx(index));
     }
 
     @Override
     public Chars subSequence(int start, int end) {
-        Validate.validIndex(this, start);
-        Validate.validIndex(this, end);
-        return new Chars(arr, idx(start), end - start, isReadOnly());
+        return slice(start, end - start);
+    }
+
+    /**
+     * Like {@link #subSequence(int, int)} but with offset + length instead
+     * of start + end.
+     */
+    public Chars slice(int off, int len) {
+        if (off < 0 || len < 0 || (off + len) > length()) {
+            throw new IndexOutOfBoundsException(
+                "Cannot cut " + start + ".." + (off + len) + " (length " + length() + ")"
+            );
+        }
+        if (len == 0) {
+            return EMPTY;
+        }
+        return new Chars(str, idx(off), len);
     }
 
     @Override
     public String toString() {
-        return new String(arr, start, len);
+        // this already avoids the copy if start == 0 && len == str.length()
+        return str.substring(start, start + len);
     }
 
     @Override
@@ -165,10 +135,17 @@ public final class Chars implements CharSequence {
 
     @Override
     public int hashCode() {
-        int result = 1;
-        for (int i = start, end = idx(len); i < end; i++) {
-            result += arr[i] * 31;
+        if (isFullString()) {
+            return str.hashCode(); // hashcode is cached on strings
         }
-        return result;
+        int h = 0;
+        for (int i = start, end = start + len; i < end; i++) {
+            h = h * 31 + str.charAt(i);
+        }
+        return h;
+    }
+
+    private boolean isFullString() {
+        return start == 0 && len == str.length();
     }
 }

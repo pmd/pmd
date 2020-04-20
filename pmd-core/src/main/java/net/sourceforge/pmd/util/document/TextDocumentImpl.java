@@ -28,7 +28,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     TextDocumentImpl(TextFile backend, LanguageVersion langVersion) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
-        this.text = backend.readContents().toReadOnly();
+        this.text = backend.readContents();
         this.langVersion = langVersion;
         this.positioner = null;
         this.fileName = backend.getDisplayName();

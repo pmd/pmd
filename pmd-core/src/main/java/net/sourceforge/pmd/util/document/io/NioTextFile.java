@@ -62,7 +62,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
     public Chars readContents() throws IOException {
         ensureOpen();
         try (BufferedReader br = Files.newBufferedReader(path, charset)) {
-            return Chars.wrap(IOUtils.toCharArray(br), true);
+            return Chars.wrap(IOUtils.toString(br));
         }
     }
 
