@@ -1439,6 +1439,13 @@ not change the result of your rules</em>, if it does, please report a bug at htt
 <p>Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 6.22.0.
 <strong>We highly recommend that you upgrade your rules to XPath 2.0</strong>. Please refer to the <a href="https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20">migration guide</a>.</p>
 
+<h4 id="javascript-improvements-for-es6">Javascript improvements for ES6</h4>
+
+<p>PMD uses the <a href="https://github.com/mozilla/rhino">Rhino</a> library to parse Javascript.
+The default version has been set to <code class="highlighter-rouge">ES6</code>, so that some ECMAScript 2015 features are
+supported. E.g. <code class="highlighter-rouge">let</code> statements and <code class="highlighter-rouge">for-of</code> loops are now parsed. However Rhino does
+not support all features.</p>
+
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
@@ -1508,6 +1515,12 @@ local variables.</p>
   <li>java-multithreading
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2313">#2313</a>: [java] Documenation for DoNotUseThreads is outdated</li>
+    </ul>
+  </li>
+  <li>javascript
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1235">#1235</a>: [javascript] Use of let results in an Empty Statement in the AST</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2379">#2379</a>: [javascript] Support for-of loop</li>
     </ul>
   </li>
   <li>javascript-errorprone
