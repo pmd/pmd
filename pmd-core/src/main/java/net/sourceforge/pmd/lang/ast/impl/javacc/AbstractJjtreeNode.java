@@ -58,6 +58,10 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
         return getFirstToken().getDocument().getTextDocument();
     }
 
+    private TextRegion getTextRegion() {
+        return TextRegion.union(getFirstToken().getRegion(), getLastToken().getRegion());
+    }
+
     // TODO move up to Node, drop all getBegin/End/Line/Column methods
     @Override
     public FileLocation getReportLocation() {
@@ -65,11 +69,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
             location = getTextDocument().toLocation(getTextRegion());
         }
         return location;
-    }
-
-    // TODO move up to Node, drop all getBegin/End/Line/Column methods
-    public TextRegion getTextRegion() {
-        return getFirstToken().getRegion().union(getLastToken().getRegion());
     }
 
     /**

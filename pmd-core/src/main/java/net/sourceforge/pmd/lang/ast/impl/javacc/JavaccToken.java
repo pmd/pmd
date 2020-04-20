@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import java.util.Comparator;
-
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.util.document.FileLocation;
@@ -28,7 +26,7 @@ import net.sourceforge.pmd.util.document.TextRegion;
  * class in a typical PMD run and this may reduce GC pressure.
  * </ul>
  */
-public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken>, Reportable {
+public class JavaccToken implements GenericToken<JavaccToken>, Reportable {
 
     /**
      * Kind for EOF tokens.
@@ -40,9 +38,6 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      * positive numbers for token kinds.
      */
     public static final int IMPLICIT_TOKEN = -1;
-
-    private static final Comparator<JavaccToken> COMPARATOR =
-        Comparator.comparing(JavaccToken::getRegion);
 
 
     /**
@@ -157,10 +152,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return image.toString();
     }
 
-    /**
-     * Returns a region with the coordinates of this token.
-     * TODO move up to GenericToken, drop all getBegin/End/Line/Column methods
-     */
+    @Override
     public TextRegion getRegion() {
         return region;
     }
@@ -168,6 +160,10 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
     @Override
     public FileLocation getReportLocation() {
         if (location == null) {
+            // todo it's not useful to cache this. This is only done
+            //  because existing APIs use getBeginLine/End/etc and so
+            //  would compute the location 4 times - not practical until
+            //  we migrate them
             location = document.getTextDocument().toLocation(getRegion());
         }
         return location;
@@ -252,12 +248,6 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         tok.next = this.next;
         return tok;
     }
-
-    @Override
-    public int compareTo(JavaccToken o) {
-        return COMPARATOR.compare(this, o);
-    }
-
 
     /**
      * Creates an implicit token, with zero length, that is linked to

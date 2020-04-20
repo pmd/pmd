@@ -30,17 +30,17 @@ public class TextRegionTest {
     public void testEmptyContains() {
         TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
 
-        assertFalse(r1.containsChar(0));
+        assertFalse(r1.containsOffset(0));
     }
 
     @Test
     public void testContains() {
         TextRegion r1 = TextRegionImpl.fromOffsetLength(1, 2);
 
-        assertFalse(r1.containsChar(0));
-        assertTrue(r1.containsChar(1));
-        assertTrue(r1.containsChar(2));
-        assertFalse(r1.containsChar(3));
+        assertFalse(r1.containsOffset(0));
+        assertTrue(r1.containsOffset(1));
+        assertTrue(r1.containsOffset(2));
+        assertFalse(r1.containsOffset(3));
     }
 
     @Test
@@ -226,30 +226,30 @@ public class TextRegionTest {
 
 
     private TextRegion doIntersect(TextRegion r1, TextRegion r2) {
-        TextRegion inter = r1.intersect(r2);
+        TextRegion inter = TextRegion.intersect(r1, r2);
         assertNotNull("Intersection of " + r1 + " and " + r2 + " must exist", inter);
-        TextRegion symmetric = r2.intersect(r1);
+        TextRegion symmetric = TextRegion.intersect(r2, r1);
         assertEquals("Intersection of " + r1 + " and " + r2 + " must be symmetric", inter, symmetric);
 
         return inter;
     }
 
     private TextRegion doUnion(TextRegion r1, TextRegion r2) {
-        TextRegion union = r1.union(r2);
+        TextRegion union = TextRegion.union(r1, r2);
 
         assertTrue("Union of " + r1 + " and " + r2 + " must contain first region", union.contains(r1));
         assertTrue("Union of " + r1 + " and " + r2 + " must contain second region", union.contains(r2));
 
-        TextRegion symmetric = r2.union(r1);
+        TextRegion symmetric = TextRegion.union(r2, r1);
         assertEquals("Union of " + r1 + " and " + r2 + " must be symmetric", union, symmetric);
 
         return union;
     }
 
     private void noIntersect(TextRegion r1, TextRegion r2) {
-        TextRegion inter = r1.intersect(r2);
+        TextRegion inter = TextRegion.intersect(r1, r2);
         assertNull("Intersection of " + r1 + " and " + r2 + " must not exist", inter);
-        TextRegion symmetric = r2.intersect(r1);
+        TextRegion symmetric = TextRegion.intersect(r2, r1);
         assertEquals("Intersection of " + r1 + " and " + r2 + " must be symmetric", inter, symmetric);
     }
 

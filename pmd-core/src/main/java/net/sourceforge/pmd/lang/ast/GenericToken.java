@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,11 +8,12 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
  */
-public interface GenericToken<T extends GenericToken<T>> {
+public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
 
     /**
      * Obtain the next generic token according to the input stream which generated the instance of this token.
@@ -41,10 +42,13 @@ public interface GenericToken<T extends GenericToken<T>> {
      */
     boolean isEof();
 
+    /**
+     * Returns a region with the coordinates of this token.
+     */
+    TextRegion getRegion();
 
     // TODO remove those methods, instead, implement Reportable.
     //  This is already done for JavaccToken, to do for AntlrToken
-
 
     /**
      * Gets the line where the token's region begins
@@ -86,6 +90,11 @@ public interface GenericToken<T extends GenericToken<T>> {
     }
 
 
+    @Override
+    default int compareTo(T o) {
+        return getRegion().compareTo(o.getRegion());
+    }
+
 
     /**
      * Returns an iterator that enumerates all (non-special) tokens
@@ -99,10 +108,10 @@ public interface GenericToken<T extends GenericToken<T>> {
      * @throws IllegalArgumentException If the first token does not come before the other token
      */
     static Iterator<JavaccToken> range(JavaccToken from, JavaccToken to) {
-        if (from.getStartInDocument() > to.getStartInDocument()) {
+        if (from.compareTo(to) > 0) {
             throw new IllegalArgumentException(
-                from + " (at " + from.getStartInDocument()
-                    + ") must come before " + to + " (at " + to.getStartInDocument() + ")"
+                from + " (at " + from.getRegion() + ") must come before "
+                    + to + " (at " + to.getRegion() + ")"
             );
         }
         return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());

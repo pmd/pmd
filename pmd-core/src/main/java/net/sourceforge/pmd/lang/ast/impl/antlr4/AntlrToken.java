@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Generic Antlr representation of a token.
@@ -62,6 +63,11 @@ public class AntlrToken implements GenericToken<AntlrToken> {
     @Override
     public boolean isEof() {
         return getKind() == Token.EOF;
+    }
+
+    @Override
+    public TextRegion getRegion() {
+        return TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex());
     }
 
     @Override

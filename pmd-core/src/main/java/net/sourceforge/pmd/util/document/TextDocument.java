@@ -51,13 +51,17 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a reader over the text of this document.
      */
-    Reader newReader();
+    default Reader newReader() {
+        return getText().newReader();
+    }
 
 
     /**
      * Returns the length in characters of the {@linkplain #getText() text}.
      */
-    int getLength();
+    default int getLength() {
+        return getText().length();
+    }
 
 
     /**
@@ -113,7 +117,9 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
      */
-    Chars slice(TextRegion region);
+    default Chars slice(TextRegion region) {
+        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
+    }
 
 
     /**

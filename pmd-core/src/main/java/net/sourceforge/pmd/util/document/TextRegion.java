@@ -22,8 +22,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
  */
-// Regions could have the stamp of the document that created them though,
-// in which case we could assert that they're up to date
 public interface TextRegion extends Comparable<TextRegion> {
 
     TextRegion UNDEFINED = TextRegionImpl.fromOffsetLength(0, 0);
@@ -64,7 +62,7 @@ public interface TextRegion extends Comparable<TextRegion> {
      *
      * @param offset Offset of a character
      */
-    default boolean containsChar(int offset) {
+    default boolean containsOffset(int offset) {
         return getStartOffset() <= offset && offset < getEndOffset();
     }
 
@@ -88,7 +86,7 @@ public interface TextRegion extends Comparable<TextRegion> {
      * @param other Other region
      */
     default boolean overlaps(TextRegion other) {
-        TextRegion intersection = this.intersect(other);
+        TextRegion intersection = TextRegion.intersect(this, other);
         return intersection != null && intersection.getLength() != 0;
     }
 
@@ -99,16 +97,17 @@ public interface TextRegion extends Comparable<TextRegion> {
      * It may have length zero, or not exist (if the regions are completely
      * disjoint).
      *
-     * @param other Other region
+     * @param r1 A region
+     * @param r2 A region
      *
      * @return The intersection, if it exists
      */
     @Nullable
-    default TextRegion intersect(TextRegion other) {
-        int start = Math.max(this.getStartOffset(), other.getStartOffset());
-        int end = Math.min(this.getEndOffset(), other.getEndOffset());
+    static TextRegion intersect(TextRegion r1, TextRegion r2) {
+        int start = Math.max(r1.getStartOffset(), r2.getStartOffset());
+        int end = Math.min(r1.getEndOffset(), r2.getEndOffset());
 
-        return start <= end ? TextRegionImpl.fromBothOffsets(start, end)
+        return start <= end ? fromBothOffsets(start, end)
                             : null;
 
     }
@@ -118,19 +117,36 @@ public interface TextRegion extends Comparable<TextRegion> {
      * Computes the union of this region with the other. This is the
      * smallest region that contains both this region and the parameter.
      *
-     * @param other Other region
+     * @param r1 A region
+     * @param r2 A region
      *
      * @return The union of both regions
      */
-    default TextRegion union(TextRegion other) {
-        if (this == other) {
-            return this;
+    static TextRegion union(TextRegion r1, TextRegion r2) {
+        if (r1 == r2) {
+            return r1;
         }
 
-        int start = Math.min(this.getStartOffset(), other.getStartOffset());
-        int end = Math.max(this.getEndOffset(), other.getEndOffset());
+        int start = Math.min(r1.getStartOffset(), r2.getStartOffset());
+        int end = Math.max(r1.getEndOffset(), r2.getEndOffset());
 
-        return TextRegionImpl.fromBothOffsets(start, end);
+        return fromBothOffsets(start, end);
+    }
+
+
+    /**
+     * Builds a new region from offset and length.
+     */
+    static TextRegion fromOffsetLength(int startOffset, int length) {
+        return TextRegionImpl.fromOffsetLength(startOffset, length);
+    }
+
+
+    /**
+     * Builds a new region from start and end offset.
+     */
+    static TextRegion fromBothOffsets(int startOffset, int endOffset) {
+        return TextRegionImpl.fromBothOffsets(startOffset, endOffset);
     }
 
 

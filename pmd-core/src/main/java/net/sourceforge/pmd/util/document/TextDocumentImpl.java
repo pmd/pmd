@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
-import java.io.Reader;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -100,31 +99,13 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public int getLength() {
-        return text.length();
-    }
-
-    @Override
     public Chars getText() {
         return text;
-    }
-
-    @Override
-    public Reader newReader() {
-        return text.newReader();
     }
 
     long getCurStamp() {
         return curStamp;
     }
 
-
-    @Override
-    public Chars slice(TextRegion region) {
-        if (region.getLength() == 0) {
-            return Chars.EMPTY;
-        }
-        return text.subSequence(region.getStartOffset(), region.getEndOffset());
-    }
 
 }
