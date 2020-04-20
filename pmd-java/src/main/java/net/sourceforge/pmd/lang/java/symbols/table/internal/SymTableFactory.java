@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AstDisambiguationPass;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
@@ -64,11 +64,11 @@ final class SymTableFactory {
 
 
     public void disambig(NodeStream<? extends JavaNode> nodes) {
-        AstDisambiguationPass.disambig(processor, nodes);
+        InternalApiBridge.disambig(processor, nodes);
     }
 
     public void disambig(JavaNode node) {
-        AstDisambiguationPass.disambig(processor, node);
+        InternalApiBridge.disambig(processor, NodeStream.of(node));
     }
 
     SemanticChecksLogger getLogger() {
