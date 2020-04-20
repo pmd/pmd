@@ -98,7 +98,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
-The following usages are now deprecated in the **Apex**, **Javascript**, **PL/SQL** and **Visualforce** ASTs:
+The following usages are now deprecated in the **Apex**, **Javascript**, **PL/SQL**, **Scala** and **Visualforce** ASTs:
 
 *   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
     marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
@@ -122,6 +122,7 @@ Please look at the package documentation to find out the full list of deprecatio
 * Apex: **{% jdoc_package apex::lang.apex.ast %}**
 * Javascript: **{% jdoc_package javascript::lang.ecmascript.ast %}**
 * PL/SQL: **{% jdoc_package plsql::lang.plsql.ast %}**
+* Scala: **{% jdoc_package scala::lang.scala.ast %}**
 * Visualforce: **{% jdoc_package visualforce::lang.vf.ast %}**
 
 These deprecations have already been rolled out in a previous version for the

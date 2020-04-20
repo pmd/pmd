@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Lit;
 
@@ -11,12 +13,8 @@ import scala.meta.Lit;
  */
 public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTLitFloat(Lit.Float scalaNode) {
         super(scalaNode);
     }
@@ -28,6 +26,6 @@ public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

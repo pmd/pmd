@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Name;
 
@@ -11,12 +13,8 @@ import scala.meta.Name;
  */
 public class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTNameAnonymous(Name.Anonymous scalaNode) {
         super(scalaNode);
     }
@@ -28,6 +26,6 @@ public class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
 
     @Override
     public String getImage() {
-        return getNode().value();
+        return node.value();
     }
 }
