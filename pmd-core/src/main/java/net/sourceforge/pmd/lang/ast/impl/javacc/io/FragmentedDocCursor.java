@@ -47,19 +47,28 @@ final class FragmentedDocCursor {
     char next() throws EOFException {
         Fragment f = cur;
 
-        while (f != null && curOutPos >= f.outEnd()) {
-            f = f.next; // this is a loop to handle chained zero-length fragments
+        if (curOutPos >= f.outEnd()) {
+            // slow path, fragment transition
+            do {
+                f = f.next;
+            } while (f != null && curOutPos >= f.outEnd());
+
+            if (f == null) {
+                throw EOF;
+            }
+            cur = f;
         }
 
-        if (f == null) {
-            throw EOF;
-        }
-
-        cur = f;
         return f.charAt(curOutPos++);
     }
 
     void backup(final int amount) {
+        if (amount == 1 && cur.outStart() < curOutPos) {
+            // fast path
+            curOutPos--;
+            return;
+        }
+
         final int posToRetreatTo = curOutPos - amount;
         this.curOutPos = posToRetreatTo;
         this.cur = findBackwards(posToRetreatTo);

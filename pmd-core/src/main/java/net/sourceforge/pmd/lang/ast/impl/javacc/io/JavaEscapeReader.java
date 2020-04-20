@@ -30,7 +30,7 @@ public final class JavaEscapeReader extends BackslashEscapeReader {
         // is there an escape at offset firstBslashOff?
         if ((bslashCount & 1) == 1 // odd number of backslashes
             && off < input.length() && input.charAt(off) == 'u') { // at least one 'u'
-            // odd number of backslashes, this is enough to expect an escape or throw an exception
+            // this is enough to expect an escape or throw an exception
             while (off < input.length() && input.charAt(off) == 'u') {
                 // consume all the 'u's
                 off++;
