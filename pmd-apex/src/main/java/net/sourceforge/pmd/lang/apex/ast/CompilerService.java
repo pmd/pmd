@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
@@ -36,6 +38,8 @@ import com.google.common.collect.ImmutableList;
  * @author nchen
  *
  */
+@Deprecated
+@InternalApi
 public class CompilerService {
     public static final CompilerService INSTANCE = new CompilerService();
     private final SymbolProvider symbolProvider;

@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -17,8 +18,9 @@ import scala.meta.inputs.Position;
  * @param <T>
  *            the type of the Scala tree node
  */
+@InternalApi
 abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements ScalaNode<T> {
-    private final T node;
+    protected final T node;
     private final Position pos;
 
     /**
@@ -65,21 +67,25 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     }
 
     @Override
+    @Deprecated
     public void testingOnlySetBeginColumn(int i) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     public void testingOnlySetBeginLine(int i) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     public void testingOnlySetEndColumn(int i) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     public void testingOnlySetEndLine(int i) {
         throw new UnsupportedOperationException();
     }
@@ -88,6 +94,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     public abstract <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
 
     @Override
+    @Deprecated
     public T getNode() {
         return node;
     }

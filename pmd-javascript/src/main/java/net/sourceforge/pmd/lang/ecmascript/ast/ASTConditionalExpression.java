@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,13 +7,10 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.ConditionalExpression;
 
 public class ASTConditionalExpression extends AbstractEcmascriptNode<ConditionalExpression> {
-    public ASTConditionalExpression(ConditionalExpression conditionalExpression) {
+    ASTConditionalExpression(ConditionalExpression conditionalExpression) {
         super(conditionalExpression);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

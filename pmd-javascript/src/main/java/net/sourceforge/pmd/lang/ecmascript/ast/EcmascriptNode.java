@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -26,7 +26,9 @@ public interface EcmascriptNode<T extends AstNode> extends Node {
 
     /**
      * Get the underlying Rhino AST node.
+     * @deprecated The underlying Rhino node should not be used directly.
      */
+    @Deprecated
     T getNode();
 
     /**

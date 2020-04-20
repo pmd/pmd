@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -48,8 +48,8 @@ public class ScalaParserVisitorAdapter<D, R> implements ScalaParserVisitor<D, R>
     @Override
     public R visit(ScalaNode<?> node, D data) {
         R returnValue = zero();
-        for (int i = 0; i < node.getNumChildren(); ++i) {
-            returnValue = combine(returnValue, node.getChild(i).accept(this, data));
+        for (ScalaNode<?> child : node.children()) {
+            returnValue = combine(returnValue, child.accept(this, data));
         }
         return returnValue;
     }

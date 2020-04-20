@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,13 +8,10 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.ExpressionStatement;
 
 public class ASTExpressionStatement extends AbstractEcmascriptNode<ExpressionStatement> {
-    public ASTExpressionStatement(ExpressionStatement expressionStatement) {
+    ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

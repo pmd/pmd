@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Tree.Quasi;
 
@@ -11,12 +13,8 @@ import scala.meta.Tree.Quasi;
  */
 public class ASTQuasi extends AbstractScalaNode<Quasi> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTQuasi(Quasi scalaNode) {
         super(scalaNode);
     }

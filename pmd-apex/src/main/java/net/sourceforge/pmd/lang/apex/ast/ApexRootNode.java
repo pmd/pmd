@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import java.util.Collections;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.services.Version;
 
+@Deprecated
+@InternalApi
 public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
 
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
@@ -36,7 +39,7 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
      * @return the apex version
      */
     public double getApexVersion() {
-        return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+        return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
 
 

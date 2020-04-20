@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Term;
 
@@ -11,12 +13,8 @@ import scala.meta.Term;
  */
 public class ASTTermForYield extends AbstractScalaNode<Term.ForYield> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTTermForYield(Term.ForYield scalaNode) {
         super(scalaNode);
     }

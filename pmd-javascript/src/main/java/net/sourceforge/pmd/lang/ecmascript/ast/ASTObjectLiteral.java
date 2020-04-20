@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,13 +10,10 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
         implements DestructuringNode, TrailingCommaNode {
     private boolean trailingComma;
 
-    public ASTObjectLiteral(ObjectLiteral objectLiteral) {
+    ASTObjectLiteral(ObjectLiteral objectLiteral) {
         super(objectLiteral);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -37,7 +34,7 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
     }
 
     @Override
-    public void setTrailingComma(boolean trailingComma) {
-        this.trailingComma = trailingComma;
+    protected void setTrailingCommaExists(boolean b) {
+        this.trailingComma = b;
     }
 }
