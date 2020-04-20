@@ -18,6 +18,8 @@ public class AbstractInfixEcmascriptNode<T extends InfixExpression> extends Abst
         this(infixExpression, true);
     }
 
+    @Deprecated
+    @InternalApi
     public AbstractInfixEcmascriptNode(T infixExpression, boolean setImage) {
         super(infixExpression);
         if (setImage) {
