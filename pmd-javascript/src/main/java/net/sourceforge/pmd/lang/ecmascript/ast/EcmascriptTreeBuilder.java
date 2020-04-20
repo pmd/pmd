@@ -137,7 +137,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
 
     private final SourceCodePositioner sourceCodePositioner;
 
-    public EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
+    EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
         this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
         this.parseProblems = parseProblems;
     }
@@ -145,7 +145,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     private static <T extends AstNode> void register(Class<T> nodeType,
             Class<? extends AbstractEcmascriptNode<T>> nodeAdapterType) {
         try {
-            NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
+            NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
