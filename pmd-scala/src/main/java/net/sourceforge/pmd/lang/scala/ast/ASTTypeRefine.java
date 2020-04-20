@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeRefine node implementation.
  */
-public class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
+public final class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeRefine(Type.Refine scalaNode) {
+    ASTTypeRefine(Type.Refine scalaNode) {
         super(scalaNode);
     }
 

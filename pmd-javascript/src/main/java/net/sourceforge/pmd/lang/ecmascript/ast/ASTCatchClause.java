@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,14 +6,11 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.CatchClause;
 
-public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
-    public ASTCatchClause(CatchClause catchClause) {
+public final class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
+    ASTCatchClause(CatchClause catchClause) {
         super(catchClause);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

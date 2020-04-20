@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermIf node implementation.
  */
-public class ASTTermIf extends AbstractScalaNode<Term.If> {
+public final class ASTTermIf extends AbstractScalaNode<Term.If> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermIf(Term.If scalaNode) {
+    ASTTermIf(Term.If scalaNode) {
         super(scalaNode);
     }
 

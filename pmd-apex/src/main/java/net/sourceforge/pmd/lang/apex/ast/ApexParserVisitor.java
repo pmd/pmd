@@ -1,16 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 public interface ApexParserVisitor {
-    /**
-     * @deprecated Use {@link #visit(ApexNode, Object)}. That method
-     *     also visits comments now.
-     */
-    @Deprecated
-    Object visit(AbstractApexNodeBase node, Object data);
 
     Object visit(ApexNode<?> node, Object data);
 

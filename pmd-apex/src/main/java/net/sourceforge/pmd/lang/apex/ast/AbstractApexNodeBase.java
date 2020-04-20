@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,13 +8,9 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-/**
- * @deprecated Use {@link ApexNode}
- */
-@Deprecated
-public abstract class AbstractApexNodeBase extends AbstractNode {
+abstract class AbstractApexNodeBase extends AbstractNode {
 
-    public AbstractApexNodeBase(Class<?> klass) {
+    protected AbstractApexNodeBase(Class<?> klass) {
         super(klass.hashCode());
     }
 

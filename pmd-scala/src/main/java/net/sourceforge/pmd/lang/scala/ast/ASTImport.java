@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Import;
 /**
  * The ASTImport node implementation.
  */
-public class ASTImport extends AbstractScalaNode<Import> {
+public final class ASTImport extends AbstractScalaNode<Import> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTImport(Import scalaNode) {
+    ASTImport(Import scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeAnnotate node implementation.
  */
-public class ASTTypeAnnotate extends AbstractScalaNode<Type.Annotate> {
+public final class ASTTypeAnnotate extends AbstractScalaNode<Type.Annotate> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeAnnotate(Type.Annotate scalaNode) {
+    ASTTypeAnnotate(Type.Annotate scalaNode) {
         super(scalaNode);
     }
 

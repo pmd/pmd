@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermPlaceholder node implementation.
  */
-public class ASTTermPlaceholder extends AbstractScalaNode<Term.Placeholder> {
+public final class ASTTermPlaceholder extends AbstractScalaNode<Term.Placeholder> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermPlaceholder(Term.Placeholder scalaNode) {
+    ASTTermPlaceholder(Term.Placeholder scalaNode) {
         super(scalaNode);
     }
 

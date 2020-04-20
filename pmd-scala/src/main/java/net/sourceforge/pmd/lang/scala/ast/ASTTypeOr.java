@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeOr node implementation.
  */
-public class ASTTypeOr extends AbstractScalaNode<Type.Or> {
+public final class ASTTypeOr extends AbstractScalaNode<Type.Or> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeOr(Type.Or scalaNode) {
+    ASTTypeOr(Type.Or scalaNode) {
         super(scalaNode);
     }
 

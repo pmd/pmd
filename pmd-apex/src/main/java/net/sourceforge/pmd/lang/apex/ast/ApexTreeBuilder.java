@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -122,7 +122,7 @@ import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
 
-public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
+final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
@@ -225,8 +225,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType,
-            Class<? extends AbstractApexNode<T>> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
@@ -235,19 +234,19 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     // The nodes having children built.
-    private Stack<Node> nodes = new Stack<>();
+    private final Stack<Node> nodes = new Stack<>();
 
     // The Apex nodes with children to build.
-    private Stack<AstNode> parents = new Stack<>();
+    private final Stack<AstNode> parents = new Stack<>();
 
-    private AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
+    private final AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private List<ApexDocTokenLocation> apexDocTokenLocations;
-    private Map<Integer, String> suppressMap;
+    private final List<ApexDocTokenLocation> apexDocTokenLocations;
+    private final Map<Integer, String> suppressMap;
 
-    public ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
+    ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 

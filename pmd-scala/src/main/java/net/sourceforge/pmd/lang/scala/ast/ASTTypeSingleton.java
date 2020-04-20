@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeSingleton node implementation.
  */
-public class ASTTypeSingleton extends AbstractScalaNode<Type.Singleton> {
+public final class ASTTypeSingleton extends AbstractScalaNode<Type.Singleton> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeSingleton(Type.Singleton scalaNode) {
+    ASTTypeSingleton(Type.Singleton scalaNode) {
         super(scalaNode);
     }
 

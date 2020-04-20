@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnTrait node implementation.
  */
-public class ASTDefnTrait extends AbstractScalaNode<Defn.Trait> {
+public final class ASTDefnTrait extends AbstractScalaNode<Defn.Trait> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTDefnTrait(Defn.Trait scalaNode) {
+    ASTDefnTrait(Defn.Trait scalaNode) {
         super(scalaNode);
     }
 

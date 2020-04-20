@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.NewListInitExpression;
 
-public class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
+public final class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
 
-    public ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
+    ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
         super(newListInitExpression);
     }
 

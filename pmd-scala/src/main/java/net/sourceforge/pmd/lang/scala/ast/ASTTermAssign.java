@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermAssign node implementation.
  */
-public class ASTTermAssign extends AbstractScalaNode<Term.Assign> {
+public final class ASTTermAssign extends AbstractScalaNode<Term.Assign> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermAssign(Term.Assign scalaNode) {
+    ASTTermAssign(Term.Assign scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Enumerator;
 /**
  * The ASTEnumeratorVal node implementation.
  */
-public class ASTEnumeratorVal extends AbstractScalaNode<Enumerator.Val> {
+public final class ASTEnumeratorVal extends AbstractScalaNode<Enumerator.Val> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTEnumeratorVal(Enumerator.Val scalaNode) {
+    ASTEnumeratorVal(Enumerator.Val scalaNode) {
         super(scalaNode);
     }
 

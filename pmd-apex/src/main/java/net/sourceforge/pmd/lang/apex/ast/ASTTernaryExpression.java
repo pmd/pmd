@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.TernaryExpression;
 
-public class ASTTernaryExpression extends AbstractApexNode<TernaryExpression> {
+public final class ASTTernaryExpression extends AbstractApexNode<TernaryExpression> {
 
-    public ASTTernaryExpression(TernaryExpression ternaryExpression) {
+    ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 

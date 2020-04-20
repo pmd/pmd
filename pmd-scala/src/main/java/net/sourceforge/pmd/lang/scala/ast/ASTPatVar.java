@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatVar node implementation.
  */
-public class ASTPatVar extends AbstractScalaNode<Pat.Var> {
+public final class ASTPatVar extends AbstractScalaNode<Pat.Var> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatVar(Pat.Var scalaNode) {
+    ASTPatVar(Pat.Var scalaNode) {
         super(scalaNode);
     }
 

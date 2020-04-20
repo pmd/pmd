@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermReturn node implementation.
  */
-public class ASTTermReturn extends AbstractScalaNode<Term.Return> {
+public final class ASTTermReturn extends AbstractScalaNode<Term.Return> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermReturn(Term.Return scalaNode) {
+    ASTTermReturn(Term.Return scalaNode) {
         super(scalaNode);
     }
 

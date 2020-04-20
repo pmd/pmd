@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeName node implementation.
  */
-public class ASTTypeName extends AbstractScalaNode<Type.Name> {
+public final class ASTTypeName extends AbstractScalaNode<Type.Name> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeName(Type.Name scalaNode) {
+    ASTTypeName(Type.Name scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTTypeName extends AbstractScalaNode<Type.Name> {
 
     @Override
     public String getImage() {
-        return getNode().value();
+        return node.value();
     }
 }

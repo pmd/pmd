@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Ctor;
 /**
  * The ASTCtorSecondary node implementation.
  */
-public class ASTCtorSecondary extends AbstractScalaNode<Ctor.Secondary> {
+public final class ASTCtorSecondary extends AbstractScalaNode<Ctor.Secondary> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTCtorSecondary(Ctor.Secondary scalaNode) {
+    ASTCtorSecondary(Ctor.Secondary scalaNode) {
         super(scalaNode);
     }
 

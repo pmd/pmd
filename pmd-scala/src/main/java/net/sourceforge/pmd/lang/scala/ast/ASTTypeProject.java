@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeProject node implementation.
  */
-public class ASTTypeProject extends AbstractScalaNode<Type.Project> {
+public final class ASTTypeProject extends AbstractScalaNode<Type.Project> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeProject(Type.Project scalaNode) {
+    ASTTypeProject(Type.Project scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeRepeated node implementation.
  */
-public class ASTTypeRepeated extends AbstractScalaNode<Type.Repeated> {
+public final class ASTTypeRepeated extends AbstractScalaNode<Type.Repeated> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeRepeated(Type.Repeated scalaNode) {
+    ASTTypeRepeated(Type.Repeated scalaNode) {
         super(scalaNode);
     }
 

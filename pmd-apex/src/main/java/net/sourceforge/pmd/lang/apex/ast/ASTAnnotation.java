@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -12,9 +12,9 @@ import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.modifier.Annotation;
 
-public class ASTAnnotation extends AbstractApexNode<Annotation> {
+public final class ASTAnnotation extends AbstractApexNode<Annotation> {
 
-    public ASTAnnotation(Annotation annotation) {
+    ASTAnnotation(Annotation annotation) {
         super(annotation);
     }
 

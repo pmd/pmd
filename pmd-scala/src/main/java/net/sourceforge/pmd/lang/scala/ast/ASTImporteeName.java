@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Importee;
 /**
  * The ASTImporteeName node implementation.
  */
-public class ASTImporteeName extends AbstractScalaNode<Importee.Name> {
+public final class ASTImporteeName extends AbstractScalaNode<Importee.Name> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTImporteeName(Importee.Name scalaNode) {
+    ASTImporteeName(Importee.Name scalaNode) {
         super(scalaNode);
     }
 

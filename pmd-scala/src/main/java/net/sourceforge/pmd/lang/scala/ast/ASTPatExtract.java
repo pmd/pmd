@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatExtract node implementation.
  */
-public class ASTPatExtract extends AbstractScalaNode<Pat.Extract> {
+public final class ASTPatExtract extends AbstractScalaNode<Pat.Extract> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatExtract(Pat.Extract scalaNode) {
+    ASTPatExtract(Pat.Extract scalaNode) {
         super(scalaNode);
     }
 

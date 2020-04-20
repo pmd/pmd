@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitShort node implementation.
  */
-public class ASTLitShort extends AbstractScalaNode<Lit.Short> {
+public final class ASTLitShort extends AbstractScalaNode<Lit.Short> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitShort(Lit.Short scalaNode) {
+    ASTLitShort(Lit.Short scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitShort extends AbstractScalaNode<Lit.Short> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

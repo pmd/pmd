@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermSelect node implementation.
  */
-public class ASTTermSelect extends AbstractScalaNode<Term.Select> {
+public final class ASTTermSelect extends AbstractScalaNode<Term.Select> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermSelect(Term.Select scalaNode) {
+    ASTTermSelect(Term.Select scalaNode) {
         super(scalaNode);
     }
 

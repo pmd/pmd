@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -13,9 +13,9 @@ import apex.jorje.semantic.ast.expression.LiteralExpression;
 import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression.NameValueParameter;
 
 
-public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
+public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
 
-    public ASTLiteralExpression(LiteralExpression literalExpression) {
+    ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
     }
 

@@ -19,6 +19,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PMD adopts Contributor Code of Conduct
+
+To facilitate healthy and constructive community behavior PMD adopts
+[Contributor Convenant](https://www.contributor-covenant.org/) as its code of
+conduct.
+
+Please note that this project is released with a Contributor Code of Conduct.
+By participating in this project you agree to abide by its terms.
+
+You can find the code of conduct in the file [code_of_conduct.md](https://github.com/pmd/pmd/blob/master/code_of_conduct.md)
+in our repository.
+
 #### Performance improvements for XPath 2.0 rules
 
 XPath rules written with XPath 2.0 now support conversion to a rulechain rule, which
@@ -52,8 +64,11 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
     *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   core
     *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
+    *   [#2357](https://github.com/pmd/pmd/issues/2357): Add code of conduct: Contributor Covenant
+*   doc
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
+    *   [#2413](https://github.com/pmd/pmd/issues/2413): \[doc] Improve documentation about the available renderers (PMD/CPD)
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
 *   java-bestpractices
@@ -88,7 +103,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 
 As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
-The following usages are now deprecated in the **Visualforce** and **PLSQL** ASTs:
+The following usages are now deprecated in the **Apex**, **Javascript**, **PL/SQL**, **Scala** and **Visualforce** ASTs:
 
 *   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
     marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
@@ -109,8 +124,11 @@ The following usages are now deprecated in the **Visualforce** and **PLSQL** AST
 
 These deprecations are added to the following language modules in this release.
 Please look at the package documentation to find out the full list of deprecations.
-* Visualforce: **{% jdoc_package visualforce::lang.vf.ast %}**
+* Apex: **{% jdoc_package apex::lang.apex.ast %}**
+* Javascript: **{% jdoc_package javascript::lang.ecmascript.ast %}**
 * PL/SQL: **{% jdoc_package plsql::lang.plsql.ast %}**
+* Scala: **{% jdoc_package scala::lang.scala.ast %}**
+* Visualforce: **{% jdoc_package visualforce::lang.vf.ast %}**
 
 These deprecations have already been rolled out in a previous version for the
 following languages:
@@ -121,17 +139,18 @@ following languages:
 Outside of these packages, these changes also concern the following TokenManager
 implementations, and their corresponding Parser if it exists (in the same package):
 
-*   {% jdoc vm::lang.vm.VmTokenManager %}
+*   {% jdoc cpp::lang.cpp.CppTokenManager %}
 *   {% jdoc java::lang.java.JavaTokenManager %}
+*   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
+*   {% jdoc jsp::lang.jsp.JspTokenManager %}
+*   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
+*   {% jdoc modelica::lang.modelica.ModelicaTokenManager %}
+*   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
+*   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
 *   {% jdoc python::lang.python.PythonTokenManager %}
 *   {% jdoc visualforce::lang.vf.VfTokenManager %}
-*   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
-*   {% jdoc jsp::lang.jsp.JspTokenManager %}
-*   {% jdoc modelica::lang.modelica.ModelicaTokenManager %}
-*   {% jdoc cpp::lang.cpp.CppTokenManager %}
-*   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
-*   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
-*   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
+*   {% jdoc vm::lang.vm.VmTokenManager %}
+
 
 In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
 

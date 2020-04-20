@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeApplyInfix node implementation.
  */
-public class ASTTypeApplyInfix extends AbstractScalaNode<Type.ApplyInfix> {
+public final class ASTTypeApplyInfix extends AbstractScalaNode<Type.ApplyInfix> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeApplyInfix(Type.ApplyInfix scalaNode) {
+    ASTTypeApplyInfix(Type.ApplyInfix scalaNode) {
         super(scalaNode);
     }
 

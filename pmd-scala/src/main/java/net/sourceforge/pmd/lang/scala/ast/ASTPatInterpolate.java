@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatInterpolate node implementation.
  */
-public class ASTPatInterpolate extends AbstractScalaNode<Pat.Interpolate> {
+public final class ASTPatInterpolate extends AbstractScalaNode<Pat.Interpolate> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatInterpolate(Pat.Interpolate scalaNode) {
+    ASTPatInterpolate(Pat.Interpolate scalaNode) {
         super(scalaNode);
     }
 

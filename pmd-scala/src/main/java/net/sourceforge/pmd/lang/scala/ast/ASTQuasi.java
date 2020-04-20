@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Tree.Quasi;
 /**
  * The ASTQuasi node implementation.
  */
-public class ASTQuasi extends AbstractScalaNode<Quasi> {
+public final class ASTQuasi extends AbstractScalaNode<Quasi> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTQuasi(Quasi scalaNode) {
+    ASTQuasi(Quasi scalaNode) {
         super(scalaNode);
     }
 

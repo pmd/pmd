@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Mod;
 /**
  * The ASTModContravariant node implementation.
  */
-public class ASTModContravariant extends AbstractScalaNode<Mod.Contravariant> {
+public final class ASTModContravariant extends AbstractScalaNode<Mod.Contravariant> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTModContravariant(Mod.Contravariant scalaNode) {
+    ASTModContravariant(Mod.Contravariant scalaNode) {
         super(scalaNode);
     }
 

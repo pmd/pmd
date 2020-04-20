@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitDouble node implementation.
  */
-public class ASTLitDouble extends AbstractScalaNode<Lit.Double> {
+public final class ASTLitDouble extends AbstractScalaNode<Lit.Double> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitDouble(Lit.Double scalaNode) {
+    ASTLitDouble(Lit.Double scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitDouble extends AbstractScalaNode<Lit.Double> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Self;
 /**
  * The ASTSelf node implementation.
  */
-public class ASTSelf extends AbstractScalaNode<Self> {
+public final class ASTSelf extends AbstractScalaNode<Self> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTSelf(Self scalaNode) {
+    ASTSelf(Self scalaNode) {
         super(scalaNode);
     }
 

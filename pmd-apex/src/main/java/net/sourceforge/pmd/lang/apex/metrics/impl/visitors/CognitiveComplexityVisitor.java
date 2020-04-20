@@ -83,7 +83,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTIfElseBlockStatement node, Object data) {
         State state = (State) data;
 
-        boolean hasElseStatement = node.getNode().hasElseStatement();
+        boolean hasElseStatement = node.hasElseStatement();
         for (ApexNode<?> child : node.children()) {
             // If we don't have an else statement, we get an empty block statement which we shouldn't count
             if (!hasElseStatement && child instanceof ASTBlockStatement) {
@@ -184,7 +184,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTBooleanExpression node, Object data) {
         State state = (State) data;
 
-        BooleanOp op = node.getNode().getOp();
+        BooleanOp op = node.getOperator();
         if (op == BooleanOp.AND || op == BooleanOp.OR) {
             state.booleanOperation(op);
         }
@@ -196,7 +196,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTPrefixExpression node, Object data) {
         State state = (State) data;
 
-        PrefixOp op = node.getNode().getOp();
+        PrefixOp op = node.getOperator();
         if (op == PrefixOp.NOT) {
             state.booleanOperation(null);
         }
@@ -222,14 +222,14 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     @Override
     public Object visit(ASTMethod node, Object data) {
         State state = (State) data;
-        state.setMethodName(node.getNode().getMethodInfo().getCanonicalName());
+        state.setMethodName(node.getCanonicalName());
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
         State state = (State) data;
-        state.methodCall(node.getNode().getMethodName());
+        state.methodCall(node.getMethodName());
         return super.visit(node, data);
     }
 

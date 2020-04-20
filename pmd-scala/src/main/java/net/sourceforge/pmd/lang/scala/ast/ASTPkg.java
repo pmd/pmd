@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pkg;
 /**
  * The ASTPkg node implementation.
  */
-public class ASTPkg extends AbstractScalaNode<Pkg> {
+public final class ASTPkg extends AbstractScalaNode<Pkg> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPkg(Pkg scalaNode) {
+    ASTPkg(Pkg scalaNode) {
         super(scalaNode);
     }
 

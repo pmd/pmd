@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatSeqWildcard node implementation.
  */
-public class ASTPatSeqWildcard extends AbstractScalaNode<Pat.SeqWildcard> {
+public final class ASTPatSeqWildcard extends AbstractScalaNode<Pat.SeqWildcard> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatSeqWildcard(Pat.SeqWildcard scalaNode) {
+    ASTPatSeqWildcard(Pat.SeqWildcard scalaNode) {
         super(scalaNode);
     }
 

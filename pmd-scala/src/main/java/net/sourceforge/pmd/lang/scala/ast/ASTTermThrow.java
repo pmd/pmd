@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermThrow node implementation.
  */
-public class ASTTermThrow extends AbstractScalaNode<Term.Throw> {
+public final class ASTTermThrow extends AbstractScalaNode<Term.Throw> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermThrow(Term.Throw scalaNode) {
+    ASTTermThrow(Term.Throw scalaNode) {
         super(scalaNode);
     }
 

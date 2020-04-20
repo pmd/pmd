@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitFloat node implementation.
  */
-public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
+public final class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitFloat(Lit.Float scalaNode) {
+    ASTLitFloat(Lit.Float scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

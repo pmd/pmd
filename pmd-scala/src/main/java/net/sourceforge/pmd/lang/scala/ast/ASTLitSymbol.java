@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitSymbol node implementation.
  */
-public class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
+public final class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitSymbol(Lit.Symbol scalaNode) {
+    ASTLitSymbol(Lit.Symbol scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

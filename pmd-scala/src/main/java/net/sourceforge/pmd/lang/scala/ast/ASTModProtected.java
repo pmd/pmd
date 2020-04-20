@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Mod;
 /**
  * The ASTModProtected node implementation.
  */
-public class ASTModProtected extends AbstractScalaNode<Mod.Protected> {
+public final class ASTModProtected extends AbstractScalaNode<Mod.Protected> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTModProtected(Mod.Protected scalaNode) {
+    ASTModProtected(Mod.Protected scalaNode) {
         super(scalaNode);
     }
 

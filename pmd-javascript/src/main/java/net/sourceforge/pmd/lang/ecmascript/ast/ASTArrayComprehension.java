@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,14 +6,11 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ArrayComprehension;
 
-public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehension> {
-    public ASTArrayComprehension(ArrayComprehension arrayComprehension) {
+public final class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehension> {
+    ASTArrayComprehension(ArrayComprehension arrayComprehension) {
         super(arrayComprehension);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

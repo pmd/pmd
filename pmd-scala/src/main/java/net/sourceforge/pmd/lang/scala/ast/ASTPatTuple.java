@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatTuple node implementation.
  */
-public class ASTPatTuple extends AbstractScalaNode<Pat.Tuple> {
+public final class ASTPatTuple extends AbstractScalaNode<Pat.Tuple> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatTuple(Pat.Tuple scalaNode) {
+    ASTPatTuple(Pat.Tuple scalaNode) {
         super(scalaNode);
     }
 

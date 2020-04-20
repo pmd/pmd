@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitInt node implementation.
  */
-public class ASTLitInt extends AbstractScalaNode<Lit.Int> {
+public final class ASTLitInt extends AbstractScalaNode<Lit.Int> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitInt(Lit.Int scalaNode) {
+    ASTLitInt(Lit.Int scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitInt extends AbstractScalaNode<Lit.Int> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

@@ -1,20 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.apex.ast;
 
 public class ApexParserVisitorAdapter implements ApexParserVisitor {
-
-    /**
-     * @deprecated Use {@link #visit(ApexNode, Object)}. That method
-     *     also visits comments now.
-     */
-    @Deprecated
-    @Override
-    public Object visit(AbstractApexNodeBase node, Object data) {
-        return node.childrenAccept(this, data);
-    }
 
     @Override
     public Object visit(ApexNode<?> node, Object data) {

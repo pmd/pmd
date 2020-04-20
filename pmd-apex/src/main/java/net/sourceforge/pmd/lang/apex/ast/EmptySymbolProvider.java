@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 // Note: taken from https://github.com/forcedotcom/idecore/blob/3083815933c2d015d03417986f57bd25786d58ce/com.salesforce.ide.apex.core/src/com/salesforce/ide/apex/internal/core/EmptySymbolProvider.java
@@ -29,7 +29,7 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
 /**
  * @author jspagnola
  */
-public final class EmptySymbolProvider implements SymbolProvider {
+final class EmptySymbolProvider implements SymbolProvider {
 
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 

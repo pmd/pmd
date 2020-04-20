@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Name;
 /**
  * The ASTNameAnonymous node implementation.
  */
-public class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
+public final class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTNameAnonymous(Name.Anonymous scalaNode) {
+    ASTNameAnonymous(Name.Anonymous scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
 
     @Override
     public String getImage() {
-        return getNode().value();
+        return node.value();
     }
 }

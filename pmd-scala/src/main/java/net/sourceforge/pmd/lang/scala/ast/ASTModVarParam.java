@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Mod;
 /**
  * The ASTModVarParam node implementation.
  */
-public class ASTModVarParam extends AbstractScalaNode<Mod.VarParam> {
+public final class ASTModVarParam extends AbstractScalaNode<Mod.VarParam> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTModVarParam(Mod.VarParam scalaNode) {
+    ASTModVarParam(Mod.VarParam scalaNode) {
         super(scalaNode);
     }
 

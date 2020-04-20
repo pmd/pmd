@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Mod;
 /**
  * The ASTModAnnot node implementation.
  */
-public class ASTModAnnot extends AbstractScalaNode<Mod.Annot> {
+public final class ASTModAnnot extends AbstractScalaNode<Mod.Annot> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTModAnnot(Mod.Annot scalaNode) {
+    ASTModAnnot(Mod.Annot scalaNode) {
         super(scalaNode);
     }
 

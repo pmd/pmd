@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeSelect node implementation.
  */
-public class ASTTypeSelect extends AbstractScalaNode<Type.Select> {
+public final class ASTTypeSelect extends AbstractScalaNode<Type.Select> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeSelect(Type.Select scalaNode) {
+    ASTTypeSelect(Type.Select scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermNewAnonymous node implementation.
  */
-public class ASTTermNewAnonymous extends AbstractScalaNode<Term.NewAnonymous> {
+public final class ASTTermNewAnonymous extends AbstractScalaNode<Term.NewAnonymous> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermNewAnonymous(Term.NewAnonymous scalaNode) {
+    ASTTermNewAnonymous(Term.NewAnonymous scalaNode) {
         super(scalaNode);
     }
 

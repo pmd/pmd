@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypePlaceholder node implementation.
  */
-public class ASTTypePlaceholder extends AbstractScalaNode<Type.Placeholder> {
+public final class ASTTypePlaceholder extends AbstractScalaNode<Type.Placeholder> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypePlaceholder(Type.Placeholder scalaNode) {
+    ASTTypePlaceholder(Type.Placeholder scalaNode) {
         super(scalaNode);
     }
 

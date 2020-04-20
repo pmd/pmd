@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -12,12 +12,12 @@ import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
-public class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
+public final class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;
 
-    public ASTUserInterface(UserInterface userInterface) {
+    ASTUserInterface(UserInterface userInterface) {
         super(userInterface);
     }
 
@@ -28,7 +28,7 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
 
     @Override
     public String getImage() {
-        String apexName = node.getDefiningType().getApexName();
+        String apexName = getDefiningType();
         return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 

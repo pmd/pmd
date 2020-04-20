@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,7 +20,7 @@ import apex.jorje.semantic.symbol.resolver.SymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 import apex.jorje.semantic.symbol.type.TypeInfos;
 
-public class ASTFormalComment extends AbstractApexNode<AstComment> {
+public final class ASTFormalComment extends AbstractApexNode<AstComment> {
 
     private final String image;
 
@@ -50,7 +50,7 @@ public class ASTFormalComment extends AbstractApexNode<AstComment> {
     }
 
 
-    public static final class AstComment implements AstNode {
+    static final class AstComment implements AstNode {
 
         private final Location loc;
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnMacro node implementation.
  */
-public class ASTDefnMacro extends AbstractScalaNode<Defn.Macro> {
+public final class ASTDefnMacro extends AbstractScalaNode<Defn.Macro> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTDefnMacro(Defn.Macro scalaNode) {
+    ASTDefnMacro(Defn.Macro scalaNode) {
         super(scalaNode);
     }
 

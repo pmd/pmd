@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,9 +8,9 @@ import net.sourceforge.pmd.Rule;
 
 import apex.jorje.semantic.ast.member.Parameter;
 
-public class ASTParameter extends AbstractApexNode<Parameter> implements CanSuppressWarnings {
+public final class ASTParameter extends AbstractApexNode<Parameter> implements CanSuppressWarnings {
 
-    public ASTParameter(Parameter parameter) {
+    ASTParameter(Parameter parameter) {
         super(parameter);
     }
 

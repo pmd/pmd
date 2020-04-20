@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermName node implementation.
  */
-public class ASTTermName extends AbstractScalaNode<Term.Name> {
+public final class ASTTermName extends AbstractScalaNode<Term.Name> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermName(Term.Name scalaNode) {
+    ASTTermName(Term.Name scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTTermName extends AbstractScalaNode<Term.Name> {
 
     @Override
     public String getImage() {
-        return getNode().value();
+        return node.value();
     }
 }

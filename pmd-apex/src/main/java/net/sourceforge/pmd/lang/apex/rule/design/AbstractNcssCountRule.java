@@ -22,11 +22,9 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to
@@ -68,10 +66,10 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
          *
          * @return count of the number of children of the node, plus one
          */
-        protected Integer countNodeChildren(Node node, Object data) {
+        protected Integer countNodeChildren(ApexNode<?> node, Object data) {
             int nodeCount = 0;
             for (int i = 0; i < node.getNumChildren(); i++) {
-                nodeCount += (Integer) ((AbstractApexNodeBase) node.getChild(i)).jjtAccept(this, data);
+                nodeCount += (Integer) node.getChild(i).jjtAccept(this, data);
             }
             return nodeCount;
         }

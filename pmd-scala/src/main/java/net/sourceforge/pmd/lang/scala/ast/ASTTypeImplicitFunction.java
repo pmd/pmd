@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeImplicitFunction node implementation.
  */
-public class ASTTypeImplicitFunction extends AbstractScalaNode<Type.ImplicitFunction> {
+public final class ASTTypeImplicitFunction extends AbstractScalaNode<Type.ImplicitFunction> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeImplicitFunction(Type.ImplicitFunction scalaNode) {
+    ASTTypeImplicitFunction(Type.ImplicitFunction scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermBlock node implementation.
  */
-public class ASTTermBlock extends AbstractScalaNode<Term.Block> {
+public final class ASTTermBlock extends AbstractScalaNode<Term.Block> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermBlock(Term.Block scalaNode) {
+    ASTTermBlock(Term.Block scalaNode) {
         super(scalaNode);
     }
 

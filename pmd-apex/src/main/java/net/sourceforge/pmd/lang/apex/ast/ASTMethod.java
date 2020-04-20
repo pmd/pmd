@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,10 +10,10 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
 
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
+public final class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {
 
-    public ASTMethod(Method method) {
+    ASTMethod(Method method) {
         super(method);
     }
 
@@ -25,6 +25,10 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     @Override
     public String getImage() {
         return node.getMethodInfo().getName();
+    }
+
+    public String getCanonicalName() {
+        return node.getMethodInfo().getCanonicalName();
     }
 
     @Override
@@ -87,6 +91,10 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     }
 
     public String getReturnType() {
-        return node.getReturnTypeRef().toString();
+        return node.getMethodInfo().getEmitSignature().getReturnType().getApexName();
+    }
+
+    public int getArity() {
+        return node.getMethodInfo().getParameterTypes().size();
     }
 }

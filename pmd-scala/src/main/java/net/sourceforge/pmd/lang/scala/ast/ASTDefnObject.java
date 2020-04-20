@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Defn;
 /**
  * The ASTDefnObject node implementation.
  */
-public class ASTDefnObject extends AbstractScalaNode<Defn.Object> {
+public final class ASTDefnObject extends AbstractScalaNode<Defn.Object> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTDefnObject(Defn.Object scalaNode) {
+    ASTDefnObject(Defn.Object scalaNode) {
         super(scalaNode);
     }
 

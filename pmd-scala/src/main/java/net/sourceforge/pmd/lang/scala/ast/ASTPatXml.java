@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatXml node implementation.
  */
-public class ASTPatXml extends AbstractScalaNode<Pat.Xml> {
+public final class ASTPatXml extends AbstractScalaNode<Pat.Xml> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatXml(Pat.Xml scalaNode) {
+    ASTPatXml(Pat.Xml scalaNode) {
         super(scalaNode);
     }
 

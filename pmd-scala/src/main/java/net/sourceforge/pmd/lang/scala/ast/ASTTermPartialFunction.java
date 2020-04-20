@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermPartialFunction node implementation.
  */
-public class ASTTermPartialFunction extends AbstractScalaNode<Term.PartialFunction> {
+public final class ASTTermPartialFunction extends AbstractScalaNode<Term.PartialFunction> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermPartialFunction(Term.PartialFunction scalaNode) {
+    ASTTermPartialFunction(Term.PartialFunction scalaNode) {
         super(scalaNode);
     }
 

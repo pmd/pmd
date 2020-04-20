@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeWith node implementation.
  */
-public class ASTTypeWith extends AbstractScalaNode<Type.With> {
+public final class ASTTypeWith extends AbstractScalaNode<Type.With> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeWith(Type.With scalaNode) {
+    ASTTypeWith(Type.With scalaNode) {
         super(scalaNode);
     }
 

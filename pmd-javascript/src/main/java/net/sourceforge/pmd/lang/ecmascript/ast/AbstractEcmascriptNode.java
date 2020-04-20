@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,11 +10,11 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-public abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
 
     protected final T node;
 
-    public AbstractEcmascriptNode(T node) {
+    AbstractEcmascriptNode(T node) {
         super(node.getType());
         this.node = node;
     }
@@ -58,6 +58,7 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
     }
 
     @Override
+    @Deprecated
     public T getNode() {
         return node;
     }
@@ -72,11 +73,13 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
         return node.hasSideEffects();
     }
 
-
-
-
     @Override
     public String getXPathNodeName() {
         return node.shortName();
+    }
+
+    protected void setTrailingCommaExists(boolean b) {
+        // empty. Only needed for ASTArrayLiteral and ASTObjectLiteral
+        // This method is protected to not clutter the public API via a interface
     }
 }

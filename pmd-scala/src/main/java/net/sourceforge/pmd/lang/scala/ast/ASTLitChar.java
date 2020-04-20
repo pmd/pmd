@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitChar node implementation.
  */
-public class ASTLitChar extends AbstractScalaNode<Lit.Char> {
+public final class ASTLitChar extends AbstractScalaNode<Lit.Char> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitChar(Lit.Char scalaNode) {
+    ASTLitChar(Lit.Char scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitChar extends AbstractScalaNode<Lit.Char> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }

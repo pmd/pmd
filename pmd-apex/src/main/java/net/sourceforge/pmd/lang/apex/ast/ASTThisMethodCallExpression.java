@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.expression.ThisMethodCallExpression;
 
-public class ASTThisMethodCallExpression extends AbstractApexNode<ThisMethodCallExpression> {
+public final class ASTThisMethodCallExpression extends AbstractApexNode<ThisMethodCallExpression> {
 
-    public ASTThisMethodCallExpression(ThisMethodCallExpression thisMethodCallExpression) {
+    ASTThisMethodCallExpression(ThisMethodCallExpression thisMethodCallExpression) {
         super(thisMethodCallExpression);
     }
 

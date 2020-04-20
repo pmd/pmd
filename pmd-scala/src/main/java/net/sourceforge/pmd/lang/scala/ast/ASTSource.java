@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,15 +11,9 @@ import scala.meta.Source;
 /**
  * The ASTSource node implementation.
  */
-public class ASTSource extends AbstractScalaNode<Source> implements RootNode {
+public final class ASTSource extends AbstractScalaNode<Source> implements RootNode {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTSource(Source scalaNode) {
+    ASTSource(Source scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Pat;
 /**
  * The ASTPatWildcard node implementation.
  */
-public class ASTPatWildcard extends AbstractScalaNode<Pat.Wildcard> {
+public final class ASTPatWildcard extends AbstractScalaNode<Pat.Wildcard> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTPatWildcard(Pat.Wildcard scalaNode) {
+    ASTPatWildcard(Pat.Wildcard scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermInterpolate node implementation.
  */
-public class ASTTermInterpolate extends AbstractScalaNode<Term.Interpolate> {
+public final class ASTTermInterpolate extends AbstractScalaNode<Term.Interpolate> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermInterpolate(Term.Interpolate scalaNode) {
+    ASTTermInterpolate(Term.Interpolate scalaNode) {
         super(scalaNode);
     }
 

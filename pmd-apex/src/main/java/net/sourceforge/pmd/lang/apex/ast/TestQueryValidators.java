@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 // Note: taken from https://github.com/forcedotcom/idecore/blob/3083815933c2d015d03417986f57bd25786d58ce/com.salesforce.ide.apex.core/src/apex/jorje/semantic/common/TestQueryValidators.java
@@ -35,7 +35,7 @@ import apex.jorje.semantic.symbol.resolver.SymbolResolver;
  * @author jspagnola
  */
 @SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // this class provides utility classes
-public final class TestQueryValidators {
+final class TestQueryValidators {
 
     private TestQueryValidators() {
     }

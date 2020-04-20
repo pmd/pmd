@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Type;
 /**
  * The ASTTypeTuple node implementation.
  */
-public class ASTTypeTuple extends AbstractScalaNode<Type.Tuple> {
+public final class ASTTypeTuple extends AbstractScalaNode<Type.Tuple> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTypeTuple(Type.Tuple scalaNode) {
+    ASTTypeTuple(Type.Tuple scalaNode) {
         super(scalaNode);
     }
 

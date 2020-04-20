@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.compilation.UserEnum;
 
-public class ASTUserEnum extends ApexRootNode<UserEnum> {
+public final class ASTUserEnum extends ApexRootNode<UserEnum> {
 
-    public ASTUserEnum(UserEnum userEnum) {
+    ASTUserEnum(UserEnum userEnum) {
         super(userEnum);
     }
 
@@ -19,7 +19,7 @@ public class ASTUserEnum extends ApexRootNode<UserEnum> {
 
     @Override
     public String getImage() {
-        String apexName = node.getDefiningType().getApexName();
+        String apexName = getDefiningType();
         return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 

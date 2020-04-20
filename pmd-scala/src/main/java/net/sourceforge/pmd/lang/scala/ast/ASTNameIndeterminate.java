@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Name;
 /**
  * The ASTNameIndeterminate node implementation.
  */
-public class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> {
+public final class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTNameIndeterminate(Name.Indeterminate scalaNode) {
+    ASTNameIndeterminate(Name.Indeterminate scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> 
 
     @Override
     public String getImage() {
-        return getNode().value();
+        return node.value();
     }
 }

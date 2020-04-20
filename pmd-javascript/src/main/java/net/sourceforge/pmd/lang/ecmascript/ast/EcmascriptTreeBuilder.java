@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -69,9 +69,9 @@ import org.mozilla.javascript.ast.XmlString;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-public final class EcmascriptTreeBuilder implements NodeVisitor {
+final class EcmascriptTreeBuilder implements NodeVisitor {
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractEcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
         register(ArrayComprehension.class, ASTArrayComprehension.class);
@@ -126,38 +126,37 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         register(XmlString.class, ASTXmlString.class);
     }
 
-    private List<ParseProblem> parseProblems;
-    private Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<>();
+    private final List<ParseProblem> parseProblems;
+    private final Map<ParseProblem, AbstractEcmascriptNode<?>> parseProblemToNode = new HashMap<>();
 
     // The nodes having children built.
-    private Stack<Node> nodes = new Stack<>();
+    private final Stack<Node> nodes = new Stack<>();
 
     // The Rhino nodes with children to build.
-    private Stack<AstNode> parents = new Stack<>();
+    private final Stack<AstNode> parents = new Stack<>();
 
     private final SourceCodePositioner sourceCodePositioner;
 
-    public EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
+    EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
         this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
         this.parseProblems = parseProblems;
     }
 
     private static <T extends AstNode> void register(Class<T> nodeType,
-            Class<? extends EcmascriptNode<T>> nodeAdapterType) {
+            Class<? extends AbstractEcmascriptNode<T>> nodeAdapterType) {
         try {
-            NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
+            NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
 
-    static <T extends AstNode> EcmascriptNode<T> createNodeAdapter(T node) {
+    static <T extends AstNode> AbstractEcmascriptNode<T> createNodeAdapter(T node) {
         try {
-            // the register function makes sure only EcmascriptNode<T> can be
+            // the register function makes sure only AbstractEcmascriptNode<T> can be
             // added, where T is "T extends AstNode".
             @SuppressWarnings("unchecked")
-            Constructor<? extends EcmascriptNode<T>> constructor = (Constructor<? extends EcmascriptNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
-                    .get(node.getClass());
+            Constructor<? extends AbstractEcmascriptNode<T>> constructor = (Constructor<? extends AbstractEcmascriptNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
                         "There is no Node adapter class registered for the Node class: " + node.getClass());
@@ -176,8 +175,8 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         calculateLineNumbers(node);
 
         // Set all the trailing comma nodes
-        for (TrailingCommaNode trailingCommaNode : parseProblemToNode.values()) {
-            trailingCommaNode.setTrailingComma(true);
+        for (AbstractEcmascriptNode<?> trailingCommaNode : parseProblemToNode.values()) {
+            trailingCommaNode.setTrailingCommaExists(true);
         }
 
         return node;
@@ -185,7 +184,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 
     private <T extends AstNode> EcmascriptNode<T> buildInternal(T astNode) {
         // Create a Node
-        EcmascriptNode<T> node = createNodeAdapter(astNode);
+        AbstractEcmascriptNode<T> node = createNodeAdapter(astNode);
 
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
@@ -216,11 +215,10 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         }
     }
 
-    private void handleParseProblems(EcmascriptNode<? extends AstNode> node) {
+    private void handleParseProblems(AbstractEcmascriptNode<? extends AstNode> node) {
         if (node instanceof TrailingCommaNode) {
-            TrailingCommaNode trailingCommaNode = (TrailingCommaNode) node;
-            int nodeStart = node.getNode().getAbsolutePosition();
-            int nodeEnd = nodeStart + node.getNode().getLength() - 1;
+            int nodeStart = node.node.getAbsolutePosition();
+            int nodeEnd = nodeStart + node.node.getLength() - 1;
 
             // This will fetch the localized message
             // See https://github.com/pmd/pmd/issues/384
@@ -235,9 +233,9 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
                     if (trailingCommaLocalizedMessage.equals(parseProblem.getMessage())) {
                         // Report on the shortest code block containing the
                         // problem (i.e. inner most code in nested structures).
-                        EcmascriptNode<?> currentNode = (EcmascriptNode<?>) parseProblemToNode.get(parseProblem);
-                        if (currentNode == null || node.getNode().getLength() < currentNode.getNode().getLength()) {
-                            parseProblemToNode.put(parseProblem, trailingCommaNode);
+                        AbstractEcmascriptNode<?> currentNode = (AbstractEcmascriptNode<?>) parseProblemToNode.get(parseProblem);
+                        if (currentNode == null || node.node.getLength() < currentNode.node.getLength()) {
+                            parseProblemToNode.put(parseProblem, node);
                         }
                     }
                 }

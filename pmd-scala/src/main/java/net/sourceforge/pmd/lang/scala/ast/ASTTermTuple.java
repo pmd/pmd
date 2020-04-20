@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Term;
 /**
  * The ASTTermTuple node implementation.
  */
-public class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
+public final class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTTermTuple(Term.Tuple scalaNode) {
+    ASTTermTuple(Term.Tuple scalaNode) {
         super(scalaNode);
     }
 

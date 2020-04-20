@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableList;
  * @author nchen
  *
  */
-public class CompilerService {
+class CompilerService {
     public static final CompilerService INSTANCE = new CompilerService();
     private final SymbolProvider symbolProvider;
     private final AccessEvaluator accessEvaluator;
@@ -59,8 +59,7 @@ public class CompilerService {
      * @param queryValidator
      *            A way to validate your queries.
      */
-    public CompilerService(SymbolProvider symbolProvider, AccessEvaluator accessEvaluator,
-            QueryValidator queryValidator) {
+    CompilerService(SymbolProvider symbolProvider, AccessEvaluator accessEvaluator, QueryValidator queryValidator) {
         this.symbolProvider = symbolProvider;
         this.accessEvaluator = accessEvaluator;
         this.queryValidator = queryValidator;

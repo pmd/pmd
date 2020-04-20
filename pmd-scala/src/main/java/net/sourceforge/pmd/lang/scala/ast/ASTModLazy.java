@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Mod;
 /**
  * The ASTModLazy node implementation.
  */
-public class ASTModLazy extends AbstractScalaNode<Mod.Lazy> {
+public final class ASTModLazy extends AbstractScalaNode<Mod.Lazy> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTModLazy(Mod.Lazy scalaNode) {
+    ASTModLazy(Mod.Lazy scalaNode) {
         super(scalaNode);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 import apex.jorje.data.ast.PrefixOp;
 import apex.jorje.semantic.ast.expression.PrefixExpression;
 
-public class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
+public final class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
 
-    public ASTPrefixExpression(PrefixExpression prefixExpression) {
+    ASTPrefixExpression(PrefixExpression prefixExpression) {
         super(prefixExpression);
     }
 
@@ -22,5 +22,4 @@ public class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
     public PrefixOp getOperator() {
         return node.getOp();
     }
-
 }

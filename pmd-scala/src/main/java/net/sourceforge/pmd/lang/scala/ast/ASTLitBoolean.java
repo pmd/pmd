@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,15 +9,9 @@ import scala.meta.Lit;
 /**
  * The ASTLitBoolean node implementation.
  */
-public class ASTLitBoolean extends AbstractScalaNode<Lit.Boolean> {
+public final class ASTLitBoolean extends AbstractScalaNode<Lit.Boolean> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
-    public ASTLitBoolean(Lit.Boolean scalaNode) {
+    ASTLitBoolean(Lit.Boolean scalaNode) {
         super(scalaNode);
     }
 
@@ -28,6 +22,6 @@ public class ASTLitBoolean extends AbstractScalaNode<Lit.Boolean> {
 
     @Override
     public String getImage() {
-        return String.valueOf(getNode().value());
+        return String.valueOf(node.value());
     }
 }
