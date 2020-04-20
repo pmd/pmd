@@ -142,10 +142,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return image;
     }
 
-    public boolean imageEquals(CharSequence charSequence) {
-        return StringUtils.equals(image, charSequence);
-    }
-
     @Override
     public TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);

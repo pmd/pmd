@@ -19,6 +19,8 @@ import net.sourceforge.pmd.util.document.TextDocument;
  */
 public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 
+    final StringPool stringPool = new StringPool();
+
     private JavaccToken first;
 
     public JavaccTokenDocument(TextDocument textDocument) {
@@ -72,6 +74,18 @@ public class JavaccTokenDocument extends TokenDocument<JavaccToken> {
             throw new IllegalStateException("Document has not been opened");
         }
         return first.next;
+    }
+
+    final String computeImage(JavaccToken t) {
+        CharSequence imageCs = t.getImageCs();
+        if (imageCs instanceof String) {
+            return (String) imageCs;
+        }
+        return stringPool.toString(imageCs, isImagePooled(t));
+    }
+
+    protected boolean isImagePooled(JavaccToken t) {
+        return false;
     }
 
     /**
