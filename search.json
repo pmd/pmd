@@ -1950,6 +1950,22 @@
 
 
 {
+"title": "Report formats for CPD",
+"tags": "cpduserdocs",
+"keywords": "formatsrenderers",
+"url": "pmd_userdocs_cpd_report_formats.html",
+"summary": "Overview of the built-in report formats for CPD"
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Credits",
 "tags": "",
 "keywords": "",
@@ -5067,6 +5083,22 @@
 "keywords": "",
 "url": "pmd_rules_plsql.html",
 "summary": "Index of all built-in rules available for PLSQL"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Report formats for PMD",
+"tags": "pmduserdocs",
+"keywords": "formatsrenderers",
+"url": "pmd_userdocs_report_formats.html",
+"summary": "Overview of the built-in report formats for CPD"
 }
 
 

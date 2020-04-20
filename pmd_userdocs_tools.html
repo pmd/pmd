@@ -333,6 +333,49 @@
             
 
                 
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 
                 <li class="subfolders">
                     <a href="#">Extending PMD</a>
@@ -395,18 +438,6 @@
                     </ul>
                 </li>
                 
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
                 
 
             
@@ -1612,11 +1643,11 @@ source file in your project.</p>
       <li>Name: PMD</li>
       <li>Description: PMD, good for what ails you.</li>
       <li>Menu: Select the “Main menu”, “Project views”, “Editor menu”, and “Search results” checkboxes.</li>
-      <li>Program: $JDKPath$\bin\java.exe</li>
+      <li>Program: <code class="highlighter-rouge">c:\pmd\bin\pmd.bat</code></li>
       <li>For the next parameter you’ll need to plug in the location of your PMD installation
 and the rulesets you want to use</li>
       <li>Parameters:
-<code class="highlighter-rouge">-cp %CLASSPATH%;c:\pmd\lib\pmd-.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$</code></li>
+<code class="highlighter-rouge">-d "$FilePath$" -f ideaj -R rulesets/java/quickstart.xml -P sourcePath="$Sourcepath$" -P classAndMethodName=$FileClass$.method -P fileName=$FileName$</code></li>
     </ul>
   </li>
 </ul>
@@ -1850,7 +1881,7 @@ the (blank Command Results) document, and then confirming that, “yes, I do rea
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 18, 2020 <br />
+ Site last generated: Apr 20, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

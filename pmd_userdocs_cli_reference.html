@@ -333,6 +333,49 @@
             
 
                 
+                <li><a href="pmd_userdocs_report_formats.html">PMD Report formats</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">CPD reference</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_userdocs_cpd_report_formats.html">CPD Report formats</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 
                 <li class="subfolders">
                     <a href="#">Extending PMD</a>
@@ -395,18 +438,6 @@
                     </ul>
                 </li>
                 
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                <li><a href="pmd_userdocs_cpd.html">Copy-paste detection</a></li>
                 
 
             
@@ -2017,111 +2048,8 @@ and <code class="highlighter-rouge">-version</code> parameter.</p>
 <h2 id="available-report-formats">Available Report Formats</h2>
 
 <p>PMD comes with many different renderers.
-The mnemonics in bold are used to select them on the command line, as
-arguments to the <code class="highlighter-rouge">-format</code> option. Some formats accept <em>properties</em>,
-which can be specified with the <code class="highlighter-rouge">-property</code> option on the command-line.</p>
+All formats are described at <a href="pmd_userdocs_report_formats.html">PMD Report formats</a></p>
 
-<ul>
-  <li>
-    <p><strong>codeclimate</strong>: Renderer for Code Climate JSON format.</p>
-  </li>
-  <li>
-    <p><strong>csv</strong>: Comma-separated values tabular format.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>problem: Include problem column. Default: true.</li>
-      <li>package: Include package column. Default: true.</li>
-      <li>file: Include file column. Default: true.</li>
-      <li>priority: Include priority column. Default: true.</li>
-      <li>line: Include line column. Default: true.</li>
-      <li>desc: Include description column. Default: true.</li>
-      <li>ruleSet: Include Rule set column. Default: true.</li>
-      <li>rule: Include Rule column. Default: true.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>emacs</strong>: GNU Emacs integration.</p>
-  </li>
-  <li>
-    <p><strong>html</strong>: HTML format.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>linePrefix: Prefix for line number anchor in the source file.</li>
-      <li>linkPrefix: Path to HTML source.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>ideaj</strong>: IntelliJ IDEA integration.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>classAndMethodName: Class and method name, pass <code class="highlighter-rouge">.method</code> when processing a directory.</li>
-      <li>sourcePath:</li>
-      <li>fileName:</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>summaryhtml</strong>: Summary HTML format.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>linePrefix: Prefix for line number anchor in the source file.</li>
-      <li>linkPrefix: Path to HTML source.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>text</strong>: Text format.</p>
-  </li>
-  <li>
-    <p><strong>textcolor</strong>: Text format, with color support (requires ANSI console support, e.g. xterm, rxvt, etc.).</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>color: Enables colors with anything other than <code class="highlighter-rouge">false</code> or <code class="highlighter-rouge">0</code>. Default: yes.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>textpad</strong>: TextPad integration.</p>
-  </li>
-  <li>
-    <p><strong>vbhtml</strong>: Vladimir Bossicard HTML format.</p>
-  </li>
-  <li>
-    <p><strong>xml</strong>: XML format.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>encoding: XML encoding format, defaults to UTF-8.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>xslt</strong>: XML with a XSL transformation applied.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>encoding: XML encoding format, defaults to UTF-8.</li>
-      <li>xsltFilename: The XSLT file name.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>yahtml</strong>: Yet Another HTML format.</p>
-
-    <p>Properties:</p>
-
-    <ul>
-      <li>outputDir: Output directory.</li>
-    </ul>
-  </li>
-</ul>
 
 
     <div class="tags">
@@ -2146,7 +2074,7 @@ which can be specified with the <code class="highlighter-rouge">-property</code>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 18, 2020 <br />
+ Site last generated: Apr 20, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
