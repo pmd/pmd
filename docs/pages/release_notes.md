@@ -33,8 +33,7 @@ Note that XPath 1.0 support, the default XPath version, is deprecated since PMD 
 #### New JSON renderer
 
 PMD now supports a JSON renderer (use it with `-f json` on the CLI).
-
-TODO link to doc when the doc PR for renderers is updated & merged
+See [the documentation and example](https://pmd.github.io/latest/pmd_userdocs_report_formats.hmtl#json)
 
 #### New Rules
 
