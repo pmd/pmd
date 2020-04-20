@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.XmlMemberGet;
 
-public class ASTXmlMemberGet extends AbstractInfixEcmascriptNode<XmlMemberGet> {
+public final class ASTXmlMemberGet extends AbstractInfixEcmascriptNode<XmlMemberGet> {
     ASTXmlMemberGet(XmlMemberGet xmlMemberGet) {
         super(xmlMemberGet);
     }

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.SwitchStatement;
 
-public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> {
+public final class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> {
     ASTSwitchStatement(SwitchStatement switchStatement) {
         super(switchStatement);
     }

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.BreakStatement;
 
-public class ASTBreakStatement extends AbstractEcmascriptNode<BreakStatement> {
+public final class ASTBreakStatement extends AbstractEcmascriptNode<BreakStatement> {
     ASTBreakStatement(BreakStatement breakStatement) {
         super(breakStatement);
         super.setImage(breakStatement.getBreakLabel() != null ? breakStatement.getBreakLabel().getIdentifier() : null);

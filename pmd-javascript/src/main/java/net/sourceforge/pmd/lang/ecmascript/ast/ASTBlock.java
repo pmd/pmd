@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Block;
 
-public class ASTBlock extends AbstractEcmascriptNode<Block> {
+public final class ASTBlock extends AbstractEcmascriptNode<Block> {
     ASTBlock(Block block) {
         super(block);
     }

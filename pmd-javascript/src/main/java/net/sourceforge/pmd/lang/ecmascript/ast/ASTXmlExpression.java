@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.XmlExpression;
 
-public class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
+public final class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
     ASTXmlExpression(XmlExpression xmlExpression) {
         super(xmlExpression);
     }

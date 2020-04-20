@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ParenthesizedExpression;
 
-public class ASTParenthesizedExpression extends AbstractEcmascriptNode<ParenthesizedExpression> {
+public final class ASTParenthesizedExpression extends AbstractEcmascriptNode<ParenthesizedExpression> {
     ASTParenthesizedExpression(ParenthesizedExpression parenthesizedExpression) {
         super(parenthesizedExpression);
     }

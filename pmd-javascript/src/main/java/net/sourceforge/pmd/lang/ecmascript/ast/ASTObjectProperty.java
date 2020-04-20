@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ObjectProperty;
 
-public class ASTObjectProperty extends AbstractInfixEcmascriptNode<ObjectProperty> {
+public final class ASTObjectProperty extends AbstractInfixEcmascriptNode<ObjectProperty> {
     ASTObjectProperty(ObjectProperty objectProperty) {
         super(objectProperty);
     }

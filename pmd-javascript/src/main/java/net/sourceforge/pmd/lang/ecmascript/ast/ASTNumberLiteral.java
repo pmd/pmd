@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.NumberLiteral;
 
-public class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
+public final class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
     ASTNumberLiteral(NumberLiteral numberLiteral) {
         super(numberLiteral);
         super.setImage(numberLiteral.getValue());

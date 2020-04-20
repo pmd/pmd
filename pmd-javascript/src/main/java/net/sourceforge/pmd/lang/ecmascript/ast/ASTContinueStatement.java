@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ContinueStatement;
 
-public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
+public final class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
     ASTContinueStatement(ContinueStatement continueStatement) {
         super(continueStatement);
         super.setImage(continueStatement.getLabel() != null ? continueStatement.getLabel().getIdentifier() : null);

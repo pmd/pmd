@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.NewExpression;
 
-public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
+public final class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
     ASTNewExpression(NewExpression newExpression) {
         super(newExpression);
     }

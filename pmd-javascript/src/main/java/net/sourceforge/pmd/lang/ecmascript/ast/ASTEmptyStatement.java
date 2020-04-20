@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.EmptyStatement;
 
-public class ASTEmptyStatement extends AbstractEcmascriptNode<EmptyStatement> {
+public final class ASTEmptyStatement extends AbstractEcmascriptNode<EmptyStatement> {
     ASTEmptyStatement(EmptyStatement emptyStatement) {
         super(emptyStatement);
     }

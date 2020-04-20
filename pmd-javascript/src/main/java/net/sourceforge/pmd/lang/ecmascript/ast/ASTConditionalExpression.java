@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ConditionalExpression;
 
-public class ASTConditionalExpression extends AbstractEcmascriptNode<ConditionalExpression> {
+public final class ASTConditionalExpression extends AbstractEcmascriptNode<ConditionalExpression> {
     ASTConditionalExpression(ConditionalExpression conditionalExpression) {
         super(conditionalExpression);
     }

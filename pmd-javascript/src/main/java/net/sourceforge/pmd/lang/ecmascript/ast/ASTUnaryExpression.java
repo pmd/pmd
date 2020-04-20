@@ -8,7 +8,7 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.UnaryExpression;
 
-public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
+public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
     ASTUnaryExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
         if (unaryExpression.getOperator() == Token.VOID) {

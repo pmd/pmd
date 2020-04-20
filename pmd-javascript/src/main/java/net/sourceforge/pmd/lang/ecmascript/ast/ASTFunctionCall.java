@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.FunctionCall;
 
-public class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
+public final class ASTFunctionCall extends AbstractEcmascriptNode<FunctionCall> {
     ASTFunctionCall(FunctionCall functionCall) {
         super(functionCall);
     }

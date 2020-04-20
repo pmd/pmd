@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.IfStatement;
 
-public class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
+public final class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
     ASTIfStatement(IfStatement ifStatement) {
         super(ifStatement);
     }

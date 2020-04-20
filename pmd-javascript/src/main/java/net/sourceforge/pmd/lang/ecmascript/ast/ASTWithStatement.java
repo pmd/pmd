@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.WithStatement;
 
-public class ASTWithStatement extends AbstractEcmascriptNode<WithStatement> {
+public final class ASTWithStatement extends AbstractEcmascriptNode<WithStatement> {
     ASTWithStatement(WithStatement withStatement) {
         super(withStatement);
     }

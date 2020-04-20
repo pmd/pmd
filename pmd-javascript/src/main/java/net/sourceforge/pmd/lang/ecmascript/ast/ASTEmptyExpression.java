@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.EmptyExpression;
 
-public class ASTEmptyExpression extends AbstractEcmascriptNode<EmptyExpression> {
+public final class ASTEmptyExpression extends AbstractEcmascriptNode<EmptyExpression> {
     ASTEmptyExpression(EmptyExpression emptyExpression) {
         super(emptyExpression);
     }

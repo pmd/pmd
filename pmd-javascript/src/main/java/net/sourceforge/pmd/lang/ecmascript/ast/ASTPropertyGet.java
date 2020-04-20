@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.PropertyGet;
 
-public class ASTPropertyGet extends AbstractInfixEcmascriptNode<PropertyGet> {
+public final class ASTPropertyGet extends AbstractInfixEcmascriptNode<PropertyGet> {
     ASTPropertyGet(PropertyGet propertyGet) {
         super(propertyGet, false);
         super.setImage(".");

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.LabeledStatement;
 
-public class ASTLabeledStatement extends AbstractEcmascriptNode<LabeledStatement> {
+public final class ASTLabeledStatement extends AbstractEcmascriptNode<LabeledStatement> {
     ASTLabeledStatement(LabeledStatement labeledStatement) {
         super(labeledStatement);
     }

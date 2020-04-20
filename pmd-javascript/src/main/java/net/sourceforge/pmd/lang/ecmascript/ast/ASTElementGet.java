@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ElementGet;
 
-public class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
+public final class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
     ASTElementGet(ElementGet elementGet) {
         super(elementGet);
     }

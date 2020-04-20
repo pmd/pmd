@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.TryStatement;
 
-public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
+public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
     ASTTryStatement(TryStatement tryStatement) {
         super(tryStatement);
     }

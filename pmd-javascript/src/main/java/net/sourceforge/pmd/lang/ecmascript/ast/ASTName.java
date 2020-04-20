@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Name;
 
-public class ASTName extends AbstractEcmascriptNode<Name> {
+public final class ASTName extends AbstractEcmascriptNode<Name> {
     ASTName(Name name) {
         super(name);
         super.setImage(name.getIdentifier());

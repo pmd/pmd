@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ForInLoop;
 
-public class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
+public final class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
     ASTForInLoop(ForInLoop forInLoop) {
         super(forInLoop);
     }

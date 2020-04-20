@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ArrayComprehension;
 
-public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehension> {
+public final class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehension> {
     ASTArrayComprehension(ArrayComprehension arrayComprehension) {
         super(arrayComprehension);
     }

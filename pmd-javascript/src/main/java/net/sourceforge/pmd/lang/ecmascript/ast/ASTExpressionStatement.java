@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.ExpressionStatement;
 
-public class ASTExpressionStatement extends AbstractEcmascriptNode<ExpressionStatement> {
+public final class ASTExpressionStatement extends AbstractEcmascriptNode<ExpressionStatement> {
     ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }

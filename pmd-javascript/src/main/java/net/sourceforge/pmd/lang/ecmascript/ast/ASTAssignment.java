@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Assignment;
 
-public class ASTAssignment extends AbstractInfixEcmascriptNode<Assignment> {
+public final class ASTAssignment extends AbstractInfixEcmascriptNode<Assignment> {
     ASTAssignment(Assignment asssignment) {
         super(asssignment);
     }

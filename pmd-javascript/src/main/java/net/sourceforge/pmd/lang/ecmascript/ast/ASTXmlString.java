@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.XmlString;
 
-public class ASTXmlString extends AbstractEcmascriptNode<XmlString> {
+public final class ASTXmlString extends AbstractEcmascriptNode<XmlString> {
     ASTXmlString(XmlString xmlString) {
         super(xmlString);
         super.setImage(xmlString.getXml());

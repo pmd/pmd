@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ReturnStatement;
 
-public class ASTReturnStatement extends AbstractEcmascriptNode<ReturnStatement> {
+public final class ASTReturnStatement extends AbstractEcmascriptNode<ReturnStatement> {
     ASTReturnStatement(ReturnStatement returnStatement) {
         super(returnStatement);
     }

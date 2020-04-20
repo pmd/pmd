@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.WhileLoop;
 
-public class ASTWhileLoop extends AbstractEcmascriptNode<WhileLoop> {
+public final class ASTWhileLoop extends AbstractEcmascriptNode<WhileLoop> {
     ASTWhileLoop(WhileLoop whileLoop) {
         super(whileLoop);
     }

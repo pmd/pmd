@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.RegExpLiteral;
 
-public class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral> {
+public final class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral> {
     ASTRegExpLiteral(RegExpLiteral regExpLiteral) {
         super(regExpLiteral);
         super.setImage(regExpLiteral.getValue());

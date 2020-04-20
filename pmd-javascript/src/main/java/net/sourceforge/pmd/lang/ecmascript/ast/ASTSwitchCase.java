@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.SwitchCase;
 
-public class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
+public final class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
     ASTSwitchCase(SwitchCase switchCase) {
         super(switchCase);
     }

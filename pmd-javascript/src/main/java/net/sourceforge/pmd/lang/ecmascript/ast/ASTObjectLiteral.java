@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ObjectLiteral;
 
-public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
+public final class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
         implements DestructuringNode, TrailingCommaNode {
     private boolean trailingComma;
 

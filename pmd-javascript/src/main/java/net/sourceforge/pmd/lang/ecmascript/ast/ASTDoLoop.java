@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.DoLoop;
 
-public class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
+public final class ASTDoLoop extends AbstractEcmascriptNode<DoLoop> {
     ASTDoLoop(DoLoop doLoop) {
         super(doLoop);
     }

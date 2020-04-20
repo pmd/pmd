@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.XmlDotQuery;
 
-public class ASTXmlDotQuery extends AbstractInfixEcmascriptNode<XmlDotQuery> {
+public final class ASTXmlDotQuery extends AbstractInfixEcmascriptNode<XmlDotQuery> {
     ASTXmlDotQuery(XmlDotQuery xmlDotQuery) {
         super(xmlDotQuery);
     }

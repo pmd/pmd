@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.CatchClause;
 
-public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
+public final class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
     ASTCatchClause(CatchClause catchClause) {
         super(catchClause);
     }

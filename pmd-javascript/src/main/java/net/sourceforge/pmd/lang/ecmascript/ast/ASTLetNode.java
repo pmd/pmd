@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.LetNode;
 
-public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
+public final class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
     ASTLetNode(LetNode letNode) {
         super(letNode);
     }

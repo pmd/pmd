@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.FunctionNode;
 
-public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
+public final class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
     ASTFunctionNode(FunctionNode functionNode) {
         super(functionNode);
         super.setImage(functionNode.getName());

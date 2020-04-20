@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ThrowStatement;
 
-public class ASTThrowStatement extends AbstractEcmascriptNode<ThrowStatement> {
+public final class ASTThrowStatement extends AbstractEcmascriptNode<ThrowStatement> {
     ASTThrowStatement(ThrowStatement throwStatement) {
         super(throwStatement);
     }

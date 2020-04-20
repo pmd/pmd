@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.StringLiteral;
 
-public class ASTStringLiteral extends AbstractEcmascriptNode<StringLiteral> {
+public final class ASTStringLiteral extends AbstractEcmascriptNode<StringLiteral> {
     ASTStringLiteral(StringLiteral stringLiteral) {
         super(stringLiteral);
         super.setImage(stringLiteral.getValue());

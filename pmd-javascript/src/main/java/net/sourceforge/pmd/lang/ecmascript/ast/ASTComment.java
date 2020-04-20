@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Comment;
 
-public class ASTComment extends AbstractEcmascriptNode<Comment> {
+public final class ASTComment extends AbstractEcmascriptNode<Comment> {
     ASTComment(Comment comment) {
         super(comment);
     }

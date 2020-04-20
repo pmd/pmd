@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Scope;
 
-public class ASTScope extends AbstractEcmascriptNode<Scope> {
+public final class ASTScope extends AbstractEcmascriptNode<Scope> {
     ASTScope(Scope scope) {
         super(scope);
     }
