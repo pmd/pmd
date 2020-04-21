@@ -220,7 +220,7 @@
         <!-- The tree builder is generic now -->
         <replaceregexp flags="g">
             <regexp pattern="\bJJT${parser-name}State\b" />
-            <substitution expression="${ast-impl-package}.JjtreeBuilder&lt;${base-class-name}&gt;" />
+            <substitution expression="${ast-impl-package}.JjtreeBuilder&lt;${base-class-name}, ${node-name}&gt;" />
             <fileset file="${parser-file}" />
         </replaceregexp>
 

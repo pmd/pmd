@@ -51,7 +51,7 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode<N>
     }
 
     @Override
-    protected void addChild(N child, int index) {
+    protected void addChild(AbstractNode<N> child, int index) {
         super.addChild(child, index);
     }
 

@@ -17,14 +17,14 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
- * Base class for all implementations of the Node interface.
+ * Base class for implementations of the Node interface whose children
+ * are stored in an array. This class provides the basic utilities to
+ * link children and parent. It's used by most most nodes, but currently
+ * not the antlr nodes, so downcasting {@link Node} to this class may fail
+ * and is very bad practice.
  *
- * <p>Please use the {@link Node} interface wherever possible and
- * not this class, unless you're compelled to do so.
- *
- * <p>Note that nearly all methods of the {@link Node} interface
- * will have default implementations with PMD 7.0.0, so that it
- * will not be necessary to extend this class directly.
+ * @param <T> Public interface for nodes of this language (eg JavaNode
+ *            in the java module).
  */
 public abstract class AbstractNode<T extends Node> implements Node {
 
@@ -38,7 +38,7 @@ public abstract class AbstractNode<T extends Node> implements Node {
 
     // never null, never contains null elements
     protected Node[] children = EMPTY_ARRAY;
-    private T parent;
+    private AbstractNode<T> parent;
     private int childIndex;
 
     private DataFlowNode dataFlowNode;
@@ -52,7 +52,7 @@ public abstract class AbstractNode<T extends Node> implements Node {
 
     @Override
     public T getParent() {
-        return parent;
+        return toPublic(parent);
     }
 
     @Override
@@ -62,7 +62,7 @@ public abstract class AbstractNode<T extends Node> implements Node {
 
     @Override
     public T getChild(final int index) {
-        return (T) children[index];
+        return toPublic(children[index]);
     }
 
     @Override
@@ -70,10 +70,14 @@ public abstract class AbstractNode<T extends Node> implements Node {
         return children.length;
     }
 
-    protected void setParent(final T parent) {
+    protected void setParent(final AbstractNode<T> parent) {
         this.parent = parent;
     }
 
+    @SuppressWarnings("unchecked")
+    protected T toPublic(Node n) {
+        return (T) n;
+    }
 
     /**
      * This method tells the node to add its argument to the node's list of children.
@@ -81,21 +85,19 @@ public abstract class AbstractNode<T extends Node> implements Node {
      * @param child The child to add
      * @param index The index to which the child will be added
      */
-    protected void addChild(final T child, final int index) {
+    protected void addChild(final AbstractNode<T> child, final int index) {
         if (index >= children.length) {
             final Node[] newChildren = new Node[index + 1];
             System.arraycopy(children, 0, newChildren, 0, children.length);
             children = newChildren;
         }
         children[index] = child;
-        AbstractNode<T> child1 = (AbstractNode<T>) child;
-        child1.setChildIndex(index);
-        child1.setParent((T) this);
+        child.setChildIndex(index);
+        child.setParent(this);
     }
 
     protected void remove() {
         // Detach current node of its parent, if any
-        final AbstractNode<T> parent = (AbstractNode<T>) getParent();
         if (parent != null) {
             parent.removeChildAtIndex(getIndexInParent());
             setParent(null);

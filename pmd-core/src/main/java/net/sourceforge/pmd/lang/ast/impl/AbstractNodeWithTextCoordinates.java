@@ -7,14 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Base class for all implementations of the Node interface.
- *
- * <p>Please use the {@link Node} interface wherever possible and
- * not this class, unless you're compelled to do so.
- *
- * <p>Note that nearly all methods of the {@link Node} interface
- * will have default implementations with PMD 7.0.0, so that it
- * will not be necessary to extend this class directly.
+ * Base class for imple
  */
 public abstract class AbstractNodeWithTextCoordinates<T extends Node> extends AbstractNode<T> {
 
