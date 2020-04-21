@@ -28,6 +28,8 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * {@link #getXPathNodeName()},  {@link #getXPathAttributesIterator()}
  * <li>Location metadata: eg {@link #getBeginLine()}, {@link #getBeginColumn()}
  * </ul>
+ * Additionally, the {@linkplain #getUserMap() user data map} is an extensibility
+ * mechanism with which any client can independently associate values to AST nodes.
  *
  * <p>Every language implementation must publish a sub-interface of Node
  * which serves as a supertype for all nodes of that language (e.g.
