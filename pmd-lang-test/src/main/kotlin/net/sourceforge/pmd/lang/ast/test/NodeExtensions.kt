@@ -36,6 +36,17 @@ val Node.beginPosition: TextPosition
 val Node.endPosition: TextPosition
     get() = TextPosition(endLine, endColumn)
 
+/**
+ * Returns the text as a string. This is to allow
+ * comparing the text to another string
+ */
+val TextAvailableNode.textStr: String
+    get() = text.toString()
+
+infix fun TextAvailableNode.textEquals(str:String) {
+    this::textStr shouldBe str
+}
+
 
 fun Node.assertTextRangeIsOk() {
 
@@ -57,6 +68,16 @@ fun Node.assertTextRangeIsOk() {
 
     if (this is TextAvailableNode && parent is TextAvailableNode) {
         parent.text.toString().shouldContain(this.text.toString())
+    }
+}
+
+
+fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
+    reportLocation.apply {
+        this::getBeginLine shouldBe bline
+        this::getBeginColumn shouldBe bcol
+        this::getEndLine shouldBe eline
+        this::getEndColumn shouldBe ecol
     }
 }
 

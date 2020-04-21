@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.Reportable;
 
 /**
@@ -17,6 +18,8 @@ import net.sourceforge.pmd.util.document.Reportable;
  */
 public interface JjtreeNode<N extends JjtreeNode<N>> extends GenericNode<N>, TextAvailableNode, Reportable {
 
+    @Override
+    Chars getText();
 
     JavaccToken getFirstToken();
 

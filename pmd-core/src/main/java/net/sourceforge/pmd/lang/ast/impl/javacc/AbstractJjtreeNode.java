@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -22,7 +23,6 @@ import net.sourceforge.pmd.util.document.TextRegion;
  */
 @Experimental
 public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N extends JjtreeNode<N>> extends AbstractNode<B, N> implements JjtreeNode<N> {
-
     protected final int id;
     private JavaccToken firstToken;
     private JavaccToken lastToken;
@@ -50,7 +50,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    public CharSequence getText() {
+    public Chars getText() {
         return getTextDocument().slice(getTextRegion());
     }
 
@@ -64,10 +64,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public FileLocation getReportLocation() {
-        if (location == null) {
-            location = getTextDocument().toLocation(getTextRegion());
-        }
-        return location;
+        return getTextDocument().toLocation(getTextRegion());
     }
 
     /**

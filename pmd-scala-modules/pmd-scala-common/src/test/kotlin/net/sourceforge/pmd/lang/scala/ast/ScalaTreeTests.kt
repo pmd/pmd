@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.test.assertBounds
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
@@ -80,12 +81,3 @@ class Foo {
 })
 
 fun String.parseScala(): ASTSource = ScalaParsingHelper.DEFAULT.parse(this)
-
-fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
-    reportLocation.apply {
-        this::getBeginLine shouldBe bline
-        this::getBeginColumn shouldBe bcol
-        this::getEndLine shouldBe eline
-        this::getEndColumn shouldBe ecol
-    }
-}
