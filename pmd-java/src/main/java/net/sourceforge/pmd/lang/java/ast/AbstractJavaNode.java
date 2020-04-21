@@ -24,7 +24,6 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
         super(id);
     }
 
-
     @Override
     public Scope getScope() {
         if (scope == null) {
