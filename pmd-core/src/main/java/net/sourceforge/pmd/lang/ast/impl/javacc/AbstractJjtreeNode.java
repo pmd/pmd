@@ -148,26 +148,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
         this.firstToken = token;
     }
 
-    @Override
-    public int getBeginLine() {
-        return getReportLocation().getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        return getReportLocation().getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        return getReportLocation().getEndColumn();
-    }
-
     /**
      * This toString implementation is only meant for debugging purposes.
      */

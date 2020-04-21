@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
@@ -45,6 +46,12 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
         super.setCoords(bline, bcol, eline, ecol);
+    }
+
+
+    @Override
+    public FileLocation getReportLocation() {
+        return FileLocation.location("todo", beginLine, beginColumn, endLine, endColumn);
     }
 
     public void setImage(String image) {
