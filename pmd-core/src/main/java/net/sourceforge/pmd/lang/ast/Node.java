@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
@@ -258,7 +260,11 @@ public interface Node {
      *
      * @return The first parent with a matching type. Returns null if there
      * is no such parent
+     *
+     * @deprecated This method causes an unchecked warning at call sites.
+     *     PMD 7 will provide a way to do the same thing without the warning.
      */
+    @Deprecated
     <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
 
     /**
@@ -381,7 +387,17 @@ public interface Node {
      * of this Node and it's children. Essentially a DOM tree representation of
      * the Node AST, thereby allowing tools which can operate upon DOM to also
      * indirectly operate on the AST.
+     *
+     * @deprecated Converting a tree to a DOM is not a standard use case.
+     *            The implementation rethrows a {@link ParserConfigurationException}
+     *            as a {@link RuntimeException}, but a caller should handle
+     *            it if he really wants to do this. Another problem is that
+     *            this is available on any node, yet only the root node of
+     *            a tree corresponds really to a document. The conversion
+     *            is easy to implement anyway, and does not have to be part
+     *            of this API.
      */
+    @Deprecated
     Document getAsDocument();
 
     /**

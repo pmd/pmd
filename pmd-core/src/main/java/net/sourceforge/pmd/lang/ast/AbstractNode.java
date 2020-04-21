@@ -345,6 +345,7 @@ public abstract class AbstractNode implements Node {
 
     @SafeVarargs
     @Override
+    @Deprecated
     public final <T> T getFirstParentOfAnyType(final Class<? extends T>... parentTypes) {
         Node parentNode = getParent();
         while (parentNode != null) {
@@ -497,7 +498,13 @@ public abstract class AbstractNode implements Node {
      * Returns true if this node has a descendant of any type among the provided types.
      *
      * @param types Types to test
+     *
+     * @deprecated This is implemented inefficiently, with PMD 7 Node streams
+     *     will provide a better alternative. We cannot ensure binary compatibility
+     *     because the methods on 7.0 expect at least one class type, by requiring
+     *     one Class parameter before the varargs (Effective Java 2nd ed., Item 42).
      */
+    @Deprecated
     public final boolean hasDescendantOfAnyType(final Class<?>... types) {
         // TODO consider implementing that with a single traversal!
         // hasDescendantOfType could then be a special case of this one
