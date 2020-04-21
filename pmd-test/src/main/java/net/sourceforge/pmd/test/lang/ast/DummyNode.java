@@ -10,7 +10,6 @@ import net.sourceforge.pmd.util.document.FileLocation;
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> {
 
     private String image;
-
     protected int beginLine = -1;
     protected int endLine;
     protected int beginColumn = -1;

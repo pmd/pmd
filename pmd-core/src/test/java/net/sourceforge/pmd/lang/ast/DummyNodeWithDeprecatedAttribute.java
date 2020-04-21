@@ -12,11 +12,6 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  */
 public class DummyNodeWithDeprecatedAttribute extends DummyNode {
 
-
-    public DummyNodeWithDeprecatedAttribute(int id) {
-        super();
-    }
-
     // this is the deprecated attribute
     @Deprecated
     public int getSize() {

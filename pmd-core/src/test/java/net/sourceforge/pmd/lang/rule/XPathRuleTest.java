@@ -94,7 +94,7 @@ public class XPathRuleTest {
 
     public DummyNode newNode() {
         DummyRoot root = new DummyRoot();
-        DummyNode dummy = new DummyNodeWithDeprecatedAttribute(2);
+        DummyNode dummy = new DummyNodeWithDeprecatedAttribute();
         dummy.setCoords(1, 1, 1, 2);
         root.addChild(dummy, 0);
         return root;

@@ -22,6 +22,7 @@ final class PmdDocumentSorter implements Comparator<Node> {
     }
 
     @Override
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public int compare(Node node1, Node node2) {
         if (node1 == node2) {
             return 0;
