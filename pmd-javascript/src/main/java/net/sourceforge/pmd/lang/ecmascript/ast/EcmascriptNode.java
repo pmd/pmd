@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
-public interface EcmascriptNode<T extends AstNode> extends Node {
+public interface EcmascriptNode<T extends AstNode> extends GenericNode<EcmascriptNode<?>> {
 
     /**
      * Accept the visitor. *

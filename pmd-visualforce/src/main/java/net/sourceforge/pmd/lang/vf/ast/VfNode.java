@@ -4,26 +4,13 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 
-public interface VfNode extends Node {
+public interface VfNode extends JjtreeNode<VfNode> {
 
     /**
      * Accept the visitor.
      */
     Object jjtAccept(VfParserVisitor visitor, Object data);
 
-
-    @Override
-    VfNode getParent();
-
-
-    @Override
-    VfNode getChild(int i);
-
-
-
-    @Override
-    NodeStream<? extends VfNode> children();
 }

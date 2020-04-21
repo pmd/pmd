@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 /**
- * Base class for imple
+ * Base class for implementations that need fields to store text
+ * coordinates.
  */
-public abstract class AbstractNodeWithTextCoordinates<T extends Node> extends AbstractNode<T> {
+public abstract class AbstractNodeWithTextCoordinates<T extends GenericNode<T>> extends AbstractNode<T> {
 
     protected int beginLine = -1;
     protected int endLine = -1;

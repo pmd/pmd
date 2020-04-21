@@ -389,7 +389,7 @@ public interface Node {
      *
      * @see NodeStream#of(Node)
      */
-    default NodeStream<Node> asStream() {
+    default NodeStream<? extends Node> asStream() {
         return StreamImpl.singleton(this);
     }
 
@@ -414,7 +414,7 @@ public interface Node {
      *
      * @see NodeStream#descendants()
      */
-    default DescendantNodeStream<Node> descendants() {
+    default DescendantNodeStream<? extends Node> descendants() {
         return StreamImpl.descendants(this);
     }
 
@@ -427,7 +427,7 @@ public interface Node {
      *
      * @see NodeStream#descendantsOrSelf()
      */
-    default DescendantNodeStream<Node> descendantsOrSelf() {
+    default DescendantNodeStream<? extends Node> descendantsOrSelf() {
         return StreamImpl.descendantsOrSelf(this);
     }
 
@@ -441,7 +441,7 @@ public interface Node {
      *
      * @see NodeStream#ancestors()
      */
-    default NodeStream<Node> ancestors() {
+    default NodeStream<? extends Node> ancestors() {
         return StreamImpl.ancestors(this);
 
     }
@@ -455,7 +455,7 @@ public interface Node {
      *
      * @see NodeStream#ancestorsOrSelf()
      */
-    default NodeStream<Node> ancestorsOrSelf() {
+    default NodeStream<? extends Node> ancestorsOrSelf() {
         return StreamImpl.ancestorsOrSelf(this);
     }
 

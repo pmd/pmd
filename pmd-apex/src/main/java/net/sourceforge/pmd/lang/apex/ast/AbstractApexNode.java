@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;

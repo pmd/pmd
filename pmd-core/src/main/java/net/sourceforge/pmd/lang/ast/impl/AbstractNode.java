@@ -10,7 +10,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -26,7 +25,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * @param <T> Public interface for nodes of this language (eg JavaNode
  *            in the java module).
  */
-public abstract class AbstractNode<T extends Node> implements Node {
+public abstract class AbstractNode<T extends GenericNode<T>> implements GenericNode<T> {
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
@@ -48,7 +47,6 @@ public abstract class AbstractNode<T extends Node> implements Node {
     public AbstractNode() {
 
     }
-
 
     @Override
     public T getParent() {
@@ -116,16 +114,6 @@ public abstract class AbstractNode<T extends Node> implements Node {
             }
         }
     }
-
-
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public NodeStream<? extends T> children() {
-        return (NodeStream<T>) Node.super.children();
-    }
-
-
 
     /**
      * Sets the index of this node from the perspective of its parent. This

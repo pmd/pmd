@@ -5,9 +5,8 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.TextAvailableNode;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -18,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.TextAvailableNode;
  * unforeseeable ways. Don't use it directly, use the node interfaces.
  */
 @Experimental
-public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode<N> implements TextAvailableNode {
+public abstract class AbstractJjtreeNode<N extends JjtreeNode<N>> extends AbstractNode<N> implements JjtreeNode<N> {
     protected final int id;
     private JavaccToken firstToken;
     private JavaccToken lastToken;
@@ -55,10 +54,12 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode<N>
         super.addChild(child, index);
     }
 
+    @Override
     public JavaccToken getFirstToken() {
         return firstToken;
     }
 
+    @Override
     public JavaccToken getLastToken() {
         return lastToken;
     }
@@ -104,7 +105,6 @@ public abstract class AbstractJjtreeNode<N extends Node> extends AbstractNode<N>
     private int getStartOffset() {
         return this.getFirstToken().getStartInDocument();
     }
-
 
     private int getEndOffset() {
         return this.getLastToken().getEndInDocument();

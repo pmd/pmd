@@ -16,11 +16,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 
 /**
@@ -29,10 +29,15 @@ import net.sourceforge.pmd.util.CompoundIterator;
  * @author Clément Fournier
  * @since 6.1.0
  */
-class XmlNodeWrapper extends AbstractNode implements XmlNode {
+class XmlNodeWrapper implements XmlNode {
 
+    int beginLine = -1;
+    int endLine = -1;
+    int beginColumn = -1;
+    int endColumn = -1;
+
+    private DataMap<DataKey<?, ?>> dataMap;
     private final XmlParserImpl parser;
-    private Object userData;
     private final org.w3c.dom.Node node;
 
 
@@ -63,7 +68,7 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
 
 
     @Override
-    public Node getChild(int index) {
+    public XmlNode getChild(int index) {
         return parser.wrapDomNode(node.getChildNodes().item(index));
     }
 
@@ -93,10 +98,12 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
         throw new UnsupportedOperationException();
     }
 
-
     @Override
-    public Object getUserData() {
-        return userData;
+    public DataMap<DataKey<?, ?>> getUserMap() {
+        if (dataMap == null) {
+            dataMap = DataMap.newDataMap();
+        }
+        return dataMap;
     }
 
 
@@ -163,6 +170,25 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
         return node;
     }
 
+    @Override
+    public int getBeginLine() {
+        return beginLine;
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return beginColumn;
+    }
+
+    @Override
+    public int getEndLine() {
+        return endLine;
+    }
+
+    @Override
+    public int getEndColumn() {
+        return endColumn;
+    }
 
     // package private, open only to DOMLineNumbers
 

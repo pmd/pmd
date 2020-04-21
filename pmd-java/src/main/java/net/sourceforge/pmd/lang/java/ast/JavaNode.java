@@ -8,9 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.TextAvailableNode;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -18,7 +16,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode, TextAvailableNode {
+public interface JavaNode extends ScopedNode, JjtreeNode<JavaNode> {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
@@ -69,28 +67,9 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
      */
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
-
-    @Override
-    JavaNode getChild(int index);
-
-
-    @Override
-    JavaNode getParent();
-
-
-    @Override
-    NodeStream<? extends JavaNode> children();
-
-
     @InternalApi
     @Deprecated
     void setScope(Scope scope);
-
-
-    JavaccToken getFirstToken();
-
-    JavaccToken getLastToken();
-
 
     @Override
     @NonNull ASTCompilationUnit getRoot();
