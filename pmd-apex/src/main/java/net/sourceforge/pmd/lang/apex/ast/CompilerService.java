@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.util.document.TextDocument;
+
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.compiler.ApexCompiler;
 import apex.jorje.semantic.compiler.CompilationInput;
@@ -58,8 +60,11 @@ class CompilerService {
 
 
     /** @throws ParseException If the code is unparsable */
-    public Compilation parseApex(String filename, String source) {
-        SourceFile sourceFile = SourceFile.builder().setBody(source).setKnownName(filename).build();
+    public Compilation parseApex(TextDocument document) {
+        SourceFile sourceFile = SourceFile.builder()
+                                          .setBody(document.getText().toString())
+                                          .setKnownName(document.getDisplayName())
+                                          .build();
         ApexCompiler compiler = ApexCompiler.builder().setInput(createCompilationInput(Collections.singletonList(sourceFile))).build();
         compiler.compile(CompilerStage.POST_TYPE_RESOLVE);
         throwParseErrorIfAny(compiler);

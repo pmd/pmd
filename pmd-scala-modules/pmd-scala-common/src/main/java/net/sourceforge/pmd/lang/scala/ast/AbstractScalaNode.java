@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 import scala.meta.Tree;
 import scala.meta.inputs.Position;
@@ -53,6 +54,11 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
     @Override
     public boolean isImplicit() {
         return pos.end() - pos.start() == 0;
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return FileLocation.location("TODO", pos.startLine() + 1, pos.startColumn() + 1, pos.endLine() + 1, pos.endColumn());
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
@@ -239,14 +239,12 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
-    private final SourceCodePositioner sourceCodePositioner;
-    private final String sourceCode;
+    private final TextDocument sourceCode;
     private final List<ApexDocTokenLocation> apexDocTokenLocations;
     private final Map<Integer, String> suppressMap;
 
-    ApexTreeBuilder(String sourceCode, String suppressMarker, SourceCodePositioner positioner) {
-        this.sourceCode = sourceCode;
-        sourceCodePositioner = positioner;
+    ApexTreeBuilder(TextDocument textDocument, String suppressMarker) {
+        this.sourceCode = textDocument;
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, suppressMarker);
         apexDocTokenLocations = commentInformation.docTokenLocations;
@@ -275,8 +273,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     <T extends AstNode> AbstractApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
-        node.calculateLineNumbers(sourceCodePositioner);
-        node.handleSourceCode(sourceCode);
+        node.calculateLineNumbers(sourceCode);
 
         // Append to parent
         AbstractApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
@@ -304,7 +301,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             AbstractApexNode<?> parent = tokenLocation.nearestNode;
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
-                comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
+                comment.calculateLineNumbers(sourceCode, tokenLocation.index,
                         tokenLocation.index + tokenLocation.token.getText().length());
 
                 parent.insertChild(comment, 0);
@@ -351,8 +348,8 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private static CommentInformation extractInformationFromComments(String source, String suppressMarker) {
-        ANTLRStringStream stream = new ANTLRStringStream(source);
+    private static CommentInformation extractInformationFromComments(TextDocument source, String suppressMarker) {
+        ANTLRStringStream stream = new ANTLRStringStream(source.getText().toString());
         ApexLexer lexer = new ApexLexer(stream);
 
         List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();

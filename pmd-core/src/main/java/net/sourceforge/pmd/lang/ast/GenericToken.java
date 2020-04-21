@@ -7,13 +7,13 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Reportable;
 
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
  */
-public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
+public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, Reportable {
 
     /**
      * Obtain the next generic token according to the input stream which generated the instance of this token.
@@ -43,19 +43,23 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
     boolean isEof();
 
     /**
-     * Returns a region with the coordinates of this token.
+     * {@inheritDoc}
+     *
+     * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
      */
-    TextRegion getRegion();
+    @Override
+    FileLocation getReportLocation();
 
-    // TODO remove those methods, instead, implement Reportable.
-    //  This is already done for JavaccToken, to do for AntlrToken
+    // TODO remove those methods, use getReportLocation
 
     /**
      * Gets the line where the token's region begins
      *
      * @return a non-negative integer containing the begin line
      */
-    int getBeginLine();
+    default int getBeginLine() {
+        return getReportLocation().getBeginLine();
+    }
 
 
     /**
@@ -63,7 +67,9 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
      *
      * @return a non-negative integer containing the end line
      */
-    int getEndLine();
+    default int getEndLine() {
+        return getReportLocation().getEndLine();
+    }
 
 
     /**
@@ -71,7 +77,9 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
      *
      * @return a non-negative integer containing the begin column
      */
-    int getBeginColumn();
+    default int getBeginColumn() {
+        return getReportLocation().getBeginColumn();
+    }
 
 
     /**
@@ -79,7 +87,10 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
      *
      * @return a non-negative integer containing the begin column
      */
-    int getEndColumn();
+    default int getEndColumn() {
+        return getReportLocation().getEndColumn();
+    }
+
 
     /**
      * Returns true if this token is implicit, ie was inserted artificially
@@ -90,10 +101,13 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
     }
 
 
+    /**
+     * This must return true if this token comes before the other token.
+     * If they start at the same index, then the smaller token comes before
+     * the other.
+     */
     @Override
-    default int compareTo(T o) {
-        return getRegion().compareTo(o.getRegion());
-    }
+    int compareTo(T o);
 
 
     /**
@@ -107,12 +121,9 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T> {
      *
      * @throws IllegalArgumentException If the first token does not come before the other token
      */
-    static Iterator<JavaccToken> range(JavaccToken from, JavaccToken to) {
+    static <T extends GenericToken<T>> Iterator<T> range(T from, T to) {
         if (from.compareTo(to) > 0) {
-            throw new IllegalArgumentException(
-                from + " (at " + from.getRegion() + ") must come before "
-                    + to + " (at " + to.getRegion() + ")"
-            );
+            throw new IllegalArgumentException(from + " must come before " + to);
         }
         return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }

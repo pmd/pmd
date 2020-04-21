@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.Reportable;
 import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
@@ -26,7 +25,7 @@ import net.sourceforge.pmd.util.document.TextRegion;
  * class in a typical PMD run and this may reduce GC pressure.
  * </ul>
  */
-public class JavaccToken implements GenericToken<JavaccToken>, Reportable {
+public class JavaccToken implements GenericToken<JavaccToken> {
 
     /**
      * Kind for EOF tokens.
@@ -152,7 +151,9 @@ public class JavaccToken implements GenericToken<JavaccToken>, Reportable {
         return image.toString();
     }
 
-    @Override
+    /**
+     * Returns a region with the coordinates of this token.
+     */
     public TextRegion getRegion() {
         return region;
     }
@@ -170,25 +171,9 @@ public class JavaccToken implements GenericToken<JavaccToken>, Reportable {
     }
 
     @Override
-    public int getBeginLine() {
-        return getReportLocation().getBeginLine();
+    public int compareTo(JavaccToken o) {
+        return getRegion().compareTo(o.getRegion());
     }
-
-    @Override
-    public int getEndLine() {
-        return getReportLocation().getEndLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
-    }
-
-    @Override
-    public int getEndColumn() {
-        return getReportLocation().getEndColumn();
-    }
-
 
     @Override
     public boolean isImplicit() {

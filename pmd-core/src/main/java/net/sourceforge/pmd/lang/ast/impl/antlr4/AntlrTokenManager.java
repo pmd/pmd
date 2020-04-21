@@ -44,7 +44,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
 
     private AntlrToken getNextTokenFromAnyChannel() {
         final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
-        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment);
+        final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment, fileName);
         if (previousToken != null) {
             previousToken.next = currentToken;
         }

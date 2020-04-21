@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Generic Antlr representation of a token.
@@ -24,6 +24,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
     private final Token token;
     private final AntlrToken previousComment;
+    private final String fileName;
     AntlrToken next;
 
     private String text;
@@ -36,10 +37,12 @@ public class AntlrToken implements GenericToken<AntlrToken> {
      *
      * @param token           The antlr token implementation
      * @param previousComment The previous comment
+     * @param fileName        The filename
      */
-    public AntlrToken(final Token token, final AntlrToken previousComment) {
+    public AntlrToken(final Token token, final AntlrToken previousComment, String fileName) {
         this.token = token;
         this.previousComment = previousComment;
+        this.fileName = fileName;
     }
 
     @Override
@@ -65,14 +68,8 @@ public class AntlrToken implements GenericToken<AntlrToken> {
         return getKind() == Token.EOF;
     }
 
-    @Override
-    public TextRegion getRegion() {
-        return TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex());
-    }
-
-    @Override
-    public int getBeginLine() {
-        return token.getLine();
+    private int getLength() {
+        return token.getStopIndex() - token.getStartIndex();
     }
 
     @Override
@@ -84,31 +81,22 @@ public class AntlrToken implements GenericToken<AntlrToken> {
 
 
     @Override
-    public int getEndLine() {
-        if (endline == 0) {
-            computeEndCoords();
-            assert endline > 0;
-        }
-        return endline;
+    public int compareTo(AntlrToken o) {
+        int start = Integer.compare(token.getStartIndex(), o.token.getStartIndex());
+        return start == 0 ? Integer.compare(getLength(), o.getLength())
+                          : start;
     }
 
     @Override
-    public int getEndColumn() {
-        if (endcolumn == 0) {
-            computeEndCoords();
-            assert endcolumn > 0;
-        }
-        return endcolumn;
-    }
+    public FileLocation getReportLocation() {
+        final int bline = token.getLine();
+        final int bcol = token.getCharPositionInLine() + 1;
 
-    private void computeEndCoords() {
         String image = getImage();
         if (image.length() == 1) {
             // fast path for single char tokens
             if (image.charAt(0) != '\n') {
-                this.endline = getBeginLine();
-                this.endcolumn = getBeginColumn() + 1;
-                return;
+                return FileLocation.location(fileName, bline, bcol, bline, bcol + 1);
             }
         }
 
@@ -128,19 +116,23 @@ public class AntlrToken implements GenericToken<AntlrToken> {
             lastOffset = matcher.end();
         }
 
+        int endline;
+        int endcolumn;
         if (numNls == 0) {
             // single line token
-            this.endline = this.getBeginLine();
+            endline = this.getBeginLine();
             int length = 1 + token.getStopIndex() - token.getStartIndex();
-            this.endcolumn = token.getCharPositionInLine() + length + 1;
+            endcolumn = token.getCharPositionInLine() + length + 1;
         } else if (lastOffset < image.length()) {
-            this.endline = this.getBeginLine() + numNls;
-            this.endcolumn = image.length() - lastOffset + 1;
+            endline = this.getBeginLine() + numNls;
+            endcolumn = image.length() - lastOffset + 1;
         } else {
             // ends with a newline, the newline is considered part of the previous line
-            this.endline = this.getBeginLine() + numNls - 1;
-            this.endcolumn = lastLineLen + 1;
+            endline = this.getBeginLine() + numNls - 1;
+            endcolumn = lastLineLen + 1;
         }
+
+        return FileLocation.location(fileName, bline, bcol, endline, endcolumn);
     }
 
     public int getKind() {

@@ -25,6 +25,8 @@ import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.Reportable;
 
 
 /**
@@ -48,7 +50,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * are indeed of the same type. Possibly, a type parameter will be added to
  * the Node interface in 7.0.0 to enforce it at compile-time.
  */
-public interface Node {
+public interface Node extends Reportable {
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
@@ -70,17 +72,35 @@ public interface Node {
     }
 
 
-    int getBeginLine();
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
+     */
+    @Override
+    default FileLocation getReportLocation() {
+        return FileLocation.location("TODO", getBeginLine(), getBeginColumn(), getEndLine(), getEndColumn());
+    }
 
 
-    int getBeginColumn();
+    default int getBeginLine() {
+        return getReportLocation().getBeginLine();
+    }
 
 
-    int getEndLine();
+    default int getBeginColumn() {
+        return getReportLocation().getBeginColumn();
+    }
 
 
-    // FIXME should not be inclusive
-    int getEndColumn();
+    default int getEndLine() {
+        return getReportLocation().getEndLine();
+    }
+
+
+    default int getEndColumn() {
+        return getReportLocation().getEndColumn();
+    }
 
 
     /**

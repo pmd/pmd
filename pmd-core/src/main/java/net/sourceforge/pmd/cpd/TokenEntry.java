@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sourceforge.pmd.util.document.FileLocation;
+
 public class TokenEntry implements Comparable<TokenEntry> {
 
     public static final TokenEntry EOF = new TokenEntry();
@@ -72,6 +74,10 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.beginColumn = beginColumn;
         this.endColumn = endColumn;
         this.index = TOKEN_COUNT.get().getAndIncrement();
+    }
+
+    public TokenEntry(String image, FileLocation location) {
+        this(image, location.getFileName(), location.getBeginLine(), location.getBeginColumn(), location.getEndColumn());
     }
 
     private boolean isOk(int coord) {

@@ -49,22 +49,22 @@ public final class FileLocation {
         return fileName;
     }
 
-    /** Inclusive line number. */
+    /** Inclusive, 1-based line number. */
     public int getBeginLine() {
         return beginLine;
     }
 
-    /** Inclusive line number. */
+    /** Inclusive, 1-based line number. */
     public int getEndLine() {
         return endLine;
     }
 
-    /** Inclusive column number. */
+    /** Inclusive, 1-based column number. */
     public int getBeginColumn() {
         return beginColumn;
     }
 
-    /** <b>Exclusive</b> column number. */
+    /** <b>Exclusive</b>, 1-based column number. */
     public int getEndColumn() {
         return endColumn;
     }

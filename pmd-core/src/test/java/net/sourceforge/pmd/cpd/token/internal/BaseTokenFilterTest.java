@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 public class BaseTokenFilterTest {
 
@@ -50,23 +51,13 @@ public class BaseTokenFilterTest {
         }
 
         @Override
-        public int getBeginLine() {
-            return 0;
+        public FileLocation getReportLocation() {
+            return FileLocation.location("n/a", 0, 0, 0, 0);
         }
 
         @Override
-        public int getEndLine() {
-            return 0;
-        }
-
-        @Override
-        public int getBeginColumn() {
-            return 0;
-        }
-
-        @Override
-        public int getEndColumn() {
-            return 0;
+        public int compareTo(StringToken o) {
+            return text.compareTo(o.text);
         }
     }
 

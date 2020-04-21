@@ -47,7 +47,7 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken plsqlToken, String fileName) {
+    protected String getImage(JavaccToken plsqlToken) {
         String image = plsqlToken.getImage();
 
         if (ignoreIdentifiers && plsqlToken.kind == PLSQLTokenKinds.IDENTIFIER) {
@@ -55,16 +55,14 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
         }
 
         if (ignoreLiterals && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
-                || plsqlToken.kind == PLSQLTokenKinds.FLOAT_LITERAL
-                || plsqlToken.kind == PLSQLTokenKinds.INTEGER_LITERAL
-                || plsqlToken.kind == PLSQLTokenKinds.CHARACTER_LITERAL
-                || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
-                || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
+            || plsqlToken.kind == PLSQLTokenKinds.FLOAT_LITERAL
+            || plsqlToken.kind == PLSQLTokenKinds.INTEGER_LITERAL
+            || plsqlToken.kind == PLSQLTokenKinds.CHARACTER_LITERAL
+            || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
+            || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
             image = String.valueOf(plsqlToken.kind);
         }
-
-        return new TokenEntry(image, fileName, plsqlToken.getBeginLine(),
-                              plsqlToken.getBeginColumn(), plsqlToken.getEndColumn());
+        return image;
     }
 
     @Override
