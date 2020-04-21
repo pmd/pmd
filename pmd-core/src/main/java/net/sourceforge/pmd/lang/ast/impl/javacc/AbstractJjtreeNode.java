@@ -23,7 +23,7 @@ public abstract class AbstractJjtreeNode<N extends JjtreeNode<N>> extends Abstra
     private JavaccToken lastToken;
 
 
-    public AbstractJjtreeNode(int id) {
+    protected AbstractJjtreeNode(int id) {
         super();
         this.id = id;
     }

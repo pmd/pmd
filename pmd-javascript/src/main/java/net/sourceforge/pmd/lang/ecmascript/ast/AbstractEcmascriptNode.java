@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
@@ -40,21 +39,6 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    @Override
-    public Object childrenAccept(EcmascriptParserVisitor visitor, Object data) {
-        for (Node child : children) {
-            // we know that the children here
-            // are all EcmascriptNodes
-            @SuppressWarnings("unchecked")
-            EcmascriptNode<T> ecmascriptNode = (EcmascriptNode<T>) child;
-            ecmascriptNode.jjtAccept(visitor, data);
-        }
-        return data;
     }
 
     @Override

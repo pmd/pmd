@@ -15,14 +15,6 @@ public interface EcmascriptNode<T extends AstNode> extends GenericNode<Ecmascrip
      */
     Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
 
-    /**
-     * Accept the visitor. *
-     *
-     * @deprecated This method is not useful, the logic for combining
-     *     children values should be present on the visitor, not the node
-     */
-    @Deprecated
-    Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
 
     /**
      * Get the underlying Rhino AST node.

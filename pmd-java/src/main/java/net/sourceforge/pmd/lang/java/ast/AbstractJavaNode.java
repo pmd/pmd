@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -23,24 +22,6 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
     @Deprecated
     public AbstractJavaNode(int id) {
         super(id);
-    }
-
-    @Override
-    public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children()) {
-            ((JavaNode) child).jjtAccept(visitor, data);
-        }
-
-        return data;
-    }
-
-
-    @Override
-    public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children()) {
-            ((JavaNode) child).jjtAccept(visitor, data);
-        }
-
     }
 
 
