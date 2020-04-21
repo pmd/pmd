@@ -13,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
-import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
@@ -170,23 +169,6 @@ public interface Node {
         return this.<T>ancestors(parentType).toList();
     }
 
-    /**
-     * Gets the first parent that's an instance of any of the given types.
-     *
-     * @param parentTypes Types to look for
-     * @param <T> Most specific common type of the parameters
-     * @return The first parent with a matching type. Returns null if there is no such parent
-     */
-    default <T extends Node> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
-        return ancestors().map(it -> {
-            for (final Class<? extends T> c : parentTypes) {
-                if (c.isInstance(it)) {
-                    return c.cast(it);
-                }
-            }
-            return null;
-        }).first();
-    }
 
     /**
      * Traverses the children to find all the instances of type childType or one of its subclasses.
@@ -211,20 +193,6 @@ public interface Node {
         return this.<T>descendants(targetType).toList();
     }
 
-    /**
-     * Traverses down the tree to find all the descendant instances of type descendantType.
-     *
-     * @param targetType class which you want to find.
-     * @param results list to store the matching descendants
-     * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
-     * is <code>true</code>
-     * @deprecated Use {@link #findDescendantsOfType(Class, boolean)} instead, which
-     * returns a result list.
-     */
-    @Deprecated
-    default <T extends Node> void findDescendantsOfType(Class<? extends T> targetType, List<? super T> results, boolean crossFindBoundaries) {
-        this.<T>descendants(targetType).crossFindBoundaries(crossFindBoundaries).forEach(results::add);
-    }
 
     /**
      * Traverses down the tree to find all the descendant instances of type
@@ -307,24 +275,6 @@ public interface Node {
             throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
         }
     }
-
-    /**
-     * Get a DOM Document which contains Elements and Attributes representative of this Node and it's children.
-     * Essentially a DOM tree representation of the Node AST, thereby allowing tools which can operate upon DOM to also
-     * indirectly operate on the AST.
-     */
-    default Document getAsDocument() {
-        try {
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder db = dbf.newDocumentBuilder();
-            final Document document = db.newDocument();
-            DocumentUtils.appendElement(this, document);
-            return document;
-        } catch (final ParserConfigurationException pce) {
-            throw new RuntimeException(pce);
-        }
-    }
-
 
 
     /**

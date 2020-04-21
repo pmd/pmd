@@ -158,22 +158,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
         this.dataFlowNode = dataFlowNode;
     }
 
-    /**
-     * Returns true if this node has a descendant of any type among the provided types.
-     *
-     * @param types Types to test
-     */
-    public final boolean hasDescendantOfAnyType(final Class<? extends Node>... types) {
-        // TODO consider implementing that with a single traversal!
-        // -> this is done if you use node streams
-        for (final Class<? extends Node> type : types) {
-            if (hasDescendantOfType(type)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public DataMap<DataKey<?, ?>> getUserMap() {
         if (userData == null) {

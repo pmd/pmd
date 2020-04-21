@@ -4,17 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
@@ -58,7 +62,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         }
 
         // Considers anonymous classes, TODO with #905 this will be easier
-        Node parent = node.getFirstParentOfAnyType(ASTEnumConstant.class, ASTAllocationExpression.class, ASTAnyTypeDeclaration.class);
+        JavaNode parent = node.ancestors().firstNonNull(asInstanceOf(ASTEnumConstant.class, ASTAllocationExpression.class, ASTAnyTypeDeclaration.class));
 
         if (!(parent instanceof ASTClassOrInterfaceDeclaration) || ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             return false;

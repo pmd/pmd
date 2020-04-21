@@ -103,9 +103,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     @JvmOverloads
     fun <R : Node> getNodes(target: Class<R>, source: String, version: String? = null): List<R> =
-            ArrayList<R>().also {
-                parse(source, version).findDescendantsOfType(target, it, true)
-            }
+                parse(source, version).descendants(target).crossFindBoundaries(true).toList()
 
     /**
      * Parses the [sourceCode] with the given [version]. This may execute

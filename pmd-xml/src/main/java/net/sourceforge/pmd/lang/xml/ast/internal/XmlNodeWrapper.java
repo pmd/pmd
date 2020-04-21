@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -91,11 +90,6 @@ class XmlNodeWrapper implements XmlNode {
     @Override
     public boolean isFindBoundary() {
         return false;
-    }
-
-    @Override
-    public Document getAsDocument() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
