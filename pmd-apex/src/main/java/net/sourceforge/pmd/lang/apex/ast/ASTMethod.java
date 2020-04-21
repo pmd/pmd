@@ -32,25 +32,26 @@ public final class ASTMethod extends AbstractApexNode<Method> implements ApexQua
         return node.getMethodInfo().getCanonicalName();
     }
 
-    @Override
-    public int getEndLine() {
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndLine();
-        }
-
-        return super.getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndColumn();
-        }
-
-        return super.getEndColumn();
-    }
+    //    TODO
+    //    @Override
+    //    public int getEndLine() {
+    //        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
+    //        if (block != null) {
+    //            return block.getEndLine();
+    //        }
+    //
+    //        return super.getEndLine();
+    //    }
+    //
+    //    @Override
+    //    public int getEndColumn() {
+    //        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
+    //        if (block != null) {
+    //            return block.getEndColumn();
+    //        }
+    //
+    //        return super.getEndColumn();
+    //    }
 
     @Override
     public ApexQualifiedName getQualifiedName() {

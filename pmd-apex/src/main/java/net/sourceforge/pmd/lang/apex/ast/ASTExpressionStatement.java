@@ -18,26 +18,27 @@ public final class ASTExpressionStatement extends AbstractApexNode<ExpressionSta
         return visitor.visit(this, data);
     }
 
-    private int beginColumnDiff = -1;
-
-    @Override
-    public int getBeginColumn() {
-        if (beginColumnDiff > -1) {
-            return super.getBeginColumn() - beginColumnDiff;
-        }
-
-        if (getNumChildren() > 0 && getChild(0) instanceof ASTMethodCallExpression) {
-            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) getChild(0);
-
-            int fullLength = methodCallExpression.getFullMethodName().length();
-            int nameLength = methodCallExpression.getMethodName().length();
-            if (fullLength > nameLength) {
-                beginColumnDiff = fullLength - nameLength;
-            } else {
-                beginColumnDiff = 0;
-            }
-        }
-
-        return super.getBeginColumn() - beginColumnDiff;
-    }
+    //    private int beginColumnDiff = -1;
+    //
+    //    @Override
+    //    public int getBeginColumn() {
+    //        TODO
+    //        if (beginColumnDiff > -1) {
+    //            return super.getBeginColumn() - beginColumnDiff;
+    //        }
+    //
+    //        if (getNumChildren() > 0 && getChild(0) instanceof ASTMethodCallExpression) {
+    //            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) getChild(0);
+    //
+    //            int fullLength = methodCallExpression.getFullMethodName().length();
+    //            int nameLength = methodCallExpression.getMethodName().length();
+    //            if (fullLength > nameLength) {
+    //                beginColumnDiff = fullLength - nameLength;
+    //            } else {
+    //                beginColumnDiff = 0;
+    //            }
+    //        }
+    //
+    //        return super.getBeginColumn() - beginColumnDiff;
+    //    }
 }

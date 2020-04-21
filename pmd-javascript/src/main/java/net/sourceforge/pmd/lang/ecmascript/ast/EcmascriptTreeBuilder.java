@@ -66,7 +66,7 @@ import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
 import org.mozilla.javascript.ast.XmlString;
 
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 final class EcmascriptTreeBuilder implements NodeVisitor {
 
@@ -134,10 +134,10 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     // The Rhino nodes with children to build.
     private final Stack<AstNode> parents = new Stack<>();
 
-    private final SourceCodePositioner sourceCodePositioner;
+    private final TextDocument textDocument;
 
-    EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
-        this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
+    EcmascriptTreeBuilder(TextDocument sourceCode, List<ParseProblem> parseProblems) {
+        this.textDocument = sourceCode;
         this.parseProblems = parseProblems;
     }
 
@@ -242,6 +242,6 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     }
 
     private void calculateLineNumbers(EcmascriptNode<?> node) {
-        node.descendantsOrSelf().forEach(n -> ((AbstractEcmascriptNode<?>) n).calculateLineNumbers(sourceCodePositioner));
+        node.descendantsOrSelf().forEach(n -> ((AbstractEcmascriptNode<?>) n).calculateLineNumbers(textDocument));
     }
 }

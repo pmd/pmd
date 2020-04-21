@@ -6,23 +6,17 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 public class JavadocElement extends Comment {
 
-    private final int beginLine;
-    private final int endLine;
-    private final int beginColumn;
-    private final int endColumn;
-
     private final JavadocTag tag;
+    private final FileLocation reportLoc;
 
     public JavadocElement(JavaccToken t, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn, JavadocTag theTag) {
         super(t);
         this.tag = theTag;
-        this.beginLine = theBeginLine;
-        this.endLine = theEndLine;
-        this.beginColumn = theBeginColumn;
-        this.endColumn = theEndColumn;
+        this.reportLoc = FileLocation.location("TODO", theBeginLine, theBeginColumn, theEndLine, theEndColumn);
     }
 
     public JavadocTag tag() {
@@ -30,23 +24,8 @@ public class JavadocElement extends Comment {
     }
 
     @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
+    public FileLocation getReportLocation() {
+        return reportLoc;
     }
 
     @Override

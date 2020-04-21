@@ -13,20 +13,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
+import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  *
  */
 class DOMLineNumbers {
     private final RootXmlNode document;
-    private String xmlString;
-    private SourceCodePositioner sourceCodePositioner;
+    private final TextDocument textDocument;
+    private Chars xmlString;
 
-    DOMLineNumbers(RootXmlNode root, String xmlString) {
+    DOMLineNumbers(RootXmlNode root, TextDocument textDocument) {
         this.document = root;
-        this.xmlString = xmlString;
-        this.sourceCodePositioner = new SourceCodePositioner(xmlString);
+        this.xmlString = textDocument.getText();
+        this.textDocument = textDocument;
     }
 
     void determine() {
@@ -148,19 +149,14 @@ class DOMLineNumbers {
 
     private void setBeginLocation(XmlNodeWrapper n, int index) {
         if (n != null) {
-            int line = sourceCodePositioner.lineNumberFromOffset(index);
-            int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setBeginLine(line);
-            n.setBeginColumn(column);
+            n.startOffset = index;
+            n.textDoc = textDocument;
         }
     }
 
     private void setEndLocation(XmlNodeWrapper n, int index) {
         if (n != null) {
-            int line = sourceCodePositioner.lineNumberFromOffset(index);
-            int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setEndLine(line);
-            n.setEndColumn(column);
+            n.endOffset = index;
         }
     }
 }

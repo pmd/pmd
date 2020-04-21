@@ -19,6 +19,7 @@ import org.mozilla.javascript.ast.ParseProblem;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class EcmascriptParser {
     protected final EcmascriptParserOptions parserOptions;
@@ -52,9 +53,9 @@ public class EcmascriptParser {
 
     public ASTAstRoot parse(final ParserTask task) {
         final List<ParseProblem> parseProblems = new ArrayList<>();
-        final String sourceCode = task.getSourceText();
-        final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
-        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
+        final TextDocument document = task.getTextDocument();
+        final AstRoot astRoot = parseEcmascript(document.getText().toString(), parseProblems);
+        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(document, parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
         tree.addTaskInfo(task);
 

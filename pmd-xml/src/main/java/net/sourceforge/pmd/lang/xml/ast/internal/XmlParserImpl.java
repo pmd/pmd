@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 
 public class XmlParserImpl {
@@ -63,7 +64,8 @@ public class XmlParserImpl {
         String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
         RootXmlNode root = new RootXmlNode(this, document, task);
-        DOMLineNumbers lineNumbers = new DOMLineNumbers(root, xmlData);
+        TextDocument textDocument = task.getTextDocument();
+        DOMLineNumbers lineNumbers = new DOMLineNumbers(root, textDocument);
         lineNumbers.determine();
         nodeCache.put(document, root);
         return root;

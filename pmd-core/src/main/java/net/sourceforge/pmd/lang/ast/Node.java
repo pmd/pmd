@@ -78,9 +78,7 @@ public interface Node extends Reportable {
      * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
      */
     @Override
-    default FileLocation getReportLocation() {
-        return FileLocation.location("TODO", getBeginLine(), getBeginColumn(), getEndLine(), getEndColumn());
-    }
+    FileLocation getReportLocation();
 
 
     default int getBeginLine() {

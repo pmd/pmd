@@ -8,13 +8,16 @@ import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
-import net.sourceforge.pmd.util.document.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextRegion;
 
-abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
     private String image;
+    private TextDocument textDocument;
 
     AbstractEcmascriptNode(T node) {
         this.node = node;
@@ -35,18 +38,13 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
     }
 
     /* package private */
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        int startOffset = node.getAbsolutePosition();
-        int endOffset = startOffset + node.getLength();
+    void calculateLineNumbers(TextDocument positioner) {
+        this.textDocument = positioner;
+    }
 
-        this.beginLine = positioner.lineNumberFromOffset(startOffset);
-        this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
-        this.endLine = positioner.lineNumberFromOffset(endOffset);
-        // end column is inclusive
-        this.endColumn = positioner.columnFromOffset(this.endLine, endOffset) - 1;
-        if (this.endColumn < 0) {
-            this.endColumn = 0;
-        }
+    @Override
+    public FileLocation getReportLocation() {
+        return textDocument.toLocation(TextRegion.fromOffsetLength(node.getAbsolutePosition(), node.getLength()));
     }
 
     @Override

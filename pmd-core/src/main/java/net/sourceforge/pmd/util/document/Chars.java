@@ -77,6 +77,14 @@ public final class Chars implements CharSequence {
         sb.append(str, idx, idx + len);
     }
 
+    public int indexOf(String s, int fromIndex) {
+        return str.indexOf(s, idx(fromIndex));
+    }
+
+    public boolean startsWith(String prefix, int fromIndex) {
+        return str.startsWith(prefix, idx(fromIndex));
+    }
+
     /**
      * Returns a new reader for the whole contents of this char sequence.
      */
