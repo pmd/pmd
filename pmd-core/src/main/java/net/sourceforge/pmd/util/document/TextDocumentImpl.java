@@ -72,7 +72,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     @Override
     public TextRegion createRegion(int startOffset, int length) {
         checkInRange(startOffset, length);
-        return TextRegionImpl.fromOffsetLength(startOffset, length);
+        return TextRegion.fromOffsetLength(startOffset, length);
     }
 
     @Override
@@ -85,7 +85,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
         int first = positioner.offsetFromLineColumn(startLineInclusive, 1);
         int last = positioner.offsetOfEndOfLine(endLineInclusive);
-        return TextRegionImpl.fromBothOffsets(first, last);
+        return TextRegion.fromBothOffsets(first, last);
     }
 
     void checkInRange(int startOffset, int length) {

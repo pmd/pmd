@@ -21,21 +21,21 @@ public class TextRegionTest {
 
     @Test
     public void testIsEmpty() {
-        TextRegion r = TextRegionImpl.fromOffsetLength(0, 0);
+        TextRegion r = TextRegion.fromOffsetLength(0, 0);
 
         assertTrue(r.isEmpty());
     }
 
     @Test
     public void testEmptyContains() {
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
+        TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
 
         assertFalse(r1.containsOffset(0));
     }
 
     @Test
     public void testContains() {
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(1, 2);
+        TextRegion r1 = TextRegion.fromOffsetLength(1, 2);
 
         assertFalse(r1.containsOffset(0));
         assertTrue(r1.containsOffset(1));
@@ -47,8 +47,8 @@ public class TextRegionTest {
     public void testIntersectZeroLen() {
         // r1: [[-----
         // r2: [ -----[
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 5);
+        TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
+        TextRegion r2 = TextRegion.fromOffsetLength(0, 5);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -59,8 +59,8 @@ public class TextRegionTest {
     public void testIntersectZeroLen2() {
         // r1:  -----[[
         // r2: [-----[
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(5, 0);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 5);
+        TextRegion r1 = TextRegion.fromOffsetLength(5, 0);
+        TextRegion r2 = TextRegion.fromOffsetLength(0, 5);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -71,8 +71,8 @@ public class TextRegionTest {
     public void testIntersectZeroLen3() {
         // r1:  -- -[---[
         // r2:  --[-[---
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(3, 3);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r1 = TextRegion.fromOffsetLength(3, 3);
+        TextRegion r2 = TextRegion.fromOffsetLength(2, 1);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -84,7 +84,7 @@ public class TextRegionTest {
 
     @Test
     public void testIntersectZeroLen4() {
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 0);
+        TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
 
         TextRegion inter = doIntersect(r1, r1);
 
@@ -96,8 +96,8 @@ public class TextRegionTest {
         // r1:  ---[-- --[
         // r2: [--- --[--
         // i:   ---[--[--
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(3, 4);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 5);
+        TextRegion r1 = TextRegion.fromOffsetLength(3, 4);
+        TextRegion r2 = TextRegion.fromOffsetLength(0, 5);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -110,8 +110,8 @@ public class TextRegionTest {
         // r1:  --[- - ---[
         // r2:  -- -[-[---
         // i:   -- -[-[---
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 5);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 1);
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 5);
+        TextRegion r2 = TextRegion.fromOffsetLength(3, 1);
 
         TextRegion inter = doIntersect(r1, r2);
 
@@ -123,8 +123,8 @@ public class TextRegionTest {
     public void testIntersectDisjoint() {
         // r1:  -- -[---[
         // r2:  --[-[---
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(4, 3);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r1 = TextRegion.fromOffsetLength(4, 3);
+        TextRegion r2 = TextRegion.fromOffsetLength(2, 1);
 
         noIntersect(r1, r2);
     }
@@ -134,8 +134,8 @@ public class TextRegionTest {
         // r1:  --[- - ---[
         // r2:  -- -[-[---
         // i:   -- -[-[---
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 5);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 1);
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 5);
+        TextRegion r2 = TextRegion.fromOffsetLength(3, 1);
 
         assertOverlap(r1, r2);
     }
@@ -144,8 +144,8 @@ public class TextRegionTest {
     public void testOverlapDisjoint() {
         // r1:  -- -[---[
         // r2:  --[-[---
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(4, 3);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r1 = TextRegion.fromOffsetLength(4, 3);
+        TextRegion r2 = TextRegion.fromOffsetLength(2, 1);
 
         assertNoOverlap(r1, r2);
     }
@@ -155,8 +155,8 @@ public class TextRegionTest {
     public void testOverlapBoundary() {
         // r1:  -- -[---[
         // r2:  --[-[---
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(3, 3);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(2, 1);
+        TextRegion r1 = TextRegion.fromOffsetLength(3, 3);
+        TextRegion r2 = TextRegion.fromOffsetLength(2, 1);
 
         assertNoOverlap(r1, r2);
     }
@@ -165,8 +165,8 @@ public class TextRegionTest {
     public void testCompare() {
         // r1:  --[-[---
         // r2:  -- -[---[
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 1);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 3);
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+        TextRegion r2 = TextRegion.fromOffsetLength(3, 3);
 
         assertIsBefore(r1, r2);
     }
@@ -175,8 +175,8 @@ public class TextRegionTest {
     public void testCompareSameOffset() {
         // r1:  [-[--
         // r2:  [- --[
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(0, 1);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(0, 3);
+        TextRegion r1 = TextRegion.fromOffsetLength(0, 1);
+        TextRegion r2 = TextRegion.fromOffsetLength(0, 3);
 
         assertIsBefore(r1, r2);
     }
@@ -186,8 +186,8 @@ public class TextRegionTest {
     public void testUnion() {
         // r1:  --[-[---
         // r2:  -- -[---[
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 1);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(3, 3);
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+        TextRegion r2 = TextRegion.fromOffsetLength(3, 3);
 
         TextRegion union = doUnion(r1, r2);
 
@@ -200,8 +200,8 @@ public class TextRegionTest {
     public void testUnionDisjoint() {
         // r1:  --[-[- ---
         // r2:  -- ---[---[
-        TextRegion r1 = TextRegionImpl.fromOffsetLength(2, 1);
-        TextRegion r2 = TextRegionImpl.fromOffsetLength(5, 3);
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+        TextRegion r2 = TextRegion.fromOffsetLength(5, 3);
 
         TextRegion union = doUnion(r1, r2);
 

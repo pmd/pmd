@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A contiguous range of text in a {@link TextDocument}. See {@link TextDocument#createRegion(int, int)}
  * for a description of valid regions in a document. Empty regions may
- * be thought of as caret positions in an IDE. An empty region at offset
+ * be thought of like caret positions in an IDE. An empty region at offset
  * {@code n} does not contain the character at offset {@code n} in the
  * document, but if it were a caret, typing a character {@code c} would
  * make {@code c} the character at offset {@code n} in the document.
@@ -22,22 +22,32 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
  */
-public interface TextRegion extends Comparable<TextRegion> {
+public final class TextRegion implements Comparable<TextRegion> {
 
-    TextRegion UNDEFINED = TextRegionImpl.fromOffsetLength(0, 0);
+    public static final TextRegion UNDEFINED = fromOffsetLength(0, 0);
 
-    /** Compares the start offset, then the length of a region. */
-    Comparator<TextRegion> COMPARATOR = Comparator.comparingInt(TextRegion::getStartOffset)
-                                                  .thenComparingInt(TextRegion::getLength);
+    private static final Comparator<TextRegion> COMPARATOR =
+        Comparator.comparingInt(TextRegion::getStartOffset)
+                  .thenComparingInt(TextRegion::getLength);
 
+    private final int startOffset;
+    private final int length;
+
+    private TextRegion(int startOffset, int length) {
+        assert startOffset >= 0 && length >= 0;
+        this.startOffset = startOffset;
+        this.length = length;
+    }
 
     /** 0-based, inclusive index. */
-    int getStartOffset();
-
+    public int getStartOffset() {
+        return startOffset;
+    }
 
     /** 0-based, exclusive index. */
-    int getEndOffset();
-
+    public int getEndOffset() {
+        return startOffset + length;
+    }
 
     /**
      * Returns the length of the region in characters. This is the difference
@@ -45,15 +55,17 @@ public interface TextRegion extends Comparable<TextRegion> {
      * including {@code '\t'}. The sequence {@code "\r\n"} has length 2 and
      * not 1.
      */
-    int getLength();
-
+    public int getLength() {
+        return length;
+    }
 
     /**
      * Returns true if the region contains no characters. In that case
      * it can be viewed as a caret position, and e.g. used for text insertion.
      */
-    boolean isEmpty();
-
+    public boolean isEmpty() {
+        return length == 0;
+    }
 
     /**
      * Returns true if this region contains the character at the given
@@ -62,10 +74,9 @@ public interface TextRegion extends Comparable<TextRegion> {
      *
      * @param offset Offset of a character
      */
-    default boolean containsOffset(int offset) {
+    public boolean containsOffset(int offset) {
         return getStartOffset() <= offset && offset < getEndOffset();
     }
-
 
     /**
      * Returns true if this region contains the entirety of the other
@@ -73,11 +84,10 @@ public interface TextRegion extends Comparable<TextRegion> {
      *
      * @param other Other region
      */
-    default boolean contains(TextRegion other) {
+    public boolean contains(TextRegion other) {
         return this.getStartOffset() <= other.getStartOffset()
             && other.getEndOffset() <= this.getEndOffset();
     }
-
 
     /**
      * Returns true if this region overlaps the other region by at
@@ -85,11 +95,10 @@ public interface TextRegion extends Comparable<TextRegion> {
      *
      * @param other Other region
      */
-    default boolean overlaps(TextRegion other) {
+    public boolean overlaps(TextRegion other) {
         TextRegion intersection = TextRegion.intersect(this, other);
         return intersection != null && intersection.getLength() != 0;
     }
-
 
     /**
      * Computes the intersection of this region with the other. This is the
@@ -103,15 +112,13 @@ public interface TextRegion extends Comparable<TextRegion> {
      * @return The intersection, if it exists
      */
     @Nullable
-    static TextRegion intersect(TextRegion r1, TextRegion r2) {
+    public static TextRegion intersect(TextRegion r1, TextRegion r2) {
         int start = Math.max(r1.getStartOffset(), r2.getStartOffset());
         int end = Math.min(r1.getEndOffset(), r2.getEndOffset());
 
         return start <= end ? fromBothOffsets(start, end)
                             : null;
-
     }
-
 
     /**
      * Computes the union of this region with the other. This is the
@@ -122,7 +129,7 @@ public interface TextRegion extends Comparable<TextRegion> {
      *
      * @return The union of both regions
      */
-    static TextRegion union(TextRegion r1, TextRegion r2) {
+    public static TextRegion union(TextRegion r1, TextRegion r2) {
         if (r1 == r2) {
             return r1;
         }
@@ -133,42 +140,46 @@ public interface TextRegion extends Comparable<TextRegion> {
         return fromBothOffsets(start, end);
     }
 
-
     /**
      * Builds a new region from offset and length.
      */
-    static TextRegion fromOffsetLength(int startOffset, int length) {
-        return TextRegionImpl.fromOffsetLength(startOffset, length);
+    public static TextRegion fromOffsetLength(int startOffset, int length) {
+        return new TextRegion(startOffset, length);
     }
-
 
     /**
      * Builds a new region from start and end offset.
      */
-    static TextRegion fromBothOffsets(int startOffset, int endOffset) {
-        return TextRegionImpl.fromBothOffsets(startOffset, endOffset);
+    public static TextRegion fromBothOffsets(int startOffset, int endOffset) {
+        return new TextRegion(startOffset, endOffset - startOffset);
     }
 
-
-    /**
-     * Ordering on text regions is defined by the {@link #COMPARATOR}.
-     */
+    /** Compares the start offset, then the length of a region. */
     @Override
-    default int compareTo(@NonNull TextRegion o) {
+    public int compareTo(@NonNull TextRegion o) {
         return COMPARATOR.compare(this, o);
     }
 
-
-    /**
-     * Returns true if the other object is a text region with the same
-     * start offset and end offset as this one.
-     *
-     * @param o {@inheritDoc}
-     *
-     * @return {@inheritDoc}
-     */
     @Override
-    boolean equals(Object o);
+    public String toString() {
+        return "Region(start=" + startOffset + ", len=" + length + ")";
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TextRegion)) {
+            return false;
+        }
+        TextRegion that = (TextRegion) o;
+        return startOffset == that.getStartOffset()
+            && length == that.getLength();
+    }
 
+    @Override
+    public int hashCode() {
+        return startOffset * 31 + length;
+    }
 }
