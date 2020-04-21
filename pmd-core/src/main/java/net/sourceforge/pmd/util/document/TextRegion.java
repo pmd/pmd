@@ -101,6 +101,24 @@ public final class TextRegion implements Comparable<TextRegion> {
     }
 
     /**
+     * Returns a region that ends at the same point, but starts 'delta'
+     * characters before this region. If the delta is negative, then this
+     * shifts the start of the region to the right (but the end stays fixed).
+     */
+    public TextRegion growLeft(int delta) {
+        return new TextRegion(startOffset - delta, delta + length);
+    }
+
+    /**
+     * Returns a region that starts at the same point, but ends 'delta'
+     * characters after this region. If the delta is negative, then this
+     * shifts the end of the region to the left (but the start stays fixed).
+     */
+    public TextRegion growRight(int delta) {
+        return new TextRegion(startOffset, delta + length);
+    }
+
+    /**
      * Computes the intersection of this region with the other. This is the
      * largest region that this region and the parameter both contain.
      * It may have length zero, or not exist (if the regions are completely

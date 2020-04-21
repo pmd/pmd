@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
@@ -50,7 +51,7 @@ public class ApexParserTest extends ApexParserTestBase {
             + "        System.out.println('abc');\n" // line 3
             + "        // this is a comment\n" // line 4
             + "    }\n" // line 5
-            + "}\n"; // line 6
+            + "}"; // line 6
 
     @Test
     public void verifyLineColumnNumbers() {
@@ -76,7 +77,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         // "method1" - starts with identifier until end of its block statement
         Node method1 = rootNode.getChild(1);
-        assertPosition(method1, 2, 17, 5, 5);
+        assertPosition(method1, 2, 17, 5, 6);
         // Modifier of method1 - doesn't work. This node just sees the
         // identifier ("method1")
         // assertPosition(method1.getChild(0), 2, 17, 2, 20); // "public" for
@@ -85,11 +86,11 @@ public class ApexParserTest extends ApexParserTestBase {
         // BlockStatement - the whole method body
         Node blockStatement = method1.getChild(1);
         assertTrue(((ASTBlockStatement) blockStatement).hasCurlyBrace());
-        assertPosition(blockStatement, 2, 27, 5, 5);
+        assertPosition(blockStatement, 2, 27, 5, 6);
 
         // the expression ("System.out...")
         Node expressionStatement = blockStatement.getChild(0);
-        assertPosition(expressionStatement, 3, 9, 3, 34);
+        assertPosition(expressionStatement, 3, 9, 3, 35);
     }
 
     @Test
@@ -130,7 +131,7 @@ public class ApexParserTest extends ApexParserTestBase {
         ApexNode<?> comment = root.getChild(0);
         assertThat(comment, instanceOf(ASTFormalComment.class));
 
-        assertPosition(comment, 1, 9, 1, 31);
+        assertPosition(comment, 1, 9, 1, 32);
         assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken());
 
         ApexNode<?> m1 = root.getChild(2);
@@ -185,10 +186,11 @@ public class ApexParserTest extends ApexParserTestBase {
 
     private int visitPosition(Node node, int count) {
         int result = count + 1;
-        Assert.assertTrue(node.getBeginLine() > 0);
-        Assert.assertTrue(node.getBeginColumn() > 0);
-        Assert.assertTrue(node.getEndLine() > 0);
-        Assert.assertTrue(node.getEndColumn() > 0);
+        FileLocation loc = node.getReportLocation();
+        Assert.assertTrue(loc.getBeginLine() > 0);
+        Assert.assertTrue(loc.getBeginColumn() > 0);
+        Assert.assertTrue(loc.getEndLine() > 0);
+        Assert.assertTrue(loc.getEndColumn() > 0);
         for (int i = 0; i < node.getNumChildren(); i++) {
             result = visitPosition(node.getChild(i), result);
         }
@@ -198,9 +200,10 @@ public class ApexParserTest extends ApexParserTestBase {
     // TEST HELPER
 
     private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
-        assertEquals("Wrong begin line", beginLine, node.getBeginLine());
-        assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
-        assertEquals("Wrong end line", endLine, node.getEndLine());
-        assertEquals("Wrong end column", endColumn, node.getEndColumn());
+        FileLocation loc = node.getReportLocation();
+        assertEquals("Wrong begin line", beginLine, loc.getBeginLine());
+        assertEquals("Wrong begin column", beginColumn, loc.getBeginColumn());
+        assertEquals("Wrong end line", endLine, loc.getEndLine());
+        assertEquals("Wrong end column", endColumn, loc.getEndColumn());
     }
 }

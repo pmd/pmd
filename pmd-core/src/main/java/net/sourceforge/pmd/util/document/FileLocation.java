@@ -28,7 +28,6 @@ public final class FileLocation {
     public static final Comparator<FileLocation> COMPARATOR =
         Comparator.comparing(FileLocation::getFileName).thenComparing(COORDS_COMPARATOR);
 
-
     private final int beginLine;
     private final int endLine;
     private final int beginColumn;

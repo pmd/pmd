@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.util.document.TextRegion;
+
 import apex.jorje.semantic.ast.statement.ExpressionStatement;
 
 public final class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement> {
@@ -18,27 +20,11 @@ public final class ASTExpressionStatement extends AbstractApexNode<ExpressionSta
         return visitor.visit(this, data);
     }
 
-    //    private int beginColumnDiff = -1;
-    //
-    //    @Override
-    //    public int getBeginColumn() {
-    //        TODO
-    //        if (beginColumnDiff > -1) {
-    //            return super.getBeginColumn() - beginColumnDiff;
-    //        }
-    //
-    //        if (getNumChildren() > 0 && getChild(0) instanceof ASTMethodCallExpression) {
-    //            ASTMethodCallExpression methodCallExpression = (ASTMethodCallExpression) getChild(0);
-    //
-    //            int fullLength = methodCallExpression.getFullMethodName().length();
-    //            int nameLength = methodCallExpression.getMethodName().length();
-    //            if (fullLength > nameLength) {
-    //                beginColumnDiff = fullLength - nameLength;
-    //            } else {
-    //                beginColumnDiff = 0;
-    //            }
-    //        }
-    //
-    //        return super.getBeginColumn() - beginColumnDiff;
-    //    }
+    @Override
+    protected TextRegion getRegion() {
+        if (getNumChildren() > 0) {
+            return TextRegion.union(super.getRegion(), ((AbstractApexNode) getChild(0)).getRegion());
+        }
+        return super.getRegion();
+    }
 }

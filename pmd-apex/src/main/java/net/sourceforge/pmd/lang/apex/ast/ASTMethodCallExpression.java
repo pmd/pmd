@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Iterator;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
@@ -28,13 +28,24 @@ public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallEx
     public String getFullMethodName() {
         final String methodName = getMethodName();
         StringBuilder typeName = new StringBuilder();
-        for (Iterator<Identifier> it = node.getReferenceContext().getNames().iterator(); it.hasNext();) {
-            typeName.append(it.next().getValue()).append('.');
+        for (Identifier identifier : node.getReferenceContext().getNames()) {
+            typeName.append(identifier.getValue()).append('.');
         }
         return typeName.toString() + methodName;
     }
 
     public int getInputParametersSize() {
         return node.getInputParameters().size();
+    }
+
+    @Override
+    protected TextRegion getRegion() {
+        int fullLength = getFullMethodName().length();
+        int nameLength = getMethodName().length();
+        TextRegion base = super.getRegion();
+        if (fullLength > nameLength) {
+            base = base.growLeft(fullLength - nameLength);
+        }
+        return base;
     }
 }

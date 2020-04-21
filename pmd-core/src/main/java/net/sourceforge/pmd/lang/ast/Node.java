@@ -83,7 +83,8 @@ public interface Node extends Reportable {
 
     /**
      * Compare the coordinates of this node with the other one as if
-     * with {@link FileLocation#COORDS_COMPARATOR}.
+     * with {@link FileLocation#COORDS_COMPARATOR}. The result is useless
+     * if both nodes are not from the same tree (todo check it?).
      *
      * @param node Other node
      *
