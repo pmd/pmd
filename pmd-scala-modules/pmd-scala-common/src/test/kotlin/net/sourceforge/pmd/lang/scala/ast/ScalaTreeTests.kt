@@ -82,8 +82,10 @@ class Foo {
 fun String.parseScala(): ASTSource = ScalaParsingHelper.DEFAULT.parse(this)
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
-    this::getBeginLine shouldBe bline
-    this::getBeginColumn shouldBe bcol
-    this::getEndLine shouldBe eline
-    this::getEndColumn shouldBe ecol
+    reportLocation.apply {
+        this::getBeginLine shouldBe bline
+        this::getBeginColumn shouldBe bcol
+        this::getEndLine shouldBe eline
+        this::getEndColumn shouldBe ecol
+    }
 }

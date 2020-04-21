@@ -41,7 +41,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
     }
 
     protected TokenEntry processToken(Tokens tokenEntries, JavaccToken currentToken, String filename) {
-        return new TokenEntry(getImage(currentToken), currentToken.getReportLocation());
+        return new TokenEntry(getImage(currentToken), filename, currentToken.getReportLocation());
     }
 
     protected String getImage(JavaccToken token) {

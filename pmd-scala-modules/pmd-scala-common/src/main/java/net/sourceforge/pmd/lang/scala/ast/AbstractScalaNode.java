@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import java.util.Comparator;
+
 import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.FileLocation;
 
@@ -17,7 +20,9 @@ import scala.meta.inputs.Position;
  *
  * @param <T> the type of the Scala tree node
  */
-abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractScalaNode<?>, ScalaNode<?>> implements ScalaNode<T> {
+abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractScalaNode<?>,ScalaNode<?>> implements ScalaNode<T> {
+    private static final Comparator<Position> POS_CMP =
+        Comparator.comparingInt(Position::start).thenComparing(Position::end);
 
     protected final T node;
     private final Position pos;
@@ -58,7 +63,19 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
 
     @Override
     public FileLocation getReportLocation() {
-        return FileLocation.location("TODO", pos.startLine() + 1, pos.startColumn() + 1, pos.endLine() + 1, pos.endColumn());
+        return FileLocation.location("TODO",
+                                     pos.startLine() + 1,
+                                     pos.startColumn() + 1,
+                                     pos.endLine() + 1,
+                                     pos.endColumn() + 1);
+    }
+
+    @Override
+    public int compareLocation(Node node) {
+        if (node instanceof AbstractScalaNode) {
+            return POS_CMP.compare(((AbstractScalaNode<?>) node).pos, pos);
+        }
+        return ScalaNode.super.compareLocation(node);
     }
 
     @Override

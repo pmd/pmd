@@ -130,7 +130,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      * @return The union of both regions
      */
     public static TextRegion union(TextRegion r1, TextRegion r2) {
-        if (r1 == r2) {
+        if (r1.equals(r2)) {
             return r1;
         }
 

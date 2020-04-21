@@ -81,6 +81,21 @@ public interface Node extends Reportable {
     FileLocation getReportLocation();
 
 
+    /**
+     * Compare the coordinates of this node with the other one as if
+     * with {@link FileLocation#COORDS_COMPARATOR}.
+     *
+     * @param node Other node
+     *
+     * @return A positive integer if this node comes AFTER the other,
+     *     0 if they have the same position, a negative integer if this
+     *     node comes BEFORE the other
+     */
+    default int compareLocation(Node node) {
+        return FileLocation.COORDS_COMPARATOR.compare(getReportLocation(), node.getReportLocation());
+    }
+
+
     default int getBeginLine() {
         return getReportLocation().getBeginLine();
     }

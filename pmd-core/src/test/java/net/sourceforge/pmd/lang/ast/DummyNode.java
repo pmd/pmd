@@ -7,15 +7,19 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.util.document.FileLocation;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
+public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+
+    // note: since line & columns are 1-based, getReportLocation
+    // will throw unless these are all set
+    private FileLocation location;
 
     public DummyNode(String xpathName) {
         super();
@@ -43,15 +47,14 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
         }
     }
 
-    @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        super.setCoords(bline, bcol, eline, ecol);
+        this.location = FileLocation.location(":dummyFile:", bline, bcol, eline, ecol);
     }
-
 
     @Override
     public FileLocation getReportLocation() {
-        return FileLocation.location("todo", beginLine, beginColumn, endLine, endColumn);
+        assert location != null : "Should have called setCoords";
+        return location;
     }
 
     public void setImage(String image) {

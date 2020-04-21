@@ -48,8 +48,8 @@ public abstract class AntlrTokenizer implements Tokenizer {
         return CharStreams.fromString(buffer.toString());
     }
 
-    private void processToken(final Tokens tokenEntries, final String fileName, final AntlrToken token) {
-        final TokenEntry tokenEntry = new TokenEntry(token.getImage(), token.getReportLocation());
+    private void processToken(final Tokens tokenEntries, String fileName, final AntlrToken token) {
+        final TokenEntry tokenEntry = new TokenEntry(token.getImage(), fileName, token.getReportLocation());
         tokenEntries.add(tokenEntry);
     }
 }

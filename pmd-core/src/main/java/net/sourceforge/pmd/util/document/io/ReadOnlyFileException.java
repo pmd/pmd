@@ -10,7 +10,4 @@ package net.sourceforge.pmd.util.document.io;
  */
 public class ReadOnlyFileException extends UnsupportedOperationException {
 
-    public ReadOnlyFileException() {
-        super();
-    }
 }

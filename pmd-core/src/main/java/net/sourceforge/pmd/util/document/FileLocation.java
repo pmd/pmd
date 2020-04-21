@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.document;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -16,6 +17,17 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 public final class FileLocation {
 
     public static final FileLocation UNDEFINED = new FileLocation("n/a", 1, 1, 1, 1);
+
+    public static final Comparator<FileLocation> COORDS_COMPARATOR =
+        Comparator.comparingInt(FileLocation::getBeginLine)
+                  .thenComparingInt(FileLocation::getBeginColumn)
+                  .thenComparingInt(FileLocation::getEndLine)
+                  .thenComparingInt(FileLocation::getEndColumn);
+
+
+    public static final Comparator<FileLocation> COMPARATOR =
+        Comparator.comparing(FileLocation::getFileName).thenComparing(COORDS_COMPARATOR);
+
 
     private final int beginLine;
     private final int endLine;

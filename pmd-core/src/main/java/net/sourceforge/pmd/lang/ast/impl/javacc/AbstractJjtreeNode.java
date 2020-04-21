@@ -91,6 +91,14 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
+    public int compareLocation(Node node) {
+        if (node instanceof AbstractJjtreeNode) {
+            return getTextRegion().compareTo(((AbstractJjtreeNode<?, ?>) node).getTextRegion());
+        }
+        return JjtreeNode.super.compareLocation(node);
+    }
+
+    @Override
     protected void insertChild(B child, int index) {
         super.insertChild(child, index);
         fitTokensToChildren(index);

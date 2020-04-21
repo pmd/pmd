@@ -76,8 +76,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.index = TOKEN_COUNT.get().getAndIncrement();
     }
 
-    public TokenEntry(String image, FileLocation location) {
-        this(image, location.getFileName(), location.getBeginLine(), location.getBeginColumn(), location.getEndColumn());
+    public TokenEntry(String image, String filename, FileLocation location) {
+        this(image, filename, location.getBeginLine(), location.getBeginColumn(), location.getEndColumn());
     }
 
     private boolean isOk(int coord) {

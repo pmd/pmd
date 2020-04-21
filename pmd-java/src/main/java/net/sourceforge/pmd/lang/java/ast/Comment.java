@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.util.document.FileLocation;
 
 public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
 
@@ -25,19 +26,24 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
     // Same as "\\R" - but \\R is only available with java8+
     static final Pattern NEWLINES_PATTERN = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
+    private final JavaccToken token;
+
     protected Comment(JavaccToken t) {
         super(0);
-
-        setImage(t.getImage());
+        this.token = t;
         setFirstToken(t);
         setLastToken(t);
     }
 
     @Override
-    public String toString() {
-        return getImage();
+    public FileLocation getReportLocation() {
+        return token.getReportLocation();
     }
 
+    @Override
+    public String getImage() {
+        return token.getImage();
+    }
 
     /**
      * Filters the comment by removing the leading comment marker (like {@code *}) of each line
