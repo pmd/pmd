@@ -64,7 +64,7 @@ public class RuleTstTest {
         when(rule.getName()).thenReturn("test rule");
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(RuleContext context, int beginLine, String message) {
-                DummyNode node = new DummyNode(1);
+                DummyNode node = new DummyNode();
                 node.testingOnlySetBeginLine(beginLine);
                 node.testingOnlySetBeginColumn(1);
                 ParametricRuleViolation<Node> violation = new ParametricRuleViolation<Node>(rule, context, node, message);

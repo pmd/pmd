@@ -96,8 +96,8 @@ public class ReportTest implements ThreadSafeReportListener {
         r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s2, mr.getMessage()));
         Map<String, Integer> summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
-        assertTrue(summary.values().contains(Integer.valueOf(1)));
-        assertTrue(summary.values().contains(Integer.valueOf(2)));
+        assertTrue(summary.containsValue(1));
+        assertTrue(summary.containsValue(2));
     }
 
     @Test

@@ -4,12 +4,9 @@
 
 package net.sourceforge.pmd.test.lang.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
-public class DummyNode extends AbstractNode {
-    public DummyNode(int id) {
-        super();
-    }
+public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
 
     @Deprecated
     @Override

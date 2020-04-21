@@ -24,7 +24,6 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
     }
 
     public DummyNode(boolean findBoundary, String xpathName) {
-        super();
         this.findBoundary = findBoundary;
         this.xpathName = xpathName;
     }
@@ -53,7 +52,6 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
         return userData;
     }
 
-    @Override
     public void addChild(DummyNode child, int index) {
         super.addChild(child, index);
     }
