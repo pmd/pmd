@@ -30,16 +30,6 @@ abstract class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNo
     }
 
     @Override
-    public JavaccToken getFirstToken() {
-        return this.getFirstToken();
-    }
-
-    @Override
-    public JavaccToken getLastToken() {
-        return this.getLastToken();
-    }
-
-    @Override
     public String getXPathNodeName() {
         return VmParserImplTreeConstants.jjtNodeName[id];
     }

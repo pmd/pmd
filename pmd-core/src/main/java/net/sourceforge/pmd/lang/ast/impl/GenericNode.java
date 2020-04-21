@@ -1,6 +1,7 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.impl;
 
 
@@ -37,6 +38,11 @@ public interface GenericNode<N extends GenericNode<N>> extends Node {
     @Override
     default DescendantNodeStream<N> descendants() {
         return (DescendantNodeStream<N>) Node.super.descendants();
+    }
+
+    @Override
+    default DescendantNodeStream<N> descendantsOrSelf() {
+        return (DescendantNodeStream<N>) Node.super.descendantsOrSelf();
     }
 
     @Override

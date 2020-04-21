@@ -44,8 +44,8 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     // @Deprecated?
     private String image;
 
-    public AbstractNode() {
-
+    protected AbstractNode() {
+        // only for subclassing
     }
 
     @Override

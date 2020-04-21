@@ -32,6 +32,10 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<ScalaNode<
         pos = node.pos();
     }
 
+    protected void addChild(AbstractScalaNode<?> child, int index) {
+        super.addChild(child, index);
+    }
+
     @Override
     public boolean isImplicit() {
         return pos.end() - pos.start() == 0;

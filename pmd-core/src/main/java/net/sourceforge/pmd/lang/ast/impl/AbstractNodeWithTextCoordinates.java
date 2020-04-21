@@ -16,6 +16,7 @@ public abstract class AbstractNodeWithTextCoordinates<T extends GenericNode<T>> 
     protected int endColumn = -1;
 
     protected AbstractNodeWithTextCoordinates() {
+        // only for subclassing
     }
 
     @Override
@@ -39,6 +40,8 @@ public abstract class AbstractNodeWithTextCoordinates<T extends GenericNode<T>> 
     }
 
     protected void setCoords(int bline, int bcol, int eline, int ecol) {
+        assert bline >= 1 && bcol >= 1 && eline >= 1 && ecol >= 1 : "coordinates are 1-based";
+        assert bline <= eline && (bline != eline || bcol <= ecol) : "coordinates must be ordered";
         beginLine = bline;
         beginColumn = bcol;
         endLine = eline;

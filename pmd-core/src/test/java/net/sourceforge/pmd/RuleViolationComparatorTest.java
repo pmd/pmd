@@ -33,23 +33,23 @@ public class RuleViolationComparatorTest {
 
         int index = 0;
         // Different begin line
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file1", 10, "desc1", 0, 20, 80);
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file1", 20, "desc1", 0, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file1", 10, "desc1", 1, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file1", 20, "desc1", 1, 20, 80);
         // Different description
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file2", 10, "desc1", 0, 20, 80);
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file2", 10, "desc2", 0, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file2", 10, "desc1", 1, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file2", 10, "desc2", 1, 20, 80);
         // Different begin column
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file3", 10, "desc1", 0, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file3", 10, "desc1", 1, 20, 80);
         expectedOrder[index++] = createJavaRuleViolation(rule1, "file3", 10, "desc1", 10, 20, 80);
         // Different end line
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file4", 10, "desc1", 0, 20, 80);
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file4", 10, "desc1", 0, 30, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file4", 10, "desc1", 1, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file4", 10, "desc1", 1, 30, 80);
         // Different end column
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file5", 10, "desc1", 0, 20, 80);
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file5", 10, "desc1", 0, 20, 90);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file5", 10, "desc1", 1, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file5", 10, "desc1", 1, 20, 90);
         // Different rule name
-        expectedOrder[index++] = createJavaRuleViolation(rule1, "file6", 10, "desc1", 0, 20, 80);
-        expectedOrder[index++] = createJavaRuleViolation(rule2, "file6", 10, "desc1", 0, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule1, "file6", 10, "desc1", 1, 20, 80);
+        expectedOrder[index++] = createJavaRuleViolation(rule2, "file6", 10, "desc1", 1, 20, 80);
 
         // Randomize
         List<RuleViolation> ruleViolations = new ArrayList<>(Arrays.asList(expectedOrder));

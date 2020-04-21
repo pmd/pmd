@@ -19,7 +19,7 @@ public class ElementNodeTest {
         DummyNode foo1 = new DummyNode(false, "foo");
         foo1.setCoords(1, 1, 2, 2);
         DummyNode foo2 = new DummyNode(false, "foo");
-        foo1.setCoords(2, 1, 2, 2);
+        foo2.setCoords(2, 1, 2, 2);
         node.addChild(foo1, 0);
         node.addChild(foo2, 1);
 

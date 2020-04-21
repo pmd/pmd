@@ -55,11 +55,11 @@ public class RuleViolationTest {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("filename1"));
         DummyNode s = new DummyNode();
-        s.setCoords(10, 1, 2, 3);
+        s.setCoords(10, 1, 11, 3);
         RuleViolation r1 = new ParametricRuleViolation<Node>(rule, ctx, s, "description");
         ctx.setSourceCodeFile(new File("filename2"));
         DummyNode s1 = new DummyNode();
-        s.setCoords(10, 1, 2, 3);
+        s1.setCoords(10, 1, 11, 3);
         RuleViolation r2 = new ParametricRuleViolation<Node>(rule, ctx, s1, "description");
         assertEquals(-1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
@@ -74,7 +74,7 @@ public class RuleViolationTest {
         DummyNode s = new DummyNode();
         s.setCoords(10, 1, 15, 10);
         DummyNode s1 = new DummyNode();
-        s.setCoords(20, 1, 25, 10);
+        s1.setCoords(20, 1, 25, 10);
         RuleViolation r1 = new ParametricRuleViolation<Node>(rule, ctx, s, "description");
         RuleViolation r2 = new ParametricRuleViolation<Node>(rule, ctx, s1, "description");
         assertTrue(comp.compare(r1, r2) < 0);

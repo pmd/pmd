@@ -111,7 +111,7 @@ public class AbstractRuleTest {
         ctx.setReport(new Report());
         ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyRoot();
-        s.setCoords(5, 1, 6, 0);
+        s.setCoords(5, 1, 6, 1);
         s.setImage("TestImage");
         r.addViolation(ctx, s);
         RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
@@ -126,7 +126,7 @@ public class AbstractRuleTest {
         m.put(5, "");
         ctx.setSourceCodeFile(new File("filename"));
         DummyRoot n = new DummyRoot(m);
-        n.setCoords(5, 1, 6, 0);
+        n.setCoords(5, 1, 6, 1);
         DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, r, n, "specificdescription", new Object[0]);
 
         assertTrue(ctx.getReport().isEmpty());

@@ -76,9 +76,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyRootNode(1);
-                    node.testingOnlySetBeginLine(1);
-                    node.testingOnlySetBeginColumn(1);
+                    DummyNode node = new DummyRootNode();
+                    node.setCoords(1, 1, 1, 2);
                     node.setImage("Foo");
                     return node;
                 }
@@ -88,10 +87,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     private static class DummyRootNode extends DummyNode implements RootNode {
-
-        DummyRootNode(int id) {
-            super();
-        }
 
     }
 

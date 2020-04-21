@@ -25,7 +25,7 @@ public class NoAttributeTest {
 
     @Test
     public void testNoAttrInherited() {
-        Node child = new NodeNoInherited(12);
+        Node child = new NodeNoInherited();
 
         Set<String> attrNames = IteratorUtil.toList(child.getXPathAttributesIterator()).stream().map(Attribute::getName).collect(Collectors.toSet());
 
@@ -45,7 +45,7 @@ public class NoAttributeTest {
 
         assertTrue(0 < IteratorUtil.count(new NodeAllAttr(12).getXPathAttributesIterator()));
 
-        NodeNoAttrAll child = new NodeNoAttrAll(12);
+        NodeNoAttrAll child = new NodeNoAttrAll();
         Set<String> attrNames = IteratorUtil.toList(child.getXPathAttributesIterator()).stream().map(Attribute::getName).collect(Collectors.toSet());
 
         // from Noded, so not suppressed
@@ -57,7 +57,7 @@ public class NoAttributeTest {
     @Test
     public void testNoAttrAllIsNotInherited() {
 
-        NodeNoAttrAllChild child = new NodeNoAttrAllChild(12);
+        NodeNoAttrAllChild child = new NodeNoAttrAllChild();
 
         Set<String> attrNames = IteratorUtil.toList(child.getXPathAttributesIterator()).stream().map(Attribute::getName).collect(Collectors.toSet());
 
@@ -70,12 +70,8 @@ public class NoAttributeTest {
 
     private static class DummyNodeParent extends DummyNode {
 
-        DummyNodeParent(int id) {
+        DummyNodeParent() {
             super();
-        }
-
-        DummyNodeParent(int id, boolean findBoundary) {
-            super(findBoundary);
         }
 
         public String getSomeName() {
@@ -99,10 +95,6 @@ public class NoAttributeTest {
 
     @NoAttribute(scope = NoAttrScope.INHERITED)
     private static class NodeNoInherited extends DummyNodeParent {
-
-        NodeNoInherited(int id) {
-            super(id);
-        }
 
         // getSomeName is inherited and filtered out by NoAttrScope.INHERITED
         // getSomeInt is inherited but overridden here, so NoAttrScope.INHERITED has no effect
@@ -140,17 +132,12 @@ public class NoAttributeTest {
     private static class NodeAllAttr extends DummyNodeParent {
 
         NodeAllAttr(int id) {
-            super(id);
+            super();
         }
     }
 
     @NoAttribute(scope = NoAttrScope.ALL)
     private static class NodeNoAttrAll extends DummyNodeParent {
-
-
-        NodeNoAttrAll(int id) {
-            super(id);
-        }
 
         public int getMySuppressedAttr() {
             return 12;
@@ -160,11 +147,6 @@ public class NoAttributeTest {
 
 
     private static class NodeNoAttrAllChild extends NodeNoAttrAll {
-
-
-        NodeNoAttrAllChild(int id) {
-            super(id);
-        }
 
         public int getNotSuppressedAttr() {
             return 12;

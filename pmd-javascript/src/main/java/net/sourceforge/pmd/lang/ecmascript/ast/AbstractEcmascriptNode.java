@@ -14,8 +14,11 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
     protected final T node;
 
     AbstractEcmascriptNode(T node) {
-        super();
         this.node = node;
+    }
+
+    protected void addChild(AbstractEcmascriptNode<?> child, int index) {
+        super.addChild(child, index);
     }
 
     /* package private */
