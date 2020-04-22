@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.impl;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -21,8 +22,8 @@ public abstract class TokenDocument<T extends GenericToken> {
     }
 
     /** Returns the original text of the file (without escaping). */
-    public String getFullText() {
-        return textDocument.getText().toString();
+    public Chars getFullText() {
+        return textDocument.getText();
     }
 
     public TextDocument getTextDocument() {

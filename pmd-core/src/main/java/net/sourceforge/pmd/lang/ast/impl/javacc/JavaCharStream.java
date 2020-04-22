@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import java.io.EOFException;
 import java.io.IOException;
 
+import net.sourceforge.pmd.util.document.Chars;
+
 /**
  * This stream buffers the whole file in memory before parsing,
  * and track start/end offsets of tokens. This allows building {@link JavaccToken}.
@@ -17,7 +19,7 @@ import java.io.IOException;
 public class JavaCharStream extends JavaCharStreamBase {
 
     // full text with nothing escaped and all
-    private final String fullText;
+    private final Chars fullText;
     private final JavaccTokenDocument document;
 
     private int[] startOffsets;
