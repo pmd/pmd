@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.TextDocument;
@@ -18,6 +17,7 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
     protected final T node;
     private String image;
     private TextDocument textDocument;
+    private int absPos;
 
     AbstractEcmascriptNode(T node) {
         this.node = node;
@@ -38,13 +38,16 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
     }
 
     /* package private */
-    void calculateLineNumbers(TextDocument positioner) {
+    int calculateAbsolutePos(TextDocument positioner, int parentRelPos) {
         this.textDocument = positioner;
+        int absPos = parentRelPos + node.getPosition();
+        this.absPos = absPos;
+        return absPos;
     }
 
     @Override
     public FileLocation getReportLocation() {
-        return textDocument.toLocation(TextRegion.fromOffsetLength(node.getAbsolutePosition(), node.getLength()));
+        return textDocument.toLocation(TextRegion.fromOffsetLength(absPos, node.getLength()));
     }
 
     @Override

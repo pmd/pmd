@@ -171,7 +171,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     public <T extends AstNode> EcmascriptNode<T> build(T astNode) {
         EcmascriptNode<T> node = buildInternal(astNode);
 
-        calculateLineNumbers(node);
+        calculateLineNumbers(node, astNode.getAbsolutePosition());
 
         // Set all the trailing comma nodes
         for (AbstractEcmascriptNode<?> trailingCommaNode : parseProblemToNode.values()) {
@@ -231,7 +231,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
                     if (trailingCommaLocalizedMessage.equals(parseProblem.getMessage())) {
                         // Report on the shortest code block containing the
                         // problem (i.e. inner most code in nested structures).
-                        AbstractEcmascriptNode<?> currentNode = (AbstractEcmascriptNode<?>) parseProblemToNode.get(parseProblem);
+                        AbstractEcmascriptNode<?> currentNode = parseProblemToNode.get(parseProblem);
                         if (currentNode == null || node.node.getLength() < currentNode.node.getLength()) {
                             parseProblemToNode.put(parseProblem, node);
                         }
@@ -241,7 +241,11 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
         }
     }
 
-    private void calculateLineNumbers(EcmascriptNode<?> node) {
-        node.descendantsOrSelf().forEach(n -> ((AbstractEcmascriptNode<?>) n).calculateLineNumbers(textDocument));
+    private void calculateLineNumbers(EcmascriptNode<?> node, int parentAbsPos) {
+        int absPos = ((AbstractEcmascriptNode<?>) node).calculateAbsolutePos(textDocument, parentAbsPos);
+
+        for (EcmascriptNode<?> child : node.children()) {
+            ((AbstractEcmascriptNode<?>) child).calculateAbsolutePos(textDocument, absPos);
+        }
     }
 }
