@@ -23,7 +23,7 @@ public class TextDocumentTest {
     public void testSingleLineRegion() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
 
-        TextRegion region = doc.createRegion(0, "bonjour".length());
+        TextRegion region = TextRegion.fromOffsetLength(0, "bonjour".length());
 
         assertEquals(0, region.getStartOffset());
         assertEquals("bonjour".length(), region.getLength());
@@ -42,7 +42,7 @@ public class TextDocumentTest {
     public void testMultiLineRegion() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
-        TextRegion region = doc.createRegion("bonjou".length(), "r\noha\ntri".length());
+        TextRegion region = TextRegion.fromOffsetLength("bonjou".length(), "r\noha\ntri".length());
 
         assertEquals("bonjou".length(), region.getStartOffset());
         assertEquals("r\noha\ntri".length(), region.getLength());
@@ -60,7 +60,7 @@ public class TextDocumentTest {
     public void testEmptyRegion() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
-        TextRegion region = doc.createRegion("bonjour".length(), 0);
+        TextRegion region = TextRegion.fromOffsetLength("bonjour".length(), 0);
 
         assertEquals("bonjour".length(), region.getStartOffset());
         assertEquals(0, region.getLength());
@@ -78,9 +78,9 @@ public class TextDocumentTest {
     public void testRegionOutOfBounds() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
-        expect.expect(InvalidRegionException.class);
+        expect.expect(AssertionError.class);
 
-        doc.createRegion(0, 40);
+        TextRegion.isValidRegion(0, 40, doc);
     }
 
 }

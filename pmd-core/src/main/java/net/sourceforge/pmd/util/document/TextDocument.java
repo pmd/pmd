@@ -65,41 +65,14 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Create a new region based on its start offset and length. The
-     * parameters must identify a valid region in the document. Valid
-     * start offsets range from 0 to {@link #getLength()} (inclusive).
-     * The sum {@code startOffset + length} must range from {@code startOffset}
-     * to {@link #getLength()} (inclusive).
-     *
-     * <p>Those rules make the region starting at {@link #getLength()}
-     * with length 0 a valid region (the caret position at the end of the document).
-     *
-     * <p>For example, for a document of length 1 ({@code "c"}), there
-     * are only three valid regions:
-     * <pre>{@code
-     * [[c     : caret position at offset 0 (empty region)
-     *  [c[    : range containing the character
-     *   c[[   : caret position at offset 1 (empty region)
-     * }</pre>
-     *
-     * @param startOffset 0-based, inclusive offset for the start of the region
-     * @param length      Length of the region in characters
-     *
-     * @throws InvalidRegionException If the arguments do not identify
-     *                                a valid region in this document
-     */
-    TextRegion createRegion(int startOffset, int length);
-
-
-    /**
      * Returns a region that spans the text of all the given lines.
      * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
      * @param startLineInclusive Inclusive start line number (1-based)
      * @param endLineInclusive   Inclusive end line number (1-based)
      *
-     * @throws InvalidRegionException If the arguments do not identify
-     *                                a valid region in this document
+     * @throws IndexOutOfBoundsException If the arguments do not identify
+     *                                   a valid region in this document
      */
     TextRegion createLineRange(int startLineInclusive, int endLineInclusive);
 
@@ -109,10 +82,9 @@ public interface TextDocument extends Closeable {
      *
      * @return A new file position
      *
-     * @throws InvalidRegionException If the argument is not a valid region in this document
+     * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
      */
     FileLocation toLocation(TextRegion region);
-
 
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.

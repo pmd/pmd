@@ -10,8 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A contiguous range of text in a {@link TextDocument}. See {@link TextDocument#createRegion(int, int)}
- * for a description of valid regions in a document. Empty regions may
+ * A contiguous range of text in a {@link TextDocument}. Empty regions may
  * be thought of like caret positions in an IDE. An empty region at offset
  * {@code n} does not contain the character at offset {@code n} in the
  * document, but if it were a caret, typing a character {@code c} would
@@ -21,10 +20,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
+ *
+ * <p>Regions are represented as a simple offset+length tuple. Valid
+ * start offsets range from 0 to {@link #getLength()} (inclusive).
+ * The sum {@code startOffset + length} must range from {@code startOffset}
+ * to {@link #getLength()} (inclusive).
+ *
+ * <p>Those rules make the region starting at {@link #getLength()}
+ * with length 0 a valid region (the caret position at the end of the document).
+ *
+ * <p>For example, for a document of length 1 ({@code "c"}), there
+ * are only three valid regions:
+ * <pre>{@code
+ * [[c     : caret position at offset 0 (empty region)
+ *  [c[    : range containing the character
+ *   c[[   : caret position at offset 1 (empty region)
+ * }</pre>
  */
 public final class TextRegion implements Comparable<TextRegion> {
-
-    public static final TextRegion UNDEFINED = fromOffsetLength(0, 0);
 
     private static final Comparator<TextRegion> COMPARATOR =
         Comparator.comparingInt(TextRegion::getStartOffset)
@@ -34,9 +47,10 @@ public final class TextRegion implements Comparable<TextRegion> {
     private final int length;
 
     private TextRegion(int startOffset, int length) {
-        assert startOffset >= 0 && length >= 0;
         this.startOffset = startOffset;
         this.length = length;
+
+        assert startOffset >= 0 && length >= 0 : "Invalid region " + this;
     }
 
     /** 0-based, inclusive index. */
@@ -124,9 +138,6 @@ public final class TextRegion implements Comparable<TextRegion> {
      * It may have length zero, or not exist (if the regions are completely
      * disjoint).
      *
-     * @param r1 A region
-     * @param r2 A region
-     *
      * @return The intersection, if it exists
      */
     @Nullable
@@ -141,9 +152,6 @@ public final class TextRegion implements Comparable<TextRegion> {
     /**
      * Computes the union of this region with the other. This is the
      * smallest region that contains both this region and the parameter.
-     *
-     * @param r1 A region
-     * @param r2 A region
      *
      * @return The union of both regions
      */
@@ -160,6 +168,8 @@ public final class TextRegion implements Comparable<TextRegion> {
 
     /**
      * Builds a new region from offset and length.
+     *
+     * @throws AssertionError If either parameter is negative
      */
     public static TextRegion fromOffsetLength(int startOffset, int length) {
         return new TextRegion(startOffset, length);
@@ -167,9 +177,27 @@ public final class TextRegion implements Comparable<TextRegion> {
 
     /**
      * Builds a new region from start and end offset.
+     *
+     * @param startOffset Start offset
+     * @param endOffset   End offset
+     *
+     * @throws AssertionError If either offset is negative, or the two
+     *                        offsets are not ordered
      */
     public static TextRegion fromBothOffsets(int startOffset, int endOffset) {
         return new TextRegion(startOffset, endOffset - startOffset);
+    }
+
+    /**
+     * Checks that the parameters are a valid region, this is provided
+     * to debug, will be a noop unless assertions are enabled.
+     */
+    public static boolean isValidRegion(int startOffset, int endOffset, TextDocument doc) {
+        assert startOffset >= 0 : "Negative start offset: " + startOffset;
+        assert endOffset >= 0 : "Negative end offset: " + endOffset;
+        assert startOffset <= endOffset : "Start and end offset are not ordered: " + startOffset + " > " + endOffset;
+        assert endOffset <= doc.getLength() : "End offset " + endOffset + " out of range for doc of length " + doc.getLength();
+        return true;
     }
 
     /** Compares the start offset, then the length of a region. */

@@ -50,7 +50,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     @Override
     public FileLocation toLocation(TextRegion region) {
-        checkInRange(region.getStartOffset(), region.getLength());
+        checkInRange(region);
 
         if (positioner == null) {
             // if nobody cares about lines, this is not computed
@@ -70,17 +70,11 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public TextRegion createRegion(int startOffset, int length) {
-        checkInRange(startOffset, length);
-        return TextRegion.fromOffsetLength(startOffset, length);
-    }
-
-    @Override
     public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
         if (!positioner.isValidLine(startLineInclusive)
             || !positioner.isValidLine(endLineInclusive)
             || startLineInclusive > endLineInclusive) {
-            throw InvalidRegionException.invalidLineRange(startLineInclusive, endLineInclusive, positioner.getLastLine());
+            throw invalidLineRange(startLineInclusive, endLineInclusive, positioner.getLastLine());
         }
 
         int first = positioner.offsetFromLineColumn(startLineInclusive, 1);
@@ -88,13 +82,9 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
         return TextRegion.fromBothOffsets(first, last);
     }
 
-    void checkInRange(int startOffset, int length) {
-        if (startOffset < 0) {
-            throw InvalidRegionException.negativeQuantity("Start offset", startOffset);
-        } else if (length < 0) {
-            throw InvalidRegionException.negativeQuantity("Region length", length);
-        } else if (startOffset + length > getLength()) {
-            throw InvalidRegionException.regionOutOfBounds(startOffset, startOffset + length, getLength());
+    void checkInRange(TextRegion region) {
+        if (region.getEndOffset() > getLength()) {
+            throw regionOutOfBounds(region.getStartOffset(), region.getEndOffset(), getLength());
         }
     }
 
@@ -108,4 +98,15 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     }
 
 
+
+    private static final String NOT_IN_RANGE = "Region {start=%d, end=%d} is not in range of this document (length %d)";
+    private static final String INVALID_LINE_RANGE = "Line range %d..%d is not in range of this document (%d lines) (line numbers are 1-based)";
+
+    static IndexOutOfBoundsException invalidLineRange(int start, int end, int numLines) {
+        return new IndexOutOfBoundsException(String.format(INVALID_LINE_RANGE, start, end, numLines));
+    }
+
+    static IndexOutOfBoundsException regionOutOfBounds(int start, int end, int maxLen) {
+        return new IndexOutOfBoundsException(String.format(NOT_IN_RANGE, start, end, maxLen));
+    }
 }

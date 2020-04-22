@@ -48,7 +48,8 @@ public class JavaccToken implements GenericToken<JavaccToken> {
 
     protected final JavaccTokenDocument document;
     private final CharSequence image;
-    private final TextRegion region;
+    private final int startOffset;
+    private final int endOffset;
     private FileLocation location;
 
     /**
@@ -84,7 +85,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public JavaccToken(String image) {
         this.kind = IMPLICIT_TOKEN;
         this.image = image;
-        this.region = TextRegion.UNDEFINED;
+        this.startOffset = this.endOffset = 0;
         this.location = FileLocation.UNDEFINED;
         this.document = null;
     }
@@ -104,23 +105,12 @@ public class JavaccToken implements GenericToken<JavaccToken> {
                        int endExclusive,
                        JavaccTokenDocument document) {
         assert document != null : "Null document";
-        this.kind = kind;
-        this.image = image;
-        this.region = document.getTextDocument().createRegion(startInclusive, endExclusive - startInclusive);
-        this.document = document;
-    }
-
-    public JavaccToken(int kind,
-                       CharSequence image,
-                       TextRegion region,
-                       JavaccTokenDocument document) {
-
-        assert document != null : "Null document";
-        assert region != null : "Null region";
+        assert TextRegion.isValidRegion(startInclusive, endExclusive, document.getTextDocument());
 
         this.kind = kind;
         this.image = image;
-        this.region = region;
+        this.startOffset = startInclusive;
+        this.endOffset = endExclusive;
         this.document = document;
     }
 
@@ -155,7 +145,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      * Returns a region with the coordinates of this token.
      */
     public TextRegion getRegion() {
-        return region;
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
     @Override
@@ -197,7 +187,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return new JavaccToken(
             this.kind,
             charStream.GetImage(),
-            region.getStartOffset(),
+            this.startOffset,
             charStream.getEndOffset(),
             this.document
         );
@@ -207,7 +197,8 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return new JavaccToken(
             this.kind,
             image,
-            this.getRegion(),
+            this.startOffset,
+            this.endOffset,
             this.document
         );
     }
@@ -226,7 +217,8 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         JavaccToken tok = new JavaccToken(
             newKind,
             this.image,
-            this.getRegion(),
+            this.startOffset,
+            this.endOffset,
             this.document
         );
         tok.specialToken = this.specialToken;
