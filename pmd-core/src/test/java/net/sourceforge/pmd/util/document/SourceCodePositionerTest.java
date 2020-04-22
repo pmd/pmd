@@ -16,7 +16,7 @@ public class SourceCodePositionerTest {
 
     @Test
     public void testLineNumberFromOffset() {
-        final String source = "abcd\ndefghi\n\njklmn\nopq";
+        final String source = "abcd\ndefghi\n\rjklmn\ropq";
 
         SourceCodePositioner positioner = new SourceCodePositioner(source);
 

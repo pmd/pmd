@@ -159,12 +159,15 @@ public final class SourceCodePositioner {
         buffer.add(0); // first line
 
         int off = 0;
+        char prev = 0; // "undefined"
         while (off < len) {
-            char c = sourceCode.charAt(off);
-            off++;
+            char c = sourceCode.charAt(off++);
             if (c == '\n') {
                 buffer.add(off);
+            } else if (prev == '\r') {
+                buffer.add(off - 1);
             }
+            prev = c;
         }
 
         int[] lineOffsets = new int[buffer.size()];
