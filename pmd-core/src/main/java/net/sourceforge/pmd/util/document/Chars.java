@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.apache.commons.io.input.CharSequenceReader;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.
  * This view is immutable. Since it uses a string internally it benefits from
- * Java 9's compacting feature, it also can efficiently created from a StringBuilder.
+ * Java 9's compacting feature, it can also be efficiently created from
+ * a StringBuilder.
  */
 public final class Chars implements CharSequence {
 
@@ -27,6 +27,7 @@ public final class Chars implements CharSequence {
     private final int len;
 
     private Chars(String str, int start, int len) {
+        validateRangeWithAssert(start, len, str.length());
         this.str = str;
         this.start = start;
         this.len = len;
@@ -38,7 +39,8 @@ public final class Chars implements CharSequence {
 
 
     /**
-     * Wraps the given char sequence.
+     * Wraps the given char sequence into a {@link Chars}. This may
+     * call {@link CharSequence#toString()}.
      */
     public static Chars wrap(CharSequence chars) {
         if (chars instanceof Chars) {
@@ -49,25 +51,63 @@ public final class Chars implements CharSequence {
 
     /**
      * Write all characters of this buffer into the given writer.
+     *
+     * @param writer A writer
+     *
+     * @throws NullPointerException If the writer is null
      */
-    public void writeFully(Writer writer) throws IOException {
+    public void writeFully(@NonNull Writer writer) throws IOException {
         writer.write(str, start, length());
     }
 
     /**
-     * Reads 'len' characters from index 'from' into the given array at 'off'.
+     * Write a range of characters to the given writer.
+     *
+     * @param writer A writer
+     * @param start  Start offset in this CharSequence
+     * @param count  Number of characters
+     *
+     * @throws IOException               If the writer throws
+     * @throws IndexOutOfBoundsException See {@link Writer#write(int)}
      */
-    public void getChars(int from, char @NonNull [] cbuf, int off, int len) {
-        if (len == 0) {
+    public void write(@NonNull Writer writer, int start, int count) throws IOException {
+        writer.write(str, idx(start), count);
+    }
+
+    /**
+     * Copies 'len' characters from index 'from' into the given array,
+     * starting at 'off'.
+     *
+     * @param srcBegin Start offset in this CharSequence
+     * @param cbuf     Character array
+     * @param count    Number of characters to copy
+     * @param dstBegin Start index in the array
+     *
+     * @throws NullPointerException      If the array is null (may)
+     * @throws IndexOutOfBoundsException See {@link String#getChars(int, int, char[], int)}
+     */
+    public void getChars(int srcBegin, char @NonNull [] cbuf, int dstBegin, int count) {
+        if (count == 0) {
             return;
         }
-        int start = idx(from);
-        str.getChars(start, start + len, cbuf, off);
+        int start = idx(srcBegin);
+        str.getChars(start, start + count, cbuf, dstBegin);
     }
 
     /**
      * Appends the character range identified by offset and length into
-     * the string builder.
+     * the string builder. This is much more efficient than calling
+     * {@link StringBuilder#append(CharSequence)} with this as the
+     * parameter, especially on Java 9+.
+     *
+     * <p>Be aware that {@link StringBuilder#append(CharSequence, int, int)}
+     * takes a start and <i>end</i> offset, whereas this method (like all
+     * the others in this class) take a start offset and a length.
+     *
+     * @param off Start (inclusive)
+     * @param len Number of characters
+     *
+     * @throws IndexOutOfBoundsException See {@link StringBuilder#append(CharSequence, int, int)}
      */
     public void appendChars(StringBuilder sb, int off, int len) {
         if (len == 0) {
@@ -77,10 +117,34 @@ public final class Chars implements CharSequence {
         sb.append(str, idx, idx + len);
     }
 
+    /**
+     * Append this character sequence on the given stringbuilder.
+     * This is much more efficient than calling {@link StringBuilder#append(CharSequence)}
+     * with this as the parameter, especially on Java 9+.
+     *
+     * @param sb String builder
+     */
+    public void appendChars(StringBuilder sb) {
+        sb.append(str, start, start + len);
+    }
+
+    /**
+     * See {@link String#indexOf(String, int)}.
+     */
     public int indexOf(String s, int fromIndex) {
         return str.indexOf(s, idx(fromIndex));
     }
 
+    /**
+     * See {@link String#indexOf(int, int)}.
+     */
+    public int indexOf(int ch, int fromIndex) {
+        return str.indexOf(ch, fromIndex);
+    }
+
+    /**
+     * See {@link String#startsWith(String, int)}.
+     */
     public boolean startsWith(String prefix, int fromIndex) {
         return str.startsWith(prefix, idx(fromIndex));
     }
@@ -89,7 +153,34 @@ public final class Chars implements CharSequence {
      * Returns a new reader for the whole contents of this char sequence.
      */
     public Reader newReader() {
-        return new CharSequenceReader(this);
+        return new Reader() {
+            private int pos = start;
+            private final int max = start + len;
+
+            @Override
+            public int read(char[] cbuf, int off, int len) {
+                if (len >= 0 && off >= 0 && (off + len) <= cbuf.length) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (pos >= max) {
+                    return -1;
+                }
+                int toRead = Integer.min(max - pos, len);
+                str.getChars(pos, pos + toRead, cbuf, off);
+                pos += toRead;
+                return toRead;
+            }
+
+            @Override
+            public int read() {
+                return pos >= max ? -1 : str.charAt(pos++);
+            }
+
+            @Override
+            public void close() {
+                // nothing to do
+            }
+        };
     }
 
     @Override
@@ -112,15 +203,19 @@ public final class Chars implements CharSequence {
      * of start + end.
      */
     public Chars slice(int off, int len) {
-        if (off < 0 || len < 0 || (off + len) > length()) {
-            throw new IndexOutOfBoundsException(
-                "Cannot cut " + start + ".." + (off + len) + " (length " + length() + ")"
-            );
-        }
+        validateRangeWithAssert(off, len, this.len);
         if (len == 0) {
             return EMPTY;
         }
         return new Chars(str, idx(off), len);
+    }
+
+    private static void validateRangeWithAssert(int off, int len, int bound) {
+        assert len >= 0 && off >= 0 && (off + len) <= bound : invalidRange(off, len, bound);
+    }
+
+    private static String invalidRange(int off, int len, int bound) {
+        return "Invalid range [" + off + ", " + (off + len) + "[ (length " + len + ") in string of length " + bound;
     }
 
     @Override
