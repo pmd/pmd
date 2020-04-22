@@ -4,27 +4,22 @@
 
 package net.sourceforge.pmd.test.lang.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.util.document.FileLocation;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> {
+public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
     private String image;
-    protected int beginLine = -1;
-    protected int endLine;
-    protected int beginColumn = -1;
-    protected int endColumn;
+    private FileLocation location;
 
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        beginLine = bline;
-        beginColumn = bcol;
-        endLine = eline;
-        endColumn = ecol;
+        this.location = FileLocation.location(":dummyFile:", bline, bcol, eline, ecol);
     }
 
     @Override
     public FileLocation getReportLocation() {
-        return FileLocation.location("todo", beginLine, beginColumn, endLine, endColumn);
+        assert location != null : "Should have called setCoords";
+        return location;
     }
 
     @Deprecated

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
@@ -92,7 +91,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         Class<?> declaration = method.getDeclaringClass();
         if (method.isAnnotationPresent(NoAttribute.class)) {
             return true;
-        } else if (declaration == Node.class || declaration == AbstractNode.class || declaration == AbstractNodeWithTextCoordinates.class) {
+        } else if (declaration == Node.class || declaration == AbstractNode.class) {
             // attributes from Node and AbstractNode are never suppressed
             // we don't know what might go wrong if we do suppress them
             return false;

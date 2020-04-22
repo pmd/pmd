@@ -17,8 +17,6 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     private final Map<String, String> userData = new HashMap<>();
     private String image;
 
-    // note: since line & columns are 1-based, getReportLocation
-    // will throw unless these are all set
     private FileLocation location;
 
     public DummyNode(String xpathName) {
