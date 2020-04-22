@@ -21,12 +21,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <p>Regions are not bound to a specific document, keeping a reference
  * to them does not prevent the document from being garbage-collected.
  *
- * <p>Regions are represented as a simple offset+length tuple. Valid
- * start offsets range from 0 to {@link #getLength()} (inclusive).
+ * <p>Regions are represented as a simple offset+length tuple. In a document,
+ * valid start offsets range from 0 to {@link TextDocument#getLength()} (inclusive).
  * The sum {@code startOffset + length} must range from {@code startOffset}
- * to {@link #getLength()} (inclusive).
+ * to {@link TextRegion#getLength()} (inclusive).
  *
- * <p>Those rules make the region starting at {@link #getLength()}
+ * <p>Those rules make the region starting at {@link TextDocument#getLength()}
  * with length 0 a valid region (the caret position at the end of the document).
  *
  * <p>For example, for a document of length 1 ({@code "c"}), there
@@ -50,7 +50,7 @@ public final class TextRegion implements Comparable<TextRegion> {
         this.startOffset = startOffset;
         this.length = length;
 
-        assert startOffset >= 0 && length >= 0 : "Invalid region " + this;
+        assert startOffset >= 0 && length >= 0 : "Invalid region" + parThis();
     }
 
     /** 0-based, inclusive index. */
@@ -118,8 +118,13 @@ public final class TextRegion implements Comparable<TextRegion> {
      * Returns a region that ends at the same point, but starts 'delta'
      * characters before this region. If the delta is negative, then this
      * shifts the start of the region to the right (but the end stays fixed).
+     *
+     * @throws AssertionError If startOffset - delta is negative
+     * @throws AssertionError If delta is negative and the
      */
     public TextRegion growLeft(int delta) {
+        assert (delta + length) >= 0 : "Left delta " + delta + " would produce a negative length region" + parThis();
+        assert (startOffset - delta) >= 0 : "Left delta " + delta + " would produce a region that starts before zero" + parThis();
         return new TextRegion(startOffset - delta, delta + length);
     }
 
@@ -127,8 +132,11 @@ public final class TextRegion implements Comparable<TextRegion> {
      * Returns a region that starts at the same point, but ends 'delta'
      * characters after this region. If the delta is negative, then this
      * shifts the end of the region to the left (but the start stays fixed).
+     *
+     * @throws AssertionError If the delta is negative and less than the length of this region
      */
     public TextRegion growRight(int delta) {
+        assert (delta + length) >= 0 : "Right delta " + delta + " would produce a negative length region" + parThis();
         return new TextRegion(startOffset, delta + length);
     }
 
@@ -199,6 +207,11 @@ public final class TextRegion implements Comparable<TextRegion> {
         assert endOffset <= doc.getLength() : "End offset " + endOffset + " out of range for doc of length " + doc.getLength();
         return true;
     }
+
+    private String parThis() {
+        return "(" + this + ")";
+    }
+
 
     /** Compares the start offset, then the length of a region. */
     @Override

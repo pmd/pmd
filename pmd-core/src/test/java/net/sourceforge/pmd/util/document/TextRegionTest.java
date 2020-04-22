@@ -76,8 +76,7 @@ public class TextRegionTest {
 
         TextRegion inter = doIntersect(r1, r2);
 
-        assertEquals(3, inter.getStartOffset());
-        assertEquals(0, inter.getLength());
+        assertRegionEquals(inter, 3, 0);
         assertTrue(inter.isEmpty());
     }
 
@@ -101,8 +100,7 @@ public class TextRegionTest {
 
         TextRegion inter = doIntersect(r1, r2);
 
-        assertEquals(3, inter.getStartOffset());
-        assertEquals(2, inter.getLength());
+        assertRegionEquals(inter, 3, 2);
     }
 
     @Test
@@ -115,8 +113,7 @@ public class TextRegionTest {
 
         TextRegion inter = doIntersect(r1, r2);
 
-        assertEquals(3, inter.getStartOffset());
-        assertEquals(1, inter.getLength());
+        assertRegionEquals(inter, 3, 1);
     }
 
     @Test
@@ -191,9 +188,7 @@ public class TextRegionTest {
 
         TextRegion union = doUnion(r1, r2);
 
-        assertEquals(2, union.getStartOffset());
-        assertEquals(6, union.getEndOffset());
-        assertEquals(4, union.getLength());
+        assertRegionEquals(union, 2, 4);
     }
 
     @Test
@@ -205,11 +200,76 @@ public class TextRegionTest {
 
         TextRegion union = doUnion(r1, r2);
 
-        assertEquals(2, union.getStartOffset());
-        assertEquals(8, union.getEndOffset());
-        assertEquals(6, union.getLength());
+        assertRegionEquals(union, 2, 6);
     }
 
+    @Test
+    public void testGrowLeft() {
+        // r1:   --[-[-
+        // r2:  [-- -[-
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+
+        TextRegion r2 = r1.growLeft(+2);
+
+        assertRegionEquals(r2, 0, 3);
+    }
+
+    @Test
+    public void testGrowLeftNegative() {
+        // r1:  --[- [-
+        // r2:  -- -[[-
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+
+        TextRegion r2 = r1.growLeft(-1);
+
+        assertRegionEquals(r2, 3, 0);
+    }
+
+    @Test
+    public void testGrowLeftOutOfBounds() {
+        // r1:  --[-[-
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+
+        expect.expect(AssertionError.class);
+        r1.growLeft(4);
+    }
+
+    @Test
+    public void testGrowRight() {
+        // r1:  --[-[-
+        // r2:  --[- -[
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+
+        TextRegion r2 = r1.growRight(+1);
+
+        assertRegionEquals(r2, 2, 2);
+    }
+
+    @Test
+    public void testGrowRightNegative() {
+        // r1:  --[ -[-
+        // r2:  --[[- -
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+
+        TextRegion r2 = r1.growRight(-1);
+
+        assertRegionEquals(r2, 2, 0);
+    }
+
+    @Test
+    public void testGrowRightOutOfBounds() {
+        // r1:  --[-[-
+        TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
+
+        expect.expect(AssertionError.class);
+        r1.growRight(-2);
+    }
+
+
+    public void assertRegionEquals(TextRegion region, int start, int len) {
+        assertEquals("Start offset", start, region.getStartOffset());
+        assertEquals("Length", len, region.getLength());
+    }
 
     public void assertIsBefore(TextRegion r1, TextRegion r2) {
         assertTrue("Region " + r1 + " should be before " + r2, r1.compareTo(r2) < 0);
