@@ -87,7 +87,7 @@
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.3.0</kotlin.version>
-        <dokka.version>0.10.0</dokka.version>
+        <dokka.version>0.10.1</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
@@ -96,7 +96,7 @@
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
+        <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -283,18 +283,23 @@
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
-                        <additionalJOptions>
-                            <additionalJOption>-html5</additionalJOption>
-                        </additionalJOptions>
-                        <additionalDependencies>
-                            <!-- TODO: this is only needed to make javadoc happy -->
-                            <additionalDependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant</artifactId>
-                                <version>${ant.version}</version>
-                            </additionalDependency>
-                        </additionalDependencies>
+                        <excludePackageNames>*.internal</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
+                        <offlineLinks>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-lang-test/target/dokka/pmd-lang-test</location>
+                                <url>../../pmd-lang-test/${project.version}</url>
+                            </offlineLink>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-test/target/apidocs</location>
+                                <url>../../pmd-test/${project.version}</url>
+                            </offlineLink>
+                            <!-- core needs to be last, because the package "net.sourceforge.pmd.lang" is both in pmd-core and pmd-test -->
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                                <url>../../pmd-core/${project.version}</url>
+                            </offlineLink>
+                        </offlineLinks>
                     </configuration>
                 </plugin>
                 <plugin>

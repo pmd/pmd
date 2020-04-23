@@ -1,0 +1,15 @@
+{
+  "formatVersion": 0,
+  "pmdVersion": "unknown",
+  "timestamp": "--replaced--",
+  "files": [],
+  "suppressedViolations": [],
+  "processingErrors": [
+    {
+      "filename": "file",
+      "message": "RuntimeException: Error",
+      "detail": "###REPLACE_ME###"
+    }
+  ],
+  "configurationErrors": []
+}
