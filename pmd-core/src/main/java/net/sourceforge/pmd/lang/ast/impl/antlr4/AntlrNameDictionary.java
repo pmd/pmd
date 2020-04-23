@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.Vocabulary;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +44,10 @@ public class AntlrNameDictionary implements Vocabulary {
         }
 
         this.xpathNames = xpathNames;
+
+
+        assert Stream.of(xpathNames).distinct().count() == xpathNames.length
+            : "Duplicate names in "+ Arrays.toString(xpathNames);
     }
 
     private static @Nullable String maybePunctName(String s) {
@@ -52,6 +59,11 @@ public class AntlrNameDictionary implements Vocabulary {
         case ",": return "comma";
         case "(": return "lparen";
         case ")": return "rparen";
+        case "[": return "lbracket";
+        case "]": return "rbracket";
+        case "{": return "lbrace";
+        case "}": return "rbrace";
+        case "@": return "at-symbol";
         }
         return null;
     }
