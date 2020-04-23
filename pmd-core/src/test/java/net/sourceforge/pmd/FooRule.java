@@ -26,7 +26,7 @@ public class FooRule extends AbstractRule {
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forXPathNames(setOf("dummyNode"));
+        return RuleTargetSelector.forXPathNames(setOf("dummyNode", "dummyRootNode"));
     }
 
     @Override
