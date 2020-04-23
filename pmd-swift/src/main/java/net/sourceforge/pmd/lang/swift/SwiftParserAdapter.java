@@ -16,18 +16,19 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 import net.sourceforge.pmd.lang.swift.ast.SwiftLexer;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.TopLevelContext;
 
 /**
  * Adapter for the SwiftParser.
  */
-public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser> {
+public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser, TopLevelContext> {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
-        super(parserOptions);
+        super(parserOptions, SwiftLanguageModule.NAME);
     }
 
     @Override
-    protected RootNode getRootNode(final SwiftParser parser) {
+    protected TopLevelContext getRootNode(final SwiftParser parser) {
         return parser.topLevel();
     }
 

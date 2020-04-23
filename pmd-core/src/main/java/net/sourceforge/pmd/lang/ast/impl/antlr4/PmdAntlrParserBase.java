@@ -11,6 +11,10 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+/**
+ * This is the base class for antlr generated parsers. The implementation
+ * of PMD's {@link net.sourceforge.pmd.lang.Parser} interface is {@link AntlrBaseParser}.
+ */
 public abstract class PmdAntlrParserBase extends Parser {
 
     public PmdAntlrParserBase(TokenStream input) {
