@@ -10,6 +10,8 @@ import org.mozilla.javascript.ast.InfixExpression;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
+@Deprecated
+@InternalApi
 public class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
 
     @Deprecated
