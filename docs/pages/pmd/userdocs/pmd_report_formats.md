@@ -82,8 +82,11 @@ Example:
 
 HTML format.
 
-This renderer provides two properties. If these are provided, then a link to the source where the violations
-have been found is rendered. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd`.
+This renderer provides two properties to render a link to the source where the violations
+have been found. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd`.
+If "linkPrefix" is not set, then "linePrefix" has no effect anyway: just the filename will
+be rendered, with no html link. Otherwise if "linePrefix" is not set, then the link will
+not contain a line number.
 
 When using [Maven JXR Plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html) to generate a html view
 of the project's sources, then the property "htmlExtension" needs to be set to "true". This will then replace the

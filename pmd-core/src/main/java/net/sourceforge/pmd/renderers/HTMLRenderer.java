@@ -15,7 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.StringProperty;
 
 /**
@@ -32,9 +35,15 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     public static final StringProperty LINE_PREFIX = new StringProperty("linePrefix",
             "Prefix for line number anchor in the source file.", null, 1);
     public static final StringProperty LINK_PREFIX = new StringProperty("linkPrefix", "Path to HTML source.", null, 0);
+    public static final PropertyDescriptor<Boolean> HTML_EXTENSION = PropertyFactory.booleanProperty("htmlExtension")
+            .desc("Replace file extension with .html for the links (default: false)")
+            // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
+            .defaultValue(false)
+            .build();
 
     private String linkPrefix;
     private String linePrefix;
+    private boolean replaceHtmlExtension;
 
     private int violationCount = 1;
     boolean colorize = true;
@@ -44,6 +53,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
         definePropertyDescriptor(LINK_PREFIX);
         definePropertyDescriptor(LINE_PREFIX);
+        definePropertyDescriptor(HTML_EXTENSION);
     }
 
     @Override
@@ -61,6 +71,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     public void renderBody(Writer writer, Report report) throws IOException {
         linkPrefix = getProperty(LINK_PREFIX);
         linePrefix = getProperty(LINE_PREFIX);
+        replaceHtmlExtension = getProperty(HTML_EXTENSION);
 
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
@@ -78,6 +89,10 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
+        linkPrefix = getProperty(LINK_PREFIX);
+        linePrefix = getProperty(LINE_PREFIX);
+        replaceHtmlExtension = getProperty(HTML_EXTENSION);
+
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
@@ -116,8 +131,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
             buf.append("<td width=\"*%\">"
-                    + maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(rv.getFilename())),
-                            linePrefix == null ? "" : linePrefix + Integer.toString(rv.getBeginLine()))
+                    + renderFileName(rv.getFilename(), rv.getBeginLine())
                     + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
 
@@ -132,6 +146,20 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             writer.write(buf.toString());
             violationCount++;
         }
+    }
+
+    private String renderFileName(String filename, int beginLine) {
+        return maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(filename)),
+                linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine);
+    }
+
+    private String renderRuleName(Rule rule) {
+        String name = rule.getName();
+        String infoUrl = rule.getExternalInfoUrl();
+        if (StringUtils.isNotBlank(infoUrl)) {
+            return "<a href=\"" + infoUrl + "\">" + name + "</a>";
+        }
+        return name;
     }
 
     private void glomProcessingErrors(Writer writer, List<Report.ProcessingError> errors) throws IOException {
@@ -155,7 +183,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td>" + determineFileName(pe.getFile()) + "</td>" + PMD.EOL);
+            buf.append("<td>" + renderFileName(pe.getFile(), -1) + "</td>" + PMD.EOL);
             buf.append("<td><pre>" + pe.getDetail() + "</pre></td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             writer.write(buf.toString());
@@ -183,9 +211,10 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td align=\"left\">" + determineFileName(sv.getRuleViolation().getFilename()) + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + sv.getRuleViolation().getBeginLine() + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + sv.getRuleViolation().getRule().getName() + "</td>" + PMD.EOL);
+            RuleViolation rv = sv.getRuleViolation();
+            buf.append("<td align=\"left\">" + renderFileName(rv.getFilename(), rv.getBeginLine()) + "</td>" + PMD.EOL);
+            buf.append("<td align=\"center\">" + rv.getBeginLine() + "</td>" + PMD.EOL);
+            buf.append("<td align=\"center\">" + renderRuleName(rv.getRule()) + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.getUserMessage() == null ? "" : sv.getUserMessage()) + "</td>"
                     + PMD.EOL);
@@ -215,7 +244,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td>" + ce.rule().getName() + "</td>" + PMD.EOL);
+            buf.append("<td>" + renderRuleName(ce.rule()) + "</td>" + PMD.EOL);
             buf.append("<td>" + ce.issue() + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             writer.write(buf.toString());
@@ -227,11 +256,16 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         if (StringUtils.isBlank(linkPrefix)) {
             return filename;
         }
-        String newFileName = filename;
-        int index = filename.lastIndexOf('.');
-        if (index >= 0) {
-            newFileName = filename.substring(0, index).replace('\\', '/');
+        String newFileName = filename.replace('\\', '/');
+
+        if (replaceHtmlExtension) {
+            int index = filename.lastIndexOf('.');
+            if (index >= 0) {
+                newFileName = filename.substring(0, index);
+            }
         }
-        return "<a href=\"" + linkPrefix + newFileName + ".html#" + line + "\">" + newFileName + "</a>";
+
+        return "<a href=\"" + linkPrefix + newFileName + (replaceHtmlExtension ? ".html#" : "#") + line + "\">"
+            + newFileName + "</a>";
     }
 }
