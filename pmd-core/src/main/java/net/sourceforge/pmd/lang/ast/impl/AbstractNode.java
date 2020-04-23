@@ -10,7 +10,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
@@ -40,7 +39,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     private AbstractNode<T> parent;
     private int childIndex;
 
-    private DataFlowNode dataFlowNode;
     // @Deprecated?
     private String image;
 
@@ -140,22 +138,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     @Override
     public boolean hasImageEqualTo(final String image) {
         return Objects.equals(this.getImage(), image);
-    }
-
-    @Override
-    public DataFlowNode getDataFlowNode() {
-        if (this.dataFlowNode == null) {
-            if (this.parent != null) {
-                return parent.getDataFlowNode();
-            }
-            return null; // TODO wise?
-        }
-        return dataFlowNode;
-    }
-
-    @Override
-    public void setDataFlowNode(final DataFlowNode dataFlowNode) {
-        this.dataFlowNode = dataFlowNode;
     }
 
     @Override

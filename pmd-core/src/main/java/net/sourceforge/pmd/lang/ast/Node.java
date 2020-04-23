@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jaxen.BaseXPath;
@@ -91,25 +88,6 @@ public interface Node {
 
     // FIXME should not be inclusive
     int getEndColumn();
-
-
-    /**
-     * @deprecated This is Java-specific and will be removed from this interface
-     */
-    @Deprecated
-    default DataFlowNode getDataFlowNode() {
-        throw new UnsupportedOperationException("JJTree specific");
-    }
-
-
-    /**
-     * @deprecated This is Java-specific and will be removed from this interface
-     */
-    @Deprecated
-    default void setDataFlowNode(DataFlowNode dataFlowNode) {
-        throw new UnsupportedOperationException("JJTree specific");
-    }
-
 
 
     /**

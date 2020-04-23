@@ -39,7 +39,7 @@ public class AcceptanceTest extends BaseNonParserTest {
     private boolean check(int[][] array, List<ASTMethodDeclarator> methodNodes) {
         for (int i = 0; i < methodNodes.size(); i++) {
             ASTMethodDeclarator decl = methodNodes.get(i);
-            DataFlowNode inode = decl.getDataFlowNode();
+            DataFlowNode inode = DataFlowNode.get(decl);
             for (int j = 0; j < inode.getChildren().size(); j++) {
                 DataFlowNode child = inode.getChildren().get(j);
                 if (array[i][j] != child.getIndex() - 1) {
