@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.swift;
+package net.sourceforge.pmd.lang.swift.ast;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -14,22 +14,19 @@ import org.antlr.v4.runtime.Lexer;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
-import net.sourceforge.pmd.lang.swift.ast.SwiftLexer;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser.TopLevelContext;
 
 /**
  * Adapter for the SwiftParser.
  */
-public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser, TopLevelContext> {
+public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser, SwiftFileNode> {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
-        super(parserOptions, SwiftLanguageModule.NAME);
+        super(parserOptions);
     }
 
     @Override
-    protected TopLevelContext getRootNode(final SwiftParser parser) {
-        return parser.topLevel();
+    protected SwiftFileNode parse(final SwiftParser parser) {
+        return new SwiftFileNode(parser.topLevel());
     }
 
     @Override

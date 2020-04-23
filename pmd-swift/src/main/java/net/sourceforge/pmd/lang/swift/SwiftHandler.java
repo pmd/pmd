@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.swift;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParserAdapter;
 
 public class SwiftHandler extends AbstractPmdLanguageVersionHandler {
 
