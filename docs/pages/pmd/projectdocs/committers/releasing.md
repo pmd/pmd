@@ -27,13 +27,14 @@ Make sure code is up to date and everything is committed and pushed with git:
 
 You can find the release notes here: `docs/pages/release_notes.md`.
 
-The date and the version must be updated in `docs/_config.yml`,  e.g.
+The date (`date +%d-%B-%Y`) and the version (remove the SNAPSHOT) must be updated in `docs/_config.yml`,  e.g.
 
 ```
 pmd:
-    version: 6.0.0
-    date: 2017-12-15
-    release_type: major
+    version: 6.22.0
+    previous_version: 6.21.0
+    date: 12-March-2020
+    release_type: minor
 ```
 
 The release type could be one of "bugfix", "minor", or "major".
@@ -86,13 +87,13 @@ The new version needs to be entered into `_config.yml`, e.g.:
 
 ```
 pmd:
-  latestVersion: 6.0.0
-  latestVersionDate: 15th December 2017
+  latestVersion: 6.22.0
+  latestVersionDate: 12-March-2020
 ```
 
 Also move the previous version down into the "downloads" section.
 
-Then create a new page for the new release, e.g. `_posts/2017-12-15-PMD-6.0.0.md` and copy
+Then create a new page for the new release, e.g. `_posts/2020-03-12-PMD-6.22.0.md` and copy
 the release notes into this page. This will appear under the news section.
 
 Check in all (version) changes to branch master:
@@ -131,6 +132,7 @@ it is a tag build and a released version build, travis-ci will do a couple of ad
     selected as the new default downloads for PMD.
 *   Add the documentation of the new release to a subfolder on <https://pmd.github.io>, also make
     this folder available as `latest`.
+*   Upload the documentation to <https://docs.pmd-code.org>.
 
 
 ## After the release
@@ -165,7 +167,16 @@ the following template:
 
 ### Prepare the new release notes
 
-*   Update version in **docs/_config.yml**
+*   Update version in **docs/_config.yml**. Note - the next version needs to have a SNAPSHOT in it.
+    
+    ```
+    pmd:
+        version: 6.23.0-SNAPSHOT
+        previous_version: 6.22.0
+        date: ??-??-2020
+        release_type: minor
+    ```
+
 *   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
 *   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 
