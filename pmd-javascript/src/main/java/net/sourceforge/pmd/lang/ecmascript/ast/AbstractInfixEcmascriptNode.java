@@ -8,7 +8,7 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.InfixExpression;
 
-public abstract class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
+abstract class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
 
     AbstractInfixEcmascriptNode(T infixExpression) {
         this(infixExpression, true);

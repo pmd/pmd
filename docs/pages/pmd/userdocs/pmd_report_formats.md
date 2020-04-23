@@ -35,8 +35,8 @@ the full rule details for each reported rule violation.
 Example:
 
 ```
-{"type":"issue","check_name":"GuardLogStatement","description":"Logger calls should be surrounded by log level guards.","content":{"body":"## GuardLogStatement\n\nSince: PMD 5.1.0\n\nPriority: Medium High\n\n[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\n\nWhenever using a log level, one should check if the loglevel is actually enabled, or otherwise skip the associate String creation and manipulation.\n\n### Example:\n\n```java\n\n\n // Add this for performance\n if (log.isDebugEnabled() { ...\n log.debug('log something' + ' and ' + 'concat strings');\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_devdocs_working_with_properties.html)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\nlogLevels | trace,debug,info,warn,error,log,finest,finer,fine,info,warning,severe | LogLevels to guard\nguardsMethods | isTraceEnabled,isDebugEnabled,isInfoEnabled,isWarnEnabled,isErrorEnabled,isLoggable | Method use to guard the log statement\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java","lines":{"begin":124,"end":125}},"severity":"normal","remediation_points":50000}
-{"type":"issue","check_name":"ForLoopCanBeForeach","description":"This for loop can be replaced by a foreach loop","content":{"body":"## ForLoopCanBeForeach\n\nSince: PMD 6.0.0\n\nPriority: Medium\n\n[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\n\nReports loops that can be safely replaced with the foreach syntax. The rule considers loops over lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to access an element of the list or array, only has one update statement, and loops through *every* element of the list or array left to right.\n\n### Example:\n\n```java\n\n\npublic class MyClass {\n void loop(List<String> l) {\n for (int i = 0; i < l.size(); i++) { // pre Java 1.5\n System.out.println(l.get(i));\n }\n\n for (String s : l) { // post Java 1.5\n System.out.println(s);\n }\n }\n}\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_devdocs_working_with_properties.html)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java","lines":{"begin":58,"end":62}},"severity":"normal","remediation_points":50000}
+{"type":"issue","check_name":"GuardLogStatement","description":"Logger calls should be surrounded by log level guards.","content":{"body":"## GuardLogStatement\n\nSince: PMD 5.1.0\n\nPriority: Medium High\n\n[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\n\nWhenever using a log level, one should check if the loglevel is actually enabled, or otherwise skip the associate String creation and manipulation.\n\n### Example:\n\n```java\n\n\n // Add this for performance\n if (log.isDebugEnabled() { ...\n log.debug('log something' + ' and ' + 'concat strings');\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_userdocs_configuring_rules.html#rule-properties)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\nlogLevels | trace,debug,info,warn,error,log,finest,finer,fine,info,warning,severe | LogLevels to guard\nguardsMethods | isTraceEnabled,isDebugEnabled,isInfoEnabled,isWarnEnabled,isErrorEnabled,isLoggable | Method use to guard the log statement\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java","lines":{"begin":124,"end":125}},"severity":"normal","remediation_points":50000}
+{"type":"issue","check_name":"ForLoopCanBeForeach","description":"This for loop can be replaced by a foreach loop","content":{"body":"## ForLoopCanBeForeach\n\nSince: PMD 6.0.0\n\nPriority: Medium\n\n[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\n\n[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\n\nReports loops that can be safely replaced with the foreach syntax. The rule considers loops over lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to access an element of the list or array, only has one update statement, and loops through *every* element of the list or array left to right.\n\n### Example:\n\n```java\n\n\npublic class MyClass {\n void loop(List<String> l) {\n for (int i = 0; i < l.size(); i++) { // pre Java 1.5\n System.out.println(l.get(i));\n }\n\n for (String s : l) { // post Java 1.5\n System.out.println(s);\n }\n }\n}\n\n \n``` \n\n### [PMD properties](https://pmd.github.io/pmd-6.22.0/pmd_userdocs_configuring_rules.html#rule-properties)\n\nName | Value | Description\n--- | --- | ---\nviolationSuppressRegex | | Suppress violations with messages matching a regular expression\nviolationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\n"},"categories":["Style"],"location":{"path":"/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java","lines":{"begin":58,"end":62}},"severity":"normal","remediation_points":50000}
 ```
 
 ## csv
@@ -82,8 +82,11 @@ Example:
 
 HTML format.
 
-This renderer provides two properties. If these are provided, then a link to the source where the violations
-have been found is rendered. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd`.
+This renderer provides two properties to render a link to the source where the violations
+have been found. The following example has been created with `-property linkPrefix=https://github.com/pmd/pmd/blob/master/ -property linePrefix=L -shortnames -d pmd`.
+If "linkPrefix" is not set, then "linePrefix" has no effect anyway: just the filename will
+be rendered, with no html link. Otherwise if "linePrefix" is not set, then the link will
+not contain a line number.
 
 When using [Maven JXR Plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html) to generate a html view
 of the project's sources, then the property "htmlExtension" needs to be set to "true". This will then replace the
@@ -127,6 +130,20 @@ This for loop can be replaced by a foreach loop
 *   classAndMethodName: Class and method name, pass `.method` when processing a directory.
 *   sourcePath:
 *   fileName:
+
+## json
+
+JSON format.
+
+This prints a single JSON object containing some header information,
+and then the violations grouped by file. The root object fields are
+* `formatVersion`: an integer which will be incremented if we change the serialization format
+* `pmdVersion`: the version of PMD that produced the report
+* `timestamp`: explicit
+* `files`: an array of objects (see the example)
+
+[Example](report-examples/pmd-report-json.json)
+
 
 ## summaryhtml
 

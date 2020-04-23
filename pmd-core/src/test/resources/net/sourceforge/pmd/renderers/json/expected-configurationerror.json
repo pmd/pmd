@@ -1,0 +1,15 @@
+{
+  "formatVersion": 0,
+  "pmdVersion": "unknown",
+  "timestamp": "--replaced--",
+  "files": [],
+  "suppressedViolations": [],
+  "processingErrors": [],
+  "configurationErrors": [
+    {
+      "rule": "Foo",
+      "ruleset": "RuleSet",
+      "message": "a configuration error"
+    }
+  ]
+}

@@ -54,6 +54,11 @@ The default version has been set to `ES6`, so that some ECMAScript 2015 features
 supported. E.g. `let` statements and `for-of` loops are now parsed. However Rhino does
 not support all features.
 
+#### New JSON renderer
+
+PMD now supports a JSON renderer (use it with `-f json` on the CLI).
+See [the documentation and example](https://pmd.github.io/latest/pmd_userdocs_report_formats.html#json)
+
 #### New Rules
 
 *   The new Apex rule {% rule "apex/codestyle/FieldDeclarationsShouldBeAtStart" %} (`apex-codestyle`)
@@ -70,11 +75,14 @@ not support all features.
     *   [#2210](https://github.com/pmd/pmd/issues/2210): \[apex] ApexCRUDViolation: Support WITH SECURITY_ENFORCED
     *   [#2399](https://github.com/pmd/pmd/issues/2399): \[apex] ApexCRUDViolation: false positive with security enforced with line break
 *   core
+    *   [#1286](https://github.com/pmd/pmd/issues/1286): \[core] Export Supporting JSON Format
     *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
     *   [#2357](https://github.com/pmd/pmd/issues/2357): Add code of conduct: Contributor Covenant
+    *   [#2426](https://github.com/pmd/pmd/issues/2426): \[core] CodeClimate renderer links are dead
 *   doc
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
+    *   [#2412](https://github.com/pmd/pmd/issues/2412): \[core] HTMLRenderer doesn't render links to source files
     *   [#2413](https://github.com/pmd/pmd/issues/2413): \[doc] Improve documentation about the available renderers (PMD/CPD)
 *   java
     *   [#2378](https://github.com/pmd/pmd/issues/2378): \[java] AbstractJUnitRule has bad performance on large code bases
