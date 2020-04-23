@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.util.List;
 
+import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -21,7 +23,7 @@ public abstract class AntlrBaseRule extends AbstractRule {
 
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        AbstractAntlrVisitor<Void> visitor = buildVisitor(ctx);
+        AbstractParseTreeVisitor<Void> visitor = buildVisitor(ctx);
         assert visitor != null : "Rule should provide a non-null visitor";
 
         for (Node node : nodes) {
@@ -40,6 +42,6 @@ public abstract class AntlrBaseRule extends AbstractRule {
      *
      * @return A visitor bound to the given rule context
      */
-    public abstract AbstractAntlrVisitor<Void> buildVisitor(RuleContext ruleCtx);
+    public abstract AbstractParseTreeVisitor<Void> buildVisitor(RuleContext ruleCtx);
 
 }

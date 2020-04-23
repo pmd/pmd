@@ -8,7 +8,11 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * A base root node for Antlr implementations. Such a node wraps the
- * top level context produced by the parser.
+ * top level context produced by the parser, so there's an extra node
+ * as the root of each tree. But this allows us to add data to RootNode
+ * later on without using an ant task to edit the generated root node.
+ *
+ * <p>The XPath name of the file node is the language name + "File", eg "SwiftFile".
  *
  * @param <T> Type of the toplevel context
  */
