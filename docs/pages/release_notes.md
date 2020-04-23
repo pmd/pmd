@@ -52,7 +52,7 @@ not support all features.
 #### New JSON renderer
 
 PMD now supports a JSON renderer (use it with `-f json` on the CLI).
-See [the documentation and example](https://pmd.github.io/latest/pmd_userdocs_report_formats.hmtl#json)
+See [the documentation and example](https://pmd.github.io/latest/pmd_userdocs_report_formats.html#json)
 
 #### New Rules
 
