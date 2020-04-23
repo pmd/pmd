@@ -31,6 +31,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.MapPSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -610,6 +613,26 @@ public final class CollectionUtil {
                 return left;
             },
             Collections::unmodifiableList
+        );
+    }
+
+    /**
+     * A collectors that accumulates into a persistent set.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
+        class Holder {
+            MapPSet<T> set = HashTreePSet.empty();
+        }
+        return Collector.of(
+            Holder::new,
+            (h, t) -> h.set = h.set.plus(t),
+            (left, right) -> {
+                left.set = left.set.plusAll(right.set);
+                return left;
+            },
+            a -> a.set
         );
     }
 
