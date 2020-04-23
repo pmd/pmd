@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.jaxen.JaxenException;
