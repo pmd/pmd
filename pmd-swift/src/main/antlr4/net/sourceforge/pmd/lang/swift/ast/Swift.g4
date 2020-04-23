@@ -39,22 +39,22 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 
 
 
-@classMembers {
+@parser::members {
 
     @Override
 	public TerminalNode createTerminalNode(ParserRuleContext parent, Token t) {
-		return new PmdAntlrTerminalNodeImpl(t);
+		return new SwiftTerminalNode(t);
 	}
 
     @Override
 	public ErrorNode createErrorNode(ParserRuleContext parent, Token t) {
-		return new PmdAntlrErrorNodeImpl(t);
+		return new SwiftErrorNode(t);
 	}
 
 }
 
 options {
-    contextSuperClass = SwiftNode;
+    contextSuperClass = SwiftInnerNode;
     superClass = PmdAntlrParserBase;
 }
 

@@ -12,7 +12,15 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
-public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRuleContext implements AntlrNode {
+/**
+ * Base class for inner nodes.
+ *
+ * @param <I> Type of inner nodes of the language
+ * @param <P> Supertype of all nodes of the language
+ */
+public abstract class AntlrBaseInnerNode<
+    I extends AntlrBaseInnerNode<I, P>,
+    P extends AntlrNode> extends ParserRuleContext implements AntlrNode {
 
     private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
@@ -21,7 +29,7 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
     /**
      * Constructor required by {@link ParserRuleContext}
      */
-    protected AntlrBaseNode() {
+    protected AntlrBaseInnerNode() {
         // Nothing to be done
     }
 
@@ -31,7 +39,7 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
      * @param parent The parent
      * @param invokingStateNumber the invokingState defined by {@link org.antlr.v4.runtime.RuleContext} parent
      */
-    protected AntlrBaseNode(final ParserRuleContext parent, final int invokingStateNumber) {
+    protected AntlrBaseInnerNode(final ParserRuleContext parent, final int invokingStateNumber) {
         super(parent, invokingStateNumber);
     }
 
@@ -50,7 +58,7 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
     }
 
     protected void addOnlyChild(ParseTree child, Token first, Token last) {
-        I cast = cast(child);
+        I cast = castToInnerNode(child);
         assert this.children == null;
         addChild(cast);
         cast.setParent(this);
@@ -61,8 +69,8 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
     @Override
     public <T extends ParseTree> T addAnyChild(T t) {
         int numChildren = getNumChildren();
-        if (t instanceof AntlrBaseNode) {
-            ((AntlrBaseNode<?>) t).setIndexInParent(numChildren);
+        if (t instanceof AntlrBaseInnerNode) {
+            ((AntlrBaseInnerNode<?, ?>) t).setIndexInParent(numChildren);
         } else if (t instanceof PmdAntlrTerminalNode) {
             ((PmdAntlrTerminalNode) t).setIndexInParent(numChildren);
         }
@@ -106,17 +114,19 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
     }
 
     @Override
-    public AntlrNode getChild(int i) {
+    public P getChild(int i) {
         // this could be an error node, or a terminal
-        return (AntlrNode) super.getChild(i);
+        return castToItf(super.getChild(i));
     }
 
     @Override
     public I getParent() {
-        return cast(super.getParent());
+        return castToInnerNode(super.getParent());
     }
 
-    protected abstract I cast(ParseTree o);
+    protected abstract P castToItf(ParseTree o);
+
+    protected abstract I castToInnerNode(ParseTree o);
 
     @Override
     public int getNumChildren() {

@@ -24,8 +24,9 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  */
 public abstract class AntlrBaseParser<
     P extends org.antlr.v4.runtime.Parser,
-    N extends AntlrBaseNode<N>,
-    R extends AntlrBaseNode<N> & RootNode> implements Parser {
+    I extends AntlrNode,
+    N extends AntlrBaseInnerNode<N, I>,
+    R extends AntlrBaseInnerNode<N, I> & RootNode> implements Parser {
 
     protected final ParserOptions parserOptions;
 

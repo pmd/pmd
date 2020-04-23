@@ -18,7 +18,7 @@ public class AntlrRuleChainVisitor extends AbstractRuleChainVisitor {
     protected void visit(Rule rule, Node node, RuleContext ctx) {
         if (rule instanceof AntlrBaseRule) {
             AntlrBaseRule rule1 = (AntlrBaseRule) rule;
-            ((AntlrBaseNode) node).accept(rule1.buildVisitor(ctx));
+            ((AntlrBaseInnerNode) node).accept(rule1.buildVisitor(ctx));
         } else {
             ((XPathRule) rule).evaluate(node, ctx);
         }

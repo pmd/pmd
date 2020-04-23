@@ -27,9 +27,9 @@ public abstract class AntlrBaseRule extends AbstractRule {
         assert visitor != null : "Rule should provide a non-null visitor";
 
         for (Node node : nodes) {
-            assert node instanceof AntlrBaseNode : "Incorrect node type " + node + " passed to " + this;
+            assert node instanceof AntlrBaseInnerNode : "Incorrect node type " + node + " passed to " + this;
 
-            ((AntlrBaseNode) node).accept(visitor);
+            ((AntlrBaseInnerNode) node).accept(visitor);
         }
     }
 
