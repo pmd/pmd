@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
-import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
  * Base class for implementations of the Node interface whose children
@@ -28,9 +27,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
-    @Deprecated
-    public static final SimpleDataKey<Object> LEGACY_USER_DATA = DataMap.simpleDataKey("legacy user data");
-
     // lazy initialized, many nodes don't need it
     private @Nullable DataMap<DataKey<?, ?>> userData;
 
@@ -38,9 +34,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     protected Node[] children = EMPTY_ARRAY;
     private AbstractNode<T> parent;
     private int childIndex;
-
-    // @Deprecated?
-    private String image;
 
     protected AbstractNode() {
         // only for subclassing
@@ -73,11 +66,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     @SuppressWarnings("unchecked")
     protected T toPublic(Node n) {
         return (T) n;
-    }
-
-    @SuppressWarnings("unchecked")
-    private AbstractNode<T> downCast(T t) {
-        return (AbstractNode) t;
     }
 
     /**
@@ -126,18 +114,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
      */
     protected void setChildIndex(final int index) {
         childIndex = index;
-    }
-
-
-    @Override
-    public String getImage() {
-        return image;
-    }
-
-    @Override
-    @Deprecated
-    public void setImage(final String image) {
-        this.image = image;
     }
 
     @Override

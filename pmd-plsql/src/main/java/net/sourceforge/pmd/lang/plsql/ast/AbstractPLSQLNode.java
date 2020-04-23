@@ -19,6 +19,11 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
         super(i);
     }
 
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
+    }
+
     protected void jjtSetValue(Object value) {
         this.value = value;
     }

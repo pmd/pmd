@@ -32,6 +32,11 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
         return scope;
     }
 
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
+    }
+
     @InternalApi
     @Deprecated
     @Override

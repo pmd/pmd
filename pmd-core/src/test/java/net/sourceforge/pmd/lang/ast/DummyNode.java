@@ -14,6 +14,7 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
+    private String image;
 
     public DummyNode() {
         this(false);
@@ -31,6 +32,15 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
     @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
         super.setCoords(bline, bcol, eline, ecol);
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    @Override
+    public String getImage() {
+        return image;
     }
 
     @Override

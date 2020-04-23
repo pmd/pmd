@@ -12,6 +12,12 @@ abstract class AbstractJspNode extends AbstractJjtreeNode<JspNode> implements Js
         super(id);
     }
 
+
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
+    }
+
     @Override
     public String getXPathNodeName() {
         return JspParserImplTreeConstants.jjtNodeName[id];

@@ -24,6 +24,12 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> imp
         super(id);
     }
 
+
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
+    }
+
     @Override
     public abstract Object jjtAccept(ModelicaParserVisitor visitor, Object data);
 

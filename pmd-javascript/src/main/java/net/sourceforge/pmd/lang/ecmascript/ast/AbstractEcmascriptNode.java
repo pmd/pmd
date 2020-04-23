@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
+    private String image;
 
     AbstractEcmascriptNode(T node) {
         this.node = node;
@@ -19,6 +20,15 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
 
     protected void addChild(AbstractEcmascriptNode<?> child, int index) {
         super.addChild(child, index);
+    }
+
+    @Override
+    public String getImage() {
+        return image;
+    }
+
+    protected void setImage(String image) {
+        this.image = image;
     }
 
     /* package private */

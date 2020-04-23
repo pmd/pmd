@@ -11,7 +11,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -53,16 +52,6 @@ public interface Node {
      */
     default String getImage() {
         return null;
-    }
-
-
-    /**
-     * @deprecated This is internal API, the image should never be set by developers.
-     */
-    @InternalApi
-    @Deprecated
-    default void setImage(String image) {
-        throw new UnsupportedOperationException("setImage");
     }
 
 

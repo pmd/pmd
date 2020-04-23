@@ -22,10 +22,21 @@ public abstract class AbstractJjtreeNode<N extends JjtreeNode<N>> extends Abstra
     private JavaccToken firstToken;
     private JavaccToken lastToken;
 
+    private String image;
+
 
     protected AbstractJjtreeNode(int id) {
         super();
         this.id = id;
+    }
+
+    @Override
+    public String getImage() {
+        return image;
+    }
+
+    protected void setImage(String image) {
+        this.image = image;
     }
 
     @Override

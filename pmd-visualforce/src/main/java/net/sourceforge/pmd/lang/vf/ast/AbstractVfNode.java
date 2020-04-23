@@ -12,6 +12,11 @@ abstract class AbstractVfNode extends AbstractJjtreeNode<VfNode> implements VfNo
         super(id);
     }
 
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
+    }
+
     @Override
     public String getXPathNodeName() {
         return VfParserImplTreeConstants.jjtNodeName[id];

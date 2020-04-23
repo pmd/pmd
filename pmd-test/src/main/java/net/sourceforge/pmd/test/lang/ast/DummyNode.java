@@ -8,6 +8,8 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
 
+    private String image;
+
     @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
         super.setCoords(bline, bcol, eline, ecol);
@@ -22,5 +24,14 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
     @Override
     public String getXPathNodeName() {
         return "dummyNode";
+    }
+
+    @Override
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

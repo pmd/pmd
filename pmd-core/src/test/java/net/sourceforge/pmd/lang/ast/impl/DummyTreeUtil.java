@@ -86,7 +86,7 @@ public final class DummyTreeUtil {
     }
 
 
-    private static void assignPathImage(Node node, String curPath) {
+    private static void assignPathImage(DummyNode node, String curPath) {
         node.setImage(curPath);
 
         for (int i = 0; i < node.getNumChildren(); i++) {
