@@ -9,6 +9,8 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import net.sourceforge.pmd.lang.ast.TextAvailableNode;
+import net.sourceforge.pmd.lang.ast.xpath.NoAttribute;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -44,10 +46,10 @@ public abstract class AntlrBaseInnerNode<
     }
 
     /**
-     * TODO @NoAttribute (port swift rules)
+     * @see TextAvailableNode
      */
     @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
+    @NoAttribute
     public String getText() {
         return super.getText();
     }

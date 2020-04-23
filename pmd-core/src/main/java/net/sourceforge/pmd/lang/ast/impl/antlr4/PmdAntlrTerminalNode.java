@@ -25,6 +25,12 @@ public abstract class PmdAntlrTerminalNode extends TerminalNodeImpl implements A
         this.dico = dico;
     }
 
+    // not @NoAttribute
+    @Override
+    public String getText() {
+        return super.getText();
+    }
+
     @Override
     public AntlrNode getChild(int i) {
         return null;

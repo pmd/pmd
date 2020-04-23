@@ -16,8 +16,7 @@ class ViewController: UIViewController {
   }
 }
      ]]></code>
-        <source-type>swift</source-type>
-    </test-code>
+</test-code>
     <test-code>
         <description><![CDATA[
 Good example #2
@@ -35,8 +34,7 @@ func jsonValue(_ jsonString: String) -> NSObject {
    fatalError()
 }
      ]]></code>
-        <source-type>swift</source-type>
-    </test-code>
+</test-code>
     <test-code>
         <description><![CDATA[
 Bad example #1
@@ -49,8 +47,7 @@ class ViewController: UIViewController {
   }
 }
      ]]></code>
-        <source-type>swift</source-type>
-    </test-code>
+</test-code>
     <test-code>
         <description><![CDATA[
 Bad example #2
@@ -61,6 +58,5 @@ func doSomething() {
     fatalError("doSomething() has not been implemented")
 }
      ]]></code>
-        <source-type>swift</source-type>
-    </test-code>
+</test-code>
 </test-data>
