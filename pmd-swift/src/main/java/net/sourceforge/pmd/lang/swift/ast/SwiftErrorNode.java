@@ -11,6 +11,6 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.PmdAntlrErrorNode;
 public class SwiftErrorNode extends PmdAntlrErrorNode implements SwiftNode {
 
     public SwiftErrorNode(Token t) {
-        super(t);
+        super(t, SwiftParser.DICO);
     }
 }

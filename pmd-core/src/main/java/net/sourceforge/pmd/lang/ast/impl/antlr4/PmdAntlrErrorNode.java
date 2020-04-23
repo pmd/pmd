@@ -8,10 +8,10 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
-public class PmdAntlrErrorNode extends PmdAntlrTerminalNode implements AntlrNode, ErrorNode {
+public abstract class PmdAntlrErrorNode extends PmdAntlrTerminalNode implements AntlrNode, ErrorNode {
 
-    public PmdAntlrErrorNode(Token t) {
-        super(t);
+    public PmdAntlrErrorNode(Token t, AntlrNameDictionary dico) {
+        super(t, dico);
     }
 
     @Override

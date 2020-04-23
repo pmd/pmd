@@ -14,13 +14,15 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
 /**
  * @author Clément Fournier
  */
-public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode {
+public abstract class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode {
 
     private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
     private int idxInParent = -1;
+    private final AntlrNameDictionary dico;
 
-    public PmdAntlrTerminalNode(Token t) {
+    public PmdAntlrTerminalNode(Token t, AntlrNameDictionary dico) {
         super(t);
+        this.dico = dico;
     }
 
     @Override
@@ -35,7 +37,8 @@ public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode 
 
     @Override
     public String getXPathNodeName() {
-        return "Token" + getSymbol().getType(); // TODO
+        int type = getSymbol().getType();
+        return dico.getXPathName(type);
     }
 
     @Override
