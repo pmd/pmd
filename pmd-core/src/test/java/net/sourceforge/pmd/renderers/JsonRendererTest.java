@@ -8,8 +8,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -18,7 +16,9 @@ import org.junit.Test;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.ViolationSuppressor;
 
 public class JsonRendererTest extends AbstractRendererTest {
 
@@ -86,10 +86,9 @@ public class JsonRendererTest extends AbstractRendererTest {
     @Test
     public void suppressedViolations() throws IOException {
         Report rep = new Report();
-        Map<Integer, String> suppressedLines = new HashMap<>();
-        suppressedLines.put(1, "test");
-        rep.suppress(suppressedLines);
-        rep.addRuleViolation(newRuleViolation(1));
+        SuppressedViolation suppressed = new SuppressedViolation(newRuleViolation(1),
+                ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, "test");
+        rep.addSuppressedViolation(suppressed);
         String actual = ReportTest.render(getRenderer(), rep);
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));

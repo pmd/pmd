@@ -131,9 +131,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> ").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(PMD.EOL);
             buf.append("<td width=\"*%\">")
-               .append(renderFileName(rv.getFilename(), rv.getBeginLine()))
-               .append("</td>")
-               .append(PMD.EOL);
+                .append(renderFileName(rv.getFilename(), rv.getBeginLine()))
+                .append("</td>")
+                .append(PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
