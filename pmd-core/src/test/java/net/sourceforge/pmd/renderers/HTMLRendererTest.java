@@ -116,4 +116,17 @@ public class HTMLRendererTest extends AbstractRendererTest {
         String actual = ReportTest.render(renderer, rep);
         assertEquals(filter(getExpected(linkPrefix, "")), filter(actual));
     }
+
+    @Test
+    public void testEmptyLinePrefix() throws IOException {
+        final HTMLRenderer renderer = new HTMLRenderer();
+        final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
+        renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, "");
+        renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
+
+        Report rep = reportOneViolation();
+        String actual = ReportTest.render(renderer, rep);
+        assertEquals(filter(getExpected(linkPrefix, "1")), filter(actual));
+    }
 }
