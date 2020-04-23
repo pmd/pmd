@@ -59,9 +59,6 @@ public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode 
         return idxInParent;
     }
 
-    // FIXME these coordinates are not accurate
-
-
     @Override
     public int getBeginLine() {
         return getSymbol().getLine();
@@ -69,17 +66,18 @@ public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode 
 
     @Override
     public int getBeginColumn() {
-        return getSymbol().getCharPositionInLine() + 1;
+        return AntlrUtils.getBeginColumn(getSymbol());
     }
 
     @Override
     public int getEndLine() {
+        // FIXME this is not the end line if the stop token spans several lines
         return getBeginLine();
     }
 
     @Override
     public int getEndColumn() {
-        return getBeginColumn() + getSymbol().getText().length();
+        return AntlrUtils.getEndColumn(getSymbol());
     }
 
     @Override

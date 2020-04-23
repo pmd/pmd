@@ -86,8 +86,6 @@ public abstract class AntlrBaseInnerNode<
         return idxInParent;
     }
 
-    // FIXME these coordinates are not accurate
-
     @Override
     public int getBeginLine() {
         return start.getLine(); // This goes from 1 to n
@@ -95,17 +93,18 @@ public abstract class AntlrBaseInnerNode<
 
     @Override
     public int getEndLine() {
-        return stop.getLine(); // This goes from 1 to n
+        // FIXME this is not the end line if the stop token spans several lines
+        return stop.getLine();
     }
 
     @Override
     public int getBeginColumn() {
-        return start.getCharPositionInLine(); // This goes from 0 to (n - 1)
+        return AntlrUtils.getBeginColumn(start);
     }
 
     @Override
     public int getEndColumn() {
-        return stop.getCharPositionInLine(); // This goes from 0 to (n - 1)
+        return AntlrUtils.getEndColumn(stop);
     }
 
     @Override

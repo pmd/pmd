@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseInnerNode;
 
-public abstract class SwiftInnerNode extends AntlrBaseInnerNode<SwiftInnerNode, SwiftNode> {
+public abstract class SwiftInnerNode extends AntlrBaseInnerNode<SwiftInnerNode, SwiftNode> implements SwiftNode {
 
     protected SwiftInnerNode() {
         super();
