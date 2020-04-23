@@ -17,6 +17,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
 public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode {
 
     private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
+    private int idxInParent = -1;
 
     public PmdAntlrTerminalNode(Token t) {
         super(t);
@@ -45,10 +46,18 @@ public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode 
 
     @Override
     public void setParent(RuleContext parent) {
-        assert parent instanceof AntlrNode : "Parent should be a parent";
+        assert parent instanceof AntlrNode : "Parent should be an antlr node";
         super.setParent(parent);
     }
 
+    void setIndexInParent(int idxInParent) {
+        this.idxInParent = idxInParent;
+    }
+
+    @Override
+    public int getIndexInParent() {
+        return idxInParent;
+    }
 
     // FIXME these coordinates are not accurate
 

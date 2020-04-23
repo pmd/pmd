@@ -13,10 +13,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftParser.TopLevelContext;
 public class SwiftFileNode extends SwiftNode implements RootNode {
 
     public SwiftFileNode(TopLevelContext toplevel) {
-        addChild(toplevel);
-        toplevel.setParent(this);
-        this.start = toplevel.start;
-        this.stop = toplevel.stop;
+        addOnlyChild(toplevel, toplevel.start, toplevel.stop);
     }
 
     @Override

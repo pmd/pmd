@@ -31,10 +31,5 @@ public interface AntlrNode extends Node, ParseTree {
         return (NodeStream<? extends AntlrNode>) Node.super.children();
     }
 
-    @Override
-    default int getIndexInParent() {
-        // FIXME, relied on by node streams
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
 
 }

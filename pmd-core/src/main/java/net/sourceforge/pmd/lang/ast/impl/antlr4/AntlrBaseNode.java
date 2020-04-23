@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import net.sourceforge.pmd.util.DataMap;
@@ -13,6 +15,8 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
 public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRuleContext implements AntlrNode {
 
     private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
+
+    private int idxInParent = -1;
 
     /**
      * Constructor required by {@link ParserRuleContext}
@@ -40,6 +44,39 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
         return super.getText();
     }
 
+    @Override
+    public RuleContext addChild(RuleContext ruleInvocation) {
+        return super.addChild(ruleInvocation);
+    }
+
+    protected void addOnlyChild(ParseTree child, Token first, Token last) {
+        I cast = cast(child);
+        assert this.children == null;
+        addChild(cast);
+        cast.setParent(this);
+        this.start = first;
+        this.stop = last;
+    }
+
+    @Override
+    public <T extends ParseTree> T addAnyChild(T t) {
+        int numChildren = getNumChildren();
+        if (t instanceof AntlrBaseNode) {
+            ((AntlrBaseNode<?>) t).setIndexInParent(numChildren);
+        } else if (t instanceof PmdAntlrTerminalNode) {
+            ((PmdAntlrTerminalNode) t).setIndexInParent(numChildren);
+        }
+        return super.addAnyChild(t);
+    }
+
+    void setIndexInParent(int idxInParent) {
+        this.idxInParent = idxInParent;
+    }
+
+    @Override
+    public int getIndexInParent() {
+        return idxInParent;
+    }
 
     // FIXME these coordinates are not accurate
 
@@ -69,8 +106,9 @@ public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRu
     }
 
     @Override
-    public I getChild(int i) {
-        return cast(super.getChild(i));
+    public AntlrNode getChild(int i) {
+        // this could be an error node, or a terminal
+        return (AntlrNode) super.getChild(i);
     }
 
     @Override

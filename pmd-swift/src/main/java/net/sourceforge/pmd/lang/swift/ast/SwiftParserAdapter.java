@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 /**
  * Adapter for the SwiftParser.
  */
-public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser, SwiftFileNode> {
+public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser, SwiftNode, SwiftFileNode> {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
         super(parserOptions);
