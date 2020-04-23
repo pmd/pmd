@@ -128,6 +128,20 @@ This for loop can be replaced by a foreach loop
 *   sourcePath:
 *   fileName:
 
+## json
+
+JSON format.
+
+This prints a single JSON object containing some header information,
+and then the violations grouped by file. The root object fields are
+* `formatVersion`: an integer which will be incremented if we change the serialization format
+* `pmdVersion`: the version of PMD that produced the report
+* `timestamp`: explicit
+* `files`: an array of objects (see the example)
+
+[Example](report-examples/pmd-report-json.json)
+
+
 ## summaryhtml
 
 Summary HTML format.
