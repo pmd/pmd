@@ -54,7 +54,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 }
 
 options {
-    contextSuperClass = AntlrBaseNode;
+    contextSuperClass = SwiftNode;
     superClass = PmdAntlrParserBase;
 }
 

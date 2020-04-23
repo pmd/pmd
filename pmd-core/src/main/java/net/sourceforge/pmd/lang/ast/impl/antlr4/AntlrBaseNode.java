@@ -5,19 +5,19 @@
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
-public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
+public abstract class AntlrBaseNode<I extends AntlrBaseNode<I>> extends ParserRuleContext implements AntlrNode {
 
     private final DataMap<DataKey<?, ?>> userData = DataMap.newDataMap();
 
     /**
      * Constructor required by {@link ParserRuleContext}
      */
-    @SuppressWarnings("unused")
-    public AntlrBaseNode() {
+    protected AntlrBaseNode() {
         // Nothing to be done
     }
 
@@ -27,8 +27,7 @@ public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNo
      * @param parent The parent
      * @param invokingStateNumber the invokingState defined by {@link org.antlr.v4.runtime.RuleContext} parent
      */
-    @SuppressWarnings("unused")
-    public AntlrBaseNode(final ParserRuleContext parent, final int invokingStateNumber) {
+    protected AntlrBaseNode(final ParserRuleContext parent, final int invokingStateNumber) {
         super(parent, invokingStateNumber);
     }
 
@@ -70,14 +69,16 @@ public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNo
     }
 
     @Override
-    public AntlrNode getChild(int i) {
-        return (AntlrNode) super.getChild(i);
+    public I getChild(int i) {
+        return cast(super.getChild(i));
     }
 
     @Override
-    public AntlrBaseNode getParent() {
-        return (AntlrBaseNode) super.getParent();
+    public I getParent() {
+        return cast(super.getParent());
     }
+
+    protected abstract I cast(ParseTree o);
 
     @Override
     public int getNumChildren() {
