@@ -586,14 +586,16 @@ public final class CollectionUtil {
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, List<T>> toMutableList() {
-        return Collector.<T, ArrayList<T>, List<T>>of(ArrayList::new,
-                                                      ArrayList::add,
-                                                      (left, right) -> {
-                                                          left.addAll(right);
-                                                          return left;
-                                                      },
-                                                      a -> a,
-                                                      Characteristics.IDENTITY_FINISH);
+        return Collector.<T, ArrayList<T>, List<T>>of(
+            ArrayList::new,
+            ArrayList::add,
+            (left, right) -> {
+                left.addAll(right);
+                return left;
+            },
+            a -> a,
+            Characteristics.IDENTITY_FINISH
+        );
     }
 
     /**
@@ -605,15 +607,7 @@ public final class CollectionUtil {
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
-        return Collector.<T, ArrayList<T>, List<T>>of(
-            ArrayList::new,
-            ArrayList::add,
-            (left, right) -> {
-                left.addAll(right);
-                return left;
-            },
-            Collections::unmodifiableList
-        );
+        return Collectors.collectingAndThen(toMutableList(), Collections::unmodifiableList);
     }
 
     /**
@@ -625,6 +619,7 @@ public final class CollectionUtil {
         class Holder {
             MapPSet<T> set = HashTreePSet.empty();
         }
+
         return Collector.of(
             Holder::new,
             (h, t) -> h.set = h.set.plus(t),

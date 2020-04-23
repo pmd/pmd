@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
-import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
 
