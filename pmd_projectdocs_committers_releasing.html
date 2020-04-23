@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.23.0</li>
+    <li class="sidebarTitle">PMD 6.23.0-SNAPSHOT</li>
     
     
     
@@ -1424,12 +1424,13 @@ $ git status
 
 <p>You can find the release notes here: <code class="highlighter-rouge">docs/pages/release_notes.md</code>.</p>
 
-<p>The date and the version must be updated in <code class="highlighter-rouge">docs/_config.yml</code>,  e.g.</p>
+<p>The date (<code class="highlighter-rouge">date +%d-%B-%Y</code>) and the version (remove the SNAPSHOT) must be updated in <code class="highlighter-rouge">docs/_config.yml</code>,  e.g.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
-    version: 6.0.0
-    date: 2017-12-15
-    release_type: major
+    version: 6.22.0
+    previous_version: 6.21.0
+    date: 12-March-2020
+    release_type: minor
 </code></pre></div></div>
 
 <p>The release type could be one of “bugfix”, “minor”, or “major”.</p>
@@ -1482,13 +1483,13 @@ $ git push
 <p>The new version needs to be entered into <code class="highlighter-rouge">_config.yml</code>, e.g.:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
-  latestVersion: 6.0.0
-  latestVersionDate: 15th December 2017
+  latestVersion: 6.22.0
+  latestVersionDate: 12-March-2020
 </code></pre></div></div>
 
 <p>Also move the previous version down into the “downloads” section.</p>
 
-<p>Then create a new page for the new release, e.g. <code class="highlighter-rouge">_posts/2017-12-15-PMD-6.0.0.md</code> and copy
+<p>Then create a new page for the new release, e.g. <code class="highlighter-rouge">_posts/2020-03-12-PMD-6.22.0.md</code> and copy
 the release notes into this page. This will appear under the news section.</p>
 
 <p>Check in all (version) changes to branch master:</p>
@@ -1527,6 +1528,7 @@ the release notes.</li>
 selected as the new default downloads for PMD.</li>
   <li>Add the documentation of the new release to a subfolder on <a href="https://pmd.github.io">https://pmd.github.io</a>, also make
 this folder available as <code class="highlighter-rouge">latest</code>.</li>
+  <li>Upload the documentation to <a href="https://docs.pmd-code.org">https://docs.pmd-code.org</a>.</li>
 </ul>
 
 <h2 id="after-the-release">After the release</h2>
@@ -1563,7 +1565,16 @@ And Copy-Paste the release notes
 <h3 id="prepare-the-new-release-notes">Prepare the new release notes</h3>
 
 <ul>
-  <li>Update version in <strong>docs/_config.yml</strong></li>
+  <li>
+    <p>Update version in <strong>docs/_config.yml</strong>. Note - the next version needs to have a SNAPSHOT in it.</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
+    version: 6.23.0-SNAPSHOT
+    previous_version: 6.22.0
+    date: ??-??-2020
+    release_type: minor
+</code></pre></div>    </div>
+  </li>
   <li>Move version/release info from <strong>docs/pages/release_notes.md</strong> to <strong>docs/pages/release_notes_old.md</strong>.</li>
   <li>Update version/release info in <strong>docs/pages/release_notes.md</strong>. Use the following template:</li>
 </ul>
@@ -1649,7 +1660,7 @@ and <code class="highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 20, 2020 <br />
+ Site last generated: Apr 23, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
