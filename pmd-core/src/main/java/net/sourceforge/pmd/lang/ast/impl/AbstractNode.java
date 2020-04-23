@@ -75,6 +75,11 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
         return (T) n;
     }
 
+    @SuppressWarnings("unchecked")
+    private AbstractNode<T> downCast(T t) {
+        return (AbstractNode) t;
+    }
+
     /**
      * This method tells the node to add its argument to the node's list of children.
      *

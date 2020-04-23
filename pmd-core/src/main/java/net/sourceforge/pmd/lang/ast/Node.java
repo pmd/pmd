@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.internal.ContextualizedNavigator;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
