@@ -79,6 +79,7 @@ See [the documentation and example](https://pmd.github.io/latest/pmd_userdocs_re
     *   [#2019](https://github.com/pmd/pmd/issues/2019): \[core] Insufficient deprecation warnings for XPath attributes
     *   [#2357](https://github.com/pmd/pmd/issues/2357): Add code of conduct: Contributor Covenant
     *   [#2426](https://github.com/pmd/pmd/issues/2426): \[core] CodeClimate renderer links are dead
+    *   [#2432](https://github.com/pmd/pmd/pull/2432): \[core] Close ZIP data sources even if a runtime exception or error is thrown
 *   doc
     *   [#2355](https://github.com/pmd/pmd/issues/2355): \[doc] Improve documentation about incremental analysis
     *   [#2356](https://github.com/pmd/pmd/issues/2356): \[doc] Add missing doc about pmd.github.io
@@ -185,6 +186,9 @@ In the **Java AST** the following attributes are deprecated and will issue a war
 *   {% jdoc !!core::cpd.token.AntlrToken#getType() %} - use `getKind()` instead.
 *   {% jdoc core::lang.rule.ImmutableLanguage %}
 *   {% jdoc core::lang.rule.MockRule %}
+*   {% jdoc !!core::lang.ast.Node#getFirstParentOfAnyType(java.lang.Class[]) %}
+*   {% jdoc !!core::lang.ast.Node#getAsDocument() %}
+*   {% jdoc !!core::lang.ast.AbstractNode#hasDescendantOfAnyType(java.lang.Class[]) %}
 *   {% jdoc !!java::lang.java.ast.ASTRecordDeclaration#getComponentList() %}
 *   Multiple fields, constructors and methods in {% jdoc core::lang.rule.XPathRule %}. See javadoc for details.
 
@@ -202,6 +206,7 @@ In the **Java AST** the following attributes are deprecated and will issue a war
 *   [#2409](https://github.com/pmd/pmd/pull/2409): \[java] ClassNamingConventions suggests to add Util for class containing only static constants, fixes #1164 - [Binu R J](https://github.com/binu-r)
 *   [#2411](https://github.com/pmd/pmd/pull/2411): \[java] Fix UseAssertEqualsInsteadOfAssertTrue Example - [Moritz Scheve](https://github.com/Blightbuster)
 *   [#2423](https://github.com/pmd/pmd/pull/2423): \[core] Fix Checkstyle OperatorWrap in AbstractTokenizer - [Harsh Kukreja](https://github.com/harsh-kukreja)
+*   [#2432](https://github.com/pmd/pmd/pull/2432): \[core] Close ZIP data sources even if a runtime exception or error is thrown - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
 
 {% endtocmaker %}
 
