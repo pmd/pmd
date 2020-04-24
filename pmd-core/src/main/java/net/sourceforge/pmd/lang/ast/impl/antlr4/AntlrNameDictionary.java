@@ -33,6 +33,7 @@ public class AntlrNameDictionary {
         for (int i = 0; i < xpathNames.length; i++) {
             String name = vocab.getSymbolicName(i);
 
+
             if (name == null) {
                 name = vocab.getLiteralName(i);
 
@@ -43,6 +44,8 @@ public class AntlrNameDictionary {
                         name = maybePunctName(name);
                     }
                 }
+            } else {
+                assert name.matches("[a-zA-Z][\\w_-]+"); // must be a valid xpath name
             }
             if (name == null) {
                 name = String.valueOf(i);
@@ -95,6 +98,7 @@ public class AntlrNameDictionary {
 
         case "@": return "at-symbol";
         case "$": return "dollar";
+        case "&": return "amp";
 
         case "\\": return "backslash";
         case "/": return "slash";
@@ -108,15 +112,15 @@ public class AntlrNameDictionary {
         case "<": return "lt";
         case "<=": return "le";
 
-        case "=": return "eq";
-        case "==": return "double-eq";
-        case "===": return "triple-eq";
-        case "!=": return "not-eq";
-
         case ">>": return "double-gt";
         case "<<": return "double-lt";
         case ">>>": return "triple-gt";
         case "<<<": return "triple-lt";
+
+        case "=": return "eq";
+        case "==": return "double-eq";
+        case "===": return "triple-eq";
+        case "!=": return "not-eq";
 
         case "*": return "star";
         case "**": return "double-star";
