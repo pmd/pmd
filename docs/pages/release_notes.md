@@ -203,5 +203,10 @@ In the **Java AST** the following attributes are deprecated and will issue a war
 *   [#2423](https://github.com/pmd/pmd/pull/2423): \[core] Fix Checkstyle OperatorWrap in AbstractTokenizer - [Harsh Kukreja](https://github.com/harsh-kukreja)
 *   [#2432](https://github.com/pmd/pmd/pull/2432): \[core] Close ZIP data sources even if a runtime exception or error is thrown - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
 
+### Stats
+* 237 commits
+* 64 closed tickets & PRs
+* Days since last release: 42
+
 {% endtocmaker %}
 

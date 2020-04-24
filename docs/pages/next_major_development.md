@@ -73,6 +73,94 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.23.0
+
+##### Deprecated APIs
+
+###### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc core::lang.rule.xpath.AbstractXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.JaxenXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.SaxonXPathRuleQuery %}
+*   {% jdoc core::lang.rule.xpath.XPathRuleQuery %}
+
+###### In ASTs
+
+As part of the changes we'd like to do to AST classes for 7.0.0, we would like to
+hide some methods and constructors that rule writers should not have access to.
+The following usages are now deprecated in the **Apex**, **Javascript**, **PL/SQL**, **Scala** and **Visualforce** ASTs:
+
+*   Manual instantiation of nodes. **Constructors of node classes are deprecated** and
+    marked {% jdoc core::annotation.InternalApi %}. Nodes should only be obtained from the parser,
+    which for rules, means that they never need to instantiate node themselves.
+    Those constructors will be made package private with 7.0.0.
+*   **Subclassing of abstract node classes, or usage of their type**. The base classes are internal API
+    and will be hidden in version 7.0.0. You should not couple your code to them.
+    *   In the meantime you should use interfaces like {% jdoc visualforce::lang.vf.ast.VfNode %} or
+        {% jdoc core::lang.ast.Node %}, or the other published interfaces in this package,
+        to refer to nodes generically.
+    *   Concrete node classes will **be made final** with 7.0.0.
+*   Setters found in any node class or interface. **Rules should consider the AST immutable**.
+    We will make those setters package private with 7.0.0.
+*   The implementation classes of {% jdoc core::lang.Parser %} (eg {% jdoc visualforce::lang.vf.VfParser %}) are deprecated and should not be used directly.
+    Use {% jdoc !!core::lang.LanguageVersionHandler#getParser(ParserOptions) %} instead.
+*   The implementation classes of {% jdoc core::lang.TokenManager %} (eg {% jdoc visualforce::lang.vf.VfTokenManager %}) are deprecated and should not be used outside of our implementation.
+    **This also affects CPD-only modules**.
+
+These deprecations are added to the following language modules in this release.
+Please look at the package documentation to find out the full list of deprecations.
+* Apex: **{% jdoc_package apex::lang.apex.ast %}**
+* Javascript: **{% jdoc_package javascript::lang.ecmascript.ast %}**
+* PL/SQL: **{% jdoc_package plsql::lang.plsql.ast %}**
+* Scala: **{% jdoc_package scala::lang.scala.ast %}**
+* Visualforce: **{% jdoc_package visualforce::lang.vf.ast %}**
+
+These deprecations have already been rolled out in a previous version for the
+following languages:
+* Java: {% jdoc_package java::lang.java.ast %}
+* Java Server Pages: {% jdoc_package jsp::lang.jsp.ast %}
+* Velocity Template Language: {% jdoc_package vm::lang.vm.ast %}
+
+Outside of these packages, these changes also concern the following TokenManager
+implementations, and their corresponding Parser if it exists (in the same package):
+
+*   {% jdoc cpp::lang.cpp.CppTokenManager %}
+*   {% jdoc java::lang.java.JavaTokenManager %}
+*   {% jdoc javascript::lang.ecmascript5.Ecmascript5TokenManager %}
+*   {% jdoc jsp::lang.jsp.JspTokenManager %}
+*   {% jdoc matlab::lang.matlab.MatlabTokenManager %}
+*   {% jdoc modelica::lang.modelica.ModelicaTokenManager %}
+*   {% jdoc objectivec::lang.objectivec.ObjectiveCTokenManager %}
+*   {% jdoc plsql::lang.plsql.PLSQLTokenManager %}
+*   {% jdoc python::lang.python.PythonTokenManager %}
+*   {% jdoc visualforce::lang.vf.VfTokenManager %}
+*   {% jdoc vm::lang.vm.VmTokenManager %}
+
+
+In the **Java AST** the following attributes are deprecated and will issue a warning when used in XPath rules:
+
+*   {% jdoc !!java::lang.java.ast.ASTAdditiveExpression#getImage() %} - use `getOperator()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getImage() %} - use `getName()` instead
+*   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#getVariableName() %} - use `getName()` instead
+
+###### For removal
+
+*   {% jdoc !!core::lang.Parser#getTokenManager(java.lang.String,java.io.Reader) %}
+*   {% jdoc !!core::lang.TokenManager#setFileName(java.lang.String) %}
+*   {% jdoc !!core::lang.ast.AbstractTokenManager#setFileName(java.lang.String) %}
+*   {% jdoc !!core::lang.ast.AbstractTokenManager#getFileName(java.lang.String) %}
+*   {% jdoc !!core::cpd.token.AntlrToken#getType() %} - use `getKind()` instead.
+*   {% jdoc core::lang.rule.ImmutableLanguage %}
+*   {% jdoc core::lang.rule.MockRule %}
+*   {% jdoc !!core::lang.ast.Node#getFirstParentOfAnyType(java.lang.Class[]) %}
+*   {% jdoc !!core::lang.ast.Node#getAsDocument() %}
+*   {% jdoc !!core::lang.ast.AbstractNode#hasDescendantOfAnyType(java.lang.Class[]) %}
+*   {% jdoc !!java::lang.java.ast.ASTRecordDeclaration#getComponentList() %}
+*   Multiple fields, constructors and methods in {% jdoc core::lang.rule.XPathRule %}. See javadoc for details.
+
 #### 6.22.0
 
 ##### Deprecated APIs
