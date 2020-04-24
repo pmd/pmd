@@ -415,6 +415,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public Document getAsDocument() {
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -487,7 +488,8 @@ public abstract class AbstractNode implements Node {
      * Returns true if this node has a descendant of any type among the provided types.
      *
      * @param types Types to test
-     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
+     *
+     * @deprecated See {@link #hasDescendantOfAnyType(Class[])} for reasons
      */
     @Deprecated
     public final boolean hasDecendantOfAnyType(final Class<?>... types) {
