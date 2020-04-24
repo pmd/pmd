@@ -110,27 +110,29 @@ public abstract class AbstractPMDProcessor {
     // this is done manually without a try-with-resources
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers) {
-        final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
-        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-        final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
+        try {
+            final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
+            configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+            final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
-        for (final DataSource dataSource : files) {
-            // this is the real, canonical and absolute filename (not shortened)
-            String realFileName = dataSource.getNiceFileName(false, null);
+            for (final DataSource dataSource : files) {
+                // this is the real, canonical and absolute filename (not shortened)
+                String realFileName = dataSource.getNiceFileName(false, null);
 
-            runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
-        }
+                runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
+            }
 
-        // render base report first - general errors
-        renderReports(renderers, ctx.getReport());
+            // render base report first - general errors
+            renderReports(renderers, ctx.getReport());
 
-        // then add analysis results per file
-        collectReports(renderers);
-
-        // in case we analyzed files within Zip Files/Jars, we need to close them after
-        // the analysis is finished
-        for (DataSource dataSource : files) {
-            IOUtils.closeQuietly(dataSource);
+            // then add analysis results per file
+            collectReports(renderers);
+        } finally {
+            // in case we analyzed files within Zip Files/Jars, we need to close them after
+            // the analysis is finished
+            for (DataSource dataSource : files) {
+                IOUtils.closeQuietly(dataSource);
+            }
         }
     }
 
