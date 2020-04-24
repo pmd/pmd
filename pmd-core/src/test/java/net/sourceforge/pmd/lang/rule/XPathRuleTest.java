@@ -82,6 +82,7 @@ public class XPathRuleTest {
     public XPathRule makeRule(XPathVersion version, String name) {
         XPathRule xpr = new XPathRule(version, "//dummyNode[@Size >= 2 and @Name='foo']");
         xpr.setName(name);
+        xpr.setLanguage(LanguageRegistry.getLanguage("Dummy"));
         xpr.setMessage("gotcha");
         return xpr;
     }

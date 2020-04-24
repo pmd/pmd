@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.GenericTreeInfo;

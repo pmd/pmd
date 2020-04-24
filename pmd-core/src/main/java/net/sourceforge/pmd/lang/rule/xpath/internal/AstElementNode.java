@@ -33,7 +33,6 @@ import net.sf.saxon.tree.iter.SingleNodeIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
-import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.Type;
 
@@ -41,14 +40,11 @@ import net.sf.saxon.type.Type;
 /**
  * A wrapper for Saxon around a Node.
  */
-public final class AstElementNode extends AbstractNodeWrapper implements SiblingCountingNode {
+public final class AstElementNode extends BaseNodeInfo implements SiblingCountingNode {
 
-    private final AstElementNode parent;
     private final Node wrappedNode;
     /** The index of the node in the tree according to document order */
     private final int id;
-    /** Name in the name pool. */
-    private final int fingerprint;
 
     private final List<AstElementNode> children;
     private @Nullable Map<String, AstAttributeNode> attributes;
@@ -59,11 +55,15 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
                           AstElementNode parent,
                           Node wrappedNode,
                           Configuration configuration) {
+        super(parent == null ? Type.DOCUMENT
+                             : Type.ELEMENT,
+              configuration.getNamePool(),
+              wrappedNode.getXPathNodeName(),
+              parent);
+
         this.treeInfo = document;
-        this.parent = parent;
         this.wrappedNode = wrappedNode;
         this.id = idGenerator.getNextId();
-        fingerprint = configuration.getNamePool().allocateFingerprint("", wrappedNode.getXPathNodeName());
 
         this.children = new ArrayList<>(wrappedNode.getNumChildren());
 
@@ -90,11 +90,6 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
             attributes = makeAttributes(getUnderlyingNode());
         }
         return attributes;
-    }
-
-    @Override
-    public AstDocumentNode getTreeInfo() {
-        return (AstDocumentNode) super.getTreeInfo();
     }
 
     List<AstElementNode> getChildren() {
@@ -173,13 +168,13 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
 
     @Override
     public String getAttributeValue(String uri, String local) {
-        AstAttributeNode attributeWrapper = attributes.get(local);
+        AstAttributeNode attributeWrapper = getAttributes().get(local);
 
         return attributeWrapper == null ? null : attributeWrapper.getStringValue();
     }
 
     public Sequence getTypedAttributeValue(String uri, String local) {
-        AstAttributeNode attributeWrapper = attributes.get(local);
+        AstAttributeNode attributeWrapper = getAttributes().get(local);
         return attributeWrapper == null ? null : attributeWrapper.atomize();
     }
 
@@ -193,12 +188,6 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
     @Override
     public int getLineNumber() {
         return wrappedNode.getBeginLine();
-    }
-
-
-    @Override
-    public int getNodeKind() {
-        return Type.ELEMENT;
     }
 
 
@@ -219,22 +208,6 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
     }
 
 
-    @Override
-    public String getURI() {
-        return "";
-    }
-
-
-    @Override
-    public String getPrefix() {
-        return "";
-    }
-
-
-    @Override
-    public AstElementNode getParent() {
-        return parent;
-    }
 
     @Override
     public CharSequence getStringValueCS() {
@@ -244,11 +217,6 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
     @Override
     public boolean hasFingerprint() {
         return true;
-    }
-
-    @Override
-    public int getFingerprint() {
-        return fingerprint;
     }
 
     @Override
@@ -279,7 +247,7 @@ public final class AstElementNode extends AbstractNodeWrapper implements Sibling
             if (todo.isEmpty()) {
                 return null;
             }
-            AstElementNode first = todo.getFirst();
+            AstElementNode first = todo.removeFirst();
             todo.addAll(first.children);
             return first;
         }

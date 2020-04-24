@@ -12,7 +12,6 @@ import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
-import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.SchemaType;
 import net.sf.saxon.type.Type;
@@ -22,10 +21,9 @@ import net.sf.saxon.type.Type;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class AstAttributeNode extends AbstractNodeWrapper implements SiblingCountingNode {
+public class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
 
 
-    private final AstElementNode parent;
     private final Attribute attribute;
     private AtomicSequence value;
     private final SchemaType schemaType;
@@ -33,10 +31,11 @@ public class AstAttributeNode extends AbstractNodeWrapper implements SiblingCoun
 
 
     AstAttributeNode(AstElementNode parent, Attribute attribute, int siblingPosition) {
-        this.parent = parent;
+        super(Type.ATTRIBUTE, parent.getNamePool(), attribute.getName(), parent);
         this.attribute = attribute;
         this.schemaType = DomainConversion.buildType(attribute.getType());
         this.siblingPosition = siblingPosition;
+        this.treeInfo = parent.getTreeInfo();
     }
 
     @Override
@@ -87,13 +86,6 @@ public class AstAttributeNode extends AbstractNodeWrapper implements SiblingCoun
         return attribute;
     }
 
-
-    @Override
-    public int getNodeKind() {
-        return Type.ATTRIBUTE;
-    }
-
-
     @Override
     public int compareOrder(NodeInfo other) {
         if (other instanceof SiblingCountingNode) {
@@ -110,24 +102,6 @@ public class AstAttributeNode extends AbstractNodeWrapper implements SiblingCoun
 
 
     @Override
-    public String getURI() {
-        return "";
-    }
-
-
-    @Override
-    public String getPrefix() {
-        return "";
-    }
-
-
-    @Override
-    public NodeInfo getParent() {
-        return parent;
-    }
-
-
-    @Override
     public void generateId(FastStringBuffer buffer) {
         buffer.append(Integer.toString(hashCode()));
     }
@@ -135,6 +109,7 @@ public class AstAttributeNode extends AbstractNodeWrapper implements SiblingCoun
 
     @Override
     public CharSequence getStringValueCS() {
+        getTreeInfo().getLogger().recordUsageOf(attribute);
         return attribute.getStringValue();
     }
 }

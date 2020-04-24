@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
@@ -70,12 +69,6 @@ public class Attribute {
 
     public Node getParent() {
         return parent;
-    }
-
-    /** Returns the most general type that the value may be. */
-    @Experimental
-    public Class<?> getType() {
-        return method == null ? String.class : method.getReturnType();
     }
 
     /**

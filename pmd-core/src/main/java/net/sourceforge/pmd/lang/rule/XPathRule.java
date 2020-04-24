@@ -225,10 +225,10 @@ public class XPathRule extends AbstractRule {
         return true;
     }
 
-    private static Map<String, String> getXPathVersions() {
-        Map<String, String> tmp = new HashMap<>();
+    private static Map<String, XPathVersion> getXPathVersions() {
+        Map<String, XPathVersion> tmp = new HashMap<>();
         for (XPathVersion v : XPathVersion.values()) {
-            tmp.put(v.getXmlName(), v.getXmlName());
+            tmp.put(v.getXmlName(), v);
         }
         return Collections.unmodifiableMap(tmp);
     }

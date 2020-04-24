@@ -117,8 +117,6 @@ public class SaxonXPathRuleQuery {
             documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
-            final AstNodeWrapper rootElementNode = documentNode.getRootNode();
-            assert rootElementNode != null : "Cannot find " + node;
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(documentNode.findWrapperFor(node));
 
             final List<AstElementNode> nodes = new ArrayList<>();
@@ -205,9 +203,9 @@ public class SaxonXPathRuleQuery {
         final RootNode root = node.getRoot();
 
         DataMap<DataKey<?, ?>> userMap = root.getUserMap();
-        AstDocument docNode = userMap.get(SAXON_TREE_CACHE_KEY);
+        AstDocumentNode docNode = userMap.get(SAXON_TREE_CACHE_KEY);
         if (docNode == null) {
-            docNode = new AstDocument(root, configuration);
+            docNode = new AstDocumentNode(root, configuration);
             userMap.set(SAXON_TREE_CACHE_KEY, docNode);
         }
         return docNode;
@@ -301,4 +299,7 @@ public class SaxonXPathRuleQuery {
         addExpressionForNode(AST_ROOT, xpathExpression.getInternalExpression());
     }
 
+    public static NamePool getNamePool() {
+        return NAME_POOL;
+    }
 }

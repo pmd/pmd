@@ -1,6 +1,7 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -173,7 +175,7 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(resultSize, result.size());
     }
 
-    private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?> ...descriptors) {
+    private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?>... descriptors) {
         Map<PropertyDescriptor<?>, Object> props = new HashMap<>();
         if (descriptors != null) {
             for (PropertyDescriptor<?> prop : descriptors) {
@@ -206,7 +208,8 @@ public class SaxonXPathRuleQueryTest {
                         }
                     };
                 }
-            })
+            }),
+            DeprecatedAttrLogger.noop()
         );
     }
 }
