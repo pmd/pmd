@@ -38,6 +38,8 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * {@link #getXPathNodeName()},  {@link #getXPathAttributesIterator()}
  * <li>Location metadata: eg {@link #getBeginLine()}, {@link #getBeginColumn()}
  * </ul>
+ * Additionally, the {@linkplain #getUserMap() user data map} is an extensibility
+ * mechanism with which any client can independently associate values to AST nodes.
  *
  * <p>Every language implementation must publish a sub-interface of Node
  * which serves as a supertype for all nodes of that language (e.g.
@@ -299,7 +301,11 @@ public interface Node {
      * @param parentTypes Types to look for
      * @param <T> Most specific common type of the parameters
      * @return The first parent with a matching type. Returns null if there is no such parent
+     *
+     * @deprecated This method causes an unchecked warning at call sites.
+     *     PMD 7 will provide a way to do the same thing without the warning.
      */
+    @Deprecated
     default <T extends Node> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
         return ancestors().map(it -> {
             for (final Class<? extends T> c : parentTypes) {
@@ -436,7 +442,17 @@ public interface Node {
      * Get a DOM Document which contains Elements and Attributes representative of this Node and it's children.
      * Essentially a DOM tree representation of the Node AST, thereby allowing tools which can operate upon DOM to also
      * indirectly operate on the AST.
+     *
+     * @deprecated Converting a tree to a DOM is not a standard use case.
+     *            The implementation rethrows a {@link ParserConfigurationException}
+     *            as a {@link RuntimeException}, but a caller should handle
+     *            it if he really wants to do this. Another problem is that
+     *            this is available on any node, yet only the root node of
+     *            a tree corresponds really to a document. The conversion
+     *            is easy to implement anyway, and does not have to be part
+     *            of this API.
      */
+    @Deprecated
     default Document getAsDocument() {
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

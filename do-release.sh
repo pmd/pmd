@@ -113,7 +113,10 @@ echo
 echo "Updated stats in release notes:"
 echo "$STATS"
 echo
+echo "Please verify docs/pages/release_notes.md"
 echo
+echo "Press enter to continue..."
+read
 
 # install bundles needed for rendering release notes
 bundle install --with=release_notes_preprocessing --path vendor/bundle
