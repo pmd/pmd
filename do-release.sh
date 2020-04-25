@@ -78,6 +78,9 @@ RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION
 echo "*   Update date info in **docs/_config.yml**."
 echo "    date: $(date -u +%d-%B-%Y)"
 echo
+echo "*   Update version info in **docs/_config.yml**."
+echo "    remove the SNAPSHOT from site.pmd.version"
+echo
 echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
