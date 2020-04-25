@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#2444](https://github.com/pmd/pmd/pull/2444): \[core] Support reproducible builds
+
 ### API Changes
 
 ### External Contributions
