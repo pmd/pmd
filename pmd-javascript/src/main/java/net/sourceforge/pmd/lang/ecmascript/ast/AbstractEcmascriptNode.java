@@ -9,7 +9,7 @@ import org.mozilla.javascript.ast.AstNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
-abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<EcmascriptNode<?>> implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
     private String image;
@@ -18,6 +18,7 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
         this.node = node;
     }
 
+    @Override
     protected void addChild(AbstractEcmascriptNode<?> child, int index) {
         super.addChild(child, index);
     }

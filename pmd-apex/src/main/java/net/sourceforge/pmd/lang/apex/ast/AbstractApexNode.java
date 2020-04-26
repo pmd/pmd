@@ -14,7 +14,7 @@ import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
 
-abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<ApexNode<?>> implements ApexNode<T> {
+abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractApexNode<?>, ApexNode<?>> implements ApexNode<T> {
 
     protected final T node;
 
@@ -22,10 +22,13 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
         this.node = node;
     }
 
+    // overridden to make them visible
+    @Override
     protected void addChild(AbstractApexNode<?> child, int index) {
         super.addChild(child, index);
     }
 
+    @Override
     protected void insertChild(AbstractApexNode<?> child, int index) {
         super.insertChild(child, index);
     }

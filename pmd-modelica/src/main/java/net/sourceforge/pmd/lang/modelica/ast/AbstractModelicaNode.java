@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  *
  * @see ModelicaNode for public API.
  */
-abstract class AbstractModelicaNode extends AbstractJjtreeNode<ModelicaNode> implements ModelicaNode {
+abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaNode, ModelicaNode> implements ModelicaNode {
 
     private ModelicaScope ownScope;
 

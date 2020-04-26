@@ -10,7 +10,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @InternalApi
-public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> implements PLSQLNode {
+public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<AbstractPLSQLNode, PLSQLNode> implements PLSQLNode {
+
     protected Object value;
     protected PLSQLParser parser;
     protected Scope scope;

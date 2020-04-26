@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.ast.impl;
  * Base class for implementations that need fields to store text
  * coordinates.
  */
-public abstract class AbstractNodeWithTextCoordinates<T extends GenericNode<T>> extends AbstractNode<T> {
+public abstract class AbstractNodeWithTextCoordinates<B extends AbstractNodeWithTextCoordinates<B, T>, T extends GenericNode<T>> extends AbstractNode<B, T> {
 
     protected int beginLine = -1;
     protected int endLine = -1;

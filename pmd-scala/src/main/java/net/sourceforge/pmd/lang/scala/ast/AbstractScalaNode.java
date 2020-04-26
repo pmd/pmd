@@ -13,10 +13,10 @@ import scala.meta.inputs.Position;
  * A Wrapper for translating the Scala Tree Nodes to PMD-compatible Java-base
  * Nodes.
  *
- * @param <T>
- *            the type of the Scala tree node
+ * @param <T> the type of the Scala tree node
  */
-abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<ScalaNode<?>> implements ScalaNode<T> {
+abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractScalaNode<?>, ScalaNode<?>> implements ScalaNode<T> {
+
     protected final T node;
     private final Position pos;
 
@@ -32,6 +32,8 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<ScalaNode<
         pos = node.pos();
     }
 
+    // overridden to make it visible
+    @Override
     protected void addChild(AbstractScalaNode<?> child, int index) {
         super.addChild(child, index);
     }
@@ -60,9 +62,6 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<ScalaNode<
     public int getEndColumn() {
         return pos.endColumn(); // no +1
     }
-
-    @Override
-    public abstract <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
 
     @Override
     @Deprecated

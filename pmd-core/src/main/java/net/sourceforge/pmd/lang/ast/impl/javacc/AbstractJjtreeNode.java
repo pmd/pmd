@@ -17,7 +17,8 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
  * unforeseeable ways. Don't use it directly, use the node interfaces.
  */
 @Experimental
-public abstract class AbstractJjtreeNode<N extends JjtreeNode<N>> extends AbstractNode<N> implements JjtreeNode<N> {
+public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N extends JjtreeNode<N>> extends AbstractNode<B, N> implements JjtreeNode<N> {
+
     protected final int id;
     private JavaccToken firstToken;
     private JavaccToken lastToken;
@@ -64,8 +65,47 @@ public abstract class AbstractJjtreeNode<N extends JjtreeNode<N>> extends Abstra
         // to be overridden
     }
 
-    protected void addChild(AbstractJjtreeNode<N> child, int index) {
+    @Override // override to make it protected
+    protected void addChild(B child, int index) {
         super.addChild(child, index);
+    }
+
+    @Override
+    protected void insertChild(B child, int index) {
+        super.insertChild(child, index);
+        fitTokensToChildren(index);
+    }
+
+    /**
+     * Ensures that the first (resp. last) token of this node is before
+     * (resp. after) the first (resp. last) token of the child at the
+     * given index. The index
+     */
+    protected void fitTokensToChildren(int index) {
+        if (index == 0) {
+            enlargeLeft((B) getChild(index));
+        }
+        if (index == getNumChildren()) {
+            enlargeRight((B) getChild(index));
+        }
+    }
+
+    private void enlargeLeft(B child) {
+        JavaccToken thisFst = this.getFirstToken();
+        JavaccToken childFst = child.getFirstToken();
+
+        if (childFst.compareTo(thisFst) < 0) {
+            this.setFirstToken(childFst);
+        }
+    }
+
+    private void enlargeRight(B child) {
+        JavaccToken thisLast = this.getLastToken();
+        JavaccToken childLast = child.getLastToken();
+
+        if (childLast.compareTo(thisLast) > 0) {
+            this.setLastToken(childLast);
+        }
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
+public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> {
 
     private final boolean findBoundary;
     private final String xpathName;
@@ -29,7 +29,7 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
         this.xpathName = xpathName;
     }
 
-    public void setChildren(DummyNode... children) {
+    public void publicSetChildren(DummyNode... children) {
         super.setChildren(children);
     }
 
@@ -66,6 +66,7 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
         return userData;
     }
 
+    @Override
     public void addChild(DummyNode child, int index) {
         super.addChild(child, index);
     }

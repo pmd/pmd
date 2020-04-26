@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
-abstract class AbstractVfNode extends AbstractJjtreeNode<VfNode> implements VfNode {
+abstract class AbstractVfNode extends AbstractJjtreeNode<AbstractVfNode, VfNode> implements VfNode {
 
     protected AbstractVfNode(int id) {
         super(id);

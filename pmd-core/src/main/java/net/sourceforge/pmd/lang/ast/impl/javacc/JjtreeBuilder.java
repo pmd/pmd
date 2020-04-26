@@ -13,7 +13,7 @@ import java.util.List;
  * @param <N> Internal base class for nodes
  * @param <P> Public interface for nodes
  */
-public final class JjtreeBuilder<N extends AbstractJjtreeNode<P>, P extends JjtreeNode<P>> {
+public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, P>, P extends JjtreeNode<P>> {
 
     private final List<N> nodes = new ArrayList<>();
     private final List<Integer> marks = new ArrayList<>();
