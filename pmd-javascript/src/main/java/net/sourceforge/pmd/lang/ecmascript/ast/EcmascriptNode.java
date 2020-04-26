@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 public interface EcmascriptNode<T extends AstNode> extends Node {
 
@@ -30,6 +31,13 @@ public interface EcmascriptNode<T extends AstNode> extends Node {
      */
     @Deprecated
     T getNode();
+
+
+    @Override
+    default NodeStream<? extends EcmascriptNode<?>> children() {
+        return (NodeStream) Node.super.children();
+    }
+
 
     /**
      * Get the JsDoc associated with the given node. If there is no JsDoc on
