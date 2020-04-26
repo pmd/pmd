@@ -65,11 +65,9 @@ public abstract class AbstractPLSQLNode extends AbstractJjtreeNode<PLSQLNode> im
 
     public void dump(String prefix) {
         System.out.println(toString(prefix));
-        for (Node child : children) {
+        for (Node child : children()) {
             AbstractPLSQLNode n = (AbstractPLSQLNode) child;
-            if (n != null) {
-                n.dump(prefix + " ");
-            }
+            n.dump(prefix + " ");
         }
     }
 

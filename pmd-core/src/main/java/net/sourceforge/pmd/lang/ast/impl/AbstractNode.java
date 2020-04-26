@@ -29,7 +29,7 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     private @Nullable DataMap<DataKey<?, ?>> userData;
 
     // never null, never contains null elements
-    protected Node[] children = EMPTY_ARRAY;
+    private Node[] children = EMPTY_ARRAY;
     private AbstractNode<T> parent;
     private int childIndex;
 
@@ -84,6 +84,19 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
         child.setChildIndex(index);
         child.setParent(this);
     }
+
+
+
+    @SafeVarargs
+    protected final void setChildren(AbstractNode<T>... newChildren) {
+        this.children = new Node[newChildren.length];
+        System.arraycopy(newChildren, 0, this.children, 0, newChildren.length);
+        for (int i = 0; i < newChildren.length; i++) {
+            newChildren[i].setParent(this);
+            newChildren[i].setChildIndex(i);
+        }
+    }
+
 
     protected void remove() {
         // Detach current node of its parent, if any

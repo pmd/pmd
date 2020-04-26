@@ -42,11 +42,7 @@ public final class DummyTreeUtil {
     }
 
     private static <T extends DummyNode> T nodeImpl(T node, DummyNode... children) {
-        node.children = children;
-        for (int i = 0; i < children.length; i++) {
-            children[i].setParent(node);
-            children[i].setChildIndex(i);
-        }
+        node.setChildren(children);
         return node;
     }
 

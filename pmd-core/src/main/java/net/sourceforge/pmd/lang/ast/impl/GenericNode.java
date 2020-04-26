@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.ast.impl;
 
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
@@ -35,6 +37,17 @@ public interface GenericNode<N extends GenericNode<N>> extends Node {
     @Override
     N getParent();
 
+    @Override
+    @Nullable
+    default N getFirstChild() {
+        return getNumChildren() > 0 ? getChild(0) : null;
+    }
+
+    @Override
+    @Nullable
+    default N getLastChild() {
+        return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
+    }
 
     @Override
     default NodeStream<N> asStream() {

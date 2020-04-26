@@ -29,6 +29,10 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
         this.xpathName = xpathName;
     }
 
+    public void setChildren(DummyNode... children) {
+        super.setChildren(children);
+    }
+
     @Override
     public void setCoords(int bline, int bcol, int eline, int ecol) {
         super.setCoords(bline, bcol, eline, ecol);

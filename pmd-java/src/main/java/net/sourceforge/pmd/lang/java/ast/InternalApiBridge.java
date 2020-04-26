@@ -21,6 +21,12 @@ public final class InternalApiBridge {
 
     }
 
+    @Deprecated
+    public static ASTVariableDeclaratorId newVarId(String image) {
+        ASTVariableDeclaratorId varid = new ASTVariableDeclaratorId(JavaParserImplTreeConstants.JJTVARIABLEDECLARATORID);
+        varid.setImage(image);
+        return varid;
+    }
 
     public static JavaccTokenDocument javaTokenDoc(String fullText) {
         return new JavaTokenDocument(fullText);

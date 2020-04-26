@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 
@@ -286,6 +287,7 @@ public interface Node {
      */
     String getXPathNodeName();
 
+
     /**
      * Returns an iterator enumerating all the attributes that are available from XPath for this node.
      *
@@ -293,6 +295,22 @@ public interface Node {
      */
     default Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);
+    }
+
+
+    /**
+     * Returns the first child of this node, or null if it doesn't exist.
+     */
+    default @Nullable Node getFirstChild() {
+        return getNumChildren() > 0 ? getChild(0) : null;
+    }
+
+
+    /**
+     * Returns the first last of this node, or null if it doesn't exist.
+     */
+    default @Nullable Node getLastChild() {
+        return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
     }
 
 
