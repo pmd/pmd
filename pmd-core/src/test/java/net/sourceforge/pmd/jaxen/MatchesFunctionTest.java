@@ -19,7 +19,8 @@ import net.sourceforge.pmd.lang.xpath.MatchesFunction;
 
 public class MatchesFunctionTest {
 
-    public static class MyNode extends AbstractNodeWithTextCoordinates<MyNode> {
+    public static class MyNode extends AbstractNodeWithTextCoordinates<MyNode, MyNode> {
+
         private String className;
 
         public MyNode() {

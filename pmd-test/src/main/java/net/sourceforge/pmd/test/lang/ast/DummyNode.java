@@ -6,7 +6,7 @@ package net.sourceforge.pmd.test.lang.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode> {
+public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> {
 
     private String image;
 

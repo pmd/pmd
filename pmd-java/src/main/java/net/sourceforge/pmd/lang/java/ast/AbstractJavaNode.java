@@ -32,7 +32,12 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
         return scope;
     }
 
-    @Override // override to make protected member accessible to parser
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
+    protected void addChild(AbstractJavaNode child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override // override to make it accessible to parser
     protected void setImage(String image) {
         super.setImage(image);
     }

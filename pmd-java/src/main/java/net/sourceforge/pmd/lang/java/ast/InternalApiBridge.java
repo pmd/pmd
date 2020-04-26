@@ -28,6 +28,20 @@ public final class InternalApiBridge {
         return varid;
     }
 
+    @Deprecated
+    public static ASTPrimaryPrefix newThisSuperPrefix(String image, boolean isThis) {
+        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(JavaParserImplTreeConstants.JJTPRIMARYPREFIX);
+        if (isThis) {
+            prefix.setUsesThisModifier();
+        } else {
+            prefix.setUsesSuperModifier();
+        }
+        ASTName name = new ASTName(JavaParserImplTreeConstants.JJTNAME);
+        name.setImage(image);
+        prefix.addChild(name, 0);
+        return prefix;
+    }
+
     public static JavaccTokenDocument javaTokenDoc(String fullText) {
         return new JavaTokenDocument(fullText);
     }
