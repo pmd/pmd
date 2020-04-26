@@ -1,9 +1,9 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.23.0-SNAPSHOT
-    previous_version: 6.22.0
-    date: ??-??-2020
+    version: 6.24.0-SNAPSHOT
+    previous_version: 6.23.0
+    date: ??-May-2020
     release_type: minor
 
 # release types: major, minor, bugfix
@@ -42,6 +42,9 @@ exclude:
   - README.md
   - Dockerfile
   - build-docs.sh
+  - pdf-*.sh
+  - pdfconfigs/
+  - pdf/
 
 feedback_subject_line: PMD Source Code Analyzer
 

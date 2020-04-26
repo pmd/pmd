@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jaxen.BaseXPath;
@@ -241,7 +244,6 @@ public interface Node {
             throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
         }
     }
-
 
     /**
      * Returns a data map used to store additional information on this node.

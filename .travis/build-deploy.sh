@@ -62,7 +62,11 @@ elif travis_isPush; then
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
 
-        regression-tester_uploadBaseline
+        if [ "${TRAVIS_BRANCH}" != "java-grammar" ]; then
+            regression-tester_uploadBaseline
+        else
+            log_info "Skipping regression tester for branch ${TRAVIS_BRANCH}"
+        fi
 
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.

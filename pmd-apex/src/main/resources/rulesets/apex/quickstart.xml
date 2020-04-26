@@ -196,6 +196,7 @@
    <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
       <priority>3</priority>
    </rule>
+   <!-- <rule ref="category/apex/codestyle.xml/FieldDeclarationsShouldBeAtStart"/> -->
 
    <!-- DOCUMENTATION -->
    <rule ref="category/apex/documentation.xml/ApexDoc" message="Document classes, methods, and properties that are public or global.">
@@ -206,4 +207,6 @@
    <rule ref="category/apex/bestpractices.xml/DebugsShouldUseLoggingLevel">
       <priority>3</priority>
    </rule>
+   <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
+
 </ruleset>
