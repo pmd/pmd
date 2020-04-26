@@ -112,7 +112,7 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
         assert index >= 0 && index <= children.length
             : "Invalid index for insertion into array of length " + children.length + ": " + index;
 
-        Node[] newChildren = new Node[index + 1];
+        Node[] newChildren = new Node[children.length + 1];
         if (index != 0) {
             System.arraycopy(children, 0, newChildren, 0, index);
         }
