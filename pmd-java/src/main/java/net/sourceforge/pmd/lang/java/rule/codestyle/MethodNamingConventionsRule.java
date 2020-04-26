@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import static net.sourceforge.pmd.lang.ast.NodeStream.*;
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;

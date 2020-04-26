@@ -13,7 +13,6 @@ import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
@@ -41,15 +40,13 @@ public class GetCommentOnFunction implements Function {
             return Boolean.FALSE;
         }
         Node n = (Node) context.getNodeSet().get(0);
-        if (n instanceof AbstractNode) {
-            int codeBeginLine = ((AbstractNode) n).getBeginLine();
-            int codeEndLine = ((AbstractNode) n).getEndLine();
+        int codeBeginLine = n.getBeginLine();
+        int codeEndLine = n.getEndLine();
 
-            List<Comment> commentList = ((AbstractNode) n).getFirstParentOfType(ASTCompilationUnit.class).getComments();
-            for (Comment comment : commentList) {
-                if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
-                    return comment.getImage();
-                }
+        List<Comment> commentList = n.getFirstParentOfType(ASTCompilationUnit.class).getComments();
+        for (Comment comment : commentList) {
+            if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
+                return comment.getImage();
             }
         }
         return Boolean.FALSE;

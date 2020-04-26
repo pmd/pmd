@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 
 public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
 
@@ -68,7 +67,7 @@ public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
         return data;
     }
 
-    private boolean insideLoop(AbstractNode node) {
+    private boolean insideLoop(Node node) {
         Node n = node.getParent();
 
         while (n != null) {

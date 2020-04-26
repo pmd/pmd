@@ -172,11 +172,11 @@ public class ClassScope extends AbstractJavaScope {
             final boolean hasAuxclasspath = getEnclosingScope(SourceFileScope.class).hasAuxclasspath();
             matchMethodDeclaration(occurrence, methodDeclarations.keySet(), hasAuxclasspath, result);
 
-             if (isEnum && "valueOf".equals(occurrence.getImage())) {
-                 ASTMethodDeclarator declarator = createBuiltInMethodDeclaration("valueOf", "String");
-                 declarator.setScope(this);
-                 result.add(new MethodNameDeclaration(declarator));
-             }
+            if (isEnum && "valueOf".equals(occurrence.getImage())) {
+                ASTMethodDeclarator declarator = createBuiltInMethodDeclaration("valueOf", "String");
+                declarator.setScope(this);
+                result.add(new MethodNameDeclaration(declarator));
+            }
 
             if (result.isEmpty()) {
                 for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
