@@ -39,6 +39,11 @@ public interface DataFlowNode {
 
 
     static DataFlowNode get(Node node) {
-        return node.getUserMap().get(DATAFLOW_KEY);
+        DataFlowNode df = node.getUserMap().get(DATAFLOW_KEY);
+        if (df == null && node.getParent() != null) {
+            return get(node.getParent());
+        } else {
+            return df;
+        }
     }
 }
