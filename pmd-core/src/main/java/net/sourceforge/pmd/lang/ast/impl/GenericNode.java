@@ -16,10 +16,9 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * the same hierarchy (eg Java nodes only have Java nodes as parent, or
  * as children).
  *
- * <p>This is considered an "implementation detail". Although subinterfaces
- * like JavaNode profit from the added type information, the Node interface
- * and its usages in language-independent code would suffer from adding a
- * type parameter directly to {@link Node}.
+ * <p>Although subinterfaces like JavaNode profit from the added type
+ * information, the Node interface and its usages in language-independent
+ * code would suffer from adding a type parameter directly to {@link Node}.
  *
  * <p>Type safety of the unchecked casts here is the responsibility of
  * the implementation, it should check that methods like setParent or

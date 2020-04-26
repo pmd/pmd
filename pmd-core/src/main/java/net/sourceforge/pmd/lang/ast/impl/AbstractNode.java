@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
-import java.util.Objects;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -70,6 +68,8 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
 
     /**
      * This method tells the node to add its argument to the node's list of children.
+     * Note that it is more efficient to add children in reverse (from right to left),
+     * because the array is resized only once.
      *
      * @param child The child to add
      * @param index The index to which the child will be added
@@ -114,11 +114,6 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
      */
     protected void setChildIndex(final int index) {
         childIndex = index;
-    }
-
-    @Override
-    public boolean hasImageEqualTo(final String image) {
-        return Objects.equals(this.getImage(), image);
     }
 
     @Override

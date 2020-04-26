@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jaxen.BaseXPath;
@@ -64,7 +62,7 @@ public interface Node {
      * @param image The image to check
      */
     default boolean hasImageEqualTo(String image) {
-        return getImage() != null && getImage().equals(image);
+        return Objects.equals(getImage(), image);
     }
 
 
@@ -426,6 +424,10 @@ public interface Node {
         return StreamImpl.ancestors(this, rClass);
     }
 
+
+    /**
+     * Returns the root of the tree this node is declared in.
+     */
     @NonNull
     default RootNode getRoot() {
         Node r = this;
