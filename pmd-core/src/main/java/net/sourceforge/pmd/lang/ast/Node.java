@@ -431,11 +431,11 @@ public interface Node {
     @NonNull
     default RootNode getRoot() {
         Node r = this;
-        while (r != null && !(r instanceof RootNode)) {
+        while (r.getParent() != null) {
             r = r.getParent();
         }
-        if (r == null) {
-            throw new IllegalStateException("No root node in tree ?");
+        if (!(r instanceof RootNode)) {
+            throw new AssertionError("Root of the tree should implement RootNode");
         }
         return (RootNode) r;
     }
