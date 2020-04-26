@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import static net.sourceforge.pmd.lang.java.ast.InternalApiBridge.createBuiltInMethodDeclaration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
@@ -38,20 +41,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * method declarations and inner class declarations.
  */
 public class ClassScope extends AbstractJavaScope {
-
-    private static final Set<String> PRIMITIVE_TYPES;
-
-    static {
-        PRIMITIVE_TYPES = new HashSet<>();
-        PRIMITIVE_TYPES.add("boolean");
-        PRIMITIVE_TYPES.add("char");
-        PRIMITIVE_TYPES.add("byte");
-        PRIMITIVE_TYPES.add("short");
-        PRIMITIVE_TYPES.add("int");
-        PRIMITIVE_TYPES.add("long");
-        PRIMITIVE_TYPES.add("float");
-        PRIMITIVE_TYPES.add("double");
-    }
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
@@ -183,9 +172,11 @@ public class ClassScope extends AbstractJavaScope {
             final boolean hasAuxclasspath = getEnclosingScope(SourceFileScope.class).hasAuxclasspath();
             matchMethodDeclaration(occurrence, methodDeclarations.keySet(), hasAuxclasspath, result);
 
-            // if (isEnum && "valueOf".equals(occurrence.getImage())) {
-            //     result.add(createBuiltInMethodDeclaration("valueOf", "String"));
-            // }
+             if (isEnum && "valueOf".equals(occurrence.getImage())) {
+                 ASTMethodDeclarator declarator = createBuiltInMethodDeclaration("valueOf", "String");
+                 declarator.setScope(this);
+                 result.add(new MethodNameDeclaration(declarator));
+             }
 
             if (result.isEmpty()) {
                 for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
@@ -274,73 +265,6 @@ public class ClassScope extends AbstractJavaScope {
             }
         }
     }
-
-    /**
-     * Creates a fake method name declaration for built-in methods from Java
-     * like the Enum Method "valueOf".
-     *
-     * @param methodName
-     *            the method name
-     * @param parameterTypes
-     *            the reference types of each parameter of the method
-     * @return a method name declaration
-     */
-    //    private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName,
-    //            final String... parameterTypes) {
-    //        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(0);
-    //        methodDeclaration.setPublic(true);
-    //        methodDeclaration.setScope(this);
-    //
-    //        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(0);
-    //        methodDeclarator.setImage(methodName);
-    //        methodDeclarator.setScope(this);
-    //
-    //        ASTFormalParameters formalParameters = new ASTFormalParameters(0);
-    //        formalParameters.setScope(this);
-    //
-    //        methodDeclaration.addChild(methodDeclarator, 0);
-    //        methodDeclarator.setParent(methodDeclaration);
-    //        methodDeclarator.addChild(formalParameters, 0);
-    //        formalParameters.setParent(methodDeclarator);
-    //
-    //        /*
-    //         * jjtAddChild resizes it's child node list according to known indexes.
-    //         * Going backwards makes sure the first time it gets the right size avoiding copies.
-    //         */
-    //        for (int i = parameterTypes.length - 1; i >= 0; i--) {
-    //            ASTFormalParameter formalParameter = new ASTFormalParameter(0);
-    //            formalParameters.addChild(formalParameter, i);
-    //            formalParameter.setParent(formalParameters);
-    //
-    //            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(0);
-    //            variableDeclaratorId.setImage("arg" + i);
-    //            formalParameter.addChild(variableDeclaratorId, 1);
-    //            variableDeclaratorId.setParent(formalParameter);
-    //
-    //            ASTType type = new ASTType(0);
-    //            formalParameter.addChild(type, 0);
-    //            type.setParent(formalParameter);
-    //
-    //            if (PRIMITIVE_TYPES.contains(parameterTypes[i])) {
-    //                ASTPrimitiveType primitiveType = new ASTPrimitiveType(0);
-    //                primitiveType.setImage(parameterTypes[i]);
-    //                type.addChild(primitiveType, 0);
-    //                primitiveType.setParent(type);
-    //            } else {
-    //                ASTReferenceType referenceType = new ASTReferenceType(0);
-    //                type.addChild(referenceType, 0);
-    //                referenceType.setParent(type);
-    //
-    //                // TODO : this could actually be a primitive array...
-    //                ASTClassOrInterfaceType classOrInterfaceType = new ASTClassOrInterfaceType(0);
-    //                classOrInterfaceType.setImage(parameterTypes[i]);
-    //                referenceType.addChild(classOrInterfaceType, 0);
-    //                classOrInterfaceType.jjtSetParent(referenceType);
-    //            }
-    //        }
-    //
-    //        return new MethodNameDeclaration(methodDeclarator);
-    //    }
 
     /**
      * Provide a list of types of the parameters of the given method

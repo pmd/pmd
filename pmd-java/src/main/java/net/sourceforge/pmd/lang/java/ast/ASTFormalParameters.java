@@ -7,14 +7,10 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 
 public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameters(int id) {
+    ASTFormalParameters(int id) {
         super(id);
     }
 
