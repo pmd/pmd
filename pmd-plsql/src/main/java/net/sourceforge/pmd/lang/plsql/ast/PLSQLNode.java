@@ -16,6 +16,31 @@ public interface PLSQLNode extends ScopedNode, JjtreeNode<PLSQLNode> {
     @Override
     Scope getScope();
 
-    void setScope(Scope scope);
+    /**
+     * Return node image converted to the normal Oracle form.
+     *
+     * <p>
+     * Normally this is uppercase, unless the names is quoted ("name").
+     * </p>
+     */
+    default String getCanonicalImage() {
+        return PLSQLParserImpl.canonicalName(this.getImage());
+    }
 
+
+    /**
+     * Convert arbitrary String to normal Oracle format, under assumption that
+     * the passed image is an Oracle name.
+     *
+     * <p>
+     * This a helper method for PLSQL classes dependent on SimpleNode, that
+     * would otherwise have to import PLSQParser.
+     * </p>
+     *
+     * @param image
+     * @return
+     */
+    static String getCanonicalImage(String image) {
+        return PLSQLParserImpl.canonicalName(image);
+    }
 }
