@@ -22,6 +22,14 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
         this.node = node;
     }
 
+    protected void addChild(AbstractApexNode<?> child, int index) {
+        super.addChild(child, index);
+    }
+
+    protected void insertChild(AbstractApexNode<?> child, int index) {
+        super.insertChild(child, index);
+    }
+
     /* package */ void calculateLineNumbers(SourceCodePositioner positioner, int startOffset, int endOffset) {
         // end column will be interpreted as inclusive, while endOffset/endIndex
         // is exclusive

@@ -16,7 +16,6 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
@@ -283,8 +282,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // Append to parent
         AbstractApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
-            parent.jjtAddChild(node, parent.getNumChildren());
-            node.setParent(parent);
+            parent.addChild(node, parent.getNumChildren());
         }
 
         // Build the children...
@@ -304,27 +302,20 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private void addFormalComments() {
         for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
-            ApexNode<?> parent = tokenLocation.nearestNode;
+            AbstractApexNode<?> parent = tokenLocation.nearestNode;
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
                 comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
                         tokenLocation.index + tokenLocation.token.getText().length());
 
-                // move existing nodes so that we can insert the comment as the first node
-                for (int i = parent.getNumChildren(); i > 0; i--) {
-                    parent.jjtAddChild(parent.getChild(i - 1), i);
-                }
-
-                parent.jjtAddChild(comment, 0);
-                comment.setParent(parent);
+                parent.insertChild(comment, 0);
             }
         }
     }
 
     private void buildFormalComment(AstNode node) {
         if (parents.peek() == node) {
-            ApexNode<?> parent = (ApexNode<?>) nodes.peek();
-            assignApexDocTokenToNode(node, parent);
+            assignApexDocTokenToNode(node, nodes.peek());
         }
     }
 
@@ -337,7 +328,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * @param jorjeNode the original node
      * @param node the potential parent node, to which the comment could belong
      */
-    private void assignApexDocTokenToNode(AstNode jorjeNode, ApexNode<?> node) {
+    private void assignApexDocTokenToNode(AstNode jorjeNode, AbstractApexNode<?> node) {
         Location loc = jorjeNode.getLoc();
         if (!Locations.isReal(loc)) {
             // Synthetic nodes such as "<clinit>" don't have a location in the
@@ -411,7 +402,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private static class ApexDocTokenLocation {
         int index;
         Token token;
-        ApexNode<?> nearestNode;
+        AbstractApexNode<?> nearestNode;
         int nearestNodeDistance;
 
         ApexDocTokenLocation(int index, Token token) {

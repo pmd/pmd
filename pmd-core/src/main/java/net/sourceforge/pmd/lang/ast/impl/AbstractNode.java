@@ -67,24 +67,63 @@ public abstract class AbstractNode<T extends GenericNode<T>> implements GenericN
     }
 
     /**
-     * This method tells the node to add its argument to the node's list of children.
-     * Note that it is more efficient to add children in reverse (from right to left),
-     * because the array is resized only once.
+     * Set the child at the given index to the given node. This resizes
+     * the children array to be able to contain the given index. Implementations
+     * must take care that this does not leave any "holes" in the array.
+     * This method throws if there is already a child at the given index.
+     *
+     * <p>Note that it is more efficient to add children in reverse
+     * (from right to left), because the array is resized only the
+     * first time.
+     *
+     * <p>This method also calls {@link #setParent(AbstractNode)}.
      *
      * @param child The child to add
      * @param index The index to which the child will be added
      */
     protected void addChild(final AbstractNode<T> child, final int index) {
+        assert index >= 0 : "Invalid index " + index;
+        assert index >= children.length || children[index] == null : "There is already a child at index " + index;
+
         if (index >= children.length) {
             final Node[] newChildren = new Node[index + 1];
             System.arraycopy(children, 0, newChildren, 0, children.length);
             children = newChildren;
         }
+
         children[index] = child;
         child.setChildIndex(index);
         child.setParent(this);
     }
 
+    /**
+     * Insert a child at the given index, shifting all the following
+     * children to the right.
+     *
+     * @param child New child
+     * @param index Index (must be 0 <= index <= getNumChildren()), ie
+     *              you can insert a node beyond the end, because that
+     *              would leave holes in the array
+     */
+    protected void insertChild(final AbstractNode<T> child, final int index) {
+        assert index >= 0 && index <= children.length
+            : "Invalid index for insertion into array of length " + children.length + ": " + index;
+
+        Node[] newChildren = new Node[index + 1];
+        if (index != 0) {
+            System.arraycopy(children, 0, newChildren, 0, index);
+        }
+        if (index != children.length) {
+            System.arraycopy(children, index, newChildren, index + 1, children.length - index);
+        }
+        newChildren[index] = child;
+        child.setParent(this);
+
+        for (int i = index; i < newChildren.length; i++) {
+            ((AbstractNode<?>) newChildren[i]).setChildIndex(i);
+        }
+        this.children = newChildren;
+    }
 
 
     @SafeVarargs
