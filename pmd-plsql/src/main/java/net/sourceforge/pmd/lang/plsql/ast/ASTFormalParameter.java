@@ -8,6 +8,37 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+
+    private boolean in;
+
+    private boolean out;
+
+    private boolean nocopy;
+
+    public boolean isIn() {
+        return this.in;
+    }
+
+    public void setIn(boolean in) {
+        this.in = in;
+    }
+
+    public boolean isOut() {
+        return this.out;
+    }
+
+    public void setOut(boolean out) {
+        this.out = out;
+    }
+
+    public boolean isNoCopy() {
+        return this.nocopy;
+    }
+
+    public void setNoCopy(boolean nocopy) {
+        this.nocopy = nocopy;
+    }
+
     public ASTFormalParameter(int id) {
         super(id);
     }
