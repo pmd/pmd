@@ -9,15 +9,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.sxpath.XPathEvaluator;
+import net.sf.saxon.type.Type;
 
 public class ElementNodeTest {
 
     @Test
     public void testCompareOrder() {
-        DummyNode node = new DummyNode( "dummy");
+        DummyRoot node = new DummyRoot();
         DummyNode foo1 = new DummyNode("foo").setCoords(1,1,1,2);
         DummyNode foo2 = new DummyNode( "foo").setCoords(1,1,1,2);
         node.jjtAddChild(foo1, 0);
@@ -26,13 +28,18 @@ public class ElementNodeTest {
 
         Configuration configuration = new XPathEvaluator().getStaticContext().getConfiguration();
 
-        AstDocumentNode document = new AstDocumentNode(node, configuration);
+        AstTreeInfo document = new AstTreeInfo(node, configuration);
         Assert.assertSame(node, document.getRootNode().getUnderlyingNode());
+        Assert.assertEquals(Type.DOCUMENT, document.getRootNode().getNodeKind());
 
-        AstElementNode elementFoo1 = document.getRootNode().getChildren().get(0);
+        AstElementNode rootElt = document.getRootNode().getRootElement();
+        Assert.assertSame(node, rootElt.getUnderlyingNode());
+        Assert.assertEquals(Type.ELEMENT, rootElt.getNodeKind());
+
+        AstElementNode elementFoo1 = rootElt.getChildren().get(0);
         Assert.assertSame(foo1, elementFoo1.getUnderlyingNode());
 
-        AstElementNode elementFoo2 = document.getRootNode().getChildren().get(1);
+        AstElementNode elementFoo2 = rootElt.getChildren().get(1);
         Assert.assertSame(foo2, elementFoo2.getUnderlyingNode());
 
         Assert.assertFalse(elementFoo1.isSameNodeInfo(elementFoo2));

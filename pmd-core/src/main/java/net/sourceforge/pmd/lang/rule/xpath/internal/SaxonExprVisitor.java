@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
-import net.sourceforge.pmd.lang.ast.xpath.internal.TypedAttributeGetter;
-
 import net.sf.saxon.expr.AndExpression;
-import net.sf.saxon.expr.AttributeGetter;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.BinaryExpression;
 import net.sf.saxon.expr.BooleanExpression;
@@ -104,8 +101,6 @@ abstract class SaxonExprVisitor {
             result = visit((LetExpression) expr);
         } else if (expr instanceof BooleanExpression) {
             result = visit((BooleanExpression) expr);
-        } else if (expr instanceof AttributeGetter) {
-            return new TypedAttributeGetter(((AttributeGetter) expr).getAttributeName());
         } else {
             result = expr;
         }

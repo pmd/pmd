@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -45,6 +46,18 @@ public class SaxonXPathRuleQueryTest {
         assertQuery(1, "//dummyNode[@EnumList = \"BAR\"]", dummy);
         assertQuery(1, "//dummyNode[@EnumList = (\"FOO\", \"BAR\")]", dummy);
         assertQuery(0, "//dummyNode[@EmptyList = (\"A\")]", dummy);
+    }
+
+    @Test
+    public void testListProperty() {
+        RootNode dummy = new DummyNodeWithListAndEnum();
+
+        PropertyDescriptor<List<String>> prop = PropertyFactory.stringListProperty("prop")
+                                                               .defaultValues("FOO", "BAR")
+                                                               .desc("description").build();
+
+
+        assertQuery(1, "//dummyRootNode[@Enum = $prop]", dummy, prop);
     }
 
     @Test
@@ -169,8 +182,8 @@ public class SaxonXPathRuleQueryTest {
                    .replaceAll("\\$zz:zz-?\\d+", "\\$zz:zz000");
     }
 
-    private static void assertQuery(int resultSize, String xpath, Node node) {
-        SaxonXPathRuleQuery query = createQuery(xpath);
+    private static void assertQuery(int resultSize, String xpath, Node node, PropertyDescriptor<?>... descriptors) {
+        SaxonXPathRuleQuery query = createQuery(xpath, descriptors);
         List<Node> result = query.evaluate(node, new RuleContext());
         Assert.assertEquals(resultSize, result.size());
     }
@@ -187,29 +200,34 @@ public class SaxonXPathRuleQueryTest {
             xpath,
             XPathVersion.XPATH_2_0,
             props,
-            XPathHandler.getHandlerForFunctionDefs(new AbstractXPathFunctionDef("imageIs", "dummy") {
-                @Override
-                public SequenceType[] getArgumentTypes() {
-                    return new SequenceType[] {SequenceType.SINGLE_STRING};
-                }
-
-                @Override
-                public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-                    return SequenceType.SINGLE_BOOLEAN;
-                }
-
-                @Override
-                public ExtensionFunctionCall makeCallExpression() {
-                    return new ExtensionFunctionCall() {
-                        @Override
-                        public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                            Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
-                            return BooleanValue.get(arguments[0].head().getStringValue().equals(contextNode.getImage()));
-                        }
-                    };
-                }
-            }),
+            XPathHandler.getHandlerForFunctionDefs(imageIsFunction()),
             DeprecatedAttrLogger.noop()
         );
+    }
+
+    @NonNull
+    private static AbstractXPathFunctionDef imageIsFunction() {
+        return new AbstractXPathFunctionDef("imageIs", "dummy") {
+            @Override
+            public SequenceType[] getArgumentTypes() {
+                return new SequenceType[] {SequenceType.SINGLE_STRING};
+            }
+
+            @Override
+            public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+                return SequenceType.SINGLE_BOOLEAN;
+            }
+
+            @Override
+            public ExtensionFunctionCall makeCallExpression() {
+                return new ExtensionFunctionCall() {
+                    @Override
+                    public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+                        Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
+                        return BooleanValue.get(arguments[0].head().getStringValue().equals(contextNode.getImage()));
+                    }
+                };
+            }
+        };
     }
 }

@@ -56,7 +56,7 @@ public class SaxonXPathRuleQuery {
     private static final NamePool NAME_POOL = new NamePool();
 
     /** Cache key for the wrapped tree for saxon. */
-    private static final SimpleDataKey<AstDocumentNode> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
+    private static final SimpleDataKey<AstTreeInfo> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
     private final String xpathExpr;
     private final XPathVersion version;
@@ -113,7 +113,7 @@ public class SaxonXPathRuleQuery {
         initializeXPathExpression();
 
         try {
-            final AstDocumentNode documentNode = getDocumentNodeForRootNode(node);
+            final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
             documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
@@ -199,13 +199,13 @@ public class SaxonXPathRuleQuery {
      *
      * @return the DocumentNode representing the whole AST
      */
-    private AstDocumentNode getDocumentNodeForRootNode(final Node node) {
+    private AstTreeInfo getDocumentNodeForRootNode(final Node node) {
         final RootNode root = node.getRoot();
 
         DataMap<DataKey<?, ?>> userMap = root.getUserMap();
-        AstDocumentNode docNode = userMap.get(SAXON_TREE_CACHE_KEY);
+        AstTreeInfo docNode = userMap.get(SAXON_TREE_CACHE_KEY);
         if (docNode == null) {
-            docNode = new AstDocumentNode(root, configuration);
+            docNode = new AstTreeInfo(root, configuration);
             userMap.set(SAXON_TREE_CACHE_KEY, docNode);
         }
         return docNode;

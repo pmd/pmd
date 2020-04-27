@@ -5,7 +5,12 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 
+import java.util.List;
+
 import net.sf.saxon.om.NamePool;
+import net.sf.saxon.pattern.NodeTest;
+import net.sf.saxon.tree.iter.AxisIterator;
+import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 
@@ -18,18 +23,20 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     private final NamePool namePool;
     private final int fingerprint;
 
-    protected final AstElementNode parent;
+    protected final BaseNodeInfo parent;
 
-    BaseNodeInfo(int nodeKind, NamePool namePool, String localName, AstElementNode parent) {
+    BaseNodeInfo(int nodeKind, NamePool namePool, String localName, BaseNodeInfo parent) {
         this.nodeKind = nodeKind;
         this.namePool = namePool;
         this.fingerprint = namePool.allocateFingerprint("", localName) & NamePool.FP_MASK;
         this.parent = parent;
     }
 
+    abstract List<AstElementNode> getChildren();
+
     @Override
-    public AstDocumentNode getTreeInfo() {
-        return (AstDocumentNode) treeInfo;
+    public AstTreeInfo getTreeInfo() {
+        return (AstTreeInfo) treeInfo;
     }
 
     @Override
@@ -48,7 +55,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     }
 
     @Override
-    public final AstElementNode getParent() {
+    public final BaseNodeInfo getParent() {
         return parent;
     }
 
@@ -67,4 +74,7 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
         return nodeKind;
     }
 
+    protected static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
+        return nodeTest != null ? new AxisFilter(iter, nodeTest) : iter;
+    }
 }

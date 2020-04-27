@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import net.sf.saxon.om.AtomicSequence;
@@ -21,7 +24,7 @@ import net.sf.saxon.type.Type;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
+class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNode {
 
 
     private final Attribute attribute;
@@ -36,6 +39,11 @@ public class AstAttributeNode extends BaseNodeInfo implements SiblingCountingNod
         this.schemaType = DomainConversion.buildType(attribute.getType());
         this.siblingPosition = siblingPosition;
         this.treeInfo = parent.getTreeInfo();
+    }
+
+    @Override
+    List<AstElementNode> getChildren() {
+        return Collections.emptyList();
     }
 
     @Override

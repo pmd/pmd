@@ -4,64 +4,95 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode.DescendantIter;
 
 import net.sf.saxon.Configuration;
-import net.sf.saxon.om.GenericTreeInfo;
-
+import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.pattern.NodeTest;
+import net.sf.saxon.tree.iter.AxisIterator;
+import net.sf.saxon.tree.iter.EmptyIterator;
+import net.sf.saxon.tree.iter.ListIterator;
+import net.sf.saxon.tree.util.FastStringBuffer;
+import net.sf.saxon.type.Type;
 
 /**
- * A wrapper around the root node of an AST, implementing {@link net.sf.saxon.om.TreeInfo}.
+ *
  */
-public final class AstDocumentNode extends GenericTreeInfo {
+class AstDocumentNode extends BaseNodeInfo {
 
-    private DeprecatedAttrLogger logger;
+    private final AstElementNode rootElement;
+    private final List<AstElementNode> children;
 
-    /**
-     * Builds an AstDocument, with the given node as the root.
-     *
-     * @param node          The root AST Node.
-     * @param configuration Configuration of the run
-     *
-     * @see AstElementNode
-     */
-    public AstDocumentNode(Node node, Configuration configuration) {
-        super(configuration);
-        setRootNode(new AstElementNode(this, new IdGenerator(), null, node, configuration));
+    public AstDocumentNode(AstTreeInfo document,
+                           IdGenerator idGenerator,
+                           RootNode wrappedNode,
+                           Configuration configuration) {
+        super(Type.DOCUMENT, configuration.getNamePool(), "", null);
+        this.rootElement = new AstElementNode(document, idGenerator, this, wrappedNode, configuration);
+        this.children = Collections.singletonList(rootElement);
     }
-
-    public AstElementNode findWrapperFor(Node node) {
-        List<Integer> indices = node.ancestorsOrSelf().toList(Node::getIndexInParent);
-        AstElementNode cur = getRootNode();
-        for (int i = 1; i < indices.size(); i++) { // note we skip the first, who is the root
-            Integer idx = indices.get(i);
-            if (idx >= cur.getChildren().size()) {
-                throw new IllegalArgumentException("Node is not part of this tree " + node);
-            }
-
-            cur = cur.getChildren().get(idx);
-        }
-        if (cur.getUnderlyingNode() != node) {
-            // may happen with the root
-            throw new IllegalArgumentException("Node is not part of this tree " + node);
-        }
-        return cur;
-    }
-
 
     @Override
-    public AstElementNode getRootNode() {
-        return (AstElementNode) super.getRootNode();
+    List<AstElementNode> getChildren() {
+        return children;
     }
 
-    public void setAttrCtx(DeprecatedAttrLogger attrCtx) {
-        this.logger = attrCtx;
+    public AstElementNode getRootElement() {
+        return rootElement;
     }
 
-    public DeprecatedAttrLogger getLogger() {
-        return logger == null ? DeprecatedAttrLogger.noop() : logger;
+    @Override
+    protected AxisIterator iterateAttributes(NodeTest nodeTest) {
+        return EmptyIterator.OfNodes.THE_INSTANCE;
+    }
+
+    @Override
+    protected AxisIterator iterateChildren(NodeTest nodeTest) {
+        return filter(nodeTest, new ListIterator.OfNodes.OfNodes(children));
+    }
+
+    @Override
+    protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
+        return EmptyIterator.OfNodes.THE_INSTANCE;
+    }
+
+    @Override
+    protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
+        return filter(nodeTest, new DescendantIter(this, includeSelf));
+    }
+
+    @Override
+    public int getSiblingPosition() {
+        return 0;
+    }
+
+    @Override
+    public Node getUnderlyingNode() {
+        return rootElement.getUnderlyingNode();
+    }
+
+    @Override
+    public int compareOrder(NodeInfo other) {
+        return other == this ? 0 : -1;
+    }
+
+    @Override
+    public String getLocalPart() {
+        return "";
+    }
+
+    @Override
+    public void generateId(FastStringBuffer buffer) {
+        buffer.append("0");
+    }
+
+    @Override
+    public CharSequence getStringValueCS() {
+        return "";
     }
 }

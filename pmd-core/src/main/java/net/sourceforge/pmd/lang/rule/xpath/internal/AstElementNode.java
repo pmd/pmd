@@ -15,6 +15,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -32,13 +33,13 @@ import net.sf.saxon.tree.iter.ReverseListIterator;
 import net.sf.saxon.tree.iter.SingleNodeIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
-import net.sf.saxon.tree.util.Navigator.AxisFilter;
 import net.sf.saxon.tree.wrapper.SiblingCountingNode;
 import net.sf.saxon.type.Type;
 
 
 /**
- * A wrapper for Saxon around a Node.
+ * A wrapper for Saxon around a Node. Note: the {@link RootNode} of a tree
+ * corresponds to both a document node and an element node that is its child.
  */
 public final class AstElementNode extends BaseNodeInfo implements SiblingCountingNode {
 
@@ -50,16 +51,12 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     private @Nullable Map<String, AstAttributeNode> attributes;
 
 
-    public AstElementNode(AstDocumentNode document,
+    public AstElementNode(AstTreeInfo document,
                           IdGenerator idGenerator,
-                          AstElementNode parent,
+                          BaseNodeInfo parent,
                           Node wrappedNode,
                           Configuration configuration) {
-        super(parent == null ? Type.DOCUMENT
-                             : Type.ELEMENT,
-              configuration.getNamePool(),
-              wrappedNode.getXPathNodeName(),
-              parent);
+        super(Type.ELEMENT, configuration.getNamePool(), wrappedNode.getXPathNodeName(), parent);
 
         this.treeInfo = document;
         this.wrappedNode = wrappedNode;
@@ -92,6 +89,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         return attributes;
     }
 
+    @Override
     List<AstElementNode> getChildren() {
         return children;
     }
@@ -108,8 +106,9 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     @Override
     public int getSiblingPosition() {
-        AstElementNode parent = getParent();
-        return parent == null ? 0 : id - parent.id;
+        BaseNodeInfo parent = getParent();
+        return !(parent instanceof AstElementNode) ? 0
+                                                   : id - ((AstElementNode) parent).id;
     }
 
     @Override
@@ -151,18 +150,14 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         }
 
         List<? extends NodeInfo> siblingsList =
-            forwards ? CollectionUtil.drop(parent.children, wrappedNode.getIndexInParent())
-                     : CollectionUtil.take(parent.children, wrappedNode.getIndexInParent());
+            forwards ? CollectionUtil.drop(parent.getChildren(), wrappedNode.getIndexInParent())
+                     : CollectionUtil.take(parent.getChildren(), wrappedNode.getIndexInParent());
 
         AxisIterator iter =
             forwards ? new ListIterator.OfNodes(siblingsList)
                      : new RevListAxisIterator(siblingsList);
 
         return filter(nodeTest, iter);
-    }
-
-    private static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
-        return nodeTest != null ? new AxisFilter(iter, nodeTest) : iter;
     }
 
 
@@ -181,7 +176,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     @Override
     protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {
-        return filter(nodeTest, new DescendantIter(includeSelf));
+        return filter(nodeTest, new DescendantIter(this, includeSelf));
     }
 
 
@@ -199,7 +194,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     @Override
     public void generateId(FastStringBuffer buffer) {
-        buffer.append(Integer.toString(hashCode()));
+        buffer.append(Integer.toString(id));
     }
 
     @Override
@@ -224,16 +219,16 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         return "Wrapper[" + getLocalPart() + "]@" + hashCode();
     }
 
-    private class DescendantIter implements AxisIterator, LookaheadIterator {
+    static class DescendantIter implements AxisIterator, LookaheadIterator {
 
-        private final Deque<AstElementNode> todo;
+        private final Deque<BaseNodeInfo> todo;
 
-        public DescendantIter(boolean includeSelf) {
+        public DescendantIter(BaseNodeInfo start, boolean includeSelf) {
             todo = new ArrayDeque<>();
             if (includeSelf) {
-                todo.addLast(AstElementNode.this);
+                todo.addLast(start);
             } else {
-                todo.addAll(children);
+                todo.addAll(start.getChildren());
             }
         }
 
@@ -247,8 +242,8 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
             if (todo.isEmpty()) {
                 return null;
             }
-            AstElementNode first = todo.removeFirst();
-            todo.addAll(first.children);
+            BaseNodeInfo first = todo.removeFirst();
+            todo.addAll(first.getChildren());
             return first;
         }
 
