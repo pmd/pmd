@@ -5,10 +5,13 @@
 package net.sourceforge.pmd.lang.ecmascript;
 
 import static net.sourceforge.pmd.lang.ParserOptionsTest.verifyOptionsEqualsHashcode;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 
@@ -68,8 +71,8 @@ public class EcmascriptParserOptionsTest {
     @Test
     public void testEqualsHashcode() throws Exception {
         @SuppressWarnings("unchecked")
-        PropertyDescriptor<Boolean>[] properties = new PropertyDescriptor[] {EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
-                                           EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR,};
+        List<PropertyDescriptor<Boolean>> properties = listOf(EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
+                                                              EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
 
         for (PropertyDescriptor<Boolean> property : properties) {
             MyRule rule = new MyRule();

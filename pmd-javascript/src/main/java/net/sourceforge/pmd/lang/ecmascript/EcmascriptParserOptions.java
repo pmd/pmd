@@ -70,7 +70,7 @@ public class EcmascriptParserOptions extends ParserOptions {
     public static final PropertyDescriptor<Version> RHINO_LANGUAGE_VERSION =
         PropertyFactory.enumProperty("rhinoLanguageVersion", associateBy(asList(Version.values()), Version::getLabel))
                        .desc("Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.")
-                       .defaultValue(Version.VERSION_DEFAULT)
+                       .defaultValue(Version.VERSION_ES6)
                        .build();
 
     private boolean recordingComments;
