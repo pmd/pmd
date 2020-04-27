@@ -287,7 +287,13 @@ public abstract class AbstractNode implements Node {
      * Returns true if this node has a descendant of any type among the provided types.
      *
      * @param types Types to test
+     *
+     * @deprecated This is implemented inefficiently, with PMD 7 Node streams
+     *     will provide a better alternative. We cannot ensure binary compatibility
+     *     because the methods on 7.0 expect at least one class type, by requiring
+     *     one Class parameter before the varargs (Effective Java 2nd ed., Item 42).
      */
+    @Deprecated
     public final boolean hasDescendantOfAnyType(final Class<? extends Node>... types) {
         // TODO consider implementing that with a single traversal!
         // -> this is done if you use node streams
