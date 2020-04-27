@@ -20,5 +20,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#2448](https://github.com/pmd/pmd/pull/2448): \[java] Operator Wrap check - [Harsh Kukreja](https://github.com/harsh-kukreja)
+
+
 {% endtocmaker %}
 
