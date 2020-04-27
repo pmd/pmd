@@ -1658,7 +1658,7 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.getImage())}) "(" Expression() <AS> Datatype() ")"
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.getImage())}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.getImage())}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
+      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.getImage())}) "(" SqlExpression() [ [ <AS> ] ID() ] ( "," SqlExpression() [ [ <AS> ] ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.getImage())}) XMLElement()
       | LOOKAHEAD({"XMLROOT".equalsIgnoreCase(token.getImage())})
              "(" Expression() "," KEYWORD("VERSION") (<NO> KEYWORD("VALUE") | Expression() )
@@ -3205,7 +3205,7 @@ ASTMultiplicativeExpression MultiplicativeExpression() #MultiplicativeExpression
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
  (
   (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
-  ( LOOKAHEAD(2)
+  ( LOOKAHEAD("**" | "*" | "/" | <MOD> , {getToken(1).specialToken == null || getToken(1).specialToken.kind != EOL})
     ( ("**"  ) { sb.append(" ** "); } //Exponentiation
     | ("*"  ) { sb.append(" * "); }
     | ("/"  ) { sb.append(" / "); }

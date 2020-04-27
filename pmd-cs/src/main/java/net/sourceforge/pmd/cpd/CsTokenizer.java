@@ -58,6 +58,7 @@ public class CsTokenizer extends AntlrTokenizer {
         private final boolean ignoreUsings;
         private boolean discardingUsings = false;
         private boolean discardingNL = false;
+        private boolean discardCurrent = false;
 
         CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings) {
             super(tokenManager);
@@ -71,22 +72,26 @@ public class CsTokenizer extends AntlrTokenizer {
 
         @Override
         protected void analyzeTokens(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+            discardCurrent = false;
             skipUsingDirectives(currentToken, remainingTokens);
         }
 
         private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
-            final int type = currentToken.getType();
-            if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
-                discardingUsings = true;
-            } else if (type == CSharpLexer.SEMICOLON) {
-                discardingUsings = false;
+            if (ignoreUsings) {
+                final int type = currentToken.getKind();
+                if (type == CSharpLexer.USING && isUsingDirective(remainingTokens)) {
+                    discardingUsings = true;
+                } else if (type == CSharpLexer.SEMICOLON && discardingUsings) {
+                    discardingUsings = false;
+                    discardCurrent = true;
+                }
             }
         }
 
         private boolean isUsingDirective(final Iterable<AntlrToken> remainingTokens) {
             UsingState usingState = UsingState.KEYWORD;
             for (final AntlrToken token : remainingTokens) {
-                final int type = token.getType();
+                final int type = token.getKind();
                 if (usingState == UsingState.KEYWORD) {
                     // The previous token was a using keyword.
                     switch (type) {
@@ -142,12 +147,12 @@ public class CsTokenizer extends AntlrTokenizer {
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = currentToken.getType() == CSharpLexer.NL;
+            discardingNL = currentToken.getKind() == CSharpLexer.NL;
         }
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingUsings || discardingNL;
+            return discardingUsings || discardingNL || discardCurrent;
         }
     }
 }

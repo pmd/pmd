@@ -12,7 +12,9 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
@@ -22,7 +24,11 @@ import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Adapter for the PLSQLParser.
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@InternalApi
+@Deprecated
 public class PLSQLParser extends AbstractParser {
     public PLSQLParser(ParserOptions parserOptions) {
         super(parserOptions);

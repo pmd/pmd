@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
+import com.github.oowekyala.treeutils.DoublyLinkedTreeLikeAdapter
 import com.github.oowekyala.treeutils.TreeLikeAdapter
 import com.github.oowekyala.treeutils.matchers.MatchingConfig
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
@@ -12,10 +13,14 @@ import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import net.sourceforge.pmd.lang.ast.Node
 
 /** An adapter for [baseShouldMatchSubtree]. */
-object NodeTreeLikeAdapter : TreeLikeAdapter<Node> {
+object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
     override fun getChildren(node: Node): List<Node> = node.findChildrenOfType(Node::class.java)
 
     override fun nodeName(type: Class<out Node>): String = type.simpleName.removePrefix("AST")
+
+    override fun getParent(node: Node): Node? = node.parent
+
+    override fun getChild(node: Node, index: Int): Node? = node.safeGetChild(index)
 }
 
 /** A subtree matcher written in the DSL documented on [TreeNodeWrapper]. */

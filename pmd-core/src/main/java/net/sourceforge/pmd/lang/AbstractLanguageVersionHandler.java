@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
  */
 public abstract class AbstractLanguageVersionHandler implements LanguageVersionHandler {
 
+
     @Override
     public DataFlowHandler getDataFlowHandler() {
         return DataFlowHandler.DUMMY;
@@ -45,7 +46,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
     @Override
     public VisitorStarter getSymbolFacade(ClassLoader classLoader) {
-        return VisitorStarter.DUMMY;
+        return getSymbolFacade();
     }
 
     @Override

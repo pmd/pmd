@@ -466,6 +466,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <!-- <rule ref="category/apex/codestyle.xml/FieldDeclarationsShouldBeAtStart"/> -->
 
    <!-- DOCUMENTATION -->
    <rule ref="category/apex/documentation.xml/ApexDoc" message="Document classes, methods, and properties that are public or global.">
@@ -488,4 +489,6 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
+
 </ruleset>

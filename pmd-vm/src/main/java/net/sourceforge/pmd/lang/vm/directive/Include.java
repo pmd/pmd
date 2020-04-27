@@ -53,7 +53,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:kav@kav.dk">Kasper Nielsen</a>
  * @version $Id: Include.java 746438 2009-02-21 05:41:24Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Include extends InputBase {
 
     /**

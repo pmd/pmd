@@ -14,6 +14,7 @@ import static net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.Declar
 import static net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind.INITIALIZER;
 import static net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind.INTERFACE;
 import static net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD;
+import static net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind.RECORD;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -77,6 +78,8 @@ abstract class AbstractTypeBodyDeclaration extends AbstractJavaNode implements A
             return ANNOTATION;
         } else if (node instanceof ASTEnumDeclaration) {
             return ENUM;
+        } else if (node instanceof ASTRecordDeclaration) {
+            return RECORD;
         }
 
         throw new IllegalStateException("Declaration node types should all be known");

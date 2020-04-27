@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -39,7 +41,10 @@ public class ASTReference extends AbstractVmNode {
 
     /**
      * Indicates if we are running in strict reference mode.
+     *
+     * @deprecated for removal with PMD 7.0.0
      */
+    @Deprecated
     public boolean strictRef = false;
 
     /**
@@ -48,20 +53,20 @@ public class ASTReference extends AbstractVmNode {
      * implementations are known to have non-null return values. Disabling the
      * check will give a performance improval since toString() may be a complex
      * operation on large objects.
+     *
+     * @deprecated for removal with PMD 7.0.0
      */
+    @Deprecated
     public boolean toStringNullCheck = true;
 
-    /**
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTReference(final int id) {
         super(id);
     }
 
-    /**
-     * @param p
-     * @param id
-     */
+    @InternalApi
+    @Deprecated
     public ASTReference(final VmParser p, final int id) {
         super(p, id);
     }
@@ -91,6 +96,8 @@ public class ASTReference extends AbstractVmNode {
      * @param literal
      *            String to render to when null
      */
+    @InternalApi
+    @Deprecated
     public void setLiteral(final String literal) {
         /*
          * do only once

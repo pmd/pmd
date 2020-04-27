@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.scala.ast;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 import scala.meta.Mod;
 
@@ -11,12 +13,8 @@ import scala.meta.Mod;
  */
 public class ASTModImplicit extends AbstractScalaNode<Mod.Implicit> {
 
-    /**
-     * Create the AST node for this Scala node.
-     *
-     * @param scalaNode
-     *            the underlying Scala node
-     */
+    @Deprecated
+    @InternalApi
     public ASTModImplicit(Mod.Implicit scalaNode) {
         super(scalaNode);
     }

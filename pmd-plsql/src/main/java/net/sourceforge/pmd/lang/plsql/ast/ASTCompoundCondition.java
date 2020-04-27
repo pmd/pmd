@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,13 +6,19 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.Locale;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTCompoundCondition extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
     private String type;
 
+    @Deprecated
+    @InternalApi
     public ASTCompoundCondition(int id) {
         super(id);
     }
 
+    @Deprecated
+    @InternalApi
     public ASTCompoundCondition(PLSQLParser p, int id) {
         super(p, id);
     }
@@ -33,4 +39,3 @@ public class ASTCompoundCondition extends net.sourceforge.pmd.lang.plsql.ast.Abs
         }
     }
 }
-/* JavaCC - OriginalChecksum=e16db32ec742f0a3836eafa8756cfbc2 (do not edit this line) */

@@ -31,25 +31,38 @@ import org.jaxen.expr.XPathFactory;
 import org.jaxen.saxpath.Axis;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.ContextualizedNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * This is a Jaxen based XPathRule query.
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final Logger LOG = Logger.getLogger(JaxenXPathRuleQuery.class.getName());
 
-    private enum InitializationStatus {
-        NONE, PARTIAL, FULL
+    static final String AST_ROOT = "_AST_ROOT_";
+
+    private InitializationStatus initializationStatus = InitializationStatus.NONE;
+    // Mapping from Node name to applicable XPath queries
+    Map<String, List<XPath>> nodeNameToXPaths;
+
+    private final DeprecatedAttrLogger attrCtx;
+
+    public JaxenXPathRuleQuery() {
+        this(DeprecatedAttrLogger.noop());
     }
 
-    // Mapping from Node name to applicable XPath queries
-    private InitializationStatus initializationStatus = InitializationStatus.NONE;
-    private Map<String, List<XPath>> nodeNameToXPaths;
-
-    private static final String AST_ROOT = "_AST_ROOT_";
+    public JaxenXPathRuleQuery(DeprecatedAttrLogger attrCtx) {
+        this.attrCtx = attrCtx;
+    }
 
     @Override
     public boolean isSupportedVersion(String version) {
@@ -61,7 +74,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
         final List<Node> results = new ArrayList<>();
 
         try {
-            initializeExpressionIfStatusIsNoneOrPartial(data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator());
+            initializeExpressionIfStatusIsNoneOrPartial(new ContextualizedNavigator(attrCtx));
 
             List<XPath> xPaths = getXPathsForNodeOrDefault(node.getXPathNodeName());
             for (XPath xpath : xPaths) {
@@ -260,5 +273,10 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
             xpath.setVariableContext(vc);
         }
         return xpath;
+    }
+
+
+    private enum InitializationStatus {
+        NONE, PARTIAL, FULL
     }
 }

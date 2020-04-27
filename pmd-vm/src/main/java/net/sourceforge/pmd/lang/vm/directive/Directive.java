@@ -26,7 +26,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author Nathan Bubna
  * @version $Id: Directive.java 778045 2009-05-23 22:17:46Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public abstract class Directive implements Cloneable {
     /** Block directive indicator */
     public static final int BLOCK = 1;

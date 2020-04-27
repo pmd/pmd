@@ -45,12 +45,13 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
 |
-//IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
+//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
 ]]>
                 </value>
             </property>
@@ -82,10 +83,11 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace='false']
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -97,6 +99,30 @@ if (foo)    // not recommended
 
 if (foo) {  // preferred approach
     x++;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="FieldDeclarationsShouldBeAtStart"
+          language="apex"
+          since="6.23.0"
+          message="Field declaration for ''{0}'' should be before method declarations in its class"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart">
+        <description>
+            Field declarations should appear before method declarations within a class.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+    public Integer someField; // good
+
+    public void someMethod() {
+    }
+
+    public Integer anotherField; // bad
 }
 ]]>
         </example>
@@ -139,12 +165,13 @@ from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForLoopStatement/BlockStatement[@CurlyBrace='false']
+//ForLoopStatement/BlockStatement[@CurlyBrace= false()]
 |
-//ForEachStatement/BlockStatement[@CurlyBrace='false']
+//ForEachStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -248,6 +275,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
         </description>
         <priority>1</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -345,10 +373,11 @@ controlled from the rest.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileLoopStatement/BlockStatement[@CurlyBrace='false']
+//WhileLoopStatement/BlockStatement[@CurlyBrace= false()]
 ]]>
                 </value>
             </property>
@@ -364,5 +393,4 @@ while (true) {  // preferred approach
 ]]>
         </example>
     </rule>
-
 </ruleset>

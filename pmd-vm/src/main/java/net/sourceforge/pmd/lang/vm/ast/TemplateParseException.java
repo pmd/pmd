@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.vm.util.LogUtil;
  * @version $Id: TemplateParseException.java 703544 2008-10-10 18:15:53Z nbubna
  *          $
  * @since 1.5
+ * @deprecated for removal in PMD 7.0.0
  */
 @Deprecated
 public class TemplateParseException extends ParseException {

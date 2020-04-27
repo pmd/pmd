@@ -582,5 +582,18 @@
         </code>
     </test-code>
 
+    <test-code>
+        <description>EmptyStackException with record top level</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public record Point(int x, int y) {
 
+    public static void main(String[] args) {
+        Point p = new Point(1, 2);
+        System.out.println("p = " + p);
+    }
+}
+        ]]></code>
+        <source-type>java 14-preview</source-type>
+    </test-code>
 </test-data>

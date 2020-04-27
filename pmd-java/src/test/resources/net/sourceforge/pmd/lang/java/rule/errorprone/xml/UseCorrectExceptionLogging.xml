@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -19,10 +18,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case - two calls
-     ]]></description>
+        <description>failure case - two calls</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -36,10 +34,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-must be in a catch block
-     ]]></description>
+        <description>must be in a catch block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -50,10 +47,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bug 1626232, the rule should not be confused by inner classes
-     ]]></description>
+        <description>bug 1626232, the rule should not be confused by inner classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -71,10 +67,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bug 1626232, should work with a static block
-     ]]></description>
+        <description>bug 1626232, should work with a static block</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -89,5 +84,24 @@ public class Foo {
  }
 }
      ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XPath problem: A sequence of more than one item is not allowed as the first argument of concat()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseCorrectExceptionLoggingCase {
+    protected static final Log logger1 = LogFactory.getLog(DISCONNECTED_CLIENT_LOG_CATEGORY);
+    protected final Log logger2 = LogFactory.getLog(getClass());
+
+    public void run() {
+        try {
+            //...
+        } catch (Exception e) {
+            logger2.debug("Error", e);
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

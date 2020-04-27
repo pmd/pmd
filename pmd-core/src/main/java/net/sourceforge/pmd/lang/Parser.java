@@ -29,7 +29,9 @@ public interface Parser {
      * @param source
      *            Reader that provides the source code to tokenize.
      * @return A TokenManager for reading token.
+     * @deprecated For removal in 7.0.0
      */
+    @Deprecated
     TokenManager getTokenManager(String fileName, Reader source);
 
 

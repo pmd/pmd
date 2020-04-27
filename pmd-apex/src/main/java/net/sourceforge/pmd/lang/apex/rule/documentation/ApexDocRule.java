@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
@@ -107,7 +106,7 @@ public class ApexDocRule extends AbstractApexRule {
         return data;
     }
 
-    private void handleClassOrInterface(AbstractApexNode<?> node, Object data) {
+    private void handleClassOrInterface(ApexNode<?> node, Object data) {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
@@ -120,7 +119,7 @@ public class ApexDocRule extends AbstractApexRule {
         }
     }
 
-    private boolean shouldHaveApexDocs(AbstractApexNode<?> node) {
+    private boolean shouldHaveApexDocs(ApexNode<?> node) {
         if (!node.hasRealLoc()) {
             return false;
         }

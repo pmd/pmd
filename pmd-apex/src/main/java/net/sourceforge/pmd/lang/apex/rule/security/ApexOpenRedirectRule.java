@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
@@ -69,7 +68,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         return data;
     }
 
-    private void findSafeLiterals(AbstractApexNode<?> node) {
+    private void findSafeLiterals(ApexNode<?> node) {
         ASTBinaryExpression binaryExp = node.getFirstChildOfType(ASTBinaryExpression.class);
         if (binaryExp != null) {
             findSafeLiterals(binaryExp);

@@ -27,7 +27,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author Andrew Tetlaw
  * @author Nathan Bubna
  * @version $Id: Define.java 686842 2008-08-18 18:29:31Z nbubna $
+ * @deprecated for removal in PMD 7.0.0
  */
+@Deprecated
 public class Define extends Block {
     /**
      * Return name of this directive.

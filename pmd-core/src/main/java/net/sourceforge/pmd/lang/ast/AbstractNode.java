@@ -25,6 +25,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.ContextualizedNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -343,6 +345,7 @@ public abstract class AbstractNode implements Node {
 
     @SafeVarargs
     @Override
+    @Deprecated
     public final <T> T getFirstParentOfAnyType(final Class<? extends T>... parentTypes) {
         Node parentNode = getParent();
         while (parentNode != null) {
@@ -357,7 +360,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public <T> List<T> findDescendantsOfType(final Class<T> targetType) {
+    public <T> List<T> findDescendantsOfType(final Class<? extends T> targetType) {
         final List<T> list = new ArrayList<>();
         findDescendantsOfType(this, targetType, list, false);
         return list;
@@ -381,7 +384,7 @@ public abstract class AbstractNode implements Node {
         findDescendantsOfType(this, targetType, results, crossBoundaries);
     }
 
-    private static <T> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
+    private static <T> void findDescendantsOfType(final Node node, final Class<? extends T> targetType, final List<T> results,
                                                   final boolean crossFindBoundaries) {
 
         for (Node child : node.children()) {
@@ -412,6 +415,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    @Deprecated
     public Document getAsDocument() {
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -484,7 +488,8 @@ public abstract class AbstractNode implements Node {
      * Returns true if this node has a descendant of any type among the provided types.
      *
      * @param types Types to test
-     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
+     *
+     * @deprecated See {@link #hasDescendantOfAnyType(Class[])} for reasons
      */
     @Deprecated
     public final boolean hasDecendantOfAnyType(final Class<?>... types) {
@@ -495,7 +500,13 @@ public abstract class AbstractNode implements Node {
      * Returns true if this node has a descendant of any type among the provided types.
      *
      * @param types Types to test
+     *
+     * @deprecated This is implemented inefficiently, with PMD 7 Node streams
+     *     will provide a better alternative. We cannot ensure binary compatibility
+     *     because the methods on 7.0 expect at least one class type, by requiring
+     *     one Class parameter before the varargs (Effective Java 2nd ed., Item 42).
      */
+    @Deprecated
     public final boolean hasDescendantOfAnyType(final Class<?>... types) {
         // TODO consider implementing that with a single traversal!
         // hasDescendantOfType could then be a special case of this one
@@ -513,7 +524,8 @@ public abstract class AbstractNode implements Node {
     @Override
     @SuppressWarnings("unchecked")
     public List<Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
-        return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
+        return new BaseXPath(xpathString, new ContextualizedNavigator(DeprecatedAttrLogger.createAdHocLogger()))
+                .selectNodes(this);
     }
 
     @Override

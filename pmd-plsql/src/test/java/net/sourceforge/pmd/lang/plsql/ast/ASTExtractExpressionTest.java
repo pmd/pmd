@@ -7,15 +7,14 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class ASTExtractExpressionTest {
+public class ASTExtractExpressionTest extends AbstractPLSQLParserTst {
 
 
     @Test
     public void testXml() {
-        PlsqlParsingHelper parser = PlsqlParsingHelper.JUST_PARSE;
-        ASTInput unit = parser.parse("SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks', "
+        ASTInput unit = plsql.parse("SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks', "
                 + "'xmlns:a=\"http://warehouse/1\" xmlns:b=\"http://warehouse/2\"') \"Number of Docks\" "
                 + " FROM warehouses WHERE warehouse_spec IS NOT NULL;");
         ASTExtractExpression extract = unit.getFirstDescendantOfType(ASTExtractExpression.class);

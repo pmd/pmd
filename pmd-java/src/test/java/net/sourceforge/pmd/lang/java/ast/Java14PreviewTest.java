@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 
 /**
  * Tests new java14 preview features.
@@ -83,6 +84,9 @@ public class Java14PreviewTest {
             Assert.assertEquals("s", variable.getVariableName());
             Assert.assertTrue(variable.isPatternBinding());
             Assert.assertTrue(variable.isFinal());
+            // Note: these variables are not part of the symbol table
+            // See ScopeAndDeclarationFinder#visit(ASTVariableDeclaratorId, Object)
+            Assert.assertNull(variable.getNameDeclaration());
         }
     }
 
@@ -102,6 +106,9 @@ public class Java14PreviewTest {
         Assert.assertEquals(2, components.size());
         Assert.assertEquals("x", components.get(0).getVarId().getImage());
         Assert.assertEquals("y", components.get(1).getVarId().getImage());
+        Assert.assertNull(components.get(0).getVarId().getNameDeclaration().getAccessNodeParent());
+        Assert.assertEquals(Integer.TYPE, components.get(0).getVarId().getNameDeclaration().getType());
+        Assert.assertEquals("int", components.get(0).getVarId().getNameDeclaration().getTypeImage());
     }
 
     @Test(expected = ParseException.class)
@@ -130,6 +137,10 @@ public class Java14PreviewTest {
         Assert.assertEquals(2, complex.getDeclarations().size());
         Assert.assertTrue(complex.getDeclarations().get(0).getChild(1) instanceof ASTConstructorDeclaration);
         Assert.assertTrue(complex.getDeclarations().get(1).getChild(0) instanceof ASTRecordDeclaration);
+        Assert.assertTrue(complex.getParent() instanceof ASTClassOrInterfaceBodyDeclaration);
+        ASTClassOrInterfaceBodyDeclaration complexParent = complex.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        Assert.assertEquals(DeclarationKind.RECORD, complexParent.getKind());
+        Assert.assertSame(complex, complexParent.getDeclarationNode());
 
         ASTRecordDeclaration nested = recordDecls.get(1);
         Assert.assertEquals("Nested", nested.getSimpleName());

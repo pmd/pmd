@@ -76,4 +76,37 @@ import com.google.auto.value.AutoValue;
 }
      ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>FN with nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+abstract class Foo {
+
+    class Inner {
+        void ohio() {}
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with sibling class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+
+    abstract class Pos {}
+
+    class Sibling {
+        void ohio() {}
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>

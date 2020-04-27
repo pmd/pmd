@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.22.0-SNAPSHOT</version>
+    <version>6.24.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -87,16 +87,16 @@
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.3.0</kotlin.version>
-        <dokka.version>0.10.0</dokka.version>
+        <dokka.version>0.10.1</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
         <checkstyle.version>8.30</checkstyle.version>
-        <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
+        <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.13.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
+        <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -105,9 +105,9 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>6-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>6</pmd.build-tools.version>
 
-        <pmd-designer.version>6.21.0</pmd-designer.version>
+        <pmd-designer.version>6.24.0-SNAPSHOT</pmd-designer.version>
     </properties>
 
     <build>
@@ -256,6 +256,9 @@
                     <configuration>
                         <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
+                        <systemPropertyVariables>
+                            <mvn.project.src.test.resources>${project.basedir}/src/test/resources</mvn.project.src.test.resources>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -275,18 +278,23 @@
                     <configuration>
                         <quiet>true</quiet>
                         <doclint>none</doclint>
-                        <additionalJOptions>
-                            <additionalJOption>-html5</additionalJOption>
-                        </additionalJOptions>
-                        <additionalDependencies>
-                            <!-- TODO: this is only needed to make javadoc happy -->
-                            <additionalDependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant</artifactId>
-                                <version>${ant.version}</version>
-                            </additionalDependency>
-                        </additionalDependencies>
+                        <excludePackageNames>*.internal</excludePackageNames>
                         <detectOfflineLinks>false</detectOfflineLinks>
+                        <offlineLinks>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-lang-test/target/dokka/pmd-lang-test</location>
+                                <url>../../pmd-lang-test/${project.version}</url>
+                            </offlineLink>
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-test/target/apidocs</location>
+                                <url>../../pmd-test/${project.version}</url>
+                            </offlineLink>
+                            <!-- core needs to be last, because the package "net.sourceforge.pmd.lang" is both in pmd-core and pmd-test -->
+                            <offlineLink>
+                                <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                                <url>../../pmd-core/${project.version}</url>
+                            </offlineLink>
+                        </offlineLinks>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -363,12 +371,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.21.0</version>
+                            <version>6.23.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.21.0</version>
+                            <version>6.23.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -807,6 +815,18 @@
 
     <repositories>
         <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>sonatype-nexus-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -817,14 +837,6 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -832,6 +844,7 @@
             <name>Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
             <releases>
+                <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
@@ -850,8 +863,16 @@
             </snapshots>
         </pluginRepository>
         <pluginRepository>
+            <!-- needed for dokka-maven-plugin in pmd-lang-test -->
             <id>jcenter</id>
             <name>JCenter</name>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
             <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>

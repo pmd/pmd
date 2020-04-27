@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -36,7 +36,9 @@ public interface ScalaNode<T extends Tree> extends Node {
      * Get the underlying Scala Node.
      *
      * @return the Scala Node for this node
+     * @deprecated The underlying scala node should not be used directly.
      */
+    @Deprecated
     T getNode();
 
 

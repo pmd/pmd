@@ -34,6 +34,98 @@ public class JaxenXPathRuleQueryTest {
         assertQuery(0, "//dummyNode[@EmptyList = \"A\"]", dummy);
     }
 
+    @Test
+    public void ruleChainVisits() {
+        final String xpath = "//dummyNode[@Image='baz']/foo | //bar[@Public = 'true'] | //dummyNode[@Public = 'false'] | //dummyNode";
+        JaxenXPathRuleQuery query = createQuery(xpath);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(3, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        Assert.assertTrue(ruleChainVisits.contains("bar"));
+        // Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+        // match a real node name.
+        Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+        query.evaluate(dummy, data);
+        // note: the actual xpath queries are only available after evaluating
+        Assert.assertEquals(3, query.nodeNameToXPaths.size());
+        Assert.assertEquals("self::node()", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+        Assert.assertEquals("self::node()[(attribute::Public = \"false\")]", query.nodeNameToXPaths.get("dummyNode").get(1).toString());
+        Assert.assertEquals("self::node()[(attribute::Image = \"baz\")]/child::foo", query.nodeNameToXPaths.get("dummyNode").get(2).toString());
+        Assert.assertEquals("self::node()[(attribute::Public = \"true\")]", query.nodeNameToXPaths.get("bar").get(0).toString());
+        Assert.assertEquals(xpath, query.nodeNameToXPaths.get(JaxenXPathRuleQuery.AST_ROOT).get(0).toString());
+    }
+
+    @Test
+    public void ruleChainVisitsMultipleFilters() {
+        final String xpath = "//dummyNode[@Test1 = 'false'][@Test2 = 'true']";
+        JaxenXPathRuleQuery query = createQuery(xpath);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(2, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        // Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+        // match a real node name.
+        Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+        query.evaluate(dummy, data);
+        // note: the actual xpath queries are only available after evaluating
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+        Assert.assertEquals(xpath, query.nodeNameToXPaths.get(JaxenXPathRuleQuery.AST_ROOT).get(0).toString());
+    }
+
+    @Test
+    public void ruleChainVisitsNested() {
+        final String xpath = "//dummyNode/foo/*/bar[@Test = 'false']";
+        JaxenXPathRuleQuery query = createQuery(xpath);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(2, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        // Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+        // match a real node name.
+        Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+        query.evaluate(dummy, data);
+        // note: the actual xpath queries are only available after evaluating
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        Assert.assertEquals("self::node()/child::foo/child::*/child::bar[(attribute::Test = \"false\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+        Assert.assertEquals(xpath, query.nodeNameToXPaths.get(JaxenXPathRuleQuery.AST_ROOT).get(0).toString());
+    }
+
+    @Test
+    public void ruleChainVisitsNested2() {
+        final String xpath = "//dummyNode/foo[@Baz = 'a']/*/bar[@Test = 'false']";
+        JaxenXPathRuleQuery query = createQuery(xpath);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(2, ruleChainVisits.size());
+        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        // Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+        // match a real node name.
+        Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+        DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+        query.evaluate(dummy, data);
+        // note: the actual xpath queries are only available after evaluating
+        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        Assert.assertEquals("self::node()/child::foo[(attribute::Baz = \"a\")]/child::*/child::bar[(attribute::Test = \"false\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+        Assert.assertEquals(xpath, query.nodeNameToXPaths.get(JaxenXPathRuleQuery.AST_ROOT).get(0).toString());
+    }
+
     private static void assertQuery(int resultSize, String xpath, Node node) {
         JaxenXPathRuleQuery query = createQuery(xpath);
         RuleContext data = new RuleContext();

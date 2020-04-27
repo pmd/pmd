@@ -405,10 +405,11 @@ public class RuleDocGenerator {
                     lines.addAll(EscapeUtils.escapeLines(toLines(stripIndentation(rule.getDescription()))));
                     lines.add("");
 
-                    if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+                    XPathRule xpathRule = asXPathRule(rule);
+                    if (xpathRule != null) {
                         lines.add("**This rule is defined by the following XPath expression:**");
                         lines.add("``` xpath");
-                        lines.addAll(toLines(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR))));
+                        lines.addAll(toLines(StringUtils.stripToEmpty(xpathRule.getXPathExpression())));
                         lines.add("```");
                     } else {
                         lines.add("**This rule is defined by the following Java class:** "
@@ -500,6 +501,15 @@ public class RuleDocGenerator {
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    private XPathRule asXPathRule(Rule rule) {
+        if (rule instanceof XPathRule) {
+            return (XPathRule) rule;
+        } else if (rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+            return (XPathRule) ((RuleReference) rule).getRule();
+        }
+        return null;
     }
 
     private static boolean isDeprecated(PropertyDescriptor<?> propertyDescriptor) {
