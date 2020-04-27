@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
+import static java.util.Arrays.asList;
+import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
+
 import java.util.Objects;
 
 import org.mozilla.javascript.Context;
@@ -46,12 +49,6 @@ public class EcmascriptParserOptions extends ParserOptions {
         }
     }
 
-    private static final String[] VERSION_LABELS = {Version.VERSION_DEFAULT.getLabel(),
-                                                    Version.VERSION_1_0.getLabel(), Version.VERSION_1_1.getLabel(), Version.VERSION_1_2.getLabel(),
-                                                    Version.VERSION_1_3.getLabel(), Version.VERSION_1_4.getLabel(), Version.VERSION_1_5.getLabel(),
-                                                    Version.VERSION_1_6.getLabel(), Version.VERSION_1_7.getLabel(),
-                                                    Version.VERSION_1_8.getLabel(), Version.VERSION_ES6.getLabel()};
-
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
 
@@ -71,7 +68,7 @@ public class EcmascriptParserOptions extends ParserOptions {
                        .build();
 
     public static final PropertyDescriptor<Version> RHINO_LANGUAGE_VERSION =
-        PropertyFactory.enumProperty("rhinoLanguageVersion", Version.class, Version::getLabel)
+        PropertyFactory.enumProperty("rhinoLanguageVersion", associateBy(asList(Version.values()), Version::getLabel))
                        .desc("Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.")
                        .defaultValue(Version.VERSION_DEFAULT)
                        .build();

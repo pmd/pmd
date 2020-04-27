@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
+import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,15 +42,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule {
 
-    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES;
-
-    static {
-        final Map<String, ForeachReassignOption> map = new HashMap<>();
-        map.put("deny", ForeachReassignOption.DENY);
-        map.put("firstOnly", ForeachReassignOption.FIRST_ONLY);
-        map.put("allow", ForeachReassignOption.ALLOW);
-        FOREACH_REASSIGN_VALUES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES =
+        associateBy(asList(ForeachReassignOption.values()), o -> o.displayName);
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
             = enumProperty("foreachReassign", FOREACH_REASSIGN_VALUES)
@@ -59,15 +51,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             .desc("how/if foreach control variables may be reassigned")
             .build();
 
-    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES;
-
-    static {
-        final Map<String, ForReassignOption> map = new HashMap<>();
-        map.put("deny", ForReassignOption.DENY);
-        map.put("skip", ForReassignOption.SKIP);
-        map.put("allow", ForReassignOption.ALLOW);
-        FOR_REASSIGN_VALUES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES=
+        associateBy(asList(ForReassignOption.values()), o -> o.displayName);
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
             = enumProperty("forReassign", FOR_REASSIGN_VALUES)
@@ -205,7 +190,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         if (ignoreFlags.length == 0) {
             return false;
         }
-        final List<IgnoreFlags> ignoreFlagsList = Arrays.asList(ignoreFlags);
+        final List<IgnoreFlags> ignoreFlagsList = asList(ignoreFlags);
 
         // ignore the first statement
         final boolean ignoredFirstStatement = ignoreFlagsList.contains(IgnoreFlags.IGNORE_FIRST) && isFirstStatementInBlock(node, loopBody);
@@ -319,17 +304,23 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         /**
          * Deny reassigning the 'foreach' control variable
          */
-        DENY,
+        DENY("deny"),
 
         /**
          * Allow reassigning the 'foreach' control variable if it is the first statement in the loop body.
          */
-        FIRST_ONLY,
+        FIRST_ONLY("firstOnly"),
 
         /**
          * Allow reassigning the 'foreach' control variable.
          */
-        ALLOW;
+        ALLOW("allow");
+
+        private final String displayName;
+
+        ForeachReassignOption(String displayName) {
+            this.displayName = displayName;
+        }
 
         /**
          * The RuleDocGenerator uses toString() to determine the default value.
@@ -338,14 +329,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            for (Map.Entry<String, ForeachReassignOption> entry : FOREACH_REASSIGN_VALUES.entrySet()) {
-                if (entry.getValue().equals(this)) {
-                    return entry.getKey();
-                }
-            }
-
-            // fallback
-            return super.toString();
+            return displayName;
         }
     }
 
@@ -353,17 +337,23 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         /**
          * Deny reassigning a 'for' control variable.
          */
-        DENY,
+        DENY("deny"),
 
         /**
          * Allow skipping elements by incrementing/decrementing the 'for' control variable.
          */
-        SKIP,
+        SKIP("skip"),
 
         /**
          * Allow reassigning the 'for' control variable.
          */
-        ALLOW;
+        ALLOW("allow");
+
+        private final String displayName;
+
+        ForReassignOption(String displayName) {
+            this.displayName = displayName;
+        }
 
         /**
          * The RuleDocGenerator uses toString() to determine the default value.
@@ -372,14 +362,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            for (Map.Entry<String, ForReassignOption> entry : FOR_REASSIGN_VALUES.entrySet()) {
-                if (entry.getValue().equals(this)) {
-                    return entry.getKey();
-                }
-            }
-
-            // fallback
-            return super.toString();
+            return displayName;
         }
     }
 
