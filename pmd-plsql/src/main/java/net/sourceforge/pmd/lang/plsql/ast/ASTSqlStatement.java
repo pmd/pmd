@@ -7,16 +7,22 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTSqlStatement extends AbstractPLSQLNode {
 
     private Type type;
 
     public enum Type { COMMIT, ROLLBACK, SAVEPOINT, SET_TRANSACTION, LOCK_TABLE, MERGE }
 
+    @Deprecated
+    @InternalApi
     public ASTSqlStatement(int id) {
         super(id);
     }
 
+    @Deprecated
+    @InternalApi
     public ASTSqlStatement(PLSQLParser p, int id) {
         super(p, id);
     }
