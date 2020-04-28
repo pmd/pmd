@@ -148,6 +148,14 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
+    int getStartOffset() {
+        return startOffset;
+    }
+
+    int getEndOffset() {
+        return endOffset;
+    }
+
     @Override
     public FileLocation getReportLocation() {
         if (location == null) {

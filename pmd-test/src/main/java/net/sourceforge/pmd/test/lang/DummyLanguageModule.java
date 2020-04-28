@@ -4,6 +4,14 @@
 
 package net.sourceforge.pmd.test.lang;
 
+import java.io.Reader;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -12,6 +20,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Dummy language used for testing PMD.
@@ -54,25 +63,17 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static class DummyRootNode extends DummyNode implements RootNode {
 
+        @Override
+        public @NonNull TextDocument getTextDocument() {
+            return TextDocument.readOnlyString("dummy text", languageVersion);
+        }
 
         private LanguageVersion languageVersion;
-
-        @Override
-        public LanguageVersion getLanguageVersion() {
-            return languageVersion;
-        }
-
-        @Override
-        public String getSourceCodeFile() {
-            return "someFile.dummy";
-        }
 
         public DummyRootNode setLanguageVersion(LanguageVersion languageVersion) {
             this.languageVersion = languageVersion;
             return this;
         }
-
-
     }
 
 

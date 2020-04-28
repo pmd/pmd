@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.document.FileLocation;
 import net.sourceforge.pmd.util.document.Reportable;
+import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.util.document.TextRegion;
 
 
@@ -340,7 +341,7 @@ public interface Node extends Reportable {
 
 
     default LanguageVersion getLanguageVersion() {
-        return getRoot().getLanguageVersion();
+        return getTextDocument().getLanguageVersion();
     }
 
 
@@ -350,7 +351,7 @@ public interface Node extends Reportable {
     @Deprecated
     @NoAttribute
     default String getSourceCodeFile() {
-        return getRoot().getSourceCodeFile();
+        return getTextDocument().getDisplayName();
     }
 
 
@@ -530,5 +531,9 @@ public interface Node extends Reportable {
             throw new AssertionError("Root of the tree should implement RootNode");
         }
         return (RootNode) r;
+    }
+
+    default TextDocument getTextDocument() {
+        return getRoot().getTextDocument();
     }
 }

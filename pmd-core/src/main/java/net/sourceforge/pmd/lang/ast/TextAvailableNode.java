@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Refinement of {@link Node} for nodes that can provide the underlying
@@ -14,17 +15,14 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  */
 public interface TextAvailableNode extends Node {
 
-    /*
-      Note for future: I initially implemented a CharSequence that shares
-      the char array for the full file, which seems advantageous, but tbh
-      is out of scope of the first prototype
 
-      Problem with using strings is that I suspect it can be very easy to
-      create significant memory issues without paying attention...
-
-      See 046958adad for the removal commit
+    /**
+     * Returns the exact region of text delimiting
+     * the node in the underlying text document. Note
+     * that {@link #getReportLocation()} does not need
+     * to match this region.
      */
-
+    TextRegion getTextRegion();
 
     /**
      * Returns the original source code underlying this node. In

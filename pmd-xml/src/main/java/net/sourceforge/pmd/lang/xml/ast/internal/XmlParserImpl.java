@@ -12,6 +12,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -94,23 +96,16 @@ public class XmlParserImpl {
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
 
-        private final LanguageVersion languageVersion;
-        private final String filename;
+        private final TextDocument textDoc;
 
-        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
+        RootXmlNode(XmlParserImpl parser, Node domNode, TextDocument textDoc) {
             super(parser, domNode);
-            this.languageVersion = task.getLanguageVersion();
-            this.filename = task.getFileDisplayName();
+            this.textDoc = textDoc;
         }
 
         @Override
-        public LanguageVersion getLanguageVersion() {
-            return languageVersion;
-        }
-
-        @Override
-        public String getSourceCodeFile() {
-            return filename;
+        public @NonNull TextDocument getTextDocument() {
+            return textDoc;
         }
     }
 

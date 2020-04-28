@@ -109,13 +109,21 @@ public interface TextDocument extends Closeable {
     void close() throws IOException;
 
 
+    static TextDocument create(TextFile textFile, LanguageVersion lv) throws IOException {
+        return new TextDocumentImpl(textFile, lv);
+    }
+
     /**
      * Returns a read-only document for the given text.
      * FIXME for the moment, the language version may be null (for CPD languages).
-     *  this may be fixed when CPD and PMD languages are merged
+     * this may be fixed when CPD and PMD languages are merged
      */
     static TextDocument readOnlyString(final String source, LanguageVersion lv) {
-        TextFile textFile = TextFile.readOnlyString(source, "n/a", lv);
+        return readOnlyString(source, "n/a", lv);
+    }
+
+    static TextDocument readOnlyString(final String source, final String filename, LanguageVersion lv) {
+        TextFile textFile = TextFile.readOnlyString(source, filename, lv);
         try {
             return new TextDocumentImpl(textFile, lv);
         } catch (IOException e) {

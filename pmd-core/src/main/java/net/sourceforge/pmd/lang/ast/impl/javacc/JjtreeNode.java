@@ -25,6 +25,7 @@ public interface JjtreeNode<N extends JjtreeNode<N>> extends GenericNode<N>, Tex
     /**
      * Returns the region delimiting the text of this node.
      */
+    @Override
     TextRegion getTextRegion();
 
 

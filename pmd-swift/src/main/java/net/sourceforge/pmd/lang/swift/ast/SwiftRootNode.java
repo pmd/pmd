@@ -5,16 +5,16 @@
 package net.sourceforge.pmd.lang.swift.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 // package private base class
 abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
 
-    private String filename;
-    private LanguageVersion languageVersion;
+    private TextDocument textDocument;
 
     SwiftRootNode() {
         super();
@@ -26,18 +26,14 @@ abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
 
 
     @Override
-    public String getSourceCodeFile() {
-        return filename;
+    public @NonNull TextDocument getTextDocument() {
+        return textDocument;
     }
 
-    @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
+    SwiftRootNode addTaskInfo(ParserTask task) {
+        textDocument = task.getTextDocument();
+        return this;
     }
 
-    void addTaskInfo(ParserTask languageVersion) {
-        this.languageVersion = languageVersion.getLanguageVersion();
-        this.filename = languageVersion.getFileDisplayName();
-    }
 
 }

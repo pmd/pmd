@@ -5,7 +5,16 @@
 package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.Parser;
+import java.io.IOException;
+import java.io.Reader;
+
+import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 import scala.meta.Dialect;
 import scala.meta.Source;
@@ -35,7 +44,7 @@ public final class ScalaParser implements Parser {
         Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileDisplayName(), task.getSourceText());
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         ASTSource root = (ASTSource) new ScalaTreeBuilder().build(src);
-        root.addTaskInfo(task);
+        root.setTextDocument(task.getTextDocument());
         return root;
     }
 

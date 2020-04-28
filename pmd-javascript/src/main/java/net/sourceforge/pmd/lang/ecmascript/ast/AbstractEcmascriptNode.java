@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
@@ -16,7 +17,7 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
 
     protected final T node;
     private String image;
-    private TextDocument textDocument;
+    protected TextDocument textDocument;
     private int absPos;
 
     AbstractEcmascriptNode(T node) {
@@ -47,7 +48,16 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
 
     @Override
     public FileLocation getReportLocation() {
-        return textDocument.toLocation(TextRegion.fromOffsetLength(absPos, node.getLength()));
+        return textDocument.toLocation(getTextRegion());
+    }
+
+    private TextRegion getTextRegion() {
+        return TextRegion.fromOffsetLength(absPos, node.getLength());
+    }
+
+    @Override
+    public @NonNull TextDocument getTextDocument() {
+        return textDocument;
     }
 
     @Override

@@ -7,10 +7,13 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Collections;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, RootNode {
 
@@ -37,16 +40,6 @@ public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, Root
     }
 
 
-    @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
-
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
-    }
-
     public DummyRoot withLanguage(LanguageVersion languageVersion) {
         this.languageVersion = languageVersion;
         return this;
@@ -55,6 +48,11 @@ public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, Root
     public DummyRoot withFileName(String filename) {
         this.filename = filename;
         return this;
+    }
+
+    @Override
+    public @NonNull TextDocument getTextDocument() {
+        return TextDocument.readOnlyString("dummy text", filename, languageVersion);
     }
 
     @Override

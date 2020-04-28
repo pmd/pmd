@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Collections;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.document.TextDocument;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
@@ -19,6 +21,12 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * in the tree.
  */
 public interface RootNode extends Node {
+
+    /**
+     * Returns the text document from which this tree was parsed.
+     */
+    @Override
+    @NonNull TextDocument getTextDocument();
 
 
     /**
@@ -38,13 +46,4 @@ public interface RootNode extends Node {
     default Map<Integer, String> getNoPmdComments() {
         return Collections.emptyMap();
     }
-
-
-    @Override
-    LanguageVersion getLanguageVersion();
-
-
-    @Override
-    @NoAttribute
-    String getSourceCodeFile();
 }

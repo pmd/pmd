@@ -57,7 +57,6 @@ public class EcmascriptParser {
         final AstRoot astRoot = parseEcmascript(document.getText().toString(), parseProblems);
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(document, parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
-        tree.addTaskInfo(task);
 
         String suppressMarker = task.getCommentMarker();
         Map<Integer, String> suppressMap = new HashMap<>();

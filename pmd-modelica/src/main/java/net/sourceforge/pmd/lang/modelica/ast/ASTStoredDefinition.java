@@ -4,18 +4,19 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
+import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * A representation of a Modelica source code file.
  */
 public class ASTStoredDefinition extends AbstractModelicaNode implements RootNode {
     private boolean hasBOM = false;
-    private LanguageVersion languageVersion;
-    private String filename;
+    private TextDocument textDocument;
 
     ASTStoredDefinition(int id) {
         super(id);
@@ -31,18 +32,12 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
     }
 
     @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
+    public @NonNull TextDocument getTextDocument() {
+        return textDocument;
     }
 
-    @Override
-    public String getSourceCodeFile() {
-        return filename;
-    }
-
-    ASTStoredDefinition addTaskInfo(ParserTask languageVersion) {
-        this.languageVersion = languageVersion.getLanguageVersion();
-        this.filename = languageVersion.getFileDisplayName();
+    ASTStoredDefinition addTaskInfo(ParserTask task) {
+        textDocument = task.getTextDocument();
         return this;
     }
 
