@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 
 abstract class AbstractJspNode extends AbstractJjtreeNode<AbstractJspNode, JspNode> implements JspNode {
@@ -11,6 +12,16 @@ abstract class AbstractJspNode extends AbstractJjtreeNode<AbstractJspNode, JspNo
     protected AbstractJspNode(int id) {
         super(id);
     }
+
+    @Override
+    public final <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P param) {
+        if (visitor instanceof JspVisitor) {
+            return this.acceptVisitor((JspVisitor<P, R>) visitor, param);
+        }
+        return visitor.visitNode(this, param);
+    }
+
+    protected abstract <P, R> R acceptVisitor(JspVisitor<P, R> visitor, P data);
 
 
     @Override // override to make protected member accessible to parser

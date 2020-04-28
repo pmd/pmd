@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+
 /**
  * A Visitor Pattern Interface for the Scala AST.
  *
@@ -12,7 +14,8 @@ package net.sourceforge.pmd.lang.scala.ast;
  * @param <R>
  *            the type of the returned data from each visit method
  */
-public interface ScalaParserVisitor<D, R> {
+public interface ScalaParserVisitor<D, R> extends AstVisitor<D, R> {
+
     /**
      * Visit an arbitrary Scala Node (any node in the tree).
      *

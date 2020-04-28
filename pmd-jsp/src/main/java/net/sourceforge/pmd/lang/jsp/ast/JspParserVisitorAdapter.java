@@ -4,6 +4,23 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public class JspParserVisitorAdapter implements JspParserVisitor {
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.Node;
+
+
+/**
+ * Backwards-compatibility only.
+ *
+ * @deprecated Use {@link JspVisitorBase}
+ */
+@Deprecated
+@DeprecatedUntil700
+public class JspParserVisitorAdapter extends JspVisitorBase<Object, Object> implements JspParserVisitor {
+
+    @Override
+    protected Object visitChildren(Node node, Object data) {
+        super.visitChildren(node, data);
+        return data;
+    }
 
 }

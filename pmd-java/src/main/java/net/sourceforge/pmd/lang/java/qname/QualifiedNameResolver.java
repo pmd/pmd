@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -45,7 +45,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  */
 @Deprecated
 @InternalApi
-public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
+public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     // Package names to package representation.
     // Allows reusing the same list instance for the same packages.

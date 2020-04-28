@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.lang.ast.AstVisitorBase;
+
 import scala.meta.Case;
 import scala.meta.Ctor;
 import scala.meta.Decl;
@@ -28,30 +30,14 @@ import scala.meta.Type;
 /**
  * An Adapter for the Scala Parser that implements the Visitor Pattern.
  *
- * @param <D>
- *            The type of the data input
- * @param <R>
- *            The type of the returned data
+ * @param <D> The type of the data input
+ * @param <R> The type of the returned data
  */
-public class ScalaParserVisitorAdapter<D, R> implements ScalaParserVisitor<D, R> {
-
-    /** Initial value when combining values returned by children. */
-    protected R zero() {
-        return null;
-    }
-
-    /** Merge two values of type R, used to combine values returned by children. */
-    protected R combine(R acc, R r) {
-        return r;
-    }
+public class ScalaParserVisitorAdapter<D, R> extends AstVisitorBase<D, R> implements ScalaParserVisitor<D, R> {
 
     @Override
     public R visit(ScalaNode<?> node, D data) {
-        R returnValue = zero();
-        for (ScalaNode<?> child : node.children()) {
-            returnValue = combine(returnValue, child.accept(this, data));
-        }
-        return returnValue;
+        return visitChildren(node, data);
     }
 
     @Override

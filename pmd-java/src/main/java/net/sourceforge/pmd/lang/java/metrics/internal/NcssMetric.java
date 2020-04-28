@@ -53,7 +53,7 @@ public final class NcssMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-            MutableInt ncss = (MutableInt) node.jjtAccept(new NcssVisitor(options, node), new MutableInt(0));
+            MutableInt ncss = (MutableInt) node.acceptVisitor(new NcssVisitor(options, node), new MutableInt(0));
             return (double) ncss.getValue();
         }
 

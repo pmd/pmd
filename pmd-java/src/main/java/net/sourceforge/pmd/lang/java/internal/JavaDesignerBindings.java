@@ -16,8 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
@@ -32,7 +31,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
     @Override
     public Attribute getMainAttribute(Node node) {
         if (node instanceof JavaNode) {
-            Attribute attr = (Attribute) ((JavaNode) node).jjtAccept(MainAttrVisitor.INSTANCE, null);
+            Attribute attr = ((JavaNode) node).acceptVisitor(MainAttrVisitor.INSTANCE, null);
             if (attr != null) {
                 return attr;
             }
@@ -70,22 +69,22 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         return super.getAdditionalInfo(node);
     }
 
-    private static final class MainAttrVisitor extends JavaParserVisitorReducedAdapter {
+    private static final class MainAttrVisitor extends JavaVisitorBase<Void, Attribute> {
 
-        private static final JavaParserVisitor INSTANCE = new MainAttrVisitor();
+        private static final MainAttrVisitor INSTANCE = new MainAttrVisitor();
 
         @Override
-        public Object visit(JavaNode node, Object data) {
+        public Attribute visit(JavaNode node, Void data) {
             return null; // don't recurse
         }
 
         @Override
-        public Object visit(ASTAnyTypeDeclaration node, Object data) {
+        public Attribute visit(ASTAnyTypeDeclaration node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 
         @Override
-        public Object visit(ASTMethodDeclaration node, Object data) {
+        public Attribute visit(ASTMethodDeclaration node, Void data) {
             return new Attribute(node, "Name", node.getName());
         }
     }

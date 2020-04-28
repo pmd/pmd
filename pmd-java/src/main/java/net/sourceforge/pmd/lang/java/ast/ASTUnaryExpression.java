@@ -35,14 +35,14 @@ public class ASTUnaryExpression extends AbstractJavaTypeNode {
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    /** Returns the expression nested within this expression. */
+    public ASTExpression getOperand() {
+        return (ASTExpression) getChild(0);
     }
 
 

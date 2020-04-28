@@ -52,14 +52,9 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
         return ((ASTArguments) getChild(getNumChildren() - 1)).size();
     }
 
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
     }
 }

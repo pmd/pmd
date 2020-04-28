@@ -280,6 +280,27 @@ public interface Node {
      */
     int getIndexInParent();
 
+
+    /**
+     * Calls back the visitor's visit method corresponding to the runtime
+     * type of this Node. This should usually be preferred to calling
+     * a {@code visit} method directly (usually the only calls to those
+     * are in the implementations of this {@code acceptVisitor} method).
+     *
+     * @param visitor Visitor to dispatch
+     * @param param   Parameter to the visit
+     * @param <R>     Return type of the visitor
+     * @param <P>     Parameter type of the visitor
+     *
+     * @return What the visitor returned
+     */
+    // TODO remove the default implementation, convert all visitors to be generic
+    default <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P param) {
+        // override me
+        return visitor.visitNode(this, param);
+    }
+
+
     /**
      * Gets the name of the node that is used to match it with XPath queries.
      *
