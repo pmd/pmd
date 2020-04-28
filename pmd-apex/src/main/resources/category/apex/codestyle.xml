@@ -36,7 +36,7 @@ public class fooClass { } // This will be reported unless you change the regex
           language="apex"
           since="5.6.0"
           message="Avoid using 'if...else' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces">
         <description>
 Avoid using if..else statements without using surrounding braces. If the code formatting
@@ -74,7 +74,7 @@ else
           language="apex"
           since="5.6.0"
           message="Avoid using if statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifstmtsmustusebraces">
         <description>
 Avoid using if statements without using braces to surround the code block. If the code
@@ -156,7 +156,7 @@ public class Foo {
           language="apex"
           since="5.6.0"
           message="Avoid using 'for' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#forloopsmustusebraces">
         <description>
 Avoid using 'for' statements without using surrounding braces. If the code formatting or
@@ -267,7 +267,7 @@ public class Foo {
     <rule name="OneDeclarationPerLine"
           since="6.7.0"
           message="Use one statement for each line, it enhances code readability."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#onedeclarationperline">
         <description>
 Apex allows the use of several variables declaration of the same type on one line. However, it
@@ -364,7 +364,7 @@ public class Foo {
           language="apex"
           since="5.6.0"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#whileloopsmustusebraces">
         <description>
 Avoid using 'while' statements without using braces to surround the code block. If the code

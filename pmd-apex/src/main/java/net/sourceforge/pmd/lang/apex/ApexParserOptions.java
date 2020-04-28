@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.apex;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 
+/**
+ * @deprecated Not useful
+ */
 @Deprecated
 public class ApexParserOptions extends ParserOptions {
 
