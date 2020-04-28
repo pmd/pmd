@@ -19,6 +19,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <p>This admittedly should replace the text coordinates methods in {@link Node},
  * {@link GenericToken}, and {@link RuleViolation} at least.
+ *
+ * TODO the end line/end column are barely used, mostly ignored even by
+ *  renderers. Maybe these could be optional, or replaced by just a length
+ *  in case a renderer wants to cut out a piece of the file.
  */
 public final class FileLocation {
 
