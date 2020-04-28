@@ -93,7 +93,7 @@ public class JavaNameOccurrence implements NameOccurrence {
                     "Found a NameOccurrence (" + location + ") that didn't have an ASTPrimary Expression"
                             + " as parent or grandparent nor is a concise resource.  Parent = "
                             + location.getParent() + " and grandparent = " + location.getParent().getParent()
-                            + " (location line " + location.getBeginLine() + " col " + location.getBeginColumn() + ")");
+                            + " (location " + location.getReportLocation().startPosToString() + ")");
         }
 
         if (isStandAlonePostfix(primaryExpression)) {

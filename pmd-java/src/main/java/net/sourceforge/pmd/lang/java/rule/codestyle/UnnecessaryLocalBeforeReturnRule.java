@@ -106,10 +106,8 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         return false;
     }
 
-    // TODO : should node define isAfter / isBefore helper methods for Nodes?
     private static boolean isAfter(Node n1, Node n2) {
-        return n1.getBeginLine() > n2.getBeginLine()
-                || n1.getBeginLine() == n2.getBeginLine() && n1.getBeginColumn() >= n2.getEndColumn();
+        return n1.compareLocation(n2) > 0;
     }
 
     private boolean isInitDataModifiedAfterInit(final VariableNameDeclaration variableDeclaration,

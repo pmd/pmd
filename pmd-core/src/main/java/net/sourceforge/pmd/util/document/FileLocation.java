@@ -86,6 +86,9 @@ public final class FileLocation {
         return endColumn;
     }
 
+    public String startPosToString() {
+        return "line " + getBeginLine() + ", column " + getBeginColumn();
+    }
 
     /**
      * Creates a new location from the given parameters.

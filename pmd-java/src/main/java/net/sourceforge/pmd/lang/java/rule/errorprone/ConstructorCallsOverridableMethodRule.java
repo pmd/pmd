@@ -564,12 +564,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static int compareNodes(Node n1, Node n2) {
-        int l1 = n1.getBeginLine();
-        int l2 = n2.getBeginLine();
-        if (l1 == l2) {
-            return n1.getBeginColumn() - n2.getBeginColumn();
-        }
-        return l1 - l2;
+        return n1.compareLocation(n2);
     }
 
     private static class MethodHolderComparator implements Comparator<MethodHolder> {
