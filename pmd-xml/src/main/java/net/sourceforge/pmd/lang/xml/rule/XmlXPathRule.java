@@ -11,6 +11,10 @@ import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.properties.BooleanProperty;
 
+/**
+ * @deprecated Parser options are deprecated, use {@link XPathRule} directly
+ */
+@Deprecated
 public class XmlXPathRule extends XPathRule {
 
     public static final BooleanProperty COALESCING_DESCRIPTOR = XmlParserOptions.COALESCING_DESCRIPTOR;
