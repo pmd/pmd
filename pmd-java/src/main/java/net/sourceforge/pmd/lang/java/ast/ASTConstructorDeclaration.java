@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
@@ -56,6 +57,7 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
      * @deprecated Use {@link #getArity()}
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Arity")
     public int getParameterCount() {
         return getArity();
     }

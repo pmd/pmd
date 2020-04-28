@@ -95,6 +95,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     @Override
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@ArrayType")
     public boolean isArray() {
         return arrayDepth > 0;
     }
