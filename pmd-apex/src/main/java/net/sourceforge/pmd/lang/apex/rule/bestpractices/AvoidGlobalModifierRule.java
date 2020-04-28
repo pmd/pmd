@@ -33,6 +33,10 @@ public class AvoidGlobalModifierRule extends AbstractApexRule {
             addViolation(data, node);
         }
 
+        // Note, the rule reports the whole class, since that's enough and stops to visit right here.
+        // It also doesn't use rulechain, since it the top level type needs to global.
+        // if a member is global, that class has to be global as well to be valid apex.
+        // See also https://github.com/pmd/pmd/issues/2298
         return data;
     }
 
