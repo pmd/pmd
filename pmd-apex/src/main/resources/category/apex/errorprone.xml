@@ -52,7 +52,7 @@ public class Foo {
     <rule name="AvoidDirectAccessTriggerMap"
           since="6.0.0"
           message="Avoid directly accessing Trigger.old and Trigger.new"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap">
         <description>
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
@@ -112,7 +112,7 @@ public without sharing class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty catch blocks"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
         <description>
 Empty Catch Block finds instances where an exception is caught, but nothing is done.
@@ -148,7 +148,7 @@ public void doSomething() {
           language="apex"
           since="6.0.0"
           message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptyifstmt">
         <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
@@ -182,7 +182,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty block statements."
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptystatementblock">
         <description>
 Empty block statements serve no purpose and should be removed.
@@ -218,7 +218,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty try or finally blocks"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptytryorfinallyblock">
         <description>
 Avoid empty try or finally blocks - what's the point?
@@ -263,7 +263,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty 'while' statements"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
         <description>
 Empty While Statement finds all instances where a while statement does nothing.
@@ -338,7 +338,7 @@ public class MyClass {
     <rule name="TestMethodsMustBeInTestClasses"
           since="6.22.0"
           message="Test methods must be in test classes"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
        <description>
           Test methods marked as a testMethod or annotated with @IsTest,
