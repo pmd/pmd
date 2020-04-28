@@ -16,6 +16,11 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.BooleanProperty;
 
+/**
+ * @deprecated Parser options will be removed with 7.0, these options
+ *             will assume their default values then.
+ */
+@Deprecated
 public class XmlParserOptions extends ParserOptions {
 
     // Note: The UI order values are chosen to be larger than those built into
