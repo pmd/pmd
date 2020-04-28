@@ -23,7 +23,7 @@ public final class ASTExpressionStatement extends AbstractApexNode<ExpressionSta
     @Override
     protected TextRegion getRegion() {
         if (getNumChildren() > 0) {
-            return TextRegion.union(super.getRegion(), ((AbstractApexNode) getChild(0)).getRegion());
+            return TextRegion.union(super.getRegion(), ((AbstractApexNode<?>) getChild(0)).getRegion());
         }
         return super.getRegion();
     }

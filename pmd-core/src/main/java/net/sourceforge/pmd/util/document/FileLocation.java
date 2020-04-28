@@ -7,12 +7,18 @@ package net.sourceforge.pmd.util.document;
 import java.util.Comparator;
 import java.util.Objects;
 
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * A kind of {@link TextRegion} used for reporting. This provides access
  * to the line and column positions, as well as the text file. Instances
  * can be obtained from a {@link TextRegion} with {@link TextDocument#toLocation(TextRegion) TextDocument::toLocation}.
+ *
+ * <p>This admittedly should replace the text coordinates methods in {@link Node},
+ * {@link GenericToken}, and {@link RuleViolation} at least.
  */
 public final class FileLocation {
 

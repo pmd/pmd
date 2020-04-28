@@ -8,6 +8,7 @@ package net.sourceforge.pmd.util.document;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -16,7 +17,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * View on a string which doesn't copy the array for subsequence operations.
  * This view is immutable. Since it uses a string internally it benefits from
  * Java 9's compacting feature, it can also be efficiently created from
- * a StringBuilder.
+ * a StringBuilder. When confronted with an instance of this interface, please
+ * don't create substrings unnecessarily. Both {@link #subSequence(int, int)}
+ * and {@link #slice(int, int)} can cut out a subsequence without copying
+ * the underlying byte array. The {@link Pattern} API also works perfectly
+ * on arbitrary {@link CharSequence}s, not just on strings. Lastly some
+ * methods here provided provide mediated access to the underlying string,
+ * which for many use cases is much more optimal than using this CharSequence
+ * directly, eg {@link #appendChars(StringBuilder)}, {@link #writeFully(Writer)}.
  */
 public final class Chars implements CharSequence {
 
@@ -206,8 +214,24 @@ public final class Chars implements CharSequence {
         validateRangeWithAssert(off, len, this.len);
         if (len == 0) {
             return EMPTY;
+        } else if (off == 0 && len == this.len) {
+            return this;
         }
         return new Chars(str, idx(off), len);
+    }
+
+    /**
+     * Returns the substring starting at the given offset and with the
+     * given length. This differs from {@link String#substring(int, int)}
+     * in that it uses offset + length instead of start + end.
+     *
+     * @param off Start offset (0 <= off < this.length())
+     * @param len Length of the substring (0 <= len <= this.length() - off)
+     */
+    public String substring(int off, int len) {
+        validateRangeWithAssert(off, len, this.len);
+        int start = idx(off);
+        return str.substring(start, start + len);
     }
 
     private static void validateRangeWithAssert(int off, int len, int bound) {
