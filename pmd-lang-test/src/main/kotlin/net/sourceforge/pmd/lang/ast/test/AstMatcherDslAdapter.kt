@@ -20,7 +20,7 @@ object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
 
     override fun getParent(node: Node): Node? = node.parent
 
-    override fun getChild(node: Node, index: Int): Node? = node.safeGetChild(index)
+    override fun getChild(node: Node, index: Int): Node? = node.children().get(index)
 }
 
 /** A [NodeSpec] that returns a value. */
