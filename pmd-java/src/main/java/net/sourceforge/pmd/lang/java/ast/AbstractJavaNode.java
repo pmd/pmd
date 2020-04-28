@@ -17,7 +17,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
 
     private Scope scope;
     protected JSymbolTable symbolTable;
-    private Comment comment;
     private ASTCompilationUnit root;
 
     AbstractJavaNode(int id) {
@@ -113,15 +112,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         this.scope = scope;
     }
 
-    void comment(Comment theComment) {
-        comment = theComment;
-    }
-
-
-    @Override
-    public Comment comment() {
-        return comment;
-    }
 
     @Override
     @NonNull

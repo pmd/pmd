@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -59,13 +58,13 @@ public class AbstractCommentRuleTest {
 
     @Test
     public void testCommentAssignments() {
-        Node node = JavaParsingHelper.WITH_PROCESSING.parse("public class Foo {" + "     /** Comment 1 */\n"
+        ASTCompilationUnit node = JavaParsingHelper.WITH_PROCESSING.parse("public class Foo {" + "     /** Comment 1 */\n"
                                                                 + "        public void method1() {}\n" + "    \n" + "        /** Comment 2 */\n" + "    \n"
                                                                 + "        /** Comment 3 */\n" + "        public void method2() {}" + "}");
 
-        testSubject.assignCommentsToDeclarations((ASTCompilationUnit) node);
+        testSubject.assignCommentsToDeclarations(node);
         List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class);
-        Assert.assertEquals("/** Comment 1 */", methods.get(0).comment().getImage());
-        Assert.assertEquals("/** Comment 3 */", methods.get(1).comment().getImage());
+        Assert.assertEquals("/** Comment 1 */", AbstractCommentRule.getComment(methods.get(0)).getImage());
+        Assert.assertEquals("/** Comment 3 */", AbstractCommentRule.getComment(methods.get(1)).getImage());
     }
 }

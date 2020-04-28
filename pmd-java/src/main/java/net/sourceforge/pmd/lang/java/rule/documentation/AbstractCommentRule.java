@@ -7,19 +7,19 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
@@ -27,19 +27,23 @@ import net.sourceforge.pmd.lang.java.ast.CommentUtil;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocElement;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
- *
  * @author Brian Remedios
  * @deprecated Internal API
  */
 @Deprecated
 @InternalApi
 public abstract class AbstractCommentRule extends AbstractJavaRule {
+
+    public static final SimpleDataKey<Comment> COMMENT_KEY = DataMap.simpleDataKey("java.comment");
 
     /**
      * Returns a list of indices of javadoc tag occurrences in the comment.
@@ -67,25 +71,28 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
         return comment.getFilteredComment();
     }
 
+    protected static Comment getComment(JavaNode node) {
+        return node.getUserMap().get(COMMENT_KEY);
+    }
+
     protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
         // FIXME make that a processing stage!
 
-        SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+        List<JjtreeNode<?>> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
         FormalComment lastComment = null;
         JavaNode lastNode = null;
 
-        for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
-            Node value = entry.getValue();
-            if (value instanceof AccessNode || value instanceof ASTPackageDeclaration) {
+        for (JjtreeNode<?> value : itemsByLineNumber) {
+            if (!(value instanceof Comment)) {
                 JavaNode node = (JavaNode) value;
-
                 // maybe the last comment is within the last node
-                if (lastComment != null && isCommentNotWithin(lastComment, lastNode, value)
-                        && isCommentBefore(lastComment, value)) {
-                    InternalApiBridge.setComment(node, lastComment);
+                if (lastComment != null
+                    && isCommentNotWithin(lastComment, lastNode, node)
+                    && isCommentBefore(lastComment, node)) {
+                    node.getUserMap().set(COMMENT_KEY, lastComment);
                     lastComment = null;
                 }
-                if (!(node instanceof TypeNode)) {
+                if (node instanceof ASTMethodOrConstructorDeclaration) {
                     lastNode = node;
                 }
             } else if (value instanceof FormalComment) {
@@ -94,47 +101,36 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
         }
     }
 
-    private boolean isCommentNotWithin(FormalComment n1, Node n2, Node node) {
+    private boolean isCommentNotWithin(FormalComment n1, JjtreeNode<?> n2, JjtreeNode<?> node) {
         if (n1 == null || n2 == null || node == null) {
             return true;
         }
-        boolean isNotWithinNode2 = !(n1.getEndLine() < n2.getEndLine()
-                || n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn());
-        boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2
-                .getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        boolean isNodeWithinNode2 = node.getEndLine() < n2.getEndLine()
-                || node.getEndLine() == n2.getEndLine() && node.getEndColumn() < n2.getEndColumn();
+        boolean isNotWithinNode2 = !n2.getTextRegion().contains(n1.getTextRegion());
+        boolean isNotSameClass =
+            node.getFirstParentOfType(ASTClassOrInterfaceBody.class)
+                != n2.getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        boolean isNodeWithinNode2 = n2.getTextRegion().contains(node.getTextRegion());
         return isNotWithinNode2 || isNotSameClass || isNodeWithinNode2;
     }
 
-    private boolean isCommentBefore(FormalComment n1, Node n2) {
-        return n1.getEndLine() < n2.getBeginLine()
-                || n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2.getBeginColumn();
+    private boolean isCommentBefore(FormalComment n1, JjtreeNode<?> n2) {
+        return n1.getTextRegion().compareTo(n2.getTextRegion()) <= 0;
     }
 
-    protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
-        SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<>();
+    protected List<JjtreeNode<?>> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
+        List<JjtreeNode<?>> itemsByLineNumber =
+            cUnit.descendants()
+                 .crossFindBoundaries()
+                .<JjtreeNode<?>>map(NodeStream.asInstanceOf(ASTAnyTypeDeclaration.class, ASTFieldDeclaration.class, ASTMethodDeclaration.class, ASTConstructorDeclaration.class))
+                .collect(Collectors.toList()); // todo toMutableList
 
-        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTPackageDeclaration.class, true));
-
-        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true));
-
-        addDeclarations(itemsByLineNumber, cUnit.getComments());
-
-        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTFieldDeclaration.class, true));
-
-        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTMethodDeclaration.class, true));
-
-        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTConstructorDeclaration.class, true));
-
-        addDeclarations(itemsByLineNumber, cUnit.findDescendantsOfType(ASTEnumDeclaration.class, true));
+        itemsByLineNumber.addAll(cUnit.getComments());
+        ASTPackageDeclaration pack = cUnit.getPackageDeclaration();
+        if (pack != null) {
+            itemsByLineNumber.add(pack);
+        }
+        itemsByLineNumber.sort(Node::compareLocation);
 
         return itemsByLineNumber;
-    }
-
-    private void addDeclarations(SortedMap<Integer, Node> map, List<? extends Node> nodes) {
-        for (Node node : nodes) {
-            map.put((node.getBeginLine() << 16) + node.getBeginColumn(), node);
-        }
     }
 }

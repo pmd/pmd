@@ -112,12 +112,12 @@ public class CommentRequiredRule extends AbstractCommentRule {
         case Ignored:
             break;
         case Required:
-            if (node.comment() == null) {
+            if (getComment(node) == null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
         case Unwanted:
-            if (node.comment() != null) {
+            if (getComment(node) != null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
