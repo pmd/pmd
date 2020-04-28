@@ -82,7 +82,7 @@
                  value="PLSQLNode" />
         <replace file="${target}/net/sourceforge/pmd/lang/plsql/ast/PLSQLParserTokenManager.java"
                  token="class PLSQLParserTokenManager"
-                 value="class PLSQLParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 value="class PLSQLParserTokenManager extends net.sourceforge.pmd.lang.ast.impl.javacc.AbstractTokenManager" />
         <replace file="${target}/net/sourceforge/pmd/lang/plsql/ast/JJTPLSQLParserState.java">
             <replacetoken>public class</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;

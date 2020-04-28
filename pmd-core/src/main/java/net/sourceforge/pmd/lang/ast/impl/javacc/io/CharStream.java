@@ -11,7 +11,7 @@ import java.io.IOException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * PMD flavour of character streams used by JavaCC parsers.
@@ -130,8 +130,7 @@ public final class CharStream {
 
 
     private FileLocation endLocation() {
-        TextDocument textDoc = tokenDoc.getTextDocument();
-        return textDoc.toLocation(textDoc.createRegion(getEndOffset(), 0));
+        return tokenDoc.getTextDocument().toLocation(TextRegion.fromOffsetLength(getEndOffset(), 0));
     }
 
 

@@ -59,7 +59,7 @@
     <property name="base-class-name" value="Abstract${lang-name}Node" />
 
     <!-- This will be moved to impl package when all language modules have been ported   -->
-    <property name="base-tokenmgr" value="${ast-api-package}.AbstractTokenManager"/>
+    <property name="base-tokenmgr" value="${ast-impl-package}.AbstractTokenManager"/>
     <property name="charstream-itf" value="${ast-impl-package}.io.CharStream"/>
 
 
