@@ -4,24 +4,19 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class AntlrRuleChainVisitor extends AbstractRuleChainVisitor {
 
     @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {
-        if (rule instanceof AntlrBaseRule) {
-            AntlrBaseRule rule1 = (AntlrBaseRule) rule;
-            ((AntlrBaseInnerNode) node).accept(rule1.buildVisitor(ctx));
-        } else {
-            ((XPathRule) rule).evaluate(node, ctx);
-        }
+        rule.apply(Collections.singletonList(node), ctx);
     }
 
     @Override

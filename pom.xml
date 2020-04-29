@@ -128,6 +128,10 @@
                             </goals>
                             <!-- This is default but let's be clear -->
                             <phase>generate-sources</phase>
+                            <configuration>
+                                <visitor>false</visitor>
+                                <listener>true</listener>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

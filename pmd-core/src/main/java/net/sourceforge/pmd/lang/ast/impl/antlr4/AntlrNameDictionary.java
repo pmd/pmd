@@ -153,7 +153,10 @@ public class AntlrNameDictionary {
     }
 
     public @NonNull String getXPathNameOfRule(AntlrParseTreeBase base) {
-        int idx = base.getRuleIndex();
+        return getXPathNameOfRule(base.getRuleIndex());
+    }
+
+    public @NonNull String getXPathNameOfRule(int idx) {
         if (idx >= 0 && idx < nonTermXpathNames.length) {
             return nonTermXpathNames[idx];
         }

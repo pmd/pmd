@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 /**
  * Adapter for the SwiftParser.
  */
-public final class SwiftParserAdapter extends AntlrBaseParser<SwiftNode, SwiftNodeImpl<?>, SwiftRootNode> {
+public final class SwiftParserAdapter extends AntlrBaseParser<SwiftNode<?>, SwiftNodeImpl<?>, SwiftRootNode> {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
         super(parserOptions);
@@ -25,6 +25,7 @@ public final class SwiftParserAdapter extends AntlrBaseParser<SwiftNode, SwiftNo
         SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
         SwiftTreeBuilder listener = new SwiftTreeBuilder();
         parser.addParseListener(listener);
+        parser.topLevel();
         return (SwiftRootNode) listener.state.top();
     }
 

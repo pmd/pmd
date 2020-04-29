@@ -6,7 +6,8 @@ package net.sourceforge.pmd.lang.swift;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseRule;
-import net.sourceforge.pmd.lang.swift.ast.SwiftBaseVisitor;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
 
 public abstract class AbstractSwiftRule extends AntlrBaseRule {
 
@@ -14,6 +15,10 @@ public abstract class AbstractSwiftRule extends AntlrBaseRule {
         // inheritance constructor
     }
 
+    protected void addRuleChainVisit(int ruleIndex) {
+        addRuleChainVisit(SwiftParser.DICO.getXPathNameOfRule(ruleIndex));
+    }
+
     @Override
-    public abstract SwiftBaseVisitor<Void> buildVisitor(RuleContext ruleCtx);
+    public abstract SwiftVisitor<RuleContext, Void> buildVisitor();
 }

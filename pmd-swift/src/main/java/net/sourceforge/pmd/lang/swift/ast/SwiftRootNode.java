@@ -12,4 +12,9 @@ public final class SwiftRootNode extends SwiftNodeImpl<TopLevelContext> implemen
     public SwiftRootNode(TopLevelContext parseTreeNode) {
         super(parseTreeNode);
     }
+
+    @Override
+    public <P, R> R acceptVisitor(SwiftVisitor<P, R> visitor, P data) {
+        return visitor.visitRoot(this, data);
+    }
 }

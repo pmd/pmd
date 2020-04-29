@@ -28,6 +28,8 @@ public abstract class AbstractAntlrNode<
         super.addChild(child, index);
     }
 
+    public abstract <P, R> R acceptVisitor(AntlrTreeVisitor<P, R, ?> visitor, P data);
+
     protected T getParseTree() {
         return parseTree;
     }
