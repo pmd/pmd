@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
  * Generic Antlr parser adapter for all Antlr parsers. This wraps a parser
@@ -24,9 +25,9 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  * @param <R> Type of the root node
  */
 public abstract class AntlrBaseParser<
-    I extends AntlrNode,
-    N extends AntlrBaseInnerNode<N, I>,
-    R extends AntlrBaseInnerNode<N, I> & RootNode
+    N extends GenericNode<N>,
+    B extends AbstractAntlrNode<B, ?, N>,
+    R extends AbstractAntlrNode<B, ?, N> & RootNode
     > implements Parser {
 
     protected final ParserOptions parserOptions;

@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 
 /**
  * Supertype of all swift nodes.
  */
-public interface SwiftNode extends AntlrNode {
+public interface SwiftNode extends GenericNode<SwiftNode> {
 
 
 }

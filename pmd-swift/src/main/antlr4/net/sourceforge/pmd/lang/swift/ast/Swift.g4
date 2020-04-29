@@ -43,20 +43,10 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 
     public static final AntlrNameDictionary DICO = new AntlrNameDictionary(VOCABULARY);
 
-    @Override
-	public TerminalNode createTerminalNode(ParserRuleContext parent, Token t) {
-		return new SwiftTerminalNode(t);
-	}
-
-    @Override
-	public ErrorNode createErrorNode(ParserRuleContext parent, Token t) {
-		return new SwiftErrorNode(t);
-	}
-
 }
 
 options {
-    contextSuperClass = SwiftInnerNode;
+    contextSuperClass = AntlrParseTreeBase;
     superClass = PmdAntlrParserBase;
 }
 

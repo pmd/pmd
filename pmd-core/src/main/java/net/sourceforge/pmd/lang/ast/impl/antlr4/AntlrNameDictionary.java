@@ -23,11 +23,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public class AntlrNameDictionary {
 
-    private final String[] xpathNames;
+    private final String[] terminalXpathNames;
+    private final String[] nonTermXpathNames;
     private final Vocabulary vocabulary;
 
-    public AntlrNameDictionary(Vocabulary vocab) {
+    public AntlrNameDictionary(Vocabulary vocab, String[] ruleNames) {
         this.vocabulary = vocab;
+
+        nonTermXpathNames = new String[ruleNames.length];
+        for (int i = 0; i < nonTermXpathNames.length; i++) {
+            nonTermXpathNames[i] = StringUtils.capitalize(ruleNames[i]);
+        }
 
         String[] xpathNames = new String[vocab.getMaxTokenType()];
         for (int i = 0; i < xpathNames.length; i++) {
@@ -54,7 +60,7 @@ public class AntlrNameDictionary {
             xpathNames[i] = "T-" + name;
         }
 
-        this.xpathNames = xpathNames;
+        this.terminalXpathNames = xpathNames;
 
 
         assert Stream.of(xpathNames).distinct().count() == xpathNames.length
@@ -134,9 +140,9 @@ public class AntlrNameDictionary {
         return null;
     }
 
-    public @NonNull String getXPathName(int tokenType) {
-        if (tokenType >= 0 && tokenType < xpathNames.length) {
-            return xpathNames[tokenType];
+    public @NonNull String getXPathNameOfToken(int tokenType) {
+        if (tokenType >= 0 && tokenType < terminalXpathNames.length) {
+            return terminalXpathNames[tokenType];
         }
 
         if (tokenType == Token.EOF) {
@@ -144,6 +150,19 @@ public class AntlrNameDictionary {
         }
 
         throw new IllegalArgumentException("I don't know token type " + tokenType);
+    }
+
+    public @NonNull String getXPathNameOfRule(AntlrParseTreeBase base) {
+        int idx = base.getRuleIndex();
+        if (idx >= 0 && idx < nonTermXpathNames.length) {
+            return nonTermXpathNames[idx];
+        }
+
+        throw new IllegalArgumentException("I don't know rule type " + idx);
+    }
+
+    public int getMaxRuleIndex() {
+        return nonTermXpathNames.length;
     }
 
     public int getMaxTokenType() {

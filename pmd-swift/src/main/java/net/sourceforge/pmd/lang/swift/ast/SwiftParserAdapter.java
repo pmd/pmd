@@ -4,31 +4,28 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import java.io.IOException;
-import java.io.Reader;
-
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 
 /**
  * Adapter for the SwiftParser.
  */
-public class SwiftParserAdapter extends AntlrBaseParser<SwiftNode, SwiftInnerNode, SwiftFileNode> {
+public final class SwiftParserAdapter extends AntlrBaseParser<SwiftNode, SwiftNodeImpl<?>, SwiftRootNode> {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
         super(parserOptions);
     }
 
     @Override
-    protected SwiftFileNode parse(final Lexer lexer) {
+    protected SwiftRootNode parse(final Lexer lexer) {
         SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
-        return new SwiftFileNode(parser.topLevel());
+        SwiftTreeBuilder listener = new SwiftTreeBuilder();
+        parser.addParseListener(listener);
+        return (SwiftRootNode) listener.state.top();
     }
 
     @Override

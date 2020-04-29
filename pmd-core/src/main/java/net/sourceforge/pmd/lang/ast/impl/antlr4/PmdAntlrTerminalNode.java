@@ -44,7 +44,7 @@ public abstract class PmdAntlrTerminalNode extends TerminalNodeImpl implements A
     @Override
     public String getXPathNodeName() {
         int type = getSymbol().getType();
-        return dico.getXPathName(type);
+        return dico.getXPathNameOfToken(type);
     }
 
     @Override
