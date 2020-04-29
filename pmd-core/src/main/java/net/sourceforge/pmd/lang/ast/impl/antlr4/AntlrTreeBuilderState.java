@@ -10,23 +10,24 @@ import java.util.Deque;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Don't extend me, compose me.
  */
-public abstract class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> implements ParseTreeListener {
+public class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> implements ParseTreeListener {
+
+
+    private final ParseTreeVisitor<B> nodeFactory;
 
     private final Deque<B> stack = new ArrayDeque<>();
     private final Deque<Integer> marks = new ArrayDeque<>();
+    private int sp = 0;
+    private int mk = 0;
 
-    private @Nullable B toPushNext;
-
-
-    public void setNodeToPush(B nextNode) {
-        assert toPushNext == null : "Already a node waiting";
-        toPushNext = nextNode;
+    public AntlrTreeBuilderState(ParseTreeVisitor<B> nodeFactory) {
+        this.nodeFactory = nodeFactory;
     }
 
     public B top() {
@@ -43,30 +44,40 @@ public abstract class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>
 
     }
 
-    protected abstract B defaultNode(AntlrParseTreeBase parseTree);
-
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        AntlrParseTreeBase tree = (AntlrParseTreeBase) ctx;
-        B toPush;
-        if (toPushNext != null) {
-            toPush = toPushNext;
-            toPushNext = null;
-        } else {
-            toPush = defaultNode(tree);
-        }
-        marks.push(stack.size());
-        stack.push(toPush);
+        marks.push(mk);
+        mk = sp;
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext ctx) {
-        B top = stack.pop();
-        Integer mark = marks.pop();
-        int arity = stack.size() - mark;
+        B newNode = nodeFactory.visit(ctx);
+        ((AntlrParseTreeBase) ctx).pmdNode = newNode;
+
+        int arity = nodeArity();
+        mk = marks.pop();
         while (arity-- > 0) {
-            top.addChild(stack.pop(), arity);
+            newNode.addChild(popNode(), arity);
         }
-        stack.push(top);
+        pushNode(newNode);
+    }
+
+    public int nodeArity() {
+        return sp - mk;
+    }
+
+
+    private void pushNode(B toPush) {
+        stack.push(toPush);
+        sp++;
+    }
+
+    public B popNode() {
+        --sp;
+        if (sp < mk) {
+            mk = marks.pop();
+        }
+        return stack.pop();
     }
 }

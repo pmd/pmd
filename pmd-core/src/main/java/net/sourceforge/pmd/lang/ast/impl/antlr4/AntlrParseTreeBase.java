@@ -12,6 +12,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
  */
 public abstract class AntlrParseTreeBase extends ParserRuleContext {
 
+    AbstractAntlrNode<?, ?, ?> pmdNode;
+
+
     protected AntlrParseTreeBase() {
     }
 

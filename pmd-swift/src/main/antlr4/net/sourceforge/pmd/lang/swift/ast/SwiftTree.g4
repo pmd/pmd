@@ -1,4 +1,4 @@
-// Downloaded on 2016/03/02 from https://github.com/sleekbyte/tailor/blob/master/src/main/antlr/com/sleekbyte/tailor/antlr/Swift.g4
+// Downloaded on 2016/03/02 from https://github.com/sleekbyte/tailor/blob/master/src/main/antlr/com/sleekbyte/tailor/antlr/SwiftTree.g4
 
 /*
  * [The "BSD license"]
@@ -31,7 +31,7 @@
  * Converted from Apple's doc, http://tinyurl.com/n8rkoue, to ANTLR's
  * meta-language.
  */
-grammar Swift;
+grammar SwiftTree;
 
 @header {
 import net.sourceforge.pmd.lang.ast.impl.antlr4.*;

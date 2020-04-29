@@ -19,12 +19,6 @@ public class SwiftNodeImpl<T extends AntlrParseTreeBase>
         super(parseTreeNode);
     }
 
-
-    @Override
-    public T getParseTree() {
-        return null;
-    }
-
     @Override
     protected void addChild(SwiftNodeImpl<?> child, int index) {
         super.addChild(child, index);
@@ -45,6 +39,6 @@ public class SwiftNodeImpl<T extends AntlrParseTreeBase>
 
     @Override
     public String getXPathNodeName() {
-        return SwiftParser.DICO.getXPathNameOfRule(getParseTree());
+        return SwiftTreeParser.DICO.getXPathNameOfRule(getParseTree());
     }
 }

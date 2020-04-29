@@ -9,9 +9,13 @@ import java.util.List;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftNode;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionDeclarationContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser.InitializerDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.AttributeContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.AttributesContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.CodeBlockContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.FunctionDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.InitializerDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.StatementContext;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
@@ -21,8 +25,8 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
 
     public UnavailableFunctionRule() {
         super();
-        addRuleChainVisit(SwiftParser.RULE_functionDeclaration);
-        addRuleChainVisit(SwiftParser.RULE_initializerDeclaration);
+        addRuleChainVisit(SwiftTreeParser.RULE_functionDeclaration);
+        addRuleChainVisit(SwiftTreeParser.RULE_initializerDeclaration);
     }
 
     @Override
@@ -33,9 +37,9 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
             @SuppressWarnings("unchecked")
             public Void visitAnyNode(SwiftNode<?> swiftNode, RuleContext data) {
                 switch (swiftNode.getParseTree().getRuleIndex()) {
-                case SwiftParser.RULE_functionDeclaration:
+                case SwiftTreeParser.RULE_functionDeclaration:
                     return visitFunctionDeclaration((SwiftNode<FunctionDeclarationContext>) swiftNode, data);
-                case SwiftParser.RULE_initializerDeclaration:
+                case SwiftTreeParser.RULE_initializerDeclaration:
                     return visitInitializerDeclaration((SwiftNode<InitializerDeclarationContext>) swiftNode, data);
                 }
                 return null;
@@ -47,7 +51,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
                 }
 
                 if (shouldIncludeUnavailableModifier(ctx.getParseTree().functionBody().codeBlock())) {
-                    final SwiftParser.AttributesContext attributes = ctx.getParseTree().functionHead().attributes();
+                    final AttributesContext attributes = ctx.getParseTree().functionHead().attributes();
                     if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                         addViolation(ruleCtx, ctx);
                     }
@@ -62,7 +66,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
                 }
 
                 if (shouldIncludeUnavailableModifier(ctx.getParseTree().initializerBody().codeBlock())) {
-                    final SwiftParser.AttributesContext attributes = ctx.getParseTree().initializerHead().attributes();
+                    final AttributesContext attributes = ctx.getParseTree().initializerHead().attributes();
                     if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                         addViolation(ruleCtx, ctx);
                     }
@@ -71,17 +75,17 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
                 return null;
             }
 
-            private boolean shouldIncludeUnavailableModifier(final SwiftParser.CodeBlockContext ctx) {
+            private boolean shouldIncludeUnavailableModifier(final CodeBlockContext ctx) {
                 if (ctx == null || ctx.statements() == null) {
                     return false;
                 }
 
-                final List<SwiftParser.StatementContext> statements = ctx.statements().statement();
+                final List<StatementContext> statements = ctx.statements().statement();
 
                 return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getStart().getText());
             }
 
-            private boolean hasUnavailableModifier(final List<SwiftParser.AttributeContext> attributes) {
+            private boolean hasUnavailableModifier(final List<AttributeContext> attributes) {
                 return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.getText()));
             }
         };

@@ -30,8 +30,15 @@ public abstract class AbstractAntlrNode<
 
     public abstract <P, R> R acceptVisitor(AntlrTreeVisitor<P, R, ?> visitor, P data);
 
-    protected T getParseTree() {
+    public T getParseTree() {
         return parseTree;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractAntlrNode{" +
+            "parseTree=" + parseTree +
+            '}';
     }
 
     @Override

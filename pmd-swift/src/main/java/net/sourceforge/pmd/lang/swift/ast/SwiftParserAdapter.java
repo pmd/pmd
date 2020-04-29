@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTreeBuilderState;
 
 /**
  * Adapter for the SwiftParser.
@@ -22,15 +23,15 @@ public final class SwiftParserAdapter extends AntlrBaseParser<SwiftNode<?>, Swif
 
     @Override
     protected SwiftRootNode parse(final Lexer lexer) {
-        SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
-        SwiftTreeBuilder listener = new SwiftTreeBuilder();
+        SwiftTreeParser parser = new SwiftTreeParser(new CommonTokenStream(lexer));
+        AntlrTreeBuilderState<?> listener = new AntlrTreeBuilderState<>(SwiftNodeFactory.INSTANCE);
         parser.addParseListener(listener);
         parser.topLevel();
-        return (SwiftRootNode) listener.state.top();
+        return (SwiftRootNode) listener.top();
     }
 
     @Override
     protected Lexer getLexer(final CharStream source) {
-        return new SwiftLexer(source);
+        return new SwiftTreeLexer(source);
     }
 }

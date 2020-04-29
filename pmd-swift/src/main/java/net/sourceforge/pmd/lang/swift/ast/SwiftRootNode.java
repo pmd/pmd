@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.swift.ast;
 
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.swift.ast.SwiftParser.TopLevelContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.TopLevelContext;
 
 public final class SwiftRootNode extends SwiftNodeImpl<TopLevelContext> implements RootNode {
 
