@@ -16,7 +16,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 /**
  * Don't extend me, compose me.
  */
-public class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> implements ParseTreeListener {
+public class AntlrTreeBuilderListener<B extends AbstractAntlrNode<?, N>, N extends AntlrNode<N>> implements ParseTreeListener {
 
 
     private final ParseTreeVisitor<B> nodeFactory;
@@ -26,7 +26,7 @@ public class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> impleme
     private int sp = 0;
     private int mk = 0;
 
-    public AntlrTreeBuilderState(ParseTreeVisitor<B> nodeFactory) {
+    public AntlrTreeBuilderListener(ParseTreeVisitor<B> nodeFactory) {
         this.nodeFactory = nodeFactory;
     }
 
@@ -36,7 +36,8 @@ public class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> impleme
 
     @Override
     public void visitTerminal(TerminalNode node) {
-
+        B toPush = nodeFactory.visitTerminal(node);
+        pushNode(toPush);
     }
 
     @Override
@@ -46,6 +47,10 @@ public class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> impleme
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
+        enterNode();
+    }
+
+    private void enterNode() {
         marks.push(mk);
         mk = sp;
     }
@@ -54,6 +59,7 @@ public class AntlrTreeBuilderState<B extends AbstractAntlrNode<B, ?, ?>> impleme
     public void exitEveryRule(ParserRuleContext ctx) {
         B newNode = nodeFactory.visit(ctx);
         ((AntlrParseTreeBase) ctx).pmdNode = newNode;
+
 
         int arity = nodeArity();
         mk = marks.pop();

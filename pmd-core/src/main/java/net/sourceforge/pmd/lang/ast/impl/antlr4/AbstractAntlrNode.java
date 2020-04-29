@@ -5,16 +5,12 @@
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
  *
  */
-public abstract class AbstractAntlrNode<
-    B extends AbstractAntlrNode<B, ?, N>,
-    T extends AntlrParseTreeBase,
-    N extends GenericNode<N>
-    > extends AbstractNode<B, N> {
+public abstract class AbstractAntlrNode<T, N extends AntlrNode<N>>
+    extends AbstractNode<AbstractAntlrNode<?, N>, N> implements AntlrNode<N> {
 
     private final T parseTree;
 
@@ -22,13 +18,10 @@ public abstract class AbstractAntlrNode<
         this.parseTree = parseTree;
     }
 
-
     @Override
-    protected void addChild(B child, int index) {
+    protected void addChild(AbstractAntlrNode<?, N> child, int index) {
         super.addChild(child, index);
     }
-
-    public abstract <P, R> R acceptVisitor(AntlrTreeVisitor<P, R, ?> visitor, P data);
 
     public T getParseTree() {
         return parseTree;
@@ -41,25 +34,5 @@ public abstract class AbstractAntlrNode<
             '}';
     }
 
-    @Override
-    public int getBeginLine() {
-        return parseTree.start.getLine(); // This goes from 1 to n
-    }
-
-    @Override
-    public int getEndLine() {
-        // FIXME this is not the end line if the stop token spans several lines
-        return parseTree.stop.getLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return AntlrUtils.getBeginColumn(parseTree.start);
-    }
-
-    @Override
-    public int getEndColumn() {
-        return AntlrUtils.getEndColumn(parseTree.stop);
-    }
 
 }

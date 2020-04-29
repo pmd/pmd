@@ -16,4 +16,9 @@ public class SwiftParserTests extends BaseSwiftTreeDumpTest {
         doTest("Simple");
     }
 
+    @Test
+    public void testBtree() {
+        doTest("BTree");
+    }
+
 }

@@ -25,7 +25,7 @@
             <property name="xpath">
                 <value>
                     <![CDATA[
-//TypeCastingOperator[T-bang]
+//TypeCastingOperator[T-as and T-bang]
 ]]>
                 </value>
             </property>

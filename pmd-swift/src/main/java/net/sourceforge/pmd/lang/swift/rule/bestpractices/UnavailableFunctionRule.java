@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
+import net.sourceforge.pmd.lang.swift.ast.SwiftInnerNode;
 import net.sourceforge.pmd.lang.swift.ast.SwiftNode;
 import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser;
 import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.AttributeContext;
@@ -34,8 +35,13 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
         return new SwiftVisitor<RuleContext, Void>() {
 
             @Override
-            @SuppressWarnings("unchecked")
             public Void visitAnyNode(SwiftNode<?> swiftNode, RuleContext data) {
+                return null;
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public Void visitInnerNode(SwiftInnerNode<?> swiftNode, RuleContext data) {
                 switch (swiftNode.getParseTree().getRuleIndex()) {
                 case SwiftTreeParser.RULE_functionDeclaration:
                     return visitFunctionDeclaration((SwiftNode<FunctionDeclarationContext>) swiftNode, data);

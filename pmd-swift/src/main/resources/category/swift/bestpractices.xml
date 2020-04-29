@@ -26,9 +26,9 @@ Rules which enforce generally accepted best practices.
             <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
-                    //VariableDeclarationHead/Attributes/Attribute[T-at-symbol and AttributeName/*/T-Identifier/@Text = "IBOutlet"]
+                    //VariableDeclarationHead/Attributes/Attribute[AttributeName/Identifier[@Name = "IBOutlet"]]
                     |
-                    //FunctionHead/Attributes/Attribute[T-at-symbol and AttributeName/*/T-Identifier/@Text = "IBAction"]
+                    //FunctionHead/Attributes/Attribute[AttributeName/Identifier[@Name = "IBAction"]]
                 </value>
             </property>
         </properties>

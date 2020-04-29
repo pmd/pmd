@@ -1,232 +1,329 @@
 +- TopLevel
    +- Statements
-      +- Statement
-         +- Declaration
-            +- StructDeclaration
-               +- AccessLevelModifier
-               +- StructName
-               |  +- Identifier
-               +- GenericParameterClause
-               |  +- GenericParameterList
-               |     +- GenericParameter
-               |     |  +- TypeName
-               |     |  |  +- Identifier
-               |     |  +- TypeIdentifier
-               |     |     +- TypeName
-               |     |        +- Identifier
-               |     +- GenericParameter
-               |        +- TypeName
-               |           +- Identifier
-               +- StructBody
-                  +- StructMembers
-                     +- StructMember
-                     |  +- Declaration
-                     |     +- TypealiasDeclaration
-                     |        +- TypealiasHead
-                     |        |  +- AccessLevelModifier
-                     |        |  +- TypealiasName
-                     |        |     +- Identifier
-                     |        +- TypealiasAssignment
-                     |           +- SType
-                     |              +- TupleType
-                     |                 +- TupleTypeElementList
-                     |                    +- TupleTypeElement
-                     |                    |  +- SType
-                     |                    |     +- TypeIdentifier
-                     |                    |        +- TypeName
-                     |                    |           +- Identifier
-                     |                    +- TupleTypeElement
-                     |                       +- SType
-                     |                          +- TypeIdentifier
-                     |                             +- TypeName
-                     |                                +- Identifier
-                     +- StructMember
-                     |  +- Declaration
-                     |     +- TypealiasDeclaration
-                     |        +- TypealiasHead
-                     |        |  +- AccessLevelModifier
-                     |        |  +- TypealiasName
-                     |        |     +- Identifier
-                     |        +- TypealiasAssignment
-                     |           +- SType
-                     |              +- TypeIdentifier
-                     |                 +- TypeName
-                     |                 |  +- Identifier
-                     |                 +- GenericArgumentClause
-                     |                    +- GenericArgumentList
-                     |                       +- GenericArgument
-                     |                       |  +- SType
-                     |                       |     +- TypeIdentifier
-                     |                       |        +- TypeName
-                     |                       |           +- Identifier
-                     |                       +- GenericArgument
-                     |                          +- SType
-                     |                             +- TypeIdentifier
-                     |                                +- TypeName
-                     |                                   +- Identifier
-                     +- StructMember
-                     |  +- Declaration
-                     |     +- VariableDeclaration
-                     |        +- VariableDeclarationHead
-                     |        |  +- DeclarationModifiers
-                     |        |     +- DeclarationModifier
-                     |        |        +- AccessLevelModifier
-                     |        +- PatternInitializerList
-                     |           +- PatternInitializer
-                     |              +- Pattern
-                     |                 +- IdentifierPattern
-                     |                 |  +- Identifier
-                     |                 +- TypeAnnotation
-                     |                    +- SType
-                     |                       +- TypeIdentifier
-                     |                          +- TypeName
-                     |                             +- Identifier
-                     +- StructMember
-                     |  +- Declaration
-                     |     +- InitializerDeclaration
-                     |        +- InitializerHead
-                     |        |  +- DeclarationModifiers
-                     |        |     +- DeclarationModifier
-                     |        |        +- AccessLevelModifier
-                     |        +- ParameterClause
-                     |        |  +- ParameterList
-                     |        |     +- Parameter
-                     |        |        +- ExternalParameterName
-                     |        |        |  +- Keyword
-                     |        |        +- LocalParameterName
-                     |        |        |  +- Identifier
-                     |        |        +- TypeAnnotation
-                     |        |           +- SType
-                     |        |              +- TypeIdentifier
-                     |        |                 +- TypeName
-                     |        |                    +- Identifier
-                     |        +- InitializerBody
-                     |           +- CodeBlock
-                     |              +- Statements
-                     |                 +- Statement
-                     |                 |  +- Expression
-                     |                 |     +- PrefixExpression
-                     |                 |        +- PostfixExpression
-                     |                 |        |  +- PrimaryExpression
-                     |                 |        |     +- Keyword
-                     |                 |        +- PostfixExpression
-                     |                 |        |  +- Identifier
-                     |                 |        +- PostfixExpression
-                     |                 |           +- PostfixOperator
-                     |                 |              +- Operator
-                     |                 |                 +- OperatorHead
-                     |                 +- Statement
-                     |                    +- Expression
-                     |                       +- PrefixExpression
-                     |                          +- PostfixExpression
-                     |                             +- PrimaryExpression
-                     |                                +- Identifier
-                     +- StructMember
-                     |  +- Declaration
-                     |     +- InitializerDeclaration
-                     |        +- InitializerHead
-                     |        |  +- DeclarationModifiers
-                     |        |     +- DeclarationModifier
-                     |        |        +- AccessLevelModifier
-                     |        +- ParameterClause
-                     |        |  +- ParameterList
-                     |        |     +- Parameter
-                     |        |        +- LocalParameterName
-                     |        |        |  +- Identifier
-                     |        |        +- TypeAnnotation
-                     |        |        |  +- SType
-                     |        |        |     +- TypeIdentifier
-                     |        |        |        +- TypeName
-                     |        |        |           +- Identifier
-                     |        |        +- DefaultArgumentClause
-                     |        |           +- Expression
-                     |        |              +- PrefixExpression
-                     |        |                 +- PostfixExpression
-                     |        |                 |  +- PrimaryExpression
-                     |        |                 |     +- Identifier
-                     |        |                 +- PostfixExpression
-                     |        |                    +- Identifier
-                     |        +- InitializerBody
-                     |           +- CodeBlock
-                     |              +- Statements
-                     |                 +- Statement
-                     |                 |  +- Expression
-                     |                 |     +- PrefixExpression
-                     |                 |        +- PostfixExpression
-                     |                 |        |  +- PrimaryExpression
-                     |                 |        |     +- Keyword
-                     |                 |        +- PostfixExpression
-                     |                 |        |  +- Identifier
-                     |                 |        +- PostfixExpression
-                     |                 |           +- PostfixOperator
-                     |                 |              +- Operator
-                     |                 |                 +- OperatorHead
-                     |                 +- Statement
-                     |                    +- Expression
-                     |                       +- PrefixExpression
-                     |                          +- PostfixExpression
-                     |                          |  +- PrimaryExpression
-                     |                          |     +- Identifier
-                     |                          +- PostfixExpression
-                     |                             +- FunctionCallArgumentClause
-                     |                                +- FunctionCallArgumentList
-                     |                                   +- FunctionCallArgument
-                     |                                      +- FunctionCallIdentifier
-                     |                                      |  +- Identifier
-                     |                                      +- Expression
-                     |                                         +- PrefixExpression
-                     |                                            +- PostfixExpression
-                     |                                               +- PrimaryExpression
-                     |                                                  +- Identifier
-                     +- StructMember
-                     |  +- Declaration
-                     |     +- VariableDeclaration
-                     |        +- VariableDeclarationHead
-                     |        |  +- DeclarationModifiers
-                     |        |     +- DeclarationModifier
-                     |        |        +- AccessLevelModifier
-                     |        +- VariableName
-                     |        |  +- Identifier
-                     |        +- TypeAnnotation
-                     |        |  +- SType
-                     |        |     +- TypeIdentifier
-                     |        |        +- TypeName
-                     |        |           +- Identifier
-                     |        +- CodeBlock
-                     |           +- Statements
-                     |              +- Statement
-                     |                 +- ControlTransferStatement
-                     |                    +- ReturnStatement
-                     |                       +- Expression
-                     |                          +- PrefixExpression
-                     |                             +- PostfixExpression
-                     |                             |  +- PrimaryExpression
-                     |                             |     +- Identifier
-                     |                             +- PostfixExpression
-                     |                                +- Identifier
-                     +- StructMember
-                        +- Declaration
-                           +- VariableDeclaration
-                              +- VariableDeclarationHead
-                              |  +- DeclarationModifiers
-                              |     +- DeclarationModifier
-                              |        +- AccessLevelModifier
-                              +- VariableName
-                              |  +- Identifier
-                              +- TypeAnnotation
-                              |  +- SType
-                              |     +- TypeIdentifier
-                              |        +- TypeName
-                              |           +- Identifier
-                              +- CodeBlock
-                                 +- Statements
-                                    +- Statement
-                                       +- ControlTransferStatement
-                                          +- ReturnStatement
-                                             +- Expression
-                                                +- PrefixExpression
-                                                   +- PostfixExpression
-                                                   |  +- PrimaryExpression
-                                                   |     +- Identifier
-                                                   +- PostfixExpression
-                                                      +- Identifier
+   |  +- Statement
+   |     +- Declaration
+   |        +- StructDeclaration
+   |           +- AccessLevelModifier
+   |           |  +- T-public
+   |           +- T-struct
+   |           +- StructName
+   |           |  +- Identifier
+   |           |     +- T-Identifier
+   |           +- GenericParameterClause
+   |           |  +- T-lt
+   |           |  +- GenericParameterList
+   |           |  |  +- GenericParameter
+   |           |  |  |  +- TypeName
+   |           |  |  |  |  +- Identifier
+   |           |  |  |  |     +- T-Identifier
+   |           |  |  |  +- T-colon
+   |           |  |  |  +- TypeIdentifier
+   |           |  |  |     +- TypeName
+   |           |  |  |        +- Identifier
+   |           |  |  |           +- T-Identifier
+   |           |  |  +- T-comma
+   |           |  |  +- GenericParameter
+   |           |  |     +- TypeName
+   |           |  |        +- Identifier
+   |           |  |           +- T-Identifier
+   |           |  +- T-gt
+   |           +- StructBody
+   |              +- T-lbrace
+   |              +- StructMembers
+   |              |  +- StructMember
+   |              |  |  +- Declaration
+   |              |  |     +- TypealiasDeclaration
+   |              |  |        +- TypealiasHead
+   |              |  |        |  +- AccessLevelModifier
+   |              |  |        |  |  +- T-public
+   |              |  |        |  +- T-typealias
+   |              |  |        |  +- TypealiasName
+   |              |  |        |     +- Identifier
+   |              |  |        |        +- T-Identifier
+   |              |  |        +- TypealiasAssignment
+   |              |  |           +- T-eq
+   |              |  |           +- SType
+   |              |  |              +- TupleType
+   |              |  |                 +- T-lparen
+   |              |  |                 +- TupleTypeElementList
+   |              |  |                 |  +- TupleTypeElement
+   |              |  |                 |  |  +- SType
+   |              |  |                 |  |     +- TypeIdentifier
+   |              |  |                 |  |        +- TypeName
+   |              |  |                 |  |           +- Identifier
+   |              |  |                 |  |              +- T-Identifier
+   |              |  |                 |  +- T-comma
+   |              |  |                 |  +- TupleTypeElement
+   |              |  |                 |     +- SType
+   |              |  |                 |        +- TypeIdentifier
+   |              |  |                 |           +- TypeName
+   |              |  |                 |              +- Identifier
+   |              |  |                 |                 +- T-Identifier
+   |              |  |                 +- T-rparen
+   |              |  +- StructMember
+   |              |  |  +- Declaration
+   |              |  |     +- TypealiasDeclaration
+   |              |  |        +- TypealiasHead
+   |              |  |        |  +- AccessLevelModifier
+   |              |  |        |  |  +- T-internal
+   |              |  |        |  +- T-typealias
+   |              |  |        |  +- TypealiasName
+   |              |  |        |     +- Identifier
+   |              |  |        |        +- T-Identifier
+   |              |  |        +- TypealiasAssignment
+   |              |  |           +- T-eq
+   |              |  |           +- SType
+   |              |  |              +- TypeIdentifier
+   |              |  |                 +- TypeName
+   |              |  |                 |  +- Identifier
+   |              |  |                 |     +- T-Identifier
+   |              |  |                 +- GenericArgumentClause
+   |              |  |                    +- T-lt
+   |              |  |                    +- GenericArgumentList
+   |              |  |                    |  +- GenericArgument
+   |              |  |                    |  |  +- SType
+   |              |  |                    |  |     +- TypeIdentifier
+   |              |  |                    |  |        +- TypeName
+   |              |  |                    |  |           +- Identifier
+   |              |  |                    |  |              +- T-Identifier
+   |              |  |                    |  +- T-comma
+   |              |  |                    |  +- GenericArgument
+   |              |  |                    |     +- SType
+   |              |  |                    |        +- TypeIdentifier
+   |              |  |                    |           +- TypeName
+   |              |  |                    |              +- Identifier
+   |              |  |                    |                 +- T-Identifier
+   |              |  |                    +- T-gt
+   |              |  +- StructMember
+   |              |  |  +- Declaration
+   |              |  |     +- VariableDeclaration
+   |              |  |        +- VariableDeclarationHead
+   |              |  |        |  +- DeclarationModifiers
+   |              |  |        |  |  +- DeclarationModifier
+   |              |  |        |  |     +- AccessLevelModifier
+   |              |  |        |  |        +- T-internal
+   |              |  |        |  +- T-var
+   |              |  |        +- PatternInitializerList
+   |              |  |           +- PatternInitializer
+   |              |  |              +- Pattern
+   |              |  |                 +- IdentifierPattern
+   |              |  |                 |  +- Identifier
+   |              |  |                 |     +- T-Identifier
+   |              |  |                 +- TypeAnnotation
+   |              |  |                    +- T-colon
+   |              |  |                    +- SType
+   |              |  |                       +- TypeIdentifier
+   |              |  |                          +- TypeName
+   |              |  |                             +- Identifier
+   |              |  |                                +- T-Identifier
+   |              |  +- StructMember
+   |              |  |  +- Declaration
+   |              |  |     +- InitializerDeclaration
+   |              |  |        +- InitializerHead
+   |              |  |        |  +- DeclarationModifiers
+   |              |  |        |  |  +- DeclarationModifier
+   |              |  |        |  |     +- AccessLevelModifier
+   |              |  |        |  |        +- T-internal
+   |              |  |        |  +- T-init
+   |              |  |        +- ParameterClause
+   |              |  |        |  +- T-lparen
+   |              |  |        |  +- ParameterList
+   |              |  |        |  |  +- Parameter
+   |              |  |        |  |     +- ExternalParameterName
+   |              |  |        |  |     |  +- Keyword
+   |              |  |        |  |     |     +- T-underscore
+   |              |  |        |  |     +- LocalParameterName
+   |              |  |        |  |     |  +- Identifier
+   |              |  |        |  |     |     +- T-Identifier
+   |              |  |        |  |     +- TypeAnnotation
+   |              |  |        |  |        +- T-colon
+   |              |  |        |  |        +- SType
+   |              |  |        |  |           +- TypeIdentifier
+   |              |  |        |  |              +- TypeName
+   |              |  |        |  |                 +- Identifier
+   |              |  |        |  |                    +- T-Identifier
+   |              |  |        |  +- T-rparen
+   |              |  |        +- InitializerBody
+   |              |  |           +- CodeBlock
+   |              |  |              +- T-lbrace
+   |              |  |              +- Statements
+   |              |  |              |  +- Statement
+   |              |  |              |  |  +- Expression
+   |              |  |              |  |     +- PrefixExpression
+   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |        |  +- PrimaryExpression
+   |              |  |              |  |        |     +- Keyword
+   |              |  |              |  |        |        +- T-self
+   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |        |  +- T-dot
+   |              |  |              |  |        |  +- Identifier
+   |              |  |              |  |        |     +- T-Identifier
+   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |           +- PostfixOperator
+   |              |  |              |  |              +- Operator
+   |              |  |              |  |                 +- OperatorHead
+   |              |  |              |  |                    +- T-eq
+   |              |  |              |  +- Statement
+   |              |  |              |     +- Expression
+   |              |  |              |        +- PrefixExpression
+   |              |  |              |           +- PostfixExpression
+   |              |  |              |              +- PrimaryExpression
+   |              |  |              |                 +- Identifier
+   |              |  |              |                    +- T-Identifier
+   |              |  |              +- T-rbrace
+   |              |  +- StructMember
+   |              |  |  +- Declaration
+   |              |  |     +- InitializerDeclaration
+   |              |  |        +- InitializerHead
+   |              |  |        |  +- DeclarationModifiers
+   |              |  |        |  |  +- DeclarationModifier
+   |              |  |        |  |     +- AccessLevelModifier
+   |              |  |        |  |        +- T-public
+   |              |  |        |  +- T-init
+   |              |  |        +- ParameterClause
+   |              |  |        |  +- T-lparen
+   |              |  |        |  +- ParameterList
+   |              |  |        |  |  +- Parameter
+   |              |  |        |  |     +- LocalParameterName
+   |              |  |        |  |     |  +- Identifier
+   |              |  |        |  |     |     +- T-Identifier
+   |              |  |        |  |     +- TypeAnnotation
+   |              |  |        |  |     |  +- T-colon
+   |              |  |        |  |     |  +- SType
+   |              |  |        |  |     |     +- TypeIdentifier
+   |              |  |        |  |     |        +- TypeName
+   |              |  |        |  |     |           +- Identifier
+   |              |  |        |  |     |              +- T-Identifier
+   |              |  |        |  |     +- DefaultArgumentClause
+   |              |  |        |  |        +- T-eq
+   |              |  |        |  |        +- Expression
+   |              |  |        |  |           +- PrefixExpression
+   |              |  |        |  |              +- PostfixExpression
+   |              |  |        |  |              |  +- PrimaryExpression
+   |              |  |        |  |              |     +- Identifier
+   |              |  |        |  |              |        +- T-Identifier
+   |              |  |        |  |              +- PostfixExpression
+   |              |  |        |  |                 +- T-dot
+   |              |  |        |  |                 +- Identifier
+   |              |  |        |  |                    +- T-Identifier
+   |              |  |        |  +- T-rparen
+   |              |  |        +- InitializerBody
+   |              |  |           +- CodeBlock
+   |              |  |              +- T-lbrace
+   |              |  |              +- Statements
+   |              |  |              |  +- Statement
+   |              |  |              |  |  +- Expression
+   |              |  |              |  |     +- PrefixExpression
+   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |        |  +- PrimaryExpression
+   |              |  |              |  |        |     +- Keyword
+   |              |  |              |  |        |        +- T-self
+   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |        |  +- T-dot
+   |              |  |              |  |        |  +- Identifier
+   |              |  |              |  |        |     +- T-Identifier
+   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |           +- PostfixOperator
+   |              |  |              |  |              +- Operator
+   |              |  |              |  |                 +- OperatorHead
+   |              |  |              |  |                    +- T-eq
+   |              |  |              |  +- Statement
+   |              |  |              |     +- Expression
+   |              |  |              |        +- PrefixExpression
+   |              |  |              |           +- PostfixExpression
+   |              |  |              |           |  +- PrimaryExpression
+   |              |  |              |           |     +- Identifier
+   |              |  |              |           |        +- T-Identifier
+   |              |  |              |           +- PostfixExpression
+   |              |  |              |              +- FunctionCallArgumentClause
+   |              |  |              |                 +- T-lparen
+   |              |  |              |                 +- FunctionCallArgumentList
+   |              |  |              |                 |  +- FunctionCallArgument
+   |              |  |              |                 |     +- FunctionCallIdentifier
+   |              |  |              |                 |     |  +- Identifier
+   |              |  |              |                 |     |     +- T-Identifier
+   |              |  |              |                 |     +- T-colon
+   |              |  |              |                 |     +- Expression
+   |              |  |              |                 |        +- PrefixExpression
+   |              |  |              |                 |           +- PostfixExpression
+   |              |  |              |                 |              +- PrimaryExpression
+   |              |  |              |                 |                 +- Identifier
+   |              |  |              |                 |                    +- T-Identifier
+   |              |  |              |                 +- T-rparen
+   |              |  |              +- T-rbrace
+   |              |  +- StructMember
+   |              |  |  +- Declaration
+   |              |  |     +- VariableDeclaration
+   |              |  |        +- VariableDeclarationHead
+   |              |  |        |  +- DeclarationModifiers
+   |              |  |        |  |  +- DeclarationModifier
+   |              |  |        |  |     +- AccessLevelModifier
+   |              |  |        |  |        +- T-public
+   |              |  |        |  +- T-var
+   |              |  |        +- VariableName
+   |              |  |        |  +- Identifier
+   |              |  |        |     +- T-Identifier
+   |              |  |        +- TypeAnnotation
+   |              |  |        |  +- T-colon
+   |              |  |        |  +- SType
+   |              |  |        |     +- TypeIdentifier
+   |              |  |        |        +- TypeName
+   |              |  |        |           +- Identifier
+   |              |  |        |              +- T-Identifier
+   |              |  |        +- CodeBlock
+   |              |  |           +- T-lbrace
+   |              |  |           +- Statements
+   |              |  |           |  +- Statement
+   |              |  |           |     +- ControlTransferStatement
+   |              |  |           |        +- ReturnStatement
+   |              |  |           |           +- T-return
+   |              |  |           |           +- Expression
+   |              |  |           |              +- PrefixExpression
+   |              |  |           |                 +- PostfixExpression
+   |              |  |           |                 |  +- PrimaryExpression
+   |              |  |           |                 |     +- Identifier
+   |              |  |           |                 |        +- T-Identifier
+   |              |  |           |                 +- PostfixExpression
+   |              |  |           |                    +- T-dot
+   |              |  |           |                    +- Identifier
+   |              |  |           |                       +- T-Identifier
+   |              |  |           +- T-rbrace
+   |              |  +- StructMember
+   |              |     +- Declaration
+   |              |        +- VariableDeclaration
+   |              |           +- VariableDeclarationHead
+   |              |           |  +- DeclarationModifiers
+   |              |           |  |  +- DeclarationModifier
+   |              |           |  |     +- AccessLevelModifier
+   |              |           |  |        +- T-public
+   |              |           |  +- T-var
+   |              |           +- VariableName
+   |              |           |  +- Identifier
+   |              |           |     +- T-Identifier
+   |              |           +- TypeAnnotation
+   |              |           |  +- T-colon
+   |              |           |  +- SType
+   |              |           |     +- TypeIdentifier
+   |              |           |        +- TypeName
+   |              |           |           +- Identifier
+   |              |           |              +- T-Identifier
+   |              |           +- CodeBlock
+   |              |              +- T-lbrace
+   |              |              +- Statements
+   |              |              |  +- Statement
+   |              |              |     +- ControlTransferStatement
+   |              |              |        +- ReturnStatement
+   |              |              |           +- T-return
+   |              |              |           +- Expression
+   |              |              |              +- PrefixExpression
+   |              |              |                 +- PostfixExpression
+   |              |              |                 |  +- PrimaryExpression
+   |              |              |                 |     +- Identifier
+   |              |              |                 |        +- T-Identifier
+   |              |              |                 +- PostfixExpression
+   |              |              |                    +- T-dot
+   |              |              |                    +- Identifier
+   |              |              |                       +- T-Identifier
+   |              |              +- T-rbrace
+   |              +- T-rbrace
+   +- EOF

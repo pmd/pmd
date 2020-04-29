@@ -38,7 +38,6 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 }
 
 
-
 @parser::members {
 
     public static final AntlrNameDictionary DICO = new AntlrNameDictionary(VOCABULARY, ruleNames);

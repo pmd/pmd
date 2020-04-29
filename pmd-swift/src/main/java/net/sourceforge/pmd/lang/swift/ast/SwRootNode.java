@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.swift.ast;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.TopLevelContext;
 
-public final class SwiftRootNode extends SwiftNodeImpl<TopLevelContext> implements RootNode {
+public final class SwRootNode extends SwiftInnerNode<TopLevelContext> implements RootNode {
 
-    public SwiftRootNode(TopLevelContext parseTreeNode) {
+    SwRootNode(TopLevelContext parseTreeNode) {
         super(parseTreeNode);
     }
 

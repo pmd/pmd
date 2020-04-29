@@ -12,13 +12,13 @@ import net.sourceforge.pmd.lang.swift.SwiftLanguageModule;
 /**
  *
  */
-public class SwiftParsingHelper extends BaseParsingHelper<SwiftParsingHelper, SwiftRootNode> {
+public class SwiftParsingHelper extends BaseParsingHelper<SwiftParsingHelper, SwRootNode> {
 
     public static final SwiftParsingHelper DEFAULT = new SwiftParsingHelper(Params.getDefaultNoProcess());
 
 
     public SwiftParsingHelper(@NotNull Params params) {
-        super(SwiftLanguageModule.NAME, SwiftRootNode.class, params);
+        super(SwiftLanguageModule.NAME, SwRootNode.class, params);
     }
 
     @NotNull
