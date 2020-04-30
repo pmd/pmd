@@ -599,21 +599,22 @@ ASTObjectNameDeclaration ObjectNameDeclaration() :
 }
 
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/formal-parameter-declaration.html#GUID-5BA8E033-96B9-439A-A4FC-4844FEC14AD8
+ */
 ASTFormalParameter FormalParameter()  :
 {
  PLSQLNode simpleNode = null ;
 }
 {
    (
-	simpleNode = ID()
-	// the order of outer "|" is important !
+    simpleNode = ID()
+    [<IN> {jjtThis.setIn(true); } ]
+    [<OUT> {jjtThis.setOut(true); } ]
+    [<NOCOPY> {jjtThis.setNoCopy(true); } ]
 
-    (<IN> {jjtThis.setIn(true); } )?
-    (<OUT> {jjtThis.setOut(true); } )?
-    (<NOCOPY> {jjtThis.setNoCopy(true); } )?
-
-	("..."    | Datatype())
-	( (":" "="|<_DEFAULT>) Expression() )?
+    ("..."    | Datatype())
+    ( (":" "="|<_DEFAULT>) Expression() )?
    )
    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }

@@ -27,7 +27,7 @@ public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.Abstr
         return this.in;
     }
 
-    public void setIn(boolean in) {
+    void setIn(boolean in) {
         this.in = in;
     }
 
@@ -35,7 +35,7 @@ public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.Abstr
         return this.out;
     }
 
-    public void setOut(boolean out) {
+    void setOut(boolean out) {
         this.out = out;
     }
 
@@ -43,10 +43,10 @@ public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.Abstr
         return this.nocopy;
     }
 
-    public void setNoCopy(boolean nocopy) {
+    void setNoCopy(boolean nocopy) {
         this.nocopy = nocopy;
     }
-    
+
     @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
