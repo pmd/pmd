@@ -599,17 +599,22 @@ ASTObjectNameDeclaration ObjectNameDeclaration() :
 }
 
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/formal-parameter-declaration.html#GUID-5BA8E033-96B9-439A-A4FC-4844FEC14AD8
+ */
 ASTFormalParameter FormalParameter()  :
 {
  PLSQLNode simpleNode = null ;
 }
 {
    (
-	simpleNode = ID()
-	// the order of outer "|" is important !
-	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>|(<IN> <OUT>)) (LOOKAHEAD(2) <NOCOPY>  )? ) | <IN> ) )?
-	("..."    | Datatype())
-	( (":" "="|<_DEFAULT>) Expression() )?
+    simpleNode = ID()
+    [<IN> {jjtThis.setIn(true); } ]
+    [<OUT> {jjtThis.setOut(true); } ]
+    [<NOCOPY> {jjtThis.setNoCopy(true); } ]
+
+    ("..."    | Datatype())
+    ( (":" "="|<_DEFAULT>) Expression() )?
    )
    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
@@ -1157,8 +1162,18 @@ ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 {}
 {
-	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
-	Skip2NextTerminator(initiator,terminator)
+    (<SELECT>
+    |<UPDATE>
+    |<INSERT>
+    |<DELETE>
+    |<COMMIT>{jjtThis.setType(ASTSqlStatement.Type.COMMIT); }
+    |<ROLLBACK>{jjtThis.setType(ASTSqlStatement.Type.ROLLBACK); }
+    |<SAVEPOINT>{jjtThis.setType(ASTSqlStatement.Type.SAVEPOINT); }
+    |<SET><TRANSACTION>{jjtThis.setType(ASTSqlStatement.Type.SET_TRANSACTION); }
+    |<LOCK><TABLE>{jjtThis.setType(ASTSqlStatement.Type.LOCK_TABLE); }
+    |<MERGE>{jjtThis.setType(ASTSqlStatement.Type.MERGE); }
+    |<WITH>)
+	Skip2NextTerminator(initiator, terminator)
 	{
           return jjtThis ;
 	}
@@ -2655,12 +2670,15 @@ ASTOpenStatement OpenStatement()  :
       { return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/FETCH-statement.html#GUID-75BC6E63-841A-4103-9B96-8AC97F5C28BB
+ */
 ASTFetchStatement FetchStatement()  :
 {}
 {
-	 <FETCH> QualifiedName() [<BULK> <COLLECT>]
+	 <FETCH> QualifiedName() [<BULK> <COLLECT> {jjtThis.setBulkCollect(true); }]
 	  //MMUE 04/08/2005 <INTO> (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()) ("," (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()))* ";"
-	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()]
+	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression(){jjtThis.setLimit(true);}]
 	//
       { return jjtThis ; }
 }

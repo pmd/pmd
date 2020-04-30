@@ -21,6 +21,7 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 *   [#2448](https://github.com/pmd/pmd/pull/2448): \[java] Operator Wrap check - [Harsh Kukreja](https://github.com/harsh-kukreja)
+*   [#2449](https://github.com/pmd/pmd/pull/2449): \[plsql] Additional info in SqlStatement, FormalParameter and FetchStatement - [Grzegorz Sudolski](https://github.com/zgrzyt93)
 
 
 {% endtocmaker %}
