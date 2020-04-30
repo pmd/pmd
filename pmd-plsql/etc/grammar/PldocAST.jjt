@@ -2670,6 +2670,9 @@ ASTOpenStatement OpenStatement()  :
       { return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/FETCH-statement.html#GUID-75BC6E63-841A-4103-9B96-8AC97F5C28BB
+ */
 ASTFetchStatement FetchStatement()  :
 {}
 {
