@@ -34,7 +34,7 @@
         </plugins>
     </build>
     <dependencies>
-	    <dependency>
+        <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
