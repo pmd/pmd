@@ -1433,7 +1433,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>To use the built-in rules PMD provides, you need to add some <em>references</em> to them. Here’s a
 basic rule reference:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/EmptyCatchBlock"</span> <span class="nt">/&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/EmptyCatchBlock"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <p>Adding that element into the <code class="highlighter-rouge">ruleset</code> element adds the rule <a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>
@@ -1475,10 +1475,10 @@ category, then PMD would fail before starting the analysis.</li>
 
 <p>You can also reference rules in bulk by referencing a complete category or ruleset, possibly excluding certain rules, like in the following:</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml"</span><span class="nt">&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;exclude</span> <span class="na">name=</span><span class="s">"WhileLoopsMustUseBraces"</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;exclude</span> <span class="na">name=</span><span class="s">"IfElseStmtsMustUseBraces"</span><span class="nt">/&gt;</span>
-  <span class="nt">&lt;/rule&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <p>Here, the <code class="highlighter-rouge">ref</code> attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.</p>
@@ -1502,13 +1502,13 @@ a single rule reference.</div>
 		<span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/ruleset/2.0.0"</span>
 		<span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
 		<span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd"</span><span class="nt">&gt;</span>
-	<span class="nt">&lt;description&gt;</span>My ruleset<span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;description&gt;</span>My ruleset<span class="nt">&lt;/description&gt;</span>
 
-	<span class="nt">&lt;exclude-pattern&gt;</span>.*/some/package/.*<span class="nt">&lt;/exclude-pattern&gt;</span>
-	<span class="nt">&lt;exclude-pattern&gt;</span>.*/some/other/package/FunkyClassNamePrefix.*<span class="nt">&lt;/exclude-pattern&gt;</span>
-	<span class="nt">&lt;include-pattern&gt;</span>.*/some/package/ButNotThisClass.*<span class="nt">&lt;/include-pattern&gt;</span>
+    <span class="nt">&lt;exclude-pattern&gt;</span>.*/some/package/.*<span class="nt">&lt;/exclude-pattern&gt;</span>
+    <span class="nt">&lt;exclude-pattern&gt;</span>.*/some/other/package/FunkyClassNamePrefix.*<span class="nt">&lt;/exclude-pattern&gt;</span>
+    <span class="nt">&lt;include-pattern&gt;</span>.*/some/package/ButNotThisClass.*<span class="nt">&lt;/include-pattern&gt;</span>
 
-	<span class="c">&lt;!-- Rules here ... --&gt;</span>
+    <span class="c">&lt;!-- Rules here ... --&gt;</span>
 
 <span class="nt">&lt;/ruleset&gt;</span>
 </code></pre></div></div>
@@ -1540,7 +1540,7 @@ a single rule reference.</div>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> May 2018 (6.4.0)<br/> Site last generated: Apr 28, 2020 <br />
+<span>Page last updated:</span> May 2018 (6.4.0)<br/> Site last generated: Apr 30, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
