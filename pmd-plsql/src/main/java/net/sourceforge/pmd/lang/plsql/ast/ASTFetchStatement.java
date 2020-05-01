@@ -4,22 +4,13 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTFetchStatement extends AbstractPLSQLNode {
+public final class ASTFetchStatement extends AbstractPLSQLNode {
     private boolean bulkcollect;
     private boolean limit;
 
-    @Deprecated
-    @InternalApi
-    public ASTFetchStatement(int id) {
-        super(id);
-    }
 
-    @Deprecated
-    @InternalApi
-    public ASTFetchStatement(PLSQLParser p, int id) {
-        super(p, id);
+    ASTFetchStatement(int id) {
+        super(id);
     }
 
     void setBulkCollect(boolean bulkcollect) {
