@@ -115,6 +115,10 @@ public final class InternalApiBridge {
         AstDisambiguationPass.disambig(processor, nodes, context, outsideContext);
     }
 
+    public static void disambig(JavaAstProcessor processor, ASTCompilationUnit root) {
+        AstDisambiguationPass.disambig(processor, root);
+    }
+
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }

@@ -5,10 +5,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.AMBIGUOUS_NAME_REFERENCE;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_AMBIGUOUS_NAME;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_MEMBER;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -19,10 +22,10 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -58,10 +61,16 @@ final class AstDisambiguationPass {
      * </ul>
      */
     public static void disambig(JavaAstProcessor processor, NodeStream<? extends JavaNode> nodes, ASTAnyTypeDeclaration node, boolean outsideContext) {
-        ReferenceCtx ctx = ReferenceCtx.ctxOf(node, processor, outsideContext);
-        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, ctx)));
+        disambigWithCtx(nodes, ReferenceCtx.ctxOf(node, processor, outsideContext));
     }
 
+    public static void disambig(JavaAstProcessor processor, ASTCompilationUnit root) {
+        disambigWithCtx(NodeStream.of(root), new ReferenceCtx(processor, root.getPackageName(), null));
+    }
+
+    private static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
+        JavaAstProcessor.bench("AST disambiguation", () -> nodes.forEach(it -> it.jjtAccept(DisambigVisitor.INSTANCE, ctx)));
+    }
 
     private enum Fallback {
         AMBIGUOUS("ambiguous"),
@@ -93,7 +102,7 @@ final class AstDisambiguationPass {
 
     private static void checkParentIsMember(ReferenceCtx ctx, ASTClassOrInterfaceType resolvedType, ASTClassOrInterfaceType parent) {
         JTypeDeclSymbol sym = resolvedType.getReferencedSym();
-        JClassSymbol parentClass = ctx.findTypeMember(sym, parent.getSimpleName());
+        JClassSymbol parentClass = ctx.findTypeMember(sym, parent.getSimpleName(), parent);
         if (parentClass == null) {
             JavaAstProcessor processor = ctx.processor;
             ctx.reportUnresolvedMember(parent, Fallback.TYPE, parent.getSimpleName(), sym);
@@ -122,8 +131,8 @@ final class AstDisambiguationPass {
         }
 
         ReferenceCtx scopeDownToNested(JClassSymbol newEnclosing) {
-            assert enclosingClass == null || enclosingClass.getDeclaredClass(newEnclosing.getSimpleName()) == null
-                : "Not a child class of the current context";
+            assert enclosingClass == null || enclosingClass.equals(newEnclosing.getEnclosingClass())
+                : "Not a child class of the current context (" + this + "): " + newEnclosing;
             assert newEnclosing.getPackageName().equals(packageName)
                 : "Mismatched package name";
             return new ReferenceCtx(processor, packageName, newEnclosing);
@@ -137,10 +146,37 @@ final class AstDisambiguationPass {
         }
 
         @Nullable
-        JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name) {
-            return classSym instanceof JClassSymbol
-                   ? JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveFirst(name)
-                   : null;
+        JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
+            if (classSym instanceof JClassSymbol) {
+                @NonNull List<JClassSymbol> found = JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveHere(name);
+                return maybeAmbiguityError(name, errorLocation, found);
+            }
+            return null;
+        }
+
+        <T extends JTypeDeclSymbol> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
+            if (found.isEmpty()) {
+                return null;
+            } else if (found.size() > 1) {
+                processor.getLogger().error(
+                    errorLocation,
+                    AMBIGUOUS_NAME_REFERENCE,
+                    name,
+                    canonicalNameOf(found.get(0)),
+                    canonicalNameOf(found.get(1))
+                );
+                // fallthrough and use the first one anyway
+            }
+            return found.get(0);
+        }
+
+        private String canonicalNameOf(JTypeDeclSymbol sym) {
+            if (sym instanceof JClassSymbol) {
+                return ((JClassSymbol) sym).getCanonicalName();
+            } else {
+                assert sym instanceof JTypeParameterSymbol;
+                return sym.getEnclosingClass().getCanonicalName() + "#" + sym.getSimpleName();
+            }
         }
 
         static ReferenceCtx ctxOf(ASTAnyTypeDeclaration node, JavaAstProcessor processor, boolean outsideContext) {
@@ -166,6 +202,14 @@ final class AstDisambiguationPass {
 
             this.processor.getLogger().warning(location, CANNOT_RESOLVE_MEMBER, memberName, ownerName, fallbackStrategy);
         }
+
+        @Override
+        public String toString() {
+            return "ReferenceCtx{" +
+                "packageName='" + packageName + '\'' +
+                ", enclosingClass=" + enclosingClass +
+                '}';
+        }
     }
 
     private static final class DisambigVisitor extends SideEffectingVisitorAdapter<ReferenceCtx> {
@@ -184,6 +228,8 @@ final class AstDisambiguationPass {
 
         @Override
         public void visit(ASTAnyTypeDeclaration node, ReferenceCtx data) {
+            // since type headers are disambiguated early it doesn't matter
+            // if the context is inaccurate in type headers
             super.visit(node, data.scopeDownToNested(node.getSymbol()));
         }
 
@@ -251,9 +297,9 @@ final class AstDisambiguationPass {
                 assert lhsSym != null : "Unresolved LHS for " + type;
                 checkParentIsMember(ctx, lhsType, type);
             } else {
-                JTypeDeclSymbol sym = type.getSymbolTable().types().resolveFirst(type.getSimpleName());
+                JTypeDeclSymbol sym = resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), ctx, type);
                 if (sym == null) {
-                    processor.getLogger().warning(type, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
+                    processor.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
                     sym = setArity(type, processor, type.getSimpleName());
                 } else {
                     if (sym.isUnresolved()) {
@@ -314,7 +360,7 @@ final class AstDisambiguationPass {
 
             // otherwise, test if it is a type name
 
-            JTypeDeclSymbol typeResult = symTable.types().resolveFirst(firstIdent.getImage());
+            JTypeDeclSymbol typeResult = resolveSingleTypeName(symTable, firstIdent.getImage(), ctx, name);
 
             if (typeResult != null) {
                 return resolveType(null, typeResult, firstIdent.getImage(), firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
@@ -322,6 +368,10 @@ final class AstDisambiguationPass {
 
             // otherwise, first is reclassified as package name.
             return resolvePackage(firstIdent, firstIdent.getImage(), tokens, name, isPackageOrTypeOnly, ctx);
+        }
+
+        private static JTypeDeclSymbol resolveSingleTypeName(JSymbolTable symTable, String image, ReferenceCtx ctx, JavaNode errorLoc) {
+            return ctx.maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
         }
 
 
@@ -405,7 +455,7 @@ final class AstDisambiguationPass {
                 }
             }
 
-            JClassSymbol inner = ctx.findTypeMember(sym, nextSimpleName);
+            JClassSymbol inner = ctx.findTypeMember(sym, nextSimpleName, ambig);
 
             if (inner == null && isPackageOrTypeOnly) {
                 // normally compile-time error, continue by considering it an unresolved inner type
@@ -518,9 +568,9 @@ final class AstDisambiguationPass {
         class Scratch2 {
             interface A { class Mem {} }
             interface B { class Mem {} }
-            class Foo implements A, B { }
-
-            Foo.Mem m; // not ok, Foo.Mem is ambiguous between A.Mem, B.Mem
+            class Foo implements A, B {
+                Foo.Mem m; // not ok, Foo.Mem is ambiguous between A.Mem, B.Mem
+            }
         }
 
         TODO both names must be visible to produce an ambiguity error

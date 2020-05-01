@@ -55,6 +55,8 @@ public interface SemanticChecksLogger {
      */
     String CANNOT_RESOLVE_AMBIGUOUS_NAME = "Cannot resolve ambiguous name {0}, treating it as a {1}";
 
+    String AMBIGUOUS_NAME_REFERENCE = "Reference ''{0}'' is ambiguous, both {1} and {2} match";
+
 
     /**
      * Log a warning at the given location.
