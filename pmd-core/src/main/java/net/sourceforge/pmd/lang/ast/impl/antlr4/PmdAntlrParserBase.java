@@ -17,4 +17,22 @@ public abstract class PmdAntlrParserBase extends Parser {
         super(input);
     }
 
+
+    protected void enterRule(AntlrParseTreeBase ptree, int state, int alt) {
+
+    }
+
+    public void enterOuterAlt(AntlrParseTreeBase localctx, int altNum) {
+
+    }
+
+
+    public void pushNewRecursionContext(AntlrParseTreeBase localctx, int state, int ruleIndex) {
+
+    }
+
+    public void enterRecursionRule(AntlrParseTreeBase localctx, int state, int ruleIndex, int precedence) {
+
+    }
+
 }
