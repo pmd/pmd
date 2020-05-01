@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainNode;
 
 final class SymbolTableImpl implements JSymbolTable {
 
-    static JSymbolTable EMPTY = new SymbolTableImpl(ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup());
+    static final JSymbolTable EMPTY = new SymbolTableImpl(ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup());
 
     private final ShadowChainNode<JVariableSymbol, ScopeInfo> vars;
     private final ShadowChainNode<JTypeDeclSymbol, ScopeInfo> types;
@@ -46,11 +46,11 @@ final class SymbolTableImpl implements JSymbolTable {
 
     @Override
     public String toString() {
-        return "NSymTableImpl{" +
-            "vars=" + vars +
-            ", types=" + types +
-            ", methods=" + methods +
-            '}';
+        return "NSymTableImpl{"
+            + "vars=" + vars
+            + ", types=" + types
+            + ", methods=" + methods
+            + '}';
     }
 
     static JSymbolTable withVars(JSymbolTable parent, ShadowChainNode<JVariableSymbol, ScopeInfo> vars) {

@@ -36,9 +36,6 @@ public abstract class ShadowChainBuilder<S, I> {
 
     private final MapMaker<String> mapMaker = this::copyToMutable;
 
-    public ShadowChainBuilder() {
-    }
-
     MostlySingularMultimap.Builder<String, S> newMapBuilder() {
         return MostlySingularMultimap.newBuilder(mapMaker);
     }

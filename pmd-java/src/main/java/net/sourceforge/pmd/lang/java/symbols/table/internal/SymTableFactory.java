@@ -71,7 +71,7 @@ final class SymTableFactory {
         return processor.getLogger();
     }
 
-    final JClassSymbol loadClassReportFailure(JavaNode location, String fqcn) {
+    JClassSymbol loadClassReportFailure(JavaNode location, String fqcn) {
         JClassSymbol loaded = loadClassOrFail(fqcn);
         if (loaded == null) {
             getLogger().warning(location, SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL, fqcn);
@@ -92,7 +92,7 @@ final class SymTableFactory {
                              : found;
     }
 
-    protected boolean canBeImported(JAccessibleElementSymbol member) {
+    boolean canBeImported(JAccessibleElementSymbol member) {
         return JavaResolvers.canBeImportedIn(thisPackage, member);
     }
 

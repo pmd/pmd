@@ -17,9 +17,9 @@ import net.sourceforge.pmd.util.OptionalBool;
 /**
  * An empty group, bottom of the linked lists, for implementation simplicity.
  */
-class ShadowChainRoot<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> {
+final class ShadowChainRoot<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> {
 
-    @SuppressWarnings( {"rawtypes"})
+    @SuppressWarnings("rawtypes")
     private static final ShadowChainRoot EMPTY = new ShadowChainRoot<>();
 
     private ShadowChainRoot() {
@@ -70,7 +70,7 @@ class ShadowChainRoot<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> 
         return "Root";
     }
 
-    @SuppressWarnings( {"unchecked"})
+    @SuppressWarnings("unchecked")
     static <S, I> ShadowChainNode<S, I> empty() {
         return EMPTY;
     }

@@ -89,7 +89,7 @@ public final class CoreResolvers {
 
         private final MostlySingularMultimap<String, S> map;
 
-        public MultimapResolver(MostlySingularMultimap<String, S> map) {
+        MultimapResolver(MostlySingularMultimap<String, S> map) {
             this.map = map;
         }
 

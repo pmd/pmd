@@ -205,10 +205,10 @@ final class AstDisambiguationPass {
 
         @Override
         public String toString() {
-            return "ReferenceCtx{" +
-                "packageName='" + packageName + '\'' +
-                ", enclosingClass=" + enclosingClass +
-                '}';
+            return "ReferenceCtx{"
+                + "packageName='" + packageName + '\''
+                + ", enclosingClass=" + enclosingClass
+                + '}';
         }
     }
 

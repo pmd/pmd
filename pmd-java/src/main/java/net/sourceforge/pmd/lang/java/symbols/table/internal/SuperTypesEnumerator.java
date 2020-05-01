@@ -63,7 +63,7 @@ enum SuperTypesEnumerator {
                 set = new LinkedHashSet<>(superItfs.size() + 1);
                 set.add(sup);
             } else {
-                if (superItfs.size() == 0) {
+                if (superItfs.isEmpty()) {
                     return emptySet();
                 }
                 set = new LinkedHashSet<>(superItfs.size());
