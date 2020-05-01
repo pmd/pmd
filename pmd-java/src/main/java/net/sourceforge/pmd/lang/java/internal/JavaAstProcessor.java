@@ -108,7 +108,7 @@ public final class JavaAstProcessor {
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
         bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
-        bench("AST disambiguation", () -> InternalApiBridge.disambig(this, NodeStream.of(acu)));
+        bench("AST disambiguation", () -> InternalApiBridge.disambig(this, NodeStream.of(acu), context, outsideContext));
 
     }
 

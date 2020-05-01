@@ -207,27 +207,36 @@ public final class JavaResolvers {
         return hidden;
     }
 
+    private static boolean isAccessibleIn(@NonNull JClassSymbol nestRoot,
+                                          JAccessibleElementSymbol sym,
+                                          boolean isOwnerASupertypeOfContext) {
+        return isAccessibleIn(nestRoot, nestRoot.getPackageName(), sym, isOwnerASupertypeOfContext);
+    }
+
     /**
      * Whether the given sym is accessible in some type T, given
      * the 'nestRoot' of T, and whether T is a subtype of the class
      * declaring 'sym'. This is a general purpose accessibility check,
      * albeit a bit low-level (but only needs subtyping to be computed once).
      */
-    private static boolean isAccessibleIn(JClassSymbol nestRoot, JAccessibleElementSymbol sym, boolean isOwnerASupertypeOfContext) {
+    private static boolean isAccessibleIn(@Nullable JClassSymbol nestRoot,
+                                          String packageName,
+                                          JAccessibleElementSymbol sym,
+                                          boolean isOwnerASupertypeOfContext) {
         int modifiers = sym.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
 
         switch (modifiers) {
         case Modifier.PUBLIC:
             return true;
         case Modifier.PRIVATE:
-            return nestRoot.equals(sym.getEnclosingClass().getNestRoot());
+            return nestRoot != null && nestRoot.equals(sym.getEnclosingClass().getNestRoot());
         case Modifier.PROTECTED:
             if (isOwnerASupertypeOfContext) {
                 return true;
             }
             // fallthrough
         case 0:
-            return sym.getPackageName().equals(nestRoot.getPackageName());
+            return sym.getPackageName().equals(packageName);
         default:
             throw new AssertionError(Modifier.toString(sym.getModifiers()));
         }
@@ -246,16 +255,17 @@ public final class JavaResolvers {
      * @param access Context of where the declaration is referenced
      * @param name   Name of the class to find
      */
-    public static NameResolver<JClassSymbol> getMemberClassResolver(JClassSymbol c, JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, access, JClassSymbol::getDeclaredClass, name, CLASSES);
+    public static NameResolver<JClassSymbol> getMemberClassResolver(JClassSymbol c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        return getNamedMemberResolver(c, access, accessPackageName, JClassSymbol::getDeclaredClass, name, CLASSES);
     }
 
-    public static NameResolver<JFieldSymbol> getMemberFieldResolver(JClassSymbol c, JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, access, JClassSymbol::getDeclaredField, name, FIELDS);
+    public static NameResolver<JFieldSymbol> getMemberFieldResolver(JClassSymbol c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        return getNamedMemberResolver(c, access, accessPackageName, JClassSymbol::getDeclaredField, name, FIELDS);
     }
 
     private static <S extends JAccessibleElementSymbol> NameResolver<S> getNamedMemberResolver(JClassSymbol c,
-                                                                                               JClassSymbol access,
+                                                                                               @Nullable JClassSymbol access,
+                                                                                               @NonNull String accessPackageName,
                                                                                                BiFunction<? super JClassSymbol, String, ? extends S> getter,
                                                                                                String name,
                                                                                                ShadowChainBuilder<S, ?> classes) {
@@ -265,8 +275,8 @@ public final class JavaResolvers {
             return CoreResolvers.singleton(name, found);
         }
 
-        JClassSymbol nestRoot = access.getNestRoot();
-        Predicate<S> isAccessible = s -> isAccessibleIn(nestRoot, s, isSubtype(access, s.getEnclosingClass()));
+        JClassSymbol nestRoot = access == null ? null : access.getNestRoot();
+        Predicate<S> isAccessible = s -> isAccessibleIn(nestRoot, accessPackageName, s, isSubtype(access, s.getEnclosingClass()));
 
         ShadowChainBuilder<S, ?>.ResolverBuilder builder = classes.new ResolverBuilder();
 

@@ -148,7 +148,7 @@ public final class SymbolTableResolver {
             popStack(pushed - 1);
 
             // resolve the supertypes, necessary for TypeMemberSymTable
-            f.disambig(notBody); // extends/implements
+            f.disambig(notBody, node, true); // extends/implements
 
             setTopSymbolTable(node);
             popStack();
@@ -174,7 +174,9 @@ public final class SymbolTableResolver {
             // process fields first, their type is needed for JSymbolTable#resolveValue
             f.disambig(node.getDeclarations()
                            .filterIs(ASTFieldDeclaration.class)
-                           .map(ASTFieldDeclaration::getTypeNode));
+                           .map(ASTFieldDeclaration::getTypeNode),
+                       node,
+                       false);
 
             visitSubtree(node.getBody());
 
@@ -189,7 +191,9 @@ public final class SymbolTableResolver {
             // the supertype node, should be disambiguated to access members of the type
             f.disambig(node.asStream().parents()
                            .filterIs(ASTConstructorCall.class)
-                           .map(ASTConstructorCall::getTypeNode));
+                           .map(ASTConstructorCall::getTypeNode),
+                       node.getEnclosingType(),
+                       false);
 
             // helper.pushCtxType(node.getSymbol());
             int pushed = pushOnStack(f.typeBody(top(), node.getSymbol())); // methods & fields & inherited classes

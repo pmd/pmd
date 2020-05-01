@@ -63,12 +63,8 @@ final class SymTableFactory {
     // <editor-fold defaultstate="collapsed" desc="Utilities for classloading">
 
 
-    public void disambig(NodeStream<? extends JavaNode> nodes) {
-        InternalApiBridge.disambig(processor, nodes);
-    }
-
-    public void disambig(JavaNode node) {
-        InternalApiBridge.disambig(processor, NodeStream.of(node));
+    public void disambig(NodeStream<? extends JavaNode> nodes, ASTAnyTypeDeclaration context, boolean outsideContext) {
+        InternalApiBridge.disambig(processor, nodes, context, outsideContext);
     }
 
     SemanticChecksLogger getLogger() {
