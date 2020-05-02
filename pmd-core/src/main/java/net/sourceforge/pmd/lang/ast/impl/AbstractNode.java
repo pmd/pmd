@@ -94,6 +94,15 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
             children = newChildren;
         }
 
+        setChild(child, index);
+    }
+
+    /**
+     * Set the child at the given index. The difference with {@link #addChild(AbstractNode, int) addChild}
+     * is that the index must exist, while addChild may resizes the array.
+     */
+    protected void setChild(final B child, final int index) {
+        assert index >= 0 && index < children.length : "Invalid index " + index + " for length " + children.length;
         children[index] = child;
         child.setChildIndex(index);
         child.setParent(asSelf(this));
@@ -129,17 +138,6 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
     }
 
 
-    @SafeVarargs
-    protected final void setChildren(B... newChildren) {
-        this.children = new Node[newChildren.length];
-        System.arraycopy(newChildren, 0, this.children, 0, newChildren.length);
-        for (int i = 0; i < newChildren.length; i++) {
-            newChildren[i].setParent(asSelf(this));
-            newChildren[i].setChildIndex(i);
-        }
-    }
-
-
     protected void remove() {
         // Detach current node of its parent, if any
         if (parent != null) {
@@ -167,7 +165,7 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
      *
      * @param index the child index
      */
-    protected void setChildIndex(final int index) {
+    void setChildIndex(final int index) {
         childIndex = index;
     }
 
