@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 @Ignore
 public class LocalScopeTest extends BaseNonParserTest {
 
-
     @Test
     public void testLocalVariableDeclarationFound() {
         ASTCompilationUnit acu = parseCode(TEST1);

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -30,9 +29,7 @@ public final class ASTFormalParameter extends AbstractJavaNode
                Annotatable,
                VariableIdOwner {
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameter(int id) {
+    ASTFormalParameter(int id) {
         super(id);
     }
 
@@ -46,7 +43,7 @@ public final class ASTFormalParameter extends AbstractJavaNode
      * Returns the list of formal parameters containing this param.
      */
     public ASTFormalParameters getOwnerList() {
-        return (ASTFormalParameters) jjtGetParent();
+        return (ASTFormalParameters) getParent();
     }
 
     /**

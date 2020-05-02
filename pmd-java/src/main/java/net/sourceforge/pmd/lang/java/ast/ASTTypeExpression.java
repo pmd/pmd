@@ -34,7 +34,7 @@ public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrim
 
     ASTTypeExpression(ASTType wrapped) {
         this(JavaParserImplTreeConstants.JJTTYPEEXPRESSION);
-        this.jjtAddChild(wrapped, 0);
+        this.addChild((AbstractJavaNode) wrapped, 0);
         copyTextCoordinates((AbstractJavaNode) wrapped);
     }
 

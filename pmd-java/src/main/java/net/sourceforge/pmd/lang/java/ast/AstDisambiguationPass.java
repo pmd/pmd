@@ -176,7 +176,7 @@ final class AstDisambiguationPass {
             }
 
             if (resolved != name) { // NOPMD - intentional check for reference equality
-                ((AbstractJavaNode) name.getParent()).replaceChildAt(name.getIndexInParent(), resolved);
+                ((AbstractJavaNode) name.getParent()).setChild((AbstractJavaNode) resolved, name.getIndexInParent());
             }
         }
 
@@ -327,7 +327,7 @@ final class AstDisambiguationPass {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-            final ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, image, ambig.jjtGetFirstToken(), identifier);
+            final ASTClassOrInterfaceType type = new ASTClassOrInterfaceType(qualifier, image, ambig.getFirstToken(), identifier);
             type.setSymbol(sym);
 
             if (!remaining.hasNext()) { // done

@@ -13,7 +13,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
-import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -101,8 +100,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
         public Parser getParser(ParserOptions parserOptions) {
             return new AbstractParser(parserOptions) {
                 @Override
-                public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyRoot();
+                public DummyRoot parse(String fileName, Reader source) throws ParseException {
+                    DummyRoot node = new DummyRoot();
                     node.setCoords(1, 1, 2, 10);
                     node.setImage("Foo");
                     return node;

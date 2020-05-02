@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,9 +53,8 @@ public final class ASTUnionType extends AbstractJavaTypeNode
     /**
      * Returns the list of component types.
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public List<ASTClassOrInterfaceType> getComponents() {
-        return (List<ASTClassOrInterfaceType>) (List) Arrays.asList(children);
+        return children(ASTClassOrInterfaceType.class).toList();
     }
 
     @Override

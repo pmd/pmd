@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 
 import scala.meta.Tree;
 import scala.meta.inputs.Position;
@@ -14,10 +13,10 @@ import scala.meta.inputs.Position;
  * A Wrapper for translating the Scala Tree Nodes to PMD-compatible Java-base
  * Nodes.
  *
- * @param <T>
- *            the type of the Scala tree node
+ * @param <T> the type of the Scala tree node
  */
-abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements ScalaNode<T> {
+abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractScalaNode<?>, ScalaNode<?>> implements ScalaNode<T> {
+
     protected final T node;
     private final Position pos;
 
@@ -28,15 +27,15 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
      *            the scala tree node this node wraps
      */
     AbstractScalaNode(T treeNode) {
-        super(0);
+        super();
         node = treeNode;
         pos = node.pos();
     }
 
+    // overridden to make it visible
     @Override
-    @SuppressWarnings("unchecked")
-    public NodeStream<? extends ScalaNode<?>> children() {
-        return (NodeStream<ScalaNode<?>>) super.children();
+    protected void addChild(AbstractScalaNode<?> child, int index) {
+        super.addChild(child, index);
     }
 
     @Override
@@ -66,45 +65,8 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
 
     @Override
     @Deprecated
-    public void testingOnlySetBeginColumn(int i) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @Deprecated
-    public void testingOnlySetBeginLine(int i) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @Deprecated
-    public void testingOnlySetEndColumn(int i) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @Deprecated
-    public void testingOnlySetEndLine(int i) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public abstract <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
-
-    @Override
-    @Deprecated
     public T getNode() {
         return node;
-    }
-
-    @Override
-    public ScalaNode<?> getChild(int index) {
-        return (ScalaNode<?>) super.getChild(index);
-    }
-
-    @Override
-    public ScalaNode<?> getParent() {
-        return (ScalaNode<?>) super.getParent();
     }
 
     @Override

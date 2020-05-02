@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -66,16 +65,6 @@ public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNo
     }
 
     @Override
-    public Object getUserData() {
-        return userData.get(AbstractNode.LEGACY_USER_DATA);
-    }
-
-    @Override
-    public void setUserData(Object userData) {
-        this.userData.set(AbstractNode.LEGACY_USER_DATA, userData);
-    }
-
-    @Override
     public DataMap<DataKey<?, ?>> getUserMap() {
         return userData;
     }
@@ -95,7 +84,6 @@ public abstract class AntlrBaseNode extends ParserRuleContext implements AntlrNo
         return getChildCount();
     }
 
-    // TODO: should we make it abstract due to the comment in AbstractNode ?
     @Override
     public String getXPathNodeName() {
         final String simpleName = getClass().getSimpleName();

@@ -26,23 +26,23 @@ public class StatementAndBraceFinderTest extends BaseNonParserTest {
     @Test
     public void testStatementExpressionParentChildLinks() {
         ASTStatementExpression se = getOrderedNodes(ASTStatementExpression.class, TEST1).get(0);
-        ASTMethodDeclaration seParent = (ASTMethodDeclaration) se.getDataFlowNode().getParents().get(0).getNode();
-        assertEquals(se, seParent.getDataFlowNode().getChildren().get(0).getNode());
-        assertEquals(seParent, se.getDataFlowNode().getParents().get(0).getNode());
+        ASTMethodDeclaration seParent = (ASTMethodDeclaration) DataFlowNode.get(se).getParents().get(0).getNode();
+        assertEquals(se, DataFlowNode.get(seParent).getChildren().get(0).getNode());
+        assertEquals(seParent, DataFlowNode.get(se).getParents().get(0).getNode());
     }
 
     @Test
     public void testVariableDeclaratorParentChildLinks() {
         ASTVariableDeclarator vd = getOrderedNodes(ASTVariableDeclarator.class, TEST2).get(0);
-        ASTMethodDeclaration vdParent = (ASTMethodDeclaration) vd.getDataFlowNode().getParents().get(0).getNode();
-        assertEquals(vd, vdParent.getDataFlowNode().getChildren().get(0).getNode());
-        assertEquals(vdParent, vd.getDataFlowNode().getParents().get(0).getNode());
+        ASTMethodDeclaration vdParent = (ASTMethodDeclaration) DataFlowNode.get(vd).getParents().get(0).getNode();
+        assertEquals(vd, DataFlowNode.get(vdParent).getChildren().get(0).getNode());
+        assertEquals(vdParent, DataFlowNode.get(vd).getParents().get(0).getNode());
     }
 
     @Test
     public void testIfStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST3).get(0);
-        DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
+        DataFlowNode dfn = DataFlowNode.get(exp).getFlow().get(2);
         assertTrue(dfn.isType(NodeType.IF_EXPR));
         assertTrue(dfn.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE));
     }
@@ -50,7 +50,7 @@ public class StatementAndBraceFinderTest extends BaseNonParserTest {
     @Test
     public void testWhileStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST4).get(0);
-        DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
+        DataFlowNode dfn = DataFlowNode.get(exp).getFlow().get(2);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
         assertTrue(dfn.isType(NodeType.WHILE_LAST_STATEMENT));
     }
@@ -58,11 +58,11 @@ public class StatementAndBraceFinderTest extends BaseNonParserTest {
     @Test
     public void testForStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST5).get(0);
-        DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
+        DataFlowNode dfn = DataFlowNode.get(exp).getFlow().get(2);
         assertTrue(dfn.isType(NodeType.FOR_INIT));
-        dfn = exp.getDataFlowNode().getFlow().get(3);
+        dfn = DataFlowNode.get(exp).getFlow().get(3);
         assertTrue(dfn.isType(NodeType.FOR_EXPR));
-        dfn = exp.getDataFlowNode().getFlow().get(4);
+        dfn = DataFlowNode.get(exp).getFlow().get(4);
         assertTrue(dfn.isType(NodeType.FOR_UPDATE));
         assertTrue(dfn.isType(NodeType.FOR_BEFORE_FIRST_STATEMENT));
         assertTrue(dfn.isType(NodeType.FOR_END));

@@ -55,7 +55,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     }
 
     @Override
-    public ASTCompilationUnit getRoot() {
+    public @NonNull ASTCompilationUnit getRoot() {
         return this;
     }
 

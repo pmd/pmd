@@ -49,7 +49,9 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
         stack.push(count);
         count = NumericConstants.ZERO;
 
-        node.childrenAccept(this, data);
+        for (JavaNode child : node.children()) {
+            child.jjtAccept(this, data);
+        }
 
         if (count > 1) {
             addViolation(data, node);

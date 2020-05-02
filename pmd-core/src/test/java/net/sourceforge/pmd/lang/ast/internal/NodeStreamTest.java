@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.pathsOf;
-import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.followPath;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.pathsOf;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 
 
 /**
@@ -35,7 +37,7 @@ public class NodeStreamTest {
 
     private final DummyNode tree1 = tree(
         () ->
-            node(// ""
+            root(// ""
                   node(// 0
                         node(), // 00
                         node(// 01
@@ -52,7 +54,7 @@ public class NodeStreamTest {
 
     private final DummyNode tree2 = tree(
         () ->
-            node(
+            root(
                 node(),
                 node(),
                 node(
@@ -186,7 +188,7 @@ public class NodeStreamTest {
     @Test
     public void testGet() {
         // ("0", "00", "01", "010", "011", "012", "013", "1")
-        NodeStream<Node> stream = tree1.descendants();
+        DescendantNodeStream<DummyNode> stream = tree1.descendants();
 
         assertEquals("0", stream.get(0).getImage());
         assertEquals("00", stream.get(1).getImage());
@@ -197,7 +199,7 @@ public class NodeStreamTest {
 
     @Test
     public void testNodeStreamsCanBeIteratedSeveralTimes() {
-        NodeStream<Node> stream = tree1.descendants();
+        DescendantNodeStream<DummyNode> stream = tree1.descendants();
 
         assertThat(stream.count(), equalTo(8));
         assertThat(stream.count(), equalTo(8));
@@ -252,7 +254,7 @@ public class NodeStreamTest {
         MutableInt upstreamEvals = new MutableInt();
         MutableInt downstreamEvals = new MutableInt();
 
-        NodeStream<Node> stream =
+        NodeStream<DummyNode> stream =
             tree1.descendants()
                  .filter(n -> n.getImage().matches("0.*"))
                  .take(4)
@@ -299,7 +301,7 @@ public class NodeStreamTest {
 
         MutableInt tree1Evals = new MutableInt();
 
-        NodeStream<Node> unionStream = tree1.descendantsOrSelf().peek(n -> tree1Evals.increment());
+        NodeStream<DummyNode> unionStream = tree1.descendantsOrSelf().peek(n -> tree1Evals.increment());
 
         int i = 0;
 

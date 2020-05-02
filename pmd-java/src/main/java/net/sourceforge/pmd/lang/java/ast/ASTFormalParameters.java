@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 
 /**
  * A list of {@linkplain ASTFormalParameter formal parameters} in a
@@ -26,9 +24,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  */
 public final class ASTFormalParameters extends ASTList<ASTFormalParameter> {
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameters(int id) {
+    ASTFormalParameters(int id) {
         super(id, ASTFormalParameter.class);
     }
 

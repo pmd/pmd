@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 import scala.meta.Tree;
 
@@ -16,7 +15,7 @@ import scala.meta.Tree;
  * @param <T>
  *            The Scala node type that extends Scala's Tree trait
  */
-public interface ScalaNode<T extends Tree> extends Node {
+public interface ScalaNode<T extends Tree> extends GenericNode<ScalaNode<?>> {
     /**
      * Accept a visitor and traverse this node.
      *
@@ -54,16 +53,4 @@ public interface ScalaNode<T extends Tree> extends Node {
     //  we could filter them out from violations transparently
     //  Apex has the same problem
     boolean isImplicit();
-
-
-    @Override
-    ScalaNode<?> getChild(int idx);
-
-
-    @Override
-    ScalaNode<?> getParent();
-
-
-    @Override
-    NodeStream<? extends ScalaNode<?>> children();
 }

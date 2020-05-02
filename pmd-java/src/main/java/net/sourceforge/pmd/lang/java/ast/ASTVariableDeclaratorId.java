@@ -51,9 +51,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
     private VariableNameDeclaration nameDeclaration;
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclaratorId(int id) {
+    ASTVariableDeclaratorId(int id) {
         super(id);
     }
 
@@ -250,8 +248,8 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     @Nullable
     public ASTExpression getInitializer() {
-        if (parent instanceof ASTVariableDeclarator) {
-            return ((ASTVariableDeclarator) parent).getInitializer();
+        if (getParent() instanceof ASTVariableDeclarator) {
+            return ((ASTVariableDeclarator) getParent()).getInitializer();
         }
         return null;
     }

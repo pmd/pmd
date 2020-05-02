@@ -65,6 +65,6 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
             return tparams.size();
         }
         ASTTypeParameters ps = node.getTypeParameters();
-        return ps == null ? 0 : ps.jjtGetNumChildren();
+        return ps == null ? 0 : ps.getNumChildren();
     }
 }
