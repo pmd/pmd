@@ -196,7 +196,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         String image = parent.getImage();
         parent.setImage(getName() + delim + image);
 
-        parent.jjtSetFirstToken(this.jjtGetFirstToken());
         parent.removeChildAtIndex(this.getIndexInParent());
     }
 
@@ -212,12 +211,14 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         // this reference and the lambdas can be optimised to a singleton
         shrinkOneSegment(
             simpleName -> {
-                simpleName.getParent().setImage(simpleName.getImage());
-                simpleName.getParent().removeChildAtIndex(simpleName.getIndexInParent());
+                AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
+                parent.setImage(simpleName.getImage());
+                parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
             },
             (ambig, simpleName) -> {
-                ambig.getParent().setImage(simpleName);
+                AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
+                parent.setImage(simpleName);
                 return null;
             }
         );
