@@ -1853,7 +1853,7 @@
    |  |           |  |              |  |              |        |  +- BinaryOperator
    |  |           |  |              |  |              |        |  |  +- Operator
    |  |           |  |              |  |              |        |  |     +- OperatorHead
-   |  |           |  |              |  |              |        |  |        +- T-133
+   |  |           |  |              |  |              |        |  |        +- T-double-amp
    |  |           |  |              |  |              |        |  +- PrefixExpression
    |  |           |  |              |  |              |        |     +- PostfixExpression
    |  |           |  |              |  |              |        |        +- PrimaryExpression
@@ -2853,7 +2853,7 @@
    |  |           |  |              |  |        |              |  +- PostfixOperator
    |  |           |  |              |  |        |              |     +- Operator
    |  |           |  |              |  |        |              |        +- OperatorHead
-   |  |           |  |              |  |        |              |           +- T-133
+   |  |           |  |              |  |        |              |           +- T-double-amp
    |  |           |  |              |  |        |              +- FunctionCallArgumentClause
    |  |           |  |              |  |        |                 +- T-lparen
    |  |           |  |              |  |        |                 +- FunctionCallArgumentList
@@ -2877,7 +2877,7 @@
    |  |           |  |              |  |        |                 |        |  +- BinaryOperator
    |  |           |  |              |  |        |                 |        |  |  +- Operator
    |  |           |  |              |  |        |                 |        |  |     +- OperatorHead
-   |  |           |  |              |  |        |                 |        |  |        +- T-134
+   |  |           |  |              |  |        |                 |        |  |        +- T-double-pipe
    |  |           |  |              |  |        |                 |        |  +- PrefixExpression
    |  |           |  |              |  |        |                 |        |     +- PostfixExpression
    |  |           |  |              |  |        |                 |        |        +- PostfixExpression

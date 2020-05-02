@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
@@ -136,6 +137,14 @@ public abstract class BaseAntlrInnerNode<N extends GenericNode<N>> extends BaseA
         @SuppressWarnings("unchecked")
         public AntlrToPmdParseTreeAdapter<N> getChild(int i) {
             return (AntlrToPmdParseTreeAdapter<N>) super.getChild(i);
+        }
+
+        @Override
+        public <T extends ParseTree> T addAnyChild(T t) {
+            assert t instanceof AntlrToPmdParseTreeAdapter;
+            BaseAntlrNode<?, ?> pmdNode = ((AntlrToPmdParseTreeAdapter<?>) t).getPmdNode();
+            pmdNode.setIndexInParent(getChildCount());
+            return super.addAnyChild(t);
         }
 
         @Override

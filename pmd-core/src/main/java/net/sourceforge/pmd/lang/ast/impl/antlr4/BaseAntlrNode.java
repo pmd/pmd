@@ -64,6 +64,10 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     public abstract Token getLastAntlrToken();
 
+    void setIndexInParent(int indexInParent) {
+        this.indexInParent = indexInParent;
+    }
+
     @Override
     public N getParent() {
         return (N) asAntlrNode().getParent().getPmdNode();
