@@ -34,6 +34,10 @@ public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
         }
     }
 
+    public String getText() {
+        return antlrNode.symbol.getText();
+    }
+
     @Override
     protected AntlrTerminalPmdAdapter<N> asAntlrNode() {
         return antlrNode;

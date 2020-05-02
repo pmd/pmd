@@ -70,7 +70,8 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     @Override
     public N getParent() {
-        return (N) asAntlrNode().getParent().getPmdNode();
+        AntlrToPmdParseTreeAdapter<N> parent = asAntlrNode().getParent();
+        return parent == null ? null : (N) parent.getPmdNode();
     }
 
     @Override
