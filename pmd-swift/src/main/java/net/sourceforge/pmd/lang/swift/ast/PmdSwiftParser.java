@@ -10,20 +10,21 @@ import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.TopLevelContext;
 
 /**
  * Adapter for the SwiftParser.
  */
-public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, SwiftFileNode> {
+public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, TopLevelContext> {
 
     public PmdSwiftParser(final ParserOptions parserOptions) {
         super(parserOptions);
     }
 
     @Override
-    protected SwiftFileNode parse(final Lexer lexer) {
+    protected TopLevelContext parse(final Lexer lexer) {
         SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
-        return new SwiftFileNode(parser.topLevel());
+        return parser.topLevel();
     }
 
     @Override

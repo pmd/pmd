@@ -23,8 +23,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public class AntlrNameDictionary {
 
-    public static final int ROOT_RULE_IDX = -1;
-
     private final String[] terminalXpathNames;
     private final String[] nonTermXpathNames;
     private final Vocabulary vocabulary;
@@ -155,12 +153,7 @@ public class AntlrNameDictionary {
     }
 
     public @NonNull String getXPathNameOfRule(int idx) {
-        if (idx >= 0 && idx < nonTermXpathNames.length) {
-            return nonTermXpathNames[idx];
-        } else if (idx == ROOT_RULE_IDX) {
-            return "FileRoot";
-        }
-        throw new IllegalArgumentException("I don't know rule type " + idx);
+        return nonTermXpathNames[idx];
     }
 
     public int getMaxRuleIndex() {

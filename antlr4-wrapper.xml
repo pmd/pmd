@@ -1,0 +1,32 @@
+<!--
+  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  -->
+
+<project name="pmd" default="adapt-antlr-sources" basedir="../../../../">
+
+    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast"/>
+
+    <target name="adapt-antlr-sources" description="Adapt antlr sources to the PMD codebase">
+
+        <replace file="${target-package-dir}/${lang-name}Parser.java"
+                 token="TopLevelContext extends ${lang-name}InnerNode"
+                 value="TopLevelContext extends ${lang-name}InnerNode implements net.sourceforge.pmd.lang.ast.RootNode"/>
+
+        <replace file="${target-package-dir}/${lang-name}Parser.java"
+                 token="_ctx = _localctx;"
+                 value="_ctx = _localctx.asAntlrNode();"/>
+
+        <replace file="${target-package-dir}/${lang-name}Parser.java"
+                 token="visitor.visitChildren(this)"
+                 value="visitor.visitChildren(asAntlrNode())"/>
+
+        <replaceregexp flags="g" file="${target-package-dir}/${lang-name}Parser.java">
+            <regexp pattern="_sempred\(\((\w+)\)_localctx,"/>
+            <substitution expression="_sempred\((\1) asPmdNode(_localctx),"/>
+        </replaceregexp>
+
+        <replace file="${target-package-dir}/${lang-name}Visitor.java"
+                 token="extends ParseTreeVisitor"
+                 value="extends net.sourceforge.pmd.lang.ast.impl.antlr4.PmdAntlrVisitor"/>
+    </target>
+</project>

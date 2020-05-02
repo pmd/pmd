@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
@@ -29,6 +31,11 @@ public abstract class AntlrGeneratedParserBase<N extends GenericNode<N>> extends
     }
 
     public abstract BaseAntlrTerminalNode<N> createPmdTerminal(ParserRuleContext parent, Token t);
+
+
+    protected Node asPmdNode(RuleContext ctx) {
+        return ((BaseAntlrNode.AntlrToPmdParseTreeAdapter<?>) ctx).getPmdNode();
+    }
 
     protected void enterRule(BaseAntlrInnerNode<N> ptree, int state, int alt) {
         enterRule(ptree.asAntlrNode(), state, alt);

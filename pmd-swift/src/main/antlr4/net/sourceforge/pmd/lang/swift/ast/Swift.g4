@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 
     static final AntlrNameDictionary DICO = new AntlrNameDictionary(VOCABULARY, ruleNames);
 
+    @Override
     public SwiftTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
         return new SwiftTerminalNode(t);
     }

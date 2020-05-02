@@ -151,14 +151,14 @@
    |              |  |              |  |  +- Expression
    |              |  |              |  |     +- PrefixExpression
    |              |  |              |  |        +- PostfixExpression
-   |              |  |              |  |        |  +- PrimaryExpression
-   |              |  |              |  |        |     +- Keyword
-   |              |  |              |  |        |        +- T-self
-   |              |  |              |  |        +- PostfixExpression
-   |              |  |              |  |        |  +- T-dot
-   |              |  |              |  |        |  +- Identifier
-   |              |  |              |  |        |     +- T-Identifier
-   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |           +- PostfixExpression
+   |              |  |              |  |           |  +- PostfixExpression
+   |              |  |              |  |           |  |  +- PrimaryExpression
+   |              |  |              |  |           |  |     +- Keyword
+   |              |  |              |  |           |  |        +- T-self
+   |              |  |              |  |           |  +- T-dot
+   |              |  |              |  |           |  +- Identifier
+   |              |  |              |  |           |     +- T-Identifier
    |              |  |              |  |           +- PostfixOperator
    |              |  |              |  |              +- Operator
    |              |  |              |  |                 +- OperatorHead
@@ -199,10 +199,10 @@
    |              |  |        |  |        +- Expression
    |              |  |        |  |           +- PrefixExpression
    |              |  |        |  |              +- PostfixExpression
-   |              |  |        |  |              |  +- PrimaryExpression
-   |              |  |        |  |              |     +- Identifier
-   |              |  |        |  |              |        +- T-Identifier
-   |              |  |        |  |              +- PostfixExpression
+   |              |  |        |  |                 +- PostfixExpression
+   |              |  |        |  |                 |  +- PrimaryExpression
+   |              |  |        |  |                 |     +- Identifier
+   |              |  |        |  |                 |        +- T-Identifier
    |              |  |        |  |                 +- T-dot
    |              |  |        |  |                 +- Identifier
    |              |  |        |  |                    +- T-Identifier
@@ -215,14 +215,14 @@
    |              |  |              |  |  +- Expression
    |              |  |              |  |     +- PrefixExpression
    |              |  |              |  |        +- PostfixExpression
-   |              |  |              |  |        |  +- PrimaryExpression
-   |              |  |              |  |        |     +- Keyword
-   |              |  |              |  |        |        +- T-self
-   |              |  |              |  |        +- PostfixExpression
-   |              |  |              |  |        |  +- T-dot
-   |              |  |              |  |        |  +- Identifier
-   |              |  |              |  |        |     +- T-Identifier
-   |              |  |              |  |        +- PostfixExpression
+   |              |  |              |  |           +- PostfixExpression
+   |              |  |              |  |           |  +- PostfixExpression
+   |              |  |              |  |           |  |  +- PrimaryExpression
+   |              |  |              |  |           |  |     +- Keyword
+   |              |  |              |  |           |  |        +- T-self
+   |              |  |              |  |           |  +- T-dot
+   |              |  |              |  |           |  +- Identifier
+   |              |  |              |  |           |     +- T-Identifier
    |              |  |              |  |           +- PostfixOperator
    |              |  |              |  |              +- Operator
    |              |  |              |  |                 +- OperatorHead
@@ -231,10 +231,10 @@
    |              |  |              |     +- Expression
    |              |  |              |        +- PrefixExpression
    |              |  |              |           +- PostfixExpression
-   |              |  |              |           |  +- PrimaryExpression
-   |              |  |              |           |     +- Identifier
-   |              |  |              |           |        +- T-Identifier
-   |              |  |              |           +- PostfixExpression
+   |              |  |              |              +- PostfixExpression
+   |              |  |              |              |  +- PrimaryExpression
+   |              |  |              |              |     +- Identifier
+   |              |  |              |              |        +- T-Identifier
    |              |  |              |              +- FunctionCallArgumentClause
    |              |  |              |                 +- T-lparen
    |              |  |              |                 +- FunctionCallArgumentList
@@ -280,10 +280,10 @@
    |              |  |           |           +- Expression
    |              |  |           |              +- PrefixExpression
    |              |  |           |                 +- PostfixExpression
-   |              |  |           |                 |  +- PrimaryExpression
-   |              |  |           |                 |     +- Identifier
-   |              |  |           |                 |        +- T-Identifier
-   |              |  |           |                 +- PostfixExpression
+   |              |  |           |                    +- PostfixExpression
+   |              |  |           |                    |  +- PrimaryExpression
+   |              |  |           |                    |     +- Identifier
+   |              |  |           |                    |        +- T-Identifier
    |              |  |           |                    +- T-dot
    |              |  |           |                    +- Identifier
    |              |  |           |                       +- T-Identifier
@@ -317,10 +317,10 @@
    |              |              |           +- Expression
    |              |              |              +- PrefixExpression
    |              |              |                 +- PostfixExpression
-   |              |              |                 |  +- PrimaryExpression
-   |              |              |                 |     +- Identifier
-   |              |              |                 |        +- T-Identifier
-   |              |              |                 +- PostfixExpression
+   |              |              |                    +- PostfixExpression
+   |              |              |                    |  +- PrimaryExpression
+   |              |              |                    |     +- Identifier
+   |              |              |                    |        +- T-Identifier
    |              |              |                    +- T-dot
    |              |              |                    +- Identifier
    |              |              |                       +- T-Identifier
