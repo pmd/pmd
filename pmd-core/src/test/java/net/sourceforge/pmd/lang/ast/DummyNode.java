@@ -30,7 +30,10 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     }
 
     public void publicSetChildren(DummyNode... children) {
-        super.setChildren(children);
+        assert getNumChildren() == 0;
+        for (int i = children.length - 1; i >= 0; i--) {
+            addChild(children[i], i);
+        }
     }
 
     @Override
