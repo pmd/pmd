@@ -248,8 +248,8 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     @Nullable
     public ASTExpression getInitializer() {
-        if (parent instanceof ASTVariableDeclarator) {
-            return ((ASTVariableDeclarator) parent).getInitializer();
+        if (getParent() instanceof ASTVariableDeclarator) {
+            return ((ASTVariableDeclarator) getParent()).getInitializer();
         }
         return null;
     }

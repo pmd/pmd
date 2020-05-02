@@ -25,7 +25,7 @@ class TokenUtilsTest : FunSpec({
                         ParserTestCtx(JavaVersion.J11)
                 )
 
-        val fileTokens = generateSequence(decl.root.jjtGetFirstToken()) { it.next }.toList()
+        val fileTokens = generateSequence(decl.root.firstToken) { it.next }.toList()
 
         fileTokens.map { it.image } shouldBe listOf(
                 // for some reason there's 2 EOF tokens but that's not the point of this test

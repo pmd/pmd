@@ -33,8 +33,8 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssi
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
         setImage(identifier.getImage());
-        jjtSetFirstToken(identifier);
-        jjtSetLastToken(identifier);
+        setFirstToken(identifier);
+        setLastToken(identifier);
     }
 
 

@@ -61,7 +61,7 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
      * Returns the node to which this type parameter belongs.
      */
     public TypeParamOwnerNode getOwner() {
-        return (TypeParamOwnerNode) jjtGetParent().jjtGetParent();
+        return (TypeParamOwnerNode) getParent().getParent();
     }
 
 

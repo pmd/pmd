@@ -1181,8 +1181,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         super.visit(node, data);
         // FIXME this is a hack because visit(ASTName) is too powerful,
         // Annotations don't have a Name node anymore so we imitate this
-        ASTName name = new ASTName(node.getImage());
-        name.setParent(node);
+        ASTName name = new ASTName(node.getImage(), node);
         visit(name, data);
         if (name.getTypeDefinition() != null) {
             setTypeDefinition(node, name.getTypeDefinition());

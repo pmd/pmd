@@ -30,7 +30,7 @@ public final class ASTPatternExpression extends AbstractJavaNode implements ASTP
 
     ASTPatternExpression(ASTPattern wrapped) {
         this(JavaParserImplTreeConstants.JJTPATTERNEXPRESSION);
-        this.jjtAddChild(wrapped, 0);
+        this.addChild((AbstractJavaNode) wrapped, 0);
         copyTextCoordinates((AbstractJavaNode) wrapped);
     }
 

@@ -37,7 +37,7 @@ public final class ASTBlock extends AbstractStatement implements Iterable<ASTSta
 
 
     public boolean containsComment() {
-        JavaccToken t = jjtGetLastToken().getPreviousComment();
+        JavaccToken t = getLastToken().getPreviousComment();
         while (t != null) {
             if (JavaTokenDocument.isComment(t)) {
                 return true;

@@ -94,6 +94,11 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
             children = newChildren;
         }
 
+        setChild(child, index);
+    }
+
+    protected void setChild(final B child, final int index) {
+        assert index >= 0 && index < children.length : "Invalid index " + index + " for length " + children.length;
         children[index] = child;
         child.setChildIndex(index);
         child.setParent(asSelf(this));

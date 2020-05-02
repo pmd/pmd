@@ -356,7 +356,7 @@ class JavaParserImpl {
     token_source.setSuppressMarker(marker);
   }
 
-  private void setLastTokenImage(JavaNode node) {
+  private void setLastTokenImage(AbstractJavaNode node) {
     node.setImage(getToken(0).getImage());
   }
 
@@ -377,8 +377,8 @@ class JavaParserImpl {
         emptyMods.setDeclaredModifiers(Collections.emptySet());
 
         JavaccToken tok = JavaccToken.implicitBefore(getToken(1));
-        emptyMods.jjtSetFirstToken(tok);
-        emptyMods.jjtSetLastToken(tok);
+        emptyMods.setFirstToken(tok);
+        emptyMods.setLastToken(tok);
 
         jjtree.pushNode(emptyMods);
   }
@@ -400,8 +400,8 @@ class JavaParserImpl {
   private void injectTop() {
        AbstractJavaNode top = (AbstractJavaNode) jjtree.popNode();
        AbstractJavaNode prev = (AbstractJavaNode) jjtree.peekNode();
-       prev.jjtAddChild(top, prev.getNumChildren());
-       prev.jjtSetLastToken(top.jjtGetLastToken());
+       prev.addChild(top, prev.getNumChildren());
+       prev.setLastToken(top.getLastToken());
   }
 
   /**
@@ -1753,8 +1753,8 @@ void PrimaryPrefix() #void :
   {
     AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode());
     AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
-    top.jjtSetFirstToken(savedStart);
-    top.jjtSetLastToken(getToken(0));
+    top.setFirstToken(savedStart);
+    top.setLastToken(getToken(0));
   }
 // If it is an ambiguous name, then we may go on
 // into the next step, which is less restricted
@@ -2078,7 +2078,7 @@ void BlockStatement() #void:
   LocalVariableDeclaration() ";" {
       // make it so that the LocalVariableDeclaration's last token is the semicolon
       AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
-      top.jjtSetLastToken(getToken(0));
+      top.setLastToken(getToken(0));
   } {}
 |
   // we need to lookahead until the "class" token,
@@ -2238,13 +2238,13 @@ void ForStatement() #void:
   t="for" "("
 (
       LOOKAHEAD(LocalVariableDeclaration() ":")
-      (LocalVariableDeclaration() ":" Expression() ")" Statement() { jjtThis.jjtSetFirstToken(t); }) #ForeachStatement
+      (LocalVariableDeclaration() ":" Expression() ")" Statement() { jjtThis.setFirstToken(t); }) #ForeachStatement
 | (
   [ ForInit() ] ";"
   [ Expression() ] ";"
   [ ForUpdate() ]
   ")" Statement()
-   { jjtThis.jjtSetFirstToken(t); }
+   { jjtThis.setFirstToken(t); }
   ) #ForStatement
 )
 }

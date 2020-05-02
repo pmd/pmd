@@ -18,9 +18,10 @@ public class ASTName extends AbstractJavaTypeNode {
      */
     @InternalApi
     @Deprecated
-    public ASTName(String image) {
+    public ASTName(String image, AbstractJavaNode parent) {
         super(JavaParserImplTreeConstants.JJTNAME);
         setImage(image);
+        setParent(parent);
     }
 
     ASTName(int id) {

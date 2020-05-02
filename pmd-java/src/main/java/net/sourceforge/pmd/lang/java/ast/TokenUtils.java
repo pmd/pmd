@@ -113,6 +113,6 @@ final class TokenUtils {
     }
 
     public static Iterator<JavaccToken> tokenRange(JavaNode node) {
-        return GenericToken.range(node.jjtGetFirstToken(), node.jjtGetLastToken());
+        return GenericToken.range(node.getFirstToken(), node.getLastToken());
     }
 }

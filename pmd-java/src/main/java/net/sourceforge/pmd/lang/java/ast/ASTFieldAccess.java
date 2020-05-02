@@ -28,17 +28,17 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssigna
      */
     ASTFieldAccess(ASTAmbiguousName lhs, String fieldName) {
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
-        this.jjtAddChild(lhs, 0);
+        this.addChild(lhs, 0);
         this.setImage(fieldName);
     }
 
     ASTFieldAccess(ASTExpression lhs, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
-        this.jjtAddChild(lhs, 0);
+        this.addChild((AbstractJavaNode) lhs, 0);
         this.setImage(identifier.getImage());
-        this.jjtSetFirstToken(lhs.jjtGetFirstToken());
-        this.jjtSetLastToken(identifier);
+        this.setFirstToken(lhs.getFirstToken());
+        this.setLastToken(identifier);
     }
 
 

@@ -6,6 +6,7 @@ import io.kotlintest.Result
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldNotBe
+import net.sourceforge.pmd.internal.util.IteratorUtil
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
@@ -42,16 +43,8 @@ fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : M
             Result(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
 }
 
-fun JavaNode.tokenList(): List<JavaccToken> {
-    val lst = mutableListOf<JavaccToken>()
-    var t = jjtGetFirstToken()
-    lst += t
-    while (t != jjtGetLastToken()) {
-        t = t.next
-        lst += t
-    }
-    return lst
-}
+fun JavaNode.tokenList(): List<JavaccToken> =
+        IteratorUtil.toList(TokenUtils.tokenRange(this))
 
 fun String.addArticle() = when (this[0].toLowerCase()) {
     'a', 'e', 'i', 'o', 'u' -> "an $this"

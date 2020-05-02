@@ -47,6 +47,22 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super.setImage(image);
     }
 
+
+    @Override
+    protected void setFirstToken(JavaccToken token) {
+        super.setFirstToken(token);
+    }
+
+    @Override
+    protected void setLastToken(JavaccToken token) {
+        super.setLastToken(token);
+    }
+
+    @Override
+    protected void setChild(AbstractJavaNode child, int index) {
+        super.setChild(child, index);
+    }
+
     void setSymbolTable(JSymbolTable table) {
         this.symbolTable = table;
     }
@@ -125,16 +141,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         setLastToken(copy.getLastToken());
     }
 
-
-    // assumes that the child has the same text bounds
-    // as the old one. Used to replace an ambiguous name
-    // with an unambiguous representation
-    void replaceChildAt(int idx, AbstractJavaNode newChild) {
-        // parent of the old child must not be reset to null
-        // as chances are we're reusing it as a child of the
-        // new child
-        super.addChild(newChild, idx);
-    }
 
     @Override
     public final String getXPathNodeName() {

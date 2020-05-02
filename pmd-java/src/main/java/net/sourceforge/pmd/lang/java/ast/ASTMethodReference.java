@@ -38,10 +38,10 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
         // if constructor ref, then the LHS is unambiguously a type.
         if (lhs instanceof ASTAmbiguousName) {
             if (isConstructorReference()) {
-                replaceChildAt(0, new ASTTypeExpression(((ASTAmbiguousName) lhs).forceTypeContext()));
+                setChild(new ASTTypeExpression(((ASTAmbiguousName) lhs).forceTypeContext()), 0);
             }
         } else if (lhs instanceof ASTType) {
-            replaceChildAt(0, new ASTTypeExpression((ASTType) lhs));
+            setChild(new ASTTypeExpression((ASTType) lhs), 0);
         }
     }
 
