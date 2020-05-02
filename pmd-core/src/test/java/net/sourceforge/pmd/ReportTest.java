@@ -96,8 +96,8 @@ public class ReportTest implements ThreadSafeReportListener {
         r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s2, mr.getMessage()));
         Map<String, Integer> summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
-        assertTrue(summary.values().contains(Integer.valueOf(1)));
-        assertTrue(summary.values().contains(Integer.valueOf(2)));
+        assertTrue(summary.containsValue(1));
+        assertTrue(summary.containsValue(2));
     }
 
     @Test
@@ -128,21 +128,18 @@ public class ReportTest implements ThreadSafeReportListener {
     }
 
     private static Node getNode(int line, int column) {
-        DummyNode s = new DummyNode(2);
-        DummyNode parent = new DummyNode(1);
-        parent.testingOnlySetBeginLine(line);
-        parent.testingOnlySetBeginColumn(column);
-        s.jjtSetParent(parent);
-        s.testingOnlySetBeginLine(line);
-        s.testingOnlySetBeginColumn(column);
+        DummyNode s = new DummyNode();
+        DummyNode parent = new DummyNode();
+        parent.setCoords(line, column, line, column + 1);
+        parent.addChild(s, 0);
+        s.setCoords(line, column, line, column + 1);
         return s;
     }
 
     private static Node getNode(int line, int column, boolean nextLine) {
         DummyNode s = (DummyNode) getNode(line, column);
         if (nextLine) {
-            s.testingOnlySetBeginLine(line + 1);
-            s.testingOnlySetBeginColumn(column + 4);
+            s.setCoords(line + 1, column + 4, line + 4, 1);
         }
         return s;
     }

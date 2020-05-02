@@ -12,7 +12,7 @@ public class DummyRoot extends DummyNode implements RootNode {
     private final Map<Integer, String> suppressMap;
 
     public DummyRoot(Map<Integer, String> suppressMap) {
-        super(0);
+        super();
         this.suppressMap = suppressMap;
     }
 
@@ -23,11 +23,6 @@ public class DummyRoot extends DummyNode implements RootNode {
     @Override
     public Map<Integer, String> getNoPmdComments() {
         return suppressMap;
-    }
-
-    @Override
-    public String toString() {
-        return "dummyRootNode";
     }
 
     @Override

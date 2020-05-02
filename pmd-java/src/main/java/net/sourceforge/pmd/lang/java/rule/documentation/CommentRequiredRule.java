@@ -217,11 +217,11 @@ public class CommentRequiredRule extends AbstractCommentRule {
     private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
         return false; // FIXME, commented out because of incompatibility, needs typeres
         //        return "serialPersistentFields".equals(field.getVariableName())
-        //            && field.isPrivate()
-        //            && field.isStatic()
-        //            && field.isFinal()
-        //            && field.isArray()
-        //            && "ObjectStreamField".equals(field.jjtGetFirstToken().getImage()); // .getType() returns null
+        //                && field.isPrivate()
+        //                && field.isStatic()
+        //                && field.isFinal()
+        //                && field.isArray()
+        //                && "ObjectStreamField".equals(field.getFirstToken().getImage()); // .getType() returns null
     }
 
     @Override

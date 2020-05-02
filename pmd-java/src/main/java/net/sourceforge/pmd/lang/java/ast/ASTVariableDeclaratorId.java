@@ -51,9 +51,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
 
     private VariableNameDeclaration nameDeclaration;
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclaratorId(int id) {
+    ASTVariableDeclaratorId(int id) {
         super(id);
     }
 

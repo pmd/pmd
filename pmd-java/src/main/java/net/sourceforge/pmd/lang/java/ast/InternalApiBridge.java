@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -17,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -33,8 +38,51 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 @InternalApi
 public final class InternalApiBridge {
 
+
     private InternalApiBridge() {
 
+    }
+
+    /**
+     * Creates a fake method name declaration for built-in methods from Java
+     * like the Enum Method "valueOf".
+     *
+     * @param methodName     the method name
+     * @param parameterTypes the reference types of each parameter of the method
+     *
+     * @return a method name declaration
+     */
+    public static ASTMethodDeclaration createBuiltInMethodDeclaration(final String methodName, final String... parameterTypes) {
+        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(0);
+        // InternalApiBridge.setModifier(methodDeclaration, JModifier.PUBLIC);
+
+        methodDeclaration.setImage(methodName);
+
+        ASTFormalParameters formalParameters = new ASTFormalParameters(0);
+        methodDeclaration.addChild(formalParameters, 0);
+
+        /*
+         * jjtAddChild resizes it's child node list according to known indexes.
+         * Going backwards makes sure the first time it gets the right size avoiding copies.
+         */
+        for (int i = parameterTypes.length - 1; i >= 0; i--) {
+            ASTFormalParameter formalParameter = new ASTFormalParameter(0);
+            formalParameters.addChild(formalParameter, i);
+
+            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(0);
+            variableDeclaratorId.setImage("arg" + i);
+            formalParameter.addChild(variableDeclaratorId, 1);
+
+            PrimitiveType primitive = PrimitiveType.fromToken(parameterTypes[i]);
+            // TODO : this could actually be a primitive array...
+            ASTType type = primitive != null
+                           ? new ASTPrimitiveType(primitive)
+                           : new ASTClassOrInterfaceType(parameterTypes[i]);
+
+            formalParameter.addChild(type, 0);
+        }
+
+        return methodDeclaration;
     }
 
     public static JavaccTokenDocument javaTokenDoc(String fullText) {

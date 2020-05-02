@@ -36,7 +36,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.jjtAddChild(lhs, 0);
+        this.addChild(lhs, 0);
         this.setImage(image);
     }
 
@@ -57,10 +57,10 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(image);
         if (lhs != null) {
-            this.jjtAddChild(lhs, 0);
+            this.addChild(lhs, 0);
         }
-        this.jjtSetFirstToken(firstToken);
-        this.jjtSetLastToken(identifier);
+        this.setFirstToken(firstToken);
+        this.setLastToken(identifier);
     }
 
 

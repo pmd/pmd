@@ -18,5 +18,4 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public interface ASTReferenceType extends ASTType {
-
 }

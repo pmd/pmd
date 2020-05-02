@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass;
 import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;
@@ -63,8 +63,7 @@ public class ClassScopeTest extends BaseNonParserTest {
     public void testContains() {
         ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
-        node.setImage("bar");
+        ASTVariableDeclaratorId node = InternalApiBridge.newVarId("bar");
         s.addDeclaration(new VariableNameDeclaration(node));
         assertTrue(s.getDeclarations().keySet().iterator().hasNext());
     }
@@ -73,7 +72,7 @@ public class ClassScopeTest extends BaseNonParserTest {
     public void testCantContainsSuperToString() {
         ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        JavaNode node = new DummyJavaNode(1);
+        DummyJavaNode node = new DummyJavaNode(1);
         node.setImage("super.toString");
         assertFalse(s.contains(new JavaNameOccurrence(node, node.getImage())));
     }
@@ -82,11 +81,11 @@ public class ClassScopeTest extends BaseNonParserTest {
     public void testContainsStaticVariablePrefixedWithClassName() {
         ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
         ClassScope s = new ClassScope("Foo", classDeclaration);
-        ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
-        node.setImage("X");
+        ASTVariableDeclaratorId node = InternalApiBridge.newVarId("X");
+
         s.addDeclaration(new VariableNameDeclaration(node));
 
-        JavaNode node2 = new DummyJavaNode(2);
+        DummyJavaNode node2 = new DummyJavaNode(2);
         node2.setImage("Foo.X");
         assertTrue(s.contains(new JavaNameOccurrence(node2, node2.getImage())));
     }

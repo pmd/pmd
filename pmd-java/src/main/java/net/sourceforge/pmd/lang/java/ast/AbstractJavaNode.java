@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
+abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
     private Scope scope;
     protected JSymbolTable symbolTable;
@@ -33,22 +33,9 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
         }
     }
 
-    @Override
-    public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children()) {
-            ((JavaNode) child).jjtAccept(visitor, data);
-        }
-
-        return data;
-    }
-
-
-    @Override
-    public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children()) {
-            ((JavaNode) child).jjtAccept(visitor, data);
-        }
-
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
+    protected void addChild(AbstractJavaNode child, int index) {
+        super.addChild(child, index);
     }
 
     void setSymbolTable(JSymbolTable table) {
@@ -70,6 +57,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
             return getParent().getScope();
         }
         return scope;
+    }
+
+    @Override // override to make it accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
     }
 
     void setScope(Scope scope) {
@@ -97,16 +89,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
         return root;
     }
 
-    @Override
-    public JavaccToken jjtGetFirstToken() {
-        return (JavaccToken) firstToken;
-    }
-
-    @Override
-    public JavaccToken jjtGetLastToken() {
-        return (JavaccToken) lastToken;
-    }
-
     /**
      * Replaces the child at index idx with its own children.
      */
@@ -114,8 +96,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
 
         AbstractJavaNode child = (AbstractJavaNode) getChild(idx);
         children = ArrayUtils.remove(children, idx);
-        child.jjtSetParent(null);
-        child.jjtSetChildIndex(-1);
+        child.setParent(null);
+        child.setChildIndex(-1);
 
         if (child.getNumChildren() > 0) {
             children = ArrayUtils.insert(idx, children, child.children);
@@ -147,8 +129,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
                 children = ArrayUtils.insert(index, children, child);
             }
         }
-        child.jjtSetChildIndex(index);
-        child.jjtSetParent(this);
+        child.setChildIndex(index);
+        child.setParent(this);
 
         updateChildrenIndices(index);
 
@@ -173,20 +155,20 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
     }
 
     private void enlargeLeft(AbstractJavaNode child) {
-        JavaccToken thisFst = this.jjtGetFirstToken();
-        JavaccToken childFst = child.jjtGetFirstToken();
+        JavaccToken thisFst = this.getFirstToken();
+        JavaccToken childFst = child.getFirstToken();
 
         if (TokenUtils.isBefore(childFst, thisFst)) {
-            this.jjtSetFirstToken(childFst);
+            this.setFirstToken(childFst);
         }
     }
 
     private void enlargeRight(AbstractJavaNode child) {
-        JavaccToken thisLast = this.jjtGetLastToken();
-        JavaccToken childLast = child.jjtGetLastToken();
+        JavaccToken thisLast = this.getLastToken();
+        JavaccToken childLast = child.getLastToken();
 
         if (TokenUtils.isAfter(childLast, thisLast)) {
-            this.jjtSetLastToken(childLast);
+            this.setLastToken(childLast);
         }
     }
 
@@ -199,8 +181,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
             startIndex = 0;
         }
         for (int j = startIndex; j < getNumChildren(); j++) {
-            children[j].jjtSetChildIndex(j); // shift the children to the right
-            children[j].jjtSetParent(this);
+            children[j].setChildIndex(j); // shift the children to the right
+            children[j].setParent(this);
         }
     }
 
@@ -212,10 +194,10 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
-            jjtSetFirstToken(findTokenSiblingInThisNode(jjtGetFirstToken(), leftShift));
+            setFirstToken(findTokenSiblingInThisNode(getFirstToken(), leftShift));
         }
         if (rightShift != 0) {
-            jjtSetLastToken(findTokenSiblingInThisNode(jjtGetLastToken(), rightShift));
+            setLastToken(findTokenSiblingInThisNode(getLastToken(), rightShift));
         }
     }
 
@@ -224,7 +206,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
             return token;
         } else if (shift < 0) {
             // expects a positive shift
-            return TokenUtils.nthPrevious(jjtGetFirstToken(), token, -shift);
+            return TokenUtils.nthPrevious(getFirstToken(), token, -shift);
         } else {
             return TokenUtils.nthFollower(token, shift);
         }
@@ -232,22 +214,22 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements 
 
 
     void copyTextCoordinates(AbstractJavaNode copy) {
-        jjtSetFirstToken(copy.jjtGetFirstToken());
-        jjtSetLastToken(copy.jjtGetLastToken());
+        setFirstToken(copy.getFirstToken());
+        setLastToken(copy.getLastToken());
     }
 
 
     // assumes that the child has the same text bounds
     // as the old one. Used to replace an ambiguous name
     // with an unambiguous representation
-    void replaceChildAt(int idx, JavaNode newChild) {
+    void replaceChildAt(int idx, AbstractJavaNode newChild) {
 
         // parent of the old child must not be reset to null
         // as chances are we're reusing it as a child of the
         // new child
 
-        newChild.jjtSetParent(this);
-        newChild.jjtSetChildIndex(idx);
+        newChild.setParent(this);
+        newChild.setChildIndex(idx);
 
         children[idx] = newChild;
     }

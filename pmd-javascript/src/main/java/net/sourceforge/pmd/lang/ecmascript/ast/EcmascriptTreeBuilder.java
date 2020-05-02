@@ -66,7 +66,6 @@ import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
 import org.mozilla.javascript.ast.XmlString;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 final class EcmascriptTreeBuilder implements NodeVisitor {
@@ -130,7 +129,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     private final Map<ParseProblem, AbstractEcmascriptNode<?>> parseProblemToNode = new HashMap<>();
 
     // The nodes having children built.
-    private final Stack<Node> nodes = new Stack<>();
+    private final Stack<AbstractEcmascriptNode<?>> nodes = new Stack<>();
 
     // The Rhino nodes with children to build.
     private final Stack<AstNode> parents = new Stack<>();
@@ -187,10 +186,9 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
         AbstractEcmascriptNode<T> node = createNodeAdapter(astNode);
 
         // Append to parent
-        Node parent = nodes.isEmpty() ? null : nodes.peek();
+        AbstractEcmascriptNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
-            parent.jjtAddChild(node, parent.getNumChildren());
-            node.jjtSetParent(parent);
+            parent.addChild(node, parent.getNumChildren());
         }
 
         handleParseProblems(node);

@@ -30,9 +30,7 @@ public final class ASTFormalParameter extends AbstractJavaNode
                Annotatable,
                VariableIdOwner {
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameter(int id) {
+    ASTFormalParameter(int id) {
         super(id);
     }
 

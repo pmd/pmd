@@ -13,17 +13,18 @@ import org.jaxen.Context;
 import org.jaxen.FunctionCallException;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xpath.MatchesFunction;
 
 public class MatchesFunctionTest {
 
-    public static class MyNode extends AbstractNode {
+    public static class MyNode extends AbstractNodeWithTextCoordinates<MyNode, MyNode> {
+
         private String className;
 
         public MyNode() {
-            super(1);
+            super();
         }
 
         @Override

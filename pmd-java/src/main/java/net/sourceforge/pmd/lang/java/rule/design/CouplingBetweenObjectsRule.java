@@ -54,14 +54,16 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
-        Object returnObj = cu.childrenAccept(this, data);
+        for (JavaNode child : cu.children()) {
+            child.jjtAccept(this, data);
+        }
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,
                     "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
-        return returnObj;
+        return data;
     }
 
     @Override

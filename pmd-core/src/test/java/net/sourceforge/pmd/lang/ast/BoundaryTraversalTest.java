@@ -14,29 +14,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for {@link AbstractNode} tree traversal methods
+ * Unit test for {@link Node} tree traversal methods
  */
 public class BoundaryTraversalTest {
-    private int id;
-    private Node rootNode;
 
-    private int nextId() {
-        return id++;
+    private DummyNode rootNode;
+
+    private DummyNode newDummyNode(boolean boundary) {
+        return new DummyNode(boundary);
     }
 
-    private Node newDummyNode(boolean boundary) {
-        return new DummyNode(nextId(), boundary);
-    }
-
-    private Node addChild(final Node parent, final Node child) {
-        parent.jjtAddChild(child, parent.getNumChildren()); // Append child at the end
-        child.jjtSetParent(parent);
+    private DummyNode addChild(final DummyNode parent, final DummyNode child) {
+        parent.addChild(child, parent.getNumChildren()); // Append child at the end
         return parent;
     }
 
     @Before
     public void setUpSampleNodeTree() {
-        id = 0;
         rootNode = newDummyNode(false);
     }
 

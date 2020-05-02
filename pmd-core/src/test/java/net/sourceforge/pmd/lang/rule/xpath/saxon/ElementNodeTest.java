@@ -15,13 +15,13 @@ public class ElementNodeTest {
 
     @Test
     public void testCompareOrder() {
-        DummyNode node = new DummyNode(1, false, "dummy");
-        DummyNode foo1 = new DummyNode(2, false, "foo");
-        foo1.testingOnlySetBeginLine(1);
-        DummyNode foo2 = new DummyNode(2, false, "foo");
-        foo2.testingOnlySetBeginLine(2);
-        node.jjtAddChild(foo1, 0);
-        node.jjtAddChild(foo2, 1);
+        DummyNode node = new DummyNode(false, "dummy");
+        DummyNode foo1 = new DummyNode(false, "foo");
+        foo1.setCoords(1, 1, 2, 2);
+        DummyNode foo2 = new DummyNode(false, "foo");
+        foo2.setCoords(2, 1, 2, 2);
+        node.addChild(foo1, 0);
+        node.addChild(foo2, 1);
 
         DocumentNode document = new DocumentNode(node);
         ElementNode elementFoo1 = document.nodeToElementNode.get(foo1);
@@ -37,15 +37,13 @@ public class ElementNodeTest {
 
     @Test
     public void testCompareOrderSamePosition() {
-        DummyNode node = new DummyNode(1, false, "dummy");
-        DummyNode foo1 = new DummyNode(2, false, "foo");
-        foo1.testingOnlySetBeginLine(1);
-        foo1.testingOnlySetBeginColumn(1);
-        DummyNode foo2 = new DummyNode(2, false, "foo");
-        foo2.testingOnlySetBeginLine(1);
-        foo2.testingOnlySetBeginColumn(1);
-        node.jjtAddChild(foo1, 0);
-        node.jjtAddChild(foo2, 1);
+        DummyNode node = new DummyNode(false, "dummy");
+        DummyNode foo1 = new DummyNode(false, "foo");
+        foo1.setCoords(1, 1, 5, 5);
+        DummyNode foo2 = new DummyNode(false, "foo");
+        foo2.setCoords(1, 1, 5, 5);
+        node.addChild(foo1, 0);
+        node.addChild(foo2, 1);
 
         DocumentNode document = new DocumentNode(node);
         ElementNode elementFoo1 = document.nodeToElementNode.get(foo1);

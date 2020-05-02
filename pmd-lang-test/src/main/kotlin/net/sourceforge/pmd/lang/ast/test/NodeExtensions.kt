@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import io.kotlintest.matchers.string.shouldContain
-import net.sourceforge.pmd.lang.ast.AbstractNode
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
@@ -18,13 +18,6 @@ import java.util.*
 
 // kotlin converts getters of java types into property accessors
 // but it doesn't recognise jjtGet* methods as getters
-
-
-val AbstractJjtreeNode<*>.firstToken: JavaccToken
-    get() = jjtGetFirstToken()
-
-val AbstractJjtreeNode<*>.lastToken: JavaccToken
-    get() = jjtGetLastToken()
 
 fun Node.safeGetChild(i: Int): Node? = when {
     i < numChildren -> getChild(i)

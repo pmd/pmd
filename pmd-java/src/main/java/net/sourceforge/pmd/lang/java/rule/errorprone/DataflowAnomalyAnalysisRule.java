@@ -85,7 +85,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
         rc = (RuleContext) data;
         daaRuleViolations = new ArrayList<>();
 
-        final DataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
+        final DataFlowNode node = DataFlowNode.get(methodDeclaration).getFlow().get(0);
 
         final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getProperty(MAX_PATH_DESCRIPTOR));
         pathFinder.run();

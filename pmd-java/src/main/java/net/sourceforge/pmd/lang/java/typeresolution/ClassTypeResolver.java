@@ -776,7 +776,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
     @SuppressWarnings("checkstyle")
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
         return data;
-        // visit method arguments in reverse
+        //        // visit method arguments in reverse
         //        for (int i = primaryNode.getNumChildren() - 1; i >= 0; --i) {
         //            ((JavaNode) primaryNode.getChild(i)).jjtAccept(this, data);
         //        }
@@ -794,7 +794,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         //            // skip children which already have their type assigned
         //            if (currentChild.getType() == null) {
         //                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
-        //                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+        //                if (currentChild.getLastToken().kind == JavaTokenKinds.THIS) {
         //
         //                    if (previousChild != null) { // Qualified 'this' expression
         //                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
@@ -808,7 +808,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         //                    }
         //
         //                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
-        //                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+        //                } else if (currentChild.getLastToken().kind == JavaTokenKinds.SUPER) {
         //
         //                    if (previousChild != null) { // Qualified 'super' expression
         //                        // anonymous classes can't have qualified super expression, thus
@@ -826,7 +826,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         //                    String currentChildImage = currentChild.getImage();
         //                    if (currentChildImage == null) {
         //                        // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
-        //                        currentChildImage = currentChild.jjtGetLastToken().toString();
+        //                        currentChildImage = currentChild.getLastToken().getImage();
         //                    }
         //
         //                    ASTArguments astArguments = nextChild != null
@@ -889,7 +889,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         //        }
         //
         //        primaryNode.setTypeDefinition(primaryNodeType);
-        //
         //        return data;
     }
 
@@ -1183,7 +1182,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
         // FIXME this is a hack because visit(ASTName) is too powerful,
         // Annotations don't have a Name node anymore so we imitate this
         ASTName name = new ASTName(node.getImage());
-        name.jjtSetParent(node);
+        name.setParent(node);
         visit(name, data);
         if (name.getTypeDefinition() != null) {
             setTypeDefinition(node, name.getTypeDefinition());
