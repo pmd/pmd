@@ -8,9 +8,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-
-public abstract class BaseAntlrErrorNode<N extends GenericNode<N>> extends BaseAntlrTerminalNode<N> {
+public abstract class BaseAntlrErrorNode<N extends AntlrNode<N>> extends BaseAntlrTerminalNode<N> {
 
     protected BaseAntlrErrorNode(Token symbol) {
         super(symbol, true);

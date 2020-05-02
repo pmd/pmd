@@ -13,13 +13,13 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNameDictionary;
 
 final class SwiftNameDictionary extends AntlrNameDictionary {
 
-    public SwiftNameDictionary(Vocabulary vocab, String[] ruleNames) {
+    SwiftNameDictionary(Vocabulary vocab, String[] ruleNames) {
         super(vocab, ruleNames);
     }
 
     @Override
     protected @Nullable String nonAlphaNumName(String name) {
-        {
+        { // limit scope of 'sup', which would be null outside of here anyway
             String sup = super.nonAlphaNumName(name);
             if (sup != null) {
                 return sup;

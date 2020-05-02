@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNode;
 
 
 /**
  * Supertype of all swift nodes.
  */
-public interface SwiftNode extends GenericNode<SwiftNode> {
+public interface SwiftNode extends AntlrNode<SwiftNode> {
 
-    <T> T accept(ParseTreeVisitor<? extends T> visitor);
 
 }

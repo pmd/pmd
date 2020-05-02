@@ -16,7 +16,6 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode.PmdAsAntlrInnerNode;
 
 /**
@@ -24,7 +23,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode.PmdAsAntlrInn
  * Use the {@code contextSuperClass} option to set this in the antlr g4 file,
  * eg {@code options { contextSuperClass = SwiftInnerNode; }}.
  */
-public abstract class BaseAntlrInnerNode<N extends GenericNode<N>> extends BaseAntlrNode<PmdAsAntlrInnerNode<N>, N> {
+public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAntlrNode<PmdAsAntlrInnerNode<N>, N> {
 
     public RecognitionException exception;
 
@@ -109,7 +108,7 @@ public abstract class BaseAntlrInnerNode<N extends GenericNode<N>> extends BaseA
         return visitor.visitChildren(asAntlrNode());
     }
 
-    protected static class PmdAsAntlrInnerNode<N extends GenericNode<N>> extends ParserRuleContext implements RuleNode, AntlrToPmdParseTreeAdapter<N> {
+    protected static class PmdAsAntlrInnerNode<N extends AntlrNode<N>> extends ParserRuleContext implements RuleNode, AntlrToPmdParseTreeAdapter<N> {
 
         private final BaseAntlrInnerNode<N> pmdNode;
 

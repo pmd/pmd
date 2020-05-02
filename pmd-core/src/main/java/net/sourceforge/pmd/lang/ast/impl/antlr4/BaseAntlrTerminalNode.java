@@ -12,13 +12,12 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode.AntlrTerminalPmdAdapter;
 
 /**
  * Base class for terminal nodes (they wrap a {@link TerminalNode}).
  */
-public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
+public abstract class BaseAntlrTerminalNode<N extends AntlrNode<N>>
     extends BaseAntlrNode<AntlrTerminalPmdAdapter<N>, N> {
 
     private final AntlrTerminalPmdAdapter<N> antlrNode;
@@ -77,7 +76,7 @@ public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
         throw new IndexOutOfBoundsException("Index " + index + " for terminal node");
     }
 
-    protected static class AntlrTerminalPmdAdapter<N extends GenericNode<N>> extends TerminalNodeImpl implements AntlrToPmdParseTreeAdapter<N> {
+    protected static class AntlrTerminalPmdAdapter<N extends AntlrNode<N>> extends TerminalNodeImpl implements AntlrToPmdParseTreeAdapter<N> {
 
         private final BaseAntlrTerminalNode<N> pmdNode;
 
@@ -103,7 +102,7 @@ public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
         }
     }
 
-    protected static class AntlrErrorPmdAdapter<N extends GenericNode<N>> extends AntlrTerminalPmdAdapter<N> implements ErrorNode {
+    protected static class AntlrErrorPmdAdapter<N extends AntlrNode<N>> extends AntlrTerminalPmdAdapter<N> implements ErrorNode {
 
         public AntlrErrorPmdAdapter(BaseAntlrTerminalNode<N> pmdNode, Token symbol) {
             super(pmdNode, symbol);

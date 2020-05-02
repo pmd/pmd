@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -34,7 +33,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * @param <A> Type of the underlying antlr node
  * @param <N> Public interface (eg SwiftNode)
  */
-public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends GenericNode<N>> implements GenericNode<N> {
+public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends AntlrNode<N>> implements AntlrNode<N> {
 
     private DataMap<DataKey<?, ?>> userMap;
     private int indexInParent = -1;
@@ -110,13 +109,10 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
         return userMap;
     }
 
-    public abstract <T> T accept(ParseTreeVisitor<? extends T> visitor);
-
-
     protected abstract A asAntlrNode();
 
 
-    protected interface AntlrToPmdParseTreeAdapter<N extends GenericNode<N>> extends ParseTree {
+    protected interface AntlrToPmdParseTreeAdapter<N extends AntlrNode<N>> extends ParseTree {
 
         BaseAntlrNode<?, N> getPmdNode();
 

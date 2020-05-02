@@ -86,12 +86,15 @@ public class AntlrNameDictionary {
         return vocabulary;
     }
 
-    protected @Nullable String nonAlphaNumName(String s) {
-        // these are hardcoded, but it's overridable
-        // here we try to avoid semantic overtones, because
-        // a-priori the same terminal may mean several things
-        // in different contexts.
-        switch (s) {
+    /**
+     * Override this to customize the XPath name of tokes with no symbolic
+     * name and with an image that is non-alphanumeric. Return null to give
+     * up. The default just gives some name to common punctuation. Remember
+     * that the same token may mean several things in different contexts, so
+     * eg using {@code "not"} as the name of {@code "!"} is too specific.
+     */
+    protected @Nullable String nonAlphaNumName(String name) {
+        switch (name) {
         case "!": return "bang";
         case "!!": return "double-bang";
 

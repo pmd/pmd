@@ -16,5 +16,5 @@ public abstract class AbstractSwiftRule extends AntlrBaseRule {
     }
 
     @Override
-    public abstract ParseTreeVisitor<Void> buildVisitor(RuleContext ctx);
+    public abstract ParseTreeVisitor<Void> buildVisitor(RuleContext ruleCtx);
 }

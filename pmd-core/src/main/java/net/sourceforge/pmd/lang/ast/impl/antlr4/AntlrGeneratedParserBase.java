@@ -13,7 +13,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
  * This is the base class for antlr generated parsers. The implementation
@@ -34,7 +33,7 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
  * <p>Additional members can be added to a parser with {@code @parser::members { ... }}
  * in the g4 file.
  */
-public abstract class AntlrGeneratedParserBase<N extends GenericNode<N>> extends Parser {
+public abstract class AntlrGeneratedParserBase<N extends AntlrNode<N>> extends Parser {
 
     public AntlrGeneratedParserBase(TokenStream input) {
         super(input);
