@@ -19,8 +19,9 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode.PmdAsAntlrInnerNode;
 
 /**
- * Base class for the parser rule contexts, use {@code contextSuperClass} option
- * in the antlr grammar.
+ * Base class for the inner nodes (corresponds to {@link ParserRuleContext}).
+ * Use the {@code contextSuperClass} option to set this in the antlr g4 file,
+ * eg {@code options { contextSuperClass = SwiftInnerNode; }}.
  */
 public abstract class BaseAntlrInnerNode<N extends GenericNode<N>> extends BaseAntlrNode<PmdAsAntlrInnerNode<N>, N> {
 

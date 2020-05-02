@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
@@ -14,8 +17,22 @@ import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
- * Base class for the parser rule contexts, use {@code contextSuperClass} option
- * in the antlr grammar.
+ * Base class for an antlr node. This implements the PMD interfaces only,
+ * not the antlr ones. It wraps an antlr node (they are linked both ways).
+ * Antlr primarily distinguishes {@link ParserRuleContext} for inner nodes,
+ * {@link TerminalNode} for nodes that wrap tokens (and can have no children),
+ * and {@link ErrorNode}, a subtype of {@link TerminalNode}. These each have
+ * a base class here, which refines the type of the underlying antlr node:
+ * {@link BaseAntlrInnerNode}, {@link BaseAntlrTerminalNode} and {@link BaseAntlrErrorNode}.
+ * These must be implemented in each language module with a class that also
+ * implements {@code <N>}.
+ *
+ * <p>During tree construction, the antlr runtime does its thing with the
+ * underlying antlr nodes. The PMD nodes are just wrappers around those,
+ * that respect the contract of {@link GenericNode}.
+ *
+ * @param <A> Type of the underlying antlr node
+ * @param <N> Public interface (eg SwiftNode)
  */
 public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends GenericNode<N>> implements GenericNode<N> {
 

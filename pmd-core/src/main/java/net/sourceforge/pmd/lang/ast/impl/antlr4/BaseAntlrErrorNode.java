@@ -27,7 +27,7 @@ public abstract class BaseAntlrErrorNode<N extends GenericNode<N>> extends BaseA
     }
 
     @Override
-    public String getXPathNodeName() {
+    public final String getXPathNodeName() {
         return "Error";
     }
 }

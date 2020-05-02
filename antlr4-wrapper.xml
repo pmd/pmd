@@ -4,13 +4,22 @@
 
 <project name="pmd" default="adapt-antlr-sources" basedir="../../../../">
 
+<!--    Input properties:
+        - lang-name: matches the grammar name (eg "Swift")
+        - lang-terse-name: uncapitalized package name (eg "swift")
+        - root-node-name: name of the root node (eg "TopLevel"), will be made to implement RootNode
+
+        See AntlrGeneratedParserBase
+
+-->
+
     <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast"/>
 
     <target name="adapt-antlr-sources" description="Adapt antlr sources to the PMD codebase">
 
         <replace file="${target-package-dir}/${lang-name}Parser.java"
-                 token="TopLevelContext extends ${lang-name}InnerNode"
-                 value="TopLevelContext extends ${lang-name}InnerNode implements net.sourceforge.pmd.lang.ast.RootNode"/>
+                 token="${root-node-name}Context extends ${lang-name}InnerNode"
+                 value="${root-node-name}Context extends ${lang-name}InnerNode implements net.sourceforge.pmd.lang.ast.RootNode"/>
 
         <replace file="${target-package-dir}/${lang-name}Parser.java"
                  token="_ctx = _localctx;"

@@ -8,13 +8,14 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode.AntlrTerminalPmdAdapter;
 
 /**
- *
+ * Base class for terminal nodes (they wrap a {@link TerminalNode}).
  */
 public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
     extends BaseAntlrNode<AntlrTerminalPmdAdapter<N>, N> {

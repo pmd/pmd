@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.Vocabulary;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public class AntlrNameDictionary {
 
-    private final String[] terminalXpathNames;
+    private final String[] terminalXPathNames;
     private final String[] nonTermXpathNames;
     private final Vocabulary vocabulary;
 
@@ -35,8 +36,9 @@ public class AntlrNameDictionary {
             nonTermXpathNames[i] = StringUtils.capitalize(ruleNames[i]);
         }
 
-        String[] xpathNames = new String[vocab.getMaxTokenType()];
-        for (int i = 0; i < xpathNames.length; i++) {
+        // terminal names
+        terminalXPathNames = new String[vocab.getMaxTokenType()];
+        for (int i = 0; i < terminalXPathNames.length; i++) {
             String name = vocab.getSymbolicName(i);
 
 
@@ -44,27 +46,28 @@ public class AntlrNameDictionary {
                 name = vocab.getLiteralName(i);
 
                 if (name != null) {
-                    // cleanup literal name
+                    // cleanup literal name, Antlr surrounds the image with single quotes
                     name = name.substring(1, name.length() - 1);
+
                     if (!StringUtils.isAlphanumeric(name)) {
                         name = maybePunctName(name);
-                    }
+                    } // otherwise something like "final"
                 }
-            } else {
-                assert name.matches("[a-zA-Z][\\w_-]+"); // must be a valid xpath name
-            }
-            if (name == null) {
-                name = String.valueOf(i);
             }
 
-            xpathNames[i] = "T-" + name;
+
+            assert name != null : "Token of kind " + i + " has no XPath name (literal " + vocab.getLiteralName(i) + ")";
+
+            String finalName = "T-" + name;
+
+            assert finalName.matches("[a-zA-Z][\\w_-]+"); // must be a valid xpath name
+
+            terminalXPathNames[i] = finalName;
         }
 
-        this.terminalXpathNames = xpathNames;
 
-
-        assert Stream.of(xpathNames).distinct().count() == xpathNames.length
-            : "Duplicate names in " + Arrays.toString(xpathNames);
+        assert Stream.of(terminalXPathNames).distinct().count() == terminalXPathNames.length
+            : "Duplicate names in " + Arrays.toString(terminalXPathNames);
     }
 
     public Vocabulary getVocabulary() {
@@ -132,7 +135,9 @@ public class AntlrNameDictionary {
         case "**": return "double-star";
 
         case "+": return "plus";
+        case "++": return "double-plus";
         case "-": return "minus";
+        case "--": return "double-minus";
 
         case "->": return "rarrow";
         case "<-": return "larrow";
@@ -142,9 +147,14 @@ public class AntlrNameDictionary {
         }
     }
 
+    /**
+     * Gets the xpath name of a terminal node with a given {@link Token#getType()}.
+     *
+     * @throws IllegalArgumentException If the index is invalid
+     */
     public @NonNull String getXPathNameOfToken(int tokenType) {
-        if (tokenType >= 0 && tokenType < terminalXpathNames.length) {
-            return terminalXpathNames[tokenType];
+        if (tokenType >= 0 && tokenType < terminalXPathNames.length) {
+            return terminalXPathNames[tokenType];
         }
 
         if (tokenType == Token.EOF) {
@@ -154,6 +164,11 @@ public class AntlrNameDictionary {
         throw new IllegalArgumentException("I don't know token type " + tokenType);
     }
 
+    /**
+     * Gets the xpath name of an inner node with a given {@link ParserRuleContext#getRuleIndex()}.
+     *
+     * @throws IndexOutOfBoundsException If the index is invalid
+     */
     public @NonNull String getXPathNameOfRule(int idx) {
         return nonTermXpathNames[idx];
     }
