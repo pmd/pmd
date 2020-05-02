@@ -41,7 +41,9 @@ public abstract class BaseAntlrInnerNode<N extends GenericNode<N>> extends BaseA
     @SuppressWarnings("unchecked")
     public N getChild(int index) {
         if (0 <= index && index < getNumChildren()) {
-            return (N) antlrNode.getChild(index).getPmdNode();
+            N pmdNode = (N) antlrNode.getChild(index).getPmdNode();
+            assert pmdNode.getIndexInParent() == index;
+            return pmdNode;
         }
         throw new IndexOutOfBoundsException("Index " + index + ", numChildren " + getNumChildren());
     }

@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -35,10 +38,13 @@ public class AntlrNameDictionary {
         for (int i = 0; i < nonTermXpathNames.length; i++) {
             nonTermXpathNames[i] = StringUtils.capitalize(ruleNames[i]);
         }
+        Set<String> seen = new HashSet<>();
+        Collections.addAll(seen, ruleNames);
 
         // terminal names
         terminalXPathNames = new String[vocab.getMaxTokenType()];
-        for (int i = 0; i < terminalXPathNames.length; i++) {
+        terminalXPathNames[0] = "Invalid"; // See Token.INVALID_TYPE
+        for (int i = Token.MIN_USER_TOKEN_TYPE; i < terminalXPathNames.length; i++) {
             String name = vocab.getSymbolicName(i);
 
 
@@ -49,8 +55,8 @@ public class AntlrNameDictionary {
                     // cleanup literal name, Antlr surrounds the image with single quotes
                     name = name.substring(1, name.length() - 1);
 
-                    if (!StringUtils.isAlphanumeric(name)) {
-                        name = maybePunctName(name);
+                    if (!name.matches("[a-zA-Z][\\w_-]+")) { // not alphanum
+                        name = nonAlphaNumName(name);
                     } // otherwise something like "final"
                 }
             }
@@ -60,7 +66,8 @@ public class AntlrNameDictionary {
 
             String finalName = "T-" + name;
 
-            assert finalName.matches("[a-zA-Z][\\w_-]+"); // must be a valid xpath name
+            assert finalName.matches("[a-zA-Z][\\w_-]+") : "Not a valid XPath name " + finalName;
+            assert seen.add(finalName) : "Duplicate XPath name " + finalName;
 
             terminalXPathNames[i] = finalName;
         }
@@ -74,7 +81,7 @@ public class AntlrNameDictionary {
         return vocabulary;
     }
 
-    protected @Nullable String maybePunctName(String s) {
+    protected @Nullable String nonAlphaNumName(String s) {
         // these are hardcoded, but it's overridable
         // here we try to avoid semantic overtones, because
         // a-priori the same terminal may mean several things
@@ -107,7 +114,6 @@ public class AntlrNameDictionary {
 
         case "@": return "at-symbol";
         case "$": return "dollar";
-        case "&": return "amp";
 
         case "\\": return "backslash";
         case "/": return "slash";
@@ -115,6 +121,7 @@ public class AntlrNameDictionary {
         case "`": return "backtick";
         case "'": return "squote";
         case "\"": return "dquote";
+        case "\"\"\"": return "triple-quote";
 
         case ">": return "gt";
         case ">=": return "ge";
@@ -130,6 +137,11 @@ public class AntlrNameDictionary {
         case "==": return "double-eq";
         case "===": return "triple-eq";
         case "!=": return "not-eq";
+
+        case "&": return "amp";
+        case "&&": return "double-amp";
+        case "|": return "pipe";
+        case "||": return "double-pipe";
 
         case "*": return "star";
         case "**": return "double-star";
