@@ -48,7 +48,7 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
     }
 
     @Override
-    public SwiftTerminalNode createPmdError(ParserRuleContext parent, Token t) {
+    public SwiftErrorNode createPmdError(ParserRuleContext parent, Token t) {
         return new SwiftErrorNode(t);
     }
 }

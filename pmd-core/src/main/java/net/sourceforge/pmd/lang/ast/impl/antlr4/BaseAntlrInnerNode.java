@@ -59,12 +59,12 @@ public abstract class BaseAntlrInnerNode<N extends GenericNode<N>> extends BaseA
 
 
     @Override
-    protected Token getFirstToken() {
+    public Token getFirstAntlrToken() {
         return asAntlrNode().start;
     }
 
     @Override
-    protected Token getLastToken() {
+    public Token getLastAntlrToken() {
         return asAntlrNode().stop;
     }
 

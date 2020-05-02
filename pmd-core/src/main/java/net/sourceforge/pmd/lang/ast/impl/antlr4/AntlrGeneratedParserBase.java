@@ -66,8 +66,8 @@ public abstract class AntlrGeneratedParserBase<N extends GenericNode<N>> extends
 
     }
 
-    protected boolean sempred(BaseAntlrInnerNode<N> _localctx, int ruleIndex, int predIndex) {
-        return sempred(_localctx.asAntlrNode(), ruleIndex, predIndex);
+    protected boolean sempred(BaseAntlrInnerNode<N> localctx, int ruleIndex, int predIndex) {
+        return sempred(localctx.asAntlrNode(), ruleIndex, predIndex);
     }
 
 }

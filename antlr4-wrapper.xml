@@ -17,8 +17,10 @@
                  value="_ctx = _localctx.asAntlrNode();"/>
 
         <replace file="${target-package-dir}/${lang-name}Parser.java"
-                 token="visitor.visitChildren(this)"
-                 value="visitor.visitChildren(asAntlrNode())"/>
+                 token="else return visitor.visitChildren(this);"
+                 value="
+else if (visitor instanceof PmdAntlrVisitor) return ((PmdAntlrVisitor&lt;? extends T>) visitor).visitChildren(this);
+else return visitor.visitChildren(asAntlrNode());"/>
 
         <replaceregexp flags="g" file="${target-package-dir}/${lang-name}Parser.java">
             <regexp pattern="_sempred\(\((\w+)\)_localctx,"/>

@@ -39,7 +39,6 @@ public abstract class AntlrBaseRule extends AbstractRule {
      * violations on the given rule context.
      *
      * @return A visitor bound to the given rule context
-     * @param ctx
      */
     public abstract ParseTreeVisitor<Void> buildVisitor(RuleContext ctx);
 

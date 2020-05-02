@@ -17,7 +17,7 @@ public final class SwiftTerminalNode extends BaseAntlrTerminalNode<SwiftNode> im
 
     @Override
     public String getXPathNodeName() {
-        return SwiftParser.DICO.getXPathNameOfToken(getFirstToken().getType());
+        return SwiftParser.DICO.getXPathNameOfToken(getFirstAntlrToken().getType());
     }
 
     @Override

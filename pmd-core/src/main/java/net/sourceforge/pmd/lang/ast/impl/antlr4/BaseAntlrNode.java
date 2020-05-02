@@ -23,12 +23,29 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
     private int indexInParent = -1;
 
     protected BaseAntlrNode() {
+        // protected
     }
 
-    protected abstract Token getFirstToken();
+    /**
+     * Recurses over the text of all terminal descendants to build the
+     * text of this node (without spaces). This is extremely inefficient
+     * and should not be used to write rules. The antlr impl doesn't even
+     * use a single stringbuilder.
+     *
+     * @deprecated Some rules depend on it and have not been rewritten
+     */
+    @Deprecated
+    public String joinTokenText() {
+        return asAntlrNode().getText();
+    }
 
+    // these are an implementation detail, meant as a crutch while some
+    // rules depend on it
+    // Should be made protected
 
-    protected abstract Token getLastToken();
+    public abstract Token getFirstAntlrToken();
+
+    public abstract Token getLastAntlrToken();
 
     @Override
     public N getParent() {
@@ -37,23 +54,23 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     @Override
     public int getBeginLine() {
-        return getFirstToken().getLine(); // This goes from 1 to n
+        return getFirstAntlrToken().getLine(); // This goes from 1 to n
     }
 
     @Override
     public int getEndLine() {
         // FIXME this is not the end line if the stop token spans several lines
-        return getLastToken().getLine();
+        return getLastAntlrToken().getLine();
     }
 
     @Override
     public int getBeginColumn() {
-        return getFirstToken().getCharPositionInLine() + 1;
+        return getFirstAntlrToken().getCharPositionInLine() + 1;
     }
 
     @Override
     public int getEndColumn() {
-        Token tok = getLastToken();
+        Token tok = getLastAntlrToken();
         return tok.getCharPositionInLine() + tok.getStopIndex() - tok.getStartIndex() + 1;
     }
 

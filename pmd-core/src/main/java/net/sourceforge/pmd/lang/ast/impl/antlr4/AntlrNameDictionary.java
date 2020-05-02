@@ -136,8 +136,10 @@ public class AntlrNameDictionary {
 
         case "->": return "rarrow";
         case "<-": return "larrow";
+
+        default:
+            return null;
         }
-        return null;
     }
 
     public @NonNull String getXPathNameOfToken(int tokenType) {

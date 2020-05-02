@@ -67,13 +67,11 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
 
                 final List<SwiftParser.StatementContext> statements = ctx.statements().statement();
 
-                return false;
-//                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getFirstToken().getText());
+                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getFirstAntlrToken().getText());
             }
 
             private boolean hasUnavailableModifier(final List<SwiftParser.AttributeContext> attributes) {
-                return false;
-//                return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.getText()));
+                return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.joinTokenText()));
             }
         };
     }

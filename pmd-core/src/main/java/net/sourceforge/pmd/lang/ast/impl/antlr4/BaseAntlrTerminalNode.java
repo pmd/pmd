@@ -27,9 +27,9 @@ public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
 
     BaseAntlrTerminalNode(Token symbol, boolean isError) {
         if (isError) {
-            this.antlrNode = new AntlrTerminalPmdAdapter<>(this, symbol);
-        } else {
             this.antlrNode = new AntlrErrorPmdAdapter<>(this, symbol);
+        } else {
+            this.antlrNode = new AntlrTerminalPmdAdapter<>(this, symbol);
         }
     }
 
@@ -39,12 +39,12 @@ public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
     }
 
     @Override
-    protected Token getFirstToken() {
+    public Token getFirstAntlrToken() {
         return antlrNode.symbol;
     }
 
     @Override
-    protected Token getLastToken() {
+    public Token getLastAntlrToken() {
         return antlrNode.symbol;
     }
 
