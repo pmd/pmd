@@ -8,16 +8,10 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
-import net.sourceforge.pmd.lang.swift.ast.SwiftInnerNode;
-import net.sourceforge.pmd.lang.swift.ast.SwiftNode;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.AttributeContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.AttributesContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.CodeBlockContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.FunctionDeclarationContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.InitializerDeclarationContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftTreeParser.StatementContext;
-import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
+import net.sourceforge.pmd.lang.swift.ast.SwiftBaseVisitor;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.InitializerDeclarationContext;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
 
@@ -26,38 +20,22 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
 
     public UnavailableFunctionRule() {
         super();
-        addRuleChainVisit(SwiftTreeParser.RULE_functionDeclaration);
-        addRuleChainVisit(SwiftTreeParser.RULE_initializerDeclaration);
+        addRuleChainVisit(FunctionDeclarationContext.class);
+        addRuleChainVisit(InitializerDeclarationContext.class);
     }
 
     @Override
-    public SwiftVisitor<RuleContext, Void> buildVisitor() {
-        return new SwiftVisitor<RuleContext, Void>() {
+    public SwiftBaseVisitor<Void> buildVisitor(RuleContext ruleCtx) {
+        return new SwiftBaseVisitor<Void>() {
 
             @Override
-            public Void visitAnyNode(SwiftNode<?> swiftNode, RuleContext data) {
-                return null;
-            }
-
-            @Override
-            @SuppressWarnings("unchecked")
-            public Void visitInnerNode(SwiftInnerNode<?> swiftNode, RuleContext data) {
-                switch (swiftNode.getParseTree().getRuleIndex()) {
-                case SwiftTreeParser.RULE_functionDeclaration:
-                    return visitFunctionDeclaration((SwiftNode<FunctionDeclarationContext>) swiftNode, data);
-                case SwiftTreeParser.RULE_initializerDeclaration:
-                    return visitInitializerDeclaration((SwiftNode<InitializerDeclarationContext>) swiftNode, data);
-                }
-                return null;
-            }
-
-            public Void visitFunctionDeclaration(final SwiftNode<FunctionDeclarationContext> ctx, RuleContext ruleCtx) {
+            public Void visitFunctionDeclaration(final FunctionDeclarationContext ctx) {
                 if (ctx == null) {
                     return null;
                 }
 
-                if (shouldIncludeUnavailableModifier(ctx.getParseTree().functionBody().codeBlock())) {
-                    final AttributesContext attributes = ctx.getParseTree().functionHead().attributes();
+                if (shouldIncludeUnavailableModifier(ctx.functionBody().codeBlock())) {
+                    final SwiftParser.AttributesContext attributes = ctx.functionHead().attributes();
                     if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                         addViolation(ruleCtx, ctx);
                     }
@@ -66,13 +44,14 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
                 return null;
             }
 
-            public Void visitInitializerDeclaration(final SwiftNode<InitializerDeclarationContext> ctx, RuleContext ruleCtx) {
+            @Override
+            public Void visitInitializerDeclaration(final InitializerDeclarationContext ctx) {
                 if (ctx == null) {
                     return null;
                 }
 
-                if (shouldIncludeUnavailableModifier(ctx.getParseTree().initializerBody().codeBlock())) {
-                    final AttributesContext attributes = ctx.getParseTree().initializerHead().attributes();
+                if (shouldIncludeUnavailableModifier(ctx.initializerBody().codeBlock())) {
+                    final SwiftParser.AttributesContext attributes = ctx.initializerHead().attributes();
                     if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                         addViolation(ruleCtx, ctx);
                     }
@@ -81,18 +60,20 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
                 return null;
             }
 
-            private boolean shouldIncludeUnavailableModifier(final CodeBlockContext ctx) {
+            private boolean shouldIncludeUnavailableModifier(final SwiftParser.CodeBlockContext ctx) {
                 if (ctx == null || ctx.statements() == null) {
                     return false;
                 }
 
-                final List<StatementContext> statements = ctx.statements().statement();
+                final List<SwiftParser.StatementContext> statements = ctx.statements().statement();
 
-                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getStart().getText());
+                return false;
+//                return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getFirstToken().getText());
             }
 
-            private boolean hasUnavailableModifier(final List<AttributeContext> attributes) {
-                return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.getText()));
+            private boolean hasUnavailableModifier(final List<SwiftParser.AttributeContext> attributes) {
+                return false;
+//                return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.getText()));
             }
         };
     }

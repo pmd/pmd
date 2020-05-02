@@ -4,27 +4,26 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNode;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTreeVisitor;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 
 /**
  * Supertype of all swift nodes.
  */
-public interface SwiftNode<T> extends AntlrNode<SwiftNode<?>> {
+public interface SwiftNode extends GenericNode<SwiftNode> {
 
-    T getParseTree();
+    <T> T accept(ParseTreeVisitor<? extends T> visitor);
 
-
-    <P, R> R acceptVisitor(SwiftVisitor<P, R> visitor, P data);
-
-
-    @Override
-    default <P, R> R acceptVisitor(AntlrTreeVisitor<P, R, ?> visitor, P data) {
-        if (visitor instanceof SwiftVisitor) {
-            return acceptVisitor((SwiftVisitor<P, R>) visitor, data);
-        }
-        throw new IllegalArgumentException("Cannot accept visitor " + visitor);
-    }
+//
+//
+//    @Override
+//    default <P, R> R acceptVisitor(AntlrTreeVisitor<P, R, ?> visitor, P data) {
+//        if (visitor instanceof SwiftVisitor) {
+//            return acceptVisitor((SwiftVisitor<P, R>) visitor, data);
+//        }
+//        throw new IllegalArgumentException("Cannot accept visitor " + visitor);
+//    }
 
 }

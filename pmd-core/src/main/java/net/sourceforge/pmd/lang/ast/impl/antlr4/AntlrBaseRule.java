@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.util.List;
 
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -21,13 +23,13 @@ public abstract class AntlrBaseRule extends AbstractRule {
 
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        AntlrTreeVisitor<RuleContext, Void, ?> visitor = buildVisitor();
+        ParseTreeVisitor<Void> visitor = buildVisitor(ctx);
         assert visitor != null : "Rule should provide a non-null visitor";
 
         for (Node node : nodes) {
-            assert node instanceof AbstractAntlrNode : "Incorrect node type " + node + " passed to " + this;
+            assert node instanceof BaseAntlrNode : "Incorrect node type " + node + " passed to " + this;
 
-            ((AbstractAntlrNode<?, ?>) node).acceptVisitor(visitor, ctx);
+            ((BaseAntlrNode<?, ?>) node).accept(visitor);
         }
     }
 
@@ -37,7 +39,8 @@ public abstract class AntlrBaseRule extends AbstractRule {
      * violations on the given rule context.
      *
      * @return A visitor bound to the given rule context
+     * @param ctx
      */
-    public abstract AntlrTreeVisitor<RuleContext, Void, ?> buildVisitor();
+    public abstract ParseTreeVisitor<Void> buildVisitor(RuleContext ctx);
 
 }

@@ -12,12 +12,4 @@ final class AntlrUtils {
         // utility class
     }
 
-    static int getEndColumn(Token tok) {
-        return tok.getCharPositionInLine() + tok.getStopIndex() - tok.getStartIndex() + 1;
-    }
-
-    static int getBeginColumn(Token tok) {
-        return tok.getCharPositionInLine() + 1;
-    }
-
 }

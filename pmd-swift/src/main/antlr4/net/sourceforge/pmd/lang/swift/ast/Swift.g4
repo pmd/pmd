@@ -1,4 +1,4 @@
-// Downloaded on 2016/03/02 from https://github.com/sleekbyte/tailor/blob/master/src/main/antlr/com/sleekbyte/tailor/antlr/SwiftTree.g4
+// Downloaded on 2016/03/02 from https://github.com/sleekbyte/tailor/blob/master/src/main/antlr/com/sleekbyte/tailor/antlr/Swift.g4
 
 /*
  * [The "BSD license"]
@@ -31,7 +31,7 @@
  * Converted from Apple's doc, http://tinyurl.com/n8rkoue, to ANTLR's
  * meta-language.
  */
-grammar SwiftTree;
+grammar Swift;
 
 @header {
 import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
@@ -40,13 +40,16 @@ import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 
 @parser::members {
 
-    public static final AntlrNameDictionary DICO = new AntlrNameDictionary(VOCABULARY, ruleNames);
+    static final AntlrNameDictionary DICO = new AntlrNameDictionary(VOCABULARY, ruleNames);
 
+    public SwiftTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+        return new SwiftTerminalNode(t);
+    }
 }
 
 options {
-    contextSuperClass = AntlrParseTreeBase;
-    superClass = PmdAntlrParserBase;
+    contextSuperClass = 'SwiftInnerNode';
+    superClass = 'AntlrGeneratedParserBase<SwiftNode>';
 }
 
 topLevel : statements? EOF ;
