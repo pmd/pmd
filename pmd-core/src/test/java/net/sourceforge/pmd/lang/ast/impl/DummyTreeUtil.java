@@ -1,15 +1,19 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast;
+package net.sourceforge.pmd.lang.ast.impl;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyNodeTypeB;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
@@ -23,15 +27,13 @@ public final class DummyTreeUtil {
     }
 
 
+    public static DummyRoot root(DummyNode... children) {
+        return nodeImpl(new DummyRoot(), children);
+    }
+
     /** Creates a dummy node with the given children. */
     public static DummyNode node(DummyNode... children) {
-        DummyNode node = new DummyNode() {
-            @Override
-            public String toString() {
-                return getImage();
-            }
-        };
-        return nodeImpl(node, children);
+        return nodeImpl(new DummyNode(), children);
     }
 
     /** Creates a dummy node with the given children. */
@@ -39,12 +41,8 @@ public final class DummyTreeUtil {
         return nodeImpl(new DummyNodeTypeB(), children);
     }
 
-    private static DummyNode nodeImpl(DummyNode node, DummyNode... children) {
-        node.children = children;
-        for (int i = 0; i < children.length; i++) {
-            children[i].jjtSetParent(node);
-            children[i].jjtSetChildIndex(i);
-        }
+    private static <T extends DummyNode> T nodeImpl(T node, DummyNode... children) {
+        node.publicSetChildren(children);
         return node;
     }
 
@@ -77,14 +75,14 @@ public final class DummyTreeUtil {
      * )
      * </pre>
      */
-    public static DummyNode tree(Supplier<DummyNode> supplier) {
-        DummyNode dummyNode = supplier.get();
+    public static DummyRoot tree(Supplier<DummyRoot> supplier) {
+        DummyRoot dummyNode = supplier.get();
         assignPathImage(dummyNode, "");
         return dummyNode;
     }
 
 
-    private static void assignPathImage(Node node, String curPath) {
+    private static void assignPathImage(DummyNode node, String curPath) {
         node.setImage(curPath);
 
         for (int i = 0; i < node.getNumChildren(); i++) {

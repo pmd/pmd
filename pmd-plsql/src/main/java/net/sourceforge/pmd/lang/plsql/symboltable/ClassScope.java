@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
-import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
@@ -36,7 +36,7 @@ public class ClassScope extends AbstractScope {
     private String className;
 
     public ClassScope(String className) {
-        this.className = AbstractPLSQLNode.getCanonicalImage(className);
+        this.className = PLSQLNode.getCanonicalImage(className);
         anonymousInnerClassCounter.set(Integer.valueOf(1));
     }
 

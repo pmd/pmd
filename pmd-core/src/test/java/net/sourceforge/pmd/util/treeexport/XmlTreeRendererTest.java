@@ -269,8 +269,8 @@ public class XmlTreeRendererTest {
 
         MyDummyNode dummy2 = new MyDummyNode();
 
-        dummy.jjtAddChild(dummy1, 0);
-        dummy.jjtAddChild(dummy2, 1);
+        dummy.addChild(dummy1, 0);
+        dummy.addChild(dummy2, 1);
         return dummy;
     }
 

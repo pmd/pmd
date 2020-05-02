@@ -101,15 +101,15 @@ public class SimpleNodeTest extends BaseParserTest {
     @Test
     public void testFindDescendantsOfType() {
         ASTBlock block = new ASTBlock(2);
-        block.jjtAddChild(new ASTReturnStatement(1), 0);
+        block.addChild(new ASTReturnStatement(1), 0);
         assertEquals(1, block.findDescendantsOfType(ASTReturnStatement.class).size());
     }
 
     @Test
     public void testFindDescendantsOfTypeMultiple() {
         ASTBlock block = new ASTBlock(1);
-        block.jjtAddChild(new ASTBlockStatement(2), 0);
-        block.jjtAddChild(new ASTBlockStatement(3), 1);
+        block.addChild(new ASTBlockStatement(2), 0);
+        block.addChild(new ASTBlockStatement(3), 1);
         List<ASTBlockStatement> nodes = block.findDescendantsOfType(ASTBlockStatement.class);
         assertEquals(2, nodes.size());
     }
@@ -118,8 +118,8 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testFindDescendantsOfTypeRecurse() {
         ASTBlock block = new ASTBlock(1);
         ASTBlock childBlock = new ASTBlock(2);
-        block.jjtAddChild(childBlock, 0);
-        childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
+        block.addChild(childBlock, 0);
+        childBlock.addChild(new ASTMethodDeclaration(3), 0);
         List<ASTMethodDeclaration> nodes = block.findDescendantsOfType(ASTMethodDeclaration.class);
         assertEquals(1, nodes.size());
     }
@@ -128,8 +128,8 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testGetFirstChild() {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
-        block.jjtAddChild(x, 0);
-        block.jjtAddChild(new ASTStatement(3), 1);
+        block.addChild(x, 0);
+        block.addChild(new ASTStatement(3), 1);
 
         Node n = block.getFirstDescendantOfType(ASTStatement.class);
         assertNotNull(n);
@@ -142,9 +142,9 @@ public class SimpleNodeTest extends BaseParserTest {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
         ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
-        x.jjtAddChild(x1, 0);
-        block.jjtAddChild(x, 0);
-        block.jjtAddChild(new ASTStatement(3), 1);
+        x.addChild(x1, 0);
+        block.addChild(x, 0);
+        block.addChild(new ASTStatement(3), 1);
 
         Node n = block.getFirstDescendantOfType(ASTAssignmentOperator.class);
         assertNotNull(n);
@@ -159,10 +159,10 @@ public class SimpleNodeTest extends BaseParserTest {
         ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
         ASTName x2 = new ASTName(5);
 
-        x.jjtAddChild(x1, 0);
-        x1.jjtAddChild(x2, 0);
-        block.jjtAddChild(x, 0);
-        block.jjtAddChild(new ASTStatement(3), 1);
+        x.addChild(x1, 0);
+        x1.addChild(x2, 0);
+        block.addChild(x, 0);
+        block.addChild(new ASTStatement(3), 1);
 
         Node n = block.getFirstDescendantOfType(ASTName.class);
         assertNotNull(n);
@@ -256,17 +256,6 @@ public class SimpleNodeTest extends BaseParserTest {
 
         assertTrue(c.hasDescendantMatchingXPath("//FieldDeclaration"));
         assertFalse(c.hasDescendantMatchingXPath("//MethodDeclaration"));
-    }
-
-    @Test
-    public void testUserData() {
-        ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
-                .iterator().next();
-        assertNull(c.getUserData());
-        c.setUserData("foo");
-        assertEquals("foo", c.getUserData());
-        c.setUserData(null);
-        assertNull(c.getUserData());
     }
 
     private void verifyNode(Node node, int beginLine, int beginCol, int endLine, int endCol) {

@@ -11,9 +11,7 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
     private boolean usesThisModifier;
     private boolean usesSuperModifier;
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimaryPrefix(int id) {
+    ASTPrimaryPrefix(int id) {
         super(id);
     }
 

@@ -75,16 +75,12 @@ public class XMLRendererTest extends AbstractRendererTest {
 
     @Override
     public String filter(String expected) {
-        String result = expected.replaceAll(" timestamp=\"[^\"]+\">", " timestamp=\"\">");
-        return result;
+        return expected.replaceAll(" timestamp=\"[^\"]+\">", " timestamp=\"\">");
     }
 
     private RuleViolation createRuleViolation(String description) {
-        DummyNode node = new DummyNode(1);
-        node.testingOnlySetBeginLine(1);
-        node.testingOnlySetBeginColumn(1);
-        node.testingOnlySetEndLine(1);
-        node.testingOnlySetEndColumn(1);
+        DummyNode node = new DummyNode();
+        node.setCoords(1, 1, 1, 1);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, description);

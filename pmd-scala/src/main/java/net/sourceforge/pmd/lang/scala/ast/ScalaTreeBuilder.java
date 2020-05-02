@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import scala.meta.Case;
 import scala.meta.Ctor;
 import scala.meta.Decl;
@@ -173,7 +171,7 @@ class ScalaTreeBuilder {
     }
 
     // The nodes having children built.
-    private final Stack<Node> nodes = new Stack<>();
+    private final Stack<AbstractScalaNode<?>> nodes = new Stack<>();
 
     private static <T extends Tree> void register(Class<T> nodeType,
             Class<? extends ScalaNode<T>> nodeAdapterType) {
@@ -185,10 +183,10 @@ class ScalaTreeBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Tree> ScalaNode<T> createNodeAdapter(T node) {
+    private static <T extends Tree> AbstractScalaNode<T> createNodeAdapter(T node) {
         try {
 
-            Constructor<? extends ScalaNode<T>> constructor = null;
+            Constructor<? extends AbstractScalaNode<T>> constructor = null;
 
             // This isInstance is unfortunately necessary as Scala gives us
             // access to the Interface (Trait) of classes at compile time, but
@@ -197,7 +195,7 @@ class ScalaTreeBuilder {
             // translation between Scala Traits and Java Classes
             for (Class<?> treeClass : NODE_TYPE_TO_NODE_ADAPTER_TYPE.keySet()) {
                 if (treeClass.isInstance(node)) {
-                    constructor = (Constructor<? extends ScalaNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(treeClass);
+                    constructor = (Constructor<? extends AbstractScalaNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(treeClass);
                 }
             }
 
@@ -229,12 +227,11 @@ class ScalaTreeBuilder {
 
     private <T extends Tree> ScalaNode<T> buildInternal(T astNode) {
         // Create a Node
-        ScalaNode<T> node = createNodeAdapter(astNode);
+        AbstractScalaNode<T> node = createNodeAdapter(astNode);
         // Append to parent
-        Node parent = nodes.isEmpty() ? null : nodes.peek();
+        AbstractScalaNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
-            parent.jjtAddChild(node, parent.getNumChildren());
-            node.jjtSetParent(parent);
+            parent.addChild(node, parent.getNumChildren());
         }
 
         // Build the children...
