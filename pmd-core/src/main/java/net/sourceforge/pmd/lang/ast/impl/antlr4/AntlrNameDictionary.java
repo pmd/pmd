@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class AntlrNameDictionary {
 
     private final String[] terminalXPathNames;
+    private final String[] terminalImages;
     private final String[] nonTermXpathNames;
     private final Vocabulary vocabulary;
 
@@ -44,21 +45,25 @@ public class AntlrNameDictionary {
         // terminal names
         terminalXPathNames = new String[vocab.getMaxTokenType()];
         terminalXPathNames[0] = "Invalid"; // See Token.INVALID_TYPE
+
+        terminalImages = new String[vocab.getMaxTokenType()];
+        terminalImages[0] = null;
+
         for (int i = Token.MIN_USER_TOKEN_TYPE; i < terminalXPathNames.length; i++) {
             String name = vocab.getSymbolicName(i);
+            String literalName = vocab.getLiteralName(i);
 
+            if (literalName != null) {
+                // cleanup literal name, Antlr surrounds the image with single quotes
+                literalName = literalName.substring(1, literalName.length() - 1);
+                terminalImages[i] = literalName;
+            }
 
-            if (name == null) {
-                name = vocab.getLiteralName(i);
-
-                if (name != null) {
-                    // cleanup literal name, Antlr surrounds the image with single quotes
-                    name = name.substring(1, name.length() - 1);
-
-                    if (!name.matches("[a-zA-Z][\\w_-]+")) { // not alphanum
-                        name = nonAlphaNumName(name);
-                    } // otherwise something like "final"
-                }
+            if (name == null && literalName != null) {
+                name = literalName;
+                if (!name.matches("[a-zA-Z][\\w_-]+")) { // not alphanum
+                    name = nonAlphaNumName(name);
+                } // otherwise something like "final"
             }
 
 
@@ -174,6 +179,22 @@ public class AntlrNameDictionary {
         }
 
         throw new IllegalArgumentException("I don't know token type " + tokenType);
+    }
+
+    /**
+     * Returns the constant image of the given token (a shared string),
+     * or null if the token has none. This is a memory optimization to
+     * avoid creating a new string for tokens with constant images. Antlr
+     * does not do this by itself sadly.
+     */
+    public @Nullable String getConstantImageOfToken(Token token) {
+        int tokenType = token.getType();
+        if (tokenType >= 0 && tokenType < terminalXPathNames.length) {
+            return terminalImages[tokenType];
+        } else if (token.getStartIndex() == token.getStopIndex()) {
+            return "";
+        }
+        return null;
     }
 
     /**

@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode.AntlrTerminalPmdAdapter;
@@ -34,9 +35,13 @@ public abstract class BaseAntlrTerminalNode<N extends GenericNode<N>>
         }
     }
 
-    public String getText() {
-        return antlrNode.symbol.getText();
-    }
+    /**
+     * Returns the text of the token.
+     *
+     * @implNote This should use {@link AntlrNameDictionary#getConstantImageOfToken(Token)},
+     *     or default to {@link Token#getText()}
+     */
+    public abstract @NonNull String getText();
 
     @Override
     protected AntlrTerminalPmdAdapter<N> asAntlrNode() {

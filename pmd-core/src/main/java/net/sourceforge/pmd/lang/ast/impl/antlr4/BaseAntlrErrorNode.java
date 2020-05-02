@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
@@ -24,6 +25,12 @@ public abstract class BaseAntlrErrorNode<N extends GenericNode<N>> extends BaseA
     @Override
     public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
         return visitor.visitErrorNode(asAntlrNode());
+    }
+
+
+    @Override
+    public @NonNull String getText() {
+        return getFirstAntlrToken().getText();
     }
 
     @Override

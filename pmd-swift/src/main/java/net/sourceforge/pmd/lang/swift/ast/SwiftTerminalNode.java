@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.swift.ast;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
 
@@ -13,6 +14,13 @@ public final class SwiftTerminalNode extends BaseAntlrTerminalNode<SwiftNode> im
 
     SwiftTerminalNode(Token token) {
         super(token);
+    }
+
+    @Override
+    public @NonNull String getText() {
+        String constImage = SwiftParser.DICO.getConstantImageOfToken(getFirstAntlrToken());
+        return constImage == null ? getFirstAntlrToken().getText()
+                                  : constImage;
     }
 
     @Override
