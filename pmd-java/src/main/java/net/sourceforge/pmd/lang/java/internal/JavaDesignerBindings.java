@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -12,13 +14,21 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
+import net.sourceforge.pmd.util.designerbindings.RelatedNodesSelector;
 
 public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
@@ -60,13 +70,50 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
     @Override
     public Collection<AdditionalInfo> getAdditionalInfo(Node node) {
-        if (node instanceof TypeNode) {
-            Class<?> type = ((TypeNode) node).getType();
-            if (type != null) {
-                return Collections.singletonList(new AdditionalInfo("Type: " + type));
-            }
+        if (node instanceof ASTLambdaExpression) {
+            ASTLambdaExpression lambda = (ASTLambdaExpression) node;
+            return listOf(
+                new AdditionalInfo("Type: " + lambda.getTypeMirror()),
+                new AdditionalInfo("Function type: " + lambda.getFunctionalMethod())
+            );
+        } else if (node instanceof ASTMethodReference) {
+            ASTMethodReference lambda = (ASTMethodReference) node;
+            return listOf(
+                new AdditionalInfo("Type: " + lambda.getTypeMirror()),
+                new AdditionalInfo("Function type: " + lambda.getFunctionalMethod()),
+                new AdditionalInfo("CTDecl: " + lambda.getReferencedMethod())
+            );
+        } else if (node instanceof InvocationNode) {
+            InvocationNode invoc = (InvocationNode) node;
+            return listOf(
+                new AdditionalInfo("Type: " + invoc.getTypeMirror()),
+                new AdditionalInfo("Function: " + invoc.getMethodType())
+            );
+        } else if (node instanceof TypeNode) {
+            JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
+            return Collections.singletonList(new AdditionalInfo("Type: " + typeMirror));
         }
         return super.getAdditionalInfo(node);
+    }
+
+    @Override
+    public RelatedNodesSelector getRelatedNodesSelector() {
+        return n -> {
+            if (n instanceof ASTVariableAccess) {
+                // poor man's reference search
+                JVariableSymbol var = ((JavaNode) n).getSymbolTable()
+                                                    .variables()
+                                                    .resolveFirst(n.getImage());
+                if (var != null) {
+                    return n.getRoot().descendants(ASTVariableDeclaratorId.class)
+                            .filter(it -> it.getSymbol().equals(var))
+                            .toList(it -> it);
+                }
+            }
+
+            return Collections.emptyList();
+
+        };
     }
 
     private static final class MainAttrVisitor extends JavaVisitorBase<Void, Attribute> {
@@ -76,6 +123,11 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         @Override
         public Attribute visit(JavaNode node, Void data) {
             return null; // don't recurse
+        }
+
+        @Override
+        public Attribute visit(ASTInfixExpression node, Void data) {
+            return new Attribute(node, "Operator", node.getOperator().toString());
         }
 
         @Override

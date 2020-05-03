@@ -320,6 +320,10 @@ public interface JTypeMirror extends JTypeVisitable {
     }
 
 
+    @Override
+    JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
+
+
     /**
      * Returns true if the object is a type equivalent to this one. A
      * few kinds of types use reference identity, like captured type
@@ -336,10 +340,6 @@ public interface JTypeMirror extends JTypeVisitable {
      */
     @Override
     boolean equals(Object o);
-
-
-    @Override
-    JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
 
 
     /**
