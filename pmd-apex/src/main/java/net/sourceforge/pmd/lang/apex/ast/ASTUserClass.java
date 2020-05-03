@@ -13,7 +13,7 @@ import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
-public final class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass>,
+public final class ASTUserClass extends AbstractApexNode<UserClass> implements ASTUserClassOrInterface<UserClass>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;

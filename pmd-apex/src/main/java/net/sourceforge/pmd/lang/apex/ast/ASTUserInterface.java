@@ -12,7 +12,7 @@ import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
-public final class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
+public final class ASTUserInterface extends AbstractApexNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -17,7 +18,7 @@ import apex.jorje.services.Version;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
-    private Map<Integer, String> suppressMap;
+    private Map<Integer, String> suppressMap = Collections.emptyMap();
 
     ASTApexFile(AbstractApexNode<? extends Compilation> child) {
         super(child.getNode());
