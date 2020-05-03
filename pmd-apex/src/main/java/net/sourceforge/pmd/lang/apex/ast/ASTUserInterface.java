@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
 public final class ASTUserInterface extends AbstractApexNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
-       CanSuppressWarnings {
+                                                                                       Node {
 
     private ApexQualifiedName qname;
 
@@ -53,17 +53,6 @@ public final class ASTUserInterface extends AbstractApexNode<UserInterface> impl
         return qname;
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);

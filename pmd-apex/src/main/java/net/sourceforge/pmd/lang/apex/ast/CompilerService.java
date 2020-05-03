@@ -31,7 +31,7 @@ class CompilerService {
     public static final CompilerService INSTANCE = new CompilerService();
     private final SymbolProvider symbolProvider;
     private final AccessEvaluator accessEvaluator;
-    private QueryValidator queryValidator;
+    private final QueryValidator queryValidator;
 
     /**
      * Configure a compiler with the default configurations:
