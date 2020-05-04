@@ -245,9 +245,9 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final List<ApexDocTokenLocation> apexDocTokenLocations;
     private final Map<Integer, String> suppressMap;
 
-    ApexTreeBuilder(String sourceCode, ParserOptions parserOptions) {
+    ApexTreeBuilder(String sourceCode, ParserOptions parserOptions, SourceCodePositioner positioner) {
         this.sourceCode = sourceCode;
-        sourceCodePositioner = new SourceCodePositioner(sourceCode);
+        sourceCodePositioner = positioner;
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
         apexDocTokenLocations = commentInformation.docTokenLocations;

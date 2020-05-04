@@ -36,6 +36,11 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
     }
 
     @Override
+    protected void setCoords(int bline, int bcol, int eline, int ecol) {
+        super.setCoords(bline, bcol, eline, ecol);
+    }
+
+    @Override
     public @NonNull ASTApexFile getRoot() {
         return getParent().getRoot();
     }

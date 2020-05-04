@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -25,6 +26,7 @@ public final class ApexParser extends AbstractParser {
         ApexJorjeLogging.disableLogging();
         Locations.useIndexFactory();
     }
+
     @Override
     public RootNode parse(final String filename, final Reader reader) {
         try {
@@ -35,9 +37,10 @@ public final class ApexParser extends AbstractParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, getParserOptions());
+            SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, getParserOptions(), positioner);
             AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            ASTApexFile fileNode = new ASTApexFile(treeRoot);
+            ASTApexFile fileNode = new ASTApexFile(positioner, treeRoot);
             fileNode.setNoPmdComments(treeBuilder.getSuppressMap());
             return fileNode;
         } catch (IOException | apex.jorje.services.exception.ParseException e) {

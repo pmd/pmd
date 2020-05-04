@@ -19,6 +19,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
@@ -77,6 +78,7 @@ public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory 
     private static boolean canSuppressWarnings(ApexNode<?> node) {
         return node instanceof ASTFieldDeclarationStatements
             || node instanceof ASTVariableDeclarationStatements
+            || node instanceof ASTField
             || node instanceof ASTMethod
             || node instanceof ASTUserClassOrInterface
             || node instanceof ASTUserEnum

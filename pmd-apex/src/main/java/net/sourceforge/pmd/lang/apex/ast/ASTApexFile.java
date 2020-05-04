@@ -19,13 +19,14 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
 
     private Map<Integer, String> suppressMap = Collections.emptyMap();
 
-    ASTApexFile(AbstractApexNode<? extends Compilation> child) {
+    ASTApexFile(SourceCodePositioner source, AbstractApexNode<? extends Compilation> child) {
         super(child.getNode());
         addChild(child, 0);
-        this.beginLine = child.getBeginLine();
-        this.endLine = child.getEndLine();
-        this.beginColumn = child.getBeginColumn();
-        this.endColumn = child.getEndColumn();
+        this.beginLine = 1;
+        this.endLine = source.getLastLine();
+        this.beginColumn = 1;
+        this.endColumn = source.getLastLineColumn();
+        child.setCoords(child.getBeginLine(), child.getBeginColumn(), source.getLastLine(), source.getLastLineColumn());
     }
 
     @Override
@@ -33,8 +34,8 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
         return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
 
-    public ApexNode<? extends Compilation> getMainNode() {
-        return (ApexNode<? extends Compilation>) getChild(0);
+    public ApexNode<Compilation> getMainNode() {
+        return (ApexNode<Compilation>) getChild(0);
     }
 
     @Override
