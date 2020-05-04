@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -43,7 +44,7 @@ public class TreeRenderersTest {
 
         PropertySource properties = TreeRenderers.XML.newPropertyBundle();
 
-        Assert.assertThat(properties.getPropertyDescriptors(),
+        MatcherAssert.assertThat(properties.getPropertyDescriptors(),
                           Matchers.<PropertyDescriptor<?>>containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
                                                                              TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
                                                                              TreeRenderers.XML_RENDER_PROLOG,

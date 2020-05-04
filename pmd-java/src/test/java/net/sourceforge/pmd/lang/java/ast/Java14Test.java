@@ -5,11 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 
 import java.util.List;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -109,29 +109,29 @@ public class Java14Test {
         Assert.assertEquals(18, stmts.size());
 
         int i = 0;
-        assertThat(stmts.get(i++), instanceOf(ASTLocalVariableDeclaration.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTLocalVariableDeclaration.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
 
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
 
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
-        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
-        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
 
-        assertThat(stmts.get(i++), instanceOf(ASTIfStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTIfStatement.class));
 
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
 
-        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
-        assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
-        assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTStatementExpression.class));
+        MatcherAssert.assertThat(stmts.get(i++), instanceOf(ASTYieldStatement.class));
 
         Assert.assertEquals(i, stmts.size());
     }
