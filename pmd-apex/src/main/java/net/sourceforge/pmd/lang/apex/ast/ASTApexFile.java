@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.services.Version;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 
@@ -29,13 +28,7 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
         this.endColumn = child.getEndColumn();
     }
 
-    /**
-     * Gets the apex version this class has been compiled with.
-     * Use {@link Version} to compare, e.g.
-     * {@code node.getApexVersion() >= Version.V176.getExternal()}
-     *
-     * @return the apex version
-     */
+    @Override
     public double getApexVersion() {
         return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
