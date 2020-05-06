@@ -51,6 +51,11 @@ public class Foo {
             return 'some other string';
         }
     }
+
+    public void hasMethodCalledOnIt() {
+        String foo = 'foobar';
+        foo.substringAfter('foo');
+    }
 }
 ]]>
         </code>
