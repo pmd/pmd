@@ -56,6 +56,11 @@ public class Foo {
         String foo = 'foobar';
         foo.substringAfter('foo');
     }
+
+    public void handlesChainedMethods() {
+        String foo = 'foobar';
+        foo.substringAfter('f').substringAfter('b');
+    }
 }
 ]]>
         </code>

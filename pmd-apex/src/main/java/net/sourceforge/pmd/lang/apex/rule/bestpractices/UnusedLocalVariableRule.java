@@ -36,7 +36,8 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
             if (usage.getParent() == node) {
                 continue;
             }
-            if (usage.getImage().equals(variableName)) {
+
+            if (usage.hasImageEqualTo(variableName)) {
                 return data;
             }
         }
