@@ -67,9 +67,10 @@
             <regexp pattern='throw new Error\("Invalid escape character at line " \+ line \+\s+" column " \+ column \+ "."\);' />
             <substitution expression='throw new TokenMgrError(line, column, AbstractTokenManager.getFileName(), "Invalid unicode escape", null);' />
         </replaceregexp>
+        <!-- This is in ExpandBuf, the exception this may throw is OutOfMemoryError, which is stupidly erased by javacc -->
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-                 token="throw new Error"
-                 value="throw new RuntimeException" />
+                 token="throw new Error(t.getMessage())"
+                 value="throw t" />
 
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
@@ -89,9 +90,10 @@
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
                  token="public class SimpleCharStream"
                  value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi public class SimpleCharStream implements CharStream" />
+        <!-- This is in ExpandBuf, the exception this may throw is OutOfMemoryError, which is stupidly erased by javacc -->
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
-                 token="throw new Error"
-                 value="throw new RuntimeException" />
+                 token="throw new Error(t.getMessage())"
+                 value="throw t" />
 
 
         <move overwrite="true"
