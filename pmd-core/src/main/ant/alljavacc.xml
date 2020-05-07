@@ -63,10 +63,14 @@
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
                  token="class JavaCharStream"
                  value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi class JavaCharStream implements CharStream" />
+        <replaceregexp file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java">
+            <regexp pattern='throw new Error\("Invalid escape character at line " \+ line \+\s+" column " \+ column \+ "."\);' />
+            <substitution expression='throw new TokenMgrError(line, column, AbstractTokenManager.getFileName(), "Invalid unicode escape", null);' />
+        </replaceregexp>
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-                 token='throw new Error("Invalid escape character at line " + line +
-                                         " column " + column + ".");'
-                 value='throw new TokenMgrError(line, column, AbstractTokenManager.getFileName(), "Invalid unicode escape", null);' />
+                 token="throw new Error"
+                 value="throw new RuntimeException" />
+
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/JavaCharStream.java" />
