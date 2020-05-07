@@ -18,6 +18,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated APIs
+
+* Some members of {% jdoc core::lang.ast.TokenMgrError %}, in particular, a new constructor is available
+that should be preferred to the old ones
+* {% jdoc core::lang.antlr.AntlrTokenManager.ANTLRSyntaxError %}
+
 ### External Contributions
 
 *   [#2446](https://github.com/pmd/pmd/pull/2446): \[core] Update maven-compiler-plugin to 3.8.1 - [Artem Krosheninnikov](https://github.com/KroArtem)
