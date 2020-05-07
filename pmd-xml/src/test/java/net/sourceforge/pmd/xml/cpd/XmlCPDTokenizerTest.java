@@ -2,14 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.xml.cpd;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class XmlCPDTokenizerTest extends AbstractTokenizerTest {
@@ -25,7 +27,7 @@ public class XmlCPDTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-        return IOUtils.toString(XmlTokenizer.class.getResourceAsStream(FILENAME));
+        return IOUtils.toString(XmlTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
     }
 
     @Test

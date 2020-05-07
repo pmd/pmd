@@ -9,9 +9,6 @@ import org.antlr.v4.runtime.CharStream;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.go.antlr4.GolangLexer;
 
-/**
- * The Go tokenizer.
- */
 public class GoTokenizer extends AntlrTokenizer {
 
     @Override
