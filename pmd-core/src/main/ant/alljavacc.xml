@@ -89,6 +89,11 @@
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
                  token="public class SimpleCharStream"
                  value="@Deprecated @net.sourceforge.pmd.annotation.InternalApi public class SimpleCharStream implements CharStream" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
+                 token="throw new Error"
+                 value="throw new RuntimeException" />
+
+
         <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/SimpleCharStream.java"
               tofile="${target}/net/sourceforge/pmd/lang/ast/SimpleCharStream.java" />
