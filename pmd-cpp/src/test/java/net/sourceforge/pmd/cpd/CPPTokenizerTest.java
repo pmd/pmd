@@ -64,7 +64,7 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testUnicodeSupport() {
+    public void testUnicodeStringSupport() {
         doTest("unicodeStrings");
     }
 
@@ -79,8 +79,13 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testDollarSignInIdentifier() {
+    public void testIdentifierValidChars() {
         doTest("identifierChars");
+    }
+
+    @Test
+    public void testWrongUnicodeInIdentifier() {
+        expectTokenMgrError(" void main() { int ⚜ = __; }");
     }
 
 

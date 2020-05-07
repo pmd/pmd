@@ -382,7 +382,63 @@ rstringbody:
 
 TOKEN :
 {
-  < ID : ["$", "a"-"z","A"-"Z", "_"] (["a"-"z","A"-"Z","0"-"9","_","$"])* >
+// the standard says ids are only CHAR_NON_DIGIT CHAR*
+// where CHAR is at least [a-zA-Z_0-9],
+// but can also be \ uhhhh or \ Uhhhhhh (unicode escapes)
+// *and* other characters may be allowed by implementations, eg a raw unicode char (not escaped), or a dollar
+
+// this grammar doesn't allow unicode escapes
+
+// ref: https://en.cppreference.com/w/cpp/language/identifiers#Unicode_characters_in_identifiers
+
+  < ID : <ID_START_CHAR> (<ID_CHAR>)* >
+
+| < #ID_CHAR: [
+    "a"-"z", "A"-"Z", "0"-"9", "_", "$",
+    "\u00a8", "\u00aa", "\u00ad", "\u00af",
+    "\u00b2"-"\u00b5", "\u00b7"-"\u00ba",
+    "\u00b7"-"\u00ba", "\u00bc"-"\u00be",
+    "\u00c0"-"\u00d6", "\u00d8"-"\u00f6",
+    "\u00f8"-"\u167f", "\u1681"-"\u180d",
+    "\u180f"-"\u1fff", "\u200b"-"\u200d",
+    "\u202a"-"\u202e", "\u203f"-"\u2040",
+    "\u2054", "\u2060"-"\u218f",
+    "\u2460"-"\u24ff", "\u2776"-"\u2793",
+    "\u2c00"-"\u2dff", "\u2e80"-"\u2fff",
+    "\u3004"-"\u3007", "\u3021"-"\u302f",
+    "\u3031"-"\ud7ff", "\uf900"-"\ufd3d",
+    "\ufd40"-"\ufdcf", "\ufdf0"-"\ufe44",
+    "\ufe47"-"\ufffd"
+    // the standard also allows code points in planes 1 through e,
+    // but javacc doesn't support supplementary characters
+  ] >
+// this production is the same as the above,
+// with some ranges subtracted
+| < #ID_START_CHAR: [
+     "a"-"z", "A"-"Z", "_", "$",
+     "\u00a8", "\u00aa", "\u00ad", "\u00af",
+     "\u00b2"-"\u00b5", "\u00b7"-"\u00ba",
+     "\u00b7"-"\u00ba", "\u00bc"-"\u00be",
+     "\u00c0"-"\u00d6", "\u00d8"-"\u00f6",
+     // subtracted u+0300-u+036f from u+00f8-u+167f
+     "\u00f8"-"\u02ff", "\u0370"-"\u167f",
+     "\u1681"-"\u180d",
+     // subtracted u+1dc0-u+1dff from u+180f-u+1fff
+     "\u180f"-"\u1dbf", "\u1e00"-"\u1fff",
+     "\u200b"-"\u200d",
+     "\u202a"-"\u202e", "\u203f"-"\u2040",
+     "\u2054",
+     // subtracted u+20d0-u+20ff from u+2060-u+218f
+     "\u2060"-"\u20cf", "\u2100"-"\u218f",
+     "\u2460"-"\u24ff", "\u2776"-"\u2793",
+     "\u2c00"-"\u2dff", "\u2e80"-"\u2fff",
+     "\u3004"-"\u3007", "\u3021"-"\u302f",
+     "\u3031"-"\ud7ff", "\uf900"-"\ufd3d",
+     "\ufd40"-"\ufdcf",
+     // subtracted u+fe20-u+fe2f from u+fdf0-u+fe44
+     "\ufdf0"-"\ufe1f", "\ufe30"-"\ufe44",
+     "\ufe47"-"\ufffd"
+   ] >
 }
 
 
