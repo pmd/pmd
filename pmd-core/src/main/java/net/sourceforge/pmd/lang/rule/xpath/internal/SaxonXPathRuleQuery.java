@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -28,10 +27,11 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.LocalVariableReference;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
+import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.Sequence;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -77,13 +77,6 @@ public class SaxonXPathRuleQuery {
      */
     XPathExpression xpathExpression;
 
-    /**
-     * Holds the static context later used to match the variables in the dynamic context in
-     * {@link #createDynamicContext(AstElementNode)}. Created at {@link #initializeXPathExpression()}
-     * using the properties descriptors in {@link #properties}.
-     */
-    private List<XPathVariable> xpathVariables;
-
     private final DeprecatedAttrLogger attrCtx;
 
 
@@ -119,7 +112,7 @@ public class SaxonXPathRuleQuery {
             documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
-            final XPathDynamicContext xpathDynamicContext = createDynamicContext(documentNode.findWrapperFor(node));
+            final XPathDynamicContext xpathDynamicContext = xpathExpression.createDynamicContext(documentNode.findWrapperFor(node));
 
             // XPath 2.0 sequences may contain duplicates
             final Set<Node> results = new LinkedHashSet<>();
@@ -154,43 +147,6 @@ public class SaxonXPathRuleQuery {
         return nodeNameToXPaths.get(AST_ROOT);
     }
 
-    /**
-     * Attempt to create a dynamic context on which to evaluate the {@link #xpathExpression}.
-     *
-     * @param elementNode the node on which to create the context; generally this node is the root node of the Saxon
-     *                    Tree
-     *
-     * @return the dynamic context on which to run the query
-     *
-     * @throws XPathException if the supplied value does not conform to the required type of the
-     *                        variable, when setting up the dynamic context; or if the supplied value contains a node that does not belong to
-     *                        this Configuration (or another Configuration that shares the same namePool)
-     */
-    private XPathDynamicContext createDynamicContext(final AstElementNode elementNode) throws XPathException {
-        final XPathDynamicContext dynamicContext = xpathExpression.createDynamicContext(elementNode);
-
-        // Set variable values on the dynamic context
-        for (final XPathVariable xpathVariable : xpathVariables) {
-            final String variableName = xpathVariable.getVariableQName().getLocalPart();
-            for (final Map.Entry<PropertyDescriptor<?>, Object> entry : properties.entrySet()) {
-                if (variableName.equals(entry.getKey().name())) {
-                    final Sequence valueRepresentation = getRepresentation(entry.getValue());
-                    dynamicContext.setVariable(xpathVariable, valueRepresentation);
-                }
-            }
-        }
-        return dynamicContext;
-    }
-
-
-    private Sequence getRepresentation(final Object value) {
-        if (value instanceof Collection) {
-            return DomainConversion.getSequenceRepresentation((Collection<?>) value);
-        } else {
-            return DomainConversion.getAtomicRepresentation(value);
-        }
-    }
-
 
     /**
      * Gets the DocumentNode representation for the whole AST in which the node is, that is, if the node is not the root
@@ -221,44 +177,31 @@ public class SaxonXPathRuleQuery {
         nodeNameToXPaths.get(nodeName).add(expression);
     }
 
-    /**
-     * Initialize the {@link #xpathExpression} and the {@link #xpathVariables}.
-     */
     private void initializeXPathExpression() {
         if (xpathExpression != null) {
             return;
         }
         try {
-            this.configuration = new Configuration();
-            configuration.setNamePool(getNamePool());
+            final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+            this.configuration = xpathEvaluator.getConfiguration();
+            StaticContextWithProperties staticCtx = new StaticContextWithProperties(configuration);
 
-            final IndependentContext xpathStaticContext = new IndependentContext(configuration);
-
-
-            for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
-                StructuredQName qname = fun.getFunctionQName();
-                xpathStaticContext.declareNamespace(qname.getPrefix(), qname.getURI());
-
-                this.configuration.registerExtensionFunction(fun);
-            }
-
-
-            /*
-            Create XPathVariables for later use. It is a Saxon quirk that XPathVariables must be defined on the
-            static context, and reused later to associate an actual value on the dynamic context creation, in
-            createDynamicContext(ElementNode).
-            */
-            xpathVariables = new ArrayList<>();
             for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
                 final String name = propertyDescriptor.name();
                 if (!"xpath".equals(name) && !XPathRule.VERSION_DESCRIPTOR.name().equals(name)) {
-                    final XPathVariable xpathVariable = xpathStaticContext.declareVariable(null, name);
-                    xpathVariables.add(xpathVariable);
+                    staticCtx.declareProperty(propertyDescriptor);
                 }
             }
 
-            final XPathEvaluator xpathEvaluator = new XPathEvaluator(configuration);
-            xpathEvaluator.setStaticContext(xpathStaticContext);
+            xpathEvaluator.setStaticContext(staticCtx);
+            configuration.setNamePool(getNamePool());
+
+            for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
+                StructuredQName qname = fun.getFunctionQName();
+                staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
+                configuration.registerExtensionFunction(fun);
+            }
+
             xpathExpression = xpathEvaluator.createExpression(xpathExpr);
             analyzeXPathForRuleChain(xpathEvaluator);
         } catch (final XPathException e) {
@@ -304,5 +247,33 @@ public class SaxonXPathRuleQuery {
 
     public static NamePool getNamePool() {
         return NAME_POOL;
+    }
+
+
+    final class StaticContextWithProperties extends IndependentContext {
+
+        private final Map<StructuredQName, PropertyDescriptor<?>> propertiesByName = new HashMap<>();
+
+        public StaticContextWithProperties(Configuration config) {
+            super(config);
+        }
+
+        public void declareProperty(PropertyDescriptor<?> prop) {
+            XPathVariable var = declareVariable(null, prop.name());
+            propertiesByName.put(var.getVariableQName(), prop);
+        }
+
+        @Override
+        public Expression bindVariable(StructuredQName qName) throws XPathException {
+            LocalVariableReference local = (LocalVariableReference) super.bindVariable(qName);
+            PropertyDescriptor<?> prop = propertiesByName.get(qName);
+            if (prop == null || prop.defaultValue() == null) {
+                return local;
+            }
+            Object actualValue = properties.getOrDefault(prop, prop.defaultValue());
+            AtomicSequence converted = DomainConversion.convert(actualValue);
+            local.setStaticType(DomainConversion.typeOf(converted), converted, 0);
+            return local;
+        }
     }
 }
