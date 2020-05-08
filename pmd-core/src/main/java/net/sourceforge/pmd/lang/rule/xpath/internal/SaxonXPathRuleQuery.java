@@ -1,6 +1,7 @@
 /*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -59,6 +60,7 @@ public class SaxonXPathRuleQuery {
     private static final SimpleDataKey<AstTreeInfo> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
     private final String xpathExpr;
+    @SuppressWarnings("PMD") // may be useful later, idk
     private final XPathVersion version;
     private final Map<PropertyDescriptor<?>, Object> properties;
     private final XPathHandler xPathHandler;

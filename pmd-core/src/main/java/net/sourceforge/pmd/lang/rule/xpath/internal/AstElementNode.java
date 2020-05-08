@@ -51,11 +51,11 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     private @Nullable Map<String, AstAttributeNode> attributes;
 
 
-    public AstElementNode(AstTreeInfo document,
-                          IdGenerator idGenerator,
-                          BaseNodeInfo parent,
-                          Node wrappedNode,
-                          Configuration configuration) {
+    AstElementNode(AstTreeInfo document,
+                   IdGenerator idGenerator,
+                   BaseNodeInfo parent,
+                   Node wrappedNode,
+                   Configuration configuration) {
         super(Type.ELEMENT, configuration.getNamePool(), wrappedNode.getXPathNodeName(), parent);
 
         this.treeInfo = document;
@@ -223,7 +223,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
         private final Deque<BaseNodeInfo> todo;
 
-        public DescendantIter(BaseNodeInfo start, boolean includeSelf) {
+        DescendantIter(BaseNodeInfo start, boolean includeSelf) {
             todo = new ArrayDeque<>();
             if (includeSelf) {
                 todo.addLast(start);
@@ -260,7 +260,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     private static class RevListAxisIterator extends ReverseListIterator implements AxisIterator {
 
-        public RevListAxisIterator(List<? extends NodeInfo> list) {
+        RevListAxisIterator(List<? extends NodeInfo> list) {
             super(list);
         }
 
@@ -274,7 +274,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
         private final Iterator<? extends NodeInfo> it;
 
-        public IteratorAdapter(Iterator<? extends NodeInfo> it) {
+        IteratorAdapter(Iterator<? extends NodeInfo> it) {
             this.it = it;
         }
 

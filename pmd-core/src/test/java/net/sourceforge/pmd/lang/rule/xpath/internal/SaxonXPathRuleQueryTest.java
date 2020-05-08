@@ -33,20 +33,21 @@ import net.sf.saxon.value.SequenceType;
 
 public class SaxonXPathRuleQueryTest {
 
-    @Test
-    public void testListAttribute() {
-        RootNode dummy = new DummyNodeWithListAndEnum();
-
-        assertQuery(1, "//dummyNode[@List = \"A\"]", dummy);
-        assertQuery(1, "//dummyNode[@List = \"B\"]", dummy);
-        assertQuery(0, "//dummyNode[@List = \"C\"]", dummy);
-        assertQuery(1, "//dummyNode[@Enum = \"FOO\"]", dummy);
-        assertQuery(0, "//dummyNode[@Enum = \"BAR\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = \"FOO\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = \"BAR\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = (\"FOO\", \"BAR\")]", dummy);
-        assertQuery(0, "//dummyNode[@EmptyList = (\"A\")]", dummy);
-    }
+    //    Unsupported: https://github.com/pmd/pmd/issues/2451
+    //    @Test
+    //    public void testListAttribute() {
+    //        RootNode dummy = new DummyNodeWithListAndEnum();
+    //
+    //        assertQuery(1, "//dummyNode[@List = \"A\"]", dummy);
+    //        assertQuery(1, "//dummyNode[@List = \"B\"]", dummy);
+    //        assertQuery(0, "//dummyNode[@List = \"C\"]", dummy);
+    //        assertQuery(1, "//dummyNode[@Enum = \"FOO\"]", dummy);
+    //        assertQuery(0, "//dummyNode[@Enum = \"BAR\"]", dummy);
+    //        assertQuery(1, "//dummyNode[@EnumList = \"FOO\"]", dummy);
+    //        assertQuery(1, "//dummyNode[@EnumList = \"BAR\"]", dummy);
+    //        assertQuery(1, "//dummyNode[@EnumList = (\"FOO\", \"BAR\")]", dummy);
+    //        assertQuery(0, "//dummyNode[@EmptyList = (\"A\")]", dummy);
+    //    }
 
     @Test
     public void testListProperty() {

@@ -28,10 +28,10 @@ class AstDocumentNode extends BaseNodeInfo {
     private final AstElementNode rootElement;
     private final List<AstElementNode> children;
 
-    public AstDocumentNode(AstTreeInfo document,
-                           IdGenerator idGenerator,
-                           RootNode wrappedNode,
-                           Configuration configuration) {
+    AstDocumentNode(AstTreeInfo document,
+                    IdGenerator idGenerator,
+                    RootNode wrappedNode,
+                    Configuration configuration) {
         super(Type.DOCUMENT, configuration.getNamePool(), "", null);
         this.rootElement = new AstElementNode(document, idGenerator, this, wrappedNode, configuration);
         this.children = Collections.singletonList(rootElement);

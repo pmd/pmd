@@ -26,6 +26,7 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -131,7 +132,11 @@ public class XPathRuleTest extends RuleTst {
         String xpath = "//PrimarySuffix[@Image='list']";
 
         // XPATH version 2.0
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath, XPathVersion.XPATH_2_0, new HashMap<>(), language.getLanguageVersionHandler().getXPathHandler());
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                     XPathVersion.XPATH_2_0,
+                                                                     new HashMap<>(),
+                                                                     language.getLanguageVersionHandler().getXPathHandler(),
+                                                                     DeprecatedAttrLogger.noop());
         List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(1, nodes.size());
     }
@@ -154,7 +159,11 @@ public class XPathRuleTest extends RuleTst {
         String xpath = "//Block/BlockStatement/following-sibling::BlockStatement";
 
         // XPATH version 2.0
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath, XPathVersion.XPATH_2_0, new HashMap<>(), language.getLanguageVersionHandler().getXPathHandler());
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                     XPathVersion.XPATH_2_0,
+                                                                     new HashMap<>(),
+                                                                     language.getLanguageVersionHandler().getXPathHandler(),
+                                                                     DeprecatedAttrLogger.noop());
         List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
         assertEquals(2, nodes.size());
         assertEquals(4, nodes.get(0).getBeginLine());
