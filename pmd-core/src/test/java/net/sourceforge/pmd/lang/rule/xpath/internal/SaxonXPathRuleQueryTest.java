@@ -155,8 +155,8 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("self::node()[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")]", query.nodeNameToXPaths.get("dummyNode").get(0));
-        assertExpression("((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")]", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exactly-one(convertUntyped(data($testClassPattern)))) treat as xs:string return (self::node()[matches(convertUntyped(data(@SimpleName)), $Q{http://saxon.sf.net/generated-variable}v0, \"\")])", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exactly-one(convertUntyped(data($testClassPattern)))) treat as xs:string return (((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), $Q{http://saxon.sf.net/generated-variable}v0, \"\")])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     @Test
@@ -167,8 +167,8 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(1, ruleChainVisits.size());
         Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("(self::node()[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")])/child::element(Q{}foo)", query.nodeNameToXPaths.get("dummyNode").get(0));
-        assertExpression("docOrder((((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")])/child::element(Q{}foo))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exactly-one(convertUntyped(data($testClassPattern)))) treat as xs:string return ((self::node()[matches(convertUntyped(data(@SimpleName)), $Q{http://saxon.sf.net/generated-variable}v0, \"\")])/child::element(Q{}foo))", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("let $Q{http://saxon.sf.net/generated-variable}v0 := (exactly-one(convertUntyped(data($testClassPattern)))) treat as xs:string return (docOrder((((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), $Q{http://saxon.sf.net/generated-variable}v0, \"\")])/child::element(Q{}foo)))", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
     }
 
     private static void assertExpression(String expected, Expression actual) {

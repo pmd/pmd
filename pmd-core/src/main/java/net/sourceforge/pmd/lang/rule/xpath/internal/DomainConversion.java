@@ -22,7 +22,6 @@ import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.DoubleValue;
 import net.sf.saxon.value.FloatValue;
 import net.sf.saxon.value.Int64Value;
-import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
 
@@ -61,36 +60,6 @@ public final class DomainConversion {
             return getSequenceRepresentation((Collection<?>) obj);
         }
         return getAtomicRepresentation(obj);
-    }
-
-    public static SequenceType typeOf(Object obj) {
-        if (obj instanceof Collection) {
-            if (((Collection<?>) obj).isEmpty()) {
-                return SequenceType.EMPTY_SEQUENCE;
-            }
-            return SequenceType.NON_EMPTY_SEQUENCE;
-        } else if (obj instanceof String) {
-            return SequenceType.SINGLE_STRING;
-        } else if (obj instanceof Boolean) {
-            return SequenceType.SINGLE_BOOLEAN;
-        } else if (obj instanceof Integer) {
-            return SequenceType.SINGLE_INTEGER;
-        } else if (obj instanceof Float) {
-            return SequenceType.SINGLE_FLOAT;
-        } else if (obj instanceof Long) {
-            return SequenceType.SINGLE_INTEGER;
-        } else if (obj instanceof Double) {
-            return SequenceType.SINGLE_DOUBLE;
-        } else if (obj instanceof Number) {
-            return SequenceType.SINGLE_NUMERIC;
-        } else if (obj instanceof Enum<?>) {
-            return SequenceType.SINGLE_STRING;
-        } else if (obj instanceof Character) {
-            return SequenceType.SINGLE_STRING;
-        } else if (obj instanceof Pattern) {
-            return SequenceType.SINGLE_STRING;
-        }
-        return SequenceType.SINGLE_ITEM;
     }
 
     public static AtomicSequence getSequenceRepresentation(Collection<?> list) {
