@@ -16,6 +16,7 @@ import net.sf.saxon.expr.FilterExpression;
 import net.sf.saxon.expr.LetExpression;
 import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.expr.SlashExpression;
+import net.sf.saxon.expr.VennExpression;
 import net.sf.saxon.expr.sort.DocumentSorter;
 import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.pattern.NameTest;
@@ -126,6 +127,13 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         } else {
             return super.visit(e);
         }
+    }
+
+    @Override
+    public Expression visit(VennExpression e) {
+        // stop visiting subtree. We assume all unions were at the root
+        // and flattened, here we find one that couldn't be flattened
+        return e;
     }
 
     public static Comparator<Node> documentOrderComparator() {

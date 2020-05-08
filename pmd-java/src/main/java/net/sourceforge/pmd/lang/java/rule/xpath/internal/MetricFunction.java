@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 
+import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.StaticContext;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
@@ -71,6 +73,11 @@ public class MetricFunction extends BaseJavaXPathFunction {
     @Override
     public ExtensionFunctionCall makeCallExpression() {
         return new ExtensionFunctionCall() {
+            @Override
+            public Expression rewrite(StaticContext context, Expression[] arguments) throws XPathException {
+                return super.rewrite(context, arguments);
+            }
+
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();

@@ -21,7 +21,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.om.Sequence;
 import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
@@ -167,12 +166,6 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
         return attributeWrapper == null ? null : attributeWrapper.getStringValue();
     }
-
-    public Sequence getTypedAttributeValue(String uri, String local) {
-        AstAttributeNode attributeWrapper = getAttributes().get(local);
-        return attributeWrapper == null ? null : attributeWrapper.atomize();
-    }
-
 
     @Override
     protected AxisIterator iterateDescendants(NodeTest nodeTest, boolean includeSelf) {

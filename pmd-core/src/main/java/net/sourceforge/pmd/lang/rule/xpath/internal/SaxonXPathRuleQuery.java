@@ -107,9 +107,9 @@ public class SaxonXPathRuleQuery {
     public List<Node> evaluate(final Node node) {
         initializeXPathExpression();
 
+        final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
+        documentNode.setAttrCtx(attrCtx);
         try {
-            final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
-            documentNode.setAttrCtx(attrCtx); //
 
             // Map AST Node -> Saxon Node
             final XPathDynamicContext xpathDynamicContext = xpathExpression.createDynamicContext(documentNode.findWrapperFor(node));
@@ -137,6 +137,8 @@ public class SaxonXPathRuleQuery {
             return sortedRes;
         } catch (final XPathException e) {
             throw new RuntimeException(xpathExpr + " had problem: " + e.getMessage(), e);
+        } finally {
+            documentNode.setAttrCtx(DeprecatedAttrLogger.noop());
         }
     }
 

@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.followPath;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.nodeB;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.AbstractXPathFunctionDef;
@@ -145,6 +152,50 @@ public class SaxonXPathRuleQueryTest {
         Assert.assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("((((self::node()/child::element(Q{}foo))[data(@Baz) = \"a\"])/child::element())/child::element(Q{}bar))[data(@Test) = \"false\"]", query.nodeNameToXPaths.get("dummyNode").get(0));
         assertExpression("docOrder(((docOrder((docOrder((((/)/descendant::element(Q{}dummyNode))/child::element(Q{}foo))[data(@Baz) = \"a\"]))/child::element()))/child::element(Q{}bar))[data(@Test) = \"false\"])", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+    }
+
+    @Test
+    public void unionBeforeSlash() {
+        SaxonXPathRuleQuery query = createQuery("(//dummyNode | //dummyNodeB)/dummyNode[@Image = '10']");
+
+        DummyRoot tree = tree(() -> root(
+            node(
+                node()
+            ),
+            nodeB(
+                node()
+            )
+        ));
+
+        tree.descendantsOrSelf().forEach(n -> {
+            List<Node> results = query.evaluate(n);
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(followPath(tree, "10"), results.get(0));
+        });
+
+        assertExpression("(((/)/descendant::(element(Q{}dummyNode) | element(Q{}dummyNodeB)))/self::node())[data(@Image) = \"10\"]", query.nodeNameToXPaths.get("dummyNode").get(0));
+    }
+
+    @Test
+    public void unionBeforeSlashWithFilter() {
+        SaxonXPathRuleQuery query = createQuery("(//dummyNode[@Image='0'] | //dummyNodeB[@Image='1'])/dummyNode[@Image = '10']");
+
+        DummyRoot tree = tree(() -> root(
+            node(
+                node()
+            ),
+            nodeB(
+                node()
+            )
+        ));
+
+        assertExpression("(((/)/descendant::(element(Q{}dummyNode) | element(Q{}dummyNodeB)))/self::node())[data(@Image) = \"10\"]", query.nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0));
+
+        tree.descendantsOrSelf().forEach(n -> {
+            List<Node> results = query.evaluate(n);
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(followPath(tree, "10"), results.get(0));
+        });
     }
 
     @Test
