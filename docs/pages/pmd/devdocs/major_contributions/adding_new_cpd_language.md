@@ -50,12 +50,18 @@ All you need to do is follow this few steps:
     
     **You are almost there!**
     
-4. Please don't forget to add some test, you can again.. look at Go implementation ;)
+4. Update the list of supported languages
+
+   - Write the fully-qualified name of your Language class to the file `src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language`
+
+   - Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java)
+
+5. Please don't forget to add some test, you can again.. look at Go implementation ;)
     
     If you read this far, I'm keen to think you would also love to support some extra CPD configuration (ignore imports or crazy things like that)    
     If that's your case , you came to the right place! 
     
-5. You can add your custom properties using a Token filter 
+6. You can add your custom properties using a Token filter
     
     -   For Antlr grammars all you need to do is implement your own [AntlrTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java)
         

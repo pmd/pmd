@@ -53,7 +53,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
         return new AntlrTokenFilter(tokenManager);
     }
 
-    /* default */ static CharStream getCharStreamFromSourceCode(final SourceCode sourceCode) {
+    public static CharStream getCharStreamFromSourceCode(final SourceCode sourceCode) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         return CharStreams.fromString(buffer.toString());
     }
