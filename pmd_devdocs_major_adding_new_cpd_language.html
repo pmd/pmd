@@ -1452,6 +1452,18 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <p><strong>You are almost there!</strong></p>
   </li>
   <li>
+    <p>Update the list of supported languages</p>
+
+    <ul>
+      <li>
+        <p>Write the fully-qualified name of your Language class to the file <code class="highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language</code></p>
+      </li>
+      <li>
+        <p>Update the test that asserts the list of supported languages by updating the <code class="highlighter-rouge">SUPPORTED_LANGUAGES</code> constant in <a href="https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java">BinaryDistributionIT</a></p>
+      </li>
+    </ul>
+  </li>
+  <li>
     <p>Please don’t forget to add some test, you can again.. look at Go implementation ;)</p>
 
     <p>If you read this far, I’m keen to think you would also love to support some extra CPD configuration (ignore imports or crazy things like that)  <br />
