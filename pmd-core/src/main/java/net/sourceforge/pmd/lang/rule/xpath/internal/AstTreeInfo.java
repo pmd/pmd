@@ -38,7 +38,12 @@ public final class AstTreeInfo extends GenericTreeInfo {
         // for the RootNode, this returns the document node
         List<Integer> indices = node.ancestorsOrSelf().toList(Node::getIndexInParent);
         AstElementNode cur = getRootNode().getRootElement();
-        for (int i = 1; i < indices.size(); i++) { // note we skip the first, who is the root
+
+        // this is a quick but possibly expensive check
+        assert cur.getUnderlyingNode() == node.getRoot() : "Node is not in this tree";
+
+        // note we skip the first, who is the root
+        for (int i = indices.size() - 2; i >= 0; i--) {
             Integer idx = indices.get(i);
             if (idx >= cur.getChildren().size()) {
                 throw new IllegalArgumentException("Node is not part of this tree " + node);
@@ -53,7 +58,11 @@ public final class AstTreeInfo extends GenericTreeInfo {
         return cur;
     }
 
-
+    /**
+     * Returns the document node of the tree. Note that this has a single
+     * child of element type. Both the document and this element child have
+     * the {@link RootNode} as {@link AstElementNode#getUnderlyingNode()}.
+     */
     @Override
     public AstDocumentNode getRootNode() {
         return (AstDocumentNode) super.getRootNode();
