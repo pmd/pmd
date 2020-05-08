@@ -11,9 +11,7 @@ public class ASTName extends AbstractJavaTypeNode {
 
     private NameDeclaration nd;
 
-    @InternalApi
-    @Deprecated
-    public ASTName(int id) {
+    ASTName(int id) {
         super(id);
     }
 

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
  * Each data flow contains a set of DataFlowNodes.
@@ -17,6 +19,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author raik
  */
 public abstract class AbstractDataFlowNode implements DataFlowNode {
+
+    static final SimpleDataKey<DataFlowNode> DATAFLOW_KEY = DataMap.simpleDataKey("dataflow.cache");
 
     protected Node node;
 
@@ -40,7 +44,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         this(dataFlow);
 
         this.node = node;
-        node.setDataFlowNode(this);
+        node.getUserMap().set(DATAFLOW_KEY, this);
         this.line = node.getBeginLine();
     }
 

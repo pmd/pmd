@@ -11,8 +11,8 @@ import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * Generic Antlr parser adapter for all Antlr parsers.
@@ -31,7 +31,7 @@ public abstract class AntlrBaseParser<T extends org.antlr.v4.runtime.Parser> imp
     }
 
     @Override
-    public Node parse(final String fileName, final Reader source) throws ParseException {
+    public RootNode parse(final String fileName, final Reader source) throws ParseException {
         try {
             return getRootNode(getParser(getLexer(source)));
         } catch (final IOException e) {
@@ -39,7 +39,7 @@ public abstract class AntlrBaseParser<T extends org.antlr.v4.runtime.Parser> imp
         }
     }
 
-    protected abstract AntlrBaseNode getRootNode(T parser);
+    protected abstract RootNode getRootNode(T parser);
 
     protected abstract Lexer getLexer(Reader source) throws IOException;
 

@@ -11,16 +11,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 
 /**
@@ -29,15 +28,20 @@ import net.sourceforge.pmd.util.CompoundIterator;
  * @author Clément Fournier
  * @since 6.1.0
  */
-class XmlNodeWrapper extends AbstractNode implements XmlNode {
+class XmlNodeWrapper implements XmlNode {
 
+    int beginLine = -1;
+    int endLine = -1;
+    int beginColumn = -1;
+    int endColumn = -1;
+
+    private DataMap<DataKey<?, ?>> dataMap;
     private final XmlParserImpl parser;
-    private Object userData;
     private final org.w3c.dom.Node node;
 
 
     XmlNodeWrapper(XmlParserImpl parser, org.w3c.dom.Node domNode) {
-        super(0);
+        super();
         this.node = domNode;
         this.parser = parser;
     }
@@ -63,7 +67,7 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
 
 
     @Override
-    public Node getChild(int index) {
+    public XmlNode getChild(int index) {
         return parser.wrapDomNode(node.getChildNodes().item(index));
     }
 
@@ -89,20 +93,11 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
     }
 
     @Override
-    public Document getAsDocument() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public Object getUserData() {
-        return userData;
-    }
-
-
-    @Override
-    public void setUserData(Object userData) {
-        this.userData = userData;
+    public DataMap<DataKey<?, ?>> getUserMap() {
+        if (dataMap == null) {
+            dataMap = DataMap.newDataMap();
+        }
+        return dataMap;
     }
 
 
@@ -169,6 +164,25 @@ class XmlNodeWrapper extends AbstractNode implements XmlNode {
         return node;
     }
 
+    @Override
+    public int getBeginLine() {
+        return beginLine;
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return beginColumn;
+    }
+
+    @Override
+    public int getEndLine() {
+        return endLine;
+    }
+
+    @Override
+    public int getEndColumn() {
+        return endColumn;
+    }
 
     // package private, open only to DOMLineNumbers
 

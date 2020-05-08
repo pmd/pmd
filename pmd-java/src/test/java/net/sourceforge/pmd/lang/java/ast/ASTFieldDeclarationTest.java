@@ -77,9 +77,9 @@ public class ASTFieldDeclarationTest extends BaseParserTest {
         ASTType t = new ASTType(id++);
         ASTVariableDeclarator decl = new ASTVariableDeclarator(id++);
         ASTVariableDeclaratorId declid = new ASTVariableDeclaratorId(id++);
-        n.jjtAddChild(t, 0);
-        t.jjtAddChild(decl, 0);
-        decl.jjtAddChild(declid, 0);
+        n.addChild(t, 0);
+        t.addChild(decl, 0);
+        decl.addChild(declid, 0);
         declid.setImage("foo");
 
         assertEquals("foo", n.getVariableName());

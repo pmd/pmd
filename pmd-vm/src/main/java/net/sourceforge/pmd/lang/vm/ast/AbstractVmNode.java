@@ -23,18 +23,16 @@ package net.sourceforge.pmd.lang.vm.ast;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
-abstract class AbstractVmNode extends AbstractJjtreeNode<VmNode> implements VmNode {
+abstract class AbstractVmNode extends AbstractJjtreeNode<AbstractVmNode, VmNode> implements VmNode {
 
     protected AbstractVmNode(final int i) {
         super(i);
     }
 
-    public JavaccToken getFirstToken() {
-        return jjtGetFirstToken();
-    }
 
-    public JavaccToken getLastToken() {
-        return jjtGetLastToken();
+    @Override // override to make protected member accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
     }
 
     @Override

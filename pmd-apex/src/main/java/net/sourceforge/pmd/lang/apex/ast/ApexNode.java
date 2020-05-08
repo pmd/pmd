@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 import apex.jorje.semantic.ast.AstNode;
 
@@ -16,22 +15,12 @@ import apex.jorje.semantic.ast.AstNode;
  *
  * @param <T> Type of the underlying Jorje node
  */
-public interface ApexNode<T extends AstNode> extends Node {
+public interface ApexNode<T extends AstNode> extends GenericNode<ApexNode<?>> {
 
     /**
      * Accept the visitor.
      */
     Object jjtAccept(ApexParserVisitor visitor, Object data);
-
-
-    /**
-     * Accept the visitor. *
-     *
-     * @deprecated This method is not useful, the logic for combining
-     *     children values should be present on the visitor, not the node
-     */
-    @Deprecated
-    Object childrenAccept(ApexParserVisitor visitor, Object data);
 
 
     /**
@@ -42,18 +31,6 @@ public interface ApexNode<T extends AstNode> extends Node {
      */
     @Deprecated
     T getNode();
-
-
-    @Override
-    NodeStream<? extends ApexNode<?>> children();
-
-
-    @Override
-    ApexNode<?> getChild(int index);
-
-
-    @Override
-    ApexNode<?> getParent();
 
     boolean hasRealLoc();
 

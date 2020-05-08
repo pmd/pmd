@@ -2,12 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast;
+package net.sourceforge.pmd.lang.ast.impl;
 
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
+import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.List;
 
 import org.jaxen.JaxenException;
 import org.junit.Before;
@@ -16,6 +21,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import junitparams.JUnitParamsRunner;
@@ -64,36 +74,25 @@ public class AbstractNodeTest {
         return indexes;
     }
 
-    private int id;
-    private Node rootNode;
-
-    private int nextId() {
-        return id++;
-    }
-
-    private Node newDummyNode() {
-        return new DummyNode(nextId());
-    }
-
-    private static Node addChild(final Node parent, final Node child) {
-        parent.jjtAddChild(child, parent.getNumChildren()); // Append child at the end
-        child.jjtSetParent(parent);
-        return parent;
-    }
+    private DummyRoot rootNode;
 
     @Before
     public void setUpSampleNodeTree() {
-        id = 0;
-        rootNode = newDummyNode();
+        rootNode = tree(
+            () -> {
+                DummyRoot root = root();
 
-        for (int i = 0; i < NUM_CHILDREN; i++) {
-            final Node child = newDummyNode();
-            for (int j = 0; j < NUM_GRAND_CHILDREN; j++) {
-                final Node grandChild = newDummyNode();
-                addChild(child, grandChild);
+                for (int i = 0; i < NUM_CHILDREN; i++) {
+                    final DummyNode child = node();
+                    for (int j = 0; j < NUM_GRAND_CHILDREN; j++) {
+                        child.addChild(node(), j);
+                    }
+                    root.addChild(child, i);
+                }
+                return root;
             }
-            addChild(rootNode, child);
-        }
+        );
+
     }
 
     /**
@@ -102,12 +101,8 @@ public class AbstractNodeTest {
     @Test
     @Parameters(method = "childrenIndexes")
     public void testRemoveChildOfRootNode(final int childIndex) {
-        final Node child = rootNode.getChild(childIndex);
-        final Node[] grandChildren = new Node[child.getNumChildren()];
-        for (int i = 0; i < grandChildren.length; i++) {
-            final Node grandChild = child.getChild(i);
-            grandChildren[i] = grandChild;
-        }
+        final DummyNode child = rootNode.getChild(childIndex);
+        final List<? extends DummyNode> grandChildren = child.children().toList();
 
         // Do the actual removal
         child.remove();
@@ -129,11 +124,7 @@ public class AbstractNodeTest {
     @Test
     public void testRemoveRootNode() {
         // Check that the root node has the expected properties
-        final Node[] children = new Node[rootNode.getNumChildren()];
-        for (int i = 0; i < children.length; i++) {
-            final Node child = rootNode.getChild(i);
-            children[i] = child;
-        }
+        final List<? extends DummyNode> children = rootNode.children().toList();
 
         // Do the actual removal
         rootNode.remove();
@@ -154,8 +145,8 @@ public class AbstractNodeTest {
     @Test
     @Parameters(method = "childrenAndGrandChildrenIndexes")
     public void testRemoveGrandChildNode(final int childIndex, final int grandChildIndex) {
-        final Node child = rootNode.getChild(childIndex);
-        final Node grandChild = child.getChild(grandChildIndex);
+        final DummyNode child = rootNode.getChild(childIndex);
+        final DummyNode grandChild = child.getChild(grandChildIndex);
 
         // Do the actual removal
         grandChild.remove();
@@ -172,11 +163,7 @@ public class AbstractNodeTest {
     @Test
     @Parameters(method = "childrenIndexes")
     public void testRemoveRootNodeChildAtIndex(final int childIndex) {
-        final Node[] originalChildren = new Node[rootNode.getNumChildren()];
-
-        for (int i = 0; i < originalChildren.length; i++) {
-            originalChildren[i] = rootNode.getChild(i);
-        }
+        final List<? extends DummyNode> originalChildren = rootNode.children().toList();
 
         // Do the actual removal
         rootNode.removeChildAtIndex(childIndex);
@@ -189,7 +176,7 @@ public class AbstractNodeTest {
                 j++;
             }
             // Check that the nodes have been rightly shifted
-            assertEquals(originalChildren[j], rootNode.getChild(i));
+            assertEquals(originalChildren.get(j), rootNode.getChild(i));
             // Check that the child index has been updated
             assertEquals(i, rootNode.getChild(i).getIndexInParent());
             j++;
@@ -218,7 +205,7 @@ public class AbstractNodeTest {
     @Parameters(method = "grandChildrenIndexes")
     public void testRemoveChildAtIndexOnNodeWithNoChildren(final int grandChildIndex) {
         // grandChild does not have any child
-        final Node grandChild = rootNode.getChild(grandChildIndex).getChild(grandChildIndex);
+        final DummyNode grandChild = rootNode.getChild(grandChildIndex).getChild(grandChildIndex);
 
         // Do the actual removal
         grandChild.removeChildAtIndex(0);
@@ -228,17 +215,18 @@ public class AbstractNodeTest {
         assertEquals(0, grandChild.getNumChildren());
     }
 
+
     @Test
     public void testDeprecatedAttributeXPathQuery() throws JaxenException {
         class MyRootNode extends DummyNode implements RootNode {
 
-            private MyRootNode(int id) {
-                super(id);
+            private MyRootNode() {
+                super();
             }
         }
 
-        Node root = addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2));
-        root.findChildNodesWithXPath("//dummyNode[@Size=1]");
+        tree(() -> root(new DummyNodeWithDeprecatedAttribute(2)))
+            .findChildNodesWithXPath("//dummyNode[@Size=1]");
 
         String log = loggingRule.getLog();
 
@@ -246,5 +234,6 @@ public class AbstractNodeTest {
         assertTrue(log.contains("attribute"));
         assertTrue(log.contains("dummyNode/@Size"));
     }
+
 
 }

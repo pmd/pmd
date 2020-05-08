@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.dfa;
 
+import static net.sourceforge.pmd.lang.dfa.AbstractDataFlowNode.DATAFLOW_KEY;
+
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -35,4 +37,13 @@ public interface DataFlowNode {
 
     void reverseParentPathsTo(DataFlowNode destination);
 
+
+    static DataFlowNode get(Node node) {
+        DataFlowNode df = node.getUserMap().get(DATAFLOW_KEY);
+        if (df == null && node.getParent() != null) {
+            return get(node.getParent());
+        } else {
+            return df;
+        }
+    }
 }

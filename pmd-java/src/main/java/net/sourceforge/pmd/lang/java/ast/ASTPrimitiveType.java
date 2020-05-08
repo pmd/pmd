@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a primitive type.
  *
@@ -19,9 +17,7 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensiona
 
     private int arrayDepth;
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimitiveType(int id) {
+    ASTPrimitiveType(int id) {
         super(id);
     }
 

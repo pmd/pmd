@@ -59,7 +59,7 @@ public class XmlParserImpl {
     }
 
 
-    public XmlNode parse(Reader reader) {
+    public RootXmlNode parse(Reader reader) {
         String xmlData;
         try {
             xmlData = IOUtils.toString(reader);

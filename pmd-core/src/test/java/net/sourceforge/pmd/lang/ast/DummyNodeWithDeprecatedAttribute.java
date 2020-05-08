@@ -14,7 +14,7 @@ public class DummyNodeWithDeprecatedAttribute extends DummyNode {
 
 
     public DummyNodeWithDeprecatedAttribute(int id) {
-        super(id);
+        super();
     }
 
     // this is the deprecated attribute

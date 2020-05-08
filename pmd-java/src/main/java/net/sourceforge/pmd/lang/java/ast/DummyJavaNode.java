@@ -21,6 +21,11 @@ public class DummyJavaNode extends AbstractJavaNode {
     }
 
     @Override
+    public void setImage(String image) {
+        super.setImage(image);
+    }
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return data;
     }

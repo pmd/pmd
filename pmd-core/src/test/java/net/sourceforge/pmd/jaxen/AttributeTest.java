@@ -17,13 +17,14 @@ public class AttributeTest {
 
     @Test
     public void testConstructor() {
-        DummyNode p = new DummyNode(1);
-        p.testingOnlySetBeginLine(5);
+        DummyNode p = new DummyNode();
+        p.setCoords(5, 5, 5, 10);
+
         Method[] methods = p.getClass().getMethods();
         Method m = null;
-        for (int i = 0; i < methods.length; i++) {
-            if (methods[i].getName().equals("getBeginLine")) {
-                m = methods[i];
+        for (Method method : methods) {
+            if (method.getName().equals("getBeginLine")) {
+                m = method;
                 break;
             }
         }

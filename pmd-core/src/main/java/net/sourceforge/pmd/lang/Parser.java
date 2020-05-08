@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * Produces an AST from a source file. Instances of this interface must
@@ -39,7 +39,7 @@ public interface Parser {
      *             In case the source code could not be parsed, probably due to
      *             syntactical errors.
      */
-    Node parse(String fileName, Reader source) throws ParseException;
+    RootNode parse(String fileName, Reader source) throws ParseException;
 
 
 }
