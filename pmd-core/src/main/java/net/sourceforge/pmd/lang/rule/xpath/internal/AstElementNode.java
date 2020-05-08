@@ -143,14 +143,14 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
 
-    @Override
+    @Override // this excludes self
     protected AxisIterator iterateSiblings(NodeTest nodeTest, boolean forwards) {
         if (parent == null) {
             return EmptyIterator.OfNodes.THE_INSTANCE;
         }
 
         List<? extends NodeInfo> siblingsList =
-            forwards ? CollectionUtil.drop(parent.getChildren(), wrappedNode.getIndexInParent())
+            forwards ? CollectionUtil.drop(parent.getChildren(), wrappedNode.getIndexInParent() + 1)
                      : CollectionUtil.take(parent.getChildren(), wrappedNode.getIndexInParent());
 
         AxisIterator iter =

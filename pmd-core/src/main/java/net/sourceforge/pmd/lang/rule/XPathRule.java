@@ -160,7 +160,7 @@ public class XPathRule extends AbstractRule {
             initXPathRuleQuery();
         }
 
-        List<Node> nodesWithViolation = xpathRuleQuery.evaluate(node, data);
+        List<Node> nodesWithViolation = xpathRuleQuery.evaluate(node);
         for (Node nodeWithViolation : nodesWithViolation) {
             addViolation(data, nodeWithViolation, nodeWithViolation.getImage());
         }

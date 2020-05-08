@@ -7,13 +7,14 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -37,7 +38,6 @@ import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
-import net.sf.saxon.sxpath.XPathStaticContext;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
 
@@ -111,7 +111,7 @@ public class SaxonXPathRuleQuery {
     }
 
 
-    public List<Node> evaluate(final Node node, final RuleContext data) {
+    public List<Node> evaluate(final Node node) {
         initializeXPathExpression();
 
         try {
@@ -121,13 +121,16 @@ public class SaxonXPathRuleQuery {
             // Map AST Node -> Saxon Node
             final XPathDynamicContext xpathDynamicContext = createDynamicContext(documentNode.findWrapperFor(node));
 
-            final List<AstElementNode> nodes = new ArrayList<>();
+            // XPath 2.0 sequences may contain duplicates
+            final Set<Node> results = new LinkedHashSet<>();
             List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
-                while (current instanceof AstElementNode) {
-                    nodes.add((AstElementNode) current);
+                while (current != null) {
+                    if (current instanceof AstElementNode) {
+                        results.add(((AstElementNode) current).getUnderlyingNode());
+                    }
                     current = iterator.next();
                 }
             }
@@ -136,12 +139,9 @@ public class SaxonXPathRuleQuery {
              Map List of Saxon Nodes -> List of AST Nodes, which were detected to match the XPath expression
              (i.e. violation found)
               */
-            final List<Node> results = new ArrayList<>(nodes.size());
-            for (final AstElementNode elementNode : nodes) {
-                results.add(elementNode.getUnderlyingNode());
-            }
-            results.sort(RuleChainAnalyzer.documentOrderComparator());
-            return results;
+            final List<Node> sortedRes = new ArrayList<>(results);
+            sortedRes.sort(RuleChainAnalyzer.documentOrderComparator());
+            return sortedRes;
         } catch (final XPathException e) {
             throw new RuntimeException(xpathExpr + " had problem: " + e.getMessage(), e);
         }
@@ -229,18 +229,17 @@ public class SaxonXPathRuleQuery {
             return;
         }
         try {
-            final XPathEvaluator xpathEvaluator = new XPathEvaluator();
-            final XPathStaticContext xpathStaticContext = xpathEvaluator.getStaticContext();
-            xpathStaticContext.getConfiguration().setNamePool(getNamePool());
+            this.configuration = new Configuration();
+            configuration.setNamePool(getNamePool());
 
-            this.configuration = xpathStaticContext.getConfiguration();
+            final IndependentContext xpathStaticContext = new IndependentContext(configuration);
 
 
             for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
                 StructuredQName qname = fun.getFunctionQName();
-                ((IndependentContext) xpathStaticContext).declareNamespace(qname.getPrefix(), qname.getURI());
+                xpathStaticContext.declareNamespace(qname.getPrefix(), qname.getURI());
 
-                configuration.registerExtensionFunction(fun);
+                this.configuration.registerExtensionFunction(fun);
             }
 
 
@@ -258,6 +257,8 @@ public class SaxonXPathRuleQuery {
                 }
             }
 
+            final XPathEvaluator xpathEvaluator = new XPathEvaluator(configuration);
+            xpathEvaluator.setStaticContext(xpathStaticContext);
             xpathExpression = xpathEvaluator.createExpression(xpathExpr);
             analyzeXPathForRuleChain(xpathEvaluator);
         } catch (final XPathException e) {

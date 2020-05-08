@@ -137,7 +137,7 @@ public class XPathRuleTest extends RuleTst {
                                                                      new HashMap<>(),
                                                                      language.getLanguageVersionHandler().getXPathHandler(),
                                                                      DeprecatedAttrLogger.noop());
-        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
+        List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(1, nodes.size());
     }
 
@@ -149,8 +149,13 @@ public class XPathRuleTest extends RuleTst {
      */
     @Test
     public void testFollowingSibling() throws Exception {
-        final String SOURCE = "public class dummy {\n" + "  public String toString() {\n"
-                + "    String test = \"bad example\";\n" + "    test = \"a\";\n" + "    return test;\n" + "  }\n" + "}";
+        final String SOURCE = "public class dummy {\n" +
+            "  public String toString() {\n" +
+            "    String test = \"bad example\";\n" +
+            "    test = \"a\";\n" +
+            "    return test;\n" +
+            "  }\n" +
+            "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
         ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(SOURCE);
         RuleContext ruleContext = new RuleContext();
@@ -164,7 +169,7 @@ public class XPathRuleTest extends RuleTst {
                                                                      new HashMap<>(),
                                                                      language.getLanguageVersionHandler().getXPathHandler(),
                                                                      DeprecatedAttrLogger.noop());
-        List<Node> nodes = xpathRuleQuery.evaluate(cu, ruleContext);
+        List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(2, nodes.size());
         assertEquals(4, nodes.get(0).getBeginLine());
         assertEquals(5, nodes.get(1).getBeginLine());

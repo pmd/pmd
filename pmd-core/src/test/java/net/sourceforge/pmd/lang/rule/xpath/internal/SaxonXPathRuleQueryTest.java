@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -185,7 +184,7 @@ public class SaxonXPathRuleQueryTest {
 
     private static void assertQuery(int resultSize, String xpath, Node node, PropertyDescriptor<?>... descriptors) {
         SaxonXPathRuleQuery query = createQuery(xpath, descriptors);
-        List<Node> result = query.evaluate(node, new RuleContext());
+        List<Node> result = query.evaluate(node);
         Assert.assertEquals(resultSize, result.size());
     }
 
