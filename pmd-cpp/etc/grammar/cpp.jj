@@ -297,7 +297,7 @@ TOKEN [IGNORE_CASE] :
 | <  UNSIGNED_DECIMALLONG : <DECIMALINT> ("ul" | "lu") >
 
 
-| <  HEXADECIMALINT : "0x" (<DECIMALDIGIT> | ["a"-"f"])+ >
+| <  HEXADECIMALINT : "0x" (<HEXDIGIT>)+ >
 | <  HEXADECIMALLONG : <HEXADECIMALINT> (["u","l"])? >
 | <  UNSIGNED_HEXADECIMALINT : <HEXADECIMALINT> "u" >
 | <  UNSIGNED_HEXADECIMALLONG : <HEXADECIMALINT> ("ul" | "lu") >
@@ -387,12 +387,16 @@ TOKEN :
 // but can also be \ uhhhh or \ Uhhhhhh (unicode escapes)
 // *and* other characters may be allowed by implementations, eg a raw unicode char (not escaped), or a dollar
 
-// this grammar doesn't allow unicode escapes
+// this grammar doesn't allow unicode escapes, maybe it should?
 
 // ref: https://en.cppreference.com/w/cpp/language/identifiers#Unicode_characters_in_identifiers
 
   < ID : <ID_START_CHAR> (<ID_CHAR>)* >
 
+| < #UNICODE_ESCAPE: "\\" ( "u" <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> <HEXDIGIT>
+                          | "U" <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> <HEXDIGIT> <HEXDIGIT>
+                          ) >
+| < #HEXDIGIT: ["a"-"f", "A"-"F", "0"-"9"] >
 | < #ID_CHAR: [
     "a"-"z", "A"-"Z", "0"-"9", "_", "$",
     "\u00a8", "\u00aa", "\u00ad", "\u00af",
