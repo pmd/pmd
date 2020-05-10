@@ -284,9 +284,9 @@ TOKEN :
 
 TOKEN [IGNORE_CASE] :
 {
-  < #DECIMALDIGIT: ["0"-"9"] >
-| < #OCTALDIGIT:   ["0"-"7"] >
-| < #HEXDIGIT:     ["a"-"f", "A"-"F", "0"-"9"] >
+  <  #DECIMALDIGIT: ["0"-"9"] >
+| <  #OCTALDIGIT:   ["0"-"7"] >
+| <  #HEXDIGIT:     ["a"-"f", "A"-"F", "0"-"9"] >
 
 | <  OCTALINT : "0" ("'" <OCTALDIGIT> | <OCTALDIGIT>)* >
 | <  OCTALLONG : <OCTALINT> "l" >
@@ -303,13 +303,11 @@ TOKEN [IGNORE_CASE] :
 | <  UNSIGNED_HEXADECIMALINT : <HEXADECIMALINT> "u" >
 | <  UNSIGNED_HEXADECIMALLONG : <HEXADECIMALINT> ("ul" | "lu") >
 
+// like DECIMALINT but may start with 0
+| <  #INT_IN_FLOAT: ["0"-"9"] ("'" <DECIMALDIGIT> | <DECIMALDIGIT>)* >
+| <  #EXP_PART: "e" (["-","+"])? <INT_IN_FLOAT> >
 
-| <  FLOATONE : (["0"-"9"](<DECIMALDIGIT>)* "."
-              | "." (<DECIMALDIGIT>)+
-              | ["0"-"9"](<DECIMALDIGIT>)* "." (<DECIMALDIGIT>)+)
-              ("e" (["-","+"])? (<DECIMALDIGIT>)+)? (["f","l"])? >
-
-| <  FLOATTWO : ["0"-"9"](<DECIMALDIGIT>)* "e" (["-","+"])? (<DECIMALDIGIT>)+ (["f","l"])? >
+| <  FLOAT_LITERAL : <INT_IN_FLOAT> ("." (<INT_IN_FLOAT> (<EXP_PART>)?)? | <EXP_PART> ) (["f", "l"])? >
 }
 
 TOKEN :
@@ -1615,8 +1613,7 @@ void constant() :
    | <UNSIGNED_HEXADECIMALLONG>
 
    | <CHARACTER>
-   | <FLOATONE>
-   | <FLOATTWO>
+   | <FLOAT_LITERAL>
    | "true"
    | "false"
 }
