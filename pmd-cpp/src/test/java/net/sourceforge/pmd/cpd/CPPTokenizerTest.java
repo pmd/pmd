@@ -74,6 +74,12 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    public void testUnicodeEscapeInIdentifier() {
+        Tokens tokens = parse(" void main() { int a\\u0048; }");
+        assertEquals(10, tokens.size());
+    }
+
+    @Test
     public void testMultiLineMacros() {
         doTest("multilineMacros");
     }
