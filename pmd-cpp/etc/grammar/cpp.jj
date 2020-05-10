@@ -282,32 +282,23 @@ TOKEN :
 | < FINALLY: "finally" >
 }
 
-TOKEN [IGNORE_CASE] :
+TOKEN:
 {
   <  #DECIMALDIGIT: ["0"-"9"] >
 | <  #OCTALDIGIT:   ["0"-"7"] >
 | <  #HEXDIGIT:     ["a"-"f", "A"-"F", "0"-"9"] >
+| <  #INT_SUFFIX:   ["u", "U", "l", "L"] | "uL" | "Ul" | "UL" | "ul" | "lu" | "Lu" | "lU" | "LU" >
 
-| <  OCTALINT : "0" ("'" <OCTALDIGIT> | <OCTALDIGIT>)* >
-| <  OCTALLONG : <OCTALINT> "l" >
-| <  UNSIGNED_OCTALINT : <OCTALINT> "u" >
-| <  UNSIGNED_OCTALLONG : <OCTALINT> ("ul" | "lu") >
-
-| <  DECIMALINT : ["1"-"9"] ("'" <DECIMALDIGIT> | <DECIMALDIGIT>)* >
-| <  DECIMALLONG : <DECIMALINT> ["u","l"] >
-| <  UNSIGNED_DECIMALINT : <DECIMALINT> "u" >
-| <  UNSIGNED_DECIMALLONG : <DECIMALINT> ("ul" | "lu") >
-
-| <  HEXADECIMALINT : "0x" <HEXDIGIT> ("'" <HEXDIGIT> | <HEXDIGIT>)+ >
-| <  HEXADECIMALLONG : <HEXADECIMALINT> (["u","l"])? >
-| <  UNSIGNED_HEXADECIMALINT : <HEXADECIMALINT> "u" >
-| <  UNSIGNED_HEXADECIMALLONG : <HEXADECIMALINT> ("ul" | "lu") >
+| <  ZERO: "0" >
+| <  OCTAL_INT_LITERAL:       "0"                       ("'" | <OCTALDIGIT>)+   (<INT_SUFFIX>)? >
+| <  DECIMAL_INT_LITERAL:     ["1"-"9"]                 ("'" | <DECIMALDIGIT>)* (<INT_SUFFIX>)? >
+| <  HEXADECIMAL_INT_LITERAL: "0" ["x", "X"] <HEXDIGIT> ("'" | <HEXDIGIT>)+     (<INT_SUFFIX>)? >
 
 // like DECIMALINT but may start with 0
-| <  #INT_IN_FLOAT: ["0"-"9"] ("'" <DECIMALDIGIT> | <DECIMALDIGIT>)* >
-| <  #EXP_PART: "e" (["-","+"])? <INT_IN_FLOAT> >
+| <  #INT_IN_FLOAT: ["0"-"9"] ("'" | <DECIMALDIGIT>)* >
+| <  #EXP_PART: ["e", "E"] (["-","+"])? <INT_IN_FLOAT> >
 
-| <  FLOAT_LITERAL : <INT_IN_FLOAT> ("." (<INT_IN_FLOAT> (<EXP_PART>)?)? | <EXP_PART> ) (["f", "l"])? >
+| <  FLOAT_LITERAL : <INT_IN_FLOAT> ("." (<INT_IN_FLOAT> (<EXP_PART>)?)? | <EXP_PART> ) (["f", "l", "F", "L"])? >
 }
 
 TOKEN :
@@ -381,12 +372,7 @@ rstringbody:
 
 TOKEN :
 {
-// the standard says ids are only CHAR_NON_DIGIT CHAR*
-// where CHAR is at least [a-zA-Z_0-9],
-// but can also be \ uhhhh or \ Uhhhhhhhh (unicode escapes)
-// *and* other characters may be allowed by implementations, eg a raw unicode char (not escaped), or a dollar
-
-// ref: https://en.cppreference.com/w/cpp/language/identifiers#Unicode_characters_in_identifiers
+// https://en.cppreference.com/w/cpp/language/identifiers#Unicode_characters_in_identifiers
 
   < ID : <ID_START_CHAR> (<ID_CHAR>)* >
 
@@ -854,8 +840,8 @@ void member_declaration() :
 void member_declarator_list(boolean isTypedef) :
 {}
 {
-   member_declarator(isTypedef) ("=" <OCTALINT>)?
-   ("," member_declarator(isTypedef) ("=" <OCTALINT>)?)*
+   member_declarator(isTypedef) ("=" assignment_expression())?
+   ("," member_declarator(isTypedef) ("=" assignment_expression())?)*
 }
 
 void member_declarator(boolean isTypedef) :
@@ -1009,7 +995,7 @@ Scope function_direct_declarator(boolean isTypedef) :
      "(" (parameter_list())?  ")"
      (LOOKAHEAD(2) type_qualifier())?
      (exception_spec())?
-     (LOOKAHEAD("=") "=" <OCTALINT>)?
+     ("=" <ZERO>)?
 
      {
         if (closeReqd)
@@ -1598,22 +1584,14 @@ void expression_list() :
 
 void constant() :
 {}
-{    <OCTALINT>
-   | <OCTALLONG>
-   | <DECIMALINT>
-   | <DECIMALLONG>
-   | <HEXADECIMALINT>
-   | <HEXADECIMALLONG>
-
-   | <UNSIGNED_OCTALINT>
-   | <UNSIGNED_OCTALLONG>
-   | <UNSIGNED_DECIMALINT>
-   | <UNSIGNED_DECIMALLONG>
-   | <UNSIGNED_HEXADECIMALINT>
-   | <UNSIGNED_HEXADECIMALLONG>
+{
+     <ZERO>
+   | <OCTAL_INT_LITERAL>
+   | <DECIMAL_INT_LITERAL>
+   | <HEXADECIMAL_INT_LITERAL>
+   | <FLOAT_LITERAL>
 
    | <CHARACTER>
-   | <FLOAT_LITERAL>
    | "true"
    | "false"
 }
