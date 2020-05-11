@@ -188,6 +188,36 @@ public class MethodNamingConventions implements SomeInterface {
     </test-code>
 
     <test-code>
+        <description>JUnit 5 test detection</description>
+        <rule-property name="junit5TestPattern">[a-z][A-Za-z]*Test</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,9</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 5 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit 5 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import org.junit.jupiter.api.Test;
+
+            public class TournamentTest {
+                @Test // note that this is also a junit 3 test, but the junit 5 rule applies
+                public void testGetBestTeam() {
+                }
+
+                @Test // this is just a junit 5 test
+                public void getBestTeam() {
+                }
+
+                // this is ok
+                @Test
+                public void getBestTeamTest() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Instance method custom convention</description>
         <rule-property name="methodPattern">m_[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
