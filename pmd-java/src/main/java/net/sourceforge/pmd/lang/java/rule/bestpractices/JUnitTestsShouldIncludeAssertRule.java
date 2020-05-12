@@ -61,6 +61,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         if (n instanceof ASTStatementExpression) {
             if (isExpectStatement((ASTStatementExpression) n, expectables)
                     || isAssertOrFailStatement((ASTStatementExpression) n)
+                    || isHamcrestAssert((ASTStatementExpression) n)
                     || isVerifyStatement((ASTStatementExpression) n)
                     || isSoftAssertionStatement((ASTStatementExpression) n, variables)) {
                 return true;
@@ -128,6 +129,23 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                     if ("expected".equals(pair.getImage())) {
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tells if the expression is an Hamcrest assert
+     */
+    private boolean isHamcrestAssert(ASTStatementExpression expression) {
+        if (expression != null) {
+            ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+            if (pe != null) {
+                Node name = pe.getFirstDescendantOfType(ASTName.class);
+                if (name != null) {
+                    String img = name.getImage();
+                    return "assertThat".equals(img) || "MatcherAssert.assertThat".equals(img);
                 }
             }
         }
