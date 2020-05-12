@@ -89,7 +89,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         return isJUnit3Class && method.isVoid() && method.getName().startsWith("test");
     }
 
-    private boolean isJUnit3Class(ASTCompilationUnit node) {
+    protected boolean isJUnit3Class(ASTCompilationUnit node) {
         ASTClassOrInterfaceDeclaration cid = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
         if (cid == null) {
             return false;
@@ -105,19 +105,19 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
             if (((ASTClassOrInterfaceType) extendsList.getChild(0)).getImage().endsWith("TestCase")) {
                 return true;
             }
-            String className = cid.getImage();
+            String className = cid.getSimpleName();
             return className.endsWith("Test");
         } else if (hasImports(node, JUNIT3_CLASS_NAME)) {
-            return cid.getImage().endsWith("Test");
+            return cid.getSimpleName().endsWith("Test");
         }
         return false;
     }
 
-    private boolean isJUnit4Class(ASTCompilationUnit node) {
+    protected boolean isJUnit4Class(ASTCompilationUnit node) {
         return doesNodeContainJUnitAnnotation(node, JUNIT4_CLASS_NAME);
     }
 
-    private boolean isJUnit5Class(ASTCompilationUnit node) {
+    protected boolean isJUnit5Class(ASTCompilationUnit node) {
         return doesNodeContainJUnitAnnotation(node, JUNIT5_CLASS_NAME);
     }
 
