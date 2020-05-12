@@ -14,7 +14,7 @@ public class JUnitSpellingRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         ASTCompilationUnit acu = node.getFirstParentOfType(ASTCompilationUnit.class);
-        if (isJUnit5Class(acu) || (isJUnit4Class(acu))) {
+        if (isJUnit5Class(acu) || isJUnit4Class(acu)) {
             return super.visit(node, data);
         }
 
