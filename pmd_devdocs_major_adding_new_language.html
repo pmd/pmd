@@ -1498,19 +1498,69 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li>Create the service registration via the text file <code class="highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language</code>. Add your fully qualified class name as a single line into it.</li>
 </ul>
 
-<h2 id="12-create-an-abstract-rule-class-for-the-language">12. Create an abstract rule class for the language</h2>
+<h2 id="12-add-ast-regression-tests">12. Add AST regression tests</h2>
+
+<p>For languages, that use an external library for parsing, the AST can easily change when upgrading the library.
+Also for languages, where we have the grammar under our control, it useful to have such tests.</p>
+
+<p>The tests parse one or more source files and generate a textual representation of the AST. This text is compared
+against a previously recorded version. If there are differences, the test fails.</p>
+
+<p>This helps to detect anything in the AST structure, that changed, maybe unexpectedly.</p>
+
+<ul>
+  <li>Create a test class in the package <code class="highlighter-rouge">net.sourceforge.pmd.lang.$lang.ast</code> with the name <code class="highlighter-rouge">$langTreeDumpTest</code>.</li>
+  <li>This test class must extend <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest</code>. Note: This class
+is written in kotlin and is available in the module “lang-test”.</li>
+  <li>
+    <p>Add a default constructor, that calls the super constructor like so:</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">$langTreeDumpTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="nc">NodePrintersKt</span><span class="o">.</span><span class="na">getSimpleNodePrinter</span><span class="o">(),</span> <span class="s">".$extension"</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></div>    </div>
+
+    <p>Replace “$lang” and “$extension” accordingly.</p>
+  </li>
+  <li>Implement the method <code class="highlighter-rouge">getParser()</code>. It must return a
+subclass of <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.test.BaseParsingHelper</code>. See 
+<code class="highlighter-rouge">net.sourceforge.pmd.lang.ecmascript.ast.JsParsingHelper</code> for a example.
+With this parser helper you can also specify, where the test files are searched, by using
+the method <code class="highlighter-rouge">withResourceContext(Class&lt;?&gt;, String)</code>.</li>
+  <li>
+    <p>Add one or more test methods. Each test method parses one file and compares the result. The base
+class has a helper method <code class="highlighter-rouge">doTest(String)</code> that does all the work. This method just needs to be called:</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">myFirstAstTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">doTest</span><span class="o">(</span><span class="s">"filename-without-extension"</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>On the first test run the test fails. A text file (with the extension <code class="highlighter-rouge">.txt</code>) is created, that records the
+current AST. On the next run, the text file is used as comparison and the test should pass. Don’t forget
+to commit the generated text file.</li>
+</ul>
+
+<p>A complete example can be seen in the JavaScript module: <code class="highlighter-rouge">net.sourceforge.pmd.lang.ecmascript.ast.JsTreeDumpTest</code>.
+The test resources are in the subpackage “testdata”: <code class="highlighter-rouge">pmd-javascript/src/test/resources/net/sourceforge/pmd/lang/ecmascript/ast/testdata/</code>.</p>
+
+<p>The Scala module also has a test, written in Kotlin instead of Java:
+<code class="highlighter-rouge">net.sourceforge.pmd.lang.scala.ast.ScalaParserTests</code>.</p>
+
+<h2 id="13-create-an-abstract-rule-class-for-the-language">13. Create an abstract rule class for the language</h2>
 <ul>
   <li>Extend <code class="highlighter-rouge">AbstractRule</code> and implement the parser visitor interface for your language <em>(see AbstractVmRule for example)</em></li>
   <li>All other rules for your language should extend this class. The purpose of this class is to implement visit methods for all AST types to simply delegate to default behavior. This is useful because most rules care only about specific AST nodes, but PMD needs to know what to do with each node - so this just lets you use default behavior for nodes you don’t care about.</li>
 </ul>
 
-<h2 id="13-create-rules">13. Create rules</h2>
+<h2 id="14-create-rules">14. Create rules</h2>
 <ul>
-  <li>Rules are created by extending the abstract rule class created in step 12 <em>(see <code class="highlighter-rouge">EmptyForeachStmtRule</code> for example)</em></li>
+  <li>Rules are created by extending the abstract rule class created in step 13 <em>(see <code class="highlighter-rouge">EmptyForeachStmtRule</code> for example)</em></li>
   <li>Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you may have different AST nodes.</li>
 </ul>
 
-<h2 id="14-test-the-rules">14. Test the rules</h2>
+<h2 id="15-test-the-rules">15. Test the rules</h2>
 <ul>
   <li>See BasicRulesTest for example</li>
   <li>You have to create a rule set for your language <em>(see vm/basic.xml for example)</em></li>
@@ -1572,7 +1622,7 @@ This can be achieved with Rule Designer:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> October 5, 2019<br/> Site last generated: May 8, 2020 <br />
+<span>Page last updated:</span> October 5, 2019<br/> Site last generated: May 13, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
