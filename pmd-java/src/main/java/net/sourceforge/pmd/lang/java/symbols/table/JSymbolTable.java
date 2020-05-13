@@ -5,54 +5,40 @@
 package net.sourceforge.pmd.lang.java.symbols.table;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 
-// @formatter:off
 /**
  * A symbol table for a particular region of a Java program. Keeps track of the types,
  * values, and methods accessible from their simple name in their extent.
  *
- * <p>Each symbol table is linked to a parent table, and keeps track of a particular set
- * of declarations having the same relative precedence. When a symbol table is asked for
- * the meaning of a name in a particular syntactic context (type name, method name, value name),
- * it first determines if it tracks a declaration with a matching name.
- * <ul>
- *      <li>If there is one, it returns the {@link JElementSymbol} representing the entity
- *          the name stands for in the given context;
- *      <li>If there is none, it asks the same question to its parent table recursively
- *          and returns that result.
- * </ul>
- * This allows directly encoding shadowing and hiding mechanisms in the parent-child
- * relationships.
+ * <p>Instances of this interface just tie together a few {@link ShadowChain}
+ * instances for each interesting namespace in the program.
  *
  * @since 7.0.0
  */
-// @formatter:on
 @Experimental
 public interface JSymbolTable {
 
-
     /**
-     * Returns the parent of this table, that is, the symbol table that will be
-     * delegated to if this table doesn't find a declaration.
-     *
-     * @return a symbol table, or null if this is the top-level symbol table
+     * The chain of tables tracking variable names that are in scope here
+     * (fields, locals, formals, etc).
      */
-    default JSymbolTable getParent() {
-        return null;
-    }
-
-
     ShadowChain<JVariableSymbol, ScopeInfo> variables();
 
 
+    /**
+     * The chain of tables tracking type names that are in scope here
+     * (classes, type params, but not eg primitive types).
+     */
     ShadowChain<JTypeDeclSymbol, ScopeInfo> types();
 
 
+    /**
+     * The chain of tables tracking method names that are in scope here.
+     */
     ShadowChain<JMethodSymbol, ScopeInfo> methods();
 
 
