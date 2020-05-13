@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SignedNode;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -177,6 +178,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
      *     Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "VariableDeclaratorId/@Name")
     public String getVariableName() {
         ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         if (decl != null) {

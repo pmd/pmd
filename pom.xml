@@ -77,9 +77,6 @@
 
     <properties>
         <java.version>7</java.version>
-        <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
-        <maven.compiler.source>1.${java.version}</maven.compiler.source>
-        <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
         <maven.compiler.test.source>1.8</maven.compiler.test.source>
         <maven.compiler.test.target>1.8</maven.compiler.test.target>
@@ -189,7 +186,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <release>${java.version}</release>
                     </configuration>

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 public class ASTArguments extends AbstractJavaNode {
 
@@ -35,6 +36,7 @@ public class ASTArguments extends AbstractJavaNode {
      * @deprecated for removal. Use {@link #size()} or {@link ASTArgumentList#size()} instead.
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Size")
     public int getArgumentCount() {
         return size();
     }
