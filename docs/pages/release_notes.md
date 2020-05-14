@@ -23,6 +23,8 @@ This is useful to find duplicated sections in XML files.
 
 *   apex-bestpractices
     *   [#2468](https://github.com/pmd/pmd/issues/2468): \[apex] Unused Local Variable fails on blocks
+*   core
+    *   [#2484](https://github.com/pmd/pmd/issues/2484): \[core] Update maven-enforcer-plugin to require Java 118
 
 ### API Changes
 
