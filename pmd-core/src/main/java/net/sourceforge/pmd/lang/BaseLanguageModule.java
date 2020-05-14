@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * Created by christoferdutz on 21.09.14.
  */
@@ -34,6 +36,7 @@ public abstract class BaseLanguageModule implements Language {
         this.extensions = Arrays.asList(extensions);
     }
 
+    @Experimental
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
         if (versions == null) {
             versions = new HashMap<>();
@@ -53,6 +56,10 @@ public abstract class BaseLanguageModule implements Language {
                 : "Default version already set to " + defaultVersion + ", cannot set it to " + languageVersion;
             defaultVersion = languageVersion;
         }
+    }
+    
+    protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
+        addVersion(version, languageVersionHandler, isDefault, new String[0]);
     }
 
     @Override
