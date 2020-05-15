@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case, inequality
-     ]]></description>
+        <description>failure case, inequality</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -16,12 +15,11 @@ public class Foo {
       return 0;
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case, comparison
-     ]]></description>
+        <description>failure case, comparison</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -31,12 +29,11 @@ public class Foo {
       return 0;
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-correct inequality
-     ]]></description>
+        <description>correct inequality</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -46,12 +43,11 @@ public class Foo {
       return 0;
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-correct comparison
-     ]]></description>
+        <description>correct comparison</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -61,6 +57,6 @@ public class Foo {
       return 0;
    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

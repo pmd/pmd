@@ -3,46 +3,44 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Bad, very deep
-     ]]></description>
+        <description>Bad, very deep</description>
         <rule-property name="problemDepth">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() { 
-  int x=2; 
-  int y=3; 
-  int z=4; 
-  if (x>y) { 
-   if (y>z) { 
-    if (z==x) { 
-     // this is officially out of control now 
-    } 
-   } 
-  }
- }
+    public void bar() {
+        int x=2;
+        int y=3;
+        int z=4;
+        if (x>y) {
+            if (y>z) {
+                if (z==x) {
+                    // this is officially out of control now
+                }
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK, not so deep
-     ]]></description>
+        <description>OK, not so deep</description>
         <rule-property name="problemDepth">3</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void bar() { 
-  if (true) {
-  } else if (true) {
-  } else if (true) {
-  } else {
-    // this ain't good code, but it shouldn't trigger this rule
-  }
- }
+    public void bar() {
+        if (true) {
+        } else if (true) {
+        } else if (true) {
+        } else {
+            // this ain't good code, but it shouldn't trigger this rule
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

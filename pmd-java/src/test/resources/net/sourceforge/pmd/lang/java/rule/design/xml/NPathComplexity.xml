@@ -6,51 +6,50 @@
 
     <code-fragment id="full-example"><![CDATA[
 public class Foo {
-  public static void bar() {
-    boolean a, b = true;
-    try { // 2 * 2 + 2
-      if (true) { // 2
-        List buz = new ArrayList();
-      }
+    public static void bar() {
+        boolean a, b = true;
+        try { // 2 * 2 + 2
+            if (true) { // 2
+                List buz = new ArrayList();
+            }
 
-      for(int i = 0; i < 19; i++) { // 2
-        List buz = new ArrayList();
-      }
-    } catch(Exception e) {
-      if (true) { // 2
-        e.printStackTrace();
-      }
+            for(int i = 0; i < 19; i++) { // 2
+                List buz = new ArrayList();
+            }
+        } catch(Exception e) {
+            if (true) { // 2
+                e.printStackTrace();
+            }
+        }
+
+        int j = 0;
+        if (true || a && b) { // 4
+            j = 10;
+            return;
+        }
+
+        while (j++ < 20) { // 2
+            List buz = new ArrayList();
+        }
+
+        switch(j) { // 7
+        case 1:
+        case 2: break;
+        case 3: j = 5; break;
+        case 4: if (b && a) { bar(); } break;
+        default: break;
+        }
+
+        do { // 3
+            List buz = new ArrayList();
+        } while (a && j++ < 30);
+
+        if (b) { // 2
+            return;
+        }
     }
-
-    int j = 0;
-    if (true || a && b) { // 4
-      j = 10;
-      return;
-    }
-
-    while (j++ < 20) { // 2
-      List buz = new ArrayList();
-    }
-
-    switch(j) { // 7
-      case 1:
-      case 2: break;
-      case 3: j = 5; break;
-      case 4: if (b && a) { bar(); } break;
-      default: break;
-    }
-
-    do { // 3
-        List buz = new ArrayList();
-    } while (a && j++ < 30);
-
-    if (b) { // 2
-      return;
-    }
-  }
 }
-     ]]></code-fragment>
-
+    ]]></code-fragment>
 
     <test-code>
         <description>Full example</description>
@@ -61,7 +60,6 @@ public class Foo {
         <code-ref id="full-example"/>
     </test-code>
 
-
     <test-code>
         <description>Test default report level - report 200</description>
         <rule-property name="reportLevel">0</rule-property>
@@ -70,27 +68,27 @@ public class Foo {
             <message>The method 'bar()' has an NPath complexity of 200</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-          public static void bar() {
-            boolean a, b = true;
-            int j = 0;
+public class Foo {
+    public static void bar() {
+        boolean a, b = true;
+        int j = 0;
 
-            switch (j) { // 5
-              case 0:
-              case 1:
-              case 3: if (a || b) {} break;
-            }
-
-            switch (j) { // * 5
-              case 0:
-              case 1:
-              case 3: if (a || b) {} break;
-            }
-
-            if (true || a && b); // * 4
-            while (j++ < 20);    // * 2
-          }
+        switch (j) { // 5
+            case 0:
+            case 1:
+            case 3: if (a || b) {} break;
         }
+
+        switch (j) { // * 5
+            case 0:
+            case 1:
+            case 3: if (a || b) {} break;
+        }
+
+        if (true || a && b); // * 4
+        while (j++ < 20);    // * 2
+    }
+}
         ]]></code>
     </test-code>
 
@@ -98,33 +96,33 @@ public class Foo {
         <description>Test default report level - ignore 199</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            boolean a, b;
-            try {
-              switch(j) { // 7
-              case 1:
-              case 2: break;
-              case 3: j = 5; break;
-              case 4: if (b && a) { bar(); } break;
-              default: break;
-              }
-
-              switch(j) { // * 7
-              case 1:
-              case 2: break;
-              case 3: j = 5; break;
-              case 4: if (b && a) { bar(); } break;
-              default: break;
-              }
-
-              if (true || a || b); // * 4
-
-            } catch (ScaryException e) {
-              if (true || a); // + 3
+class Foo {
+    void bar() {
+        boolean a, b;
+        try {
+            switch(j) { // 7
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
             }
-          }
+
+            switch(j) { // * 7
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
+            }
+
+            if (true || a || b); // * 4
+
+        } catch (ScaryException e) {
+            if (true || a); // + 3
         }
+    }
+}
         ]]></code>
     </test-code>
 
@@ -136,28 +134,27 @@ public class Foo {
             <message>The method 'bar()' has an NPath complexity of 4</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          void bar() {
-            if (a && b || c);
-          }
-        }
+class Foo {
+    void bar() {
+        if (a && b || c);
+    }
+}
         ]]></code>
     </test-code>
 
-
     <code-fragment id="bug3484404"><![CDATA[
 class Bar {
-  public void x(boolean x, boolean y) {
-    z((x ? 1 : 2), (y ? 3 : 4));
-  }
+    public void x(boolean x, boolean y) {
+        z((x ? 1 : 2), (y ? 3 : 4));
+    }
 
-  public int y(boolean x, boolean y) {
-    return z((x ? 1 : 2), (y ? 3 : 4));
-  }
+    public int y(boolean x, boolean y) {
+        return z((x ? 1 : 2), (y ? 3 : 4));
+    }
 
-  public int z(int x, int y) {
-    return x + y;
-  }
+    public int z(int x, int y) {
+        return x + y;
+    }
 }
     ]]></code-fragment>
 
@@ -172,7 +169,6 @@ class Bar {
         <code-ref id="bug3484404"/>
     </test-code>
 
-
     <test-code>
         <description>NPath supports constructors</description>
         <rule-property name="reportLevel">6</rule-property>
@@ -181,41 +177,40 @@ class Bar {
             <message>The constructor 'Foo()' has an NPath complexity of 7</message>
         </expected-messages>
         <code><![CDATA[
-        class Foo {
-          Foo() {
-            boolean a, b;
-            int j = 23;
-            switch(j) {
-              case 1:
-              case 2: break;
-              case 3: j = 5; break;
-              case 4: if (b && a) { bar(); } break;
-              default: break;
-            }
-          }
+class Foo {
+    Foo() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
         }
+    }
+}
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Backwards compatibility with minimum property</description>
         <rule-property name="minimum">300</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-        class Foo {
-          Foo() {
-            boolean a, b;
-            int j = 23;
-            switch(j) {
-              case 1:
-              case 2: break;
-              case 3: j = 5; break;
-              case 4: if (b && a) { bar(); } break;
-              default: break;
-            }
-          }
+class Foo {
+    Foo() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+            default: break;
         }
+    }
+}
         ]]></code>
     </test-code>
-    
 </test-data>
