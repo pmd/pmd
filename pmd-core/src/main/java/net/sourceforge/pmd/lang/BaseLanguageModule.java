@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.v4.runtime.atn.SemanticContext.OR;
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
@@ -36,8 +38,7 @@ public abstract class BaseLanguageModule implements Language {
         this.extensions = Arrays.asList(extensions);
     }
 
-    @Experimental
-    protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
+    private void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
         if (versions == null) {
             versions = new HashMap<>();
         }
@@ -57,7 +58,19 @@ public abstract class BaseLanguageModule implements Language {
             defaultVersion = languageVersion;
         }
     }
+
+    protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, String... versionAliases) {
+        addVersion(version, languageVersionHandler, false, versionAliases);
+    }
     
+    protected void addDefaultVersion(String version, LanguageVersionHandler languageVersionHandler, String... versionAliases) {
+        addVersion(version, languageVersionHandler, true, versionAliases);
+    }
+
+    /**
+     * @deprecated use {@link #addVersion(String, LanguageVersionHandler, String...)} or {@link #addDefaultVersion(String, LanguageVersionHandler, String...)}
+     */
+    @Deprecated
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
         addVersion(version, languageVersionHandler, isDefault, new String[0]);
     }
