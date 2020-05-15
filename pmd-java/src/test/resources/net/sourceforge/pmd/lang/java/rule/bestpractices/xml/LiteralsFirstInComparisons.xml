@@ -4,9 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, literal comes first in .equals comparison
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -17,9 +17,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 bad, literal comes last in .equals comparison
-     ]]></description>
+        </description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -30,9 +30,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, empty literal in .equals comparison
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -54,9 +54,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equals false positives
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo
@@ -69,9 +69,9 @@ public class Foo
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equals false positives
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo
@@ -102,9 +102,9 @@ public class LiteralTest {
     </test-code>
 
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, literal comes first in .equalsIgnoreCase comparison
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -115,9 +115,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 bad, literal comes last in .equalsIgnoreCase comparison
-     ]]></description>
+        </description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -128,9 +128,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, testing .equalsIgnoreCase false positive
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -143,9 +143,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equalsIgnoreCase false positives
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo
@@ -158,9 +158,9 @@ public class Foo
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 Test case from bug [1472195] - PositionLiteralsFirstInComparisons gives many .equalsIgnoreCase false positives
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo
@@ -178,9 +178,9 @@ public class Foo
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, literal comes first in .compareTo comparison
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -191,9 +191,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 bad, literal comes last in .compareTo comparison
-     ]]></description>
+        </description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -204,9 +204,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, testing for .compareTo false positive
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -217,9 +217,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, literal comes first in .compareToIgnoreCase comparison
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -230,9 +230,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 bad, literal comes last in .compareToIgnoreCase comparison
-     ]]></description>
+        </description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -243,9 +243,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, testing ,compareToIgnoreCase false positive
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -256,9 +256,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, literal comes first in .contentEquals comparison
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -269,9 +269,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 bad, literal comes last in .contentEquals comparison
-     ]]></description>
+        </description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -282,9 +282,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
+        <description>
 ok, testing .contentEquals false positive
-     ]]></description>
+        </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {

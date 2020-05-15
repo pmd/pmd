@@ -884,7 +884,7 @@ public class MyTest {
 
     <rule name="LiteralsFirstInComparisons"
           language="java"
-          since="6.23"
+          since="6.24.0"
           message="Position literals first in String comparisons"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.LiteralsFirstInComparisonsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#literalsfirstincomparisons">
