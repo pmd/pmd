@@ -3,138 +3,130 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-		JUnit 3 Test contains no assert  
-     ]]></description>
+        <description>JUnit 3 Test contains no assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-		public class MyTestCase extends TestCase {
-			//negative on rule
-			public void testMyCaseWithNoAssert() {
-				boolean myVar = false;		
-				//no assert here
-			}
-		}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 4 Test contains no assert
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-		public class MyTestCase extends TestCase {
-			//negative on rule
-			@Test
-			public void myCaseWithNoAssert() {
-				boolean myVar = false;		
-				//no assert here
-			}
-		}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 3 Test contains one assert		
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-		public class MyTestCase extends TestCase {
-			//negative on rule
-			public void testMyCaseWithOneAssert() {
-				boolean myVar = false;		
-				assertFalse("should be false",myVar);
-			}
-		}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 4 Test contains one assert
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-		public class MyTestCase extends TestCase {
-			//negative on rule
-			@Test
-			public void myCaseWithOneAssert() {
-				boolean myVar = false;		
-				assertFalse("should be false",myVar);
-			}
-		}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 3 Test contains more than one assert
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-		public class MyTestCase extends TestCase {
-			//positive on rule
-			public void testMyCaseWithMoreAsserts() {
-				boolean myVar = false;		
-				assertFalse("myVar should be false",myVar);
-				assertEquals("should equals false", false, myVar);
-			}
-		}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 4 Test contains more than one assert
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-			public class MyTestCase extends TestCase {
-				//positive on rule
-				@Test
-				public void myCaseWithMoreAsserts() {
-					boolean myVar = false;		
-					assertFalse("myVar should be false",myVar);
-					assertEquals("should equals false", false, myVar);
-				}
-			}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 3 Test contains more than one assert, but allowed
-     ]]></description>
-        <rule-property name="maximumAsserts">2</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-		public class MyTestCase extends TestCase {
-			//positive on rule
-			public void testMyCaseWithMoreAsserts() {
-				boolean myVar = false;		
-				assertFalse("myVar should be false",myVar);
-				assertEquals("should equals false", false, myVar);
-			}
-		}
-     ]]></code>
-    </test-code>
-   <test-code>
-        <description><![CDATA[
-		JUnit 4 Test contains more than one assert, but allowed
-     ]]></description>
-        <rule-property name="maximumAsserts">2</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-			public class MyTestCase extends TestCase {
-				//positive on rule
-				@Test
-				public void myCaseWithMoreAsserts() {
-					boolean myVar = false;		
-					assertFalse("myVar should be false",myVar);
-					assertEquals("should equals false", false, myVar);
-				}
-			}
-     ]]></code>
+public class MyTestCase extends TestCase {
+    //negative on rule
+    public void testMyCaseWithNoAssert() {
+        boolean myVar = false;
+        //no assert here
+    }
+}
+        ]]></code>
     </test-code>
 
    <test-code>
+        <description>JUnit 4 Test contains no assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //negative on rule
+    @Test
+    public void myCaseWithNoAssert() {
+        boolean myVar = false;
+        //no assert here
+    }
+}
+        ]]></code>
+    </test-code>
+
+   <test-code>
+        <description>JUnit 3 Test contains one assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //negative on rule
+    public void testMyCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false",myVar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+   <test-code>
+        <description>JUnit 4 Test contains one assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //negative on rule
+    @Test
+    public void myCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false",myVar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+   <test-code>
+        <description>JUnit 3 Test contains more than one assert</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //positive on rule
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+   <test-code>
+        <description>JUnit 4 Test contains more than one assert</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //positive on rule
+    @Test
+    public void myCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+   <test-code>
+        <description>JUnit 3 Test contains more than one assert, but allowed</description>
+        <rule-property name="maximumAsserts">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //positive on rule
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 4 Test contains more than one assert, but allowed</description>
+        <rule-property name="maximumAsserts">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTestCase extends TestCase {
+    //positive on rule
+    @Test
+    public void myCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false",myVar);
+        assertEquals("should equals false", false, myVar);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>JUnit 5 Test contains more than one assert</description>
         <expected-problems>5</expected-problems>
         <expected-linenumbers>10,17,24,31,39</expected-linenumbers>
@@ -183,10 +175,10 @@ public class MyTestCase {
         assertEquals("should equals false", false, myVar);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
-   <test-code>
+    <test-code>
         <description>TestNG Test contains more than one assert</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
@@ -201,6 +193,6 @@ public class MyTestCase {
         assertEquals("should equals false", false, myVar);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-fail, == 0
-     ]]></description>
+        <description>fail, == 0</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -17,12 +16,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, isEmpty
-     ]]></description>
+        <description>ok, isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -33,12 +31,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, != 0
-     ]]></description>
+        <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -49,12 +46,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, !isEmpty
-     ]]></description>
+        <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -65,12 +61,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, != 0
-     ]]></description>
+        <description>fail, != 0</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -81,12 +76,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, !isEmpty
-     ]]></description>
+        <description>ok, !isEmpty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -97,12 +91,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, 0 ==
-     ]]></description>
+        <description>fail, 0 ==</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -113,12 +106,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-fail, > 0
-     ]]></description>
+        <description>fail, &gt; 0</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -129,12 +121,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, in expression
-     ]]></description>
+        <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -146,12 +137,11 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, in expression
-     ]]></description>
+        <description>ok, in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -163,8 +153,9 @@ public class Foo {
         return false;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1214 UseCollectionIsEmpty misses some usage</description>
         <expected-problems>5</expected-problems>
@@ -223,6 +214,7 @@ public class TestIsEmpty {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1230 UseCollectionIsEmpty gets false positives</description>
         <expected-problems>4</expected-problems>
@@ -281,6 +273,7 @@ public class IsEmptyTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1304 UseCollectionIsEmpty false positive comparing to 1</description>
         <expected-problems>0</expected-problems>
@@ -297,6 +290,7 @@ public class PMDIsEmptyFalsePositive {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1345 UseCollectionIsEmpty throws NullPointerException</description>
         <expected-problems>0</expected-problems>
