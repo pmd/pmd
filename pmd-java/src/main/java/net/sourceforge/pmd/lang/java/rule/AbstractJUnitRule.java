@@ -24,9 +24,9 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     protected static final String JUNIT4_CLASS_NAME = "org.junit.Test";
     protected static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
 
-    private boolean isJUnit3Class;
-    private boolean isJUnit4Class;
-    private boolean isJUnit5Class;
+    protected boolean isJUnit3Class;
+    protected boolean isJUnit4Class;
+    protected boolean isJUnit5Class;
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -89,7 +89,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         return isJUnit3Class && method.isVoid() && method.getName().startsWith("test");
     }
 
-    protected boolean isJUnit3Class(ASTCompilationUnit node) {
+    private boolean isJUnit3Class(ASTCompilationUnit node) {
         ASTClassOrInterfaceDeclaration cid = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
         if (cid == null) {
             return false;
@@ -113,11 +113,11 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         return false;
     }
 
-    protected boolean isJUnit4Class(ASTCompilationUnit node) {
+    private boolean isJUnit4Class(ASTCompilationUnit node) {
         return doesNodeContainJUnitAnnotation(node, JUNIT4_CLASS_NAME);
     }
 
-    protected boolean isJUnit5Class(ASTCompilationUnit node) {
+    private boolean isJUnit5Class(ASTCompilationUnit node) {
         return doesNodeContainJUnitAnnotation(node, JUNIT5_CLASS_NAME);
     }
 
