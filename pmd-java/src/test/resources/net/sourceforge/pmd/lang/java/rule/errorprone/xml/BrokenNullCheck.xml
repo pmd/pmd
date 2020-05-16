@@ -3,201 +3,187 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-should be &&
-        ]]></description>
+        <description>should be &amp;&amp;</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- List bar(List list) {
-  if (list != null || !list.equals(buz)) {
-   return list;
-  }
- }
+    List bar(List list) {
+        if (list != null || !list.equals(buz)) {
+            return list;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
      </test-code>
+
      <test-code>
-        <description><![CDATA[
-Ok, is &&
-        ]]></description>
+        <description>Ok, is &amp;&amp;</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- List bar(List list) {
-  if (list != null && !list.equals(buz)) {
-   return list;
-  }
- }
+    List bar(List list) {
+        if (list != null && !list.equals(buz)) {
+            return list;
+        }
+    }
 }
-     ]]></code>
-     </test-code>
+        ]]></code>
+    </test-code>
+
     <test-code>
-        <description><![CDATA[
-should be &&, but now with a longer expression
-        ]]></description>
+        <description>should be &amp;&amp;, but now with a longer expression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Foo {
- void bar() {
-  if (books.getJane()!= null || !books.getJane().equals("")) { }
- }
+    void bar() {
+        if (books.getJane()!= null || !books.getJane().equals("")) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-should be ||
-        ]]></description>
+        <description>should be ||</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- List bar(List list) {
-  if (list == null && list.equals(buz)) {
-   return list;
-  }
- }
+    List bar(List list) {
+        if (list == null && list.equals(buz)) {
+            return list;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, is ||
-        ]]></description>
+        <description>Ok, is ||</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- List bar(List list) {
-  if (list == null || list.equals(buz)) {
-   return list;
-  }
- }
+    List bar(List list) {
+        if (list == null || list.equals(buz)) {
+            return list;
+        }
+        }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Arrays are Ok
-        ]]></description>
+        <description>Arrays are Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (index >= 0 && books[index] == null) { }
- }
+    void bar() {
+        if (index >= 0 && books[index] == null) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Different method is Ok
-        ]]></description>
+        <description>Different method is Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (books[i].getJane() == null &&
-        books[i].getEyre() == null) { }
- }
+    void bar() {
+        if (books[i].getJane() == null &&
+            books[i].getEyre() == null) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Using a shorter expression with the same variable in the second check should not crash the test
-        ]]></description>
+        <description>Using a shorter expression with the same variable in the second check should not crash the test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (books.getJane() == null &&
-        books == eyre) { }
- }
+    void bar() {
+        if (books.getJane() == null &&
+            books == eyre) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-1633683, should be ||, but now with another compare
-        ]]></description>
+        <description>1633683, should be ||, but now with another compare</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (str == null && str.length() == 0) { }
- }
+    void bar() {
+        if (str == null && str.length() == 0) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-1633683, Arrays are Ok II
-        ]]></description>
+        <description>1633683, Arrays are Ok II</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (p.length > 1 && p[0] == null) { }
- }
+    void bar() {
+        if (p.length > 1 && p[0] == null) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Different literals in variables should not match
-        ]]></description>
+        <description>Different literals in variables should not match</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (p[0] == null && p[1].getJane()) { }
- }
+    void bar() {
+        if (p[0] == null && p[1].getJane()) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Assignments in checks are OK
-        ]]></description>
+        <description>Assignments in checks are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (books == null &&
-   (books = getBook(janeEyre)) == null) { }
- }
+    void bar() {
+        if (books == null &&
+            (books = getBook(janeEyre)) == null) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <!-- A rare edge case that is technically a false positive, 
+
+    <!-- A rare edge case that is technically a false positive,
     although the code is senseless. Will not fix. -->
 <!--<test-code>
-        <description><![CDATA[
-Useless code, but it will not throw a NullPointerException
-        ]]></description>
+        <description>Useless code, but it will not throw a NullPointerException</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (family.plain == null && family.bold == null &&
-	    family.plain == null && family.bold == null) {
- }
+    void bar() {
+        if (family.plain == null && family.bold == null &&
+           family.plain == null && family.bold == null) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code> -->
-        <test-code>
-        <description><![CDATA[
-Similar method calls with different arguments are OK
-        ]]></description>
+
+    <test-code>
+        <description>Similar method calls with different arguments are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-   if (library.getBooks(Jane.class) != null ||
-      library.getBooks(Eyre.class) != null) { }
- }
+    void bar() {
+        if (library.getBooks(Jane.class) != null ||
+            library.getBooks(Eyre.class) != null) { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

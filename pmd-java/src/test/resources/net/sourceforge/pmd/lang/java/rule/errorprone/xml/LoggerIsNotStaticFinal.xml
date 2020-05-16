@@ -3,55 +3,51 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Logger log;
+    static final Logger log;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two bad loggers
-     ]]></description>
+        <description>two bad loggers</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Logger log;
- Logger log1;
- Logger log2;
+    static final Logger log;
+    Logger log1;
+    Logger log2;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok with internal class
-     ]]></description>
+        <description>ok with internal class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Logger log;
- static class c { 
-  static final Logger log;
- } 
+    static final Logger log;
+    static class c {
+        static final Logger log;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok with local var
-     ]]></description>
+        <description>ok with local var</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
- Logger log1;
- }
+    void bar() {
+        Logger log1;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

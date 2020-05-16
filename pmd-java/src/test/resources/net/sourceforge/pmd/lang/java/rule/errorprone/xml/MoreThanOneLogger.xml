@@ -3,15 +3,16 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
- Logger log;
+    Logger log;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -20,10 +21,10 @@ public class Foo {
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
- Logger log;
- Logger log2;
+    Logger log;
+    Logger log2;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -32,12 +33,12 @@ public class Foo {
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
- Logger log;
- class Bar {
-  Logger log2;
- }
+    Logger log;
+    class Bar {
+        Logger log2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -45,9 +46,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public @interface Foo {
- String FOO = "foo";
+    String FOO = "foo";
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
