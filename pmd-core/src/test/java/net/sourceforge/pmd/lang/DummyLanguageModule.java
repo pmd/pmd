@@ -38,15 +38,15 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public DummyLanguageModule() {
         super(NAME, null, TERSE_NAME, DummyRuleChainVisitor.class, "dummy");
-        addVersion("1.0", new Handler(), false);
-        addVersion("1.1", new Handler(), false);
-        addVersion("1.2", new Handler(), false);
-        addVersion("1.3", new Handler(), false);
-        addVersion("1.4", new Handler(), false);
-        addVersions(new Handler(), false, "1.5", "5");
-        addVersions(new Handler(), false, "1.6", "6");
-        addVersions(new Handler(), true, "1.7", "7");
-        addVersions(new Handler(), false, "1.8", "8");
+        addVersion("1.0", new Handler());
+        addVersion("1.1", new Handler());
+        addVersion("1.2", new Handler());
+        addVersion("1.3", new Handler());
+        addVersion("1.4", new Handler());
+        addVersion("1.5", new Handler(), "5");
+        addVersion("1.6", new Handler(), "6");
+        addDefaultVersion("1.7", new Handler(), "7");
+        addVersion("1.8", new Handler(), "8");
     }
 
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {

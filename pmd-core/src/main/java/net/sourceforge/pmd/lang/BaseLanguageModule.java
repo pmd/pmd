@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
  * Created by christoferdutz on 21.09.14.
  */
@@ -36,29 +34,67 @@ public abstract class BaseLanguageModule implements Language {
         this.extensions = Arrays.asList(extensions);
     }
 
-    @Experimental
-    protected void addVersions(LanguageVersionHandler languageVersionHandler, boolean isDefault, String ... languageVersions) {
+    private void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
         if (versions == null) {
             versions = new HashMap<>();
         }
 
-        LanguageVersion languageVersion = new LanguageVersion(this, languageVersions[0], languageVersionHandler);
+        LanguageVersion languageVersion = new LanguageVersion(this, version, languageVersionHandler);
 
         distinctVersions.add(languageVersion);
 
-        for (String version : languageVersions) {
-            versions.put(version, languageVersion);
+        checkNotPresent(version);
+        versions.put(version, languageVersion);
+        for (String alias : versionAliases) {
+            checkNotPresent(alias);
+            versions.put(alias, languageVersion);
         }
 
         if (isDefault) {
-            assert defaultVersion == null
-                : "Default version already set to " + defaultVersion + ", cannot set it to " + languageVersion;
+            if (defaultVersion != null) {
+                throw new IllegalStateException(
+                    "Default version already set to " + defaultVersion + ", cannot set it to " + languageVersion);
+            }
             defaultVersion = languageVersion;
         }
     }
 
+    private void checkNotPresent(String alias) {
+        if (versions.containsKey(alias)) {
+            throw new IllegalArgumentException("Version key '" + alias + "' is duplicated");
+        }
+    }
+
+
+    /**
+     * Adds a non-default version with the given identifier.
+     *
+     * @throws IllegalArgumentException If the string key or any of the
+     *                                  aliases conflict with other already
+     *                                  recorded versions
+     */
+    protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, String... versionAliases) {
+        addVersion(version, languageVersionHandler, false, versionAliases);
+    }
+
+    /**
+     * Adds a version with the given identifier, and sets it as the default.
+     *
+     * @throws IllegalStateException    If the default version is already set
+     * @throws IllegalArgumentException If the string key or any of the
+     *                                  aliases conflict with other already
+     *                                  recorded versions
+     */
+    protected void addDefaultVersion(String version, LanguageVersionHandler languageVersionHandler, String... versionAliases) {
+        addVersion(version, languageVersionHandler, true, versionAliases);
+    }
+
+    /**
+     * @deprecated use {@link #addVersion(String, LanguageVersionHandler, String...)} or {@link #addDefaultVersion(String, LanguageVersionHandler, String...)}
+     */
+    @Deprecated
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
-        addVersions(languageVersionHandler, isDefault, version);
+        addVersion(version, languageVersionHandler, isDefault, new String[0]);
     }
 
     @Override
