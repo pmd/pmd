@@ -23,6 +23,8 @@ This is useful to find duplicated sections in XML files.
 
 *   apex-bestpractices
     *   [#2468](https://github.com/pmd/pmd/issues/2468): \[apex] Unused Local Variable fails on blocks
+*   swift
+    *   [#2473](https://github.com/pmd/pmd/issues/2473): \[swift] Swift 5 (up to 5.2) support for CPD
 
 ### API Changes
 
@@ -34,6 +36,7 @@ This is useful to find duplicated sections in XML files.
 *   [#2452](https://github.com/pmd/pmd/pull/2452): \[doc] Fix "Making Rulesets" doc sample code indentation - [Artur Dryomov](https://github.com/arturdryomov)
 *   [#2457](https://github.com/pmd/pmd/pull/2457): \[xml] Adding XML to CPD supported languages - [Fernando Cosso](https://github.com/xnYi9wRezm)
 *   [#2469](https://github.com/pmd/pmd/pull/2469): \[apex] fix false positive unused variable if only a method is called - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2475](https://github.com/pmd/pmd/pull/2475): \[swift] Swift 4.2-5.2 support - [kenji21](https://github.com/kenji21)
 
 {% endtocmaker %}
 
