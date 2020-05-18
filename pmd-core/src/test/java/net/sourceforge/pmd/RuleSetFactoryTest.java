@@ -600,6 +600,23 @@ public class RuleSetFactoryTest {
         loadFirstRule(INCORRECT_MINIMUM_LANGUAGE_VERSION);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testIncorrectMinimumLanugageVersionWithLanguageSetInJava() throws RuleSetNotFoundException {
+        loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                          + "<ruleset name=\"TODO\">\n"
+                          + "    <description>TODO</description>\n"
+                          + "\n"
+                          + "    <rule name=\"TODO\"\n"
+                          + "          message=\"TODO\"\n"
+                          + "          class=\"net.sourceforge.pmd.util.FooRuleWithLanguageSetInJava\"\n"
+                          + "          minimumLanguageVersion=\"12\">\n"
+                          + "        <description>TODO</description>\n"
+                          + "        <priority>2</priority>\n"
+                          + "    </rule>\n"
+                          + "\n"
+                          + "</ruleset>");
+    }
+
     @Test
     public void testMaximumLanguageVersion() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);

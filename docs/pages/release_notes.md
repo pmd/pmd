@@ -28,8 +28,26 @@ This is useful to find duplicated sections in XML files.
 
 *   apex-bestpractices
     *   [#2468](https://github.com/pmd/pmd/issues/2468): \[apex] Unused Local Variable fails on blocks
+*   core
+    *   [#2484](https://github.com/pmd/pmd/issues/2484): \[core] Update maven-enforcer-plugin to require Java 118
+*   java-bestpractices
+    *   [#2288](https://github.com/pmd/pmd/issues/2288): \[java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat
 
 ### API Changes
+
+#### Deprecated APIs
+
+* {% jdoc !ca!core::lang.BaseLanguageModule#addVersion(String, LanguageVersionHandler, boolean) %}
+
+#### Experimental APIs
+
+**Note:** Experimental APIs are identified with the annotation {% jdoc core::annotation.Experimental %},
+see its javadoc for details
+
+* The experimental methods in {% jdoc !ca!core::lang.BaseLanguageModule %} have been replaced by a
+definitive API.
+
+
 
 ### External Contributions
 
@@ -39,6 +57,7 @@ This is useful to find duplicated sections in XML files.
 *   [#2452](https://github.com/pmd/pmd/pull/2452): \[doc] Fix "Making Rulesets" doc sample code indentation - [Artur Dryomov](https://github.com/arturdryomov)
 *   [#2457](https://github.com/pmd/pmd/pull/2457): \[xml] Adding XML to CPD supported languages - [Fernando Cosso](https://github.com/xnYi9wRezm)
 *   [#2469](https://github.com/pmd/pmd/pull/2469): \[apex] fix false positive unused variable if only a method is called - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2479](https://github.com/pmd/pmd/pull/2479): \[java] False positive with Hamcrest's assertThat - [andreoss](https://github.com/andreoss)
 
 {% endtocmaker %}
 
