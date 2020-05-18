@@ -3795,7 +3795,9 @@ other classes may invoke it at inappropriate times.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Some JUnit framework methods are easy to misspell.</p>
+<p>In JUnit 3, the setUp method is used to set up all data entities required in running tests.
+The tearDown method is used to clean up all data entities required in running tests.
+You should not misspell method name if you want your test to set up and clean up everything correctly.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/JUnitSpellingRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.JUnitSpellingRule</a></p>
 
@@ -5168,7 +5170,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 16, 2020 <br />
+ Site last generated: May 18, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

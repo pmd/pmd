@@ -529,6 +529,15 @@
 ,
 
 {
+"title": "LiteralsFirstInComparisons (Java, Best Practices)",
+"tags": "",
+"keywords": "LiteralsFirstInComparisons",
+"url": "pmd_rules_java_bestpractices.html#literalsfirstincomparisons",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
 "title": "LooseCoupling (Java, Best Practices)",
 "tags": "",
 "keywords": "LooseCoupling",

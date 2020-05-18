@@ -1416,6 +1416,23 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>Thanks to <a href="https://github.com/xnYi9wRezm">Fernando Cosso</a> CPD can now find duplicates in XML files as well.
 This is useful to find duplicated sections in XML files.</p>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>
+    <p>The new Java Rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="highlighter-rouge">LiteralsFirstInComparisons</code></a> (<code class="highlighter-rouge">java-bestpractices</code>)
+find String literals, that are used in comparisons and are not positioned first. Using the String literal
+as the receiver of e.g. <code class="highlighter-rouge">equals</code> helps to avoid NullPointerExceptions.</p>
+
+    <p>This rule is replacing the two old rules <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInComparisons</code></a>
+and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a> and extends the check
+for the methods <code class="highlighter-rouge">compareTo</code>, <code class="highlighter-rouge">compareToIgnoreCase</code> and <code class="highlighter-rouge">contentEquals</code> in addition to <code class="highlighter-rouge">equals</code> and
+<code class="highlighter-rouge">equalsIgnoreCase</code>.</p>
+
+    <p>Note: This rule also replaces the two mentioned rules in Java’s quickstart ruleset.</p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1429,9 +1446,24 @@ This is useful to find duplicated sections in XML files.</p>
       <li><a href="https://github.com/pmd/pmd/issues/2484">#2484</a>: [core] Update maven-enforcer-plugin to require Java 118</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2472">#2472</a>: [java] JavaCharStream throws an Error on invalid escape</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2288">#2288</a>: [java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2477">#2477</a>: [java] JUnitSpelling false-positive for JUnit5/4 tests</li>
+    </ul>
+  </li>
+  <li>swift
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2473">#2473</a>: [swift] Swift 5 (up to 5.2) support for CPD</li>
     </ul>
   </li>
 </ul>
@@ -1442,6 +1474,9 @@ This is useful to find duplicated sections in XML files.</p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.24.0-SNAPSHOT/net/sourceforge/pmd/lang/BaseLanguageModule.html#addVersion(String,LanguageVersionHandler,boolean)"><code>BaseLanguageModule#addVersion(String, LanguageVersionHandler, boolean)</code></a></li>
+  <li>Some members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.24.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/TokenMgrError.html#"><code>TokenMgrError</code></a>, in particular, a new constructor is available
+that should be preferred to the old ones</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.24.0-SNAPSHOT/net/sourceforge/pmd/lang/antlr/AntlrTokenManager/ANTLRSyntaxError.html#"><code>ANTLRSyntaxError</code></a></li>
 </ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
@@ -1463,7 +1498,10 @@ definitive API.</li>
   <li><a href="https://github.com/pmd/pmd/pull/2452">#2452</a>: [doc] Fix “Making Rulesets” doc sample code indentation - <a href="https://github.com/arturdryomov">Artur Dryomov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2457">#2457</a>: [xml] Adding XML to CPD supported languages - <a href="https://github.com/xnYi9wRezm">Fernando Cosso</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2469">#2469</a>: [apex] fix false positive unused variable if only a method is called - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2475">#2475</a>: [swift] Swift 4.2-5.2 support - <a href="https://github.com/kenji21">kenji21</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2478">#2478</a>: [java] New rule: LiteralsFirstInComparisons - <a href="https://github.com/John-Teng">John-Teng</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2479">#2479</a>: [java] False positive with Hamcrest’s assertThat - <a href="https://github.com/andreoss">andreoss</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2481">#2481</a>: [java] Fix JUnitSpellingRule false positive - <a href="https://github.com/KroArtem">Artem Krosheninnikov</a></li>
 </ul>
 
 
@@ -1482,7 +1520,7 @@ definitive API.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 16, 2020 <br />
+ Site last generated: May 18, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
