@@ -659,4 +659,52 @@ public final class StringUtil {
         return sb.toString();
     }
 
+
+    /**
+     * Replaces unprintable characters by their escaped (or unicode escaped)
+     * equivalents in the given string
+     */
+    public static String escapeJava(String str) {
+        StringBuilder retval = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            final char ch = str.charAt(i);
+            switch (ch) {
+            case 0:
+                break;
+            case '\b':
+                retval.append("\\b");
+                break;
+            case '\t':
+                retval.append("\\t");
+                break;
+            case '\n':
+                retval.append("\\n");
+                break;
+            case '\f':
+                retval.append("\\f");
+                break;
+            case '\r':
+                retval.append("\\r");
+                break;
+            case '\"':
+                retval.append("\\\"");
+                break;
+            case '\'':
+                retval.append("\\'");
+                break;
+            case '\\':
+                retval.append("\\\\");
+                break;
+            default:
+                if (ch < 0x20 || ch > 0x7e) {
+                    String s = "0000" + Integer.toString(ch, 16);
+                    retval.append("\\u").append(s.substring(s.length() - 4));
+                } else {
+                    retval.append(ch);
+                }
+                break;
+            }
+        }
+        return retval.toString();
+    }
 }

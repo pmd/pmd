@@ -14,6 +14,7 @@ import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
@@ -39,6 +40,8 @@ public abstract class JavaCCTokenizer implements Tokenizer {
                 tokenEntries.add(processToken(tokenEntries, currentToken, sourceCode.getFileName()));
                 currentToken = tokenFilter.getNextToken();
             }
+        } catch (TokenMgrError e) {
+            throw e.withFileName(sourceCode.getFileName());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

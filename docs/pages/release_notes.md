@@ -38,6 +38,8 @@ This is useful to find duplicated sections in XML files.
     *   [#2468](https://github.com/pmd/pmd/issues/2468): \[apex] Unused Local Variable fails on blocks
 *   core
     *   [#2484](https://github.com/pmd/pmd/issues/2484): \[core] Update maven-enforcer-plugin to require Java 118
+*   java
+    *   [#2472](https://github.com/pmd/pmd/issues/2472): \[java] JavaCharStream throws an Error on invalid escape
 *   java-bestpractices
     *   [#2288](https://github.com/pmd/pmd/issues/2288): \[java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat
 *   java-errorprone
@@ -49,7 +51,10 @@ This is useful to find duplicated sections in XML files.
 
 #### Deprecated APIs
 
-* {% jdoc !ca!core::lang.BaseLanguageModule#addVersion(String, LanguageVersionHandler, boolean) %}
+*   {% jdoc !ca!core::lang.BaseLanguageModule#addVersion(String, LanguageVersionHandler, boolean) %}
+*   Some members of {% jdoc core::lang.ast.TokenMgrError %}, in particular, a new constructor is available
+    that should be preferred to the old ones
+*   {% jdoc core::lang.antlr.AntlrTokenManager.ANTLRSyntaxError %}
 
 #### Experimental APIs
 
@@ -58,8 +63,6 @@ see its javadoc for details
 
 * The experimental methods in {% jdoc !ca!core::lang.BaseLanguageModule %} have been replaced by a
 definitive API.
-
-
 
 ### External Contributions
 

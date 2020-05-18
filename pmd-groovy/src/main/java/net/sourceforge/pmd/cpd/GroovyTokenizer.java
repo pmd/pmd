@@ -42,9 +42,7 @@ public class GroovyTokenizer implements Tokenizer {
             // they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line
             // option
-            throw new TokenMgrError("Lexical error in file " + sourceCode.getFileName() + " at line " + lexer.getLine()
-                    + ", column " + lexer.getColumn() + ".  Encountered: " + err.getMessage(),
-                    TokenMgrError.LEXICAL_ERROR);
+            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), sourceCode.getFileName(), err.getMessage(), err);
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }
