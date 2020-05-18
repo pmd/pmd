@@ -79,10 +79,9 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-No problem - usual JUnit5 test
-     ]]></description>
+        <description>No problem - usual JUnit5 test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.BeforeEach;
@@ -98,10 +97,9 @@ public class BTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-No problem - usual JUnit4 test
-     ]]></description>
+        <description>No problem - usual JUnit4 test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.Before;
