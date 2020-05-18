@@ -19,6 +19,19 @@ This is a {{ site.pmd.release_type }} release.
 Thanks to [Fernando Cosso](https://github.com/xnYi9wRezm) CPD can now find duplicates in XML files as well.
 This is useful to find duplicated sections in XML files.
 
+#### New Rules
+
+*   The new Java Rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %} (`java-bestpractices`)
+    find String literals, that are used in comparisons and are not positioned first. Using the String literal
+    as the receiver of e.g. `equals` helps to avoid NullPointerExceptions.
+    
+    This rule is replacing the two old rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
+    and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} and extends the check
+    for the methods `compareTo`, `compareToIgnoreCase` and `contentEquals` in addition to `equals` and
+    `equalsIgnoreCase`.
+    
+    Note: This rule also replaces the two mentioned rules in Java's quickstart ruleset.
+
 ### Fixed Issues
 
 *   apex-bestpractices
@@ -34,6 +47,7 @@ This is useful to find duplicated sections in XML files.
 *   [#2452](https://github.com/pmd/pmd/pull/2452): \[doc] Fix "Making Rulesets" doc sample code indentation - [Artur Dryomov](https://github.com/arturdryomov)
 *   [#2457](https://github.com/pmd/pmd/pull/2457): \[xml] Adding XML to CPD supported languages - [Fernando Cosso](https://github.com/xnYi9wRezm)
 *   [#2469](https://github.com/pmd/pmd/pull/2469): \[apex] fix false positive unused variable if only a method is called - [Gwilym Kuiper](https://github.com/gwilymatgearset)
+*   [#2478](https://github.com/pmd/pmd/pull/2478): \[java] New rule: LiteralsFirstInComparisons - [John-Teng](https://github.com/John-Teng)
 
 {% endtocmaker %}
 
