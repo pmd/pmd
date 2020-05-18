@@ -512,4 +512,22 @@ public class DigitalAssetManagerTest {
   }
 }]]></code>
     </test-code>
+    <test-code>
+        <description>#2288 JUnitTestsShouldIncludeAssertRule should support `Matchers.assertThat`</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import static org.hamcrest.MatcherAssert.*;
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+ public void test1() {
+    MatcherAssert.assertThat("doesn't matter", null, Matchers.nullValue());
+ }
+ public void test2() {
+    assertThat("doesn't matter", null, Matchers.nullValue());
+ }
+}
+]]></code>
+    </test-code>
 </test-data>
