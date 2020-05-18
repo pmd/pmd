@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -18,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
     private static final Comparator<ApexNode<?>> NODE_BY_SOURCE_LOCATION_COMPARATOR =
@@ -26,8 +29,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             .thenComparing(ApexNode::getBeginColumn);
     public static final String STATIC_INITIALIZER_METHOD_NAME = "<clinit>";
 
-    public FieldDeclarationsShouldBeAtStartRule() {
-        addRuleChainVisit(ASTUserClass.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
 
     @Override

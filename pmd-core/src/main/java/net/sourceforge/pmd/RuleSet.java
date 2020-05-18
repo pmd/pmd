@@ -556,6 +556,8 @@ public class RuleSet implements ChecksumAware {
      *            the node list, usually the root nodes like compilation units
      * @param ctx
      *            the current context
+     *
+     * @deprecated Use {@link RuleSets#apply(List, RuleContext)}
      */
     @Deprecated
     public void apply(List<? extends Node> acuList, RuleContext ctx) {

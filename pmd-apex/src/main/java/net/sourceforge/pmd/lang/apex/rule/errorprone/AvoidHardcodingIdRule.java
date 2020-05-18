@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class AvoidHardcodingIdRule extends AbstractApexRule {
     private static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9]{5}0[a-zA-Z0-9]{9}([a-zA-Z0-5]{3})?$");
@@ -27,9 +30,11 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
         CHECKSUM_LOOKUP = Collections.unmodifiableMap(lookup);
     }
 
-    public AvoidHardcodingIdRule() {
-        addRuleChainVisit(ASTLiteralExpression.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTLiteralExpression.class);
     }
+
 
     @Override
     public Object visit(ASTLiteralExpression node, Object data) {

@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -20,6 +22,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
@@ -30,8 +33,10 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     private static final String PAGEREFERENCE = "PageReference";
     private final Set<String> listOfStringLiteralVariables = new HashSet<>();
 
-    public ApexOpenRedirectRule() {
-        super.addRuleChainVisit(ASTUserClass.class);
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
 
     @Override

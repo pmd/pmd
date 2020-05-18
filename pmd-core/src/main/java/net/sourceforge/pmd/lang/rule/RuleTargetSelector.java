@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectorInternal;
 import net.sourceforge.pmd.lang.rule.internal.TreeIndex;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * A strategy for selecting nodes that will be targeted by a rule.
@@ -52,12 +53,28 @@ public abstract class RuleTargetSelector extends TargetSelectorInternal {
      * @return A selector
      *
      * @throws IllegalArgumentException If the argument is empty
+     * @throws NullPointerException     If the argument is null
+     * @throws NullPointerException     If any of the elements is null
      */
     public static RuleTargetSelector forTypes(Collection<Class<? extends Node>> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot visit zero types");
         }
         return new ClassRulechainVisits(types);
+    }
+
+    /**
+     * Target nodes that are subtypes of any of the given classes.
+     *
+     * @param types Node types
+     *
+     * @return A selector
+     *
+     * @throws NullPointerException if any of the arguments is null
+     */
+    @SafeVarargs
+    public static RuleTargetSelector forTypes(Class<? extends Node> first, Class<? extends Node>... types) {
+        return forTypes(CollectionUtil.listOf(first, types));
     }
 
     /**
@@ -98,6 +115,9 @@ public abstract class RuleTargetSelector extends TargetSelectorInternal {
         private final Set<Class<? extends Node>> visits;
 
         ClassRulechainVisits(Collection<Class<? extends Node>> visits) {
+            if (visits.contains(null)) {
+                throw new NullPointerException("Null element in class visits " + visits);
+            }
             this.visits = new HashSet<>(visits);
         }
 

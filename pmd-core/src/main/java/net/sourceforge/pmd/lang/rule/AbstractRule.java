@@ -259,7 +259,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     /**
-     * Create the targeting strategy for this node. Please override
+     * Create the targeting strategy for this rule. Please override
      * this instead of using {@link #addRuleChainVisit(Class)}.
      * Use the factory methods of {@link RuleTargetSelector}.
      */
