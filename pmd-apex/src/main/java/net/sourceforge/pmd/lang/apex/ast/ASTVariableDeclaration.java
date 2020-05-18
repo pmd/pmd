@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
-public final class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements Node {
+public final class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> {
 
     ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);

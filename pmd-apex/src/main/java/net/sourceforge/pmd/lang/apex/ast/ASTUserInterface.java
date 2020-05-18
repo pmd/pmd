@@ -6,14 +6,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
-public final class ASTUserInterface extends AbstractApexNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
-                                                                                       Node {
+public final class ASTUserInterface extends AbstractApexNode<UserInterface> implements ASTUserClassOrInterface<UserInterface> {
 
     private ApexQualifiedName qname;
 

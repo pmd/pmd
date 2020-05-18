@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import apex.jorje.semantic.ast.member.Field;
 
-public final class ASTField extends AbstractApexNode<Field> implements Node {
+public final class ASTField extends AbstractApexNode<Field> {
 
     ASTField(Field field) {
         super(field);

@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import apex.jorje.semantic.ast.member.Parameter;
 
-public final class ASTParameter extends AbstractApexNode<Parameter> implements Node {
+public final class ASTParameter extends AbstractApexNode<Parameter> {
 
     ASTParameter(Parameter parameter) {
         super(parameter);

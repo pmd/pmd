@@ -8,16 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
 import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
 import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
 
-public final class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements>
-    implements Node {
+public final class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements> {
 
     ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
