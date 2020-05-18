@@ -1,5 +1,5 @@
 // Downloaded on 2016/03/02 from https://github.com/sleekbyte/tailor/blob/master/src/main/antlr/com/sleekbyte/tailor/antlr/Swift.g4
-
+// https://github.com/apple/swift/blob/master/CHANGELOG.md
 /*
  * [The "BSD license"]
  *  Copyright (c) 2014 Terence Parr
@@ -871,7 +871,7 @@ classRequirement: 'class' ;
 
 // GRAMMAR OF A COMPILER CONTROL STATEMENT
 
-compilerControlStatement: conditionalCompilationBlock | lineControlStatement ;
+compilerControlStatement: conditionalCompilationBlock | lineControlStatement | warningCompilationStatement ;
 
 // GRAMMAR OF A CONDITIONAL COMPILATION BLOCK
 
@@ -907,6 +907,8 @@ lineControlStatement: '#sourceLocation' '(' 'file' ':' fileName ',' 'line' ':' l
  | '#sourceLocation' '(' ')' ;
 lineNumber: integerLiteral ;
 fileName: SingleStringLiteral ;
+
+warningCompilationStatement: '#warning' | '#error' '(' SingleStringLiteral ')' ;
 
 // ---------- Lexical Structure -----------
 
@@ -948,7 +950,7 @@ grammarString:
   'red' | 'blue' | 'green' | 'alpha' | 'resourceName' | 'of' | 'type' ;
 
 OperatorHead
-  : '/' | '=' | '-' | '+' | '!' | '*' | '%' | '<' | '>' | '&' | '|' | '^' | '~' | '?'
+  : '/' | '=' | '-' | '+' | '!' | '*' | '%' | '<' | '>' | '&' | '|' | '^' | '~' | '?' | '$'
   | [\u00A1-\u00A7]
   | [\u00A9\u00AB\u00AC\u00AE]
   | [\u00B0-\u00B1\u00B6\u00BB\u00BF\u00D7\u00F7]
