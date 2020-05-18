@@ -27,6 +27,8 @@ This is useful to find duplicated sections in XML files.
     *   [#2484](https://github.com/pmd/pmd/issues/2484): \[core] Update maven-enforcer-plugin to require Java 118
 *   java-bestpractices
     *   [#2288](https://github.com/pmd/pmd/issues/2288): \[java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat
+*   java-errorprone
+    *   [#2477](https://github.com/pmd/pmd/issues/2477): \[java] JUnitSpelling false-positive for JUnit5/4 tests
 
 ### API Changes
 
@@ -53,6 +55,7 @@ definitive API.
 *   [#2457](https://github.com/pmd/pmd/pull/2457): \[xml] Adding XML to CPD supported languages - [Fernando Cosso](https://github.com/xnYi9wRezm)
 *   [#2469](https://github.com/pmd/pmd/pull/2469): \[apex] fix false positive unused variable if only a method is called - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2479](https://github.com/pmd/pmd/pull/2479): \[java] False positive with Hamcrest's assertThat - [andreoss](https://github.com/andreoss)
+*   [#2481](https://github.com/pmd/pmd/pull/2481): \[java] Fix JUnitSpellingRule false positive - [Artem Krosheninnikov](https://github.com/KroArtem)
 
 {% endtocmaker %}
 
