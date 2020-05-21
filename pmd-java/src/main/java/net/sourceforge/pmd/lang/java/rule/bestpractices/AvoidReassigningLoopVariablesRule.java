@@ -38,11 +38,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.performance.AbstractOptimizationRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule {
 
     private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES =
-        associateBy(asList(ForeachReassignOption.values()), o -> o.displayName);
+        associateBy(asList(ForeachReassignOption.values()), ForeachReassignOption::getDisplayName);
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
             = enumProperty("foreachReassign", FOREACH_REASSIGN_VALUES)
@@ -50,8 +51,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             .desc("how/if foreach control variables may be reassigned")
             .build();
 
-    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES=
-        associateBy(asList(ForReassignOption.values()), o -> o.displayName);
+    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES =
+        associateBy(asList(ForReassignOption.values()), ForReassignOption::getDisplayName);
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
             = enumProperty("forReassign", FOR_REASSIGN_VALUES)
@@ -303,23 +304,17 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         /**
          * Deny reassigning the 'foreach' control variable
          */
-        DENY("deny"),
+        DENY,
 
         /**
          * Allow reassigning the 'foreach' control variable if it is the first statement in the loop body.
          */
-        FIRST_ONLY("firstOnly"),
+        FIRST_ONLY,
 
         /**
          * Allow reassigning the 'foreach' control variable.
          */
-        ALLOW("allow");
-
-        private final String displayName;
-
-        ForeachReassignOption(String displayName) {
-            this.displayName = displayName;
-        }
+        ALLOW;
 
         /**
          * The RuleDocGenerator uses toString() to determine the default value.
@@ -328,7 +323,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            return displayName;
+            return getDisplayName();
+        }
+
+        public String getDisplayName() {
+            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
         }
     }
 
@@ -336,23 +335,17 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         /**
          * Deny reassigning a 'for' control variable.
          */
-        DENY("deny"),
+        DENY,
 
         /**
          * Allow skipping elements by incrementing/decrementing the 'for' control variable.
          */
-        SKIP("skip"),
+        SKIP,
 
         /**
          * Allow reassigning the 'for' control variable.
          */
-        ALLOW("allow");
-
-        private final String displayName;
-
-        ForReassignOption(String displayName) {
-            this.displayName = displayName;
-        }
+        ALLOW;
 
         /**
          * The RuleDocGenerator uses toString() to determine the default value.
@@ -361,7 +354,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            return displayName;
+            return getDisplayName();
+        }
+
+        public String getDisplayName() {
+            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
         }
     }
 
