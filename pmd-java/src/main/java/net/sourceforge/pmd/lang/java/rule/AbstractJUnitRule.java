@@ -24,9 +24,9 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     protected static final String JUNIT4_CLASS_NAME = "org.junit.Test";
     protected static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
 
-    private boolean isJUnit3Class;
-    private boolean isJUnit4Class;
-    private boolean isJUnit5Class;
+    protected boolean isJUnit3Class;
+    protected boolean isJUnit4Class;
+    protected boolean isJUnit5Class;
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -105,10 +105,10 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
             if (((ASTClassOrInterfaceType) extendsList.getChild(0)).getImage().endsWith("TestCase")) {
                 return true;
             }
-            String className = cid.getImage();
+            String className = cid.getSimpleName();
             return className.endsWith("Test");
         } else if (hasImports(node, JUNIT3_CLASS_NAME)) {
-            return cid.getImage().endsWith("Test");
+            return cid.getSimpleName().endsWith("Test");
         }
         return false;
     }
