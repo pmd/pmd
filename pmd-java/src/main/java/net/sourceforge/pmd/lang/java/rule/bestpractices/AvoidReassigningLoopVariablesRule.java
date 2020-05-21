@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -294,7 +293,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
     /**
      * Add a violation, if the node image is one of the loop variables.
      */
-    private void checkVariable(Object data, Set<String> loopVariables, AbstractNode node) {
+    private void checkVariable(Object data, Set<String> loopVariables, Node node) {
         if (node != null && loopVariables.contains(node.getImage())) {
             addViolation(data, node, node.getImage());
         }

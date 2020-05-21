@@ -153,7 +153,7 @@ public class RuleBuilder {
         if (minimumVersion != null) {
             LanguageVersion minimumLanguageVersion = rule.getLanguage().getVersion(minimumVersion);
             if (minimumLanguageVersion == null) {
-                throwUnknownLanguageVersionException("minimum", minimumVersion);
+                throwUnknownLanguageVersionException("minimum", minimumVersion, rule.getLanguage());
             } else {
                 rule.setMinimumLanguageVersion(minimumLanguageVersion);
             }
@@ -162,7 +162,7 @@ public class RuleBuilder {
         if (maximumVersion != null) {
             LanguageVersion maximumLanguageVersion = rule.getLanguage().getVersion(maximumVersion);
             if (maximumLanguageVersion == null) {
-                throwUnknownLanguageVersionException("maximum", maximumVersion);
+                throwUnknownLanguageVersionException("maximum", maximumVersion, rule.getLanguage());
             } else {
                 rule.setMaximumLanguageVersion(maximumLanguageVersion);
             }
@@ -171,12 +171,12 @@ public class RuleBuilder {
         checkLanguageVersionsAreOrdered(rule);
     }
 
-    private void throwUnknownLanguageVersionException(String minOrMax, String unknownVersion) {
-        throw new IllegalArgumentException("Unknown " + minOrMax + " language version '" + unknownVersion
-                                           + "' for language '" + language.getTerseName()
-                                           + "' for rule " + name
-                                           + "; supported language versions are: "
-                                           + language.getVersions().stream().map(LanguageVersion::getVersion).collect(Collectors.joining(", ")));
+    private void throwUnknownLanguageVersionException(String minOrMax, String unknownVersion, Language lang) {
+        throw new IllegalArgumentException("Unknown " + minOrMax + " Language Version '" + unknownVersion
+                                           + "' for Language '" + lang.getTerseName()
+                                           + "' for Rule " + name
+                                           + "; supported Language Versions are: "
+                                           + lang.getVersions().stream().map(LanguageVersion::getVersion).collect(Collectors.joining(", ")));
     }
 
     public Rule build() throws ClassNotFoundException, IllegalAccessException, InstantiationException {

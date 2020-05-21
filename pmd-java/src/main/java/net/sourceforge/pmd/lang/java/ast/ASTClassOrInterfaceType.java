@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -19,9 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceType(int id) {
+    ASTClassOrInterfaceType(int id) {
         super(id);
     }
 

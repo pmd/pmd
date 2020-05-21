@@ -7,13 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Deprecated
 @InternalApi
-public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> implements JavaNode {
+public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
     private Scope scope;
     private Comment comment;
@@ -26,30 +25,21 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<JavaNode> impl
     }
 
     @Override
-    public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        for (Node child : children()) {
-            ((JavaNode) child).jjtAccept(visitor, data);
-        }
-
-        return data;
-    }
-
-
-    @Override
-    public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        for (Node child : children()) {
-            ((JavaNode) child).jjtAccept(visitor, data);
-        }
-
-    }
-
-
-    @Override
     public Scope getScope() {
         if (scope == null) {
-            return ((JavaNode) parent).getScope();
+            return getParent().getScope();
         }
         return scope;
+    }
+
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
+    protected void addChild(AbstractJavaNode child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override // override to make it accessible to parser
+    protected void setImage(String image) {
+        super.setImage(image);
     }
 
     @InternalApi

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 
 /**
@@ -15,9 +14,7 @@ import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
 @Deprecated
 public class ASTMethodDeclarator extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTMethodDeclarator(int id) {
+    ASTMethodDeclarator(int id) {
         super(id);
     }
 

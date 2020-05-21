@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
@@ -123,8 +122,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             // myTypeImg = myTypeNode.getImage();
             // otherTypeImg = otherTypeNode.getImage();
             // } else {
-            myTypeImg = ((AbstractPLSQLNode) myTypeNode.getChild(0)).getImage();
-            otherTypeImg = ((AbstractPLSQLNode) otherTypeNode.getChild(0)).getImage();
+            myTypeImg = myTypeNode.getChild(0).getImage();
+            otherTypeImg = otherTypeNode.getChild(0).getImage();
             // }
 
             if (!myTypeImg.equals(otherTypeImg)) {

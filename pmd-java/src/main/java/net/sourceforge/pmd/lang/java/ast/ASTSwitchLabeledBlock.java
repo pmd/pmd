@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 
 public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
@@ -29,8 +28,7 @@ public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitch
     public void jjtClose() {
         super.jjtClose();
         if (getNumChildren() > 0) {
-            AbstractNode firstChild = (AbstractNode) getChild(0);
-            jjtSetFirstToken(firstChild.jjtGetFirstToken());
+            setFirstToken(getFirstChild().getFirstToken());
         }
     }
 }

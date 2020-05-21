@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -72,16 +71,6 @@ public class PmdAntlrTerminalNode extends TerminalNodeImpl implements AntlrNode 
     @Override
     public int getEndColumn() {
         return getBeginColumn() + getSymbol().getText().length();
-    }
-
-    @Override
-    public Object getUserData() {
-        return userData.get(AbstractNode.LEGACY_USER_DATA);
-    }
-
-    @Override
-    public void setUserData(Object data) {
-        this.userData.set(AbstractNode.LEGACY_USER_DATA, data);
     }
 
     @Override

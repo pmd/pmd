@@ -26,10 +26,10 @@ abstract class AbstractInfixEcmascriptNode<T extends InfixExpression> extends Ab
     }
 
     public EcmascriptNode<?> getLeft() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getRight() {
-        return (EcmascriptNode<?>) getChild(1);
+        return getChild(1);
     }
 }

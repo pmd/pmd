@@ -33,7 +33,7 @@ public class GeneralFiddlingTest extends BaseNonParserTest {
     public void test1() {
         ASTCompilationUnit acu = java.parse(TEST1);
         ASTMethodDeclarator meth = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0);
-        DataFlowNode n = meth.getDataFlowNode();
+        DataFlowNode n = DataFlowNode.get(meth);
         List<DataFlowNode> f = n.getFlow();
 
         assertEquals(6, f.size());

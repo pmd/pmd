@@ -897,7 +897,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
             // skip children which already have their type assigned
             if (currentChild.getType() == null) {
                 // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
-                if (currentChild.jjtGetLastToken().kind == JavaTokenKinds.THIS) {
+                if (currentChild.getLastToken().kind == JavaTokenKinds.THIS) {
 
                     if (previousChild != null) { // Qualified 'this' expression
                         currentChild.setTypeDefinition(previousChild.getTypeDefinition());
@@ -911,7 +911,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                     }
 
                     // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
-                } else if (currentChild.jjtGetLastToken().kind == JavaTokenKinds.SUPER) {
+                } else if (currentChild.getLastToken().kind == JavaTokenKinds.SUPER) {
 
                     if (previousChild != null) { // Qualified 'super' expression
                         // anonymous classes can't have qualified super expression, thus
@@ -929,7 +929,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
                     String currentChildImage = currentChild.getImage();
                     if (currentChildImage == null) {
                         // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
-                        currentChildImage = currentChild.jjtGetLastToken().getImage();
+                        currentChildImage = currentChild.getLastToken().getImage();
                     }
 
                     ASTArguments astArguments = nextChild != null

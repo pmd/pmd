@@ -64,7 +64,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     private void addScope(Scope newScope, PLSQLNode node) {
         newScope.setParent(scopes.peek());
         scopes.push(newScope);
-        node.setScope(newScope);
+        InternalApiBridge.setScope(node, newScope);
     }
 
     /**
@@ -133,7 +133,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
             scope = new SourceFileScope();
         }
         scopes.push(scope);
-        node.setScope(scope);
+        InternalApiBridge.setScope(node, scope);
     }
 
     @Override

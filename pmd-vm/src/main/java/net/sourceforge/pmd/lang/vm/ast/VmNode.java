@@ -4,23 +4,12 @@
 
 package net.sourceforge.pmd.lang.vm.ast;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.TextAvailableNode;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 
-public interface VmNode extends TextAvailableNode {
+public interface VmNode extends JjtreeNode<VmNode> {
     /**
      * Accept the visitor.
      */
     Object jjtAccept(VmParserVisitor visitor, Object data);
-
-
-    @Override
-    VmNode getChild(int index);
-
-    @Override
-    VmNode getParent();
-
-    @Override
-    NodeStream<? extends VmNode> children();
 
 }

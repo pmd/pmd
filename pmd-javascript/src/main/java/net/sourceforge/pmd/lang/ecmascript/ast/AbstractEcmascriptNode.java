@@ -6,17 +6,30 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 
-abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
+    private String image;
 
     AbstractEcmascriptNode(T node) {
-        super(node.getType());
         this.node = node;
+    }
+
+    @Override
+    protected void addChild(AbstractEcmascriptNode<?> child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    public String getImage() {
+        return image;
+    }
+
+    protected void setImage(String image) {
+        this.image = image;
     }
 
     /* package private */
@@ -40,21 +53,6 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode im
     @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    @Override
-    public Object childrenAccept(EcmascriptParserVisitor visitor, Object data) {
-        for (Node child : children) {
-            // we know that the children here
-            // are all EcmascriptNodes
-            @SuppressWarnings("unchecked")
-            EcmascriptNode<T> ecmascriptNode = (EcmascriptNode<T>) child;
-            ecmascriptNode.jjtAccept(visitor, data);
-        }
-        return data;
     }
 
     @Override

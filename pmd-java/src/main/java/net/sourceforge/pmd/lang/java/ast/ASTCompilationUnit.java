@@ -67,7 +67,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     }
 
     @Override
-    public ASTCompilationUnit getRoot() {
+    public @NonNull ASTCompilationUnit getRoot() {
         return this;
     }
 

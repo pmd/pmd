@@ -42,9 +42,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     private VariableNameDeclaration nameDeclaration;
     private boolean explicitReceiverParameter = false;
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclaratorId(int id) {
+    ASTVariableDeclaratorId(int id) {
         super(id);
     }
 
@@ -96,6 +94,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     @Override
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@ArrayType")
     public boolean isArray() {
         return arrayDepth > 0;
     }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a reference type, i.e. a {@linkplain ASTClassOrInterfaceType class or interface type},
  * or an array type.
@@ -21,9 +19,7 @@ public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensiona
 
     private int arrayDepth;
 
-    @InternalApi
-    @Deprecated
-    public ASTReferenceType(int id) {
+    ASTReferenceType(int id) {
         super(id);
     }
 

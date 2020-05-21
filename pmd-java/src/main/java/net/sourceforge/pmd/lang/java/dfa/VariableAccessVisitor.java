@@ -54,7 +54,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     private void computeNow(Node node) {
 
 
-        DataFlowNode inode = node.getDataFlowNode();
+        DataFlowNode inode = DataFlowNode.get(node);
 
         List<VariableAccess> undefinitions = markUsages(inode);
 

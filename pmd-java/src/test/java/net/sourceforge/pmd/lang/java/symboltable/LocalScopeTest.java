@@ -16,9 +16,9 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -27,12 +27,8 @@ public class LocalScopeTest extends BaseNonParserTest {
     @Test
     public void testNameWithThisOrSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
-        ASTName name = new ASTName(1);
-        name.setImage("foo");
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.setUsesThisModifier();
-        name.jjtAddChild(prefix, 1);
-        JavaNameOccurrence occ = new JavaNameOccurrence(name, "foo");
+        ASTPrimaryPrefix prefix = InternalApiBridge.newThisSuperPrefix("foo", true);
+        JavaNameOccurrence occ = new JavaNameOccurrence(prefix.getFirstChild(), "foo");
         scope.addNameOccurrence(occ);
         assertFalse(scope.getDeclarations().keySet().iterator().hasNext());
     }
@@ -40,12 +36,8 @@ public class LocalScopeTest extends BaseNonParserTest {
     @Test
     public void testNameWithSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
-        ASTName name = new ASTName(1);
-        name.setImage("foo");
-        ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
-        prefix.setUsesSuperModifier();
-        name.jjtAddChild(prefix, 1);
-        JavaNameOccurrence occ = new JavaNameOccurrence(name, "foo");
+        ASTPrimaryPrefix prefix = InternalApiBridge.newThisSuperPrefix("foo", false);
+        JavaNameOccurrence occ = new JavaNameOccurrence(prefix.getFirstChild(), "foo");
         scope.addNameOccurrence(occ);
         assertFalse(scope.getDeclarations().keySet().iterator().hasNext());
     }

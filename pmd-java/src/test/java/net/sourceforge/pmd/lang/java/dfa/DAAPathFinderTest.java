@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.dfa;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.lang.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
@@ -18,7 +19,7 @@ public class DAAPathFinderTest {
     @Test
     public void testTwoUpdateDefs() {
         ASTMethodDeclarator meth = JavaParsingHelper.WITH_PROCESSING.getNodes(ASTMethodDeclarator.class, TWO_UPDATE_DEFS).get(0);
-        DAAPathFinder a = new DAAPathFinder(meth.getDataFlowNode().getFlow().get(0), new Executable() {
+        DAAPathFinder a = new DAAPathFinder(DataFlowNode.get(meth).getFlow().get(0), new Executable() {
             @Override
             public void execute(CurrentPath path) {
 
