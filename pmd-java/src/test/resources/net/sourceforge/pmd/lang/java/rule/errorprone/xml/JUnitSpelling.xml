@@ -79,4 +79,39 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>No problem - usual JUnit5 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class BTest {
+
+    @BeforeEach
+    void setup() {}
+
+    @Test
+    void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No problem - usual JUnit4 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Before;
+import org.junit.Test;
+public class BTest {
+
+    @Before
+    void setup() {}
+
+    @Test
+    void test() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
