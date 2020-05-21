@@ -13,6 +13,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 
@@ -128,7 +131,10 @@ public class RuleSets {
             this.ruleApplicator = prepareApplicator();
         }
 
-        ruleApplicator.index(acuList);
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
+            ruleApplicator.index(acuList);
+        }
+
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.applies(ctx.getSourceCodeFile())) {
                 ruleApplicator.apply(ruleSet.getRules(), ctx);
