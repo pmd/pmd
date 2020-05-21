@@ -12,6 +12,10 @@ public class JUnitSpellingRule extends AbstractJUnitRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        if (isJUnit5Class || isJUnit4Class) {
+            return super.visit(node, data);
+        }
+
         if (node.getArity() != 0) {
             return super.visit(node, data);
         }

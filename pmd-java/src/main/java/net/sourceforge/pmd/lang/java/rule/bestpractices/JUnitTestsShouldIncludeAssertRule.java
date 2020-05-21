@@ -61,6 +61,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         if (n instanceof ASTStatementExpression) {
             if (isExpectStatement((ASTStatementExpression) n, expectables)
                     || isAssertOrFailStatement((ASTStatementExpression) n)
+                    || isHamcrestAssert((ASTStatementExpression) n)
                     || isVerifyStatement((ASTStatementExpression) n)
                     || isSoftAssertionStatement((ASTStatementExpression) n, variables)) {
                 return true;
@@ -134,43 +135,42 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         return false;
     }
 
-    /**
-     * Tells if the expression is an assert statement or not.
-     */
-    private boolean isAssertOrFailStatement(ASTStatementExpression expression) {
+    private String getMethodCallNameOrNull(ASTStatementExpression expression) {
         if (expression != null) {
             ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
             if (pe != null) {
                 Node name = pe.getFirstDescendantOfType(ASTName.class);
                 if (name != null) {
-                    String img = name.getImage();
-                    if (img != null && (img.startsWith("assert") || img.startsWith("fail")
-                            || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"))) {
-                        return true;
-                    }
+                    return name.getImage();
                 }
             }
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * Tells if the expression is an Hamcrest assert
+     */
+    private boolean isHamcrestAssert(ASTStatementExpression expression) {
+        String img = getMethodCallNameOrNull(expression);
+        return "assertThat".equals(img) || "MatcherAssert.assertThat".equals(img);
+    }
+
+    /**
+     * Tells if the expression is an assert statement or not.
+     */
+    private boolean isAssertOrFailStatement(ASTStatementExpression expression) {
+        String img = getMethodCallNameOrNull(expression);
+        return img != null && (img.startsWith("assert") || img.startsWith("fail")
+                || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"));
     }
 
     /**
      * Tells if the expression is verify statement or not
      */
     private boolean isVerifyStatement(ASTStatementExpression expression) {
-        if (expression != null) {
-            ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
-            if (pe != null) {
-                Node name = pe.getFirstDescendantOfType(ASTName.class);
-                if (name != null) {
-                    String img = name.getImage();
-                    if (img != null && (img.startsWith("verify") || img.startsWith("Mockito.verify"))) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        String img = getMethodCallNameOrNull(expression);
+        return img != null && (img.startsWith("verify") || img.startsWith("Mockito.verify"));
     }
 
     private boolean isExpectStatement(ASTStatementExpression expression,

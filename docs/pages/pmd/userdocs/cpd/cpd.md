@@ -207,7 +207,6 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 
 ## Supported Languages
 
-* Apex
 * C#
 * C/C++
 * Dart
@@ -220,15 +219,18 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Kotlin
 * Lua
 * Matlab
+* Modelica
 * Objective-C
 * Perl
 * PHP
 * PL/SQL
 * Python
 * Ruby
+* Salesforce.com Apex
 * Scala
 * Swift
 * Visualforce
+* XML
 
 
 ## Available report formats

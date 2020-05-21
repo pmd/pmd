@@ -21,6 +21,8 @@ import net.sourceforge.pmd.PMDVersion;
 
 public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
+    private static final String SUPPORTED_LANGUAGES = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
+
     @Test
     public void testFileExistence() {
         assertTrue(getBinaryDistribution().exists());
@@ -81,7 +83,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         ExecutionResult result;
 
         result = CpdExecutor.runCpd(tempDir, "-h");
-        result.assertExecutionResult(0, "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
+        result.assertExecutionResult(0, SUPPORTED_LANGUAGES);
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");

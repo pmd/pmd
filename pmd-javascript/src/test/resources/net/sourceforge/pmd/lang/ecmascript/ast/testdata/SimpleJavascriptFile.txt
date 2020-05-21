@@ -1,0 +1,20 @@
++- AstRoot
+   +- VariableDeclaration
+   |  +- VariableInitializer
+   |     +- Name
+   |     +- NumberLiteral
+   +- VariableDeclaration
+   |  +- VariableInitializer
+   |     +- Name
+   |     +- NumberLiteral
+   +- FunctionNode
+      +- Name
+      +- Block
+         +- VariableDeclaration
+         |  +- VariableInitializer
+         |     +- Name
+         |     +- InfixExpression
+         |        +- Name
+         |        +- NumberLiteral
+         +- ReturnStatement
+            +- Name
