@@ -1577,9 +1577,11 @@ Creating a new instance is easier than synchronizing access to a shared instance
 <p>Avoid printStackTrace(); use a logger call instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
- </span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'printStackTrace'</span><span class="p">)]]</span><span class="w">
- </span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nf">boolean</span><span class="p">(</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="p">))]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="w">
+   </span><span class="p">(</span><span class="w"> </span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nt">Name</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'printStackTrace'</span><span class="p">)]]</span><span class="w">
+   </span><span class="p">|</span><span class="w"> </span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'printStackTrace'</span><span class="p">]</span><span class="w">
+   </span><span class="p">)</span><span class="o">/</span><span class="kn">following-sibling::</span><span class="o">*</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="kn">self::</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@Size</span><span class="err">=</span><span class="m">0</span><span class="p">]]</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
