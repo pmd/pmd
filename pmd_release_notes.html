@@ -1433,6 +1433,14 @@ for the methods <code class="highlighter-rouge">compareTo</code>, <code class="h
   </li>
 </ul>
 
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+
+<ul>
+  <li>The two Java rules <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInComparisons</code></a>
+and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a> have been deprecated
+in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="highlighter-rouge">LiteralsFirstInComparisons</code></a>.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1447,6 +1455,11 @@ for the methods <code class="highlighter-rouge">compareTo</code>, <code class="h
       <li><a href="https://github.com/pmd/pmd/issues/2484">#2484</a>: [core] Update maven-enforcer-plugin to require Java 118</li>
     </ul>
   </li>
+  <li>c#
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/2495">#2495</a>: [c#] Support for interpolated verbatim strings</li>
+    </ul>
+  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2472">#2472</a>: [java] JavaCharStream throws an Error on invalid escape</li>
@@ -1454,7 +1467,13 @@ for the methods <code class="highlighter-rouge">compareTo</code>, <code class="h
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2145">#2145</a>: [java] Deprecate rules PositionLiteralsFirstIn(CaseInsensitive)Comparisons in favor of LiteralsFirstInComparisons</li>
       <li><a href="https://github.com/pmd/pmd/issues/2288">#2288</a>: [java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/2476">#2476</a>: [java] MethodNamingConventions - Add support for JUnit 5 method naming</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1501,9 +1520,12 @@ definitive API.</li>
   <li><a href="https://github.com/pmd/pmd/pull/2465">#2465</a>: [dependencies] Upgrade hamcrest, mockito and JUnit - <a href="https://github.com/KroArtem">Artem Krosheninnikov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2469">#2469</a>: [apex] fix false positive unused variable if only a method is called - <a href="https://github.com/gwilymatgearset">Gwilym Kuiper</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2475">#2475</a>: [swift] Swift 4.2-5.2 support - <a href="https://github.com/kenji21">kenji21</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2476">#2476</a>: [java] MethodNamingConventions - Add support for JUnit 5 method naming - <a href="https://github.com/birdflier">Bruno Ritz</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2478">#2478</a>: [java] New rule: LiteralsFirstInComparisons - <a href="https://github.com/John-Teng">John-Teng</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2479">#2479</a>: [java] False positive with Hamcrest’s assertThat - <a href="https://github.com/andreoss">andreoss</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2481">#2481</a>: [java] Fix JUnitSpellingRule false positive - <a href="https://github.com/KroArtem">Artem Krosheninnikov</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2493">#2493</a>: [java] Deprecate redundant String Comparison rules - <a href="https://github.com/John-Teng">John-Teng</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2495">#2495</a>: [c#] Support for interpolated verbatim strings - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
 </ul>
 
 

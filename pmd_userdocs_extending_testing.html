@@ -1497,20 +1497,22 @@ this test class.</div>
     <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
+
     <span class="nt">&lt;test-code&gt;</span>
         <span class="nt">&lt;description&gt;</span>concrete class<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
         <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
 public class Foo {}
-     ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+    ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
     <span class="nt">&lt;/test-code&gt;</span>
+
     <span class="nt">&lt;test-code&gt;</span>
         <span class="nt">&lt;description&gt;</span>failure case<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;expected-problems&gt;</span>1<span class="nt">&lt;/expected-problems&gt;</span>
         <span class="nt">&lt;expected-linenumbers&gt;</span>1<span class="nt">&lt;/expected-linenumbers&gt;</span>
         <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
 public abstract class Foo {}
-     ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+    ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
     <span class="nt">&lt;/test-code&gt;</span>
 <span class="nt">&lt;/test-data&gt;</span>
 </code></pre></div></div>
@@ -1581,8 +1583,9 @@ This allows you to share the same code snippet with several test cases. The attr
 id of the references code fragment.</p>
   </li>
   <li>
-    <p><strong><code class="highlighter-rouge">&lt;source-type&gt;</code></strong>: Optional element that specifies the source code language. This defines the parser that
-is used for parsing the code snippet. If not given, <strong>java</strong> is used as default.</p>
+    <p><strong><code class="highlighter-rouge">&lt;source-type&gt;</code></strong>: Optional element that specifies a specific language version. This can be used
+to select a specific parser version for parsing the code snippet. If not given, the default version of
+the rule’s language is used. This element can almost always be omitted.</p>
   </li>
 </ul>
 
@@ -1610,27 +1613,33 @@ in a “CDATA” section, so that no further XML escapes (entity references such
             <span class="nt">&lt;message&gt;</span>Violation message 2<span class="nt">&lt;/message&gt;</span>
         <span class="nt">&lt;/expected-messages&gt;</span>
         <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
-    public class ConsistentReturn {
-        public Boolean foo() {
-        }
+public class ConsistentReturn {
+    public Boolean foo() {
     }
-         ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
-            <span class="nt">&lt;source-type&gt;</span>apex<span class="nt">&lt;/source-type&gt;</span>                             <span class="c">&lt;!-- optional --&gt;</span>
-        <span class="nt">&lt;/test-code&gt;</span>
+}
+        ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+        <span class="nt">&lt;source-type&gt;</span>java 1.5<span class="nt">&lt;/source-type&gt;</span>                             <span class="c">&lt;!-- optional --&gt;</span>
+    <span class="nt">&lt;/test-code&gt;</span>
 
-        <span class="nt">&lt;code-fragment</span> <span class="na">id=</span><span class="s">"codeSnippet1"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[
-    public class ConsistentReturn {
-        public Boolean foo() {
+    <span class="nt">&lt;code-fragment</span> <span class="na">id=</span><span class="s">"codeSnippet1"</span><span class="nt">&gt;</span><span class="cp">&lt;![CDATA[
+public class ConsistentReturn {
+    public Boolean foo() {
     }
-    }
-        ]]&gt;</span><span class="nt">&lt;/code-fragment&gt;</span>
-        <span class="nt">&lt;test-code&gt;</span>
-            <span class="nt">&lt;description&gt;</span>test case using a code fragment<span class="nt">&lt;/description&gt;</span>
-            <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
-            <span class="nt">&lt;code-ref</span> <span class="na">id=</span><span class="s">"codeSnippet1"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/test-code&gt;</span>
-    <span class="nt">&lt;/test-data&gt;</span>
+}
+    ]]&gt;</span><span class="nt">&lt;/code-fragment&gt;</span>
+
+    <span class="nt">&lt;test-code&gt;</span>
+        <span class="nt">&lt;description&gt;</span>test case using a code fragment<span class="nt">&lt;/description&gt;</span>
+        <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
+        <span class="nt">&lt;code-ref</span> <span class="na">id=</span><span class="s">"codeSnippet1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/test-code&gt;</span>
+<span class="nt">&lt;/test-data&gt;</span>
 </code></pre></div></div>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> For better readability, the indentation should be 4 for spaces and no tabs.
+Each test-code should be separated by a blank line. CDATA
+sections are only required for the code snippets which should be formatted with indentation for
+better readability. The description can be written directly without a CDATA section.</div>
 
 <h2 id="using-the-test-framework-externally">Using the test framework externally</h2>
 
@@ -1639,12 +1648,12 @@ Therefore you just need to reference the dependency <code class="highlighter-rou
 
 <p>For maven, you can use this snippet:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
-    &lt;groupId&gt;net.sourceforge.pmd&lt;/groupId&gt;
-    &lt;artifactId&gt;pmd-test&lt;/artifactId&gt;
-    &lt;version&gt;6.24.0-SNAPSHOT&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
-&lt;/dependency&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>pmd-test<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>6.24.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
 
 <p>Then proceed as described earlier: create your test class, create your test cases and run the unit test.</p>
