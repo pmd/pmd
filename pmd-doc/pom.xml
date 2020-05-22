@@ -101,6 +101,7 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.19</version>
         </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
