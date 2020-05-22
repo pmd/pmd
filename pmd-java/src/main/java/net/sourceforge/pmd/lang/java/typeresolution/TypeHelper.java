@@ -87,7 +87,7 @@ public final class TypeHelper {
     }
 
     private static boolean fallbackIsA(TypeNode n, String clazzName) {
-        if (n.getImage() != null && !n.getImage().contains(".")) {
+        if (n.getImage() != null && !n.getImage().contains(".") && clazzName.contains(".")) {
             // simple name detected, check the imports to get the full name and use that for fallback
             List<ASTImportDeclaration> imports = n.getRoot().findChildrenOfType(ASTImportDeclaration.class);
             for (ASTImportDeclaration importDecl : imports) {
