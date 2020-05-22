@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+/**
+ * @deprecated Replaced by {@link LiteralsFirstInComparisonsRule}
+ */
 @Deprecated
 public class PositionLiteralsFirstInComparisonsRule extends AbstractPositionLiteralsFirstInComparisons {
 

@@ -1055,7 +1055,9 @@ String name,
           deprecated="true">
         <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
-can be avoided, they will just return false. This rule is replaced by the more general LiteralsFirstInComparisons rule.
+can be avoided, they will just return false.
+
+This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1078,7 +1080,9 @@ class Foo {
           deprecated="true">
         <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
-can be avoided, they will just return false.  This rule is replaced by the more general LiteralsFirstInComparisons rule.
+can be avoided, they will just return false.
+
+This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons %}.
         </description>
         <priority>3</priority>
         <example>
