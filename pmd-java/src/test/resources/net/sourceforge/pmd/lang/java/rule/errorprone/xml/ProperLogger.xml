@@ -236,4 +236,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>false negative with apache commons logging</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class ProperLoggerSample {
+    private final Log log;
+
+    public PropperLoggerSample() {
+        log = LogFactory.getLog(ProperLoggerSample.class);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

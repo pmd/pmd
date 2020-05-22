@@ -43,6 +43,8 @@ This is useful to find duplicated sections in XML files.
     *   [#2472](https://github.com/pmd/pmd/issues/2472): \[java] JavaCharStream throws an Error on invalid escape
 *   java-bestpractices
     *   [#2288](https://github.com/pmd/pmd/issues/2288): \[java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat
+*   java-codestyle
+    *   [#2476](https://github.com/pmd/pmd/pull/2476): \[java] MethodNamingConventions - Add support for JUnit 5 method naming
 *   java-errorprone
     *   [#2477](https://github.com/pmd/pmd/issues/2477): \[java] JUnitSpelling false-positive for JUnit5/4 tests
 *   swift
@@ -75,6 +77,7 @@ definitive API.
 *   [#2465](https://github.com/pmd/pmd/pull/2465): \[dependencies] Upgrade hamcrest, mockito and JUnit - [Artem Krosheninnikov](https://github.com/KroArtem)
 *   [#2469](https://github.com/pmd/pmd/pull/2469): \[apex] fix false positive unused variable if only a method is called - [Gwilym Kuiper](https://github.com/gwilymatgearset)
 *   [#2475](https://github.com/pmd/pmd/pull/2475): \[swift] Swift 4.2-5.2 support - [kenji21](https://github.com/kenji21)
+*   [#2476](https://github.com/pmd/pmd/pull/2476): \[java] MethodNamingConventions - Add support for JUnit 5 method naming - [Bruno Ritz](https://github.com/birdflier)
 *   [#2478](https://github.com/pmd/pmd/pull/2478): \[java] New rule: LiteralsFirstInComparisons - [John-Teng](https://github.com/John-Teng)
 *   [#2479](https://github.com/pmd/pmd/pull/2479): \[java] False positive with Hamcrest's assertThat - [andreoss](https://github.com/andreoss)
 *   [#2481](https://github.com/pmd/pmd/pull/2481): \[java] Fix JUnitSpellingRule false positive - [Artem Krosheninnikov](https://github.com/KroArtem)
