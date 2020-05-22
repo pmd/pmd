@@ -32,6 +32,12 @@ This is useful to find duplicated sections in XML files.
     
     Note: This rule also replaces the two mentioned rules in Java's quickstart ruleset.
 
+#### Deprecated Rules
+
+*   The two Java rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
+    and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} have been deprecated
+    in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
+
 ### Fixed Issues
 
 *   apex-bestpractices
@@ -42,6 +48,7 @@ This is useful to find duplicated sections in XML files.
     *   [#2472](https://github.com/pmd/pmd/issues/2472): \[java] JavaCharStream throws an Error on invalid escape
 *   java-bestpractices
     *   [#2288](https://github.com/pmd/pmd/issues/2288): \[java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat
+    *   [#2145](https://github.com/pmd/pmd/issues/2145): \[java] Deprecate rules PositionLiteralsFirstIn(CaseInsensitive)Comparisons in favor of LiteralsFirstInComparisons
 *   java-errorprone
     *   [#2477](https://github.com/pmd/pmd/issues/2477): \[java] JUnitSpelling false-positive for JUnit5/4 tests
 *   swift
@@ -76,6 +83,7 @@ definitive API.
 *   [#2478](https://github.com/pmd/pmd/pull/2478): \[java] New rule: LiteralsFirstInComparisons - [John-Teng](https://github.com/John-Teng)
 *   [#2479](https://github.com/pmd/pmd/pull/2479): \[java] False positive with Hamcrest's assertThat - [andreoss](https://github.com/andreoss)
 *   [#2481](https://github.com/pmd/pmd/pull/2481): \[java] Fix JUnitSpellingRule false positive - [Artem Krosheninnikov](https://github.com/KroArtem)
+*   [#2493](https://github.com/pmd/pmd/pull/2493): \[java] Deprecate redundant String Comparison rules - [John-Teng](https://github.com/John-Teng)
 
 {% endtocmaker %}
 
