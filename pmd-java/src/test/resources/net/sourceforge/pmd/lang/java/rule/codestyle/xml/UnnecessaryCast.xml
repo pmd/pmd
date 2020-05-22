@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Basic Violations</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>12,15,20,25</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.uilt.HashMap;
+
+public class UnnecessaryCastSample {
+    private Map<Integer, String> map = new HashMap<>();
+
+    public void localVars() {
+        List<String> stringList = Arrays.asList("a");
+        String element = (String) stringList.get(0);
+
+        List<Double> doubleList = new ArrayList<>();
+        Double number = (Double) doubleList.get(0);
+    }
+
+    public void fields() {
+        map.put(1, "test");
+        String val = (String) map.get(1);
+    }
+
+    public void fields2() {
+        this.map.put(1, "test");
+        String val = (String) this.map.get(1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Without casts there should be no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.uilt.HashMap;
+
+public class UnnecessaryCastSample {
+    private Map<Integer, String> map = new HashMap<>();
+
+    public void localVars() {
+        List<String> stringList = Arrays.asList("a");
+        String element = stringList.get(0);
+
+        List<Double> doubleList = new ArrayList<>();
+        Double number = doubleList.get(0);
+    }
+
+    public void fields() {
+        map.put(1, "test");
+        String val = map.get(1);
+    }
+
+    public void fields2() {
+        this.map.put(1, "test");
+        String val = this.map.get(1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unnecessary casts with iterator</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,17</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class UnnecessaryCastSample {
+    public void localVars() {
+        List<String> stringList = Arrays.asList("a");
+        Iterator<String> stringIt = stringList.iterator();
+        while (stringIt.hasNext()) {
+            String element = (String) stringIt.next();
+            String element2 = stringIt.next();
+        }
+
+        List<Double> doubleList = new ArrayList<>();
+        Iterator<Double> doubleIt = doubleList.iterator();
+        while (doubleIt.hasNext()) {
+            Double number = (Double) doubleIt.next();
+            Double number2 = doubleIt.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
