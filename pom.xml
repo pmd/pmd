@@ -730,6 +730,7 @@
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock</artifactId>
                 <version>1.57</version>
+                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-lang</artifactId>
