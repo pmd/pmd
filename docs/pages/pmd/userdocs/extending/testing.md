@@ -169,8 +169,9 @@ The `<test-code>` elements understands three optional attributes:
     This allows you to share the same code snippet with several test cases. The attribute `id` must match the
     id of the references code fragment.
 
-*   **`<source-type>`**: Optional element that specifies the source code language. This defines the parser that
-    is used for parsing the code snippet. If not given, **java** is used as default.
+*   **`<source-type>`**: Optional element that specifies a specific language version. This can be used
+    to select a specific parser version for parsing the code snippet. If not given, the default version of
+    the rule's language is used. This element can almost always be omitted.
 
 ### `<code-fragment>`
 
@@ -202,7 +203,7 @@ public class ConsistentReturn {
     }
 }
         ]]></code>
-        <source-type>apex</source-type>                             <!-- optional -->
+        <source-type>java 1.5</source-type>                             <!-- optional -->
     </test-code>
 
     <code-fragment id="codeSnippet1"><![CDATA[
