@@ -7,7 +7,7 @@
     <test-code>
         <description>simple failure</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -38,10 +38,12 @@ public class Foo {
     <test-code>
         <description>pos in call chain #2437</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
-        try {} catch (Exception e) {
+        try {
+        } catch (Exception e) {
             e.getCause().printStackTrace();
         }
     }
@@ -55,7 +57,8 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     void bar() {
-        try {} catch (Exception e) {
+        try {
+        } catch (Exception e) {
             e.getCause().printStackTrace;
         }
     }
@@ -69,7 +72,8 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     void bar() {
-        try {} catch (Exception e) {
+        try {
+        } catch (Exception e) {
             e.printStackTrace;
         }
     }
@@ -83,7 +87,8 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     void bar() {
-        try {} catch (Exception e) {
+        try {
+        } catch (Exception e) {
             e.printStackTrace(e);
         }
     }

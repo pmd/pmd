@@ -188,7 +188,7 @@ Avoid printStackTrace(); use a logger call instead.
 //PrimaryExpression[
    ( PrimaryPrefix[Name[contains(@Image,'printStackTrace')]]
    | PrimarySuffix[@Image='printStackTrace']
-   )/following-sibling::*[1][self::PrimarySuffix/Arguments[@ArgumentCount=0]]
+   )/following-sibling::*[1][self::PrimarySuffix/Arguments[@Size=0]]
 ]
 ]]>
                 </value>
