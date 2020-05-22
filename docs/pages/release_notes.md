@@ -38,6 +38,8 @@ This is useful to find duplicated sections in XML files.
     *   [#2468](https://github.com/pmd/pmd/issues/2468): \[apex] Unused Local Variable fails on blocks
 *   core
     *   [#2484](https://github.com/pmd/pmd/issues/2484): \[core] Update maven-enforcer-plugin to require Java 118
+*   c#
+    *   [#2495](https://github.com/pmd/pmd/pull/2495): \[c#] Support for interpolated verbatim strings
 *   java
     *   [#2472](https://github.com/pmd/pmd/issues/2472): \[java] JavaCharStream throws an Error on invalid escape
 *   java-bestpractices
@@ -76,6 +78,7 @@ definitive API.
 *   [#2478](https://github.com/pmd/pmd/pull/2478): \[java] New rule: LiteralsFirstInComparisons - [John-Teng](https://github.com/John-Teng)
 *   [#2479](https://github.com/pmd/pmd/pull/2479): \[java] False positive with Hamcrest's assertThat - [andreoss](https://github.com/andreoss)
 *   [#2481](https://github.com/pmd/pmd/pull/2481): \[java] Fix JUnitSpellingRule false positive - [Artem Krosheninnikov](https://github.com/KroArtem)
+*   [#2495](https://github.com/pmd/pmd/pull/2495): \[c#] Support for interpolated verbatim strings - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
