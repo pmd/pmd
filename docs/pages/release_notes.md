@@ -52,6 +52,7 @@ This is useful to find duplicated sections in XML files.
 *   java-bestpractices
     *   [#2145](https://github.com/pmd/pmd/issues/2145): \[java] Deprecate rules PositionLiteralsFirstIn(CaseInsensitive)Comparisons in favor of LiteralsFirstInComparisons
     *   [#2288](https://github.com/pmd/pmd/issues/2288): \[java] JUnitTestsShouldIncludeAssert: Add support for Hamcrest MatcherAssert.assertThat
+    *   [#2437](https://github.com/pmd/pmd/issues/2437): \[java] AvoidPrintStackTrace can't detect the case e.getCause().printStackTrace()
 *   java-codestyle
     *   [#2476](https://github.com/pmd/pmd/pull/2476): \[java] MethodNamingConventions - Add support for JUnit 5 method naming
 *   java-errorprone

@@ -185,9 +185,11 @@ Avoid printStackTrace(); use a logger call instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
- [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
+//PrimaryExpression[
+   ( PrimaryPrefix[Name[contains(@Image,'printStackTrace')]]
+   | PrimarySuffix[@Image='printStackTrace']
+   )/following-sibling::*[1][self::PrimarySuffix/Arguments[@ArgumentCount=0]]
+]
 ]]>
                 </value>
             </property>
