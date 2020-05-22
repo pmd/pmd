@@ -3,115 +3,111 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-TEST1
-     ]]></description>
+        <description>TEST1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   for(;;) {
-       String a = new String();
-   }
- }
+    public void test1() {
+        for(;;) {
+            String a = new String();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST2
-     ]]></description>
+        <description>TEST2</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   while(true) {
-       String a = new String();
-   }
- }
+    public void test1() {
+        while(true) {
+            String a = new String();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST3
-     ]]></description>
+        <description>TEST3</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   do{
-       String a = new String();
-   }while(true) ;
- }
+    public void test1() {
+        do {
+            String a = new String();
+        } while(true);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST4
-     ]]></description>
+        <description>TEST4</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   do{
-       String a = new String();
-       String b = new String();
-   }while(true) ;
- }
+    public void test1() {
+        do {
+            String a = new String();
+            String b = new String();
+        } while(true);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-throw new is OK
-     ]]></description>
+        <description>throw new is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   for(;;) {
-       throw new Exception();
-   }
- }
+    public void test1() {
+        for(;;) {
+            throw new Exception();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-return new in loop is OK
-     ]]></description>
+        <description>return new in loop is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public String test1() {
-   for(;;) {
-       return new String();
-   }
- }
+    public String test1() {
+        for(;;) {
+            return new String();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <!-- FIXME -->
     <!--test-code>
         <description>#278 Semi-false positive for instantiating new object in loop</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-   while (true) {
-        try {
-       } catch (Exception e) {
-           url = new StringBuffer(); 
-           break; 
-       }
-  }
- }
+    public void test1() {
+        while (true) {
+            try {
+            } catch (Exception e) {
+                url = new StringBuffer();
+                break;
+            }
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code-->
+
     <test-code>
         <description>#1215 AvoidInstantiatingObjectsInLoops matches the right side of a list iteration loop</description>
         <expected-problems>0</expected-problems>

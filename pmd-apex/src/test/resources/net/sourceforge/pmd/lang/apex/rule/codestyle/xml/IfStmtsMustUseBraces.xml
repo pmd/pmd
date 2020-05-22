@@ -3,47 +3,44 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple failure case
-     ]]></description>
+        <description>simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  if (true) x=2;
- }
+    void foo() {
+        if (true) x=2;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  if (true) {
-   x=2;
-  }
- }
+    void foo() {
+        if (true) {
+            x=2;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-nested ifs
-     ]]></description>
+        <description>nested ifs</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {   
-  if (true) {
-   if (true) bar();
-  }
- }
+    void foo() {
+        if (true) {
+            if (true) bar();
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

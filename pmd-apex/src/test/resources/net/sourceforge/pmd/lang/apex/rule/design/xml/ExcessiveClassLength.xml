@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,64 +11,64 @@
         <code><![CDATA[
 public class Foo {
     public void foo() {
-		Integer x;
+        Integer x;
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <code-fragment id="long"><![CDATA[
 public class Foo {
     public void bar() {
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
     }
 }
-	]]></code-fragment>
-	
+    ]]></code-fragment>
+
     <test-code>
         <description>long</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="long"/>
     </test-code>
-    
+
     <test-code>
         <description>long class - changed minimum</description>
         <rule-property name="minimum">2000</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="long"/>
     </test-code>
-    
+
     <test-code>
-		<description>ignore test classes</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        <description>ignore test classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 @isTest
 public class Foo {
     public void bar() {
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
     }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
        <description>#1396 Public method with javadoc</description>

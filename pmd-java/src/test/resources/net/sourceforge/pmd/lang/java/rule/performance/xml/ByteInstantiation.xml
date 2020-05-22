@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-new Byte(), bad
-     ]]></description>
+        <description>new Byte(), bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -14,12 +13,11 @@ public class Foo {
         Byte i = new Byte(b);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Byte.valueOf(), ok
-     ]]></description>
+        <description>Byte.valueOf(), ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -27,6 +25,6 @@ public class Foo {
         Byte i = Byte.valueOf(b);
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

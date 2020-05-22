@@ -3,49 +3,46 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-clear rule violation
-     ]]></description>
+        <description>clear rule violation</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- static int x;
-     Foo(int y) {
-     x = y; 
-     }
+    static int x;
+    Foo(int y) {
+        x = y;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final int x;
-     Foo(int y) {
-     x = y; 
-     }
+    static final int x;
+    Foo(int y) {
+        x = y;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-rule violated twice
-     ]]></description>
+        <description>rule violated twice</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
- static int x;
-     Foo(int y) {
-         x = y;
-         x = y;
-     }
+    static int x;
+    Foo(int y) {
+        x = y;
+        x = y;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>
