@@ -274,6 +274,20 @@ public abstract class RuleTst {
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");
+            } else {
+                // simple class loader, that doesn't delegate to parent.
+                // this allows us in the tests to simulate PMD run without
+                // auxclasspath, not even the classes from the test dependencies
+                // will be found.
+                p.getConfiguration().setClassLoader(new ClassLoader() {
+                    @Override
+                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                        if (name.startsWith("java.") || name.startsWith("javax.")) {
+                            return super.loadClass(name, resolve);
+                        }
+                        throw new ClassNotFoundException(name);
+                    }
+                });
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
