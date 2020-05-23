@@ -1556,12 +1556,12 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
 (which is contradictory to good coding practices in most of the cases it’s applied to) and
 avoid local literals being declared in a scope smaller than the class.</p>
 
-<p>Also note, that this rule is the opposite of <a href="pmd_rules_java_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a>.
+<p>Also note, that this rule is the opposite of <a href="pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="highlighter-rouge">LocalVariableCouldBeFinal</code></a>.
 Having both rules enabled results in contradictory violations being reported.</p>
 
 <p>This rule is deprecated and will be removed with PMD 7.0.0. There is no replacement planned.
 If the goal is to avoid defining constants in a scope smaller than the class, then the rule
-<a href="pmd_rules_java_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a> should be used instead.</p>
+<a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="highlighter-rouge">AvoidDuplicateLiterals</code></a> should be used instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="w">
