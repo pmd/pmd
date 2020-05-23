@@ -1059,7 +1059,7 @@ String name,
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons %}.
+This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1084,7 +1084,7 @@ class Foo {
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons %}.
+This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
