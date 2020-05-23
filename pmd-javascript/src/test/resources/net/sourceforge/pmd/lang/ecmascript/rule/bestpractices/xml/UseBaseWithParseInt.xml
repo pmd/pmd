@@ -10,7 +10,6 @@
         <code><![CDATA[
 parseInt("10");
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -19,6 +18,5 @@ parseInt("10");
         <code><![CDATA[
 parseInt("10", 16);
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

@@ -38,7 +38,6 @@ public class Bar {
     }
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>

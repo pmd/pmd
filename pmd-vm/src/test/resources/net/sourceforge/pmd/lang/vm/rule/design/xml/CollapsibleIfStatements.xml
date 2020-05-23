@@ -19,7 +19,6 @@
     #set( $br = "<br>" )
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -39,7 +38,6 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -55,7 +53,6 @@
     #set( $br = "<br>" )
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -76,7 +73,6 @@
     some3
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -107,7 +103,6 @@
     </select>
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -138,7 +133,6 @@
     </select>
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -159,7 +153,6 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -176,7 +169,6 @@
     stuff
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -202,7 +194,6 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -217,6 +208,5 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 </test-data>

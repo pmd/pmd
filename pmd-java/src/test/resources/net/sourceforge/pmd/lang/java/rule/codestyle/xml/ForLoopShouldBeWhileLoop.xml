@@ -55,6 +55,5 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 </test-data>

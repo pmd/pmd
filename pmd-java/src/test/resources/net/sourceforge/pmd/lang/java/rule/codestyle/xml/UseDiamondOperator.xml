@@ -161,7 +161,6 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.7</source-type>
     </test-code>
 
     <test-code regressionTest="false">
@@ -178,6 +177,5 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.8</source-type>
     </test-code>
 </test-data>

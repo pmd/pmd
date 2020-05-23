@@ -3225,6 +3225,5 @@ BEGIN
 END prc_2;
 END pkg_test_unreserved_keyword;
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

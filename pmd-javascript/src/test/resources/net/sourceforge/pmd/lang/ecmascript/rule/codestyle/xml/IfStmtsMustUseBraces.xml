@@ -12,7 +12,6 @@ if (true) {
     x=2;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -22,7 +21,6 @@ if (true) {
 if (true)
     x=2;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -34,6 +32,5 @@ if (true) {
         bar();
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

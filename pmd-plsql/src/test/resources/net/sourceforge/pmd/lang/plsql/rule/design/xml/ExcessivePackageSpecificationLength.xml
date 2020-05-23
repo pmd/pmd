@@ -2094,6 +2094,5 @@ CREATE OR REPLACE PACKAGE pkg_unreserved AS
     ZONE VARCHAR2(240);
 END;
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

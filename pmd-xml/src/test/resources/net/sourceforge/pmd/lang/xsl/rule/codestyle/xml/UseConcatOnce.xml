@@ -13,7 +13,6 @@
     <xsl:variable name="var" select="concat('abc',concat('cd','ef'))"/>
 </xsl:stylesheet>
         ]]></code>
-        <source-type>xsl</source-type>
     </test-code>
 
     <test-code>
@@ -25,6 +24,5 @@
     <xsl:variable name="var" select="concat('abc','cd','ef')"/>
 </xsl:stylesheet>
         ]]></code>
-        <source-type>xsl</source-type>
     </test-code>
 </test-data>

@@ -20,7 +20,6 @@ x ? true : false;
 x ? true : false;
 x ? true : false;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -39,7 +38,6 @@ for (var i = 0; x = true; i++) {
 x ? x = true : false;
 x ? true : x = false;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -50,7 +48,6 @@ x ? true : x = false;
 if (x = true) {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -61,7 +58,6 @@ if (x = true) {
 while (x = true) {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -72,7 +68,6 @@ while (x = true) {
 do {
 } while(x = true);
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -83,7 +78,6 @@ do {
 for (var i = 0; x = true; i++) {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -93,7 +87,6 @@ for (var i = 0; x = true; i++) {
         <code><![CDATA[
 (x = true) ? true : false;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -104,7 +97,6 @@ for (var i = 0; x = true; i++) {
 x ? x = true : false;
 x ? true : x = false;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -123,7 +115,6 @@ do {
 x ? (++x || --x || x++ || x--) : false;
 x ? true : (++x || --x || x++ || x--);
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -143,6 +134,5 @@ do {
 x ? (++x || --x || x++ || x--) : false;
 x ? true : (++x || --x || x++ || x--);
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

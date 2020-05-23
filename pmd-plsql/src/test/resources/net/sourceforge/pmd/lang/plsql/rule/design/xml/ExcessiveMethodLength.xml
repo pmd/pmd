@@ -3220,6 +3220,5 @@ CREATE OR REPLACE PACKAGE BODY foo AS
     END prc_test_unreserved_keyword;
 END foo;
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

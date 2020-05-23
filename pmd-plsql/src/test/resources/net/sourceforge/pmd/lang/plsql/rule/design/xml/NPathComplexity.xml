@@ -43,6 +43,5 @@ PROCEDURE bar AS BEGIN      -- this is something more complex than it needs to b
     END;
 END;
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

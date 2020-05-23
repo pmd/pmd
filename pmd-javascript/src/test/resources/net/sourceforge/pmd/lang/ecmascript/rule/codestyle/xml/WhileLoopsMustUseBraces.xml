@@ -12,7 +12,6 @@ while (true) {
     x++;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -22,6 +21,5 @@ while (true) {
 while (true)
     x++;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

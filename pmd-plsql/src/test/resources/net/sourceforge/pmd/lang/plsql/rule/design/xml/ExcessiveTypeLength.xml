@@ -2096,6 +2096,5 @@ CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
     )
 ;
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

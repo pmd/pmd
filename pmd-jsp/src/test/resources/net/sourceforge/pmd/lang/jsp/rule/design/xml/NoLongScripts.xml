@@ -30,7 +30,6 @@ onload=calcDays;
     </BODY>
 </HTML>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -52,6 +51,5 @@ onload=calcDays;
     </BODY>
 </HTML>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 </test-data>
