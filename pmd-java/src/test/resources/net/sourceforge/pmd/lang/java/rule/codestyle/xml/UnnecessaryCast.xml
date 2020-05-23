@@ -123,4 +123,17 @@ public class UnnecessaryCastSample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Avoid clone false-positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryCastSample {
+    public void localVars() {
+        List<String> strings = new ArrayList<>();
+        List<String> copy = (List<String>) strings.clone();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
