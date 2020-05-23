@@ -132,14 +132,15 @@ class JavadocTag < Liquid::Tag
   def render(var_ctx)
 
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
+    resolved_type = JavadocTag::fqcn_type(artifact_name, @type_fqcn)
 
-    JavadocTag::diagnose(artifact_name, @type_fqcn, @is_package_ref)
+    JavadocTag::diagnose(artifact_name, @type_fqcn, @is_package_ref, resolved_type)
 
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
     @member_suffix.gsub!(JDocNamespaceDeclaration::SYM_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
 
-    visible_name = JavadocTag::get_visible_name(@opts, @type_fqcn, @member_suffix, @is_package_ref)
+    visible_name = JavadocTag::get_visible_name(@opts, @type_fqcn, @member_suffix, @is_package_ref, resolved_type)
 
     # Hack to reference the package summary
     # Has to be done after finding the visible_name
@@ -150,14 +151,19 @@ class JavadocTag < Liquid::Tag
     # Hardcode the artifact version instead of using "latest"
     api_version = var_ctx["site.pmd." + (@use_previous_api_version ? "previous_version" : "version")]
 
-
-    markup_link(visible_name, doclink(var_ctx["site.javadoc_url_prefix"], artifact_name, api_version, @type_fqcn, @member_suffix))
+    link_url = doclink(var_ctx["site.javadoc_url_prefix"], artifact_name, api_version, @type_fqcn, @member_suffix, resolved_type)
+    markup_link(visible_name, link_url)
   end
 
   private
 
-  def doclink(url_prefix, artifact, api_version, type_name, member_suffix)
-    "#{url_prefix}/#{artifact}/#{api_version}/#{type_name.gsub("\.", "/")}.html##{member_suffix}"
+  def doclink(url_prefix, artifact, api_version, type_name, member_suffix, resolved_type)
+    if resolved_type == :nested
+        resolved_type_name = "#{type_name.split(".")[0..-3].join("/")}/#{type_name.split(".")[-2..-1].join(".")}"
+    else
+        resolved_type_name = "#{type_name.gsub("\.", "/")}"
+    end
+    "#{url_prefix}/#{artifact}/#{api_version}/#{resolved_type_name}.html##{member_suffix}"
   end
 
   def markup_link(rname, link)
@@ -165,7 +171,7 @@ class JavadocTag < Liquid::Tag
   end
 
 
-  def self.get_visible_name(opts, type_fqcn, member_suffix, is_package_ref)
+  def self.get_visible_name(opts, type_fqcn, member_suffix, is_package_ref, resolved_type)
 
     # method or field
     if member_suffix && Regexp.new('(\w+)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
@@ -194,6 +200,8 @@ class JavadocTag < Liquid::Tag
 
     if is_package_ref || opts.show_fqcn? || opts.is_double_bang?
       type_fqcn
+    elsif resolved_type == :nested
+      type_fqcn.split("\.")[-2..-1].join(".") # last two names
     else
       type_fqcn.split("\.").last # type simple name
     end
@@ -201,9 +209,7 @@ class JavadocTag < Liquid::Tag
 
   BASE_PMD_DIR = File.join(File.expand_path(File.dirname(__FILE__)), "..", "..")
 
-  def self.diagnose(artifact_id, fqcn, expect_package)
-    resolved_type = JavadocTag::fqcn_type(artifact_id, fqcn)
-
+  def self.diagnose(artifact_id, fqcn, expect_package, resolved_type)
     tag_name= expect_package ? "jdoc_package" : "jdoc"
 
     if resolved_type == :package && !expect_package
@@ -215,7 +221,7 @@ class JavadocTag < Liquid::Tag
     end
   end
 
-  # Returns :package, or :file depending on the type of entity the fqcn refers to on the filesystem
+  # Returns :package, :file or :nested depending on the type of entity the fqcn refers to on the filesystem
   # Returns nil if it cannot be found
   def self.fqcn_type(artifact_id, fqcn)
 
@@ -228,8 +234,13 @@ class JavadocTag < Liquid::Tag
     targets = src_dirs
                   .map {|dir| File.join(dir, fqcn.split("."))}
                   .map {|f| File.file?(f + ".java") ? :file : File.exist?(f) ? :package : nil}
-                  .compact
 
+    # consider nested classes (one level is only supported...)
+    nested_targets = src_dirs
+                        .map { |dir| File.join(dir, fqcn.split(".")[0..-2]) }
+                        .map {|f| File.file?(f + ".java") ? :nested : File.exist?(f) ? :package : nil}
+
+    targets = targets.concat(nested_targets).compact
     targets.first
   end
 
