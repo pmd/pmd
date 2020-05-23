@@ -6,8 +6,8 @@
 
     <test-code>
         <description>Basic Violations</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>12,15,20,25</expected-linenumbers>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>12,15,18,23,28</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,9 @@ public class UnnecessaryCastSample {
 
         List<Double> doubleList = new ArrayList<>();
         Double number = (Double) doubleList.get(0);
+
+        Map<String, String> stringMap = new HashMap<>();
+        String mapData = (String) stringMap.get("a");
     }
 
     public void fields() {
@@ -97,6 +100,25 @@ public class UnnecessaryCastSample {
             Double number = (Double) doubleIt.next();
             Double number2 = doubleIt.next();
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Avoid cast false-positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryCastSample {
+    public void localVars() {
+        List<Number> numbers = Arrays.asList(1, 2, 3);
+        Integer myInt = (Integer) numbers.get(0);
+
+        List<Object> data = new ArrayList<>();
+        String item = (String) data.get(0);
+
+        Map<String, ?> map = new HashMap<>();
+        String dataFromMap = (String) map.get("foo");
     }
 }
         ]]></code>
