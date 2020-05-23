@@ -19,6 +19,11 @@ This is a {{ site.pmd.release_type }} release.
 Thanks to [Fernando Cosso](https://github.com/xnYi9wRezm) CPD can now find duplicates in XML files as well.
 This is useful to find duplicated sections in XML files.
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.24.0).
+
 #### New Rules
 
 *   The new Java Rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %} (`java-bestpractices`)
