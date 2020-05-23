@@ -4,35 +4,33 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <code-fragment id="full-example">
-        <![CDATA[
-        public class Complicated {
-          public void example() {
-            int x = 0, y = 1, z = 2, t = 2;
-            boolean a = false, b = true, c = false, d = true;
-            if (a && b || b && d) {
-              if (y == z) {
+    <code-fragment id="full-example"><![CDATA[
+public class Complicated {
+    public void example() {
+        int x = 0, y = 1, z = 2, t = 2;
+        boolean a = false, b = true, c = false, d = true;
+        if (a && b || b && d) {
+            if (y == z) {
                 x = 2;
-              } else if (y == t && !d) {
+            } else if (y == t && !d) {
                 x = 2;
-              } else {
-                x = 2;
-              }
-            } else if (c && d) {
-              while (z < y) {
-                x = 2;
-              }
-            } else if (a && !b) {
-              for (int n = 0; n < t; n++) {
-                x = 2;
-              }
             } else {
-              x = 2;
+                x = 2;
             }
-          }
+        } else if (c && d) {
+            while (z < y) {
+                x = 2;
+            }
+        } else if (a && !b) {
+            for (int n = 0; n < t; n++) {
+                x = 2;
+            }
+        } else {
+            x = 2;
         }
-      ]]>
-    </code-fragment>
+    }
+}
+    ]]></code-fragment>
 
     <test-code>
         <description>Simple method</description>
@@ -43,25 +41,21 @@
             <message>The class 'Foo' has a total cyclomatic complexity of 1 (highest 1).</message>
             <message>The method 'foo()' has a cyclomatic complexity of 1.</message>
         </expected-messages>
-        <code>
-            <![CDATA[
-            public class Foo {
-              public void foo() {}
-            }
-          ]]>
-        </code>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {}
+}
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>testLessComplicatedThanReportLevel</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
-            public class Foo {
-              public void foo() {}
-            }
-          ]]>
-        </code>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {}
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -80,13 +74,11 @@
         <expected-messages>
             <message>The constructor 'Foo()' has a cyclomatic complexity of 1.</message>
         </expected-messages>
-        <code>
-            <![CDATA[
-            public class Foo {
-              public Foo() {}
-            }
-          ]]>
-        </code>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {}
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -105,21 +97,19 @@
         <code-ref id="full-example"/>
     </test-code>
 
-    <code-fragment id="constructor-violation">
-        <![CDATA[
-        public class Test {
-          public Test() {
-            if (a == 1) {
-              if (b == 2) {
+    <code-fragment id="constructor-violation"><![CDATA[
+public class Test {
+    public Test() {
+        if (a == 1) {
+            if (b == 2) {
                 System.out.println('b');
-              } else if (b == 1) {
-              }
-            } else {
+            } else if (b == 1) {
             }
-          }
+        } else {
         }
-      ]]>
-    </code-fragment>
+    }
+}
+    ]]></code-fragment>
 
     <test-code>
         <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - reportMethods=true</description>
@@ -135,21 +125,19 @@
         <code-ref id="constructor-violation"/>
     </test-code>
 
-    <code-fragment id="manyBooleanOps">
-        <![CDATA[
-        class Foo {
-          void foo(){
-            int x=0, y=1;
-            boolean a, b;
-            if (x > 2 || y < 4) {
-              while (x++ < 10 && !(y-- < 0));
-            } else if (a && b || x < 4) {
-              return;
-            }
-          }
+    <code-fragment id="manyBooleanOps"><![CDATA[
+class Foo {
+    void foo(){
+        int x=0, y=1;
+        boolean a, b;
+        if (x > 2 || y < 4) {
+            while (x++ < 10 && !(y-- < 0));
+        } else if (a && b || x < 4) {
+            return;
         }
-      ]]>
-    </code-fragment>
+    }
+}
+    ]]></code-fragment>
 
     <test-code>
         <description>Standard Cyclo should count boolean paths</description>
@@ -161,86 +149,84 @@
         <code-ref id="manyBooleanOps"/>
     </test-code>
 
-    <code-fragment id="many-small-methods">
-        <![CDATA[
-        public class Complicated {
-          int x = 0, y = 1, z = 2, t = 2;
-          boolean a = false, b = true, c = false, d = true;
-          public void example1() {
-            if (a && b || b && d) {
-              if (y == z) {
+    <code-fragment id="many-small-methods"><![CDATA[
+public class Complicated {
+    int x = 0, y = 1, z = 2, t = 2;
+    boolean a = false, b = true, c = false, d = true;
+    public void example1() {
+        if (a && b || b && d) {
+            if (y == z) {
                 x = 2;
-              } else if (y == t && !d) {
+            } else if (y == t && !d) {
                 x = 2;
-              } else {
+            } else {
                 x = 2;
-              }
             }
-          }
-          public void example2() {
-            if (c && d) {
-              while (z < y) {
-                x = 2;
-              }
-            }
-          }
-           public void example12() {
-            if (a && b || b && d) {
-              if (y == z) {
-                x = 2;
-              } else if (y == t && !d) {
-                x = 2;
-              } else {
-                x = 2;
-              }
-            }
-          }
-          public void example22() {
-            if (c && d) {
-              while (z < y) {
-                x = 2;
-              }
-            }
-          }
-          public void example3() {
-            if (a && !b) {
-              for (int n = 0; n < t; n++) {
-                x = 2;
-              }
-            }
-          }
-          public void example32() {
-            if (a && !b) {
-              for (int n = 0; n < t; n++) {
-                x = 2;
-              }
-            }
-          }
-          public void exception() {
-            try {
-              int k = 0;
-              k++;
-            } catch (IOException ioe) {
-              ioe.printStackTrace();
-              throw new Exception('surprise', ioe);
-            } catch (Exception e) {
-              // do nothing
-            }
-          }
-          public void exception2() {
-            try {
-              int k = 0;
-              k++;
-            } catch (IOException ioe) {
-              ioe.printStackTrace();
-              throw new Exception('surprise', ioe);
-            } catch (Exception e) {
-              // do nothing
-            }
-          }
         }
-        ]]>
-    </code-fragment>
+    }
+    public void example2() {
+        if (c && d) {
+            while (z < y) {
+                x = 2;
+            }
+        }
+    }
+    public void example12() {
+        if (a && b || b && d) {
+            if (y == z) {
+                x = 2;
+            } else if (y == t && !d) {
+                x = 2;
+            } else {
+                x = 2;
+            }
+        }
+    }
+    public void example22() {
+        if (c && d) {
+            while (z < y) {
+                x = 2;
+            }
+        }
+    }
+    public void example3() {
+        if (a && !b) {
+            for (int n = 0; n < t; n++) {
+                x = 2;
+            }
+        }
+    }
+    public void example32() {
+        if (a && !b) {
+            for (int n = 0; n < t; n++) {
+                x = 2;
+            }
+        }
+    }
+    public void exception() {
+        try {
+            int k = 0;
+            k++;
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            throw new Exception('surprise', ioe);
+        } catch (Exception e) {
+            // do nothing
+        }
+    }
+    public void exception2() {
+        try {
+            int k = 0;
+            k++;
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            throw new Exception('surprise', ioe);
+        } catch (Exception e) {
+            // do nothing
+        }
+    }
+}
+    ]]></code-fragment>
 
     <test-code>
         <!-- The class should get reported even though none of its methods get reported. -->
@@ -251,37 +237,27 @@
         </expected-messages>
         <code-ref id="many-small-methods"/>
     </test-code>
-    
-    
-    <code-fragment id="trigger">
-        <![CDATA[
-            trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after undelete, after update, before delete, before insert, before update) {
-            
-            if(Trigger.isBefore) {
-                if(Trigger.isInsert || Trigger.isUpdate) {
-                    CaseAssignLevel_tr.doIsNotTrigger(Trigger.new);
-                }
-            }
-            
-            
-            
-            if(Trigger.isBefore && !CaseAssignLevel_tr.isNotTrigger) {
-                if(Trigger.isInsert || Trigger.isUpdate) {
-                    CaseAssignLevel_tr.doCreateKeyValue(Trigger.new, Trigger.oldMap);	
-                }
-            }
-            
-            
-            else if(Trigger.isAfter && !CaseAssignLevel_tr.isNotTrigger) {
-                if(Trigger.isInsert || Trigger.isUpdate) {
-                    
-                }
-            }
-            
-            }
-        ]]>
-    </code-fragment>
-    
+
+    <code-fragment id="trigger"><![CDATA[
+trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after undelete, after update, before delete, before insert, before update) {
+
+    if(Trigger.isBefore) {
+        if(Trigger.isInsert || Trigger.isUpdate) {
+            CaseAssignLevel_tr.doIsNotTrigger(Trigger.new);
+        }
+    }
+
+    if(Trigger.isBefore && !CaseAssignLevel_tr.isNotTrigger) {
+        if(Trigger.isInsert || Trigger.isUpdate) {
+            CaseAssignLevel_tr.doCreateKeyValue(Trigger.new, Trigger.oldMap);
+        }
+    } else if(Trigger.isAfter && !CaseAssignLevel_tr.isNotTrigger) {
+        if(Trigger.isInsert || Trigger.isUpdate) {
+        }
+    }
+}
+    ]]></code-fragment>
+
     <test-code>
         <description>#768 NPE caused by exception in ApexQualifiedName.ofMethod because of trigger</description>
         <expected-problems>1</expected-problems>
@@ -297,6 +273,4 @@
         <expected-problems>0</expected-problems>
         <code-ref id="trigger"/>
     </test-code>
-
-
 </test-data>

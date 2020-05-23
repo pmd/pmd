@@ -10,11 +10,11 @@
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertArrayEquals("[1] != [1]", new int[] {1}, new int[] {1});
- }
+    public void test1() {
+        assertArrayEquals("[1] != [1]", new int[] {1}, new int[] {1});
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -23,11 +23,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertArrayEquals(new int[] {1}, new int[] {1});
- }
+    public void test1() {
+        assertArrayEquals(new int[] {1}, new int[] {1});
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -36,11 +36,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertEquals("1 != 1", 1, 1);
- }
+    public void test1() {
+        assertEquals("1 != 1", 1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -49,12 +49,12 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  String s = "1 != 1";
-  assertEquals(s, 1, 1);
- }
+    public void test1() {
+        String s = "1 != 1";
+        assertEquals(s, 1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -63,11 +63,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertEquals("foo", 1, 2, 3);
- }
+    public void test1() {
+        assertEquals("foo", 1, 2, 3);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -76,11 +76,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertEquals(1, 1);
- }
+    public void test1() {
+        assertEquals(1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -89,11 +89,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertEquals(1, 2, 3);
- }
+    public void test1() {
+        assertEquals(1, 2, 3);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -102,12 +102,12 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  double d = 1;
-  assertEquals(d, 1, 1);
- }
+    public void test1() {
+        double d = 1;
+        assertEquals(d, 1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -116,11 +116,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void testBar() {
-  assertFalse("foo!", "foo".equals("foo"));
- }
+    public void testBar() {
+        assertFalse("foo!", "foo".equals("foo"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -129,11 +129,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void testBar() {
-  assertFalse("foo".equals("foo"));
- }
+    public void testBar() {
+        assertFalse("foo".equals("foo"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -142,11 +142,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertNotNull("foo", null);
- }
+    public void test1() {
+        assertNotNull("foo", null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -155,11 +155,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertNotNull(null);
- }
+    public void test1() {
+        assertNotNull(null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -168,11 +168,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertNotSame("1 == 2", 1, 2);
- }
+    public void test1() {
+        assertNotSame("1 == 2", 1, 2);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -181,11 +181,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertNotSame(1, 2);
- }
+    public void test1() {
+        assertNotSame(1, 2);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -194,11 +194,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertNull("it's not null", null);
- }
+    public void test1() {
+        assertNull("it's not null", null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -207,11 +207,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertNull(null);
- }
+    public void test1() {
+        assertNull(null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -220,11 +220,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertSame("not same!", null, null);
- }
+    public void test1() {
+        assertSame("not same!", null, null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -233,11 +233,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertSame(null, null);
- }
+    public void test1() {
+        assertSame(null, null);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -246,11 +246,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertThat("Zero is one", 0, is(not(1)));
- }
+    public void test1() {
+        assertThat("Zero is one", 0, is(not(1)));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -259,11 +259,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertThat(0, is(not(1)));
- }
+    public void test1() {
+        assertThat(0, is(not(1)));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -272,11 +272,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertTrue("foo", "foo".equals("foo"));
- }
+    public void test1() {
+        assertTrue("foo", "foo".equals("foo"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -285,11 +285,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  assertTrue("foo".equals("foo"));
- }
+    public void test1() {
+        assertTrue("foo".equals("foo"));
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -298,11 +298,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  fail("foo");
- }
+    public void test1() {
+        fail("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -311,11 +311,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  fail();
- }
+    public void test1() {
+        fail();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -324,11 +324,11 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void test1() {
-  this.test1("foo");
- }
+    public void test1() {
+        this.test1("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -336,11 +336,11 @@ public class Foo extends TestCase {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void test1() {
-  assertEquals(1, 1);
- }
+    public void test1() {
+        assertEquals(1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -349,12 +349,12 @@ public class Foo {
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
- @Test
- public void foo() {
-  assertEquals(1, 1);
- } 
+    @Test
+    public void foo() {
+        assertEquals(1, 1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -403,9 +403,7 @@ public class TestNgTestCase {
     </test-code>
 
     <test-code>
-        <description>
-Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
-        </description>
+        <description>Issue #1009: JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -417,7 +415,7 @@ class SimpleTest {
         assertEquals(0, 1, "Not equals 0 != 1");
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -433,6 +431,6 @@ class SimpleTest {
         assertEquals(0, Integer.compare(0, 0), "Not equals 0 != 1");
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

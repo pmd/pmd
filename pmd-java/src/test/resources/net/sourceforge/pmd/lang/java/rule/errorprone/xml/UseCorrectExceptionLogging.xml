@@ -9,14 +9,15 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Log _LOG = LogFactory.getLog( Foo.class );
- void foo() {
-  try {} catch (OtherException oe) {
-   _LOG.error(oe.getMessage(), oe);
-  }
- }
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo() {
+        try {
+        } catch (OtherException oe) {
+            _LOG.error(oe.getMessage(), oe);
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -24,15 +25,16 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Log _LOG = LogFactory.getLog( Foo.class );
- void foo() {
-  try {} catch (Exception e) {
-   _LOG.error(e);
-   _LOG.info(e);
-  } 
- }
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo() {
+        try {
+        } catch (Exception e) {
+            _LOG.error(e);
+            _LOG.info(e);
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -40,12 +42,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Log _LOG = LogFactory.getLog( Foo.class );
- void foo(int e) {
-  _LOG.error(e);
- }
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+    void foo(int e) {
+        _LOG.error(e);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -53,19 +55,20 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static class Inner {
-    Log _LOG = LogFactory.getLog( Foo.class );
- }
+    static class Inner {
+        Log _LOG = LogFactory.getLog( Foo.class );
+    }
 
- void foo() {
-  try {} catch (Exception e) {
-   Log _LOG = LogFactory.getLog( Main.class );
-   _LOG.error(e);
-   _LOG.info(e);
-  }
- }
+    void foo() {
+        try {
+        } catch (Exception e) {
+            Log _LOG = LogFactory.getLog( Main.class );
+            _LOG.error(e);
+            _LOG.info(e);
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -73,17 +76,18 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- static final Log _LOG = LogFactory.getLog( Foo.class );
- 
- static {}
- 
- void foo() {
-  try {} catch (Exception e) {
-   _LOG.info(e);
-  } 
- }
+    static final Log _LOG = LogFactory.getLog( Foo.class );
+
+    static {}
+
+    void foo() {
+        try {
+        } catch (Exception e) {
+            _LOG.info(e);
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

@@ -3,131 +3,126 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description><![CDATA[
-one case, which is not empty
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	void main() {
-		switch(i) {
-		case 1:
-			doSomething();
-		default:
-		}
-	}
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-just skip empty switch
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	void main() {
-		switch(i) {
-		}
-	}
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-one break, but two cases + one default case. But there is an intentional fall through -
-because there are no statemenets between case 1 and case 2.
-     ]]></description>
-     <!--
-        Indeed if there is no statement between the two cases, then no break
-    should be expected between those cases.
-    In C, there is a MISRA rule 15.2 which states:
 
-    "An unconditional break statement shall terminate every non-empty
-    switch clause"
-     -->
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	void main() {
-		switch(i) {
-		case 1:
-		case 2:
-			break;
-		default:
-		}
-	}
-}
-     ]]></code>
-    </test-code>
     <test-code>
-        <description><![CDATA[
-each case stmt has a return
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	int main() {
-		switch(i) {
-		case '1':
-		 return 1;
-		case '2':
-		 return 2;
-		default:
-		 return 3;
-		}
-	}
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-all cases have return or throw
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-	int main() {
-		switch(i) {
-		case '1':
-		 return 1;
-		case '2':
-		 return 2;
-		default:
-		 throw new Exception("bad number");
-		}
-	}
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-3496028: False-
-     ]]></description>
+        <description>one case, which is not empty</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-  public void m() {
-    switch (s) {
-      case 0 :
-        s2 = s ;
-        // missing break here!
-      case 1 :
-        s2 = (short)(s + 1);
-        break;
-      default :
-        s2 = (short)(s + 2);
-        // and missing break here!
+    void main() {
+        switch(i) {
+        case 1:
+            doSomething();
+        default:
+        }
     }
-  }
 }
-     ]]></code>
-  </test-code>
-  <test-code>
-    <description>#1246 False positive from MissingBreakInSwitch</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>just skip empty switch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void main() {
+        switch(i) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one break, but two cases + one default case. But there is an intentional fall through -
+because there are no statemenets between case 1 and case 2.</description>
+        <!--
+        Indeed if there is no statement between the two cases, then no break
+        should be expected between those cases.
+        In C, there is a MISRA rule 15.2 which states:
+
+        "An unconditional break statement shall terminate every non-empty
+        switch clause"
+        -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void main() {
+        switch(i) {
+        case 1:
+        case 2:
+            break;
+        default:
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>each case stmt has a return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int main() {
+        switch(i) {
+        case '1':
+            return 1;
+        case '2':
+            return 2;
+        default:
+            return 3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>all cases have return or throw</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int main() {
+        switch(i) {
+        case '1':
+            return 1;
+        case '2':
+            return 2;
+        default:
+            throw new Exception("bad number");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>3496028: False-</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void m() {
+        switch (s) {
+            case 0 :
+                s2 = s ;
+                // missing break here!
+            case 1 :
+                s2 = (short)(s + 1);
+                break;
+            default :
+                s2 = (short)(s + 2);
+                // and missing break here!
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1246 False positive from MissingBreakInSwitch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public static final int x1 = 1;
     public static final int x2 = 2;
@@ -152,12 +147,14 @@ public class Foo {
         }
     }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>#550 False +: MissingBreakInSwitch</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>#550 False +: MissingBreakInSwitch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public String bar() {
         switch (sign) {
@@ -172,12 +169,13 @@ public class Foo {
         }
     }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>#1262 False positive for MissingBreakInSwitch</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1262 False positive for MissingBreakInSwitch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     private boolean isAorB(MyEnum value)
     {
@@ -195,31 +193,31 @@ public class Foo {
       }
     }
 }
-    ]]></code>
-  </test-code>
-  <test-code>
-    <description>#1552  MissingBreakInSwitch - False positive for continue</description>
-    <expected-problems>0</expected-problems>
-    <code><![CDATA[
-public class DemoMissingBreakContinue {
-public DemoMissingBreakContinue() {
-method();
-}
+        ]]></code>
+    </test-code>
 
-private void method() {
-    for (int i = 0; i < 10; i = i + 1) {
-        switch (i) {
-        case 1:
-            break;
-        case 2:
-            continue; //PMD complains about missing break which would be unreachable code
-        default:
-            break;
+    <test-code>
+        <description>#1552  MissingBreakInSwitch - False positive for continue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class DemoMissingBreakContinue {
+    public DemoMissingBreakContinue() {
+        method();
+    }
+
+    private void method() {
+        for (int i = 0; i < 10; i = i + 1) {
+            switch (i) {
+            case 1:
+                break;
+            case 2:
+                continue; //PMD complains about missing break which would be unreachable code
+            default:
+                break;
+            }
         }
     }
 }
-
-}
-    ]]></code>
-  </test-code>
+        ]]></code>
+    </test-code>
 </test-data>

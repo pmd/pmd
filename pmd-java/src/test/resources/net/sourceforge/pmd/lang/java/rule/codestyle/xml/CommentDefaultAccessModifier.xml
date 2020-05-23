@@ -3,27 +3,28 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <code-fragment id="some-methods-fields-with-default-access-modifier"><![CDATA[
 public class Foo {
-	public final String stringValue = "stringValue";      // should not be reported
-	final String otherStringValue = "otherStringValue";   // should be reported
-	/* default */ final String otherValue = "otherValue"; // should not be reported
-	/* 		default		 */ final String anotherValue = "anotherValue"; // should not be reported
+    public final String stringValue = "stringValue";      // should not be reported
+    final String otherStringValue = "otherStringValue";   // should be reported
+    /* default */ final String otherValue = "otherValue"; // should not be reported
+    /*         default         */ final String anotherValue = "anotherValue"; // should not be reported
 
-	public void test() { // should not be reported
-	}
+    public void test() { // should not be reported
+    }
 
-	void test2() { // should be reported
-	}
+    void test2() { // should be reported
+    }
 
-	/* default */ void test3() { // should not be reported
-	}
+    /* default */ void test3() { // should not be reported
+    }
 
-	/*	 default 	*/ void test4() { // should not be reported
-	}
+    /*     default     */ void test4() { // should not be reported
+    }
 }
-    ]]>
-    </code-fragment>
+    ]]></code-fragment>
+
     <test-code>
         <description>Some methods and Fields with default access modifier in a class</description>
         <expected-problems>2</expected-problems>
@@ -33,21 +34,21 @@ public class Foo {
 
     <code-fragment id="all-methods-fields-with-default-access-modifier"><![CDATA[
 public class Foo {
-	final String stringValue = "stringValue";
-	final String otherStringValue = "otherStringValue";
-	final String otherValue = "otherValue";
+    final String stringValue = "stringValue";
+    final String otherStringValue = "otherStringValue";
+    final String otherValue = "otherValue";
 
-	void test() {
-	}
+    void test() {
+    }
 
-	void test2() {
-	}
+    void test2() {
+    }
 
-	void test3() {
-	}
+    void test3() {
+    }
 }
-    ]]>
-    </code-fragment>
+    ]]></code-fragment>
+
     <test-code>
         <description>All methods and Field with default access modifier in a class</description>
         <expected-problems>6</expected-problems>
@@ -57,21 +58,21 @@ public class Foo {
 
     <code-fragment id="all-methods-fields-without-default-access-modifier"><![CDATA[
 public class Foo {
-	private final String stringValue = "stringValue";
-	private final String otherStringValue = "otherStringValue";
-	private final String otherValue = "otherValue";
+    private final String stringValue = "stringValue";
+    private final String otherStringValue = "otherStringValue";
+    private final String otherValue = "otherValue";
 
-	public void test() {
-	}
+    public void test() {
+    }
 
-	public void test2() {
-	}
+    public void test2() {
+    }
 
-	public void test3() {
-	}
+    public void test3() {
+    }
 }
-    ]]>
-    </code-fragment>
+    ]]></code-fragment>
+
     <test-code>
         <description>All methods and Field without default access modifier in a class</description>
         <expected-problems>0</expected-problems>
@@ -80,11 +81,12 @@ public class Foo {
 
     <code-fragment id="interface-with-methods-with-default-access-modifier"><![CDATA[
 public interface Foo {
-	void test();
-	public void test2();
-	void test3();
+    void test();
+    public void test2();
+    void test3();
 }
     ]]></code-fragment>
+
     <test-code>
         <description>Methods with default access modifier in an Interface</description>
         <expected-problems>0</expected-problems>
@@ -93,21 +95,22 @@ public interface Foo {
 
     <code-fragment id="nested-class-with-default-access-modifier"><![CDATA[
 public class Foo {
-	private final String stringValue = "stringValue";
+    private final String stringValue = "stringValue";
 
-	public void test() {
-	}
+    public void test() {
+    }
 
-	class NestedClass {
-	}
+    class NestedClass {
+    }
 
-	static class OtherNestedClass {
-	}
+    static class OtherNestedClass {
+    }
 
-	public class AnotherNestedClass {
-	}
+    public class AnotherNestedClass {
+    }
 }
     ]]></code-fragment>
+
     <test-code>
         <description>Nested classes with default access modifier</description>
         <expected-problems>2</expected-problems>
@@ -128,6 +131,7 @@ public @interface Foo {}
 
 /* default */ @interface FoobarWithComment {}
     ]]></code-fragment>
+
     <test-code>
         <description>Top-level annotations with default access modifier are ignored by default (#1880)</description>
         <expected-problems>0</expected-problems>
@@ -155,11 +159,13 @@ enum Foobar {}
 
 /* default */ enum FoobarWithComment {}
     ]]></code-fragment>
+
     <test-code>
         <description>Top-level enums with default access modifier are ignored by default (#1880)</description>
         <expected-problems>0</expected-problems>
         <code-ref id="top-level-enums-with-default-access-modifier"/>
     </test-code>
+
     <test-code>
         <description>Top-level enums with default access modifier checks enabled with property</description>
         <rule-property name="checkTopLevelTypes">true</rule-property>
@@ -181,11 +187,13 @@ class Foobar {}
 
 /* default */ class FoobarWithComment {}
     ]]></code-fragment>
+
     <test-code>
         <description>Top-level classes with default access modifier are ignored by default (#1880)</description>
         <expected-problems>0</expected-problems>
         <code-ref id="top-level-classes-with-default-access-modifier"/>
     </test-code>
+
     <test-code>
         <description>Top-level classes with default access modifier checks enabled with property</description>
         <rule-property name="checkTopLevelTypes">true</rule-property>
@@ -196,21 +204,22 @@ class Foobar {}
 
     <code-fragment id="own-regex-to-default-access-modifier-rule"><![CDATA[
 public class Foo {
-	/* default */ final String stringValue = "stringValue";
+    /* default */ final String stringValue = "stringValue";
 
-	void test() {
-	}
+    void test() {
+    }
 
-	/* package-private */ class NestedClass {
-	}
+    /* package-private */ class NestedClass {
+    }
 
-	/*	 package-private	 */ class OtherNestedClass {
-	}
+    /*     package-private     */ class OtherNestedClass {
+    }
 
-	static class AnotherNestedClass {
-	}
+    static class AnotherNestedClass {
+    }
 }
     ]]></code-fragment>
+
     <test-code>
         <description>Test own regex to default access modifier rule</description>
         <rule-property name="regex">\/\*\s+package-private\s+\*\/</rule-property>
@@ -262,19 +271,19 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#536 Enum constructor with implicit private modifier should not trigger</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public enum Bar {
     ONE, TWO;
-    
+
     Bar() {}
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Nested Enum constructor with implicit private modifier should not trigger</description>
         <expected-problems>0</expected-problems>
@@ -282,13 +291,13 @@ public enum Bar {
 public class Foo {
     enum Bar {
         ONE, TWO;
-    
+
         Bar() {}
     }
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Nested annotation method with default access modifier should not trigger</description>
         <expected-problems>0</expected-problems>
@@ -342,8 +351,8 @@ public class Foo {
 
    /* default */ Foo(final String str1, final String str2) {}  // should not be reported
 }
-    ]]>
-    </code-fragment>
+    ]]></code-fragment>
+
     <test-code>
         <description>Add a comment to the constructors with default access modifiers to avoid mistakes</description>
         <expected-problems>2</expected-problems>

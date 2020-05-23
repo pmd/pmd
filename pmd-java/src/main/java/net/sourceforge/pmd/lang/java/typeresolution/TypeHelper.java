@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.any;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
@@ -90,6 +92,18 @@ public final class TypeHelper {
     }
 
     private static boolean fallbackIsA(TypeNode n, String clazzName) {
+        if (n.getImage() != null && !n.getImage().contains(".") && clazzName.contains(".")) {
+            // simple name detected, check the imports to get the full name and use that for fallback
+            List<ASTImportDeclaration> imports = n.getRoot().findChildrenOfType(ASTImportDeclaration.class);
+            for (ASTImportDeclaration importDecl : imports) {
+                if (n.hasImageEqualTo(importDecl.getImportedSimpleName())) {
+                    // found the import, compare the full names
+                    return clazzName.equals(importDecl.getImportedName());
+                }
+            }
+        }
+
+        // fall back on using the simple name of the class only
         if (clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage())) {
             return true;
         }

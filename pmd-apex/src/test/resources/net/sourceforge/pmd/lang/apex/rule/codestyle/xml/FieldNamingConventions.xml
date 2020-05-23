@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>all is well</description>
@@ -22,15 +21,15 @@ public class Foo {
     </test-code>
 
     <test-code>
-    <description>default is all caps for constants, camel case for others</description>
-    <expected-problems>4</expected-problems>
-    <expected-messages>
-        <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
-        <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
-        <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
-        <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
-    </expected-messages>
-    <code><![CDATA[
+        <description>default is all caps for constants, camel case for others</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
+            <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
 public class Foo {
     final static Integer constantField;
     final Integer FINAL_FIELD;
@@ -38,7 +37,7 @@ public class Foo {
     Integer INSTANCE_FIELD;
 }
         ]]></code>
-</test-code>
+    </test-code>
 
     <test-code>
         <description>enum default is all caps and underscores</description>
@@ -153,5 +152,4 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
 </test-data>

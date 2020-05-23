@@ -1,108 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-	<test-code>
-		<description>Apex class that is queued</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class that is queued</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class FooBar implements Database.Batchable {
-	public void test1() {
-		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
-	}
+    public void test1() {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex class without any sharing declared with SOQL
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class without any sharing declared with SOQL</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
-	}
+    public void test1() {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex class without any sharing declared with DML
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class without any sharing declared with DML</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void test1() {
-		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
-		upsert accounts;
-	}
+    public void test1() {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        upsert accounts;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex class without any sharing declared with Database
-			method
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class without any sharing declared with Database method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public List<SObject> test1() {
-		return Database.query('Select Id from Account LIMIT 100');
-	}
+    public List<SObject> test1() {
+        return Database.query('Select Id from Account LIMIT 100');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex class with sharing and Database method
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class with sharing and Database method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public with sharing class Foo {
-	public List<SObject> test1() {
-		return Database.query('Select Id from Account LIMIT 100');
-	}
+    public List<SObject> test1() {
+        return Database.query('Select Id from Account LIMIT 100');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex class with explicit sharing with DML</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class with explicit sharing with DML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public with sharing class Foo {
-	public void test1() {
-		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
-		upsert accounts;
-	}
+    public void test1() {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        upsert accounts;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Apex class with explicit sharing with DML</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Apex class with explicit sharing with DML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public without sharing class Foo {
-	public void test1() {
-		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
-		upsert accounts;
-	}
+    public void test1() {
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        upsert accounts;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
     <test-code>
        <description>Apex class with inherited sharing doing a safe SOQL query</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
 public inherited sharing class MyClass {
-   public List<Contact> getAllTheSecrets(){
+   public List<Contact> getAllTheSecrets() {
        return [SELECT Name FROM Contact];
    }
 }

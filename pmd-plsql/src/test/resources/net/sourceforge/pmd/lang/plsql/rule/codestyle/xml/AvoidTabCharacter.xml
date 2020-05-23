@@ -33,7 +33,7 @@ BEGIN
 	SELECT cmer_id
 		,version
 		,cmp_id
-    BULK COLLECT INTO v_cmer_ids
+    BULK COLLECT INTO v_cmer_ids -- in this line no tabs are used but spaces
 		,v_versions
 		,v_cmp_ids
 	FROM cmer;

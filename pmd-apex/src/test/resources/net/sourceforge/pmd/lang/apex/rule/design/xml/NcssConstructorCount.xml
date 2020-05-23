@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,12 +11,12 @@
         <code><![CDATA[
 public class Foo {
     public Foo() {
-		bar();
+        bar();
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>lots of comments</description>
         <rule-property name="minimum">13</rule-property>
@@ -25,21 +24,21 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public Foo() {
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		bar();
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		//nothing to see here
-		foo();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        bar();
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        //nothing to see here
+        foo();
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <code-fragment id="long-constructor"><![CDATA[
 public class Foo {
     public Foo() {
@@ -66,14 +65,14 @@ public class Foo {
     }
 }
      ]]></code-fragment>
-     
+
     <test-code>
         <description>long constructor</description>
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="long-constructor"/>
     </test-code>
-    
+
     <test-code>
         <description>long method - changed minimum</description>
         <!-- obtained this value by using NCSS directly -->
@@ -81,7 +80,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code-ref id="long-constructor"/>
     </test-code>
-    
+
     <test-code>
         <description>ignore non-constructor methods</description>
         <rule-property name="minimum">10</rule-property>
@@ -89,25 +88,25 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void bar() {
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
-		bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
     }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

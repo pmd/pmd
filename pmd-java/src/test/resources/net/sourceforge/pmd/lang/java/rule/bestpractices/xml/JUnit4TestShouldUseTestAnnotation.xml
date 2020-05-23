@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Contains test, no @Test
-     ]]></description>
+        <description>Contains test, no @Test</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -14,12 +13,11 @@ public class Foo extends TestCase{
     public void testFoo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK
-     ]]></description>
+        <description>OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -28,12 +26,11 @@ public class Foo extends TestCase{
     public void testFoo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK, renamed test
-     ]]></description>
+        <description>OK, renamed test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -42,12 +39,11 @@ public class Foo extends TestCase{
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-One test proper, the other incorrect
-     ]]></description>
+        <description>One test proper, the other incorrect</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -58,12 +54,11 @@ public class Foo extends TestCase{
     public void foo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Two tests
-     ]]></description>
+        <description>Two tests</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
@@ -73,8 +68,9 @@ public class Foo extends TestCase{
     public void testTwo() {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1197 JUnit4TestShouldUseTestAnnotation for private method</description>
         <expected-problems>0</expected-problems>
@@ -98,6 +94,7 @@ public class Faa
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#572 [java] False Alarm of JUnit4TestShouldUseTestAnnotation on Predicates</description>
         <expected-problems>0</expected-problems>
@@ -112,6 +109,7 @@ public final class Whatever<T> implements Predicate<T> {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Test class with test method not annotated</description>
         <expected-problems>1</expected-problems>
@@ -127,6 +125,7 @@ public class MyTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Test class named TestCase with test method not annotated</description>
         <expected-problems>1</expected-problems>
@@ -136,6 +135,7 @@ public class MyTestCase {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Test class prefix with Test with test method not annotated</description>
         <expected-problems>1</expected-problems>
@@ -145,6 +145,7 @@ public class TestForX {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Test class named MyTests with test method not annotated</description>
         <expected-problems>1</expected-problems>
@@ -154,6 +155,7 @@ public class MyTests {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#940 False positives with JUnit4TestShouldUseTestAnnotation when JUnit5 is used</description>
         <expected-problems>0</expected-problems>

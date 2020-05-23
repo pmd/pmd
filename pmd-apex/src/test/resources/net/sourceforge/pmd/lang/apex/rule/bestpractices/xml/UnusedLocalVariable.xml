@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Unused variables should result in errors</description>
         <expected-problems>2</expected-problems>
@@ -11,8 +12,7 @@
             <message>Variable 'foo' defined but not used</message>
             <message>Variable 'foo' defined but not used</message>
         </expected-messages>
-        <code>
-<![CDATA[
+        <code><![CDATA[
 public class Foo {
     public void assignedVariable() {
         String foo = 'unused string';
@@ -22,15 +22,13 @@ public class Foo {
         String foo;
     }
 }
-]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
         <description>Used variables should not result in errors</description>
         <expected-problems>0</expected-problems>
-        <code>
-<![CDATA[
+        <code><![CDATA[
 public class Foo {
     public String basicUsage() {
         String x = 'used variable';
@@ -62,8 +60,7 @@ public class Foo {
         foo.substringAfter('f').substringAfter('b');
     }
 }
-]]>
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>

@@ -9,7 +9,7 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 var x = 1;
-     ]]></code>
+        ]]></code>
         <source-type>ecmascript 3</source-type>
     </test-code>
 
@@ -25,7 +25,7 @@ var x = 1;
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 var x = 1.1234567890123;
-     ]]></code>
+        ]]></code>
         <source-type>ecmascript 3</source-type>
     </test-code>
 
@@ -34,7 +34,7 @@ var x = 1.1234567890123;
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 var z = 1.12345678901234567;
-     ]]></code>
+        ]]></code>
         <source-type>ecmascript 3</source-type>
     </test-code>
 
@@ -43,7 +43,7 @@ var z = 1.12345678901234567;
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 var x = 1.12e-4;
-     ]]></code>
+        ]]></code>
         <source-type>ecmascript 3</source-type>
     </test-code>
 
@@ -52,7 +52,7 @@ var x = 1.12e-4;
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 var x = 1.12345678901234567e-4;
-     ]]></code>
+        ]]></code>
         <source-type>ecmascript 3</source-type>
     </test-code>
 

@@ -162,6 +162,17 @@ public class CsTokenizerTest {
         assertEquals("using", tokens.getTokens().get(0).toString());
     }
 
+    @Test
+    public void testInterpolatedVerbatimStrings() {
+        tokenizer.setIgnoreUsings(true);
+        tokenizer.tokenize(toSourceCode(
+                "var test = $@\"test\";\n"
+                + "var test2 = @$\"test\";"),
+                tokens
+        );
+        assertEquals(15, tokens.size());
+    }
+
     private SourceCode toSourceCode(String source) {
         return new SourceCode(new SourceCode.StringCodeLoader(source));
     }
