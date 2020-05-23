@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>bad, new BigDecimal(.1)</description>
         <expected-problems>1</expected-problems>
@@ -10,12 +11,13 @@
 import java.math.BigDecimal;
 
 public class Foo {
- void bar() {
-  BigDecimal bd = new BigDecimal(.1);
- }
+    void bar() {
+        BigDecimal bd = new BigDecimal(.1);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>ok, new BigDecimal(".1")</description>
         <expected-problems>0</expected-problems>
@@ -23,12 +25,13 @@ public class Foo {
 import java.math.BigDecimal;
 
 public class Foo {
- void bar() {
-  BigDecimal bd = new BigDecimal(".1");
- }
+    void bar() {
+        BigDecimal bd = new BigDecimal(".1");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>ok, new BigDecimal(10)</description>
         <expected-problems>0</expected-problems>
@@ -36,12 +39,13 @@ public class Foo {
 import java.math.BigDecimal;
 
 public class Foo {
- void bar() {
-  BigDecimal bd = new BigDecimal(10);
- }
+    void bar() {
+        BigDecimal bd = new BigDecimal(10);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>bad, same as #1 but outside an initializer context</description>
         <expected-problems>1</expected-problems>
@@ -49,12 +53,13 @@ public class Foo {
 import java.math.BigDecimal;
 
 public class Foo {
- BigDecimal bar() {
-  return new BigDecimal(1.0);
- }
+    BigDecimal bar() {
+        return new BigDecimal(1.0);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1187 double variable with AvoidDecimalLiteralsInBigDecimalConstructor</description>
         <expected-problems>8</expected-problems>

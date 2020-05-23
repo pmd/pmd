@@ -20,6 +20,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
+/**
+ * @deprecated Replaced by {@link LiteralsFirstInComparisonsRule}
+ */
+@Deprecated
 class AbstractPositionLiteralsFirstInComparisons extends AbstractJavaRule {
 
     private final String equalsImage;

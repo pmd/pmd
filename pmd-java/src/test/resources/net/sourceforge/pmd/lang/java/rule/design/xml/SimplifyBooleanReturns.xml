@@ -3,71 +3,70 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-1, bad
-     ]]></description>
+        <description>1, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean foo() {
-  if (true) {
-   return true;
-  } else {
-   return false;
-  }
- }
+    public boolean foo() {
+        if (true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-2, bad
-     ]]></description>
+        <description>2, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean foo() {
-  if (true)
-   return true;
-   else
-  return false;
- }
+    public boolean foo() {
+        if (true)
+            return true;
+        else
+            return false;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-3, ok
-     ]]></description>
+        <description>3, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Object foo() {
-  if (!true) {
-   return null;
-  } else {}
-  return null;
- }
+    public Object foo() {
+        if (!true) {
+            return null;
+        } else
+        {
+            // nothing
+        }
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-4, ok
-     ]]></description>
+        <description>4, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void foo() { 
-  if (true) {
-   return;
-  } else {
-   return;
-  }
- }
+    public void foo() {
+        if (true) {
+            return;
+        } else {
+            return;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -84,6 +83,7 @@ public class SimplifyBooleanReturns {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1320 Enhance SimplifyBooleanReturns checks - case 2 without block</description>
         <expected-problems>1</expected-problems>

@@ -148,7 +148,7 @@ REGULAR_STRING:                      '"'  (~["\\\r\n\u0085\u2028\u2029] | Common
 VERBATIUM_STRING:                    '@"' (~'"' | '""')* '"';
 INTERPOLATED_REGULAR_STRING_START:   '$"'
     { interpolatedStringLevel++; interpolatedVerbatiums.push(false); verbatium = false; } -> pushMode(INTERPOLATION_STRING);
-INTERPOLATED_VERBATIUM_STRING_START: '$@"'
+INTERPOLATED_VERBATIUM_STRING_START: ('$@"' | '@$"')
     { interpolatedStringLevel++; interpolatedVerbatiums.push(true); verbatium = true; }  -> pushMode(INTERPOLATION_STRING);
 
 //B.1.9 Operators And Punctuators

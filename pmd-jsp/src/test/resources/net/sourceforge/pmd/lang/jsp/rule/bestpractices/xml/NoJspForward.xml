@@ -3,14 +3,13 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-A violation.
-     ]]></description>
+        <description>A violation.</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 <jsp:forward page='UnderConstruction.jsp'/>
-     ]]></code>
+        ]]></code>
         <source-type>jsp</source-type>
     </test-code>
 </test-data>

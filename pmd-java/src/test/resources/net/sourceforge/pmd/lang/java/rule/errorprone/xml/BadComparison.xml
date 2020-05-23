@@ -3,37 +3,34 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-comparison to Double.NaN
-     ]]></description>
+        <description>comparison to Double.NaN</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean x = (y == Double.NaN);
+    boolean x = (y == Double.NaN);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok equality comparison
-     ]]></description>
+        <description>ok equality comparison</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean x = (y == z);
+    boolean x = (y == z);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-comparison to Float.NaN
-     ]]></description>
+        <description>comparison to Float.NaN</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- boolean x = (y == Float.NaN);
+    boolean x = (y == Float.NaN);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

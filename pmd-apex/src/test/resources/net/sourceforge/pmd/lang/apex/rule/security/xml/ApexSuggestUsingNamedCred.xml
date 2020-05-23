@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description>Using basic auth with literal
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+
+    <test-code>
+        <description>Using basic auth with literal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo(String username, String password) {
-		HttpRequest req = new HttpRequest();
-		Blob headerValue = Blob.valueOf(username + ':' + password);
-		String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
-		req.setHeader('Authorization', authorizationHeader);  
-	}	
+    public void foo(String username, String password) {
+        HttpRequest req = new HttpRequest();
+        Blob headerValue = Blob.valueOf(username + ':' + password);
+        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+        req.setHeader('Authorization', authorizationHeader);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Using basic auth with variable
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Using basic auth with variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public static String AUTH = 'Authorization';
-	
-	public void foo(String username, String password) {		
-		HttpRequest req = new HttpRequest();
-		Blob headerValue = Blob.valueOf(username + ':' + password);
-		String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
-		req.setHeader(AUTH, authorizationHeader);  
-	}	
-}
-		]]></code>
-	</test-code>
+    public static String AUTH = 'Authorization';
 
-	<test-code>
-		<description>Using named credentials
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    public void foo(String username, String password) {
+        HttpRequest req = new HttpRequest();
+        Blob headerValue = Blob.valueOf(username + ':' + password);
+        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+        req.setHeader(AUTH, authorizationHeader);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using named credentials</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void foo() {
-		HttpRequest req = new HttpRequest();
-		req.setEndpoint('callout:***My_Named_Credential***/some_path');
-		req.setMethod('GET');
-		Http http = new Http();
-		HTTPResponse res = http.send(req);
-	}	
+    public void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:***My_Named_Credential***/some_path');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+    }
 }
-		]]></code>
-	</test-code>
-
-
+        ]]></code>
+    </test-code>
 </test-data>

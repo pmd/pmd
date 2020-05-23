@@ -3,51 +3,48 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad, toArray() with cast
-     ]]></description>
+        <description>bad, toArray() with cast</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  Collection c = new ArrayList();
-  c.add(new Integer(1));
-  Integer[] a=(Integer [])c.toArray();
- }
+    void bar() {
+        Collection c = new ArrayList();
+        c.add(new Integer(1));
+        Integer[] a=(Integer [])c.toArray();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok, no cast
-     ]]></description>
+        <description>ok, no cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  Collection c = new ArrayList();
-  c.add(new Integer(1));
-  Integer[] a = (Integer [])c.toArray(new Integer[c.size()]);;
- }
+    void bar() {
+        Collection c = new ArrayList();
+        c.add(new Integer(1));
+        Integer[] a = (Integer [])c.toArray(new Integer[c.size()]);;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ensuring we don't have a few specific false positives, see bug 1697397
-     ]]></description>
+        <description>Ensuring we don't have a few specific false positives, see bug 1697397</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-	String bar(Vector vec) {
-		return (String)vec.toArray().toString();
- 	}
- 	String foo(Vector vec) {
-		return (String)vec.toArray()[0];
- 	}
+    String bar(Vector vec) {
+        return (String)vec.toArray().toString();
+    }
+    String foo(Vector vec) {
+        return (String)vec.toArray()[0];
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

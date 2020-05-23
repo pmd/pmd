@@ -3,84 +3,78 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-TEST1
-     ]]></description>
+        <description>TEST1</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo () {
- foo.notify();
+    void foo () {
+        foo.notify();
+    }
 }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST2
-     ]]></description>
+        <description>TEST2</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo () {
- foo.notify();
- foo.notify();
+    void foo () {
+        foo.notify();
+        foo.notify();
+    }
 }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST3
-     ]]></description>
+        <description>TEST3</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo () {
- notify();
+    void foo () {
+        notify();
+    }
 }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST4
-     ]]></description>
+        <description>TEST4</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo () {
- super.notify();
+    void foo () {
+        super.notify();
+    }
 }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-TEST5
-     ]]></description>
+        <description>TEST5</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo () {
- new Object().notify();
+    void foo () {
+        new Object().notify();
+    }
 }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-notify() with params is OK
-     ]]></description>
+        <description>notify() with params is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo (int x) {
- foo.notify(x);
+    void foo (int x) {
+        foo.notify(x);
+    }
 }
-}
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
