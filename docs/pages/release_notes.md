@@ -99,5 +99,10 @@ definitive API.
 *   [#2493](https://github.com/pmd/pmd/pull/2493): \[java] Deprecate redundant String Comparison rules - [John-Teng](https://github.com/John-Teng)
 *   [#2495](https://github.com/pmd/pmd/pull/2495): \[c#] Support for interpolated verbatim strings - [Maikel Steneker](https://github.com/maikelsteneker)
 
+### Stats
+* 114 commits
+* 29 closed tickets & PRs
+* Days since last release: 30
+
 {% endtocmaker %}
 
