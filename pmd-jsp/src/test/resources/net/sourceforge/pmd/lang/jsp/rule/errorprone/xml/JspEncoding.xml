@@ -10,7 +10,6 @@
         <code><![CDATA[
 <%@ page import="com.foo.MyClass"%>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -19,7 +18,6 @@
         <code><![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -30,7 +28,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="should.ignore.this.one" %>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -39,7 +36,6 @@
         <code><![CDATA[
 <meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"/>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -48,7 +44,6 @@
         <code><![CDATA[
 <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -59,7 +54,6 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
 <meta http-equiv="Content-Language" content="nl-NL"/>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -78,6 +72,5 @@
 </head>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 </test-data>

@@ -20,7 +20,6 @@ CREATE OR REPLACE PACKAGE BODY date_utilities IS
 END date_utilities;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -38,6 +37,5 @@ CREATE OR REPLACE PACKAGE BODY date_utilities IS
 END date_utilities;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

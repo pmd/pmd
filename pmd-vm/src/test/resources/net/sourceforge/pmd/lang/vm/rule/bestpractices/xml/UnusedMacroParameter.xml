@@ -14,7 +14,6 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -27,7 +26,6 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -38,7 +36,6 @@
     #set($v2 = "${X} $v1 ${X}" )
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -49,7 +46,6 @@
     #set($v2 = "${X}${v1}${X}" )
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -60,7 +56,6 @@
     #set($v2 = "${X}$!v1${X}" )
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -71,7 +66,6 @@
     #set($v2 = "${X}${v1.val}${X}" )
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -82,7 +76,6 @@
     <div class="c1 $!v1">
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -91,6 +84,5 @@
         <code><![CDATA[
 #macro( mymacro $v1 )$context.getSomething()${v1}#end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 </test-data>

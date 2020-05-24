@@ -11,7 +11,6 @@
 function foo() {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -23,7 +22,6 @@ if (true) {
 } else {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -33,7 +31,6 @@ if (true) {
 for (var i = 0; i < 10; i++) {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -43,7 +40,6 @@ for (var i = 0; i < 10; i++) {
 for (var i in obj) {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -53,7 +49,6 @@ for (var i in obj) {
 while(true) {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -63,7 +58,6 @@ while(true) {
 do {
 } while(true)
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -75,7 +69,6 @@ switch(1) {
         break;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -87,7 +80,6 @@ try {
 } finally {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -97,7 +89,6 @@ try {
 {
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -109,7 +100,6 @@ function foo() {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -127,7 +117,6 @@ if (true) {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -139,7 +128,6 @@ for (var i = 0; i < 10; i++) {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -151,7 +139,6 @@ for (var i in obj) {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -163,7 +150,6 @@ while(true) {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -175,7 +161,6 @@ do {
     }
 } while(true)
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -189,7 +174,6 @@ switch(1) {
         break;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -207,6 +191,5 @@ try {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

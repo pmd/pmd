@@ -10,7 +10,6 @@
         <code><![CDATA[
 <apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -19,7 +18,6 @@
         <code><![CDATA[
 <apex:page controller="AcRestActionsController"  >
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -28,6 +26,5 @@
         <code><![CDATA[
 <apex:page controller="AcRestActionsController" action="init()" >
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 </test-data>

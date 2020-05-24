@@ -16,7 +16,6 @@ function(arg) {
     };
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -36,6 +35,5 @@ function(arg) {
     };
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

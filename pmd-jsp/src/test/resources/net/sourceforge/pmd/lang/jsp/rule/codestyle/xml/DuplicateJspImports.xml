@@ -15,7 +15,6 @@
     </body>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -29,7 +28,6 @@
     </body>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -44,7 +42,6 @@
     </body>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -59,7 +56,6 @@
     </body>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -74,7 +70,6 @@
     </body>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -90,6 +85,5 @@
     </body>
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 </test-data>

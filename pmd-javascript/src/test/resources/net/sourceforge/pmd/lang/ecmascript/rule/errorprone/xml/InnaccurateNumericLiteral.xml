@@ -10,14 +10,12 @@
         <code><![CDATA[
 var x = 1;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
         <description>Bad integer</description>
         <expected-problems>1</expected-problems>
         <code>var x = 999999999999999999999999;</code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -26,7 +24,6 @@ var x = 1;
         <code><![CDATA[
 var x = 1.1234567890123;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -35,7 +32,6 @@ var x = 1.1234567890123;
         <code><![CDATA[
 var z = 1.12345678901234567;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -44,7 +40,6 @@ var z = 1.12345678901234567;
         <code><![CDATA[
 var x = 1.12e-4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -53,7 +48,6 @@ var x = 1.12e-4;
         <code><![CDATA[
 var x = 1.12345678901234567e-4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -63,6 +57,5 @@ var x = 1.12345678901234567e-4;
 var hex1 = 0x20;
 var hex2 = 0X20;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

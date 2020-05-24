@@ -14,7 +14,6 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -25,7 +24,6 @@
     #foreach($c1 in $list)#end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -38,6 +36,5 @@
     #end
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 </test-data>

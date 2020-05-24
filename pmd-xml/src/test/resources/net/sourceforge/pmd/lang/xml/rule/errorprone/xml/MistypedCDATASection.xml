@@ -13,7 +13,6 @@
     </child>
 </root>
         ]]></code>
-        <source-type>xml</source-type>
     </test-code>
 
     <test-code>
@@ -28,7 +27,6 @@
     </child>
 </root>
         ]]></code>
-        <source-type>xml</source-type>
     </test-code>
 
     <test-code>
@@ -43,7 +41,6 @@
     </child>
 </root>
         ]]></code>
-        <source-type>xml</source-type>
     </test-code>
 
     <test-code>
@@ -58,7 +55,6 @@
     </child>
 </root>
         ]]></code>
-        <source-type>xml</source-type>
     </test-code>
 
     <test-code>
@@ -73,7 +69,6 @@
     </child>
 </root>
         ]]></code>
-        <source-type>xml</source-type>
     </test-code>
 
     <test-code>

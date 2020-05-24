@@ -2094,6 +2094,5 @@ CREATE OR REPLACE PACKAGE pkg_fields AS
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

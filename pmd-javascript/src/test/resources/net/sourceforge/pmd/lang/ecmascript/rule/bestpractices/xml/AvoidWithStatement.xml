@@ -12,6 +12,5 @@ with (object) {
     property = 3; // Might be on object, might be on window: who knows.
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

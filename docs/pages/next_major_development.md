@@ -193,6 +193,23 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.24.0
+
+##### Deprecated APIs
+
+*   {% jdoc !ca!core::lang.BaseLanguageModule#addVersion(String, LanguageVersionHandler, boolean) %}
+*   Some members of {% jdoc core::lang.ast.TokenMgrError %}, in particular, a new constructor is available
+    that should be preferred to the old ones
+*   {% jdoc core::lang.antlr.AntlrTokenManager.ANTLRSyntaxError %}
+
+##### Experimental APIs
+
+**Note:** Experimental APIs are identified with the annotation {% jdoc core::annotation.Experimental %},
+see its javadoc for details
+
+* The experimental methods in {% jdoc !ca!core::lang.BaseLanguageModule %} have been replaced by a
+definitive API.
+
 #### 6.23.0
 
 ##### Deprecated APIs
@@ -944,19 +961,19 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 
 ### List of currently deprecated rules
 
-*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
-    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are
+*   The Java rules `VariableNamingConventions` (java-codestyle), `MIsLeadingVariableName` (java-codestyle),
+    `SuspiciousConstantFieldName` (java-codestyle), and `AvoidPrefixingMethodParameters` (java-codestyle) are
     now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
     {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
     {% rule java/codestyle/LocalVariableNamingConventions %}.
 
-*   The Java rule {% rule java/codestyle/AbstractNaming %} is deprecated
+*   The Java rule `AbstractNaming` (java-codestyle) is deprecated
     in favour of {% rule java/codestyle/ClassNamingConventions %}.
 
-*   The Java rules {% rule java/codestyle/WhileLoopsMustUseBraces %}, {% rule java/codestyle/ForLoopsMustUseBraces %}, {% rule java/codestyle/IfStmtsMustUseBraces %}, and {% rule java/codestyle/IfElseStmtsMustUseBraces %}
+*   The Java rules `WhileLoopsMustUseBraces` (java-codestyle), `ForLoopsMustUseBraces` (java-codestyle), `IfStmtsMustUseBraces` (java-codestyle), and `IfElseStmtsMustUseBraces` (java-codestyle)
     are deprecated. They will be replaced by the new rule {% rule java/codestyle/ControlStatementBraces %}.
 
-*   The Java rules {% rule java/design/NcssConstructorCount %}, {% rule java/design/NcssMethodCount %}, and {% rule java/design/NcssTypeCount %} have been
+*   The Java rules NcssConstructorCount (java-design), NcssMethodCount (java-design), and NcssTypeCount (java-design) have been
     deprecated. They will be replaced by the new rule {% rule java/design/NcssCount %} in the category `design`.
 
 *   The Java rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from category `bestpractices` instead.

@@ -10,7 +10,6 @@
         <code><![CDATA[
 <html><body></body></html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -19,7 +18,6 @@
         <code><![CDATA[
 <html><body><!-- HTML Comment --></body></html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -28,6 +26,5 @@
         <code><![CDATA[
 <html><body><%-- JSP Comment --%></body></html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 </test-data>

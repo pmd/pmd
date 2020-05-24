@@ -299,15 +299,16 @@ public class RuleDocGenerator {
      * @return
      */
     private static String getShortRuleDescription(Rule rule) {
-        return StringEscapeUtils.escapeHtml4(
+        String htmlEscaped = StringEscapeUtils.escapeHtml4(
             StringUtils.abbreviate(
                 StringUtils.stripToEmpty(
                     rule.getDescription()
-                        .replaceAll("\n|\r", "")
+                        .replaceAll("\n+|\r+", " ")
                         .replaceAll("\\|", "\\\\|")
                         .replaceAll("`", "'")
                         .replaceAll("\\*", "")),
                 100));
+        return EscapeUtils.preserveRuleTagQuotes(htmlEscaped);
     }
 
     private static String getRuleSetDescriptionSingleLine(RuleSet ruleset) {
@@ -315,7 +316,7 @@ public class RuleDocGenerator {
         description = StringEscapeUtils.escapeHtml4(description);
         description = description.replaceAll("\\n|\\r", " ");
         description = StringUtils.stripToEmpty(description);
-        return description;
+        return EscapeUtils.preserveRuleTagQuotes(description);
     }
 
     private static List<String> toLines(String s) {

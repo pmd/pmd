@@ -14,7 +14,6 @@ if (true) {
     x = 4;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -29,7 +28,6 @@ if (true) {
     y = 4;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -39,7 +37,6 @@ if (true) {
 if (true)
     x=2;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -50,7 +47,6 @@ if (true)
     if (false)
         x=2;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -62,7 +58,6 @@ if (true) {
 } else
     y=4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -74,7 +69,6 @@ if (true)
 else
     x=4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -88,7 +82,6 @@ if (true) {
 } else
     y=4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -102,7 +95,6 @@ if (true) {
 else
     y=4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -116,6 +108,5 @@ else if (true)
 else
     y=4;
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

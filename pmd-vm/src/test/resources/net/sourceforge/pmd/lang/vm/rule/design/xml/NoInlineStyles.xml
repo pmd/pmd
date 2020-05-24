@@ -10,7 +10,6 @@
         <code><![CDATA[
 <h2 style = "color=blue;">text</h2>
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -19,6 +18,5 @@
         <code><![CDATA[
 There is nothing here
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 </test-data>

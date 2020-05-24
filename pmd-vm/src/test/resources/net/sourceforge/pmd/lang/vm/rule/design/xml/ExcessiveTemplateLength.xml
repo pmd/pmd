@@ -21,7 +21,6 @@
     stuff
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -41,6 +40,5 @@
     stuff
 #end
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 </test-data>
