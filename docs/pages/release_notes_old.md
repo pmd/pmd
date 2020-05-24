@@ -2625,8 +2625,8 @@ This is a minor release.
 
 #### Deprecated Rules
 
-*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
-    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
+*   The Java rules `VariableNamingConventions` (java-codestyle), `MIsLeadingVariableName` (java-codestyle),
+    `SuspiciousConstantFieldName` (java-codestyle), and `AvoidPrefixingMethodParameters` (java-codestyle) are
     now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
     {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
     {% rule java/codestyle/LocalVariableNamingConventions %}.
