@@ -876,7 +876,7 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 
 *   The two Java rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
     and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} (ruleset `java-bestpractices`)
-    have been deprecated in favor of the new rule {% rule java/bestpractices/LiteralsFirstInComparisons" %}.
+    have been deprecated in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
 
 
 
