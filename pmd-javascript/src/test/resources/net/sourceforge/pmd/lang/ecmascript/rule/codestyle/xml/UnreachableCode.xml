@@ -12,7 +12,6 @@ function foo() {
     return 1;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -23,7 +22,6 @@ while (true) {
     continue;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -34,7 +32,6 @@ while (true) {
     break;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -48,7 +45,6 @@ switch (foo) {
         break;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -59,7 +55,6 @@ if (true) {
     throw new Error();
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -71,7 +66,6 @@ function foo() {
     x = 1;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -83,7 +77,6 @@ while (true) {
     x = 1;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -95,7 +88,6 @@ while (true) {
     x = 1;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -111,7 +103,6 @@ switch (foo) {
         x = 1;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -123,6 +114,5 @@ if (true) {
     x = 1;
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

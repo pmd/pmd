@@ -144,7 +144,6 @@ public class FooTest {
     }
 }
         ]]></code>
-        <source-type>java 1.8</source-type>
     </test-code>
 
     <test-code>
@@ -160,7 +159,6 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.8</source-type>
     </test-code>
 
     <test-code>
@@ -178,6 +176,5 @@ public class LocalVariableTypeInferenceTryWithResources {
     }
 }
         ]]></code>
-        <source-type>java 10</source-type>
     </test-code>
 </test-data>

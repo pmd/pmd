@@ -11,7 +11,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 ${shouldBeDetectedAsXSSSecurityBreach}
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -23,7 +22,6 @@ ${shouldBeDetectedAsXSSSecurityBreach}
     <input type="text" value="${shouldBeDetectedAsXSSSecurityBreach}" />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -39,7 +37,6 @@ ${shouldBeDetectedAsXSSSecurityBreach}
     />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -58,7 +55,6 @@ ${shouldBeDetectedAsXSSSecurityBreach}
     <c:out value="${expression}" />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -70,7 +66,6 @@ ${shouldBeDetectedAsXSSSecurityBreach}
     <c:out value="${expression}" />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -81,7 +76,6 @@ ${shouldBeDetectedAsXSSSecurityBreach}
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 ${fn:escapeXml(expression)}
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -94,7 +88,6 @@ ${fn:escapeXml(expression)}
     <input type="text" value="${fn:escapeXml(expression)}" />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -111,7 +104,6 @@ ${fn:escapeXml(expression)}
     />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 
     <test-code>
@@ -131,6 +123,5 @@ ${fn:escapeXml( expression )}
     <c:out value="${fn:escapeXml(expression)}" />
 </html>
         ]]></code>
-        <source-type>jsp</source-type>
     </test-code>
 </test-data>

@@ -15,7 +15,6 @@ END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -30,7 +29,6 @@ END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -48,7 +46,6 @@ END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -67,7 +64,6 @@ END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -86,7 +82,6 @@ END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -106,7 +101,6 @@ END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>

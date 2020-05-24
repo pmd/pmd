@@ -12,7 +12,6 @@
     <apex:iframe src="{!iframeSource}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -23,7 +22,6 @@
     <iframe src="{!iframeSource}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -34,7 +32,6 @@
     <a src="{!iframeSource}">Link me</a>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -49,7 +46,6 @@
     </apex:outputPanel>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -65,7 +61,6 @@
     </apex:repeat>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -78,7 +73,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -91,7 +85,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -102,7 +95,6 @@
     <a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -115,7 +107,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -128,7 +119,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -141,7 +131,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -155,7 +144,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -169,7 +157,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -182,7 +169,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -193,7 +179,6 @@
     <link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/{!anotherRes}" id="ext-all-css"/>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -204,7 +189,6 @@
     <link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/resources/css/ext-all.css" id="ext-all-css"/>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -215,7 +199,6 @@
     <div onclick="{!XSSHere(bah)}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -228,7 +211,6 @@
     <div onclick="{!JSENCODE(NoXSSHere)}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -239,7 +221,6 @@
     <img src="{!XSSHere}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -251,7 +232,6 @@
     <a href="{!XSSHere}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -262,7 +242,6 @@
     <iframe src="{!'/foo' + XSSHere}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -273,7 +252,6 @@
     <iframe src="/{!XSSHere}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -284,7 +262,6 @@
     <iframe src="{!URLENCODE(XSSHere)}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -295,7 +272,6 @@
     <iframe src="{!XSSHere}" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -306,7 +282,6 @@
     {!NoXSSHere(bah)}
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -317,7 +292,6 @@
     <apex:outputText value=' XSS is not {! here }' />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -328,7 +302,6 @@
     <apex:outputText value='XSS might be {! here }' escape="false" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -339,7 +312,6 @@
     <apex:outputText value='XSS might be {! 'here' }' escape="false" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -350,7 +322,6 @@
     <apex:outputText value='XSS might be {! false }' escape="false" />
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -363,7 +334,6 @@
     </apex:outputText>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -376,7 +346,6 @@
     </apex:outputText>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -389,7 +358,6 @@
     </apex:outputText>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -406,7 +374,6 @@
     </apex:form>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -421,7 +388,6 @@
     </apex:form>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -432,7 +398,6 @@
     <apex:outputText value=" {!HTMLENCODE(myTextField) }" escape="false"/>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -445,7 +410,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -458,7 +422,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -471,7 +434,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -485,7 +447,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -500,7 +461,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -513,7 +473,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -526,7 +485,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -539,7 +497,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -552,7 +509,6 @@
     </script>
 </apex:page>
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -561,7 +517,6 @@
         <code><![CDATA[
 <a onclick="openTab('/apex/Download?redirectUrl={!URLENCODE(downloadURL)}', 'test');">
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -570,7 +525,6 @@
         <code><![CDATA[
 <a onclick="openTab('/apex/Download?redirectUrl={!downloadURL}', 'test');">
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 
     <test-code>
@@ -582,6 +536,5 @@
 <a onclick="openTab({!JSINHTMLENCODE('/apex/Download?redirectUrl=' + downloadURL)}', 'test');">
 <a onclick="openTab({!HTMLENCODE('/apex/Download?redirectUrl=' + downloadURL)}', 'test');">
         ]]></code>
-        <source-type>vf</source-type>
     </test-code>
 </test-data>

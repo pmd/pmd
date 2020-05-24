@@ -12,7 +12,6 @@ for (var p in obj) {
     obj[p] = obj[p];
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -25,7 +24,6 @@ function foo() {
     }
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -46,7 +44,6 @@ function foo() {
     // 'p' still has value of 'clean'.
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -57,7 +54,6 @@ for (p in obj) {
     obj[p] = obj[p];
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -70,7 +66,6 @@ function() {
     }
 };
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 
     <test-code>
@@ -91,6 +86,5 @@ function bar() {
     // 'p' is trashed and has value of 'dirty'!
 }
         ]]></code>
-        <source-type>ecmascript 3</source-type>
     </test-code>
 </test-data>

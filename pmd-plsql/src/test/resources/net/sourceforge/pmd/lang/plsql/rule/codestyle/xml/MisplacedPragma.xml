@@ -25,7 +25,6 @@ create or replace package body inline_pragma_ok is
 end inline_pragma_ok;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -51,6 +50,5 @@ create or replace package body inline_pragma_error is
 end inline_pragma_error;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

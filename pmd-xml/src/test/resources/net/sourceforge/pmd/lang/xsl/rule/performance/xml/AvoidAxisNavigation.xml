@@ -15,7 +15,6 @@
     <xsl:variable select="preceeding::book"/>
 </xsl:stylesheet>
         ]]></code>
-        <source-type>xsl</source-type>
     </test-code>
 
     <test-code>
@@ -28,7 +27,6 @@
     <xsl:variable name="var" select="//descendant"/>
 </xsl:stylesheet>
         ]]></code>
-        <source-type>xsl</source-type>
     </test-code>
 
     <test-code>
@@ -41,6 +39,5 @@
     <xsl:variable name="var" select="//child"/>
 </xsl:stylesheet>
         ]]></code>
-        <source-type>xsl</source-type>
     </test-code>
 </test-data>

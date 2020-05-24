@@ -70,7 +70,6 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>
@@ -82,7 +81,6 @@ public class Foo {
     private List<TestInterfaceTwo> x = new ArrayList<TestInterfaceTwo>();
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>
@@ -96,7 +94,6 @@ public class Foo {
     private List<Collection> x = new ArrayList<Collection>();
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>
@@ -109,7 +106,6 @@ import foo.annotation.RetentionPolicy;
 public @interface Foo {
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>
@@ -122,7 +118,6 @@ import foo.FooAnnotation2;
 @FooAnnotation2
 public class Foo {}
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>
@@ -158,7 +153,6 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>
@@ -171,7 +165,6 @@ public class Foo {
     }
 }
         ]]></code>
-        <source-type>java 1.5</source-type>
     </test-code>
 
     <test-code>

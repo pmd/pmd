@@ -44,6 +44,5 @@ CREATE OR REPLACE PACKAGE BODY foo AS
     END bar;
 END foo;
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 </test-data>

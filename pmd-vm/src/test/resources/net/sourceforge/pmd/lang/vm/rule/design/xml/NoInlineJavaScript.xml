@@ -10,7 +10,6 @@
         <code><![CDATA[
 <script type= "text/javascript"> alert("hello"); </script>
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -19,7 +18,6 @@
         <code><![CDATA[
 There is no script here
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 
     <test-code>
@@ -28,6 +26,5 @@ There is no script here
         <code><![CDATA[
 <script type="text/javascript" src="somefile.js"></script>
         ]]></code>
-        <source-type>vm</source-type>
     </test-code>
 </test-data>
