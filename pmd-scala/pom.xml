@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pmd-scala</artifactId>
+    <artifactId>pmd-scala_${scalaVersion}</artifactId>
     <name>PMD Scala</name>
 
     <parent>
@@ -11,6 +11,7 @@
     </parent>
 
     <properties>
+        <scalaVersion>2.12</scalaVersion>
         <scalameta.version>4.2.0</scalameta.version>
     </properties>
 
@@ -37,7 +38,7 @@
     <dependencies>
         <dependency>
             <groupId>org.scalameta</groupId>
-            <artifactId>scalameta_2.13</artifactId>
+            <artifactId>scalameta_${scalaVersion}</artifactId>
             <version>${scalameta.version}</version>
         </dependency>
         <dependency>

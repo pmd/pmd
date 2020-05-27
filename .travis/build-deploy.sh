@@ -26,6 +26,7 @@ elif travis_isPullRequest; then
 
     log_info "This is a pull-request build"
     ./mvnw verify $MVN_BUILD_FLAGS
+    ./mvnw clean verify $MVN_BUILD_FLAGS -pl scala -DscalaVersion=2.13
 
     regression-tester_executeDanger
 
@@ -42,6 +43,7 @@ elif travis_isPush; then
 
         # Build and deploy to ossrh / maven-central
         ./mvnw deploy -Possrh,sign,pmd-release $MVN_BUILD_FLAGS
+        ./mvnw clean deploy -Possrh,sign,pmd-release $MVN_BUILD_FLAGS -pl scala -DscalaVersion=2.13
         echo -e "\n\n"
 
         # Deploy to github releases
@@ -57,6 +59,7 @@ elif travis_isPush; then
     elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         log_info "This is a snapshot build"
         ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS
+        ./mvnw clean deploy -Possrh,sign $MVN_BUILD_FLAGS -pl scala -DscalaVersion=2.13
         
         # Deploy to sourceforge files
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"

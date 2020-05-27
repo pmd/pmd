@@ -88,6 +88,7 @@
         <kotlin.version>1.3.0</kotlin.version>
         <dokka.version>0.10.1</dokka.version>
 
+        <scala.version>2.12</scala.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
