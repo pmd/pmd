@@ -433,6 +433,9 @@ entries:
         - title: What does 'PMD' mean?
           url: /pmd_projectdocs_trivia_meaning.html
           output: web, pdf
+    - title: Logo
+      url: /pmd_projectdocs_logo.html
+      output: web, pdf
     - title: FAQ
       url: /pmd_projectdocs_faq.html
       output: web, pdf
