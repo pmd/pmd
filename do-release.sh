@@ -175,6 +175,9 @@ echo
 echo
 echo "Prepare Next development version:"
 echo "*   Update version/date info in **docs/_config.yml**."
+echo "    move version to previous_version, increase version, make sure it is a SNAPSHOT version"
+echo "    otherwise the javadoc links won't work during development"
+echo "    also update the date, e.g. ??-month-year."
 echo
 echo
 echo "Press enter to continue..."

@@ -874,6 +874,10 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     will be removed with PMD 7.0.0. The rule is replaced by the more general
     {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
 
+*   The two Java rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
+    and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} (ruleset `java-bestpractices`)
+    have been deprecated in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
+
 
 
 
