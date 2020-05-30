@@ -2008,7 +2008,7 @@ which makes the code also more readable.
 /PrimaryPrefix
 /AllocationExpression
     [@AnonymousClass=false()]
-    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not(TypeArgument//TypeArguments)]]
+    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not(.//TypeArgument[@Wildcard=true()])]]
     [not(ArrayDimsAndInits)]
 ]]>
                 </value>
