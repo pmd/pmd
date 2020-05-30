@@ -14,7 +14,21 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified rules
+
+*   The Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) now by default
+    finds unnecessary usages of type parameters, which are nested, involve wildcards and are used
+    within a ternary operator. These usages are usually only unnecessary with Java8 and later, when
+    the type inference in Java has been improved.
+    
+    In order to avoid false positives when checking Java7 only code, the rule has the new property
+    `java7compatibility`, which is disabled by default. Settings this to "true" retains
+    the old rule behaviour.
+
 ### Fixed Issues
+
+*   java-codestyle
+    *   [#2545](https://github.com/pmd/pmd/issues/2545): \[java] UseDiamondOperator false negatives
 
 ### API Changes
 
