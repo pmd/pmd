@@ -93,9 +93,9 @@ public class DuplicateImportsRule extends AbstractJavaRule {
             if (importOnDemandImports.contains(wrapper)) {
                 for (ImportWrapper thisImportOnDemand : importOnDemandImports) {
                     if (thisImportOnDemand.equals(wrapper)) {
-                        if(thisImportOnDemand.isStaticOnDemand() ^ wrapper.isStaticOnDemand()){
+                        if (thisImportOnDemand.isStaticOnDemand() ^ wrapper.isStaticOnDemand()) {
                             importOnDemandImports.add(wrapper);
-                        }else {
+                        } else {
                             isViolation = true;
                         }
                     }
@@ -110,7 +110,7 @@ public class DuplicateImportsRule extends AbstractJavaRule {
                 singleTypeImports.add(wrapper);
             }
         }
-        if(isViolation){
+        if (isViolation) {
             addViolation(data, node, node.getImportedName());
         }
         return data;
