@@ -93,7 +93,7 @@ public class ImportWrapper {
         if (name == null) {
             return fullname.hashCode();
         }
-        return name.hashCode() + (isStaticDemand?1:0);
+        return name.hashCode() + (isStaticDemand ? 1 : 0);
     }
 
     public String getName() {
