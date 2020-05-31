@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -36,6 +37,9 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 || node.getNthParent(3) instanceof ASTForStatement) {
             return data;
         }
+
+        // create a new hashmap to store occurrence of not-recommending string concatenation operations
+        HashMap<String, Integer> map = new HashMap<>();
 
         for (NameOccurrence no : node.getUsages()) {
             Node name = no.getLocation();
@@ -78,13 +82,29 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                         ASTAssignmentOperator assignmentOperator = statement
                                 .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && assignmentOperator.isCompound()) {
-                            addViolation(data, assignmentOperator);
+                            // check whether is first time to break the rule
+                            if (!map.containsKey(astName.getNameDeclaration().getName())){
+                                map.put(astName.getNameDeclaration().getName(), 1);
+                            }
+                            else {
+                                map.put(astName.getNameDeclaration().getName(),
+                                        map.get(astName.getNameDeclaration().getName())+1);
+                                addViolation(data, assignmentOperator);
+                            }
                         }
                     } else if (astName.getImage().equals(name.getImage())) {
                         ASTAssignmentOperator assignmentOperator = statement
                                 .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
-                            addViolation(data, astName);
+                            // check whether is first time to break the rule
+                            if (!map.containsKey(astName.getNameDeclaration().getName())){
+                                map.put(astName.getNameDeclaration().getName(), 1);
+                            }
+                            else {
+                                map.put(astName.getNameDeclaration().getName(),
+                                        map.get(astName.getNameDeclaration().getName())+1);
+                                addViolation(data, assignmentOperator);
+                            }
                         }
                     }
                 }
