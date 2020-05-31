@@ -5,7 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForInit;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 
 public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRule {
     /**
@@ -17,6 +23,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
      */
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
+        //CS304 Issue link: https://github.com/pmd/pmd/issues/2207
         if (insideLoop(node) && fourthParentNotThrow(node) && fourthParentNotReturn(node)) {
             if (thirdParentNotASTExpression(node) && fourthParentNotASTStatementExpression(node)) {
                 addViolation(data, node);
@@ -31,13 +38,14 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
      * @return boolean This returns Whether the third parent of node is an ASTExpression.
      */
     public boolean thirdParentNotASTExpression(ASTAllocationExpression node) {
+        //CS304 Issue link: https://github.com/pmd/pmd/issues/2207
         if (node.getParent().getClass().toString().equals(
-                "class net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix") &&
-            node.getParent().getParent().getClass().toString().equals(
+                "class net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix")
+                && node.getParent().getParent().getClass().toString().equals(
                     "class net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression")) {
             return !node.getParent().getParent().getParent().getClass().toString().equals(
                     "class net.sourceforge.pmd.lang.java.ast.ASTExpression");
-        }else {
+        } else {
             return false;
         }
     }
@@ -48,6 +56,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
      * @return boolean This returns Whether the fourth parent of node is an ASTStatementExpression.
      */
     public boolean fourthParentNotASTStatementExpression(ASTAllocationExpression node) {
+        //CS304 Issue link: https://github.com/pmd/pmd/issues/2207
         return !node.getParent().getParent().getParent().getClass().toString().equals(
                 "class net.sourceforge.pmd.lang.java.ast.ASTStateExpression");
     }
