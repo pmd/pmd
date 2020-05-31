@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pmd-scala_${scalaVersion}</artifactId>
-    <name>PMD Scala</name>
-
+    <artifactId>pmd-scala_2.13</artifactId>
+    
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd</artifactId>
+        <artifactId>pmd-scala</artifactId>
         <version>6.25.0-SNAPSHOT</version>
     </parent>
-
+    
     <properties>
-        <scalaVersion>2.12</scalaVersion>
+        <scalaVersion>2.13</scalaVersion>
         <scalameta.version>4.2.0</scalameta.version>
     </properties>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -26,15 +27,15 @@
                     </delimiters>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
             </plugin>
-
+        
         </plugins>
     </build>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.scalameta</groupId>
@@ -45,7 +46,7 @@
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
         </dependency>
-
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -67,4 +68,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
 </project>

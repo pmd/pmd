@@ -88,7 +88,6 @@
         <kotlin.version>1.3.0</kotlin.version>
         <dokka.version>0.10.1</dokka.version>
 
-        <scala.version>2.12</scala.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.1</surefire.version>
@@ -1031,7 +1030,9 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
-        <module>pmd-scala</module>
+        <module>pmd-scala-modules/pmd-scala</module>
+        <module>pmd-scala-modules/pmd-scala_2.13</module>
+        <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-visualforce</module>
