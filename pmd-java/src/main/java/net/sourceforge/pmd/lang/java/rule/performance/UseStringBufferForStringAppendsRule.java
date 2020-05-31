@@ -31,6 +31,12 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
+    /**
+     * This method is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
+     * @param node This is the expression of part of java code to be checked.
+     * @param data This is the data to return.
+     * @return Object This returns the data passed in. If violation happens, violation is added to data.
+     */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node, String.class) || node.isArray()
@@ -76,8 +82,10 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 }
             }
             if (statement.getNumChildren() > 0 && statement.getChild(0) instanceof ASTPrimaryExpression) {
+//                System.out.println(name.toString());
                 ASTName astName = statement.getChild(0).getFirstDescendantOfType(ASTName.class);
                 if (astName != null) {
+//                    System.out.println(astName.getNameDeclaration().getName());
                     if (astName.equals(name)) {
                         ASTAssignmentOperator assignmentOperator = statement
                                 .getFirstDescendantOfType(ASTAssignmentOperator.class);
