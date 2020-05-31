@@ -115,4 +115,5 @@ public class DuplicateImportsRule extends AbstractJavaRule {
         }
         return data;
     }
+
 }
