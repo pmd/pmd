@@ -146,7 +146,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (firstMethodCallInChain.isNotBuilder()) {
                     List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
                     for (ASTPrimarySuffix suffix : suffixes) {
-                        result.add(new MethodCall(expression, suffix));
+                        if (!expression.hasDescendantOfType(ASTCastExpression.class)) {
+                            result.add(new MethodCall(expression, suffix));
+                        }
                     }
                 }
             }
@@ -175,7 +177,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
             List<ASTPrimarySuffix> result = new ArrayList<>();
             if (hasRealPrefix(expr)) {
-                List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class);
+                List<ASTPrimarySuffix> suffixes = expr.findChildrenOfType(ASTPrimarySuffix.class);
                 for (ASTPrimarySuffix suffix : suffixes) {
                     if (!suffix.isArguments()) {
                         result.add(suffix);
