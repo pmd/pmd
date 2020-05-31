@@ -1,6 +1,4 @@
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
+
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
@@ -12,6 +10,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -33,22 +32,20 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-/**
- * This rule can detect possible violations of the Law of Demeter. The Law of
- * Demeter is a simple rule, that says "only talk to friends". It helps to
- * reduce coupling between classes or objects.
- * <p>
- * See:
- * <ul>
- * <li>Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer.
- * From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October
- * 1999.</li>
- * <li>K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented
- * programs. Software, IEEE, 6(5):38–48, 1989.</li>
- * </ul>
+ /**
+ * This rule can detect possible violations of the Law of Demeter.
+ * It helps to reduce coupling between classes or objects.
+ * To deal with the problem that PMD treated the array indexing as a
+ *  violation to Law of Demeter, add a check to the suffix of the
+ * expression with arguments, checking the suffix is not array indexing.
  *
- * @since 5.0
+ * @version 6.24.0-snapshot
  *
+ * @param  node of the method declaration part
+ *
+ * @return the type of Law of Demeter voilation.
+ *
+ * @see #visit(ASTMethodDeclaration, Object)
  */
 public class LawOfDemeterRule extends AbstractJavaRule {
     private static final String REASON_METHOD_CHAIN_CALLS = "method chain calls";
@@ -84,7 +81,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
      * Collects the information of one identified method call. The method call
      * might be a violation of the Law of Demeter or not.
      */
-    private static class MethodCall {
+    public static class MethodCall {
         private static final String METHOD_CALL_CHAIN = "result from previous method call";
         private static final String SIMPLE_ASSIGNMENT_OPERATOR = "=";
         private static final String SCOPE_METHOD_CHAINING = "method-chaining";
@@ -110,7 +107,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
          * Create a new method call for the prefix expression part of the
          * primary expression.
          */
-        private MethodCall(ASTPrimaryExpression expression, ASTPrimaryPrefix prefix) {
+        MethodCall(ASTPrimaryExpression expression, ASTPrimaryPrefix prefix) {
             this.expression = expression;
             analyze(prefix);
             determineType();
@@ -121,7 +118,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
          * Create a new method call for the given suffix expression part of the
          * primary expression. This is used for method chains.
          */
-        private MethodCall(ASTPrimaryExpression expression, ASTPrimarySuffix suffix) {
+         MethodCall(ASTPrimaryExpression expression, ASTPrimarySuffix suffix) {
             this.expression = expression;
             analyze(suffix);
             determineType();
@@ -146,7 +143,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 if (firstMethodCallInChain.isNotBuilder()) {
                     List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
                     for (ASTPrimarySuffix suffix : suffixes) {
-                        result.add(new MethodCall(expression, suffix));
+                        if(!suffix.isArrayDereference()){
+                            result.add(new MethodCall(expression, suffix));
+                        }
                     }
                 }
             }
@@ -166,19 +165,34 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             return true;
         }
 
-        private boolean isNotBuilder() {
+        boolean isNotBuilder() {
             return baseType != StringBuffer.class && baseType != StringBuilder.class
                     && !"StringBuilder".equals(baseTypeName) && !"StringBuffer".equals(baseTypeName)
                     && !methodName.endsWith("Builder");
         }
 
-        private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
-            List<ASTPrimarySuffix> result = new ArrayList<>();
+
+        /**
+         * Returns the children suffixes that is not arguments.
+         *
+         * @param expr expression that is be judged.
+         
+         * @return the suffix which is the child of expression without Argument.
+         */
+        private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(final ASTPrimaryExpression expr) {
+            final List<ASTPrimarySuffix> result = new ArrayList<>();
             if (hasRealPrefix(expr)) {
-                List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class);
-                for (ASTPrimarySuffix suffix : suffixes) {
-                    if (!suffix.isArguments()) {
-                        result.add(suffix);
+                final List<ASTPrimarySuffix> suffixes = new ArrayList<>();
+                Node child;
+                for (int i = 0; i < expr.getNumChildren(); i++) {
+                    child = expr.getChild(i);
+                    if (child instanceof ASTPrimarySuffix) {
+                        suffixes.add((ASTPrimarySuffix) child);
+                    }
+                }
+                for (final ASTPrimarySuffix suffixx : suffixes) {
+                    if (!suffixx.isArguments()) {
+                        result.add(suffixx);
                     }
                 }
             }
@@ -189,15 +203,25 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             ASTPrimaryPrefix prefix = expr.getFirstDescendantOfType(ASTPrimaryPrefix.class);
             return !prefix.usesThisModifier() && !prefix.usesSuperModifier();
         }
-
+        /**
+         * Adds a judgment to the expression suffix
+         * excluding the parameter suffixes whose suffixes are array references
+         *
+         * @param expr expression that is be judged.
+         *
+         * @return the boolean value of  the suffix of expression with Argument or not.
+         */
         private static boolean hasSuffixesWithArguments(ASTPrimaryExpression expr) {
             boolean result = false;
             if (hasRealPrefix(expr)) {
                 List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class);
                 for (ASTPrimarySuffix suffix : suffixes) {
                     if (suffix.isArguments()) {
-                        result = true;
-                        break;
+                        if(!suffix.isArrayDereference()){
+                            result = true;
+                            break;
+                        }
+
                     }
                 }
             }
@@ -423,7 +447,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
      * allocated locally (new constructor call). The class is comparable, so
      * that the last assignment can be determined.
      */
-    private static class Assignment implements Comparable<Assignment> {
+    static class Assignment implements Comparable<Assignment> {
         private int line;
         private boolean allocation;
         private boolean iterator;
