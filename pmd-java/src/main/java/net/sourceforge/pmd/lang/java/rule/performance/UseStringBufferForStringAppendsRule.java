@@ -44,6 +44,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             return data;
         }
 
+        //CS304 Issue link: https://github.com/pmd/pmd/issues/1736
         // create a new hashmap to store occurrence of not-recommending string concatenation operations
         HashMap<String, Integer> map = new HashMap<>();
 
@@ -82,21 +83,19 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 }
             }
             if (statement.getNumChildren() > 0 && statement.getChild(0) instanceof ASTPrimaryExpression) {
-//                System.out.println(name.toString());
                 ASTName astName = statement.getChild(0).getFirstDescendantOfType(ASTName.class);
                 if (astName != null) {
-//                    System.out.println(astName.getNameDeclaration().getName());
                     if (astName.equals(name)) {
                         ASTAssignmentOperator assignmentOperator = statement
                                 .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && assignmentOperator.isCompound()) {
+                            //CS304 Issue link: https://github.com/pmd/pmd/issues/1736
                             // check whether is first time to break the rule
-                            if (!map.containsKey(astName.getNameDeclaration().getName())){
+                            if (!map.containsKey(astName.getNameDeclaration().getName())) {
                                 map.put(astName.getNameDeclaration().getName(), 1);
-                            }
-                            else {
+                            } else {
                                 map.put(astName.getNameDeclaration().getName(),
-                                        map.get(astName.getNameDeclaration().getName())+1);
+                                        map.get(astName.getNameDeclaration().getName()) + 1);
                                 addViolation(data, assignmentOperator);
                             }
                         }
@@ -104,13 +103,13 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                         ASTAssignmentOperator assignmentOperator = statement
                                 .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
+                            //CS304 Issue link: https://github.com/pmd/pmd/issues/1736
                             // check whether is first time to break the rule
-                            if (!map.containsKey(astName.getNameDeclaration().getName())){
+                            if (!map.containsKey(astName.getNameDeclaration().getName())) {
                                 map.put(astName.getNameDeclaration().getName(), 1);
-                            }
-                            else {
+                            } else {
                                 map.put(astName.getNameDeclaration().getName(),
-                                        map.get(astName.getNameDeclaration().getName())+1);
+                                        map.get(astName.getNameDeclaration().getName()) + 1);
                                 addViolation(data, assignmentOperator);
                             }
                         }
