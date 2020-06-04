@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java
+    *   [#2549](https://github.com/pmd/pmd/issues/2549): \[java] Auxclasspath in PMD CLI does not support relative file path
+
 ### API Changes
 
 ### External Contributions
