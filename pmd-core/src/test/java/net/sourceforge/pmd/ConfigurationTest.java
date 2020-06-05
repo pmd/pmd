@@ -82,7 +82,9 @@ public class ConfigurationTest {
 
     @Test
     public void auxClasspathWithRelativeFile() throws IOException, URISyntaxException {
-        String currentWorkingDirectory = new File("").getAbsolutePath() + "/";
+        final String FILE_SCHEME = "file";
+
+        String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependClasspath("file:" + relativeFilePath);
@@ -92,13 +94,14 @@ public class ConfigurationTest {
             uris[i] = urls[i].toURI();
         }
         URI[] expectedUris = new URI[] {
-            URI.create("file:" + currentWorkingDirectory + "lib1.jar"),
-            URI.create("file:" + currentWorkingDirectory + "other/directory/lib2.jar"),
-            URI.create("file:/home/jondoe/libs/lib3.jar"),
-            URI.create("file:" + currentWorkingDirectory + "classes"),
-            URI.create("file:" + currentWorkingDirectory + "classes2"),
-            URI.create("file:/home/jondoe/classes"),
-            URI.create("file:" + currentWorkingDirectory),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
         };
         Assert.assertArrayEquals(expectedUris, uris);
     }

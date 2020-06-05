@@ -9,3 +9,5 @@ classes2/
 /home/jondoe/classes
 # relative current directory
 .
+# a test with a space in the uri
+relative source dir/bar
