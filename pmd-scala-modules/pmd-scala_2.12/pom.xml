@@ -7,70 +7,20 @@
 
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd</artifactId>
+        <artifactId>pmd-scala-common</artifactId>
         <version>6.25.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+        <relativePath>../pmd-scala-common</relativePath>
     </parent>
 
     <properties>
         <scalaVersion>2.12</scalaVersion>
-        <scalameta.version>4.2.0</scalameta.version>
     </properties>
 
     <build>
-        <sourceDirectory>../pmd-scala-common/src/main/java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>../pmd-scala-common/src/main/resources</directory>
-            </resource>
-        </resources>
-        <testSourceDirectory>../pmd-scala-common/src/test/java</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <directory>../pmd-scala-common/src/test/resources</directory>
-            </testResource>
-        </testResources>
-
         <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                    <delimiters>
-                        <delimiter>${*}</delimiter>
-                    </delimiters>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>../pmd-scala-common/src/main/kotlin</sourceDir>
-                                <sourceDir>../pmd-scala-common/src/main/java</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>../pmd-scala-common/src/test/kotlin</sourceDir>
-                                <sourceDir>../pmd-scala-common/src/test/java</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -80,31 +30,6 @@
             <groupId>org.scalameta</groupId>
             <artifactId>scalameta_${scalaVersion}</artifactId>
             <version>${scalameta.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-lang-test</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
