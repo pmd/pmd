@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cpd.token;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
@@ -14,13 +17,20 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  */
 public class AntlrToken implements GenericToken {
 
+    private static final Pattern NEWLINE_MATCHER = Pattern.compile("\\R");
+
     private final Token token;
     private final AntlrToken previousComment;
+
+    private String text;
+
+    private int endline;
+    private int endcolumn;
 
     /**
      * Constructor
      *
-     * @param token The antlr token implementation
+     * @param token           The antlr token implementation
      * @param previousComment The previous comment
      */
     public AntlrToken(final Token token, final AntlrToken previousComment) {
@@ -41,7 +51,10 @@ public class AntlrToken implements GenericToken {
 
     @Override
     public String getImage() {
-        return token.getText();
+        if (text == null) {
+            text = token.getText();
+        }
+        return text;
     }
 
     @Override
@@ -50,18 +63,63 @@ public class AntlrToken implements GenericToken {
     }
 
     @Override
-    public int getEndLine() {
-        return token.getLine();
+    public int getBeginColumn() {
+        int charPos = token.getCharPositionInLine() + 1;
+        assert charPos > 0;
+        return charPos;
     }
 
+
     @Override
-    public int getBeginColumn() {
-        return token.getCharPositionInLine();
+    public int getEndLine() {
+        if (endline == 0) {
+            computeEndCoords();
+            assert endline > 0;
+        }
+        return endline;
     }
 
     @Override
     public int getEndColumn() {
-        return token.getCharPositionInLine() + token.getStopIndex() - token.getStartIndex();
+        if (endcolumn == 0) {
+            computeEndCoords();
+            assert endcolumn > 0;
+        }
+        return endcolumn;
+    }
+
+    private void computeEndCoords() {
+        String image = getImage();
+        if (image.length() == 1) {
+            // fast path for single char tokens
+            if (image.charAt(0) != '\n') {
+                this.endline = getBeginLine();
+                this.endcolumn = getBeginColumn();
+            } else {
+                this.endline = getBeginLine() + 1;
+                this.endcolumn = 1;
+            }
+            return;
+        }
+
+        Matcher matcher = NEWLINE_MATCHER.matcher(image);
+        int numNls = 0;
+        int lastOffset = 0;
+        while (matcher.find()) {
+            // continue
+            numNls++;
+            lastOffset = matcher.end();
+        }
+
+        if (numNls == 0) {
+            // single line token
+            this.endline = this.getBeginLine();
+            int length = 1 + token.getStopIndex() - token.getStartIndex();
+            this.endcolumn = token.getCharPositionInLine() + length;
+        } else {
+            this.endline = this.getBeginLine() + numNls;
+            this.endcolumn = image.length() - lastOffset;
+        }
     }
 
     public int getKind() {

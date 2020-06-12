@@ -7,12 +7,12 @@ L2
     [var]                                   5         7
     [s1]                                    9         10
     [=]                                     12        12
-    ['''\nYou can create\nmulti-line st[    14        69
+    ['''\nYou can create\nmulti-line st[    14        3
 L7
     [var]                                   5         7
     [s2]                                    9         10
     [=]                                     12        12
-    ["""This is also a\nmulti-line stri[    14        52
+    ["""This is also a\nmulti-line stri[    14        21
 L9
     [}]                                     1         1
 EOF
