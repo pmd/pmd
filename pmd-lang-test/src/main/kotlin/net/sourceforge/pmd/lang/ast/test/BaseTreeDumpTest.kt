@@ -51,7 +51,7 @@ abstract class BaseTreeDumpTest(
 
     // Outputting a path makes for better error messages
     private val srcTestResources = let {
-        // this is set from maven surefire
+        // this is set from maven surefire - see parent pom.xml configuration for surefire (systemPropertyVariables)
         System.getProperty("mvn.project.src.test.resources")
                 ?.let { Paths.get(it).toAbsolutePath() }
                 // that's for when the tests are run inside the IDE
