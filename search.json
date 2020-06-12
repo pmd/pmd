@@ -1617,6 +1617,15 @@
 ,
 
 {
+"title": "UnnecessaryCast (Java, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryCast",
+"url": "pmd_rules_java_codestyle.html#unnecessarycast",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "UnnecessaryConstructor (Java, Code Style)",
 "tags": "",
 "keywords": "UnnecessaryConstructor",
