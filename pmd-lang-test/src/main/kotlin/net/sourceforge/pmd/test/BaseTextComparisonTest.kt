@@ -45,7 +45,7 @@ abstract class BaseTextComparisonTest {
 
         val expected = expectedFile.readText()
 
-        assertEquals(expected.normalize(), actual.normalize(), "Tree dump comparison failed, see the reference: $expectedFile")
+        assertEquals(expected.normalize(), actual.normalize(), "File comparison failed, see the reference: $expectedFile")
     }
 
     // Outputting a path makes for better error messages

@@ -28,7 +28,7 @@ abstract class CpdTextComparisonTest(
         get() = javaClass
 
     override val resourcePrefix: String
-        get() = "cpdData"
+        get() = "testData"
 
     override fun transformTextContent(sourceText: String): String {
         val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText))
@@ -45,7 +45,12 @@ abstract class CpdTextComparisonTest(
 
         for (token in tokens.iterator()) {
 
-            if (curLine != token.beginLine && token !== TokenEntry.EOF) {
+            if (token === TokenEntry.EOF) {
+                append("EOF").appendln()
+                continue
+            }
+
+            if (curLine != token.beginLine) {
                 curLine = token.beginLine
                 append('L').append(curLine).appendln()
             }

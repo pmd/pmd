@@ -10,4 +10,4 @@ L2
     ["Escaping\\ spaces\\ should work"]     33        63
 L3
     [}]                                     1         1
-    [EOF]                                   -1        -1
+EOF
