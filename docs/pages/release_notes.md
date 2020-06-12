@@ -21,6 +21,9 @@ This is useful to find duplicated sections in XML files.
 
 #### New Rules
 
+*   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
+    finds casts that are unnecessary while accessing collection elements.
+
 *   The new Java Rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %} (`java-bestpractices`)
     find String literals, that are used in comparisons and are not positioned first. Using the String literal
     as the receiver of e.g. `equals` helps to avoid NullPointerExceptions.
