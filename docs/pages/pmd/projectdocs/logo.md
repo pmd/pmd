@@ -10,7 +10,6 @@ folder: pmd/projectdocs
 
 The following PMD Logos and Icons are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
 
-*   [PMD.ai](images/logo/PMD.ai)
 *   [PMD.svg](images/logo/PMD.svg)
 *   [PMD.png](images/logo/PMD.png)
 *   [Logo (300px, transparent)](images/logo/pmd-logo-300px.png)
