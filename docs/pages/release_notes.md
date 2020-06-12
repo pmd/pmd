@@ -43,6 +43,11 @@ The coordinates for the new modules are:
 
 The command line version of PMD continues to use **scala 2.13**.
 
+#### New Rules
+
+*   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
+    finds casts that are unnecessary while accessing collection elements.
+
 ### Fixed Issues
 
 *   c#
