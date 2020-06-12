@@ -136,4 +136,22 @@ public class UnnecessaryCastSample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Necessary Map Cast (nested generics) false-positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class MapCasts {
+    private final Map<Class<?>, Map<String, ?>> resourceCaches = new ConcurrentHashMap<>(4);
+
+    @SuppressWarnings("unchecked")
+    public <T> Map<String, T> getResourceCache(Class<T> valueType) {
+        return (Map<String, T>) this.resourceCaches.computeIfAbsent(valueType, key -> new ConcurrentHashMap<>());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
@@ -94,7 +95,9 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
             ASTCastExpression castExpression = findCastExpression(no.getLocation());
             if (castExpression != null) {
                 ASTClassOrInterfaceType castTarget = castExpression.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (castTarget != null && cit.getImage().equals(castTarget.getImage())) {
+                if (castTarget != null
+                        && cit.getImage().equals(castTarget.getImage())
+                        && !castTarget.hasDescendantOfType(ASTTypeArgument.class)) {
                     addViolation(data, castExpression);
                 }
             }
