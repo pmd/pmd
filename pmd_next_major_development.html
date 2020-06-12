@@ -1403,16 +1403,69 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <p>We’re excited to bring you the next major version of PMD! Here are the major features and changes we’re working on.
-To give us feedback or to suggest a new feature, drop us a line on <a href="https://gitter.im/pmd/pmd">Gitter</a>!</p>
+  <p>We’re excited to bring you the next major version of PMD!
+Here is a summary of what is planned for PMD 7.</p>
 
-<h2 id="new-features">New Features</h2>
+<p>To give us feedback or to suggest a new feature, drop us a line on <a href="https://gitter.im/pmd/pmd">Gitter</a>!</p>
 
-<p>TODO</p>
+<h2 id="summary">Summary</h2>
 
-<h2 id="java-grammar-changes">Java grammar changes</h2>
+<h3 id="new-logo">New Logo</h3>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Current plans are listed <a href="https://github.com/pmd/pmd/labels/in%3Aast">here</a> and in particular <a href="https://github.com/pmd/pmd/issues/1019">here</a></div>
+<p>We decided it’s time to have a modernized logo and get rid of the gun. This allows to include
+the logo in anywhere without offense.</p>
+
+<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/1931">Integrate new PMD logo #1931</a></p>
+
+<h3 id="api">API</h3>
+
+<p>The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
+have a clear separation between a well-defined API and the implementation, which is internal.
+This should help us in future development. This however entails some incompatibilities and
+deprecations, see also the sections <a href="#new-api-support-guidelines">New API support guidelines</a> and
+[Planned API removals](#planned-api-removals] below.</p>
+
+<h3 id="full-antlr-support">Full Antlr Support</h3>
+
+<p>PMD 6 only supports JavaCC based grammars, but with <a href="https://www.antlr.org/">Antlr</a> parsers
+can be generated as well. PMD 7 adds full support for grammars written in Antlr, which allows
+to leverage existing grammars.</p>
+
+<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/2499">Support for ANTLR based grammars with Swift as an example language #2499</a></p>
+
+<h3 id="documentation">Documentation</h3>
+
+<p>We have quite some ideas how we want to improve the documentation. The goal is, that the documentation is
+up to date and nearly complete. One big task is, how the built-in rules are presented, so that users
+can easier see, what exactly is available and decide, which rules are useful for the project at hand.</p>
+
+<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/1139">Documentations improvements tracker #1139</a></p>
+
+<h3 id="xpath">XPath</h3>
+
+<p>PMD 6 supports XPath 1.0 via the Jaxen library. This library is old and unmaintained creating some problems
+(one of which is duplicated classes in the package <code class="highlighter-rouge">org.w3c.dom</code> which is a Java API actually).
+Therefore XPath 1.0 support will be dropped and we upgrade our XPath 2.0 implementation with Saxon moving
+on to Saxon HE. This will eventually add support in PMD for XPath 3.1.</p>
+
+<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/2523">XPath Improvements for PMD 7 #2523</a></p>
+
+<h3 id="java">Java</h3>
+
+<p>Like the main PMD API, the Java AST has been growing over time and the grammar doesn’t support
+all edge cases (e.g. annotation are not supported everywhere). The goal is to simplify the AST by reducing
+unnecessary nodes and abstractions and fix the parsing issues.
+This helps in the end to provide a better type resolution implementation, but changing the AST is a breaking
+API change.</p>
+
+<p>Some first results of the Java AST changes are for now documented in the Wiki:
+<a href="https://github.com/pmd/pmd/wiki/Java_clean_changes">Java clean changes</a>.</p>
+
+<h3 id="miscellaneous">Miscellaneous</h3>
+
+<p>There are also some small improvements, refactoring and internal tasks that are planned for PMD 7.</p>
+
+<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/2524">PMD 7 Miscellaneous Tasks #2524</a></p>
 
 <h2 id="new-api-support-guidelines">New API support guidelines</h2>
 
@@ -1541,7 +1594,7 @@ Please look at the package documentation to find out the full list of deprecatio
   <li>Apex: <strong><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.apex.ast</code></a></strong></li>
   <li>Javascript: <strong><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.ecmascript.ast</code></a></strong></li>
   <li>PL/SQL: <strong><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.plsql.ast</code></a></strong></li>
-  <li>Scala: <strong><a href="https://docs.pmd-code.org/apidocs/pmd-scala/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.scala.ast</code></a></strong></li>
+  <li>Scala: <strong><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.scala.ast</code></a></strong></li>
   <li>Visualforce: <strong><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vf.ast</code></a></strong></li>
 </ul>
 
@@ -2283,7 +2336,7 @@ not affected by this change. The following classes have been deprecated and will
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code>PythonLanguageModule</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonParser.html#"><code>PythonParser</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-ruby/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code>RubyLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code>ScalaLanguageModule</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code>ScalaLanguageModule</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#"><code>SwiftLanguageModule</code></a></li>
     </ul>
   </li>
@@ -2480,8 +2533,26 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general
 and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a> (ruleset <code class="highlighter-rouge">java-bestpractices</code>)
 have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
   </li>
+  <li>
+    <p>The Java rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable"><code class="highlighter-rouge">AvoidFinalLocalVariable</code></a> (<code class="highlighter-rouge">java-codestyle</code>) has been deprecated
+and will be removed with PMD 7.0.0. The rule is controversial and also contradicts other existing
+rules such as <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
+constants in a scope smaller than the class, then the rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="highlighter-rouge">AvoidDuplicateLiterals</code></a>
+should be used instead.</p>
+  </li>
+  <li>
+    <p>The Apex rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) has been deprecated and
+will be removed with PMD 7.0.0. The rule is replaced by the more general rules
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>,
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>, and
+<a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="highlighter-rouge">PropertyNamingConventions</code></a>.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="highlighter-rouge">LoggerIsNotStaticFinal</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been deprecated
+and will be removed with PMD 7.0.0. The rule is replaced by <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger"><code class="highlighter-rouge">ProperLogger</code></a>.</p>
+  </li>
 </ul>
-
 
 
     <div class="tags">
@@ -2498,7 +2569,7 @@ have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpracti
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 5, 2020 <br />
+ Site last generated: Jun 12, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
