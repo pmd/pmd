@@ -17,7 +17,9 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  */
 public class AntlrToken implements GenericToken {
 
-    private static final Pattern NEWLINE_MATCHER = Pattern.compile("\\R");
+    private static final Pattern NEWLINE_PATTERN =
+        // \R on java 8+
+        Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
     private final Token token;
     private final AntlrToken previousComment;
@@ -102,7 +104,7 @@ public class AntlrToken implements GenericToken {
             return;
         }
 
-        Matcher matcher = NEWLINE_MATCHER.matcher(image);
+        Matcher matcher = NEWLINE_PATTERN.matcher(image);
         int numNls = 0;
         int lastOffset = 0;
         while (matcher.find()) {
