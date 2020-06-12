@@ -77,7 +77,7 @@ public class AntlrToken implements GenericToken {
     }
 
     public boolean isHidden() {
-        return token.getChannel() == Lexer.HIDDEN;
+        return !isDefault();
     }
 
     public boolean isDefault() {
