@@ -36,7 +36,8 @@ abstract class BaseTextComparisonTest {
             "Source file $sourceFile is missing"
         }
 
-        val actual = transformTextContent(sourceFile.readText()) // UTF-8
+        val sourceText = sourceFile.readText(Charsets.UTF_8).normalize()
+        val actual = transformTextContent(sourceText)
 
         if (!expectedFile.exists()) {
             expectedFile.writeText(actual)
