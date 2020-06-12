@@ -1,221 +1,207 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-	<test-code>
-		<description>Schedulable class doesn't need check for open redirect
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Schedulable class doesn't need check for open redirect</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo implements Queueable {
-	public PageReference redirect() {
-	    return new PageReference(test1 + 'something later');
-	}
+    public PageReference redirect() {
+        return new PageReference(test1 + 'something later');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference open redirect with unsafe variable
-			concatenation
-		</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference open redirect with unsafe variable concatenation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public PageReference redirect() {
-	    return new PageReference(test1 + 'something later');
-	}
+    public PageReference redirect() {
+        return new PageReference(test1 + 'something later');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference open redirect with variable</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference open redirect with variable</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public PageReference redirect() {
-		return new PageReference(test);
-	}
+    public PageReference redirect() {
+        return new PageReference(test);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference open redirect with variable that comes from
-			a literal
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference open redirect with variable that comes from a literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public PageReference redirect() {
-		String test = 'hardcoded value here'; 
-		return new PageReference(test);
-	}
+    public PageReference redirect() {
+        String test = 'hardcoded value here';
+        return new PageReference(test);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference open redirect with variable concatenation
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference open redirect with variable concatenation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void redirect() {
-	    PageReference newTestPage = new PageReference('https://www.apex.com/myVFPage' + test);
-	}
+    public void redirect() {
+        PageReference newTestPage = new PageReference('https://www.apex.com/myVFPage' + test);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description>PageReference open redirect with variable concatenation
-			obtained from a literal
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference open redirect with variable concatenation obtained from a literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public void redirect() {
-		String test = 'hardcoded';
-	    PageReference newTestPage = new PageReference(test + 'something later');
-	}
+    public void redirect() {
+        String test = 'hardcoded';
+        PageReference newTestPage = new PageReference(test + 'something later');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-
-	<test-code>
-		<description>PageReference redirect to literal</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference redirect to literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	public PageReference redirect() {
-	    return new PageReference('/apex/myVFPage');
-	}
+    public PageReference redirect() {
+        return new PageReference('/apex/myVFPage');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference redirect in test class should be ignored
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference redirect in test class should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 @isTest
 public class Foo {
-	public PageReference redirect() {
-	    return new PageReference(test);
-	}
+    public PageReference redirect() {
+        return new PageReference(test);
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference redirect in test method should be ignored
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference redirect in test method should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	static testMethod void redirect() {
-	    PageReference pr = new PageReference(test1 + 'something later');
-	}
+    static testMethod void redirect() {
+        PageReference pr = new PageReference(test1 + 'something later');
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>PageReference to a literal field</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>PageReference to a literal field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	String test1 = 'string';
+    String test1 = 'string';
     PageReference pr = new PageReference(test1);
 
-	static PageReference redirect() {
-	    return pr;
-	}
+    static PageReference redirect() {
+        return pr;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe pageReference as a field</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe pageReference as a field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	String test1 = '';
+    String test1 = '';
     PageReference pr = new PageReference('/' + test1);
 
-	static PageReference redirect() {
-	    return pr;
-	}
+    static PageReference redirect() {
+        return pr;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Unsafe pageReference object</description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Unsafe pageReference object</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	static PageReference redirect(String otherStuff) {
-		String test1 = otherStuff + '/';
-    	PageReference pr = new PageReference(test1);
-	    return pr;
-	}
+    static PageReference redirect(String otherStuff) {
+        String test1 = otherStuff + '/';
+        PageReference pr = new PageReference(test1);
+        return pr;
+    }
 }
-		]]></code>
-	</test-code>
+        ]]></code>
+    </test-code>
 
-	<test-code>
-		<description>Safe pageReference object</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>Safe pageReference object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	static PageReference redirect(String otherStuff) {
-		String test1 = '/' + otherStuff;
-    	PageReference pr = new PageReference(test1);
-	    return pr;
-	}
+    static PageReference redirect(String otherStuff) {
+        String test1 = '/' + otherStuff;
+        PageReference pr = new PageReference(test1);
+        return pr;
+    }
 }
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Safe pageReference object concatenation</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe pageReference object concatenation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
 
-	static PageReference redirect(String otherStuff) {
-		String test1;
-		test1 = '/' + otherStuff;
-    	PageReference pr = new PageReference(test1);
-	    return pr;
-	}
+    static PageReference redirect(String otherStuff) {
+        String test1;
+        test1 = '/' + otherStuff;
+        PageReference pr = new PageReference(test1);
+        return pr;
+    }
 }
-		]]></code>
-	</test-code>
-	<test-code>
-		<description>Static link pageReference object</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static link pageReference object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
-	private static final String EMAILAUTHOR_URL = '/_ui/core/email/author/EmailAuthor';
-	
-	static PageReference redirect() {
-    	return new PageReference(EMAILAUTHOR_URL);
-	}
+    private static final String EMAILAUTHOR_URL = '/_ui/core/email/author/EmailAuthor';
+
+    static PageReference redirect() {
+        return new PageReference(EMAILAUTHOR_URL);
+    }
 }
-		]]></code>
-	</test-code>
-
-
-
+        ]]></code>
+    </test-code>
 </test-data>

@@ -19,6 +19,14 @@ language: Java
 
 Just some description of a deprecated rule.
 
+RuleTag with quotes: Use {% rule "RenamedRule" %} instead.
+
+RuleTag without quotes: Use {% rule RenamedRule %} instead.
+
+RuleTag with full category and quotes: Use {% rule "java/sample/RenamedRule" %} instead.
+
+RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRule %} instead.
+
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ForStatement

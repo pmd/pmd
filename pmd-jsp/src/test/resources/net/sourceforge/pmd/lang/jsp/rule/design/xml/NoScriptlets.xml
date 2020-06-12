@@ -3,31 +3,31 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Two scriptlets.
-     ]]></description>
+        <description>Two scriptlets.</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 <HTML>
-<HEAD>
-<% response.setHeader("Pragma", "No-cache"); %>
-</HEAD>
-<BODY>
-	<jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
-</BODY>
+    <HEAD>
+        <% response.setHeader("Pragma", "No-cache"); %>
+    </HEAD>
+    <BODY>
+        <jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
+    </BODY>
 </HTML>
-     ]]></code>
-        <source-type>jsp</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-No scriptlets.
-     ]]></description>
+        <description>No scriptlets.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-<html><body><p>text</p></body></html>
-     ]]></code>
-        <source-type>jsp</source-type>
+<html>
+    <body>
+        <p>text</p>
+    </body>
+</html>
+        ]]></code>
     </test-code>
 </test-data>

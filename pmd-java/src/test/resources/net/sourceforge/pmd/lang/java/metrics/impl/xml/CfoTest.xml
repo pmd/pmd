@@ -36,8 +36,7 @@ public class Foo {
         }
     }
 }
-     ]]></code-fragment>
-
+    ]]></code-fragment>
 
     <test-code>
         <description>Full example with default options</description>
@@ -75,8 +74,8 @@ public class Foo {
             <message>'Foo' has value 0 highest 0.</message>
         </expected-messages>
         <code><![CDATA[
-        public class Foo {
-        }
+public class Foo {
+}
         ]]></code>
     </test-code>
 
@@ -93,5 +92,4 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
 </test-data>

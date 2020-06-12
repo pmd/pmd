@@ -3,40 +3,34 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Ok
-     ]]></description>
+        <description>Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 if (true) {
-   x=2;
+    x=2;
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad
-     ]]></description>
+        <description>Bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 if (true)
-   x=2;
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+    x=2;
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, nested
-     ]]></description>
+        <description>Bad, nested</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 if (true) {
-   if (true)
-      bar();
+    if (true)
+        bar();
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
 </test-data>

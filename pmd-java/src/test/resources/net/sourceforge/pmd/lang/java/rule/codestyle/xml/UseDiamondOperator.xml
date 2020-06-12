@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-   <test-code>
-      <description>Use Diamond</description>
-      <expected-problems>2</expected-problems>
-      <expected-linenumbers>6,11</expected-linenumbers>
-      <code><![CDATA[
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Use Diamond</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
+        <code><![CDATA[
 import java.util.ArrayList;
 import java.util.List;
 public class Foo {
@@ -21,12 +23,12 @@ public class Foo {
     }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
-   <test-code>
-      <description>False positive cases: anonymous classes, methods calls</description>
-      <expected-problems>0</expected-problems>
-      <code><![CDATA[
+    <test-code>
+        <description>False positive cases: anonymous classes, methods calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 public class Foo {
     public void foo() {
         Collections.sort(files, new Comparator<DataSource>() {
@@ -58,13 +60,13 @@ public class Foo {
     }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
-   <test-code>
-      <description>#1624[java] UseDiamondOperator doesn't work with var</description>
-      <expected-problems>1</expected-problems>
-      <expected-linenumbers>6</expected-linenumbers>
-      <code><![CDATA[
+    <test-code>
+        <description>#1624[java] UseDiamondOperator doesn't work with var</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
 import java.util.ArrayList;
 public class Buzz {
     public void buzz() {
@@ -74,13 +76,13 @@ public class Buzz {
     }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
-   <test-code>
-      <description>Multiple initializations in a single declaration</description>
-      <expected-problems>1</expected-problems>
-      <expected-linenumbers>6</expected-linenumbers>
-      <code><![CDATA[
+    <test-code>
+        <description>Multiple initializations in a single declaration</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
 import java.util.ArrayList;
 import java.util.List;
 public class Buzz {
@@ -91,50 +93,50 @@ public class Buzz {
     }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
-   <test-code>
-      <description>#1723 FP with var inside lambda (declaration)</description>
-      <expected-problems>0</expected-problems>
-      <code><![CDATA[
+    <test-code>
+        <description>#1723 FP with var inside lambda (declaration)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 class Foo {
-  {
-    Runnable someAction = () -> {
-  	  var foo = new ArrayList<String>(5); // ok
-  		System.err.println(foo);
-    };
-  }
+    {
+        Runnable someAction = () -> {
+            var foo = new ArrayList<String>(5); // ok
+            System.err.println(foo);
+        };
+    }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
-   <test-code>
-      <description>#1723 FP with var inside lambda (assignment)</description>
-      <expected-problems>0</expected-problems>
-      <code><![CDATA[
+    <test-code>
+        <description>#1723 FP with var inside lambda (assignment)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 class Foo {
-  {
-    Runnable someAction;
-    someAction = () -> {
-      var foo = new ArrayList<String>(5); // ok
-      System.err.println(foo);
-    };
-  }
+    {
+        Runnable someAction;
+        someAction = () -> {
+            var foo = new ArrayList<String>(5); // ok
+            System.err.println(foo);
+        };
+    }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
-   <test-code>
-      <description>FP with array creation</description>
-      <expected-problems>0</expected-problems>
-      <code><![CDATA[
+    <test-code>
+        <description>FP with array creation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 class Foo {
-  {
-    Class<?> c = new Class<?>[0];
-  }
+    {
+        Class<?> c = new Class<?>[0];
+    }
 }
         ]]></code>
-   </test-code>
+    </test-code>
 
     <!-- These tests depend on the Java version used -->
     <!-- For now we keep the old behaviour of ignoring type
@@ -143,10 +145,10 @@ class Foo {
      in PMD 7. -->
 
     <test-code regressionTest="false">
-      <description>(J7) Version sensitive tests</description>
-      <expected-problems>1</expected-problems>
-      <expected-linenumbers>6</expected-linenumbers>
-      <code><![CDATA[
+        <description>(J7) Version sensitive tests</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
 public class Foo {
     private WeakReference<Class<?>> typeReference;
     public void foo() {
@@ -159,14 +161,13 @@ public class Foo {
     }
 }
         ]]></code>
-      <source-type>java 1.7</source-type>
-   </test-code>
+    </test-code>
 
-   <test-code regressionTest="false">
-      <description>(J8) Version sensitive tests</description>
-      <expected-problems>2</expected-problems>
-      <expected-linenumbers>4,6</expected-linenumbers>
-      <code><![CDATA[
+    <test-code regressionTest="false">
+        <description>(J8) Version sensitive tests</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <code><![CDATA[
 public class Foo {
     private WeakReference<Class<?>> typeReference;
     public void foo() {
@@ -176,7 +177,5 @@ public class Foo {
     }
 }
         ]]></code>
-      <source-type>java 1.8</source-type>
-   </test-code>
-
+    </test-code>
 </test-data>

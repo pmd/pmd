@@ -1,11 +1,12 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.migrating;
+package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -13,10 +14,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 /**
  * This is a rule, that detects unnecessary casts when using Java 1.5 generics
@@ -34,7 +37,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *      "http://sourceforge.net/p/pmd/discussion/188192/thread/276fd6f0">Java 5
  *      rules: Unnecessary casts/Iterators</a>
  */
-// TODO This is not referenced by any RuleSet?
 public class UnnecessaryCastRule extends AbstractJavaRule {
 
     private static Set<String> implClassNames = new HashSet<>();
@@ -62,35 +64,66 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
         implClassNames.add("java.util.TreeSet");
         implClassNames.add("java.util.TreeMap");
         implClassNames.add("java.util.Vector");
+        implClassNames.add("Iterator");
+        implClassNames.add("java.util.Iterator");
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        return process(node, data);
+        process(node, data);
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        return process(node, data);
+        process(node, data);
+        return super.visit(node, data);
     }
 
-    private Object process(Node node, Object data) {
-        ASTClassOrInterfaceType cit = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (cit == null || !implClassNames.contains(cit.getImage())) {
-            return data;
+    private void process(Node node, Object data) {
+        ASTClassOrInterfaceType collectionType = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (collectionType == null || !implClassNames.contains(collectionType.getImage())) {
+            return;
         }
-        cit = cit.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType cit = getCollectionItemType(collectionType);
         if (cit == null) {
-            return data;
+            return;
         }
         ASTVariableDeclaratorId decl = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         List<NameOccurrence> usages = decl.getUsages();
         for (NameOccurrence no : usages) {
-            ASTName name = (ASTName) no.getLocation();
-            Node n = name.getParent().getParent().getParent();
-            if (n instanceof ASTCastExpression) {
-                addViolation(data, n);
+            ASTCastExpression castExpression = findCastExpression(no.getLocation());
+            if (castExpression != null) {
+                ASTClassOrInterfaceType castTarget = castExpression.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                if (castTarget != null
+                        && cit.getImage().equals(castTarget.getImage())
+                        && !castTarget.hasDescendantOfType(ASTTypeArgument.class)) {
+                    addViolation(data, castExpression);
+                }
             }
+        }
+    }
+
+    private ASTClassOrInterfaceType getCollectionItemType(ASTClassOrInterfaceType collectionType) {
+        if (TypeHelper.isA(collectionType, Map.class)) {
+            List<ASTClassOrInterfaceType> types = collectionType.findDescendantsOfType(ASTClassOrInterfaceType.class);
+            if (types.size() >= 2) {
+                return types.get(1); // the value type of the map
+            }
+        } else {
+            return collectionType.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        }
+        return null;
+    }
+
+    private ASTCastExpression findCastExpression(ScopedNode usage) {
+        Node n = usage.getNthParent(2);
+        if (n instanceof ASTCastExpression) {
+            return (ASTCastExpression) n;
+        }
+        n = n.getParent();
+        if (n instanceof ASTCastExpression) {
+            return (ASTCastExpression) n;
         }
         return null;
     }

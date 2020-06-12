@@ -10,12 +10,11 @@
         <code><![CDATA[
 BEGIN
 FOR c IN (SELECT * FROM companies) LOOP
-  NULL;
+    NULL;
 END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -25,12 +24,11 @@ END;
         <code><![CDATA[
 BEGIN
 FOR c IN (SELECT * FROM companies) LOOP
-  NULL;
+    NULL;
 END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -39,16 +37,15 @@ END;
         <code><![CDATA[
 BEGIN
 FOR company IN (SELECT * FROM companies) LOOP
-  FOR contact IN (SELECT * FROM contacts) LOOP
-    FOR party IN (SELECT * FROM parties) LOOP
-      NULL;
+    FOR contact IN (SELECT * FROM contacts) LOOP
+        FOR party IN (SELECT * FROM parties) LOOP
+            NULL;
+        END LOOP;
     END LOOP;
-  END LOOP;
 END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -58,16 +55,15 @@ END;
         <code><![CDATA[
 BEGIN
 FOR c_cmp IN (SELECT * FROM companies) LOOP
-  FOR c_con IN (SELECT * FROM contacts) LOOP
-    FOR c_pa IN (SELECT * FROM parties) LOOP
-      NULL;
+    FOR c_con IN (SELECT * FROM contacts) LOOP
+        FOR c_pa IN (SELECT * FROM parties) LOOP
+            NULL;
+        END LOOP;
     END LOOP;
-  END LOOP;
 END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -77,16 +73,15 @@ END;
         <code><![CDATA[
 BEGIN
 FOR cmp IN (SELECT * FROM companies) LOOP
-  FOR con IN (SELECT * FROM contacts) LOOP
-    FOR pa IN (SELECT * FROM parties) LOOP
-      NULL;
+    FOR con IN (SELECT * FROM contacts) LOOP
+        FOR pa IN (SELECT * FROM parties) LOOP
+            NULL;
+        END LOOP;
     END LOOP;
-  END LOOP;
 END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>
@@ -97,16 +92,15 @@ END;
         <code><![CDATA[
 BEGIN
 FOR c1 IN (SELECT * FROM companies) LOOP
-  FOR c2 IN (SELECT * FROM contacts) LOOP
-    FOR c3 IN (SELECT * FROM parties) LOOP
-      NULL;
+    FOR c2 IN (SELECT * FROM contacts) LOOP
+        FOR c3 IN (SELECT * FROM parties) LOOP
+            NULL;
+        END LOOP;
     END LOOP;
-  END LOOP;
 END LOOP;
 END;
 /
         ]]></code>
-        <source-type>plsql</source-type>
     </test-code>
 
     <test-code>

@@ -3,37 +3,34 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-        Basic test case
-     ]]></description>
+        <description>Basic test case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-	// Not a good idea...
-	public int []bar()
-	{
-	    // ...
-	    return null;
-	}
+    // Not a good idea...
+    public int []bar()
+    {
+        // ...
+        return null;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-    <test-code>
-        <description><![CDATA[
-good behavior should not trigger violation
 
-     ]]></description>
+    <test-code>
+        <description>good behavior should not trigger violation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {	
-	// Good behavior
-	public String[] bar()
-	{
-	    //...
-	    return new String[0];
-	}
+public class Foo {
+    // Good behavior
+    public String[] bar()
+    {
+        //...
+        return new String[0];
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

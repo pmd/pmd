@@ -7,10 +7,10 @@ package net.sourceforge.pmd.properties;
 import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -377,17 +377,11 @@ public class PropertyDescriptorTest {
     }
 
     private static Matcher<String> containsIgnoreCase(final String substring) {
-        return new SubstringMatcher(substring) {
+        return new SubstringMatcher("containing (ignoring case)", true, substring) {
 
             @Override
             protected boolean evalSubstringOf(String string) {
                 return StringUtils.indexOfIgnoreCase(string, substring) != -1;
-            }
-
-
-            @Override
-            protected String relationship() {
-                return "containing (ignoring case)";
             }
         };
     }

@@ -3,68 +3,63 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-simple failure
-     ]]></description>
+        <description>simple failure</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
- }
+    void bar() {
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-single-line comment is OK
-     ]]></description>
+        <description>single-line comment is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  // Comment
- }
+    void bar() {
+        // Comment
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-multiple-line comment is OK
-     ]]></description>
+        <description>multiple-line comment is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  /* Comment */
- }
+    void foo() {
+        /* Comment */
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Javadoc comment is OK
-     ]]></description>
+        <description>Javadoc comment is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  /** Comment */
- }
+    void foo() {
+        /** Comment */
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  statement();
- }
+    void foo() {
+        statement();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

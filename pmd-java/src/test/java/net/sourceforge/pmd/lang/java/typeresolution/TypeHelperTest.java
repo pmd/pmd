@@ -18,6 +18,8 @@ import org.junit.rules.ExpectedException;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.java.typeresolution.internal.NullableClassLoader;
@@ -76,6 +78,24 @@ public class TypeHelperTest extends BaseNonParserTest {
         Assert.assertTrue(TypeHelper.isA(klass, "org.FooBar"));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
+    }
+
+    /**
+     * If we don't have the annotation on the classpath,
+     * we should resolve the full name via the import, if possible
+     * and compare then. Only after that, we should compare the
+     * simple names.
+     */
+    @Test
+    public void testIsAFallbackAnnotationSimpleNameImport() {
+        ASTName annotation = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
+                .getFirstDescendantOfType(ASTMarkerAnnotation.class).getFirstChildOfType(ASTName.class);
+
+        Assert.assertNull(annotation.getType());
+        Assert.assertTrue(TypeHelper.isA(annotation, "foo.Stuff"));
+        Assert.assertFalse(TypeHelper.isA(annotation, "other.Stuff"));
+        // if the searched class name is not fully qualified, then the search should still be successfull
+        Assert.assertTrue(TypeHelper.isA(annotation, "Stuff"));
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {

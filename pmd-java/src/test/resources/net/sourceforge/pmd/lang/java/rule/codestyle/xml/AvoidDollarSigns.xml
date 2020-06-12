@@ -4,56 +4,50 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-class Fo$o
-     ]]></description>
+        <description>class Fo$o</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class F$oo {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-variable fo$oo
-     ]]></description>
+        <description>field fo$o</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- int fo$o;
+    int fo$o;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-method foo$oo
-     ]]></description>
+        <description>method foo$oo</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void fo$o() {}
+    void fo$o() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-interface fo$oo
-     ]]></description>
+        <description>interface fo$oo</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo$oo {}
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {}
- int buz;
+    void foo() {}
+    int buz;
 }
-public interface Baz {} 
-     ]]></code>
+public interface Baz {}
+        ]]></code>
     </test-code>
 </test-data>
