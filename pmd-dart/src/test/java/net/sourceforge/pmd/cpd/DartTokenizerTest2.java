@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -15,10 +14,14 @@ public class DartTokenizerTest2 extends CpdTextComparisonTest {
         super(".dart");
     }
 
-    @NotNull
     @Override
     protected String getResourcePrefix() {
         return "";
+    }
+
+    @Override
+    public Tokenizer newTokenizer() {
+        return new DartTokenizer();
     }
 
     @Test
@@ -43,10 +46,5 @@ public class DartTokenizerTest2 extends CpdTextComparisonTest {
     }
 
 
-    @NotNull
-    @Override
-    public Tokenizer newTokenizer() {
-        return new DartTokenizer();
-    }
 
 }
