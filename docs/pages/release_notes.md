@@ -45,6 +45,8 @@ The command line version of PMD continues to use **scala 2.13**.
 
 ### Fixed Issues
 
+*   c#
+    *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
 
@@ -56,6 +58,7 @@ The command line version of PMD continues to use **scala 2.13**.
 ### External Contributions
 
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
+*   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
 
 {% endtocmaker %}
 
