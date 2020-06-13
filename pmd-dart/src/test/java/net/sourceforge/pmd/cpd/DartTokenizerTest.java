@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.util.Properties;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -15,7 +17,7 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Override
-    public Tokenizer newTokenizer() {
+    public Tokenizer newTokenizer(Properties properties) {
         return new DartTokenizer();
     }
 

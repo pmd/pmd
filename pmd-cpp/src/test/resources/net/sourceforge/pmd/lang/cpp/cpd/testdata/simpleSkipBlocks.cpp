@@ -16,8 +16,8 @@ static void my_memset(void *dest,int fill_value,int count)
          "rep "
          "stosl\n"
          "mov %ebx,%ecx\n"
-         "  // line 157 mentioned above
-         : 
+         "  // line 157 mentioned above"
+         :
          : "c" (count), "a" (fill_value), "D" (dest)
          : "cc","%ebx" );
 }

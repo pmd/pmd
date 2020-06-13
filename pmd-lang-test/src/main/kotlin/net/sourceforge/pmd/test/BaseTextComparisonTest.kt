@@ -16,20 +16,29 @@ import kotlin.test.assertEquals
 abstract class BaseTextComparisonTest {
 
     protected abstract val resourceLoader: Class<*>
+
+    /**
+     * Resource prefix to look for test files. This is
+     * resolved from the [resourceLoader] class. Separate
+     * directories with '/', not '.'.
+     */
     protected abstract val resourcePrefix: String
 
     /** Extension that the unparsed source file is supposed to have. */
     protected abstract val extensionIncludingDot: String
-    /** Turn the contents of the source file into the "actual" string. */
-    protected abstract fun transformTextContent(sourceText: String): String
 
     /**
      * Executes the test. The test files are looked up using the [parser].
      * The reference test file must be named [fileBaseName] + [ExpectedExt].
      * The source file to parse must be named [fileBaseName] + [extensionIncludingDot].
+     *
+     * @param transformTextContent Function that maps the contents of the source file to the
+     *                             "expected" format.
      */
-    fun doTest(fileBaseName: String) {
-        val expectedFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$ExpectedExt").toFile()
+    internal fun doTest(fileBaseName: String,
+                        expectedSuffix: String = "",
+                        transformTextContent: (String) -> String) {
+        val expectedFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$expectedSuffix$ExpectedExt").toFile()
         val sourceFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$extensionIncludingDot").toFile()
 
         assert(sourceFile.isFile) {

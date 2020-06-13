@@ -10,6 +10,7 @@ import net.sourceforge.pmd.cpd.Tokenizer
 import net.sourceforge.pmd.cpd.Tokens
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
+import java.util.*
 
 /**
  * CPD test comparing a dump of a file against a saved baseline.
@@ -22,20 +23,13 @@ abstract class CpdTextComparisonTest(
         override val extensionIncludingDot: String
 ) : BaseTextComparisonTest() {
 
-    abstract fun newTokenizer(): Tokenizer
+    abstract fun newTokenizer(properties: Properties): Tokenizer
 
     override val resourceLoader: Class<*>
         get() = javaClass
 
     override val resourcePrefix: String
         get() = "testdata"
-
-    override fun transformTextContent(sourceText: String): String {
-        val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText))
-        val tokens = Tokens().also { newTokenizer().tokenize(sourceCode, it) }
-
-        return buildString { format(tokens) }
-    }
 
 
     private fun StringBuilder.format(tokens: Tokens) {
@@ -56,6 +50,19 @@ abstract class CpdTextComparisonTest(
             }
 
             formatLine(token).appendln()
+        }
+    }
+
+    @JvmOverloads
+    fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = Properties()) {
+        super.doTest(fileBaseName, expectedSuffix) { sourceText ->
+            val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText, "$fileBaseName$extensionIncludingDot"))
+            val tokens = Tokens().also {
+                val tokenizer = newTokenizer(properties)
+                tokenizer.tokenize(sourceCode, it)
+            }
+
+            buildString { format(tokens) }
         }
     }
 

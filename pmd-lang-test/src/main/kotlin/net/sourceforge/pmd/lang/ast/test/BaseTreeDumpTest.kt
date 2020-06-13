@@ -27,8 +27,14 @@ abstract class BaseTreeDumpTest(
     override val resourcePrefix: String
         get() = parser.resourcePrefix
 
-    override fun transformTextContent(sourceText: String): String =
+    /**
+     * @see BaseTextComparisonTest.doTest
+     */
+    fun doTest(fileBaseName: String) {
+        super.doTest(fileBaseName, "") { sourceText ->
             buildString {
                 printer.renderSubtree(parser.parse(sourceText), this)
             }
+        }
+    }
 }

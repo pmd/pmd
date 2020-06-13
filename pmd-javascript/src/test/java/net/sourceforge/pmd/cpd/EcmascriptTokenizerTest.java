@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.util.Properties;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -17,7 +19,7 @@ public class EcmascriptTokenizerTest extends CpdTextComparisonTest {
 
     @NotNull
     @Override
-    public Tokenizer newTokenizer() {
+    public Tokenizer newTokenizer(Properties properties) {
         return new EcmascriptTokenizer();
     }
 

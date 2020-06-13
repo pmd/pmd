@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.xml.cpd;
 
+import java.util.Properties;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
@@ -16,7 +18,7 @@ public class XmlCPDTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Override
-    public Tokenizer newTokenizer() {
+    public Tokenizer newTokenizer(Properties properties) {
         return new XmlTokenizer();
     }
 
