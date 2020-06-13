@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>violation: [Gregorian]Calendar.getInstance().getTime()</description>
         <expected-problems>4</expected-problems>
@@ -13,18 +14,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class Foo {
-	void foo() {
-		Date now = Calendar.getInstance().getTime();
-		setDate(Calendar.getInstance().getTime());
-		setDate(GregorianCalendar.getInstance().getTime());
+    void foo() {
+        Date now = Calendar.getInstance().getTime();
+        setDate(Calendar.getInstance().getTime());
+        setDate(GregorianCalendar.getInstance().getTime());
 
-		Calendar cal = Calendar.getInstance();
-		Date now2 = cal.getTime();
-	}
-	private void setDate(Date when){
-	}
+        Calendar cal = Calendar.getInstance();
+        Date now2 = cal.getTime();
+    }
+    private void setDate(Date when){
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -37,12 +38,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class Foo {
-	void foo() {
-		DateTime nowDT1 = new DateTime(GregorianCalendar.getInstance());
-		DateTime nowDT2 = new DateTime(Calendar.getInstance());
-	}
+    void foo() {
+        DateTime nowDT1 = new DateTime(GregorianCalendar.getInstance());
+        DateTime nowDT2 = new DateTime(Calendar.getInstance());
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -53,12 +54,12 @@ public class Foo {
 import java.util.Calendar;
 
 public class Foo {
-	void foo() {
-		long time = Calendar.getInstance().getTimeInMillis();
-		String timeStr = Long.toString(Calendar.getInstance().getTimeInMillis());
-	}
+    void foo() {
+        long time = Calendar.getInstance().getTimeInMillis();
+        String timeStr = Long.toString(Calendar.getInstance().getTimeInMillis());
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -69,14 +70,14 @@ public class Foo {
 import java.util.Calendar;
 
 public class Foo {
-	void foo() {
-		long time1 = 0;
-		Calendar cal = Calendar.getInstance();
-		long time2 = cal.getTimeInMillis();
-		time1 = cal.getTimeInMillis();
-	}
+    void foo() {
+        long time1 = 0;
+        Calendar cal = Calendar.getInstance();
+        long time2 = cal.getTimeInMillis();
+        time1 = cal.getTimeInMillis();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -87,15 +88,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Foo {
-	void foo() {
-		int warmestMonth = Calendar.getInstance().AUGUST;
-		long time = System.currentTimeMillis();
-		Date now = new Date();
-	}
+    void foo() {
+        int warmestMonth = Calendar.getInstance().AUGUST;
+        long time = System.currentTimeMillis();
+        Date now = new Date();
+    }
 }
      ]]></code>
     </test-code>
-
-
-
 </test-data>

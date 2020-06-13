@@ -115,27 +115,29 @@ public class Test {
     </rule>
 
     <rule name="AvoidCalendarDateCreation"
-          since="6.17.0"
+          since="6.25.0"
           language="java"
           message="A Calendar is used to create a Date or DateTime, this is expensive."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
-        <description>Problem: A Calendar is a heavyweight object and expensive to create. &#13;
-            Solution: Use 'new Date()', Java 8+ java.time.[Local/Zoned]DateTime.now() or joda time '[Local]DateTime.now()'.
+        <description>
+Problem: A Calendar is a heavyweight object and expensive to create.
+
+Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDateTime.now()`.
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="1.0"/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //PrimaryPrefix[Name[ends-with(@Image, 'Calendar.getInstance')]] [count(../PrimarySuffix) > 2 and ../PrimarySuffix[last()-1][@Image = 'getTime' or @Image='getTimeInMillis']]
 |
 //Block/BlockStatement//Expression/PrimaryExpression/
-PrimaryPrefix/Name[typeIs('java.util.Calendar') and (ends-with(@Image,'.getTime') or ends-with(@Image,'.getTimeInMillis'))]
+PrimaryPrefix/Name[pmd-java:typeIs('java.util.Calendar') and (ends-with(@Image,'.getTime') or ends-with(@Image,'.getTimeInMillis'))]
 |
-//ClassOrInterfaceType[typeIs('org.joda.time.DateTime') or typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
-	         ]]></value>
+//ClassOrInterfaceType[pmd-java:typeIs('org.joda.time.DateTime') or pmd-java:typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
+                ]]></value>
             </property>
         </properties>
         <example>
