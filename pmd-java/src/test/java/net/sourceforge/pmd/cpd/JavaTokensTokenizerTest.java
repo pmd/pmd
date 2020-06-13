@@ -44,7 +44,7 @@ public class JavaTokensTokenizerTest {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(data));
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
-        assertEquals("public class Foo {" + PMD.EOL + "public void bar() {}", sourceCode.getSlice(1, 2));
+        assertEquals("public class Foo {\npublic void bar() {}", sourceCode.getSlice(1, 2));
     }
 
     @Test
