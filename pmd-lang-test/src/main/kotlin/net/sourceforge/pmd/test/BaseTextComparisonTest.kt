@@ -71,7 +71,11 @@ abstract class BaseTextComparisonTest {
 
     private fun findTestFile(contextClass: Class<*>, resourcePath: String): Path {
         val path = contextClass.`package`.name.replace('.', '/')
-        return srcTestResources.resolve("$path/$resourcePath")
+        // normalize the path, because if eg we have src/test/resources/some/pack/../other,
+        // where the directory 'some/pack' does not exist, the file will not be found, even if
+        // some/other exists. Normalization turns the above path into src/test/resources/some/other
+        val norm = Paths.get("$path/$resourcePath").normalize()
+        return srcTestResources.resolve(norm)
     }
 
     companion object {
