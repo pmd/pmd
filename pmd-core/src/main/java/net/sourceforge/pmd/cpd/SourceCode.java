@@ -34,6 +34,12 @@ public class SourceCode {
             return code.get();
         }
 
+        /**
+         * Loads a range of lines.
+         *
+         * @param startLine Start line (inclusive, 1-based)
+         * @param endLine   End line (inclusive, 1-based)
+         */
         public List<String> getCodeSlice(int startLine, int endLine) {
             List<String> c = null;
             if (code != null) {
@@ -63,9 +69,15 @@ public class SourceCode {
             }
         }
 
+        /**
+         * Loads a range of lines.
+         *
+         * @param startLine Start line (inclusive, 1-based)
+         * @param endLine   End line (inclusive, 1-based)
+         */
         protected List<String> load(int startLine, int endLine) {
             try (BufferedReader reader = new BufferedReader(getReader())) {
-                int linesToRead = endLine - startLine;
+                int linesToRead = 1 + endLine - startLine; // +1 because endLine is inclusive
                 List<String> lines = new ArrayList<>(linesToRead);
 
                 // Skip lines until we reach the start point
@@ -193,7 +205,12 @@ public class SourceCode {
         return sb;
     }
 
-    /** Newlines are normalized to \n. */
+    /**
+     * Loads a range of lines. Newlines are normalized to \n
+     *
+     * @param startLine Start line (inclusive, 1-based)
+     * @param endLine   End line (inclusive, 1-based)
+     */
     public String getSlice(int startLine, int endLine) {
         List<String> lines = cl.getCodeSlice(startLine, endLine);
 
