@@ -147,15 +147,15 @@ public class EcmascriptTokenizerTest {
                 + "}"));
         final Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
-        final String templateString = "`<g>" + PMD.EOL
-                + "        <path class=\"location\"/>" + PMD.EOL
-                + "        <text x=\"0\" y=\"0\" text-anchor=\"middle\" class=\"location-text\"></text>" + PMD.EOL
-                + PMD.EOL
-                + "        <path class=\"location\"/>" + PMD.EOL
-                + "        <circle class=\"location-circle\"/>" + PMD.EOL
-                + "        ${drawIndicators.Check.markup}" + PMD.EOL
-                + PMD.EOL
-                + "      </g>`";
+        final String templateString = "`<g>\n"
+            + "        <path class=\"location\"/>" + "\n"
+            + "        <text x=\"0\" y=\"0\" text-anchor=\"middle\" class=\"location-text\"></text>" + "\n"
+            + "\n"
+            + "        <path class=\"location\"/>" + "\n"
+            + "        <circle class=\"location-circle\"/>" + "\n"
+            + "        ${drawIndicators.Check.markup}" + "\n"
+            + "\n"
+            + "      </g>`";
         assertEquals(templateString, tokens.getTokens().get(24).toString());
     }
 }
