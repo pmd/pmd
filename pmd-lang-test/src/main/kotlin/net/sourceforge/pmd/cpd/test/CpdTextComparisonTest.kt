@@ -32,6 +32,30 @@ abstract class CpdTextComparisonTest(
         get() = "testdata"
 
 
+    open fun defaultProperties() = Properties()
+
+    /**
+     * A test comparing the output of the tokenizer.
+     *
+     * @param fileBaseName   Name of the source file (without extension or resource prefix)
+     * @param expectedSuffix Suffix to append to the expected file. This allows reusing the same source file
+     *                       with different configurations, provided the suffix is different
+     * @param properties     Properties to configure [newTokenizer]
+     */
+    @JvmOverloads
+    fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = defaultProperties()) {
+        super.doTest(fileBaseName, expectedSuffix) { sourceText ->
+            val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText, "$fileBaseName$extensionIncludingDot"))
+            val tokens = Tokens().also {
+                val tokenizer = newTokenizer(properties)
+                tokenizer.tokenize(sourceCode, it)
+            }
+
+            buildString { format(tokens) }
+        }
+    }
+
+
     private fun StringBuilder.format(tokens: Tokens) {
         appendHeader().appendln()
 
@@ -53,20 +77,6 @@ abstract class CpdTextComparisonTest(
         }
     }
 
-    open fun defaultProperties() = Properties()
-
-    @JvmOverloads
-    fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = defaultProperties()) {
-        super.doTest(fileBaseName, expectedSuffix) { sourceText ->
-            val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText, "$fileBaseName$extensionIncludingDot"))
-            val tokens = Tokens().also {
-                val tokenizer = newTokenizer(properties)
-                tokenizer.tokenize(sourceCode, it)
-            }
-
-            buildString { format(tokens) }
-        }
-    }
 
     private fun StringBuilder.appendHeader() =
             formatLine(

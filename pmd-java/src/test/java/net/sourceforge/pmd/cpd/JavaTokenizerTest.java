@@ -13,9 +13,9 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class JavaTokensTokenizerTest extends CpdTextComparisonTest {
+public class JavaTokenizerTest extends CpdTextComparisonTest {
 
-    public JavaTokensTokenizerTest() {
+    public JavaTokenizerTest() {
         super(".java");
     }
 
@@ -50,12 +50,12 @@ public class JavaTokensTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     public void testDiscardedElements() {
-        doTest("discardedElements", "_ignore_annots", ignoreAnnotations(true));
+        doTest("discardedElements", "_ignore_annots", ignoreAnnotations());
     }
 
     @Test
     public void testDiscardedElementsExceptAnnots() {
-        doTest("discardedElements", "_no_ignore_annots", ignoreAnnotations(false));
+        doTest("discardedElements", "_no_ignore_annots");
     }
 
     @Test
@@ -70,31 +70,45 @@ public class JavaTokensTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     public void testIgnoreBetweenSpecialAnnotationAndIgnoreAnnotations() {
-        doTest("ignoreSpecialAnnotations", "_ignore_annots", ignoreAnnotations(true));
+        doTest("ignoreSpecialAnnotations", "_ignore_annots", ignoreAnnotations());
     }
 
     @Test
     public void testIgnoreIdentifiersDontAffectConstructors() {
-        doTest("ignoreIdentsPreservesCtor", "", ignoreIdents(true));
+        doTest("ignoreIdentsPreservesCtor", "", ignoreIdents());
     }
 
     @Test
     public void testIgnoreIdentifiersHandlesEnums() {
-        doTest("ignoreIdentsPreservesEnum", "", ignoreIdents(true));
+        doTest("ignoreIdentsPreservesEnum", "", ignoreIdents());
     }
 
     @Test
     public void testIgnoreIdentifiersWithClassKeyword() {
-        doTest("ignoreIdentsPreservesClassLiteral", "", ignoreIdents(true));
+        doTest("ignoreIdentsPreservesClassLiteral", "", ignoreIdents());
+    }
+
+    @Test
+    public void testIgnoreLiterals() {
+        doTest("ignoreLiterals", "", ignoreLiterals());
+    }
+
+    @Test
+    public void testNoIgnoreLiterals() {
+        doTest("ignoreLiterals", "_noignore");
     }
 
 
-    private static Properties ignoreAnnotations(boolean doIgnore) {
-        return properties(doIgnore, false, false);
+    private static Properties ignoreAnnotations() {
+        return properties(true, false, false);
     }
 
-    private static Properties ignoreIdents(boolean doIgnore) {
-        return properties(false, false, doIgnore);
+    private static Properties ignoreIdents() {
+        return properties(false, false, true);
+    }
+
+    private static Properties ignoreLiterals() {
+        return properties(false, true, false);
     }
 
 
