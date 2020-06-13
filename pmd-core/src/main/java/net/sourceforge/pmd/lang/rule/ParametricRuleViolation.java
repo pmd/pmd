@@ -31,7 +31,7 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
     // RuleViolationFactory to support identifying without a Node, and update
     // Rule base classes too.
-    // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
+    // TODO we never need a node. We just have to have a Reportable instance
     public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
         rule = theRule;
         description = message;

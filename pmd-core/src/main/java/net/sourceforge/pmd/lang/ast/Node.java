@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
@@ -79,7 +78,7 @@ public interface Node extends Reportable {
      * {@inheritDoc}
      * This is not necessarily the exact boundaries of the node in the
      * text. Nodes that can provide exact position information do so
-     * using a {@link TextRegion}, like {@link JjtreeNode}.
+     * using a {@link TextRegion}, by implementing {@link TextAvailableNode}.
      *
      * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
      */
