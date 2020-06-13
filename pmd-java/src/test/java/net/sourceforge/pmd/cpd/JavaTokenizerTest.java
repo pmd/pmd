@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Properties;
 
 import org.junit.Test;
@@ -34,18 +32,6 @@ public class JavaTokenizerTest extends CpdTextComparisonTest {
     public void testCommentsIgnored() {
         doTest("simpleClassWithComments");
     }
-
-    @Test
-    public void testSlice() {
-        SourceCode sourceCode = sourceCodeOf("public class Foo {\n" +
-                                                 "public void bar() {}\n" +
-                                                 "public void buz() {}\n" +
-                                                 "}");
-
-        assertEquals("public class Foo {\n" +
-                         "public void bar() {}", sourceCode.getSlice(1, 2));
-    }
-
 
     @Test
     public void testDiscardedElements() {
