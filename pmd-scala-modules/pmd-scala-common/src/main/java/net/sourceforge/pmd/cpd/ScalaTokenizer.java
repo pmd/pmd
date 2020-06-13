@@ -87,8 +87,8 @@ public class ScalaTokenizer implements Tokenizer {
                                                      pos.endColumn() + 1);
                 tokenEntries.add(cpdToken);
             }
-        } catch (@SuppressWarnings("PMD.AvoidInstanceofChecksInCatchClause") Exception e) {
-            if (e instanceof TokenizeException) {
+        } catch (Exception e) {
+            if (e instanceof TokenizeException) { // NOPMD
                 // cannot catch it as it's a checked exception and Scala sneaky throws
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
