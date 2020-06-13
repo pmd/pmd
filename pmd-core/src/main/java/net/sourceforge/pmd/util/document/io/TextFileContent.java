@@ -12,7 +12,12 @@ import net.sourceforge.pmd.util.document.Chars;
  */
 public class TextFileContent {
 
+    /**
+     * The normalized line ending used to replace platform-specific
+     * line endings in the {@linkplain #getNormalizedText() normalized text}.
+     */
     public static final String NORMALIZED_LINE_TERM = "\n";
+
     private static final Pattern NEWLINE_PATTERN = Pattern.compile("\\R");
 
     private final Chars cdata;

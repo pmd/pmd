@@ -19,10 +19,7 @@ import net.sourceforge.pmd.util.document.io.TextFileContent;
  * Represents a textual document, providing methods to edit it incrementally
  * and address regions of text. A text document delegates IO operations
  * to a {@link TextFile}. It reflects some snapshot of the file,
- * though the file may still be edited externally. We do not poll for
- * external modifications, instead {@link TextFile} provides a
- * very simple stamping system to avoid overwriting external modifications
- * (by failing in {@link TextEditor#close()}).
+ * though the file may still be edited externally.
  *
  * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
  * {@link DataSource}, though the abstraction level of {@link DataSource}
@@ -87,6 +84,8 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
+     *
+     * <p>Line endings are normalized to {@link TextFileContent#NORMALIZED_LINE_TERM}.
      */
     Chars slice(TextRegion region);
 

@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -68,20 +67,6 @@ public interface TextFile extends Closeable {
      * @throws IOException If reading causes an IOException
      */
     TextFileContent readContents() throws IOException;
-
-
-    /**
-     * Returns a number identifying the state of the underlying physical
-     * record. Every time a text file is modified (either through an instance
-     * of this interface or through external filesystem operations), it
-     * should change stamps. This however doesn't mandate a pattern for
-     * the stamps over time, eg they don't need to increase, or really
-     * represent anything.
-     *
-     * @throws IOException If this instance is closed
-     * @throws IOException If reading causes an IOException
-     */
-    long fetchStamp() throws IOException;
 
 
 }

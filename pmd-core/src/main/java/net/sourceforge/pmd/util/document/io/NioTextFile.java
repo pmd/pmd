@@ -11,7 +11,6 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -76,12 +75,6 @@ class NioTextFile extends BaseCloseable implements TextFile {
             text = IOUtils.toString(br);
         }
         return TextFileContent.normalizeToFileContent(text);
-    }
-
-    @Override
-    public long fetchStamp() throws IOException {
-        ensureOpen();
-        return Files.getLastModifiedTime(path).to(TimeUnit.MICROSECONDS);
     }
 
 

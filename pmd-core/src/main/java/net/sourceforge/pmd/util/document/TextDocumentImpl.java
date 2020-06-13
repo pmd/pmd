@@ -17,8 +17,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     private final TextFile backend;
 
-    private long curStamp;
-
     private SourceCodePositioner positioner;
 
     private TextFileContent content;
@@ -29,7 +27,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     TextDocumentImpl(TextFile backend, LanguageVersion langVersion) throws IOException {
         this.backend = backend;
-        this.curStamp = backend.fetchStamp();
         this.content = backend.readContents();
         this.langVersion = langVersion;
         this.positioner = null;
@@ -110,12 +107,6 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     public Chars slice(TextRegion region) {
         return getText().subSequence(region.getStartOffset(), region.getEndOffset());
     }
-
-    long getCurStamp() {
-        return curStamp;
-    }
-
-
 
     private static final String NOT_IN_RANGE = "Region {start=%d, end=%d} is not in range of this document (length %d)";
     private static final String INVALID_LINE_RANGE = "Line range %d..%d is not in range of this document (%d lines) (line numbers are 1-based)";
