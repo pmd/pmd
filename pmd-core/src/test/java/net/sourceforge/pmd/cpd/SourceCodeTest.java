@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.SourceCode.FileCodeLoader;
 
 public class SourceCodeTest {
@@ -34,7 +33,7 @@ public class SourceCodeTest {
 
         assertEquals("Line 1", sourceCode.getSlice(1, 1));
         assertEquals("Line 2", sourceCode.getSlice(2, 2));
-        assertEquals("Line 1" + PMD.EOL + "Line 2", sourceCode.getSlice(1, 2));
+        assertEquals("Line 1\nLine 2", sourceCode.getSlice(1, 2));
     }
 
     @Test
