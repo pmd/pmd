@@ -9,14 +9,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * Read-only view on a string.
  */
 class StringTextFile implements TextFile {
 
-    private final Chars buffer;
+    private final TextFileContent content;
     private final String name;
     private final LanguageVersion lv;
 
@@ -25,7 +24,7 @@ class StringTextFile implements TextFile {
         AssertionUtil.requireParamNotNull("source text", source);
         AssertionUtil.requireParamNotNull("file name", name);
 
-        this.buffer = Chars.wrap(source);
+        this.content = TextFileContent.normalizeToFileContent(source);
         this.name = name;
     }
 
@@ -40,13 +39,13 @@ class StringTextFile implements TextFile {
     }
 
     @Override
-    public void writeContents(Chars charSequence) {
+    public void writeContents(TextFileContent charSequence) {
         throw new ReadOnlyFileException();
     }
 
     @Override
-    public Chars readContents() {
-        return buffer;
+    public TextFileContent readContents() {
+        return content;
     }
 
     @Override
@@ -61,7 +60,7 @@ class StringTextFile implements TextFile {
 
     @Override
     public String toString() {
-        return "ReadOnlyString[" + StringUtil.truncate(buffer.toString(), 40, "...") + "]";
+        return "ReadOnlyString[" + StringUtil.truncate(content.getNormalizedText().toString(), 40, "...") + "]";
     }
 
 }

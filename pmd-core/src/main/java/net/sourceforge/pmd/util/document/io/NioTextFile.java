@@ -18,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
@@ -51,19 +50,32 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
-    public void writeContents(Chars chars) throws IOException {
+    public void writeContents(TextFileContent content) throws IOException {
         ensureOpen();
         try (BufferedWriter bw = Files.newBufferedWriter(path, charset)) {
-            chars.writeFully(bw);
+            if (content.getLineTerminator().equals(TextFileContent.NORMALIZED_LINE_TERM)) {
+                content.getNormalizedText().writeFully(bw);
+            } else {
+                try (BufferedReader br = new BufferedReader(content.getNormalizedText().newReader())) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        bw.write(line);
+                        bw.write(content.getLineTerminator());
+                    }
+                }
+            }
         }
     }
 
     @Override
-    public Chars readContents() throws IOException {
+    public TextFileContent readContents() throws IOException {
         ensureOpen();
+
+        String text;
         try (BufferedReader br = Files.newBufferedReader(path, charset)) {
-            return Chars.wrap(IOUtils.toString(br));
+            text = IOUtils.toString(br);
         }
+        return TextFileContent.normalizeToFileContent(text);
     }
 
     @Override

@@ -6,17 +6,12 @@ package net.sourceforge.pmd.util.document.io;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.Chars;
 import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
@@ -45,7 +40,7 @@ public interface TextFile extends Closeable {
 
     /**
      * Returns true if this file cannot be written to. In that case,
-     * {@link #writeContents(Chars)} will throw an exception.
+     * {@link #writeContents(TextFileContent)} will throw an exception.
      * In the general case, nothing prevents this method's result from
      * changing from one invocation to another.
      */
@@ -55,13 +50,13 @@ public interface TextFile extends Closeable {
     /**
      * Writes the given content to the underlying character store.
      *
-     * @param charSequence Content to write
+     * @param content Content to write, with lines separated by the given line separator
      *
      * @throws IOException           If this instance is closed
      * @throws IOException           If an error occurs
      * @throws ReadOnlyFileException If this text source is read-only
      */
-    void writeContents(Chars charSequence) throws IOException;
+    void writeContents(TextFileContent content) throws IOException;
 
 
     /**
@@ -72,7 +67,7 @@ public interface TextFile extends Closeable {
      * @throws IOException If this instance is closed
      * @throws IOException If reading causes an IOException
      */
-    Chars readContents() throws IOException;
+    TextFileContent readContents() throws IOException;
 
 
     /**
@@ -88,43 +83,5 @@ public interface TextFile extends Closeable {
      */
     long fetchStamp() throws IOException;
 
-    // <editor-fold desc="Creator methods" collapsed-by-default="true">
-
-    /**
-     * Returns an instance of this interface reading and writing to a file.
-     * The returned instance may be read-only.
-     *
-     * @param path    Path to the file
-     * @param charset Encoding to use
-     *
-     * @throws IOException If the file is not a regular file (see {@link Files#isRegularFile(Path, LinkOption...)})
-     * @throws NullPointerException if the path or the charset is null
-     */
-    static TextFile forPath(final Path path, final Charset charset) throws IOException {
-        return new NioTextFile(path, charset);
-    }
-
-
-    /**
-     * Returns a read-only instance of this interface reading from a string.
-     *
-     * @param source Text of the file
-     * @param name   File name to use
-     *
-     * @throws NullPointerException If the source text or the name is null
-     */
-    static TextFile readOnlyString(String source, String name, LanguageVersion lv) {
-        return new StringTextFile(source, name, lv);
-    }
-
-
-    /**
-     * Wraps the given {@link SourceCode} (provided for compatibility).
-     */
-    static TextFile cpdCompat(SourceCode sourceCode) {
-        return new StringTextFile(sourceCode.getCodeBuffer(), sourceCode.getFileName());
-    }
-
-    // </editor-fold>
 
 }

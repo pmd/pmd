@@ -5,10 +5,12 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.IOException;
+import java.io.Reader;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.TextFileContent;
 
 
 final class TextDocumentImpl extends BaseCloseable implements TextDocument {
@@ -18,7 +20,8 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     private long curStamp;
 
     private SourceCodePositioner positioner;
-    private Chars text;
+
+    private TextFileContent content;
 
     private final LanguageVersion langVersion;
 
@@ -27,7 +30,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
     TextDocumentImpl(TextFile backend, LanguageVersion langVersion) throws IOException {
         this.backend = backend;
         this.curStamp = backend.fetchStamp();
-        this.text = backend.readContents();
+        this.content = backend.readContents();
         this.langVersion = langVersion;
         this.positioner = null;
         this.fileName = backend.getDisplayName();
@@ -54,7 +57,7 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
         if (positioner == null) {
             // if nobody cares about lines, this is not computed
-            positioner = new SourceCodePositioner(text);
+            positioner = new SourceCodePositioner(getText());
         }
 
         int bline = positioner.lineNumberFromOffset(region.getStartOffset());
@@ -90,7 +93,22 @@ final class TextDocumentImpl extends BaseCloseable implements TextDocument {
 
     @Override
     public Chars getText() {
-        return text;
+        return content.getNormalizedText();
+    }
+
+    @Override
+    public Reader newReader() {
+        return getText().newReader();
+    }
+
+    @Override
+    public int getLength() {
+        return getText().length();
+    }
+
+    @Override
+    public Chars slice(TextRegion region) {
+        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
     }
 
     long getCurStamp() {

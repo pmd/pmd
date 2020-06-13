@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.io.Reader;
 
 import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
 import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.TextFileContent;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
@@ -25,8 +27,6 @@ import net.sourceforge.pmd.util.document.io.TextFile;
  * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
  * {@link DataSource}, though the abstraction level of {@link DataSource}
  * is the {@link TextFile}.
- *
- * <p>TODO should TextDocument normalize line separators?
  */
 public interface TextDocument extends Closeable {
 
@@ -44,6 +44,8 @@ public interface TextDocument extends Closeable {
     /**
      * Returns the current text of this document. Note that this doesn't take
      * external modifications to the {@link TextFile} into account.
+     *
+     * <p>Line endings are normalized to {@link TextFileContent#NORMALIZED_LINE_TERM}.
      */
     Chars getText();
 
@@ -51,17 +53,13 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a reader over the text of this document.
      */
-    default Reader newReader() {
-        return getText().newReader();
-    }
+    Reader newReader();
 
 
     /**
      * Returns the length in characters of the {@linkplain #getText() text}.
      */
-    default int getLength() {
-        return getText().length();
-    }
+    int getLength();
 
 
     /**
@@ -86,12 +84,11 @@ public interface TextDocument extends Closeable {
      */
     FileLocation toLocation(TextRegion region);
 
+
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
      */
-    default Chars slice(TextRegion region) {
-        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
-    }
+    Chars slice(TextRegion region);
 
 
     /**
@@ -123,7 +120,7 @@ public interface TextDocument extends Closeable {
     }
 
     static TextDocument readOnlyString(final String source, final String filename, LanguageVersion lv) {
-        TextFile textFile = TextFile.readOnlyString(source, filename, lv);
+        TextFile textFile = PmdFiles.readOnlyString(source, filename, lv);
         try {
             return new TextDocumentImpl(textFile, lv);
         } catch (IOException e) {
