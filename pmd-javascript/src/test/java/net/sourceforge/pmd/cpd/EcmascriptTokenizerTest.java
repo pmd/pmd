@@ -62,6 +62,6 @@ public class EcmascriptTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     public void testTemplateStrings() {
-       doTest("templateStrings");
+        doTest("templateStrings");
     }
 }

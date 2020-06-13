@@ -28,7 +28,7 @@ abstract class CpdTextComparisonTest(
         get() = javaClass
 
     override val resourcePrefix: String
-        get() = "testData"
+        get() = "testdata"
 
     override fun transformTextContent(sourceText: String): String {
         val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText))
