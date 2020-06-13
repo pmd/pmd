@@ -115,14 +115,19 @@ public class Test {
     </rule>
 
     <rule name="AvoidConcatInLoop"
-          since="6.17.0"
+          since="6.25.0"
           language="java"
-          message="A String is concatenated in a loop. Use StringBuilder.append."
+          message="A String is concatenated in a loop. Use StringBuilder.append()."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidconcatinloop">
-        <description>A String is built in a loop by concatenation. Problem: Each statement with one or more +-operators creates a hidden temporary StringBuilder, a char[] and a new String object, which all have to be garbage collected. &#13;
-            Solution: Use the StringBuilder append method.
+        <description>
+A String is built in a loop by concatenation.
+
+Problem: Each statement with one or more `+`-operators creates a hidden temporary `StringBuilder`, a `char[]`
+and a new `String` object, which all have to be garbage collected.
+
+Solution: Use the `StringBuilder.append()` method.
         </description>
         <priority>2</priority>
         <properties>
@@ -139,8 +144,7 @@ public class Test {
         and @Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
     ]
 ]/.. (: Go up to report on the StatementExpression :)
-	]]>
-                </value>
+                ]]></value>
             </property>
         </properties>
         <example>

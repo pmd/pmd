@@ -48,6 +48,10 @@ The command line version of PMD continues to use **scala 2.13**.
 *   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
     finds casts that are unnecessary while accessing collection elements.
 
+*   The new Java Rule {% rule "java/performance/AvoidConcatInLoop" %} (`java-performance`)
+    finds String concatenations inside loops. This should be avoided and StringBuilder
+    should be used instead.
+
 ### Fixed Issues
 
 *   c#
@@ -64,6 +68,7 @@ The command line version of PMD continues to use **scala 2.13**.
 
 ### External Contributions
 
+*   [#1932](https://github.com/pmd/pmd/pull/1932): \[java] Added 4 performance rules originating from PMD-jPinpoint-rules - [Jeroen Borgers](https://github.com/jborgers)
 *   [#2349](https://github.com/pmd/pmd/pull/2349): \[java] Optimize UnusedPrivateMethodRule - [shilko2013](https://github.com/shilko2013)
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
