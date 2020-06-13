@@ -5,16 +5,13 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
@@ -39,10 +36,15 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
         return tok;
     }
 
+    @Override
+    public Properties defaultProperties() {
+        return dontSkipBlocks();
+    }
+
     @Test
     public void testUTFwithBOM() {
-        Tokens tokens = parse("\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
-        assertNotSame(TokenEntry.getEOF(), tokens.getTokens().get(0));
+        Tokenizer tokenizer = newTokenizer(dontSkipBlocks());
+        Tokens tokens = tokenize(tokenizer, "\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
         assertEquals(15, tokens.size());
     }
 
@@ -104,8 +106,8 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testEOLCommentInPreprocessingDirective() {
-        parse("#define LSTFVLES_CPP  //*" + PMD.EOL);
+    public void testPreprocessingDirectives() {
+        doTest("preprocessorDirectives");
     }
 
     @Test
@@ -127,30 +129,6 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
         doTest("issue-1784");
     }
 
-
-    private Tokens parse(String snippet) {
-        try {
-            return parse(snippet, false, new Tokens());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Tokens parse(String snippet, boolean skipBlocks, Tokens tokens) throws IOException {
-        return parse(snippet, skipBlocks, null, tokens);
-    }
-
-    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern, Tokens tokens) throws IOException {
-
-        Properties properties = properties(skipBlocks, skipPattern);
-
-        CPPTokenizer tokenizer = new CPPTokenizer();
-        tokenizer.setProperties(properties);
-
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(snippet));
-        tokenizer.tokenize(code, tokens);
-        return tokens;
-    }
 
     private static Properties skipBlocks(String skipPattern) {
         return properties(true, skipPattern);

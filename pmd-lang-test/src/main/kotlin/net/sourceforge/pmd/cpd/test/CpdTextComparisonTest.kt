@@ -53,8 +53,10 @@ abstract class CpdTextComparisonTest(
         }
     }
 
+    open fun defaultProperties() = Properties()
+
     @JvmOverloads
-    fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = Properties()) {
+    fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = defaultProperties()) {
         super.doTest(fileBaseName, expectedSuffix) { sourceText ->
             val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText, "$fileBaseName$extensionIncludingDot"))
             val tokens = Tokens().also {
@@ -116,6 +118,14 @@ abstract class CpdTextComparisonTest(
             "[$truncated]"
 
     }
+
+
+    fun sourceCodeOf(str: String): SourceCode = SourceCode(SourceCode.StringCodeLoader(str))
+
+    fun tokenize(tokenizer: Tokenizer, str: String): Tokens =
+            Tokens().also {
+                tokenizer.tokenize(sourceCodeOf(str), it)
+            }
 
     private companion object {
         const val Indent = "    "
