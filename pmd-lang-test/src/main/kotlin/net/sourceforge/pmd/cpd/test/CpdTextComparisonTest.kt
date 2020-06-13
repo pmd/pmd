@@ -92,9 +92,11 @@ abstract class CpdTextComparisonTest(
 
     private fun escapeImage(str: String): String {
         val escaped = str
-                .replace("\\", "\\\\")               // escape backslashes
-                .replace(Regex("\\R"), "\\\\n")     // escape newlines (normalizing)
-                .replace(Regex("[]\\[]"), "\\\\$0") // escape []
+                .replace("\\", "\\\\")                 // escape backslashes
+                .replace("\r\n", "\\r\\n")             // CRLF (treated specially because it has a different length)
+                .replace("\t", "\\t")                  // TAB
+                .replace(Regex("\\R"), "\\\\n")       // escape other newlines (normalizing)
+                .replace(Regex("[]\\[]"), "\\\\$0")   // escape []
 
         var truncated = StringUtils.truncate(escaped, ImageSize)
 

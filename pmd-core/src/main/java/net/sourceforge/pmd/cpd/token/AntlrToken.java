@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -97,19 +97,23 @@ public class AntlrToken implements GenericToken {
             if (image.charAt(0) != '\n') {
                 this.endline = getBeginLine();
                 this.endcolumn = getBeginColumn();
-            } else {
-                this.endline = getBeginLine() + 1;
-                this.endcolumn = 1;
+                return;
             }
-            return;
         }
 
         Matcher matcher = NEWLINE_PATTERN.matcher(image);
         int numNls = 0;
         int lastOffset = 0;
+        int lastLineLen = -1;
         while (matcher.find()) {
             // continue
             numNls++;
+            if (lastLineLen < 0) {
+                // first iteration, line may not be completely in the image
+                lastLineLen = token.getCharPositionInLine() + matcher.end();
+            } else {
+                lastLineLen = matcher.end() - lastOffset;
+            }
             lastOffset = matcher.end();
         }
 
@@ -118,9 +122,13 @@ public class AntlrToken implements GenericToken {
             this.endline = this.getBeginLine();
             int length = 1 + token.getStopIndex() - token.getStartIndex();
             this.endcolumn = token.getCharPositionInLine() + length;
-        } else {
+        } else if (lastOffset < image.length()) {
             this.endline = this.getBeginLine() + numNls;
             this.endcolumn = image.length() - lastOffset;
+        } else {
+            // ends with a newline, the newline is considered part of the previous line
+            this.endline = this.getBeginLine() + numNls - 1;
+            this.endcolumn = lastLineLen;
         }
     }
 
