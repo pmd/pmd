@@ -94,8 +94,4 @@ public class CsTokenizerTest extends CpdTextComparisonTest {
         properties.setProperty(Tokenizer.IGNORE_USINGS, Boolean.toString(ignoreUsings));
         return properties;
     }
-
-    private SourceCode toSourceCode(String source) {
-        return new SourceCode(new SourceCode.StringCodeLoader(source));
-    }
 }
