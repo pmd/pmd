@@ -47,4 +47,9 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    @Override
+    public ASTMethodDeclaration getParent() {
+        return (ASTMethodDeclaration) super.getParent();
+    }
 }
