@@ -62,6 +62,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
      * @param endColumn the column number, 1-based
      */
     public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endColumn) {
+        assert beginLine >= 1 && beginColumn >= 1 && endColumn >= 1 : "Coordinates are 1-based";
         setImage(image);
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;

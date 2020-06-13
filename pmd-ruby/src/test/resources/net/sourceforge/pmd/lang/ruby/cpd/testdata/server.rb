@@ -1,7 +1,7 @@
 require "socket"
 
-gs = TCPServer.open(0)
-addr = gs.addr
+gs =  TCPServer.open(0)
+addr  = gs.addr
 addr.shift
 
 while true
