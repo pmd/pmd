@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -20,7 +19,7 @@ public class JavaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Override
-    public Tokenizer newTokenizer(@NotNull Properties properties) {
+    public Tokenizer newTokenizer(Properties properties) {
         JavaTokenizer javaTokenizer = new JavaTokenizer();
         javaTokenizer.setProperties(properties);
         return javaTokenizer;
@@ -112,7 +111,6 @@ public class JavaTokenizerTest extends CpdTextComparisonTest {
     }
 
 
-    @NotNull
     @Override
     public Properties defaultProperties() {
         return properties(false, false, false);

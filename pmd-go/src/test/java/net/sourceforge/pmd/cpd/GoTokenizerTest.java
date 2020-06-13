@@ -4,33 +4,40 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class GoTokenizerTest extends AbstractTokenizerTest {
+public class GoTokenizerTest extends CpdTextComparisonTest {
 
-    private static final String FILENAME = "btrfs.go";
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new GoTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
+    public GoTokenizerTest() {
+        super(".go");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(GoTokenizer.class.getResourceAsStream(FILENAME));
+    public Tokenizer newTokenizer(Properties properties) {
+        return new GoTokenizer();
+    }
+
+    @Override
+    protected String getResourcePrefix() {
+        return "../lang/go/cpd/testdata";
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 3517;
-        super.tokenizeTest();
+    public void simpleTest() {
+        doTest("hello");
+    }
+
+    @Test
+    public void bigFileTest() {
+        doTest("btrfs");
+    }
+
+    @Test
+    public void testIssue1751() {
+        doTest("issue-1751");
     }
 }
