@@ -17,8 +17,6 @@ import java.util.List;
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.input.BOMInputStream;
 
-import net.sourceforge.pmd.PMD;
-
 public class SourceCode {
 
     public abstract static class CodeLoader {
@@ -185,22 +183,24 @@ public class SourceCode {
         return cl.getCode();
     }
 
+    /** Newlines are normalized to \n. */
     public StringBuilder getCodeBuffer() {
         StringBuilder sb = new StringBuilder();
         List<String> lines = cl.getCode();
         for (String line : lines) {
-            sb.append(line).append(PMD.EOL);
+            sb.append(line).append('\n');
         }
         return sb;
     }
 
+    /** Newlines are normalized to \n. */
     public String getSlice(int startLine, int endLine) {
         List<String> lines = cl.getCodeSlice(startLine, endLine);
 
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             if (sb.length() != 0) {
-                sb.append(PMD.EOL);
+                sb.append('\n');
             }
             sb.append(line);
         }
