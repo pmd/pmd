@@ -1,0 +1,45 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [require]                               0         6
+    ["socket"]                              9         16
+L3
+    [gs]                                    0         1
+    [=]                                     3         3
+    [tcpserver.open]                        5         18
+    [0]                                     20        20
+L4
+    [addr]                                  0         3
+    [=]                                     5         5
+    [gs.addr]                               7         13
+L5
+    [addr.shift]                            0         9
+L7
+    [true]                                  6         9
+L8
+    [ns]                                    2         3
+    [=]                                     5         5
+    [gs.accept]                             7         15
+L9
+    [print]                                 2         6
+    [ns]                                    8         9
+    [" is accepted"]                        13        26
+L10
+    [thread.start]                          2         13
+L11
+    [s]                                     4         4
+    [=]                                     6         6
+    [ns]                                    8         9
+    [ # save to dynamic variable]           31        57
+L12
+    [s.gets]                                10        15
+L13
+    [s.write]                               6         12
+    [$_]                                    14        15
+L15
+    [print]                                 4         8
+    [s]                                     10        10
+L18
+    [" is                gone          [    -46       39
+L19
+    [s.close]                               4         10
+EOF

@@ -31,7 +31,6 @@ public class KotlinTokenizerTest extends CpdTextComparisonTest {
         doTest("comment");
     }
 
-
     @Test
     public void testIncrement() {
         doTest("increment");
