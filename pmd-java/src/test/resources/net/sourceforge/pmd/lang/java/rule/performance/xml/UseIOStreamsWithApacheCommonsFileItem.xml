@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>violation: FileItem get() used</description>
         <expected-problems>3</expected-problems>
@@ -26,8 +27,9 @@ public class Foo {
         globalFileItem.get(); // bad
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>violation: FileItem get() used with fully qualified class reference</description>
         <expected-problems>3</expected-problems>
@@ -50,8 +52,9 @@ public class Foo {
         globalFileItem.get(); // bad
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>violation: FileItem getString() used</description>
         <expected-problems>4</expected-problems>
@@ -75,8 +78,9 @@ public class Foo {
         globalFileItem.getString(); // bad
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>violation: FileItem getString() used with fully qualified class reference</description>
         <expected-problems>4</expected-problems>
@@ -99,8 +103,9 @@ public class Foo {
         globalFileItem.getString(); // bad
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>no violation: harmless get methods</description>
         <expected-problems>0</expected-problems>
@@ -116,8 +121,9 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Harmless getString methods</description>
         <expected-problems>0</expected-problems>
@@ -133,6 +139,6 @@ public class Foo {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>
