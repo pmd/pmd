@@ -6,265 +6,113 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.Properties;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class JavaTokensTokenizerTest {
+public class JavaTokensTokenizerTest extends CpdTextComparisonTest {
 
-    @Test
-    public void test1() throws IOException {
-        Tokenizer tokenizer = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("public class Foo {}"));
-        Tokens tokens = new Tokens();
-        tokenizer.tokenize(sourceCode, tokens);
-        assertEquals(6, tokens.size());
-        assertEquals("public class Foo {}", sourceCode.getSlice(1, 1));
+    public JavaTokensTokenizerTest() {
+        super(".java");
+    }
+
+    @Override
+    public Tokenizer newTokenizer(@NotNull Properties properties) {
+        JavaTokenizer javaTokenizer = new JavaTokenizer();
+        javaTokenizer.setProperties(properties);
+        return javaTokenizer;
+    }
+
+    @Override
+    protected String getResourcePrefix() {
+        return "../lang/java/cpd/testdata";
     }
 
     @Test
-    public void testCommentsIgnored() throws IOException {
-        Tokenizer tokenizer = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode(
-                new SourceCode.StringCodeLoader("public class Foo { // class Bar */ \n }"));
-        Tokens tokens = new Tokens();
-        tokenizer.tokenize(sourceCode, tokens);
-        assertEquals(6, tokens.size());
+    public void testCommentsIgnored() {
+        doTest("simpleClassWithComments");
     }
 
     @Test
-    public void test2() throws IOException {
-        Tokenizer t = new JavaTokenizer();
-        String data = "public class Foo {" + PMD.EOL + "public void bar() {}" + PMD.EOL + "public void buz() {}"
-                + PMD.EOL + "}";
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(data));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        assertEquals("public class Foo {\npublic void bar() {}", sourceCode.getSlice(1, 2));
+    public void testSlice() {
+        SourceCode sourceCode = sourceCodeOf("public class Foo {\n" +
+                                                 "public void bar() {}\n" +
+                                                 "public void buz() {}\n" +
+                                                 "}");
+
+        assertEquals("public class Foo {\n" +
+                         "public void bar() {}", sourceCode.getSlice(1, 2));
+    }
+
+
+    @Test
+    public void testDiscardedElements() {
+        doTest("discardedElements", "_ignore_annots", ignoreAnnotations(true));
     }
 
     @Test
-    public void testDiscardSemicolons() throws IOException {
-        Tokenizer t = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("public class Foo {private int x;}"));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        assertEquals(9, tokens.size());
+    public void testDiscardedElementsExceptAnnots() {
+        doTest("discardedElements", "_no_ignore_annots", ignoreAnnotations(false));
     }
 
     @Test
-    public void testDiscardImports() throws IOException {
-        Tokenizer t = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode(
-                new SourceCode.StringCodeLoader("import java.io.File;" + PMD.EOL + "public class Foo {}"));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        assertEquals(6, tokens.size());
+    public void testIgnoreBetweenSpecialComments() {
+        doTest("specialComments");
     }
 
     @Test
-    public void testDiscardPkgStmts() throws IOException {
-        Tokenizer t = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode(
-                new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL + "public class Foo {}"));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        assertEquals(6, tokens.size());
+    public void testIgnoreBetweenSpecialAnnotation() {
+        doTest("ignoreSpecialAnnotations");
     }
 
     @Test
-    public void testDiscardSimpleOneLineAnnotation() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(true);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
-                "package foo.bar.baz;" + PMD.EOL + "@MyAnnotation" + PMD.EOL + "public class Foo {}"));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        assertEquals(6, tokens.size());
+    public void testIgnoreBetweenSpecialAnnotationAndIgnoreAnnotations() {
+        doTest("ignoreSpecialAnnotations", "_ignore_annots", ignoreAnnotations(true));
     }
 
     @Test
-    public void testIgnoreComments() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "/*****" + PMD.EOL + " * ugh" + PMD.EOL + " *****/" + PMD.EOL + "public class Foo {}"));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        assertEquals(6, tokens.size());
+    public void testIgnoreIdentifiersDontAffectConstructors() {
+        doTest("ignoreIdentsPreservesCtor", "", ignoreIdents(true));
     }
 
     @Test
-    public void testDiscardOneLineAnnotationWithParams() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(true);
-
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
-                "package foo.bar.baz;" + PMD.EOL + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL
-                        + "@NamedQuery(" + PMD.EOL + ")})" + PMD.EOL + "public class Foo {" + PMD.EOL + "}"));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(6, tokens.size());
+    public void testIgnoreIdentifiersHandlesEnums() {
+        doTest("ignoreIdentsPreservesEnum", "", ignoreIdents(true));
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "// CPD-OFF" + PMD.EOL + "// CPD-OFF" + PMD.EOL
-                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
-                + PMD.EOL + "public class Foo {" + "// CPD-ON" + PMD.EOL
-                + "}"
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(2, tokens.size()); // 2 tokens: "}" + EOF
+    public void testIgnoreIdentifiersWithClassKeyword() {
+        doTest("ignoreIdentsPreservesClassLiteral", "", ignoreIdents(true));
     }
 
-    @Test
-    public void testIgnoreBetweenSpecialCommentsMultiple() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "// CPD-OFF" + PMD.EOL + "// another irrelevant comment" + PMD.EOL
-                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
-                + PMD.EOL + "public class Foo {" + "// CPD-ON" + PMD.EOL
-                + "}"
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(2, tokens.size()); // 2 tokens: "}" + EOF
+
+    private static Properties ignoreAnnotations(boolean doIgnore) {
+        return properties(doIgnore, false, false);
     }
 
-    @Test
-    public void testIgnoreBetweenSpecialCommentsMultiline() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "/* " + PMD.EOL + " * CPD-OFF" + PMD.EOL + "*/" + PMD.EOL
-                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
-                + PMD.EOL + "public class Foo {" + PMD.EOL
-                + "/* " + PMD.EOL + " * CPD-ON" + PMD.EOL + "*/" + PMD.EOL
-                + "}"
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(2, tokens.size()); // 2 tokens: "}" + EOF
+    private static Properties ignoreIdents(boolean doIgnore) {
+        return properties(false, false, doIgnore);
     }
 
-    @Test
-    public void testIgnoreBetweenSpecialAnnotation() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "@SuppressWarnings({\"woof\",\"CPD-START\"})" + PMD.EOL + "@SuppressWarnings(\"CPD-START\")" + PMD.EOL
-                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
-                + PMD.EOL + "public class Foo {}" + "@SuppressWarnings({\"ugh\",\"CPD-END\"})" + PMD.EOL
 
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(10, tokens.size());
+    @NotNull
+    @Override
+    public Properties defaultProperties() {
+        return properties(false, false, false);
     }
 
-    @Test
-    public void testIgnoreBetweenSpecialAnnotationAndIgnoreAnnotations() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(true);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "@SuppressWarnings({\"woof\",\"CPD-START\"})" + PMD.EOL + "@SuppressWarnings(\"CPD-START\")" + PMD.EOL
-                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
-                + PMD.EOL + "public class Foo {}" + PMD.EOL + "@SuppressWarnings({\"ugh\",\"CPD-END\"})" + PMD.EOL
-
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        assertEquals(1, tokens.size());
+    private static Properties properties(boolean ignoreAnnotations,
+                                         boolean ignoreLiterals,
+                                         boolean ignoreIdents) {
+        Properties properties = new Properties();
+        properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, Boolean.toString(ignoreAnnotations));
+        properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, Boolean.toString(ignoreIdents));
+        properties.setProperty(Tokenizer.IGNORE_LITERALS, Boolean.toString(ignoreLiterals));
+        return properties;
     }
 
-    @Test
-    public void testIgnoreIdentifiersDontAffectConstructors() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        t.setIgnoreIdentifiers(true);
 
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
-                + "public class Foo extends Bar {" + PMD.EOL + "private Foo notAConstructor;" + PMD.EOL
-                + "public Foo(int i) { super(i); }" + PMD.EOL + "private Foo(int i, String s) { super(i, s); }"
-                + PMD.EOL + "/* default */ Foo(int i, String s, Object o) { super(i, s, o); }" + PMD.EOL
-                + "private static class Inner {" + PMD.EOL + "Inner() { System.out.println(\"Guess who?\"); }" + PMD.EOL
-                + "}" + PMD.EOL + "}" + PMD.EOL
-
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        List<TokenEntry> tokenList = tokens.getTokens();
-
-        // Member variable of type Foo
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(7).toString());
-        // Public constructor
-        assertEquals("Foo", tokenList.get(10).toString());
-        // Private constructor
-        assertEquals("Foo", tokenList.get(22).toString());
-        // Package-private constructor
-        assertEquals("Foo", tokenList.get(38).toString());
-        // Inner class constructor
-        assertEquals("Inner", tokenList.get(64).toString());
-    }
-
-    @Test
-    public void testIgnoreIdentifiersHandlesEnums() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        t.setIgnoreIdentifiers(true);
-
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
-                "package foo.bar.baz;" + PMD.EOL + "public enum Foo {" + PMD.EOL + "BAR(1)," + PMD.EOL + "BAZ(2);"
-                        + PMD.EOL + "Foo(int val) {" + PMD.EOL + "}" + PMD.EOL + "}" + PMD.EOL
-
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        List<TokenEntry> tokenList = tokens.getTokens();
-
-        // Enum member
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(4).toString());
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(9).toString());
-        // Enum constructor
-        assertEquals("Foo", tokenList.get(13).toString());
-    }
-
-    @Test
-    public void testIgnoreIdentifiersWithClassKeyword() throws IOException {
-        JavaTokenizer t = new JavaTokenizer();
-        t.setIgnoreAnnotations(false);
-        t.setIgnoreIdentifiers(true);
-
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
-                "package foo.bar.baz;" + PMD.EOL + "public class Foo {" + PMD.EOL + "Foo() {" + PMD.EOL
-                        + "}" + PMD.EOL + "public void bar() {" + PMD.EOL + "Bar.baz(Foo.class, () -> {});"
-                        + PMD.EOL + "}" + PMD.EOL + "}" + PMD.EOL
-        ));
-        Tokens tokens = new Tokens();
-        t.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
-        List<TokenEntry> tokenList = tokens.getTokens();
-
-        // Class constructor
-        assertEquals("Foo", tokenList.get(4).toString());
-        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(11).toString());
-    }
 }
