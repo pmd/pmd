@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>violation: concat to String in for/while loop</description>
         <expected-problems>5</expected-problems>
@@ -40,7 +41,7 @@ public class ConcatInLoop {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -102,7 +103,7 @@ public class ConcatInLoop {
         }
     }
 }
-    ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -120,7 +121,7 @@ public class ConcatInLoop {
         }
     }
 }
-    ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -139,7 +140,7 @@ public class ConcatInLoop {
         for (String val2 : values) logStatement.append(val2);
     }
 }
-    ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -165,7 +166,7 @@ public class ConcatInLoop {
         return description;
     }
 }
-    ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -225,7 +226,7 @@ public class ConcatInLoop {
     private static void logError(String text, Exception e) {
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -246,7 +247,7 @@ public class ConcatInLoop {
         } while (i < values.length());
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -267,7 +268,6 @@ public class ConcatInLoop {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
-
 </test-data>
