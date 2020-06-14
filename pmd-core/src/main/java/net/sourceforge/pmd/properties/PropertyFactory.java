@@ -294,6 +294,9 @@ public final class PropertyFactory {
      *
      * @return A new builder
      */
+    // Note: there is a bug, whereby the default value can be set on
+    // the builder, even if it wasn't registered in the constants
+    // This is fixed in the framework refactoring
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         // TODO find solution to document the set of possible values
         // At best, map that requirement to a constraint (eg make parser return null if not found, and

@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -26,11 +25,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
 
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
-
-    @Deprecated
-    private static final BooleanProperty CHECK_NATIVE_METHODS_DESCRIPTOR = new BooleanProperty("checkNativeMethods",
-                                                                                               "deprecated! Check native methods", true, 1.0f);
-
 
     private final PropertyDescriptor<Pattern> instanceRegex = defaultProp("", "instance").build();
     private final PropertyDescriptor<Pattern> staticRegex = defaultProp("static").build();
@@ -41,8 +35,6 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
 
     public MethodNamingConventionsRule() {
-        definePropertyDescriptor(CHECK_NATIVE_METHODS_DESCRIPTOR);
-
         definePropertyDescriptor(instanceRegex);
         definePropertyDescriptor(staticRegex);
         definePropertyDescriptor(nativeRegex);
@@ -86,11 +78,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         }
 
         if (node.isNative()) {
-            if (getProperty(CHECK_NATIVE_METHODS_DESCRIPTOR)) {
-                checkMatches(node, nativeRegex, data);
-            } else {
-                return super.visit(node, data);
-            }
+            checkMatches(node, nativeRegex, data);
         } else if (node.isStatic()) {
             checkMatches(node, staticRegex, data);
         } else if (isJunit5Test(node)) {
