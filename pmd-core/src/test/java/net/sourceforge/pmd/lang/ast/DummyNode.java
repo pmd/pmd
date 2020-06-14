@@ -86,6 +86,9 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
 
     public static class DummyNodeTypeB extends DummyNode {
 
+        public DummyNodeTypeB() {
+            super("dummyNodeB");
+        }
     }
 
 }

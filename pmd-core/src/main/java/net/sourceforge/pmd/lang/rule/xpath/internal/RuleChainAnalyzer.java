@@ -63,6 +63,10 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     @Override
     public Expression visit(SlashExpression e) {
         if (!insideExpensiveExpr && rootElement == null) {
+            if (e.getLhsExpression() instanceof VennExpression) {
+                // nested venn expression
+                return e;
+            }
             Expression result = super.visit(e);
             if (rootElement != null && !rootElementReplaced) {
                 if (result instanceof SlashExpression) {
@@ -72,12 +76,14 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
                         result = new FilterExpression(new AxisExpression(AxisInfo.SELF, null), filterExpression.getFilter());
                         rootElementReplaced = true;
                     } else if (newPath.getStep() instanceof AxisExpression) {
-                        if (newPath.getStart() instanceof RootExpression) {
+                        Expression start = newPath.getStart();
+                        if (start instanceof RootExpression) {
                             result = new AxisExpression(AxisInfo.SELF, null);
-                        } else {
-                            result = new SlashExpression(newPath.getStart(), new AxisExpression(AxisInfo.SELF, null));
+                            rootElementReplaced = true;
+                        } else if (!(start instanceof VennExpression)) {
+                            result = new SlashExpression(start, new AxisExpression(AxisInfo.SELF, null));
+                            rootElementReplaced = true;
                         }
-                        rootElementReplaced = true;
                     }
                 } else {
                     result = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, null);

@@ -73,7 +73,7 @@ public class SaxonXPathRuleQuery {
     Map<String, List<Expression>> nodeNameToXPaths = new HashMap<>();
 
     /**
-     * Representation of an XPath query, created at {@link #initializeXPathExpression()} using {@link #xpathExpr}.
+     * Representation of an XPath query, created at {@link #ensureInitialized()} using {@link #xpathExpr}.
      */
     XPathExpression xpathExpression;
 
@@ -99,13 +99,13 @@ public class SaxonXPathRuleQuery {
 
 
     public List<String> getRuleChainVisits() {
-        initializeXPathExpression();
+        ensureInitialized();
         return rulechainQueries;
     }
 
 
     public List<Node> evaluate(final Node node) {
-        initializeXPathExpression();
+        ensureInitialized();
 
         final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
         documentNode.setAttrCtx(attrCtx);
@@ -116,7 +116,7 @@ public class SaxonXPathRuleQuery {
 
             // XPath 2.0 sequences may contain duplicates
             final Set<Node> results = new LinkedHashSet<>();
-            List<Expression> expressions = getXPathExpressionForNodeOrDefault(node.getXPathNodeName());
+            List<Expression> expressions = getExpressionsForLocalNameOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
                 SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
                 Item current = iterator.next();
@@ -142,11 +142,20 @@ public class SaxonXPathRuleQuery {
         }
     }
 
-    private List<Expression> getXPathExpressionForNodeOrDefault(String nodeName) {
-        if (nodeNameToXPaths.containsKey(nodeName)) {
-            return nodeNameToXPaths.get(nodeName);
+    // test only
+    List<Expression> getExpressionsForLocalNameOrDefault(String nodeName) {
+        ensureInitialized();
+        List<Expression> expressions = nodeNameToXPaths.get(nodeName);
+        if (expressions != null) {
+            return expressions;
         }
         return nodeNameToXPaths.get(AST_ROOT);
+    }
+
+    // test only
+    Expression getFallbackExpr() {
+        ensureInitialized();
+        return nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0);
     }
 
 
@@ -179,7 +188,7 @@ public class SaxonXPathRuleQuery {
         nodeNameToXPaths.get(nodeName).add(expression);
     }
 
-    private void initializeXPathExpression() {
+    private void ensureInitialized() {
         if (xpathExpression != null) {
             return;
         }
@@ -256,7 +265,7 @@ public class SaxonXPathRuleQuery {
 
         private final Map<StructuredQName, PropertyDescriptor<?>> propertiesByName = new HashMap<>();
 
-        public StaticContextWithProperties(Configuration config) {
+        StaticContextWithProperties(Configuration config) {
             super(config);
         }
 

@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.List;
 
 import net.sf.saxon.om.NamePool;
+import net.sf.saxon.pattern.AnyNodeTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.util.Navigator.AxisFilter;
@@ -75,6 +76,6 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     }
 
     protected static AxisIterator filter(NodeTest nodeTest, AxisIterator iter) {
-        return nodeTest != null ? new AxisFilter(iter, nodeTest) : iter;
+        return nodeTest != null && nodeTest != AnyNodeTest.getInstance() ? new AxisFilter(iter, nodeTest) : iter;
     }
 }
