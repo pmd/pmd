@@ -196,10 +196,17 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
 
-
     @Override
     public CharSequence getStringValueCS() {
-        return getStringValue();
+        // https://www.w3.org/TR/xpath-datamodel-31/#ElementNode
+        // The string-value property of an Element Node must be the
+        // concatenation of the string-values of all its Text Node
+        // descendants in document order or, if the element has no such
+        // descendants, the zero-length string.
+
+        // Since we represent all our Nodes as elements, there are no
+        // text nodes
+        return "";
     }
 
     @Override

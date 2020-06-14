@@ -64,7 +64,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testWellFormedClassMetricRule() throws PMDException {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[metric('NCSS') > 0]");
+        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:metric('NCSS') > 0]");
         final String code = "class Foo { Foo() {} void bar() {}}";
 
         Iterator<RuleViolation> violations = getViolations(rule, code);
@@ -74,7 +74,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testWellFormedOperationMetricRule() throws PMDException {
-        Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[metric('CYCLO') > 1]");
+        Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
         final String code = "class Goo { Goo() {if(true){}} }";
 
         Iterator<RuleViolation> violations = getViolations(rule, code);
@@ -84,7 +84,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testBadCase() throws PMDException {
-        Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[metric('cYclo') > 1]");
+        Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('cYclo') > 1]");
         final String code = "class Hoo { Hoo() {if(true){}} }";
 
         Iterator<RuleViolation> violations = getViolations(rule, code);
@@ -94,7 +94,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testNonexistentMetric() throws Exception {
-        testWithExpectedException("//ConstructorDeclaration[metric('FOOBAR') > 1]",
+        testWithExpectedException("//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
                                   "class Joo { Joo() {if(true){}} }",
                                   IllegalArgumentException.class,
                                   MetricFunction.badOperationMetricKeyMessage());
@@ -103,7 +103,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testWrongNodeTypeGeneric() throws Exception {
-        testWithExpectedException("//IfStatement[metric('NCSS') > 1]",
+        testWithExpectedException("//IfStatement[pmd-java:metric('NCSS') > 1]",
                                   "class Koo { Koo() {if(true){}} }",
                                   IllegalStateException.class,
                                   MetricFunction.genericBadNodeMessage());
@@ -112,7 +112,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testWrongMetricKeyForTypeDeclaration() throws Exception {
-        testWithExpectedException("//EnumDeclaration[metric('CYCLO') > 1]",
+        testWithExpectedException("//EnumDeclaration[pmd-java:metric('CYCLO') > 1]",
                                   "enum Loo { FOO; }",
                                   IllegalArgumentException.class,
                                   MetricFunction.badClassMetricKeyMessage());
@@ -121,7 +121,7 @@ public class XPathMetricFunctionTest {
 
     @Test
     public void testWrongMetricKeyForOperationDeclaration() throws Exception {
-        testWithExpectedException("//MethodDeclaration[metric('WMC') > 1]",
+        testWithExpectedException("//MethodDeclaration[pmd-java:metric('WMC') > 1]",
                                   "class Moo { void foo() {if(true){}} }",
                                   IllegalArgumentException.class,
                                   MetricFunction.badOperationMetricKeyMessage());

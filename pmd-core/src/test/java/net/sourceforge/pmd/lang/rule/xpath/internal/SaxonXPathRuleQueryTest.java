@@ -174,7 +174,7 @@ public class SaxonXPathRuleQueryTest {
             assertEquals(followPath(tree, "10"), results.get(0));
         });
 
-        assertExpression("(((/)/descendant::(element(Q{}dummyNode) | element(Q{}dummyNodeB)))/self::node())[data(@Image) = \"10\"]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
+        assertExpression("docOrder((((/)/descendant::(element(Q{}dummyNode) | element(Q{}dummyNodeB)))/child::element(Q{}dummyNode))[data(@Image) = \"10\"])", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
     }
 
     @Test
@@ -197,6 +197,31 @@ public class SaxonXPathRuleQueryTest {
             List<Node> results = query.evaluate(n);
             assertEquals(1, results.size());
             assertEquals(followPath(tree, "10"), results.get(0));
+        });
+    }
+
+    @Test
+    public void unionBeforeSlashDeeper() {
+        SaxonXPathRuleQuery query = createQuery("(//dummyNode | //dummyNodeB)/dummyNode/dummyNode");
+
+        DummyRoot tree = tree(() -> root(
+            node(
+                node(
+                    node()
+                )
+            ),
+            nodeB(
+                node()
+            )
+        ));
+
+        assertEquals(0, query.getRuleChainVisits().size());
+        assertExpression("docOrder((docOrder(((/)/descendant::(element(Q{}dummyNode) | element(Q{}dummyNodeB)))/child::element(Q{}dummyNode)))/child::element(Q{}dummyNode))", query.getFallbackExpr());
+
+        tree.descendantsOrSelf().forEach(n -> {
+            List<Node> results = query.evaluate(n);
+            assertEquals(1, results.size());
+            assertEquals(followPath(tree, "000"), results.get(0));
         });
     }
 

@@ -56,6 +56,9 @@ class XmlNodeWrapper implements XmlNode {
     @Override
     public int getIndexInParent() {
         org.w3c.dom.Node parent = node.getParentNode();
+        if (parent == null) {
+            return -1;
+        }
         NodeList childNodes = parent.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (node == childNodes.item(i)) {

@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -24,7 +27,7 @@ import net.sf.saxon.type.Type;
 
 /**
  * Analyzes the xpath expression to find the root path selector for a element. If found,
- * the element name is available via {@link RuleChainAnalyzer#getRootElement()} and the
+ * the element name is available via {@link RuleChainAnalyzer#getRootElements()} and the
  * expression is rewritten to start at "node::self()" instead.
  *
  * <p>It uses a visitor to visit all the different expressions.
@@ -36,8 +39,9 @@ import net.sf.saxon.type.Type;
  * after all (sub)expressions have been executed.
  */
 public class RuleChainAnalyzer extends SaxonExprVisitor {
+
     private final Configuration configuration;
-    private String rootElement;
+    private List<String> rootElement;
     private boolean rootElementReplaced;
     private boolean insideExpensiveExpr;
     private boolean foundPathInsideExpensive;
@@ -46,11 +50,11 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         this.configuration = currentConfiguration;
     }
 
-    public String getRootElement() {
+    public List<String> getRootElements() {
         if (!foundPathInsideExpensive && rootElementReplaced) {
-            return rootElement;
+            return rootElement == null ? Collections.emptyList() : rootElement;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -60,14 +64,28 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         return result.getBaseExpression();
     }
 
+    public Expression visitSlashPreserveRootElement(SlashExpression e) {
+        Expression start = visit(e.getStart());
+
+        // save state
+        List<String> elt = rootElement;
+        boolean replaced = rootElementReplaced;
+
+        Expression step = visit(e.getStep());
+
+        if (!(e.getStart() instanceof RootExpression)) {
+            // restore
+            rootElement = elt;
+            rootElementReplaced = replaced;
+        }
+
+        return new SlashExpression(start, step);
+    }
+
     @Override
     public Expression visit(SlashExpression e) {
         if (!insideExpensiveExpr && rootElement == null) {
-            if (e.getLhsExpression() instanceof VennExpression) {
-                // nested venn expression
-                return e;
-            }
-            Expression result = super.visit(e);
+            Expression result = visitSlashPreserveRootElement(e);
             if (rootElement != null && !rootElementReplaced) {
                 if (result instanceof SlashExpression) {
                     SlashExpression newPath = (SlashExpression) result;
@@ -79,11 +97,15 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
                         Expression start = newPath.getStart();
                         if (start instanceof RootExpression) {
                             result = new AxisExpression(AxisInfo.SELF, null);
-                            rootElementReplaced = true;
-                        } else if (!(start instanceof VennExpression)) {
+                        } else if (start instanceof VennExpression) {
+                            // abort, set rootElementReplaced so that the
+                            // nodes above won't try to replace themselves
+                            rootElement = null;
+                            result = e;
+                        } else {
                             result = new SlashExpression(start, new AxisExpression(AxisInfo.SELF, null));
-                            rootElementReplaced = true;
                         }
+                        rootElementReplaced = true;
                     }
                 } else {
                     result = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, null);
@@ -104,9 +126,9 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
         if (rootElement == null && e.getNodeTest() instanceof NameTest) {
             NameTest test = (NameTest) e.getNodeTest();
             if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == AxisInfo.DESCENDANT) {
-                rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
+                rootElement = listOf(configuration.getNamePool().getClarkName(test.getFingerprint()));
             } else if (test.getPrimitiveType() == Type.ELEMENT && e.getAxis() == AxisInfo.CHILD) {
-                rootElement = configuration.getNamePool().getClarkName(test.getFingerprint());
+                rootElement = listOf(configuration.getNamePool().getClarkName(test.getFingerprint()));
             }
         }
         return super.visit(e);

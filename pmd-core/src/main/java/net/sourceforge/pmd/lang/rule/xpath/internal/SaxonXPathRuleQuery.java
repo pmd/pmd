@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +28,7 @@ import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.LocalVariableReference;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
+import net.sf.saxon.lib.NamespaceConstant;
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
@@ -182,10 +182,7 @@ public class SaxonXPathRuleQuery {
 
 
     private void addExpressionForNode(String nodeName, Expression expression) {
-        if (!nodeNameToXPaths.containsKey(nodeName)) {
-            nodeNameToXPaths.put(nodeName, new LinkedList<>());
-        }
-        nodeNameToXPaths.get(nodeName).add(expression);
+        nodeNameToXPaths.computeIfAbsent(nodeName, n -> new ArrayList<>(2)).add(expression);
     }
 
     private void ensureInitialized() {
@@ -196,6 +193,7 @@ public class SaxonXPathRuleQuery {
             final XPathEvaluator xpathEvaluator = new XPathEvaluator();
             this.configuration = xpathEvaluator.getConfiguration();
             StaticContextWithProperties staticCtx = new StaticContextWithProperties(configuration);
+            staticCtx.declareNamespace("fn", NamespaceConstant.FN);
 
             for (final PropertyDescriptor<?> propertyDescriptor : properties.keySet()) {
                 final String name = propertyDescriptor.name();
@@ -233,8 +231,8 @@ public class SaxonXPathRuleQuery {
             RuleChainAnalyzer rca = new RuleChainAnalyzer(xpathEvaluator.getConfiguration());
             Expression modified = rca.visit(subexpression);
 
-            if (rca.getRootElement() != null) {
-                addExpressionForNode(rca.getRootElement(), modified);
+            if (!rca.getRootElements().isEmpty()) {
+                rca.getRootElements().forEach(it -> addExpressionForNode(it, modified));
             } else {
                 // couldn't find a root element for the expression, that means, we can't use rule chain at all
                 // even though, it would be possible for part of the expression.
@@ -283,7 +281,10 @@ public class SaxonXPathRuleQuery {
             }
             Object actualValue = properties.getOrDefault(prop, prop.defaultValue());
             AtomicSequence converted = DomainConversion.convert(actualValue);
-            local.setStaticType(DomainConversion.typeOf(converted), converted, 0);
+            // we could set the value (2nd parameter = converted) to inline the
+            // property value, but in some cases the saxon optimizer throws a type
+            // error because it prunes entire branches
+            local.setStaticType(DomainConversion.typeOf(converted), null, 0);
             return local;
         }
     }
