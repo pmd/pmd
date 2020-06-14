@@ -61,6 +61,11 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
+    
+#### Deprecated APIs
+
+*   {%jdoc apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %}
+
 
 ### External Contributions
 
