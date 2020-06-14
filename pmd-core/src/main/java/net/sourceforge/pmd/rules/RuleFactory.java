@@ -58,10 +58,11 @@ public class RuleFactory {
     private static final String MAXIMUM_LANGUAGE_VERSION = "maximumLanguageVersion";
     private static final String SINCE = "since";
     private static final String PROPERTIES = "properties";
-    private static final String PRIORITY = "priority";
+    public static final String PRIORITY = "priority";
+
+    public static final String RULE = "rule";
     private static final String EXAMPLE = "example";
-    private static final String DESCRIPTION = "description";
-    private static final String PROPERTY = "property";
+    public static final String DESCRIPTION = "description";
     private static final String CLASS = "class";
 
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));

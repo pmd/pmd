@@ -63,10 +63,6 @@ public class RuleSetFactory {
 
     private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
 
-    private static final String DESCRIPTION = "description";
-    private static final String UNEXPECTED_ELEMENT = "Unexpected element <";
-    private static final String PRIORITY = "priority";
-
     private final ResourceLoader resourceLoader;
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
@@ -396,6 +392,7 @@ public class RuleSetFactory {
 
             PositionedXmlDoc parsed = XmlMessageUtils.getInstance().parse(builder, inputSource, handler);
 
+            @SuppressWarnings("PMD.CloseResource")
             AccumulatingErrorReporter err = makeReporter(handler, parsed);
             try {
                 RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue()).withFileName(ruleSetReferenceId.getRuleSetFileName());
@@ -408,7 +405,7 @@ public class RuleSetFactory {
                 throw e;
             }
         } catch (ParserConfigurationException | IOException | XmlException ex) {
-            if (!(ex instanceof XmlException)) { // would already have been reported
+            if (!(ex instanceof XmlException)) { // NOPMD would already have been reported
                 ex.printStackTrace();
             }
             throw new RulesetParseException("Couldn't read the ruleset " + ruleSetReferenceId, ex);
@@ -456,7 +453,7 @@ public class RuleSetFactory {
             String nodeName = node.getNodeName();
             String text = parseTextNode(node);
             switch (nodeName) {
-            case DESCRIPTION:
+            case RuleFactory.DESCRIPTION:
                 builder.withDescription(text);
                 break;
             case "include-pattern": {
@@ -475,7 +472,7 @@ public class RuleSetFactory {
                 builder.withFileExclusions(pattern);
                 break;
             }
-            case "rule":
+            case RuleFactory.RULE:
                 parseRuleNode(ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
                 break;
             default:
@@ -595,7 +592,7 @@ public class RuleSetFactory {
                 Element excludeElement = (Element) child;
                 String excludedRuleName = excludeElement.getAttribute("name");
                 excludedRulesCheck.add(excludedRuleName);
-            } else if (isElementNode(child, PRIORITY)) {
+            } else if (isElementNode(child, RuleFactory.PRIORITY)) {
                 priority = parseTextNode(child).trim();
             }
         }

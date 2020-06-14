@@ -24,7 +24,9 @@ import net.sourceforge.pmd.properties.xml.XmlMapper;
  * <h1>Upcoming API changes to the properties framework</h1>
  * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
  *
- * @param <T> Type of the property's value.
+ * TODO this could be turned into a class, there's a single, very simple implementation
+ *
+ * @param <T> Type of the property's value
  *
  * @author Brian Remedios
  * @author Clément Fournier
