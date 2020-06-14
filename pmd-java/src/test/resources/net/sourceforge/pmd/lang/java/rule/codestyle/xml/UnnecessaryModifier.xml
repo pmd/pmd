@@ -3,197 +3,179 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public' in interface method
-     ]]></description>
+        <description>Unneeded 'public' in interface method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public void bar();
+    public void bar();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-class, no problem
-     ]]></description>
+        <description>class, no problem</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class Foo {
- public abstract void bar();
+    public abstract void bar();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'abstract' in interface method
-     ]]></description>
+        <description>Unneeded 'abstract' in interface method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- abstract void bar();
+    abstract void bar();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-all is well in interface method
-     ]]></description>
+        <description>all is well in interface method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- void bar();
+    void bar();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public' in interface field
-     ]]></description>
+        <description>Unneeded 'public' in interface field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public int X = 0;
+    public int X = 0;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'static' in interface field
-     ]]></description>
+        <description>Unneeded 'static' in interface field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- static int X = 0;
+    static int X = 0;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'final' in interface field
-     ]]></description>
+        <description>Unneeded 'final' in interface field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- final int X = 0;
+    final int X = 0;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public static final' in interface field
-     ]]></description>
+        <description>Unneeded 'public static final' in interface field</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public static final int X = 0;
+    public static final int X = 0;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK in interface field
-     ]]></description>
+        <description>OK in interface field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- int X = 0;
+    int X = 0;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public' in class nested in interface
-     ]]></description>
+        <description>Unneeded 'public' in class nested in interface</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public class Bar {}
+    public class Bar {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'static' in class nested in interface
-     ]]></description>
+        <description>Unneeded 'static' in class nested in interface</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- static class Bar {}
+    static class Bar {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK in class nested in interface
-     ]]></description>
+        <description>OK in class nested in interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- class Bar {}
+    class Bar {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public' in interface nested in interface
-     ]]></description>
+        <description>Unneeded 'public' in interface nested in interface</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public interface Baz {}
+    public interface Baz {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'static' in interface nested in interface
-     ]]></description>
+        <description>Unneeded 'static' in interface nested in interface</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Foo {
- static interface Baz {}
+    static interface Baz {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK in interface nested in interface
-     ]]></description>
+        <description>OK in interface nested in interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- interface Baz {}
+    interface Baz {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'static' in interface nested in class
-     ]]></description>
+        <description>Unneeded 'static' in interface nested in class</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public static interface Bar {}
+    public static interface Bar {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK in interface nested in class
-     ]]></description>
+        <description>OK in interface nested in class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public interface Bar {}
+    public interface Bar {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public static final' in interface field inside another interface
-     ]]></description>
+        <description>Unneeded 'public static final' in interface field inside another interface</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'public' on interface 'Bar': members of interface types are implicitly public</message>
@@ -201,16 +183,15 @@ Unneeded 'public static final' in interface field inside another interface
         </expected-messages>
         <code><![CDATA[
 public interface Foo {
- public interface Bar {
-  public static final int X = 0;
- }
+    public interface Bar {
+        public static final int X = 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Unneeded 'public static final' in annotation field inside another interface
-     ]]></description>
+        <description>Unneeded 'public static final' in annotation field inside another interface</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'public' on annotation 'Bar': members of interface types are implicitly public</message>
@@ -218,63 +199,59 @@ Unneeded 'public static final' in annotation field inside another interface
         </expected-messages>
         <code><![CDATA[
 public interface Foo {
- public @interface Bar {
-  public static final int X = 0;
- }
+    public @interface Bar {
+        public static final int X = 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-OK in interface field inside another interface
-     ]]></description>
+        <description>OK in interface field inside another interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 interface Foo {
- interface Bar {
-  int X = 0;
- }
+    interface Bar {
+        int X = 0;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Don't check methods in nested classes
-     ]]></description>
+        <description>Don't check methods in nested classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 interface Foo {
- class Bar {
-  public void foo() {}
- }
+    class Bar {
+        public void foo() {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Don't check fields in nested classes
-     ]]></description>
+        <description>Don't check fields in nested classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 interface Foo {
- class Bar {
-  public int buz;
- }
+    class Bar {
+        public int buz;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Don't check fields that are anonymous inner classes
-     ]]></description>
+        <description>Don't check fields that are anonymous inner classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 interface Foo {
-   Test DFLT_IMPL = new Test() {
-   public int size() { return 0;}
- };
+    Test DFLT_IMPL = new Test() {
+        public int size() { return 0;}
+    };
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -293,18 +270,19 @@ public enum Testing {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1275 False positive: UnusedModifier rule for static inner class in enum</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public enum MyEnum
 {
-  VALUE_1,
-  VALUE_2;
+    VALUE_1,
+    VALUE_2;
 
-  private static class MyInnerClass // violation detected by PMD
-  {
-  }
+    private static class MyInnerClass // violation detected by PMD
+    {
+    }
 }
         ]]></code>
     </test-code>
@@ -320,7 +298,7 @@ public enum TestEnum {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Unnecessary public on annotation element</description>
         <expected-problems>1</expected-problems>
@@ -333,6 +311,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary abstract on annotation element</description>
         <expected-problems>1</expected-problems>
@@ -345,6 +324,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary final on annotation field</description>
         <expected-problems>1</expected-problems>
@@ -354,6 +334,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary static on annotation field</description>
         <expected-problems>1</expected-problems>
@@ -363,6 +344,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary public on annotation field</description>
         <expected-problems>1</expected-problems>
@@ -372,6 +354,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary public on annotation nested class</description>
         <expected-problems>1</expected-problems>
@@ -382,6 +365,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary static on annotation nested class</description>
         <expected-problems>1</expected-problems>
@@ -392,6 +376,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary public on annotation nested interface</description>
         <expected-problems>1</expected-problems>
@@ -402,6 +387,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary public on annotation nested annotation</description>
         <expected-problems>1</expected-problems>
@@ -412,6 +398,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary static on annotation nested enum</description>
         <expected-problems>2</expected-problems>
@@ -426,6 +413,7 @@ public @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary static on interface nested enum</description>
         <expected-problems>2</expected-problems>
@@ -440,6 +428,7 @@ public interface TestInterface {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary static on class nested enum</description>
         <expected-problems>1</expected-problems>
@@ -453,6 +442,7 @@ public class TestClass {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary abstract on interface</description>
         <expected-problems>1</expected-problems>
@@ -464,6 +454,7 @@ public abstract interface TestInterface {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Unnecessary abstract on annotation</description>
         <expected-problems>1</expected-problems>
@@ -475,98 +466,93 @@ public abstract @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-final method on non-final class is ok
-     ]]></description>
+        <description>final method on non-final class is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public final void foo() { }
+    public final void foo() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>final and non-final methods mixed</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public final void foo() { }
- public void foo2() { }
+    public final void foo() { }
+    public void foo2() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-final method on a final class
-     ]]></description>
+        <description>final method on a final class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'final' on method 'foo': the method is already in a final class</message>
         </expected-messages>
         <code><![CDATA[
 public final class Foo {
- public final void foo() { }
+    public final void foo() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-mixed final and non-final methods on final class
-     ]]></description>
+        <description>mixed final and non-final methods on final class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'final' on method 'foo': the method is already in a final class</message>
         </expected-messages>
         <code><![CDATA[
 public final class Foo {
- public final void foo() { }
- public void foo2() { }
+    public final void foo() { }
+    public void foo2() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-multiple final methods on final class
-     ]]></description>
+        <description>multiple final methods on final class</description>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public final class Foo {
- public final void fooA() { }
- public final void fooS() { }
- public final void fooD() { }
- public void foo2() { }
+    public final void fooA() { }
+    public final void fooS() { }
+    public final void fooD() { }
+    public void foo2() { }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-final method in inner class of non-final outer class
-     ]]></description>
+        <description>final method in inner class of non-final outer class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public final class Foo {
- public static class Bar {
-  public final void buz() {}
- }
+    public static class Bar {
+        public final void buz() {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-final method in inner final class 
-     ]]></description>
+        <description>final method in inner final class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'final' on method 'buz': the method is already in a final class</message>
         </expected-messages>
         <code><![CDATA[
 public final class Foo {
- public final class Bar {
-  public final void buz() {}
- }
+    public final class Bar {
+        public final void buz() {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -587,22 +573,24 @@ public final class InboxContents2 {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-    <description>Unnecessary final of private method</description>
+        <description>Unnecessary final of private method</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'final' on method 'getValue': private methods cannot be overridden</message>
         </expected-messages>
         <code><![CDATA[
 public class TestClass {
-	private final int getValue() {
-		return 0;
-	}
+    private final int getValue() {
+        return 0;
+    }
 }
         ]]></code>
     </test-code>
+
     <test-code>
-    <description>Unnecessary final of enum method</description>
+        <description>Unnecessary final of enum method</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'final' on method 'magic': an anonymous class cannot be extended</message>
@@ -618,8 +606,9 @@ public enum Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-    <description>Unnecessary final of anonymous class method</description>
+        <description>Unnecessary final of anonymous class method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -632,8 +621,9 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
-    <description>Unnecessary final of try-with-resources resource</description>
+        <description>Unnecessary final of try-with-resources resource</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>Unnecessary modifier 'final' on resource specification 'fw': resource specifications are implicitly final</message>
@@ -648,6 +638,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#817 [java] UnnecessaryModifierRule crashes on valid code</description>
         <expected-problems>0</expected-problems>
@@ -658,6 +649,7 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Private constructor of enum</description>
         <expected-problems>1</expected-problems>
@@ -667,15 +659,16 @@ class Foo {
         <code><![CDATA[
 enum Foo {
     BAR("bar");
-    
+
     private String name;
-    
+
     private Foo(String s) {
         name = s;
     }
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Static Modifier on interface</description>
         <expected-problems>1</expected-problems>
@@ -690,6 +683,7 @@ class Foo{
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Static Modifier on interface</description>
         <expected-problems>1</expected-problems>
@@ -701,8 +695,7 @@ public interface Bar {
     void method() {
     }
     static class Foo {}
-
 }
-            ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

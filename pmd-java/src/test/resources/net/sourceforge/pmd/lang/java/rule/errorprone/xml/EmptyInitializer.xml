@@ -3,63 +3,60 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case (non static)
-     ]]></description>
+        <description>failure case (non static)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   {}
+    {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case (static)
-     ]]></description>
+        <description>failure case (static)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-   static {}
+    static {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-not an initializer
-     ]]></description>
+        <description>not an initializer</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-   public void bar() {
-      { }
-   }
+    public void bar() {
+        { }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-initializer not empty
-     ]]></description>
+        <description>initializer not empty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-      { System.out.print("something interesting"); }
+    {
+        System.out.print("something interesting");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-static initializer not empty
-     ]]></description>
+        <description>static initializer not empty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- static {
-  x++;
- }
+    static {
+        x++;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

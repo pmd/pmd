@@ -9,10 +9,10 @@
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String bar = new String("bar");
- private String baz = new String();
+    private String bar = new String("bar");
+    private String baz = new String();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -20,9 +20,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private String[] bar = new String[5];
+    private String[] bar = new String[5];
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -30,12 +30,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  byte[] bytes = new byte[50];
-  String bar = new String(bytes, 0, bytes.length);
- }
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes, 0, bytes.length);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -43,12 +43,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  byte[] bytes = new byte[50];
-  String bar = new String(bytes, 0, bytes.length, "some-encoding");
- }
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes, 0, bytes.length, "some-encoding");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -56,12 +56,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {
-  byte[] bytes = new byte[50];
-  String bar = new String(bytes);
- }
+    void foo() {
+        byte[] bytes = new byte[50];
+        String bar = new String(bytes);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -69,11 +69,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String foo() {
-  return new String("foo");
- }
+    String foo() {
+        return new String("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -81,11 +81,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- STRING foo() {
-  return new STRING("foo");
- }
+    STRING foo() {
+        return new STRING("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -93,11 +93,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String foo(String str) {
-  return new String(str);
- }
+    String foo(String str) {
+        return new String(str);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

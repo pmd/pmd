@@ -3,137 +3,127 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-returning a HashSet, bad
-     ]]></description>
+        <description>returning a HashSet, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.HashSet;
 public class Foo {
- HashSet foo() {
-  return new HashSet();
- }
+    HashSet foo() {
+        return new HashSet();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-returning a Map, OK
-     ]]></description>
+        <description>returning a Map, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.Map;
 import java.util.HashMap;
 public class Foo {
- Map getFoo() {
-  return new HashMap();
- }
+    Map getFoo() {
+        return new HashMap();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-no problemo
-     ]]></description>
+        <description>no problemo</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {}
+    void foo() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-returning a set
-     ]]></description>
+        <description>returning a set</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
- Set fooSet = new HashSet(); // OK
- Set foo() {
-  return fooSet;
- }
+    Set fooSet = new HashSet(); // OK
+    Set foo() {
+        return fooSet;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-field declared of type HashSet
-     ]]></description>
+        <description>field declared of type HashSet</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.HashSet;
 public class Foo {
- HashSet fooSet = new HashSet(); // NOT OK
+    HashSet fooSet = new HashSet(); // NOT OK
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-field, return type both HashSet
-     ]]></description>
+        <description>field, return type both HashSet</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.util.HashSet;
 public class Foo {
- HashSet fooSet = new HashSet(); // NOT OK
- HashSet foo() { // NOT OK
-  return fooSet;
- }
+    HashSet fooSet = new HashSet(); // NOT OK
+    HashSet foo() { // NOT OK
+        return fooSet;
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-two fields
-     ]]></description>
+        <description>two fields</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.util.HashSet;
 import java.util.HashMap;
 public class Foo {
- HashSet fooSet = new HashSet();
- HashMap fooMap = new HashMap();
+    HashSet fooSet = new HashSet();
+    HashMap fooMap = new HashMap();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-method param is HashMap
-     ]]></description>
+        <description>method param is HashMap</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.HashMap;
 public class Foo {
- void foo(HashMap bar) {}
+    void foo(HashMap bar) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Vector could be List
-     ]]></description>
+        <description>Vector could be List</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
- public void foo(Vector bar) {}
+    public void foo(Vector bar) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ArrayList could be List
-     ]]></description>
+        <description>ArrayList could be List</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
- public void foo(ArrayList bar) {}
+    public void foo(ArrayList bar) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

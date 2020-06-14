@@ -3,80 +3,109 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-setUp mispellings
-     ]]></description>
+        <description>setUp mispellings</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void setup() {}
- public void SetUp() {}
+    public void setup() {}
+    public void SetUp() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-tearDown misspellings
-     ]]></description>
+        <description>tearDown misspellings</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void TearDown() {}
- public void teardown() {}
+    public void TearDown() {}
+    public void teardown() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void setUp() {}
- public void tearDown() {}
+    public void setUp() {}
+    public void tearDown() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-unrelated methods
-     ]]></description>
+        <description>unrelated methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void utility() {}
- public void foobr() {}
+    public void utility() {}
+    public void foobr() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-overloaded setUp
-     ]]></description>
+        <description>overloaded setUp</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
- public void setup(String x) {}
+    public void setup(String x) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-No problem - not a JUnit test
-     ]]></description>
+        <description>No problem - not a JUnit test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void setup() {}
- public void SetUp() {}
+    public void setup() {}
+    public void SetUp() {}
 }
-     ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No problem - usual JUnit5 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class BTest {
+
+    @BeforeEach
+    void setup() {}
+
+    @Test
+    void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No problem - usual JUnit4 test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Before;
+import org.junit.Test;
+public class BTest {
+
+    @Before
+    void setup() {}
+
+    @Test
+    void test() {}
+}
+        ]]></code>
     </test-code>
 </test-data>

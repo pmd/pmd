@@ -79,6 +79,18 @@ public class CsTokenizerTest {
     }
 
     @Test
+    public void testIgnoreBetweenSpecialComments() {
+        tokenizer
+                .tokenize(
+                        toSourceCode("// CPD-OFF\n" + "class Foo {\n" + "  void bar() {\n" + "    int a = 1 >> 2; \n"
+                                + "    a += 1; \n" + "    a++; \n" + "    a /= 3e2; \n" + "    float f = -3.1; \n"
+                                + "    f *= 2; \n" + "    bool b = ! (f == 2.0 || f >= 1.0 && f <= 2.0) \n"
+                                + "  }\n" + "// CPD-ON\n" + "}"),
+                        tokens);
+        assertEquals(2, tokens.size()); // "}" + EOF
+    }
+
+    @Test
     public void testCommentsIgnored3() {
         tokenizer.tokenize(toSourceCode("class Foo { /// class X /* aaa */ \n }"), tokens);
         assertEquals(5, tokens.size());
@@ -160,6 +172,17 @@ public class CsTokenizerTest {
                 "using var font1 = new Font(\"Arial\", 10.0f);\n" + "  byte charset = font1.GdiCharSet;\n"),
                 tokens);
         assertEquals("using", tokens.getTokens().get(0).toString());
+    }
+
+    @Test
+    public void testInterpolatedVerbatimStrings() {
+        tokenizer.setIgnoreUsings(true);
+        tokenizer.tokenize(toSourceCode(
+                "var test = $@\"test\";\n"
+                + "var test2 = @$\"test\";"),
+                tokens
+        );
+        assertEquals(15, tokens.size());
     }
 
     private SourceCode toSourceCode(String source) {

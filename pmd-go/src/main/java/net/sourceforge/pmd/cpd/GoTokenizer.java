@@ -10,9 +10,6 @@ import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.go.antlr4.GolangLexer;
 
-/**
- * The Go tokenizer.
- */
 public class GoTokenizer extends AntlrTokenizer {
 
     @Override

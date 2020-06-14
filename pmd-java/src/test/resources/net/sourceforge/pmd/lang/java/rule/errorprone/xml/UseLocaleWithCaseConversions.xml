@@ -3,64 +3,59 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-toLowerCase() with no args
-     ]]></description>
+        <description>toLowerCase() with no args</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String x = y.toLowerCase();
+    String x = y.toLowerCase();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-toUpperCase() with no args
-     ]]></description>
+        <description>toUpperCase() with no args</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- String x = y.toUpperCase();
+    String x = y.toUpperCase();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-both ok
-     ]]></description>
+        <description>both ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String x = y.toUpperCase(Locale.EN);
- String z = y.toLowerCase(Locale.EN);
+    String x = y.toUpperCase(Locale.EN);
+    String z = y.toLowerCase(Locale.EN);
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-toHexString OK
-     ]]></description>
+        <description>toHexString OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String x = y.toHexString().toUpperCase();
+    String x = y.toHexString().toUpperCase();
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Compound method call
-     ]]></description>
+        <description>Compound method call</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  public String getString(){
-    String x = "hello world";
-    return x.toUpperCase(Locale.GERMANY).trim();
-  }
+    public String getString(){
+        String x = "hello world";
+        return x.toUpperCase(Locale.GERMANY).trim();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -70,11 +65,11 @@ public class Foo {
 import java.sql.*;
 
 final class Test {
-  private Test() { }
+    private Test() { }
 
-  public static String foo(ResultSet r) throws SQLException {
-    return r.getString("bar").toLowerCase();
-  }
+    public static String foo(ResultSet r) throws SQLException {
+        return r.getString("bar").toLowerCase();
+    }
 }
         ]]></code>
     </test-code>

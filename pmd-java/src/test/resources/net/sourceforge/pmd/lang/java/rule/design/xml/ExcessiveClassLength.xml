@@ -3,6 +3,7 @@
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>short</description>
         <rule-property name="minimum">10</rule-property>
@@ -10,33 +11,36 @@
         <code><![CDATA[
 public class Foo {
     public static void main(String args[]) {
-	  int x;
+        int x;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <code-fragment id="long"><![CDATA[
 public class Foo {
     public void bar() {
-      bar();
-      bar();
-      bar();
-      bar();
-      bar();
-      bar();
-      bar();
-      bar();
-      bar();
-      bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
+        bar();
     }
 }
- ]]></code-fragment>
+    ]]></code-fragment>
+
     <test-code>
         <description>long</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="long"/>
     </test-code>
+
     <test-code>
         <description>long class - changed minimum</description>
         <rule-property name="minimum">2000</rule-property>
@@ -44,20 +48,19 @@ public class Foo {
         <code-ref id="long"/>
     </test-code>
 
-
     <test-code>
         <description>Consider enum types, refs #825</description>
         <rule-property name="minimum">4</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-        public enum Foo {
-             CONST;
-            // foo
-            // foo
-            // foo
-            // foo
-        }
-     ]]></code>
+public enum Foo {
+     CONST;
+    // foo
+    // foo
+    // foo
+    // foo
+}
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -65,14 +68,13 @@ public class Foo {
         <rule-property name="minimum">4</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-        public @interface Foo {
-            String name();
-            // foo
-            // foo
-            // foo
-            // foo
-        }
-     ]]></code>
+public @interface Foo {
+    String name();
+    // foo
+    // foo
+    // foo
+    // foo
+}
+        ]]></code>
     </test-code>
-
 </test-data>

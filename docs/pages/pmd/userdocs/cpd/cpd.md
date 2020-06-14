@@ -207,7 +207,6 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 
 ## Supported Languages
 
-* Apex
 * C#
 * C/C++
 * Dart
@@ -220,15 +219,18 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Kotlin
 * Lua
 * Matlab
+* Modelica
 * Objective-C
 * Perl
 * PHP
 * PL/SQL
 * Python
 * Ruby
+* Salesforce.com Apex
 * Scala
 * Swift
 * Visualforce
+* XML
 
 
 ## Available report formats
@@ -368,7 +370,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 ## Suppression
 
 Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
-**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python** and **Swift** by including the keywords `CPD-OFF` and `CPD-ON`.
+**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
     public Object someParameterizedFactoryMethod(int x) throws Exception {

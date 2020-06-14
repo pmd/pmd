@@ -3,35 +3,28 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-	<test-code>
-		<description><![CDATA[
-CSRF by starting a controller with an EL action
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-	<test-code>
-		<description><![CDATA[
-Controller without actions is perfectly safe
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page controller="AcRestActionsController"  >
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
 
-	<test-code>
-		<description><![CDATA[
-JS action on load is perfectly safe     
-	]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
+    <test-code>
+        <description>CSRF by starting a controller with an EL action</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Controller without actions is perfectly safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page controller="AcRestActionsController"  >
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JS action on load is perfectly safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
 <apex:page controller="AcRestActionsController" action="init()" >
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
+        ]]></code>
+    </test-code>
 </test-data>

@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-Ok, all cases
-     ]]></description>
+        <description>Ok, all cases</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 if (x) {
@@ -20,13 +19,11 @@ for (var i = 0; i < 10; i++) {
 x ? true : false;
 x ? true : false;
 x ? true : false;
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, assignment, all cases
-     ]]></description>
+        <description>Bad, assignment, all cases</description>
         <expected-problems>7</expected-problems>
         <code><![CDATA[
 if (x = true) {
@@ -40,84 +37,70 @@ for (var i = 0; x = true; i++) {
 (x = true) ? true : false;
 x ? x = true : false;
 x ? true : x = false;
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow assignment, if
-     ]]></description>
+        <description>Ok, allow assignment, if</description>
         <rule-property name="allowIf">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 if (x = true) {
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow assignment, while
-     ]]></description>
+        <description>Ok, allow assignment, while</description>
         <rule-property name="allowWhile">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 while (x = true) {
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow assignment, do
-     ]]></description>
+        <description>Ok, allow assignment, do</description>
         <rule-property name="allowWhile">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 do {
 } while(x = true);
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow assignment, for
-     ]]></description>
+        <description>Ok, allow assignment, for</description>
         <rule-property name="allowFor">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 for (var i = 0; x = true; i++) {
 }
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow assignment, ternary
-     ]]></description>
+        <description>Ok, allow assignment, ternary</description>
         <rule-property name="allowTernary">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 (x = true) ? true : false;
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow assignment, ternary results
-     ]]></description>
+        <description>Ok, allow assignment, ternary results</description>
         <rule-property name="allowTernaryResults">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 x ? x = true : false;
 x ? true : x = false;
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Bad, increment/decrement, all cases
-     ]]></description>
+        <description>Bad, increment/decrement, all cases</description>
         <expected-problems>28</expected-problems>
         <code><![CDATA[
 if (++x || --x || x++ || x--) {
@@ -131,13 +114,11 @@ do {
 (++x || --x || x++ || x--) ? true : false;
 x ? (++x || --x || x++ || x--) : false;
 x ? true : (++x || --x || x++ || x--);
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Ok, allow increment/decrement, all cases
-     ]]></description>
+        <description>Ok, allow increment/decrement, all cases</description>
         <rule-property name="allowIncrementDecrement">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -152,7 +133,6 @@ do {
 (++x || --x || x++ || x--) ? true : false;
 x ? (++x || --x || x++ || x--) : false;
 x ? true : (++x || --x || x++ || x--);
-     ]]></code>
-        <source-type>ecmascript 3</source-type>
+        ]]></code>
     </test-code>
 </test-data>

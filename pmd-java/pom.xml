@@ -8,6 +8,7 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -157,6 +158,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -180,6 +186,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <version>3.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

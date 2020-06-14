@@ -98,20 +98,22 @@ This is a stripped down example which just contains two test cases.
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>concrete class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {}
-     ]]></code>
+    ]]></code>
     </test-code>
+
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public abstract class Foo {}
-     ]]></code>
+    ]]></code>
     </test-code>
 </test-data>
 ```
@@ -167,8 +169,9 @@ The `<test-code>` elements understands three optional attributes:
     This allows you to share the same code snippet with several test cases. The attribute `id` must match the
     id of the references code fragment.
 
-*   **`<source-type>`**: Optional element that specifies the source code language. This defines the parser that
-    is used for parsing the code snippet. If not given, **java** is used as default.
+*   **`<source-type>`**: Optional element that specifies a specific language version. This can be used
+    to select a specific parser version for parsing the code snippet. If not given, the default version of
+    the rule's language is used. This element can almost always be omitted.
 
 ### `<code-fragment>`
 
@@ -195,27 +198,33 @@ in a "CDATA" section, so that no further XML escapes (entity references such as 
             <message>Violation message 2</message>
         </expected-messages>
         <code><![CDATA[
-    public class ConsistentReturn {
-        public Boolean foo() {
-        }
+public class ConsistentReturn {
+    public Boolean foo() {
     }
-         ]]></code>
-            <source-type>apex</source-type>                             <!-- optional -->
-        </test-code>
+}
+        ]]></code>
+        <source-type>java 1.5</source-type>                             <!-- optional -->
+    </test-code>
 
-        <code-fragment id="codeSnippet1"><![CDATA[
-    public class ConsistentReturn {
-        public Boolean foo() {
+    <code-fragment id="codeSnippet1"><![CDATA[
+public class ConsistentReturn {
+    public Boolean foo() {
     }
-    }
-        ]]></code-fragment>
-        <test-code>
-            <description>test case using a code fragment</description>
-            <expected-problems>0</expected-problems>
-            <code-ref id="codeSnippet1"/>
-        </test-code>
-    </test-data>
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>test case using a code fragment</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="codeSnippet1"/>
+    </test-code>
+</test-data>
 ```
+
+{% include note.html content="For better readability, the indentation should be 4 for spaces and no tabs.
+Each test-code should be separated by a blank line. CDATA
+sections are only required for the code snippets which should be formatted with indentation for
+better readability. The description can be written directly without a CDATA section." %}
 
 ## Using the test framework externally
 
@@ -224,12 +233,14 @@ Therefore you just need to reference the dependency `net.sourceforge.pmd:pmd-tes
 
 For maven, you can use this snippet:
 
-    <dependency>
-        <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd-test</artifactId>
-        <version>{{site.pmd.version}}</version>
-        <scope>test</scope>
-    </dependency>
+```xml
+<dependency>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd-test</artifactId>
+    <version>{{site.pmd.version}}</version>
+    <scope>test</scope>
+</dependency>
+```
 
 Then proceed as described earlier: create your test class, create your test cases and run the unit test.
 

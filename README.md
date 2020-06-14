@@ -15,7 +15,7 @@ Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
 
 Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
 C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
+Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift, Visualforce and XML.
 
 ## Support
 
