@@ -118,8 +118,9 @@ public class SaxonXPathRuleQuery {
             final Set<Node> results = new LinkedHashSet<>();
             List<Expression> expressions = getExpressionsForLocalNameOrDefault(node.getXPathNodeName());
             for (Expression expression : expressions) {
-                SequenceIterator iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
-                Item current = iterator.next();
+                @SuppressWarnings("PMD.CloseResource")
+                SequenceIterator<?> iterator = expression.iterate(xpathDynamicContext.getXPathContextObject());
+                Item<?> current = iterator.next();
                 while (current != null) {
                     if (current instanceof AstElementNode) {
                         results.add(((AstElementNode) current).getUnderlyingNode());

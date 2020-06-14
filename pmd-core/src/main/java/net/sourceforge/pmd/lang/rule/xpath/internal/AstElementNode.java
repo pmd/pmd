@@ -146,6 +146,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
             forwards ? CollectionUtil.drop(parent.getChildren(), wrappedNode.getIndexInParent() + 1)
                      : CollectionUtil.take(parent.getChildren(), wrappedNode.getIndexInParent());
 
+        @SuppressWarnings("PMD.CloseResource")
         AxisIterator iter =
             forwards ? iterateList(siblingsList)
                      : new RevListAxisIterator(siblingsList);

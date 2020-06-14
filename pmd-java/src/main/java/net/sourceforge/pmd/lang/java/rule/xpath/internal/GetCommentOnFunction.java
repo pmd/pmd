@@ -61,7 +61,7 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
     public ExtensionFunctionCall makeCallExpression() {
         return new ExtensionFunctionCall() {
             @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) {
+            public Sequence<?> call(XPathContext context, Sequence[] arguments) {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
 
                 int codeBeginLine = contextNode.getBeginLine();
@@ -73,7 +73,7 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
                         return new StringValue(comment.getImage());
                     }
                 }
-                return new EmptyAtomicSequence();
+                return EmptyAtomicSequence.INSTANCE;
             }
 
         };
