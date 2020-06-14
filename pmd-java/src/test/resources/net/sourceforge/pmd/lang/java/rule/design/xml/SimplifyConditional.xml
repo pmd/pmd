@@ -3,124 +3,110 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar(Object x) {
-  if (x != null && x instanceof String) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar(Object x) {
-  if (x instanceof String) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-transpose x and null, still bad
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar(Object x) {
-  if (null != x && x instanceof String) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-conditional or and !(instanceof)
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar(Object x) {
-  if (x == null || !(x instanceof String)) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-indexing into array is ok
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar(Object x) {
-  if (x != null && x[0] instanceof String) {}
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-test for null on unrelated object is ok
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- void bar(Object x) {
-  if (x instanceof String && ((String)x).substring(2) != null) {}
- }
-}
-     ]]></code>
-    </test-code>
-        <test-code>
-        <description><![CDATA[
-Bug [1843273] False -
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Bug1843273
-{
-	public boolean isTrue(Boolean value)
-	   {
-	       boolean result = true;
 
-	       if (value.booleanValue())
-	       {
-	           return result;
-	       }
-	       else
-	       {
-	           return ! result;
-	       }
-	   }
+    <test-code>
+        <description>failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x) {
+        if (x != null && x instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x) {
+        if (x instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>transpose x and null, still bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x) {
+        if (null != x && x instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional or and !(instanceof)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x) {
+        if (x == null || !(x instanceof String)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>indexing into array is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x) {
+        if (x != null && x[0] instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>test for null on unrelated object is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x) {
+        if (x instanceof String && ((String)x).substring(2) != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bug [1843273] False -</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bug1843273 {
+    public boolean isTrue(Boolean value) {
+       boolean result = true;
+
+       if (value.booleanValue()) {
+           return result;
+       } else {
+           return ! result;
+       }
    }
-     ]]></code>
+}
+        ]]></code>
     </test-code>
 
      <test-code>
-        <description><![CDATA[
-Bug 2317099 : False + in SimplifyConditional
-     ]]></description>
+        <description>Bug 2317099 : False + in SimplifyConditional</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Bug2317099
 {
-  public void method(Env env) {
-    if (env != null && env.getContext() != null &&
-      env.getContext().getContextObject() instanceof PageContext) {
+    public void method(Env env) {
+        if (env != null && env.getContext() != null &&
+            env.getContext().getContextObject() instanceof PageContext) {
+        }
     }
- }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>

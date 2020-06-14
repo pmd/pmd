@@ -184,9 +184,11 @@ Avoid printStackTrace(); use a logger call instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
- [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
+//PrimaryExpression[
+   ( PrimaryPrefix[Name[contains(@Image,'printStackTrace')]]
+   | PrimarySuffix[@Image='printStackTrace']
+   )/following-sibling::*[1][self::PrimarySuffix/Arguments[@Size=0]]
+]
 ]]>
                 </value>
             </property>
@@ -1042,10 +1044,13 @@ String name,
           since="5.1"
           message="Position literals first in String comparisons for EqualsIgnoreCase"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInCaseInsensitiveComparisonsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"
+          deprecated="true">
         <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
+
+This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1064,10 +1069,13 @@ class Foo {
           since="3.3"
           message="Position literals first in String comparisons"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInComparisonsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"
+          deprecated="true">
         <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
+
+This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>

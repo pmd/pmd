@@ -13,6 +13,7 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <build>
@@ -93,6 +94,11 @@
              so that they are automatically available to users
              of the pmd-lang-test module
         -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-OK
-     ]]></description>
+        <description>OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -16,12 +15,11 @@ public class Foo {
 public class Foo {
     StringBuilder sb2 = new StringBuilder("c");
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -31,6 +29,6 @@ public class Foo {
 public class Foo2 {
     StringBuilder sb = new StringBuilder('c');
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

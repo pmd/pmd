@@ -194,6 +194,14 @@ public class JumbledIncrementerRule1 {
       deprecated="true">
  <description>
 Just some description of a deprecated rule.
+
+RuleTag with quotes: Use {% rule "RenamedRule" %} instead.
+
+RuleTag without quotes: Use {% rule RenamedRule %} instead.
+
+RuleTag with full category and quotes: Use {% rule "java/sample/RenamedRule" %} instead.
+
+RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRule %} instead.
  </description>
  <priority>3</priority>
  <properties>

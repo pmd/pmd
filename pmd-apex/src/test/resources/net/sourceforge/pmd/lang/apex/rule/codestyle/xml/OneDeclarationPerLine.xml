@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -26,7 +25,6 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
 
     <test-code>
         <description>all is well</description>
@@ -55,7 +53,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>one field declaration per line, ok by default</description>
         <expected-problems>0</expected-problems>
@@ -66,7 +64,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>one variable declaration per line, not ok when strictMode</description>
         <rule-property name="strictMode">true</rule-property>
@@ -80,7 +78,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>one field declaration per line, not ok when strictMode</description>
         <rule-property name="strictMode">true</rule-property>
