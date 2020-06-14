@@ -78,7 +78,7 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
         int npath = (int) MetricsUtil.computeMetric(JavaOperationMetricKey.NPATH, node);
         if (npath >= reportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                   PrettyPrintingUtil.displaySignature(node), "" + npath, });
+                                                   PrettyPrintingUtil.displaySignature(node), "" + npath, String.valueOf(reportLevel)});
         }
 
         return data;
