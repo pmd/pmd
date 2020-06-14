@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -25,8 +26,6 @@ import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
-import net.sf.saxon.tree.iter.ListIterator;
-import net.sf.saxon.tree.iter.ListIterator.OfNodes;
 import net.sf.saxon.tree.iter.LookaheadIterator;
 import net.sf.saxon.tree.iter.ReverseListIterator;
 import net.sf.saxon.tree.iter.SingleNodeIterator;
@@ -51,7 +50,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
 
     AstElementNode(AstTreeInfo document,
-                   IdGenerator idGenerator,
+                   MutableInt idGenerator,
                    BaseNodeInfo parent,
                    Node wrappedNode,
                    Configuration configuration) {
@@ -59,7 +58,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
         this.treeInfo = document;
         this.wrappedNode = wrappedNode;
-        this.id = idGenerator.getNextId();
+        this.id = idGenerator.getAndIncrement();
 
         this.children = new ArrayList<>(wrappedNode.getNumChildren());
 
@@ -111,11 +110,6 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     }
 
     @Override
-    public int comparePosition(NodeInfo other) {
-        return super.comparePosition(other);
-    }
-
-    @Override
     public int compareOrder(NodeInfo other) {
         if (other instanceof AstElementNode) {
             return Integer.compare(this.id, ((AstElementNode) other).id);
@@ -138,7 +132,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     @Override
     protected AxisIterator iterateChildren(NodeTest nodeTest) {
-        return filter(nodeTest, new OfNodes(children));
+        return filter(nodeTest, iterateList(children));
     }
 
 
@@ -153,7 +147,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
                      : CollectionUtil.take(parent.getChildren(), wrappedNode.getIndexInParent());
 
         AxisIterator iter =
-            forwards ? new ListIterator.OfNodes(siblingsList)
+            forwards ? iterateList(siblingsList)
                      : new RevListAxisIterator(siblingsList);
 
         return filter(nodeTest, iter);
@@ -219,7 +213,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         return "Wrapper[" + getLocalPart() + "]@" + hashCode();
     }
 
-    static class DescendantIter implements AxisIterator, LookaheadIterator {
+    static class DescendantIter implements AxisIterator, LookaheadIterator<NodeInfo> {
 
         private final Deque<BaseNodeInfo> todo;
 
@@ -258,19 +252,19 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         }
     }
 
-    private static class RevListAxisIterator extends ReverseListIterator implements AxisIterator {
+    private static class RevListAxisIterator extends ReverseListIterator<NodeInfo> implements AxisIterator {
 
         RevListAxisIterator(List<? extends NodeInfo> list) {
-            super(list);
+            super((List<NodeInfo>) list);
         }
 
         @Override
         public NodeInfo next() {
-            return (NodeInfo) super.next();
+            return super.next();
         }
     }
 
-    private static class IteratorAdapter implements AxisIterator, LookaheadIterator {
+    private static class IteratorAdapter implements AxisIterator, LookaheadIterator<NodeInfo> {
 
         private final Iterator<? extends NodeInfo> it;
 

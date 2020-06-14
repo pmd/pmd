@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode.DescendantIter;
@@ -16,7 +18,6 @@ import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.iter.EmptyIterator;
-import net.sf.saxon.tree.iter.ListIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.type.Type;
 
@@ -29,7 +30,7 @@ class AstDocumentNode extends BaseNodeInfo {
     private final List<AstElementNode> children;
 
     AstDocumentNode(AstTreeInfo document,
-                    IdGenerator idGenerator,
+                    MutableInt idGenerator,
                     RootNode wrappedNode,
                     Configuration configuration) {
         super(Type.DOCUMENT, configuration.getNamePool(), "", null);
@@ -53,7 +54,7 @@ class AstDocumentNode extends BaseNodeInfo {
 
     @Override
     protected AxisIterator iterateChildren(NodeTest nodeTest) {
-        return filter(nodeTest, new ListIterator.OfNodes.OfNodes(children));
+        return filter(nodeTest, iterateList(children));
     }
 
     @Override

@@ -279,12 +279,11 @@ public class SaxonXPathRuleQuery {
             if (prop == null || prop.defaultValue() == null) {
                 return local;
             }
+
+            // TODO Saxon optimizer bug (js/codestyle.xml/AssignmentInOperand)
             Object actualValue = properties.getOrDefault(prop, prop.defaultValue());
             AtomicSequence converted = DomainConversion.convert(actualValue);
-            // we could set the value (2nd parameter = converted) to inline the
-            // property value, but in some cases the saxon optimizer throws a type
-            // error because it prunes entire branches
-            local.setStaticType(DomainConversion.typeOf(converted), null, 0);
+            local.setStaticType(null, converted, 0);
             return local;
         }
     }

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.List;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttrLogger;
@@ -31,7 +33,8 @@ public final class AstTreeInfo extends GenericTreeInfo {
      */
     public AstTreeInfo(RootNode node, Configuration configuration) {
         super(configuration);
-        setRootNode(new AstDocumentNode(this, new IdGenerator(), node, configuration));
+        MutableInt idGenerator = new MutableInt(1); // 0 is taken by the document node
+        setRootNode(new AstDocumentNode(this, idGenerator, node, configuration));
     }
 
     public AstElementNode findWrapperFor(Node node) {
