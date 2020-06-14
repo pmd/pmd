@@ -1,0 +1,17 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [<%--]                                  1         4
+    [\nBSD-style license; for more info[    5         77
+L3
+    [--%>]                                  1         4
+L5
+    [<%]                                    1         2
+    [\nString nodeContent = "<% %>";\n]     3         30
+L7
+    [%>]                                    1         2
+L8
+    [<%]                                    1         2
+    [\n<!\[cdata\[\nString nodeContent [    3         4
+L12
+    [%>]                                    1         2
+EOF
