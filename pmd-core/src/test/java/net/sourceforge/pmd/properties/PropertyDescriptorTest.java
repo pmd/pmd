@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.properties;
 
+import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -333,18 +335,53 @@ public class PropertyDescriptorTest {
                 .build();
     }
 
+
+    private static List<String> parseEscaped(String s, char d) {
+        return ValueParserConstants.parseListWithEscapes(s, d, ValueParserConstants.STRING_PARSER);
+    }
+
+    @Test
+    public void testStringParserEmptyString() {
+        assertEquals(emptyList(), parseEscaped("", ','));
+    }
+
+
+    @Test
+    public void testStringParserSimple() {
+        assertEquals(listOf("a", "b", "c"),
+                     parseEscaped("a,b,c", ','));
+    }
+
+    @Test
+    public void testStringParserEscapedChar() {
+        assertEquals(listOf("a", "b,c"),
+                     parseEscaped("a,b\\,c", ','));
+    }
+
+    @Test
+    public void testStringParserEscapedEscapedChar() {
+        assertEquals(listOf("a", "b\\", "c"),
+                     parseEscaped("a,b\\\\,c", ','));
+    }
+
+    @Test
+    public void testStringParserDelimIsBackslash() {
+        assertEquals(listOf("a,b", "", ",c"),
+                     parseEscaped("a,b\\\\,c", '\\'));
+    }
+
+    @Test
+    public void testStringParserTrailingBackslash() {
+        assertEquals(listOf("a", "b\\"),
+                     parseEscaped("a,b\\", ','));
+    }
+
     private static Matcher<String> containsIgnoreCase(final String substring) {
-        return new SubstringMatcher(substring) {
+        return new SubstringMatcher("containing (ignoring case)", true, substring) {
 
             @Override
             protected boolean evalSubstringOf(String string) {
                 return StringUtils.indexOfIgnoreCase(string, substring) != -1;
-            }
-
-
-            @Override
-            protected String relationship() {
-                return "containing (ignoring case)";
             }
         };
     }

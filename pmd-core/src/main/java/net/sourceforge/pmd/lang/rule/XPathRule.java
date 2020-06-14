@@ -28,8 +28,8 @@ import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
@@ -42,11 +42,11 @@ public class XPathRule extends AbstractRule {
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
-    public static final StringProperty XPATH_DESCRIPTOR = StringProperty.named("xpath")
-            .desc("XPath expression")
-            .defaultValue("")
-            .uiOrder(1.0f)
-            .build();
+    public static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
+        PropertyFactory.stringProperty("xpath")
+                       .desc("XPath expression")
+                       .defaultValue("")
+                       .build();
 
     private static final Map<String, String> XPATH_VERSIONS;
 
@@ -63,13 +63,11 @@ public class XPathRule extends AbstractRule {
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
      */
     @Deprecated
-    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = EnumeratedProperty.<String>named("version")
-            .desc("XPath specification version")
-            .mappings(XPATH_VERSIONS)
-            .defaultValue(XPATH_1_0)
-            .type(String.class)
-            .uiOrder(2.0f)
-            .build();
+    public static final PropertyDescriptor<String> VERSION_DESCRIPTOR =
+        PropertyFactory.enumProperty("version", XPATH_VERSIONS)
+                       .desc("XPath specification version")
+                       .defaultValue(XPATH_1_0)
+                       .build();
 
     /**
      * This is initialized only once when calling {@link #evaluate(Node, RuleContext)} {@link #getTargetSelector()}.

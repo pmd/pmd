@@ -3,58 +3,54 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case
-     ]]></description>
+        <description>failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean bar(String x) {
-  return x.startsWith("x");
- }
+    public boolean bar(String x) {
+        return x.startsWith("x");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-startsWith multiple chars
-     ]]></description>
+        <description>startsWith multiple chars</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean bar(Fiddle x) {
-  return x.startsWith("abc");
- }
+    public boolean bar(Fiddle x) {
+        return x.startsWith("abc");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-startsWith defined on some other class, doesn't take a String
-     ]]></description>
+        <description>startsWith defined on some other class, doesn't take a String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean bar(Fiddle x) {
-  return x.startsWith(123);
- }
+    public boolean bar(Fiddle x) {
+        return x.startsWith(123);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
 <!--
     <test-code>
-        <description><![CDATA[
-Document Jaxen exception parsing Unicode chars in startsWith
-     ]]></description>
+        <description>Document Jaxen exception parsing Unicode chars in startsWith</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  public boolean bar(String x) {
-    return x.startsWith("\u07FF\uF001");
-  }
+    public boolean bar(String x) {
+        return x.startsWith("\u07FF\uF001");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 -->
 

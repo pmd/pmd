@@ -3,10 +3,9 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class ShortMethodName0 {
@@ -14,12 +13,11 @@ public class ShortMethodName0 {
        // Should not violate.
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-bad
-     ]]></description>
+        <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class ShortMethodName1 {
@@ -27,12 +25,11 @@ public class ShortMethodName1 {
        // Should violate.
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-2 violations
-     ]]></description>
+        <description>2 violations</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class ShortMethodName2 {
@@ -44,12 +41,11 @@ public class ShortMethodName2 {
        // Should violate
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-2 methods, 1 violation
-     ]]></description>
+        <description>2 methods, 1 violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class ShortMethodName3 {
@@ -61,8 +57,9 @@ public class ShortMethodName3 {
        // Should not violate
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#1361 ShortMethodName configuration - 7 characters</description>
         <rule-property name="minimum">7</rule-property>
@@ -75,6 +72,7 @@ public class ShortMethodName {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1361 ShortMethodName configuration - 1 characters</description>
         <rule-property name="minimum">1</rule-property>

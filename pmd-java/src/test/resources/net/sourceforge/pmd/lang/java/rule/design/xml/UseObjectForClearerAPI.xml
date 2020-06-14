@@ -3,12 +3,11 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>No issues here</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
-
+        <code><![CDATA[
 import other.exceptions.SecurityException;
 import yet.an.other.one.NoSuchMethodException;
 
@@ -30,72 +29,67 @@ public class MyClass {
       System.loadLibrary("nativelib");
     }
 }
-             ]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Public method with 4 String parameters</description>
         <expected-problems>1</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class MyClass {
-  public void connect(String username,
-    String pssd, 
-    String databaseName, 
-    String databaseAdress) 
-    // Instead of those parameters object 
-    // would ensure a cleaner API and permit
-    // to add extra data transparently (no code change):
-    // void connect(UserData data);
-    {
-
-  }
+    public void connect(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+        // Instead of those parameters object
+        // would ensure a cleaner API and permit
+        // to add extra data transparently (no code change):
+        // void connect(UserData data);
+        {
+        }
 }
-             ]]>
-        </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>non-public methods should not have findings</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class MyClass {
-  protected void connectProtected(String username,
-    String pssd,
-    String databaseName,
-    String databaseAdress)
-  {
-  }
-  void connectPackagePrivate(String username,
-    String pssd,
-    String databaseName,
-    String databaseAdress)
-  {
-  }
-  private void connectPrivate(String username,
-    String pssd,
-    String databaseName,
-    String databaseAdress)
-  {
-  }
+    protected void connectProtected(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+    {
+    }
+    void connectPackagePrivate(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+    {
+    }
+    private void connectPrivate(String username,
+        String pssd,
+        String databaseName,
+        String databaseAdress)
+    {
+    }
 }
-           ]]>
-       </code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>String[] should not be treated as String</description>
         <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
+        <code><![CDATA[
 public class MyClass {
-  public void connectProtected(String username,
-    String[] pssd,
-    String databaseName,
-    String databaseAdress)
-  {
-  }
+    public void connectProtected(String username,
+        String[] pssd,
+        String databaseName,
+        String databaseAdress)
+    {
+    }
 }
-           ]]>
-       </code>
+        ]]></code>
     </test-code>
 </test-data>

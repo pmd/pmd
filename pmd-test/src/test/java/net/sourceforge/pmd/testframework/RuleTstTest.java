@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.testframework;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -74,7 +75,7 @@ public class RuleTstTest {
 
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                RuleContext context = invocation.getArgumentAt(1, RuleContext.class);
+                RuleContext context = invocation.getArgument(1, RuleContext.class);
                 // the violations are reported out of order
                 context.getReport().addRuleViolation(createViolation(context, 15, "first reported violation"));
                 context.getReport().addRuleViolation(createViolation(context, 5, "second reported violation"));

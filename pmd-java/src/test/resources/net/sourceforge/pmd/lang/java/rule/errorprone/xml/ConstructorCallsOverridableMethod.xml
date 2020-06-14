@@ -3,172 +3,159 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-calling public method from constructor
-     ]]></description>
+        <description>calling public method from constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- public void bar() {}
+    public Foo() {
+        bar();
+    }
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-calling protected method from constructor
-     ]]></description>
+        <description>calling protected method from constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- protected void bar() {}
+    public Foo() {
+        bar();
+    }
+    protected void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-calling package private method from constructor
-     ]]></description>
+        <description>calling package private method from constructor</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- void bar() {}
+    public Foo() {
+        bar();
+    }
+    void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-calling private method, ok
-     ]]></description>
+        <description>calling private method, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- private void bar() {}
+    public Foo() {
+        bar();
+    }
+    private void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-overloaded constructors, calling public method
-     ]]></description>
+        <description>overloaded constructors, calling public method</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  this("Bar");
- }
- private Foo(String bar) {
-  bar();
- }
- public void bar() {}
+    public Foo() {
+        this("Bar");
+    }
+    private Foo(String bar) {
+        bar();
+    }
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-calling method on literal bug
-     ]]></description>
+        <description>calling method on literal bug</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo(String s) {
-  "foo".equals(s);
- }
- public void equals(String bar) {}
+    public Foo(String s) {
+        "foo".equals(s);
+    }
+    public void equals(String bar) {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-method in anonymous inner class is ok
-     ]]></description>
+        <description>method in anonymous inner class is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo(String s) {
-  addActionListener(new ActionListener() {
-   public void actionPerformed(ActionEvent e) {bar();}
-  });
- }
- public void bar() {}
+    public Foo(String s) {
+        addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {bar();}
+        });
+    }
+    public void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-method in lambda expression is ok
-     ]]></description>
+        <description>method in lambda expression is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo(String s) {
-  addActionListener(() -> bar());
-  addActionListener(() -> { bar(); });
-  addActionListener((a) -> { bar(); });
-  addActionListener(this::bar);
- }
- public void bar() {}
+    public Foo(String s) {
+        addActionListener(() -> bar());
+        addActionListener(() -> { bar(); });
+        addActionListener((a) -> { bar(); });
+        addActionListener(this::bar);
+    }
+    public void bar() {}
 }
-     ]]></code>
-    </test-code>    
+        ]]></code>
+    </test-code>
+
     <test-code>
-        <description><![CDATA[
-bug report 975407
-     ]]></description>
+        <description>bug report 975407</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- private void bar() {}
+    public Foo() {
+        bar();
+    }
+    private void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ignore abstract methods
-     ]]></description>
+        <description>ignore abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar();
- }
- abstract void bar() {}
+    public Foo() {
+        bar();
+    }
+    abstract void bar() {}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-Generics
-     ]]></description>
+        <description>Generics</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package foo.bar;
 public enum Buz {
- FOO(2);
- private Buz(String s) {}
+    FOO(2);
+    private Buz(String s) {}
 }
-     ]]></code>
-        <source-type>java 1.5</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-985989, base line
-     ]]></description>
+        <description>985989, base line</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SeniorClass {
@@ -181,7 +168,7 @@ public class SeniorClass {
 }
 public class JuniorClass extends SeniorClass {
     private String name;
-    
+
     public JuniorClass() {
         super(); //Automatic call leads to NullPointerException
         name = "JuniorClass";
@@ -190,12 +177,11 @@ public class JuniorClass extends SeniorClass {
         return name.toUpperCase();
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-985989, inner static class should be checked as well
-     ]]></description>
+        <description>985989, inner static class should be checked as well</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -210,7 +196,7 @@ public class Test {
     }
     public static class JuniorClass extends SeniorClass {
         private String name;
-        
+
         public JuniorClass() {
             super(); //Automatic call leads to NullPointerException
             name = "JuniorClass";
@@ -223,23 +209,24 @@ public class Test {
         System.out.println(": "+new SeniorClass());
         System.out.println(": "+new JuniorClass());
     }
-
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>bug #1005 False + for ConstructorCallsOverridableMethod - overloaded methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Foo() {
-  bar(true);
- }
- public final void bar(boolean b) {}
- public void bar(String o) {}
+    public Foo() {
+        bar(true);
+    }
+    public final void bar(boolean b) {}
+    public void bar(String o) {}
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>bug #1127 False positive: Constructor Calls Overridable Method</description>
         <expected-problems>0</expected-problems>
@@ -253,6 +240,7 @@ public final class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>NullPointer while analyzing ExcessiveLengthRule</description>
         <expected-problems>0</expected-problems>

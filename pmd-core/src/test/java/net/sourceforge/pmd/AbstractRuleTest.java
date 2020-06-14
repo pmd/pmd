@@ -25,19 +25,18 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.StringProperty;
 
 
 public class AbstractRuleTest {
 
     public static class MyRule extends AbstractRule {
-        private static final StringProperty FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
+        private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
         private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
                 .defaultValue("bar")
                 .desc("Property without value uses default value")
                 .build();
 
-        private static final StringProperty XPATH_PROPERTY = new StringProperty("xpath", "xpath property", "", 2.0f);
+        private static final PropertyDescriptor<String> XPATH_PROPERTY = PropertyFactory.stringProperty("xpath").desc("xpath property").defaultValue("").build();
 
         public MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
@@ -55,7 +54,7 @@ public class AbstractRuleTest {
     }
 
     private static class MyOtherRule extends AbstractRule {
-        private static final PropertyDescriptor FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
+        private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
 
         MyOtherRule() {
             definePropertyDescriptor(FOO_PROPERTY);

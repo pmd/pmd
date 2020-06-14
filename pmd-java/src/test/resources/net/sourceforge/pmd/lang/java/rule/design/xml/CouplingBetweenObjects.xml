@@ -3,42 +3,39 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-lots of coupling
-     ]]></description>
+        <description>lots of coupling</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
- public List foo() {return null;}
- public ArrayList foo() {return null;}
- public Vector foo() {return null;}
+    public List foo() {return null;}
+    public ArrayList foo() {return null;}
+    public Vector foo() {return null;}
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-no coupling
-     ]]></description>
+        <description>no coupling</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-skip interfaces
-     ]]></description>
+        <description>skip interfaces</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
- public static final int FOO = 2;  
+    public static final int FOO = 2;
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

@@ -3,57 +3,53 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-if (true)
-     ]]></description>
+        <description>if (true)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (true) {}
- }
+    void bar() {
+        if (true) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-if (false)
-     ]]></description>
+        <description>if (false)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar() {
-  if (false) {}
- }
+    void bar() {
+        if (false) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-no constant folding
-     ]]></description>
+        <description>no constant folding</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static final boolean DEBUG = "false";
- void bar() {
-  if (DEBUG) {}
- }
+    private static final boolean DEBUG = "false";
+    void bar() {
+        if (DEBUG) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-short circuit operator
-     ]]></description>
+        <description>short circuit operator</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(Object x, boolean y) {
-  if (y == true) {}
- }
+    void bar(Object x, boolean y) {
+        if (y == true) {}
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

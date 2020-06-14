@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,15 +9,15 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class foo {}
-		]]></code>
+        ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooBar {}
-		]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -158,5 +157,4 @@ public class FOO_CLASS { }
 public interface FOO_INTERFACE { }
         ]]></code>
     </test-code>
-    
 </test-data>

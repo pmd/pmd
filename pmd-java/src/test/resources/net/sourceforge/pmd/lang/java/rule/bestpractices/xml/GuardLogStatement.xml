@@ -3,20 +3,22 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>OK, guard is here - log4j</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-  private static final Logger logger = Logger.getLogger(Foo.class);
+    private static final Logger logger = Logger.getLogger(Foo.class);
 
-  private void foo() {
-    if ( logger.isDebugEnabled() )
-        logger.debug("Debug statement");
- }
+    private void foo() {
+        if ( logger.isDebugEnabled() )
+            logger.debug("Debug statement");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>ok, no error expected - apache commons logging</description>
         <expected-problems>0</expected-problems>
@@ -30,35 +32,38 @@ public class Test {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Guarded call - OK - java util</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 
- private void foo(Logger logger) { 
-    if ( logger.isLoggable(Level.FINE) ) {
-        logger.fine("debug message" + ""); 
-    } 
- }  
+    private void foo(Logger logger) {
+        if ( logger.isLoggable(Level.FINE) ) {
+            logger.fine("debug message" + "");
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>KO, missing guard 1 - log4j</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-  private static final Logger logger = Logger.getLogger(Foo.class);
+    private static final Logger logger = Logger.getLogger(Foo.class);
 
-  private void foo() {
+    private void foo() {
         logger.debug("Debug statement" + "");
-  }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>KO, missing guard 2 - log4j</description>
         <rule-property name="logLevels">debug,trace</rule-property>
@@ -66,19 +71,19 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-  private static final Logger logger = Logger.getLogger(Foo.class);
+    private static final Logger logger = Logger.getLogger(Foo.class);
 
-  private void foo() {
+    private void foo() {
         logger.debug("Debug statement" + "");
-  }
+    }
 
-  private void bar() {
+    private void bar() {
         logger.info("No guard, but'is OK with properties configuration" + "");
-  }
-
+    }
 }
-       ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Complex logging without guard - apache commons logging</description>
         <expected-problems>2</expected-problems>
@@ -99,8 +104,9 @@ public class Test {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Complex logging with misplaced guard - apache commons logging</description>
         <expected-problems>1</expected-problems>
@@ -116,20 +122,22 @@ public class Test {
         }
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Unguarded call - KO - java util</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
 
- private void foo(Logger logger) { 
-    logger.fine("debug message" + ""); 
- }  
+    private void foo(Logger logger) {
+        logger.fine("debug message" + "");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>ok #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
         <expected-problems>0</expected-problems>
@@ -147,6 +155,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>violation - wrong guard #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
         <expected-problems>2</expected-problems>
@@ -164,6 +173,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>violation - no if #1189 GuardLogStatementRule and GuardDebugLoggingRule broken for log4j2</description>
         <expected-problems>1</expected-problems>
@@ -177,6 +187,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1224 GuardDebugLogging broken in 5.1.1 - missing additive statement check in log statement - apache commons logging</description>
         <expected-problems>0</expected-problems>
@@ -198,6 +209,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1341 pmd:GuardDebugLogging violates LOGGER.debug with format "{}" - slf4j</description>
         <expected-problems>0</expected-problems>
@@ -210,6 +222,7 @@ public class GuardDebugFalsePositive {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1203 GuardLogStatementJavaUtil issues warning for severe level not being specified as property</description>
         <rule-property name="logLevels">finest,finer,fine,info</rule-property>
@@ -228,6 +241,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1227 GuardLogStatementJavaUtil doesn't catch log(Level.FINE, "msg" + " msg") calls</description>
         <expected-problems>1</expected-problems>
@@ -248,6 +262,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1347 False positive for GuardLogStatementJavaUtil with slf4j</description>
         <expected-problems>0</expected-problems>
@@ -264,6 +279,7 @@ public class GuardLogTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1398 False positive for GuardLogStatementJavaUtil with Log4j</description>
         <expected-problems>0</expected-problems>
@@ -278,8 +294,9 @@ public class GuardLogTest {
         }
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#783 [java] GuardLogStatement regression</description>
         <expected-problems>0</expected-problems>
@@ -296,6 +313,7 @@ public class GuardLogTest {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Wrong guard method for java util logging</description>
         <expected-problems>1</expected-problems>
@@ -314,13 +332,14 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#370 rule not considering lambdas</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Logger {
     private static final Logger LOGGER = new Logger();
-    
+
     public void bar() {
         LOGGER.info(() -> "Bla " + " bla"); // The lambda is free to do whatever it likes
     }

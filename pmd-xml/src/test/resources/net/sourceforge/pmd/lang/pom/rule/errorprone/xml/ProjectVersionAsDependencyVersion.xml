@@ -3,6 +3,7 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
         <description>Simple POM file</description>
         <expected-problems>0</expected-problems>
@@ -21,9 +22,9 @@
         </dependency>
     </dependencies>
 </project>
-     ]]></code>
-        <source-type>pom</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Simple POM file with violation</description>
         <expected-problems>1</expected-problems>
@@ -42,9 +43,9 @@
         </dependency>
     </dependencies>
 </project>
-     ]]></code>
-        <source-type>pom</source-type>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#715 [xml] ProjectVersionAsDependencyVersion false positive: Valid usage child modules</description>
         <expected-problems>1</expected-problems>
