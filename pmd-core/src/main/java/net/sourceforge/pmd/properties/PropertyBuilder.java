@@ -171,7 +171,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      *
      * @return The built descriptor
      *
-     * @throws IllegalArgumentException if the description or default value were not provided, or if the default value doesn't satisfy the given constraints
+     * @throws IllegalArgumentException if the description or default value were not provided
+     * @throws IllegalArgumentException if the default value does not satisfy the given constraints
      */
     public abstract PropertyDescriptor<T> build();
 
@@ -222,9 +223,11 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return A new list property builder
          *
          * @throws IllegalStateException if the default value has already been set
+         *
+         * @see #map(Collector)
          */
-        /* package private */ GenericCollectionPropertyBuilder<T, List<T>> toList() {
-            return to(Collectors.toList());
+        public GenericCollectionPropertyBuilder<T, List<T>> toList() {
+            return map(Collectors.toList());
         }
 
         /**
@@ -256,7 +259,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *
          * @throws IllegalStateException if the default value has already been set
          */
-        public <C extends Iterable<T>> GenericCollectionPropertyBuilder<T, C> to(Collector<? super T, ?, ? extends C> collector) {
+        public <C extends Iterable<T>> GenericCollectionPropertyBuilder<T, C> map(Collector<? super T, ?, ? extends C> collector) {
 
             if (isDefaultValueSet()) {
                 throw new IllegalStateException("The default value is already set!");

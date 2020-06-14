@@ -89,7 +89,7 @@ public enum PropertyTypeId {
 
             @Override
             public PropertyBuilder<?, ?> newBuilder(String name) {
-                return factory.apply(name);
+                return factory.apply(name).typeId(PropertyTypeId.this);
             }
         };
     }

@@ -43,7 +43,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                          .desc("List of literals to ignore. "
                                           + "A literal is ignored if its image can be found in this list. "
                                           + "Components of this list should not be surrounded by double quotes.")
-                         .to(Collectors.toSet())
+                         .map(Collectors.toSet())
                          .defaultValue(Collections.emptySet())
                          .delim(',')
                          .build();

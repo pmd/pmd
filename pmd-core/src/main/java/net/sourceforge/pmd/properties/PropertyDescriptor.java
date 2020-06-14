@@ -120,12 +120,4 @@ public interface PropertyDescriptor<T> {
         return xmlMapper().toString(value);
     }
 
-
-    /**
-     * Property descriptors are equal if they have the same name, to be
-     * used in a map. Other attributes are ignored.
-     */
-    @Override
-    boolean equals(Object o);
-
 }
