@@ -74,7 +74,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.index = TOKEN_COUNT.get().getAndIncrement();
     }
 
-    public boolean isOk(int coord) {
+    private boolean isOk(int coord) {
         return coord >= 1 || coord == -1;
     }
 
