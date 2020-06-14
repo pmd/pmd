@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -27,7 +28,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     public Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
-        result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
+        result.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of("line_prefix"));
         result.setProperty(HTMLRenderer.HTML_EXTENSION, true);
         return result;
     }

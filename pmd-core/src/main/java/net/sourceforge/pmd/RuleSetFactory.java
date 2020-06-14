@@ -373,6 +373,8 @@ public class RuleSetFactory {
      *                                     or not
      *
      * @return The new RuleSet.
+     *
+     * @throws RulesetParseException If the ruleset cannot be parsed (eg IO exception, malformed XML, validation errors)
      */
     private RuleSet readDocument(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
         throws RuleSetNotFoundException {
@@ -409,7 +411,18 @@ public class RuleSetFactory {
             if (!(ex instanceof XmlException)) { // would already have been reported
                 ex.printStackTrace();
             }
-            throw new RuntimeException("Couldn't read the ruleset " + ruleSetReferenceId, ex);
+            throw new RulesetParseException("Couldn't read the ruleset " + ruleSetReferenceId, ex);
+        }
+    }
+
+    static class RulesetParseException extends RuntimeException {
+
+        public RulesetParseException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public RulesetParseException(Throwable cause) {
+            super(cause);
         }
     }
 

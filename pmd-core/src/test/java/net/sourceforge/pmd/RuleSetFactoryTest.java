@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,10 +25,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.RuleSetFactory.RulesetParseException;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -32,6 +37,8 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
+
+import com.github.oowekyala.ooxml.messages.XmlException;
 
 public class RuleSetFactoryTest {
 
@@ -398,8 +405,9 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testExternalReferenceOverrideNonExistent() throws RuleSetNotFoundException {
-        ex.expect(IllegalArgumentException.class);
-        ex.expectMessage("Cannot set non-existent property 'test4' on rule TestNameOverride");
+        ex.expect(RulesetParseException.class);
+        ex.expectCause(allOf(isA(XmlException.class),
+                             hasProperty("simpleMessage", is("Cannot set non-existent property 'test4' on rule TestNameOverride"))));
         loadFirstRule(REF_OVERRIDE_NONEXISTENT);
     }
 
@@ -580,7 +588,7 @@ public class RuleSetFactoryTest {
     @Test
     public void testIncorrectMinimumLanguageVersion() throws RuleSetNotFoundException {
         ex.expect(IllegalArgumentException.class);
-        ex.expectMessage(Matchers.containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
+        ex.expectMessage(containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
         loadFirstRule(INCORRECT_MINIMUM_LANGUAGE_VERSION);
     }
 
@@ -611,7 +619,7 @@ public class RuleSetFactoryTest {
     @Test
     public void testIncorrectMaximumLanguageVersion() throws RuleSetNotFoundException {
         ex.expect(IllegalArgumentException.class);
-        ex.expectMessage(Matchers.containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
+        ex.expectMessage(containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
         loadFirstRule(INCORRECT_MAXIMUM_LANGUAGE_VERSION);
     }
 

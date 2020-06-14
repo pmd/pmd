@@ -122,10 +122,8 @@ public interface PropertyDescriptor<T> {
 
 
     /**
-     * Property descriptors are equal if they have the same name and
-     * default value. In general, {@link XmlMapper}s are not equatable,
-     * so they are not taken into account in the comparison; descriptions
-     * are ignored.
+     * Property descriptors are equal if they have the same name, to be
+     * used in a map. Other attributes are ignored.
      */
     @Override
     boolean equals(Object o);

@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_VAL
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.WARN__DEPRECATED_USE_OF_ATTRIBUTE;
 import static net.sourceforge.pmd.internal.util.xml.XmlUtil.getSingleChildIn;
 import static net.sourceforge.pmd.internal.util.xml.XmlUtil.parseTextNode;
 
@@ -311,11 +310,11 @@ public class RuleFactory {
         if (defaultAttr != null) {
             Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
 
-            // the attribute syntax is deprecated.
-            err.warn(attrNode,
-                     WARN__DEPRECATED_USE_OF_ATTRIBUTE,
-                     PROPERTY_VALUE.xmlName(),
-                     String.join("\nor\n", syntax.getExamples()));
+            // the attribute syntax could be deprecated.
+            //   err.warn(attrNode,
+            //            WARN__DEPRECATED_USE_OF_ATTRIBUTE,
+            //            PROPERTY_VALUE.xmlName(),
+            //            String.join("\nor\n", syntax.getExamples()));
 
             try {
                 return syntax.fromString(defaultAttr);

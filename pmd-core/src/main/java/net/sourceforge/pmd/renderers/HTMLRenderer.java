@@ -20,7 +20,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * Renderer to basic HTML format.
@@ -32,9 +31,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 
-    // TODO use PropertyDescriptor<Optional<String>> : we need a "blank" default value
     public static final PropertyDescriptor<Optional<String>> LINE_PREFIX =
-        PropertyFactory.stringProperty("linePrefix").desc("Prefix for line number anchor in the source file.")
+        PropertyFactory.stringProperty("linePrefix")
+                       .desc("Prefix for line number anchor in the source file.")
                        .toOptional()
                        .defaultValue(Optional.empty())
                        .build();
