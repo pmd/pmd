@@ -345,9 +345,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Violation: Avoid contact in append method invocations</description>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>9,18,24</expected-linenumbers>
+        <description>Violation: Avoid concat in append method invocations</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,13,18,27,33</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
 
@@ -360,9 +360,18 @@ public class Foo {
         sb.append("arg='" + arg + "'"); // bad
     }
 
-    private void concatNumericIsBad() {
+    private void concatIsBad2(String arg) {
+        StringBuilder sb = new StringBuilder().append("arg='" + arg + "'"); // bad
+    }
+
+    private void concatIsBad3(String arg) {
+        StringBuilder sb;
+        sb = new StringBuilder().append("arg='" + arg + "'"); // bad
+    }
+
+    private void concatNumeric() {
         StringBuilder sb = new StringBuilder();
-        sb.append(1 + 2); // bad
+        sb.append(1 + 2);
     }
 
     private String testStaticBad() {
@@ -379,7 +388,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>No violation: Avoid contact in append method invocations</description>
+        <description>No violation: Avoid concat in append method invocations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -417,6 +426,13 @@ public class Foo {
     private String testFinalLocalGood() {
         final String local = "local"; // final assumed a constant expression
         return new StringBuilder().append("fld:" + local).toString(); // good
+    }
+
+    private String testFinalLocalGood2() {
+        final String local = "local"; // final assumed a constant expression
+        StringBuilder sb = new StringBuilder();
+        sb.append("local:" + local); // good
+        return sb.toString;
     }
 }
         ]]></code>

@@ -193,4 +193,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>append single character string in constructor chain</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder sb = new StringBuilder().append("a");
+        sb = new StringBuilder().append("c");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
