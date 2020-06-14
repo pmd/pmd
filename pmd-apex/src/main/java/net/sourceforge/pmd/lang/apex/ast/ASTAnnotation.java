@@ -28,6 +28,10 @@ public final class ASTAnnotation extends AbstractApexNode<Annotation> {
         return node.getType().getApexName();
     }
 
+    /**
+     * @deprecated Will be removed in 7.0, the AST shouldn't know about rules
+     */
+    @Deprecated
     public boolean suppresses(Rule rule) {
         final String ruleAnno = "PMD." + rule.getName();
 
