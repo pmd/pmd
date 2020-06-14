@@ -8,16 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.Rule;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
 import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
 import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
 
-public final class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements>
-        implements CanSuppressWarnings {
+public final class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements> {
 
     ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
@@ -28,17 +25,6 @@ public final class ASTFieldDeclarationStatements extends AbstractApexNode<FieldD
         return visitor.visit(this, data);
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);

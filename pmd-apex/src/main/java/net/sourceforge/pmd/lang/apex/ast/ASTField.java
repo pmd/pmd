@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.Rule;
-
 import apex.jorje.semantic.ast.member.Field;
 
-public final class ASTField extends AbstractApexNode<Field> implements CanSuppressWarnings {
+public final class ASTField extends AbstractApexNode<Field> {
 
     ASTField(Field field) {
         super(field);
@@ -24,17 +22,6 @@ public final class ASTField extends AbstractApexNode<Field> implements CanSuppre
         return getName();
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public String getType() {
         return node.getFieldInfo().getType().getApexName();

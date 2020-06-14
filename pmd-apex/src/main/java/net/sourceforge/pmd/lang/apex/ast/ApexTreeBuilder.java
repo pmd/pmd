@@ -15,7 +15,7 @@ import java.util.Stack;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import apex.jorje.data.Location;
@@ -245,9 +245,9 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final List<ApexDocTokenLocation> apexDocTokenLocations;
     private final Map<Integer, String> suppressMap;
 
-    ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
+    ApexTreeBuilder(String sourceCode, ParserOptions parserOptions, SourceCodePositioner positioner) {
         this.sourceCode = sourceCode;
-        sourceCodePositioner = new SourceCodePositioner(sourceCode);
+        sourceCodePositioner = positioner;
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
         apexDocTokenLocations = commentInformation.docTokenLocations;
@@ -273,7 +273,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    public <T extends AstNode> ApexNode<T> build(T astNode) {
+    <T extends AstNode> AbstractApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
         node.calculateLineNumbers(sourceCodePositioner);

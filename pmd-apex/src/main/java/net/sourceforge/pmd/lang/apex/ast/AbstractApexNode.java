@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -31,6 +33,16 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
     @Override
     protected void insertChild(AbstractApexNode<?> child, int index) {
         super.insertChild(child, index);
+    }
+
+    @Override
+    protected void setCoords(int bline, int bcol, int eline, int ecol) {
+        super.setCoords(bline, bcol, eline, ecol);
+    }
+
+    @Override
+    public @NonNull ASTApexFile getRoot() {
+        return getParent().getRoot();
     }
 
     /* package */ void calculateLineNumbers(SourceCodePositioner positioner, int startOffset, int endOffset) {
