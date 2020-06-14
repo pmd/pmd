@@ -16,7 +16,7 @@ public final class ASTTypeLambda extends AbstractScalaNode<Type.Lambda> {
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <D, R> R acceptVisitor(ScalaParserVisitor<D, R> visitor, D data) {
         return visitor.visit(this, data);
     }
 }

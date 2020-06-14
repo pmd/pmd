@@ -28,7 +28,7 @@ public class ScalaRuleChainVisitor extends AbstractRuleChainVisitor {
         if (rule instanceof XPathRule) {
             ((XPathRule) rule).evaluate(node, ctx);
         } else {
-            ((ScalaNode<?>) node).accept((ScalaParserVisitorAdapter<RuleContext, ?>) rule, ctx);
+            node.acceptVisitor((ScalaParserVisitorAdapter<RuleContext, ?>) rule, ctx);
         }
     }
 

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 
 import scala.meta.Tree;
@@ -31,6 +32,16 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
         node = treeNode;
         pos = node.pos();
     }
+
+    @Override
+    public <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P data) {
+        if (visitor instanceof ScalaParserVisitor) {
+            return this.accept((ScalaParserVisitor<P, R>) visitor, data);
+        }
+        return visitor.visitNode(this, data);
+    }
+
+    protected abstract <D, R> R acceptVisitor(ScalaParserVisitor<D, R> visitor, D data);
 
     // overridden to make it visible
     @Override

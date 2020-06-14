@@ -288,16 +288,16 @@ public interface Node {
      * are in the implementations of this {@code acceptVisitor} method).
      *
      * @param visitor Visitor to dispatch
-     * @param param   Parameter to the visit
+     * @param data    Parameter to the visit
      * @param <R>     Return type of the visitor
      * @param <P>     Parameter type of the visitor
      *
      * @return What the visitor returned
      */
     // TODO remove the default implementation, convert all visitors to be generic
-    default <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P param) {
+    default <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P data) {
         // override me
-        return visitor.visitNode(this, param);
+        return visitor.visitNode(this, data);
     }
 
 

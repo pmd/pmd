@@ -16,7 +16,7 @@ public final class ASTTermEta extends AbstractScalaNode<Term.Eta> {
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <D, R> R acceptVisitor(ScalaParserVisitor<D, R> visitor, D data) {
         return visitor.visit(this, data);
     }
 }

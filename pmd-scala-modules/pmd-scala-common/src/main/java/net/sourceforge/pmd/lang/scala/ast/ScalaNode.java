@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 import scala.meta.Tree;
@@ -16,20 +17,16 @@ import scala.meta.Tree;
  *            The Scala node type that extends Scala's Tree trait
  */
 public interface ScalaNode<T extends Tree> extends GenericNode<ScalaNode<?>> {
+
     /**
      * Accept a visitor and traverse this node.
      *
-     * @param <D>
-     *            The type of the data input
-     * @param <R>
-     *            The type of the returned data
-     * @param visitor
-     *            the visitor to visit this node with
-     * @param data
-     *            context-specific data to pass along
-     * @return context-specific data for this Visitor pattern
+     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
      */
-    <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
+    @Deprecated
+    default <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+        return acceptVisitor(visitor, data);
+    }
 
 
     /**
