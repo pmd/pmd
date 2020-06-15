@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
+import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,18 +38,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.performance.AbstractOptimizationRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule {
 
-    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES;
-
-    static {
-        final Map<String, ForeachReassignOption> map = new HashMap<>();
-        map.put("deny", ForeachReassignOption.DENY);
-        map.put("firstOnly", ForeachReassignOption.FIRST_ONLY);
-        map.put("allow", ForeachReassignOption.ALLOW);
-        FOREACH_REASSIGN_VALUES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES =
+        associateBy(asList(ForeachReassignOption.values()), ForeachReassignOption::getDisplayName);
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
             = enumProperty("foreachReassign", FOREACH_REASSIGN_VALUES)
@@ -58,15 +51,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             .desc("how/if foreach control variables may be reassigned")
             .build();
 
-    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES;
-
-    static {
-        final Map<String, ForReassignOption> map = new HashMap<>();
-        map.put("deny", ForReassignOption.DENY);
-        map.put("skip", ForReassignOption.SKIP);
-        map.put("allow", ForReassignOption.ALLOW);
-        FOR_REASSIGN_VALUES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES =
+        associateBy(asList(ForReassignOption.values()), ForReassignOption::getDisplayName);
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
             = enumProperty("forReassign", FOR_REASSIGN_VALUES)
@@ -204,7 +190,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         if (ignoreFlags.length == 0) {
             return false;
         }
-        final List<IgnoreFlags> ignoreFlagsList = Arrays.asList(ignoreFlags);
+        final List<IgnoreFlags> ignoreFlagsList = asList(ignoreFlags);
 
         // ignore the first statement
         final boolean ignoredFirstStatement = ignoreFlagsList.contains(IgnoreFlags.IGNORE_FIRST) && isFirstStatementInBlock(node, loopBody);
@@ -337,14 +323,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            for (Map.Entry<String, ForeachReassignOption> entry : FOREACH_REASSIGN_VALUES.entrySet()) {
-                if (entry.getValue().equals(this)) {
-                    return entry.getKey();
-                }
-            }
+            return getDisplayName();
+        }
 
-            // fallback
-            return super.toString();
+        public String getDisplayName() {
+            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
         }
     }
 
@@ -371,14 +354,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
          */
         @Override
         public String toString() {
-            for (Map.Entry<String, ForReassignOption> entry : FOR_REASSIGN_VALUES.entrySet()) {
-                if (entry.getValue().equals(this)) {
-                    return entry.getKey();
-                }
-            }
+            return getDisplayName();
+        }
 
-            // fallback
-            return super.toString();
+        public String getDisplayName() {
+            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
         }
     }
 

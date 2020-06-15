@@ -4,14 +4,17 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
+import static java.util.Arrays.asList;
+import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
+
 import java.util.Objects;
 
 import org.mozilla.javascript.Context;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 public class EcmascriptParserOptions extends ParserOptions {
@@ -46,27 +49,29 @@ public class EcmascriptParserOptions extends ParserOptions {
         }
     }
 
-    private static final String[] VERSION_LABELS = {Version.VERSION_DEFAULT.getLabel(),
-                                                    Version.VERSION_1_0.getLabel(), Version.VERSION_1_1.getLabel(), Version.VERSION_1_2.getLabel(),
-                                                    Version.VERSION_1_3.getLabel(), Version.VERSION_1_4.getLabel(), Version.VERSION_1_5.getLabel(),
-                                                    Version.VERSION_1_6.getLabel(), Version.VERSION_1_7.getLabel(),
-                                                    Version.VERSION_1_8.getLabel(), Version.VERSION_ES6.getLabel()};
-
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
 
     // These aren't converted to the new property framework
     // Do we need them anyway?
 
-    public static final BooleanProperty RECORDING_COMMENTS_DESCRIPTOR = new BooleanProperty("recordingComments",
-            "Specifies that comments are produced in the AST.", Boolean.TRUE, 3.0f);
-    public static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = new BooleanProperty(
-            "recordingLocalJsDocComments", "Specifies that JsDoc comments are produced in the AST.", Boolean.TRUE,
-            4.0f);
-    public static final EnumeratedProperty<Version> RHINO_LANGUAGE_VERSION = new EnumeratedProperty<>(
-            "rhinoLanguageVersion",
-            "Specifies the Rhino Language Version to use for parsing.  Defaults to ES6.", VERSION_LABELS,
-            Version.values(), Version.VERSION_ES6.ordinal(), Version.class, 5.0f);
+    public static final PropertyDescriptor<Boolean> RECORDING_COMMENTS_DESCRIPTOR =
+        PropertyFactory.booleanProperty("recordingComments")
+                       .desc("Specifies that comments are produced in the AST.")
+                       .defaultValue(true)
+                       .build();
+
+    public static final PropertyDescriptor<Boolean> RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR =
+        PropertyFactory.booleanProperty("recordingLocalJsDocComments")
+                       .desc("Specifies that JsDoc comments are produced in the AST.")
+                       .defaultValue(true)
+                       .build();
+
+    public static final PropertyDescriptor<Version> RHINO_LANGUAGE_VERSION =
+        PropertyFactory.enumProperty("rhinoLanguageVersion", associateBy(asList(Version.values()), Version::getLabel))
+                       .desc("Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.")
+                       .defaultValue(Version.VERSION_ES6)
+                       .build();
 
     private boolean recordingComments;
     private boolean recordingLocalJsDocComments;

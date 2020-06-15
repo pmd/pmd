@@ -37,6 +37,10 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
         return super.getImage();
     }
 
+    @Override
+    public ASTMethodDeclaration getParent() {
+        return (ASTMethodDeclaration) super.getParent();
+    }
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {

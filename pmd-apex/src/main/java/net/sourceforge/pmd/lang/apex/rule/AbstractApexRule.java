@@ -131,13 +131,9 @@ public abstract class AbstractApexRule extends AbstractRule
     }
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        for (Object element : nodes) {
-            if (element instanceof ASTUserClass) {
-                visit((ASTUserClass) element, ctx);
-            } else if (element instanceof ASTUserInterface) {
-                visit((ASTUserInterface) element, ctx);
-            } else if (element instanceof ASTUserTrigger) {
-                visit((ASTUserTrigger) element, ctx);
+        for (Node element : nodes) {
+            if (element instanceof ApexNode<?>) {
+                ((ApexNode<?>) element).jjtAccept(this, ctx);
             }
         }
     }
