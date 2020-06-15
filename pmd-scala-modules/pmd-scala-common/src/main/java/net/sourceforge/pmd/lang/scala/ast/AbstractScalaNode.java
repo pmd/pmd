@@ -36,7 +36,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
     @Override
     public <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P data) {
         if (visitor instanceof ScalaParserVisitor) {
-            return this.accept((ScalaParserVisitor<P, R>) visitor, data);
+            return this.acceptVisitor((ScalaParserVisitor<P, R>) visitor, data);
         }
         return visitor.visitNode(this, data);
     }
