@@ -145,7 +145,7 @@ class Foo {
 
     <test-code>
         <description>(J7) Version sensitive tests - avoid possible false positives on Java7</description>
-        <rule-property name="java7compatibility">true</rule-property>
+        <rule-property name="java7Compatibility">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.lang.ref.WeakReference;
@@ -188,7 +188,7 @@ public class Foo {
 
     <test-code>
         <description>False negative for nested type parameters (#2545)</description>
-        <rule-property name="java7compatibility">true</rule-property>
+        <rule-property name="java7Compatibility">true</rule-property>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>7,8,17</expected-linenumbers>
         <code><![CDATA[

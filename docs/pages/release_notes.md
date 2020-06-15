@@ -22,7 +22,7 @@ This is a {{ site.pmd.release_type }} release.
     the type inference in Java has been improved.
     
     In order to avoid false positives when checking Java7 only code, the rule has the new property
-    `java7compatibility`, which is disabled by default. Settings this to "true" retains
+    `java7Compatibility`, which is disabled by default. Settings this to "true" retains
     the old rule behaviour.
 
 ### Fixed Issues
