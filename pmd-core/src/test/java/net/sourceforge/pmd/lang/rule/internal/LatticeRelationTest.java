@@ -234,6 +234,39 @@ public class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get("d"));
     }
 
+    @Test
+    public void testTransitiveSuccWithHoleInTheMiddle() {
+
+        LatticeRelation<String, String, Set<String>> lattice =
+            stringLattice(setOf("abc", "bbc", "c")::contains);
+
+        lattice.put("abc", "v1");
+        lattice.put("bbc", "v2");
+
+        // We have "abc" <: "bc" <: "c" <: ""
+        // We have "bbc" <: "bc" <: "c" <: ""
+
+        // Only "abc", "bbc" and "c" are query nodes
+        // When adding "abc" we add its successors and link "abc" to "c"
+
+        // When adding "bbc" it must be linked to "c" even if on its
+        // path to "c" there is "bc", which is not a QNode and was already added
+
+        assertEquals(emptySet(), lattice.transitiveQuerySuccs(""));
+        assertEquals(emptySet(), lattice.get(""));
+
+        assertEquals(setOf("c"), lattice.transitiveQuerySuccs("abc"));
+        assertEquals(setOf("v1"), lattice.get("abc"));
+
+        assertEquals(setOf("c"), lattice.transitiveQuerySuccs("bbc"));
+        assertEquals(setOf("v2"), lattice.get("bbc"));
+
+        assertEquals(emptySet(), lattice.get("bc"));
+
+        assertEquals(emptySet(), lattice.transitiveQuerySuccs("c"));
+        assertEquals(setOf("v1", "v2"), lattice.get("c"));
+    }
+
 
     @Test
     public void testToString() {

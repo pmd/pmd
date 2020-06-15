@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import java.util.Set;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Base class for rules using the rulechain. The visit methods don't
@@ -23,7 +19,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
 
-    private final Set<Class<? extends Node>> typesToVisit;
+    private final RuleTargetSelector selector;
 
     /**
      * Specify the node types to visit as parameters.
@@ -34,12 +30,12 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     @SafeVarargs
     @Experimental
     public AbstractJavaRulechainRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {
-        typesToVisit = CollectionUtil.setOf(first, visits);
+        selector = RuleTargetSelector.forTypes(first, visits);
     }
 
     @Override
     protected final @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(typesToVisit);
+        return selector;
     }
 
     @Override

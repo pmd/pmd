@@ -163,6 +163,7 @@ class LatticeRelation<K, @NonNull V, C> {
     }
 
     // test only
+    /** Returns the keys of all transitive successors. */
     Set<K> transitiveQuerySuccs(K key) {
         LNode lNode = nodes.get(key);
         if (lNode == null) {
@@ -253,7 +254,10 @@ class LatticeRelation<K, @NonNull V, C> {
         }
 
         void addAsSuccessorTo(Iterable<LNode> preds) {
-            // do nothing, this cannot be a successor of anything
+            // just link succs to preds, eliding this jump
+            for (QueryNode<?> it : transitiveSuccs) {
+                it.addAsSuccessorTo(preds);
+            }
         }
 
         void addValue(@NonNull V v) {
