@@ -16,7 +16,8 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class RuleReferenceTest {
 
@@ -30,7 +31,7 @@ public class RuleReferenceTest {
 
     @Test
     public void testOverride() {
-        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
         rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
@@ -42,7 +43,7 @@ public class RuleReferenceTest {
         rule.setExternalInfoUrl("externalInfoUrl1");
         rule.setPriority(RulePriority.HIGH);
 
-        final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+        final PropertyDescriptor<String> PROPERTY2_DESCRIPTOR = PropertyFactory.stringProperty("property2").desc("Test property").defaultValue("").build();
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
@@ -66,7 +67,7 @@ public class RuleReferenceTest {
 
     @Test
     public void testDeepCopyOverride() {
-        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
         rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
@@ -78,7 +79,7 @@ public class RuleReferenceTest {
         rule.setExternalInfoUrl("externalInfoUrl1");
         rule.setPriority(RulePriority.HIGH);
 
-        final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+        final PropertyDescriptor<String> PROPERTY2_DESCRIPTOR = PropertyFactory.stringProperty("property2").desc("Test property").defaultValue("").build();
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
@@ -100,8 +101,8 @@ public class RuleReferenceTest {
         validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
     }
 
-    private void validateOverridenValues(final StringProperty propertyDescriptor1,
-            final StringProperty propertyDescriptor2, RuleReference ruleReference) {
+    private void validateOverridenValues(final PropertyDescriptor<String> propertyDescriptor1,
+            final PropertyDescriptor<String> propertyDescriptor2, RuleReference ruleReference) {
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
                 ruleReference.getLanguage());
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
@@ -159,7 +160,7 @@ public class RuleReferenceTest {
 
     @Test
     public void testNotOverride() {
-        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));

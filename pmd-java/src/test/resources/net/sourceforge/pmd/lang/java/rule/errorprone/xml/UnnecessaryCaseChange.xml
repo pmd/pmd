@@ -3,62 +3,57 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-failure case with toUpperCase().equals()
-     ]]></description>
+        <description>failure case with toUpperCase().equals()</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private boolean baz(String buz) {
-  return foo.toUpperCase().equals("foo");
- }
+    private boolean baz(String buz) {
+        return foo.toUpperCase().equals("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case with toLowerCase().equals()
-     ]]></description>
+        <description>failure case with toLowerCase().equals()</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private boolean baz(String buz) {
-  return foo.toLowerCase().equals("foo");
- }
+    private boolean baz(String buz) {
+        return foo.toLowerCase().equals("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case with toUpperCase().equalsIgnoreCase()
-     ]]></description>
+        <description>failure case with toUpperCase().equalsIgnoreCase()</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private boolean baz(String buz) {
-  return foo.toUpperCase().equalsIgnoreCase("foo");
- }
+    private boolean baz(String buz) {
+        return foo.toUpperCase().equalsIgnoreCase("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-don't flag toUpperCase() invocations with Locale args
-     ]]></description>
+        <description>don't flag toUpperCase() invocations with Locale args</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- private boolean baz(String buz) {
-  return foo.toUpperCase(locale).equals("foo");
- }
+    private boolean baz(String buz) {
+        return foo.toUpperCase(locale).equals("foo");
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-failure case with toLowerCase().equals()
-     ]]></description>
+        <description>failure case with toLowerCase().equals()</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -70,6 +65,6 @@ public class Foo {
         return data;
     }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

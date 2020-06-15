@@ -10,21 +10,18 @@
         <expected-problems>1</expected-problems>
         <code>
 <![CDATA[
-CREATE OR REPLACE PACKAGE update_planned_hrs
-IS
-PROCEDURE method1 (id IN NUMBER);
-PROCEDURE method2 (id IN NUMBER);
-PROCEDURE method3 (id IN NUMBER);
-PROCEDURE method4 (id IN NUMBER);
-FUNCTION getId1() RETURN NUMBER;
-FUNCTION getId2() RETURN NUMBER;
-FUNCTION getId3() RETURN NUMBER;
-FUNCTION getId4() RETURN NUMBER;
+CREATE OR REPLACE PACKAGE update_planned_hrs IS
+    PROCEDURE method1 (id IN NUMBER);
+    PROCEDURE method2 (id IN NUMBER);
+    PROCEDURE method3 (id IN NUMBER);
+    PROCEDURE method4 (id IN NUMBER);
+    FUNCTION getId1() RETURN NUMBER;
+    FUNCTION getId2() RETURN NUMBER;
+    FUNCTION getId3() RETURN NUMBER;
+    FUNCTION getId4() RETURN NUMBER;
 END update_planned_hrs;
 /
-]]>
-</code>
-        <source-type>plsql</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -33,20 +30,17 @@ END update_planned_hrs;
         <expected-problems>0</expected-problems>
         <code>
 <![CDATA[
-CREATE OR REPLACE PACKAGE update_planned_hrs
-IS
-PROCEDURE method1 (id IN NUMBER);
-PROCEDURE method2 (id IN NUMBER);
-PROCEDURE method3 (id IN NUMBER);
-FUNCTION getId1() RETURN NUMBER;
-FUNCTION isId2() RETURN BOOL;
-FUNCTION getId3() RETURN NUMBER;
-FUNCTION getId4() RETURN NUMBER;
+CREATE OR REPLACE PACKAGE update_planned_hrs IS
+    PROCEDURE method1 (id IN NUMBER);
+    PROCEDURE method2 (id IN NUMBER);
+    PROCEDURE method3 (id IN NUMBER);
+    FUNCTION getId1() RETURN NUMBER;
+    FUNCTION isId2() RETURN BOOL;
+    FUNCTION getId3() RETURN NUMBER;
+    FUNCTION getId4() RETURN NUMBER;
 END update_planned_hrs;
 /
-]]>
-</code>
-        <source-type>plsql</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -55,18 +49,16 @@ END update_planned_hrs;
         <expected-problems>1</expected-problems>
         <code>
 <![CDATA[
-CREATE TYPE data_typ1 AS OBJECT 
-   ( year NUMBER, 
-     MEMBER FUNCTION prod1(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION prod2(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION prod3(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION prod4(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION prod5(invent NUMBER) RETURN NUMBER 
-   ); 
+CREATE TYPE data_typ1 AS OBJECT
+    ( year NUMBER,
+        MEMBER FUNCTION prod1(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION prod2(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION prod3(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION prod4(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION prod5(invent NUMBER) RETURN NUMBER
+    );
 /
-]]>
-</code>
-        <source-type>plsql</source-type>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -75,19 +67,15 @@ CREATE TYPE data_typ1 AS OBJECT
         <expected-problems>0</expected-problems>
         <code>
 <![CDATA[
-CREATE TYPE data_typ1 AS OBJECT 
-   ( year NUMBER, 
-     MEMBER FUNCTION prod1(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION prod2(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION prod3(invent NUMBER) RETURN NUMBER, 
-     MEMBER FUNCTION getProd(invent NUMBER) RETURN NUMBER, 
-     MEMBER PROCEDURE setProd(invent NUMBER) 
-   ); 
+CREATE TYPE data_typ1 AS OBJECT
+    ( year NUMBER,
+        MEMBER FUNCTION prod1(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION prod2(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION prod3(invent NUMBER) RETURN NUMBER,
+        MEMBER FUNCTION getProd(invent NUMBER) RETURN NUMBER,
+        MEMBER PROCEDURE setProd(invent NUMBER)
+    );
 /
-]]>
-</code>
-        <source-type>plsql</source-type>
+        ]]></code>
     </test-code>
-
 </test-data>
-

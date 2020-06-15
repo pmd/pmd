@@ -8,7 +8,7 @@
       <code><![CDATA[
 func a() throws {}
 do {
-  try a()
+    try a()
 } catch {}
         ]]></code>
    </test-code>
@@ -21,5 +21,4 @@ func a() throws {}
 try! a()
         ]]></code>
    </test-code>
-
 </test-data>

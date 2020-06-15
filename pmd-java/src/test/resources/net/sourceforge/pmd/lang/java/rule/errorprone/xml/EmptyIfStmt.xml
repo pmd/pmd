@@ -3,59 +3,57 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-one empty
-     ]]></description>
+        <description>one empty</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(int x) {
-  if (x>2) {
-  }
- }
+    void bar(int x) {
+        if (x > 2) {
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-one not empty
-     ]]></description>
+        <description>one not empty</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(int x) {
-  if (x>2) {
-   x = 1;
-  }
- }
+    void bar(int x) {
+        if (x > 2) {
+            x = 1;
+        }
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-empty statement
-     ]]></description>
+        <description>empty statement</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(int x) {
-  if (x>2);
- }
+    void bar(int x) {
+        if (x > 2);
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>empty if statement with comment</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar(int x) {
-  if (x == 0) {
-   // empty!
-  }
- }
+    void bar(int x) {
+        if (x == 0) {
+            // empty!
+        }
+    }
 }
-]]></code>
+        ]]></code>
     </test-code>
 </test-data>

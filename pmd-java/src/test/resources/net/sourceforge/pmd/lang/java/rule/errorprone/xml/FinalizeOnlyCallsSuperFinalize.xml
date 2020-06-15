@@ -3,31 +3,29 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
     <test-code>
-        <description><![CDATA[
-bad
-     ]]></description>
+        <description>bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void finalize() {
-  super.finalize();
- }
+    public void finalize() {
+        super.finalize();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void finalize() {
-  int x = 2;
-  super.finalize();
- }
+    public void finalize() {
+        int x = 2;
+        super.finalize();
+    }
 }
-     ]]></code>
+        ]]></code>
     </test-code>
 </test-data>

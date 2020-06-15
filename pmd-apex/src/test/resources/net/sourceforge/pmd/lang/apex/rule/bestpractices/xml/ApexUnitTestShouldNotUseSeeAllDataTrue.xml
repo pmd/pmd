@@ -16,8 +16,9 @@ public class Foo {
       System.assertNotEquals(a, null, 'account not found');
    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>Problematic apex unit test method - uses SeeAllData = true</description>
         <expected-problems>1</expected-problems>
@@ -31,6 +32,6 @@ public class Foo {
       System.assertNotEquals(a, null, 'account not found');
    }
 }
-		]]></code>
+        ]]></code>
     </test-code>
 </test-data>
