@@ -274,7 +274,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
                 && !overridingMethod.isProtected();
         boolean elevatingFromPackagePrivate = superMethod.getModifiers() == 0
             && !overridingMethod.getModifiers().getExplicitModifiers().isEmpty();
-        boolean elevatingIntoDifferentPackage = !packageName.equals(superPackageName);
+        boolean elevatingIntoDifferentPackage = !packageName.equals(superPackageName)
+                && !Modifier.isPublic(superMethod.getModifiers());
 
         return elevatingFromProtected
                 || elevatingFromPackagePrivate

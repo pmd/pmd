@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.Rule;
-
 import apex.jorje.semantic.ast.member.Parameter;
 
-public final class ASTParameter extends AbstractApexNode<Parameter> implements CanSuppressWarnings {
+public final class ASTParameter extends AbstractApexNode<Parameter> {
 
     ASTParameter(Parameter parameter) {
         super(parameter);
@@ -22,18 +20,6 @@ public final class ASTParameter extends AbstractApexNode<Parameter> implements C
     @Override
     public String getImage() {
         return node.getName().getValue();
-    }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public ASTModifierNode getModifiers() {

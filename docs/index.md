@@ -52,6 +52,7 @@ in a variety of ways, which are [documented here](pmd_userdocs_cpd.html).
 
 The latest release of PMD can be downloaded from our [Github releases page](https://github.com/pmd/pmd/releases/latest).
 
+The Logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
 
 ## Documentation
 

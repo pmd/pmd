@@ -50,10 +50,14 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
     }
 
     @Override
+    public ASTMethodDeclaration getParent() {
+        return (ASTMethodDeclaration) super.getParent();
+    }
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
 
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {

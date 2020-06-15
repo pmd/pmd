@@ -53,10 +53,27 @@ The command line version of PMD continues to use **scala 2.13**.
 *   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
     finds casts that are unnecessary while accessing collection elements.
 
+
+#### Modified rules
+
+*   The Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) now by default
+    finds unnecessary usages of type parameters, which are nested, involve wildcards and are used
+    within a ternary operator. These usages are usually only unnecessary with Java8 and later, when
+    the type inference in Java has been improved.
+    
+    In order to avoid false positives when checking Java7 only code, the rule has the new property
+    `java7Compatibility`, which is disabled by default. Settings this to "true" retains
+    the old rule behaviour.
+
+
 ### Fixed Issues
 
 *   c#
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
+*   java-codestyle
+    *   [#2545](https://github.com/pmd/pmd/issues/2545): \[java] UseDiamondOperator false negatives
+*   java-design
+    *   [#2563](https://github.com/pmd/pmd/pull/2563): \[java] UselessOverridingMethod false negative with already public methods
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
 
@@ -64,9 +81,15 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
+    
+#### Deprecated APIs
+
+*   {%jdoc apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %}
+
 
 ### External Contributions
 
+*   [#2349](https://github.com/pmd/pmd/pull/2349): \[java] Optimize UnusedPrivateMethodRule - [shilko2013](https://github.com/shilko2013)
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
 

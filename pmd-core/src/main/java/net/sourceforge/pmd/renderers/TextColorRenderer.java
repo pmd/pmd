@@ -17,7 +17,8 @@ import java.util.Map;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * <p>
@@ -55,8 +56,12 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     public static final String NAME = "textcolor";
 
     // What? TODO 7.0.0 Use a boolean property
-    public static final StringProperty COLOR = new StringProperty("color",
-            "Enables colors with anything other than 'false' or '0'.", "yes", 0);
+    // TODO should the "textcolor" renderer really support "optional" colors?
+    //   either use text or textcolor...
+    //   This property is really weird, the standard boolean properties
+    //   are false unless value is exactly "true", this one is true unless
+    //   "false" or "0"...
+    public static final PropertyDescriptor<String> COLOR = PropertyFactory.stringProperty("color").desc("Enables colors with anything other than 'false' or '0'.").defaultValue("yes").build();
     private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";
 
     /**
