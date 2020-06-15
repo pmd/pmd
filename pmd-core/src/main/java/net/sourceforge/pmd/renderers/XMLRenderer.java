@@ -14,7 +14,8 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -25,8 +26,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "xml";
 
     // TODO 7.0.0 use PropertyDescriptor<String> or something more specialized
-    public static final StringProperty ENCODING = new StringProperty("encoding",
-            "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
+    public static final PropertyDescriptor<String> ENCODING =
+        PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
     private boolean useUTF8 = false;
 
     public XMLRenderer() {

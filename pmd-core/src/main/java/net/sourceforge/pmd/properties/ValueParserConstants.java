@@ -13,6 +13,7 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -293,6 +294,56 @@ public final class ValueParserConstants {
         List<U> result = new ArrayList<>();
         for (String s : values) {
             result.add(extractor.valueOf(s));
+        }
+        return result;
+    }
+
+    private static final char ESCAPE_CHAR = '\\';
+
+    /**
+     * Parse a list delimited with the given delimiter, converting individual
+     * values to type {@code <U>} with the given extractor. Any character is
+     * escaped with a backslash. This is useful to escape the delimiter, and
+     * to escape the backslash. For example:
+     * <pre>{@code
+     *
+     * "a,c"  -> [ "a", "c" ]
+     * "a\,c" -> [ "a,c" ]
+     * "a\c"  -> [ "ac" ]
+     * "a\\c" -> [ "a\c" ]
+     * "a\"   -> [ "a\"  ]   (a backslash at the end of the string is just a backslash)
+     *
+     * }</pre>
+     */
+    static <U> List<U> parseListWithEscapes(String str, char delimiter, ValueParser<U> extractor) {
+        if (str.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<U> result = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+        boolean inEscapeMode = false;
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
+            if (inEscapeMode) {
+                inEscapeMode = false;
+                currentToken.append(c);
+            } else if (c == delimiter) {
+                result.add(extractor.valueOf(currentToken.toString()));
+                currentToken = new StringBuilder();
+            } else if (c == ESCAPE_CHAR && i < str.length() - 1) {
+                // this is ordered this way so that if the delimiter is
+                // itself a backslash, no escapes are processed.
+                inEscapeMode = true;
+            } else {
+                currentToken.append(c);
+            }
+        }
+
+        if (currentToken.length() > 0) {
+            result.add(extractor.valueOf(currentToken.toString()));
         }
         return result;
     }

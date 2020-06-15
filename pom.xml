@@ -261,7 +261,7 @@
                         <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
                         <systemPropertyVariables>
-                            <mvn.project.src.test.resources>${project.basedir}/src/test/resources</mvn.project.src.test.resources>
+                            <mvn.project.src.test.resources>${project.build.testResources[0].directory}</mvn.project.src.test.resources>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
@@ -1039,7 +1039,10 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
-        <module>pmd-scala</module>
+        <module>pmd-scala</module> <!-- deprecated -->
+        <module>pmd-scala-modules/pmd-scala-common</module>
+        <module>pmd-scala-modules/pmd-scala_2.13</module>
+        <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-visualforce</module>

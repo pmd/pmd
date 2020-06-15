@@ -23,11 +23,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Renderer to XML format with a XSL Transformation applied.
@@ -39,8 +41,7 @@ public class XSLTRenderer extends XMLRenderer {
     public static final String NAME = "xslt";
 
     // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
-    public static final StringProperty XSLT_FILENAME = new StringProperty("xsltFilename", "The XSLT file name.", null,
-            0);
+    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory.stringProperty("xsltFilename").desc("The XSLT file name.").defaultValue("").build();
 
     private Transformer transformer;
     private String xsltFilename = "/pmd-nicerhtml.xsl";
@@ -61,7 +62,7 @@ public class XSLTRenderer extends XMLRenderer {
     @Override
     public void start() throws IOException {
         String xsltFilenameProperty = getProperty(XSLT_FILENAME);
-        if (xsltFilenameProperty != null) {
+        if (StringUtils.isNotBlank(xsltFilenameProperty)) {
             File file = new File(xsltFilenameProperty);
             if (file.exists() && file.canRead()) {
                 this.xsltFilename = xsltFilenameProperty;
