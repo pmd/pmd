@@ -2197,13 +2197,23 @@ and IfElseStmtMustUseBraces.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Use explicit scoping instead of accidental usage of default package private level.
-The rule allows methods and fields annotated with Guava’s @VisibleForTesting.</p>
+The rule allows methods and fields annotated with Guava’s @VisibleForTesting and JUnit 5’s annotations.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
 </span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'VisibleForTesting'</span><span class="p">)])]</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+    </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.ParameterizedTest'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestFactory'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.TestTemplate'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeAll'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterAll'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.BeforeEach'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.AfterEach'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'VisibleForTesting'</span><span class="p">)])]</span><span class="w">
 </span><span class="p">[</span><span class="w">
 </span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@PackagePrivate</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
 </span><span class="ow">or</span><span class="w"> </span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@PackagePrivate</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
