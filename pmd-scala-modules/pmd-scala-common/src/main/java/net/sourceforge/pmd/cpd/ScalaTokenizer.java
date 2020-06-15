@@ -96,7 +96,7 @@ public class ScalaTokenizer implements Tokenizer {
             Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class };
 
         ScalaTokenFilter(Iterator<Token> iterator) {
-            this.tokenIter = iterator.iterator();
+            this.tokenIter = iterator;
         }
 
         Token getNextToken() {
