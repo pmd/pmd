@@ -53,10 +53,25 @@ The command line version of PMD continues to use **scala 2.13**.
 *   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
     finds casts that are unnecessary while accessing collection elements.
 
+
+#### Modified rules
+
+*   The Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) now by default
+    finds unnecessary usages of type parameters, which are nested, involve wildcards and are used
+    within a ternary operator. These usages are usually only unnecessary with Java8 and later, when
+    the type inference in Java has been improved.
+    
+    In order to avoid false positives when checking Java7 only code, the rule has the new property
+    `java7Compatibility`, which is disabled by default. Settings this to "true" retains
+    the old rule behaviour.
+
+
 ### Fixed Issues
 
 *   c#
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
+*   java-codestyle
+    *   [#2545](https://github.com/pmd/pmd/issues/2545): \[java] UseDiamondOperator false negatives
 *   java-design
     *   [#2563](https://github.com/pmd/pmd/pull/2563): \[java] UselessOverridingMethod false negative with already public methods
 *   scala
