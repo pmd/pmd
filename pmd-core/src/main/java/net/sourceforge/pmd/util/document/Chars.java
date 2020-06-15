@@ -147,7 +147,7 @@ public final class Chars implements CharSequence {
      * See {@link String#indexOf(int, int)}.
      */
     public int indexOf(int ch, int fromIndex) {
-        return str.indexOf(ch, fromIndex);
+        return str.indexOf(ch, idx(fromIndex));
     }
 
     /**

@@ -35,6 +35,11 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     @Override
+    public @NonNull TextDocument getTextDocument() {
+        return textDocument;
+    }
+
+    @Override
     public double getApexVersion() {
         return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }

@@ -10,8 +10,10 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Interface implemented by those objects that can be the target of
- * a {@link RuleViolation}. {@link Node}s and {@link GenericToken}s
- * should implement this interface, eventually.
+ * a {@link RuleViolation}. {@link Node}s and {@link GenericToken tokens}
+ * implement this interface.
+ *
+ * TODO use this in RuleViolationFactory
  */
 public interface Reportable {
 

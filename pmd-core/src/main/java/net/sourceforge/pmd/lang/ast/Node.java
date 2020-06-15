@@ -283,6 +283,16 @@ public interface Node extends Reportable {
 
 
     /**
+     * Returns the text document from which this tree was parsed. This
+     * means, that the whole file text is in memory while the AST is.
+     *
+     * @return The text document
+     */
+    default @NonNull TextDocument getTextDocument() {
+        return getRoot().getTextDocument();
+    }
+
+    /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
      *
@@ -532,7 +542,4 @@ public interface Node extends Reportable {
         return (RootNode) r;
     }
 
-    default TextDocument getTextDocument() {
-        return getRoot().getTextDocument();
-    }
 }
