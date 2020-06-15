@@ -4141,17 +4141,23 @@ to avoid duplication of the type parameters.
 Instead, the compiler is now able to infer the parameter types for constructor calls,
 which makes the code also more readable.</p>
 
+<p>The diamond operator has been introduced with java 7. However, type inference has been improved further
+with java8, rendering more type parameters unnecessary. This is only possible with java8 and the resulting
+code won’t compile with java7. If you use java7, make sure to enable <code class="highlighter-rouge">java7Compatibility</code> for this rule to avoid
+false positives.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="w">
 </span><span class="o">//</span><span class="nt">VariableInitializer</span><span class="p">[</span><span class="kn">preceding-sibling::</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@TypeInferred</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="o">//</span><span class="nt">StatementExpression</span><span class="p">[</span><span class="nt">AssignmentOperator</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Expression</span><span class="p">)]]</span><span class="w">
 </span><span class="p">)</span><span class="w">
-</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ArgumentList</span><span class="p">)]</span><span class="w">
+</span><span class="err">/</span><span class="p">(</span><span class="nt">Expression</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">Expression</span><span class="p">[</span><span class="nv">$java7Compatibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">Expression</span><span class="p">[</span><span class="nv">$java7Compatibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="o">/</span><span class="nt">ConditionalExpression</span><span class="o">/</span><span class="nt">Expression</span><span class="p">)</span><span class="w">
+</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ArgumentList</span><span class="p">)]</span><span class="w">
 </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="w">
 </span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="w">
     </span><span class="p">[</span><span class="na">@AnonymousClass</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="nt">ClassOrInterfaceType</span><span class="o">/</span><span class="nt">TypeArguments</span><span class="p">[</span><span class="na">@Diamond</span><span class="err">=</span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">TypeArgument</span><span class="o">//</span><span class="nt">TypeArguments</span><span class="p">)]]</span><span class="w">
+    </span><span class="p">[</span><span class="nt">ClassOrInterfaceType</span><span class="o">/</span><span class="nt">TypeArguments</span><span class="p">[</span><span class="na">@Diamond</span><span class="err">=</span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nv">$java7Compatibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">TypeArgument</span><span class="p">[</span><span class="na">@Wildcard</span><span class="err">=</span><span class="nf">true</span><span class="p">()])]]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ArrayDimsAndInits</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -4161,8 +4167,37 @@ which makes the code also more readable.</p>
 <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">stringsWithDiamond</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span> <span class="c1">// using the diamond operator is more concise</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>java7Compatibility</td>
+      <td>false</td>
+      <td>If disabled, the rule shows also violations that are applicable for java8+</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UseDiamondOperator"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UseDiamondOperator"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"java7Compatibility"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="uselessparentheses">UselessParentheses</h2>
@@ -4591,7 +4626,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 14, 2020 <br />
+ Site last generated: Jun 15, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

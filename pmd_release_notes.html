@@ -1446,12 +1446,32 @@ is still available, but is deprecated from now on. It has been demoted to be jus
 finds casts that are unnecessary while accessing collection elements.</li>
 </ul>
 
+<h4 id="modified-rules">Modified rules</h4>
+
+<ul>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="highlighter-rouge">UseDiamondOperator</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now by default
+finds unnecessary usages of type parameters, which are nested, involve wildcards and are used
+within a ternary operator. These usages are usually only unnecessary with Java8 and later, when
+the type inference in Java has been improved.</p>
+
+    <p>In order to avoid false positives when checking Java7 only code, the rule has the new property
+<code class="highlighter-rouge">java7Compatibility</code>, which is disabled by default. Settings this to “true” retains
+the old rule behaviour.</p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
   <li>c#
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2551">#2551</a>: [c#] CPD suppression with comments doesn’t work</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2545">#2545</a>: [java] UseDiamondOperator false negatives</li>
     </ul>
   </li>
   <li>java-design
@@ -1503,7 +1523,7 @@ or <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.12</code> ins
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 14, 2020 <br />
+ Site last generated: Jun 15, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
