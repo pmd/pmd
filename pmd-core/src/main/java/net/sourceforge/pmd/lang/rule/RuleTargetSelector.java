@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
@@ -118,7 +119,7 @@ public abstract class RuleTargetSelector extends TargetSelectorInternal {
             if (visits.contains(null)) {
                 throw new NullPointerException("Null element in class visits " + visits);
             }
-            this.visits = new HashSet<>(visits);
+            this.visits = new LinkedHashSet<>(visits);
         }
 
         @Override
