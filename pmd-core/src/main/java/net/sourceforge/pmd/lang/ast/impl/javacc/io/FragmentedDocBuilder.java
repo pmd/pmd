@@ -30,8 +30,7 @@ final class FragmentedDocBuilder {
      *                     This may be empty.
      */
     void recordDelta(int startInInput, int endInInput, Chars translation) {
-        assert curOffInInput <= startInInput
-            : "Already moved past " + curOffInInput + ", cannot add delta at " + startInInput;
+        assert curOffInInput <= startInInput : "Already moved past " + curOffInInput + ", cannot add delta at " + startInInput;
         assert startInInput <= endInInput : "Offsets must be ordered";
         assert translation != null : "Translation cannot be null";
 

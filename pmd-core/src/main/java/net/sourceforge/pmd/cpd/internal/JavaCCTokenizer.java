@@ -18,13 +18,13 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.CharStream;
 import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.io.TextFile;
+import net.sourceforge.pmd.util.document.io.PmdFiles;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
-        TextDocument textDocument = TextDocument.create(TextFile.cpdCompat(sourceCode));
+        TextDocument textDocument = TextDocument.create(PmdFiles.cpdCompat(sourceCode));
         JavaccTokenDocument tokenDoc = newTokenDoc(textDocument);
         return makeLexerImpl(CharStream.create(tokenDoc));
     }

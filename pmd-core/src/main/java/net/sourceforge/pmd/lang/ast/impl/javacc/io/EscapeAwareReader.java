@@ -19,11 +19,10 @@ import net.sourceforge.pmd.util.document.Chars;
 /**
  * A reader that may interpret escapes in its input text. It records
  * where escapes occurred, and can translate an offset in the translated
- * document (the "output") to a line/column/offset coordinates in the
- * original input. It uses a single char buffer to store both input and
- * translated output, and is overall very optimised for the case where
- * there are very few escapes. {@link CharStream} is the API to navigate
- * on a translated document (with arbitrary backtrack abilities).
+ * document (the "output") to an offset in the original input.
+ * The implementation is optimised for the case where there are few escapes.
+ * {@link CharStream} is the API to navigate on a translated document
+ * (with arbitrary backtrack abilities).
  *
  * <p>This is useful to back a {@link CharStream} for JavaCC implementation,
  * but can also be used as a plain {@link Reader} if using other parser/lexer
@@ -58,8 +57,7 @@ public class EscapeAwareReader extends Reader {
     }
 
     /**
-     * Translate all the input (in-place) in the buffer. This is fed to a
-     * cursor initialized to zero.
+     * Translate all the input in the buffer. This is fed to a cursor initialized to zero.
      */
     FragmentedDocCursor translate() throws IOException {
         readUnchecked(null, 0, Integer.MAX_VALUE);
@@ -123,11 +121,10 @@ public class EscapeAwareReader extends Reader {
     }
 
     /**
-     * Returns the max offset, EXclusive, with which we can cut the input
-     * array from the bufpos to dump it into the output array. This must
-     * set the {@link #bufpos} to where we should start reading next (INclusive).
-     * If applicable, it must also replace in the buffer the start of
-     * the escape with its translation.
+     * Returns the max offset, EXclusive, up to which we can cut the input
+     * array from the bufpos to dump it into the output array.
+     *
+     * @param maxOff Max offset up to which to read ahead
      */
     protected int gobbleMaxWithoutEscape(int maxOff) throws IOException {
         return this.bufpos = maxOff;
