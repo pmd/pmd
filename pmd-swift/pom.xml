@@ -39,6 +39,7 @@
                                     <property name="lang-name" value="Swift" />
                                     <property name="lang-terse-name" value="swift" />
                                     <property name="root-node-name" value="TopLevel" />
+                                    <property name="node-prefix" value="Sw" />
                                 </ant>
                             </target>
                         </configuration>

@@ -7,6 +7,7 @@
 <!--    Input properties:
         - lang-name: matches the grammar name (eg "Swift")
         - lang-terse-name: uncapitalized package name (eg "swift")
+        - node-prefix: prefix for generated AST nodes (eg "Sw")
         - root-node-name: name of the root node (eg "TopLevel"), will be made to implement RootNode
 
         See AntlrGeneratedParserBase
@@ -88,30 +89,16 @@
 
         </replace>
 
-        <replace file="${visitor-file}">
-
-            <replacefilter token="Visitor&lt;T> extends ParseTreeVisitor&lt;T> {"
-                           value="Visitor&lt;P, R> extends net.sourceforge.pmd.lang.ast.AstVisitor&lt;P, R> {&#10;
-&#10;
-    /**&#10;
-     * The default visit method for ${lang-name} nodes. Unless overridden,&#10;
-     * the default implementations of the methods of this interface delegate&#10;
-     * to this method. The default calls {@link #visitNode(Node, Object)}.&#10;
-     * &#10;
-     * @param node Node to visit&#10;
-     * @param data Parameter of the visit&#10;
-     * @return Result of the visit&#10;
-     */&#10;
-     default R visit${node-itf-name}(${node-itf-name} node, P data) { return visitNode(node, data); }&#10;&#10;
-&#10;
-"/>
-
-            <replacefilter token="T visit" value="default R visit"/>
-            <replacefilter token="ctx);" value="node, P data) { return visit${node-itf-name}(node, data); }"/>
-
-        </replace>
-
         <!-- This is in the main sources (not much to do). -->
         <delete file="${base-visitor-file}" />
+
+
+        <replaceregexp flags="g">
+            <fileset dir="${target-package-dir}" />
+            <regexp pattern="\b([A-Z]\w*)Context\b(?&lt;!\b(Parser)?RuleContext\b)"/>
+            <substitution expression="${node-prefix}\1"/>
+        </replaceregexp>
+
+
     </target>
 </project>
