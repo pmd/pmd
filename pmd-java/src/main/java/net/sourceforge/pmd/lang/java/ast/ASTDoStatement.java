@@ -56,7 +56,7 @@ public class ASTDoStatement extends AbstractJavaNode {
 
 
     @Override
-    public <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

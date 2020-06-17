@@ -29,7 +29,7 @@ public class ASTTypeDeclaration extends AbstractJavaTypeNode implements CanSuppr
     }
 
     @Override
-    protected <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

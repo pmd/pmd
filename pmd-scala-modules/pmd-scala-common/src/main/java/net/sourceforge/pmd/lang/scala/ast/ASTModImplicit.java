@@ -16,7 +16,7 @@ public final class ASTModImplicit extends AbstractScalaNode<Mod.Implicit> {
     }
 
     @Override
-    protected <D, R> R acceptVisitor(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

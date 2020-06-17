@@ -45,7 +45,7 @@ public final class ASTDoctypeExternalId extends AbstractJspNode {
     }
 
     @Override
-    protected <P, R> R acceptVisitor(JspVisitor<P, R> visitor, P data) {
+    protected <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -33,7 +33,7 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
 
 
     @Override
-    protected <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

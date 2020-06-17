@@ -34,14 +34,14 @@ public abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNo
     }
 
     @Override
-    public final <R, P> R acceptVisitor(AstVisitor<P, R> visitor, P data) {
+    public final <R, P> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         if (visitor instanceof JavaVisitor) {
-            return this.acceptVisitor((JavaVisitor<P, R>) visitor, data);
+            return this.acceptVisitor((JavaVisitor<? super P, ? extends R>) visitor, data);
         }
         return visitor.visitNode(this, data);
     }
 
-    protected abstract <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data);
+    protected abstract <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data);
 
     // override those to make them accessible in this package
 

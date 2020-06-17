@@ -71,7 +71,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     }
 
     @Override
-    protected <P, R> R acceptVisitor(JavaVisitor<P, R> visitor, P data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
