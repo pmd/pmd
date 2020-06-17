@@ -35,6 +35,7 @@ grammar Swift;
 
 @header {
 import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 }
 
 

@@ -62,11 +62,6 @@ public abstract class BaseAntlrTerminalNode<N extends AntlrNode<N>>
         return 0;
     }
 
-    @Override
-    public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-        return visitor.visitTerminal(asAntlrNode());
-    }
-
     protected int getTokenKind() {
         return antlrNode.symbol.getTokenIndex();
     }

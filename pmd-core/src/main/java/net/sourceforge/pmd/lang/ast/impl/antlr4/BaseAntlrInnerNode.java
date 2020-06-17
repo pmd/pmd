@@ -102,12 +102,6 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
         // default does nothing
     }
 
-
-    @Override
-    public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-        return visitor.visitChildren(asAntlrNode());
-    }
-
     protected static class PmdAsAntlrInnerNode<N extends AntlrNode<N>> extends ParserRuleContext implements RuleNode, AntlrToPmdParseTreeAdapter<N> {
 
         private final BaseAntlrInnerNode<N> pmdNode;
@@ -154,9 +148,7 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
 
         @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            // note: this delegate to the PMD node, giving
-            // control of the visit back to the first-class nodes
-            return pmdNode.accept(visitor);
+            throw new UnsupportedOperationException("Cannot visit the underlying antlr nodes");
         }
     }
 }

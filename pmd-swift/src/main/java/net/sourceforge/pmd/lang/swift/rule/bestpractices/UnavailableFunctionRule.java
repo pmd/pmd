@@ -7,11 +7,12 @@ package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
-import net.sourceforge.pmd.lang.swift.ast.SwiftBaseVisitor;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionDeclarationContext;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.InitializerDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftVisitorBase;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
 
@@ -25,11 +26,11 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
     }
 
     @Override
-    public SwiftBaseVisitor<Void> buildVisitor(RuleContext ruleCtx) {
-        return new SwiftBaseVisitor<Void>() {
+    public AstVisitor<RuleContext, ?> buildVisitor() {
+        return new SwiftVisitorBase<RuleContext, Void>() {
 
             @Override
-            public Void visitFunctionDeclaration(final FunctionDeclarationContext ctx) {
+            public Void visitFunctionDeclaration(final FunctionDeclarationContext ctx, RuleContext ruleCtx) {
                 if (ctx == null) {
                     return null;
                 }
@@ -45,7 +46,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
             }
 
             @Override
-            public Void visitInitializerDeclaration(final InitializerDeclarationContext ctx) {
+            public Void visitInitializerDeclaration(final InitializerDeclarationContext ctx, RuleContext ruleCtx) {
                 if (ctx == null) {
                     return null;
                 }

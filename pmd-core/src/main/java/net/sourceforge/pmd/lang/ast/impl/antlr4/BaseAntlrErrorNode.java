@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class BaseAntlrErrorNode<N extends AntlrNode<N>> extends BaseAntlrTerminalNode<N> {
@@ -17,12 +16,6 @@ public abstract class BaseAntlrErrorNode<N extends AntlrNode<N>> extends BaseAnt
     @Override
     protected final AntlrErrorPmdAdapter<N> asAntlrNode() {
         return (AntlrErrorPmdAdapter<N>) super.asAntlrNode();
-    }
-
-
-    @Override
-    public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-        return visitor.visitErrorNode(asAntlrNode());
     }
 
 
