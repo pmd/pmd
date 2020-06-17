@@ -1,9 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,13 +17,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -30,6 +28,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * deleted.
  */
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
+    private static final Set<String> SERIALIZATION_METHODS = new HashSet<>(Arrays.asList(
+            "readObject", "writeObject", "readResolve", "writeReplace"));
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
@@ -61,7 +61,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             if (occs.isEmpty()) {
                 addViolation(data, mnd.getNode(), mnd.getImage() + mnd.getParameterDisplaySignature());
             } else {
-                if (calledFromOutsideItself(occs, mnd)) {
+                if (isMethodNotCalledFromOtherMethods(mnd, occs)) {
                     addViolation(data, mnd.getNode(), mnd.getImage() + mnd.getParameterDisplaySignature());
                 }
 
@@ -86,7 +86,15 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         return unique;
     }
 
-    private boolean calledFromOutsideItself(List<NameOccurrence> occs, NameDeclaration mnd) {
+    /**
+     * Checks, whether the given method {@code mnd} is called from other methods or constructors.
+     *
+     * @param mnd the private method, that is checked
+     * @param occs the usages of the private method
+     * @return <code>true</code> if the method is not used (except maybe from itself), <code>false</code>
+     *         if the method is called by other methods.
+     */
+    private boolean isMethodNotCalledFromOtherMethods(MethodNameDeclaration mnd, List<NameOccurrence> occs) {
         int callsFromOutsideMethod = 0;
         for (NameOccurrence occ : occs) {
             Node occNode = occ.getLocation();
@@ -105,15 +113,14 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             ASTMethodDeclaration enclosingMethod = occNode.getFirstParentOfType(ASTMethodDeclaration.class);
             if (enclosingMethod == null || !mnd.getNode().getParent().equals(enclosingMethod)) {
                 callsFromOutsideMethod++;
+                break;
             }
         }
         return callsFromOutsideMethod == 0;
     }
 
-    private boolean privateAndNotExcluded(NameDeclaration mnd) {
-        ASTMethodDeclarator node = (ASTMethodDeclarator) mnd.getNode();
-        return ((AccessNode) node.getParent()).isPrivate() && !node.hasImageEqualTo("readObject")
-                && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve")
-                && !node.hasImageEqualTo("writeReplace");
+    private boolean privateAndNotExcluded(MethodNameDeclaration mnd) {
+        ASTMethodDeclaration node = mnd.getMethodNameDeclaratorNode().getParent();
+        return node.isPrivate() && !SERIALIZATION_METHODS.contains(node.getName());
     }
 }
