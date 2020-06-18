@@ -195,4 +195,11 @@ public class SaxonXPathRuleQueryTest {
         query.setXPath(xpath);
         return query;
     }
+
+    @Test
+    public void ruleChainWithUnions() {
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
 }
