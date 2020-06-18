@@ -67,6 +67,10 @@ The command line version of PMD continues to use **scala 2.13**.
     *   [#2554](https://github.com/pmd/pmd/issues/2554): \[apex] Exception applying rule UnusedLocalVariable on trigger
 *   core
     *   [#2599](https://github.com/pmd/pmd/pull/2599): \[core] Fix XPath 2.0 Rule Chain Analyzer with Unions
+    *   [#2483](https://github.com/pmd/pmd/issues/2483): \[lang-test] Support cpd tests based on text comparison.
+        For details see
+        [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
+        in the developer documentation.
 *   c#
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
 *   java
@@ -90,8 +94,12 @@ The command line version of PMD continues to use **scala 2.13**.
     
 #### Deprecated APIs
 
-*   {% jdoc apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %}
-
+*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
+*   {% jdoc !!core::cpd.TokenEntry#TokenEntry(java.lang.String, java.lang.String, int) %}
+*   {% jdoc test::testframework.AbstractTokenizerTest %}. Use CpdTextComparisonTest in module pmd-lang-test instead.
+    For details see
+    [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
+    in the developer documentation.
 
 ### External Contributions
 

@@ -1,0 +1,53 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [function]                              1         8
+    [switchToRealPassword]                  10        29
+    [(]                                     30        30
+    [)]                                     31        31
+    [{]                                     33        33
+L2
+    [var]                                   5         7
+    [real]                                  9         12
+    [=]                                     14        14
+    [$]                                     16        16
+    [(]                                     17        17
+    ['realPass']                            18        27
+    [)]                                     28        28
+    [;]                                     29        29
+L3
+    [var]                                   5         7
+    [prompt]                                9         14
+    [=]                                     16        16
+    [$]                                     18        18
+    [(]                                     19        19
+    ['promptPass']                          20        31
+    [)]                                     32        32
+    [;]                                     33        33
+L4
+    [real]                                  5         8
+    [.]                                     9         9
+    [style]                                 10        14
+    [.]                                     15        15
+    [display]                               16        22
+    [=]                                     24        24
+    ['inline']                              26        33
+    [;]                                     34        34
+L5
+    [prompt]                                5         10
+    [.]                                     11        11
+    [style]                                 12        16
+    [.]                                     17        17
+    [display]                               18        24
+    [=]                                     26        26
+    ['none']                                28        33
+    [;]                                     34        34
+L6
+    [real]                                  5         8
+    [.]                                     9         9
+    [focus]                                 10        14
+    [(]                                     15        15
+    [)]                                     16        16
+    [;]                                     17        17
+L7
+    [}]                                     1         1
+EOF
