@@ -89,11 +89,12 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
             if (rootElement != null && !rootElementReplaced) {
                 if (result instanceof SlashExpression) {
                     SlashExpression newPath = (SlashExpression) result;
-                    if (newPath.getStep() instanceof FilterExpression) {
-                        FilterExpression filterExpression = (FilterExpression) newPath.getStep();
+                    Expression step = newPath.getStep();
+                    if (step instanceof FilterExpression) {
+                        FilterExpression filterExpression = (FilterExpression) step;
                         result = new FilterExpression(new AxisExpression(AxisInfo.SELF, null), filterExpression.getFilter());
                         rootElementReplaced = true;
-                    } else if (newPath.getStep() instanceof AxisExpression) {
+                    } else if (step instanceof AxisExpression) {
                         Expression start = newPath.getStart();
                         if (start instanceof RootExpression) {
                             result = new AxisExpression(AxisInfo.SELF, null);
