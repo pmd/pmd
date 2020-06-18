@@ -1503,7 +1503,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="auxclasspath"><code>-auxclasspath&nbsp;&lt;cp&gt;</code></a></td>
     <td>Specifies the classpath for libraries used by the source code.
-               This is used to resolve types in source files. Alternatively, a <code>file://</code> URL
+               This is used to resolve types in source files. The platform specific path delimiter
+               (":" on Linux, ";" on Windows) is used to separate the entries.
+               Alternatively, a single <code>file:</code> URL
                to a text file containing path elements on consecutive lines can be specified.</td>
     <td><code></code></td>
     <td>Java</td>
@@ -2074,7 +2076,7 @@ All formats are described at <a href="pmd_userdocs_report_formats.html">PMD Repo
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 15, 2020 <br />
+ Site last generated: Jun 18, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
