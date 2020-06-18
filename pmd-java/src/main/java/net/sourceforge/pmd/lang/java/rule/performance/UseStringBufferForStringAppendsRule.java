@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -22,15 +22,17 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
 
+    public UseStringBufferForStringAppendsRule() {
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
+    }
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isA(node, String.class) || node.isArray()) {
+        if (!TypeHelper.isA(node, String.class) || node.isArray()
+                || node.getNthParent(3) instanceof ASTForStatement) {
             return data;
         }
-        Node parent = node.getParent().getParent();
-        if (!(parent instanceof ASTLocalVariableDeclaration)) {
-            return data;
-        }
+
         for (NameOccurrence no : node.getUsages()) {
             Node name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
