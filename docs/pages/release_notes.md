@@ -54,6 +54,8 @@ The command line version of PMD continues to use **scala 2.13**.
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
 *   java-design
     *   [#2563](https://github.com/pmd/pmd/pull/2563): \[java] UselessOverridingMethod false negative with already public methods
+*   java-performance
+    *   [#2591](https://github.com/pmd/pmd/pull/2591): \[java] InefficientStringBuffering/AppendCharacterWithChar: Fix false negatives with concats in appends
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
 
@@ -61,6 +63,10 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
+
+#### Deprecated APIs
+
+*   {% jdoc !!java::lang.java.rule.performance.InefficientStringBufferingRule#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node, int, java.lang.String) %}
 
 ### External Contributions
 
