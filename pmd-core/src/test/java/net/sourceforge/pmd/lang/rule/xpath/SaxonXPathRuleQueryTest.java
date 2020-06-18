@@ -202,4 +202,11 @@ public class SaxonXPathRuleQueryTest {
         List<String> ruleChainVisits = query.getRuleChainVisits();
         Assert.assertEquals(0, ruleChainVisits.size());
     }
+
+    @Test
+    public void ruleChainWithUnionsAndFilter() {
+        SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator[@Image='foo']");
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        Assert.assertEquals(0, ruleChainVisits.size());
+    }
 }
