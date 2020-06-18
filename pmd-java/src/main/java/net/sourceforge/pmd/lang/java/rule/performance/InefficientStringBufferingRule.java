@@ -46,7 +46,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAdditiveExpression node, Object data) {
-        if (node.getParent() instanceof ASTConditionalExpression) {
+        if (node.getParent() instanceof ASTConditionalExpression || node.getNthParent(2) instanceof ASTConditionalExpression) {
             // ignore concats in ternary expressions
             return data;
         }
