@@ -1472,6 +1472,10 @@ the old rule behaviour.</p>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/2599">#2599</a>: [core] Fix XPath 2.0 Rule Chain Analyzer with Unions</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2483">#2483</a>: [lang-test] Support cpd tests based on text comparison.
+For details see
+<a href="pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation">Testing your implementation</a>
+in the developer documentation.</li>
     </ul>
   </li>
   <li>c#
@@ -1518,7 +1522,12 @@ or <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.12</code> ins
 <h4 id="deprecated-apis">Deprecated APIs</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTAnnotation.html#suppresses(net.sourceforge.pmd.Rule)"><code>suppresses</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTAnnotation.html#suppresses(net.sourceforge.pmd.Rule)"><code>ASTAnnotation#suppresses</code></a> (Apex)</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.25.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#TokenEntry(java.lang.String,java.lang.String,int)"><code>TokenEntry#TokenEntry</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/6.25.0-SNAPSHOT/net/sourceforge/pmd/testframework/AbstractTokenizerTest.html#"><code>AbstractTokenizerTest</code></a>. Use CpdTextComparisonTest in module pmd-lang-test instead.
+For details see
+<a href="pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation">Testing your implementation</a>
+in the developer documentation.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>

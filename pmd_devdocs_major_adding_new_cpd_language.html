@@ -1491,6 +1491,63 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </li>
 </ol>
 
+<h3 id="testing-your-implementation">Testing your implementation</h3>
+
+<p>Add a Maven dependency on <code class="highlighter-rouge">pmd-lang-test</code> (scope <code class="highlighter-rouge">test</code>) in your <code class="highlighter-rouge">pom.xml</code>.
+This contains utilities to test your Tokenizer.</p>
+
+<p>For simple tests, create a test class extending from <code class="highlighter-rouge">CpdTextComparisonTest</code>.
+That class is written in Kotlin, but you can extend it in Java as well.</p>
+
+<p>To add tests, you need to write regular JUnit <code class="highlighter-rouge">@Test</code>-annotated methods, and
+call the method <code class="highlighter-rouge">doTest</code> with the name of the test file.</p>
+
+<p>For example, for the Dart language:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DartTokenizerTest</span> <span class="kd">extends</span> <span class="nc">CpdTextComparisonTest</span> <span class="o">{</span>
+
+    <span class="cm">/**********************************
+      Implementation of the superclass
+    ***********************************/</span>
+
+
+    <span class="kd">public</span> <span class="nf">DartTokenizerTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="s">".dart"</span><span class="o">);</span> <span class="c1">// the file extension for the dart language</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="nc">String</span> <span class="nf">getResourcePrefix</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// If your class is in                  src/test/java     /some/package</span>
+        <span class="c1">// you need to place the test files in  src/test/resources/some/package/cpdData</span>
+        <span class="k">return</span> <span class="s">"cpdData"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Tokenizer</span> <span class="nf">newTokenizer</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Override this abstract method to return the correct tokenizer</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">DartTokenizer</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**************
+      Test methods
+    ***************/</span>
+
+
+    <span class="nd">@Test</span>  <span class="c1">// don't forget the JUnit annotation</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testLiterals</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// This will look for a file named literals.dart</span>
+        <span class="c1">// in the directory identified by getResourcePrefix,</span>
+        <span class="c1">// tokenize it, then compare the result against a baseline</span>
+        <span class="c1">// literals.txt file in the same directory</span>
+
+        <span class="c1">// If the baseline file does not exist, it is created automatically</span>
+        <span class="n">doTest</span><span class="o">(</span><span class="s">"literals"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
 
     <div class="tags">
         
