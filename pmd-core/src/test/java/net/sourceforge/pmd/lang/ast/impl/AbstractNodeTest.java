@@ -14,7 +14,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.jaxen.JaxenException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +24,6 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import junitparams.JUnitParamsRunner;
@@ -217,14 +215,7 @@ public class AbstractNodeTest {
 
 
     @Test
-    public void testDeprecatedAttributeXPathQuery() throws JaxenException {
-        class MyRootNode extends DummyNode implements RootNode {
-
-            private MyRootNode() {
-                super();
-            }
-        }
-
+    public void testDeprecatedAttributeXPathQuery() {
         tree(() -> root(new DummyNodeWithDeprecatedAttribute(2)))
             .findChildNodesWithXPath("//dummyNode[@Size=1]");
 

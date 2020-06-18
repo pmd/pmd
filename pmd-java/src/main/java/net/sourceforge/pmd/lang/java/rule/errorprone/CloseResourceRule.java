@@ -299,13 +299,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean hasNullInitializer(ASTLocalVariableDeclaration var) {
         ASTVariableInitializer init = var.getFirstDescendantOfType(ASTVariableInitializer.class);
         if (init != null) {
-            try {
-                List<?> nulls = init
-                        .findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral");
-                return !nulls.isEmpty();
-            } catch (JaxenException e) {
-                return false;
-            }
+            return !init.findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral").isEmpty();
         }
         return false;
     }
@@ -527,15 +521,11 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean nullCheckIfCondition(ASTBlock enclosingBlock, Node node, String varName) {
         ASTIfStatement ifStatement = findIfStatement(enclosingBlock, node);
         if (ifStatement != null) {
-            try {
-                // find expressions like: varName != null or null != varName
-                List<?> nodes = ifStatement.findChildNodesWithXPath("Expression/EqualityExpression[@Image='!=']"
-                        + "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]"
-                        + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
-                return !nodes.isEmpty();
-            } catch (JaxenException e) {
-                throw new RuntimeException(e);
-            }
+            // find expressions like: varName != null or null != varName
+            List<?> nodes = ifStatement.findChildNodesWithXPath("Expression/EqualityExpression[@Image='!=']"
+                    + "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]"
+                    + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
+            return !nodes.isEmpty();
         }
         return true;
     }

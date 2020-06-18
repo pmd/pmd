@@ -111,14 +111,12 @@ public class ParserCornersTest {
     }
 
     @Test
-    public void testParsersCases18() throws Exception {
+    public void testParsersCases18() {
         ASTCompilationUnit cu = java8.parseResource("ParserCornerCases18.java");
 
-        Assert.assertEquals(21, cu.findChildNodesWithXPath("//FormalParameter").size());
-        Assert.assertEquals(4,
-                cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
-        Assert.assertEquals(17,
-                cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
+        Assert.assertEquals(21, cu.descendants(ASTFormalParameter.class).count());
+        Assert.assertEquals(4, cu.descendants(ASTFormalParameter.class).filter(ASTFormalParameter::isExplicitReceiverParameter).count());
+        Assert.assertEquals(17, cu.descendants(ASTFormalParameter.class).filter(it -> !it.isExplicitReceiverParameter()).count());
     }
 
     /**

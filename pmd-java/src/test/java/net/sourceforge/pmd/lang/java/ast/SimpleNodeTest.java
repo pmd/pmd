@@ -248,7 +248,7 @@ public class SimpleNodeTest extends BaseParserTest {
     }
 
     @Test
-    public void testXPathNodeSelect() throws JaxenException {
+    public void testXPathNodeSelect() {
         ASTClassOrInterfaceDeclaration c = java.getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
         List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
