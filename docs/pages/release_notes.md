@@ -63,6 +63,8 @@ The command line version of PMD continues to use **scala 2.13**.
 
 ### Fixed Issues
 
+*   apex-bestpractices
+    *   [#2554](https://github.com/pmd/pmd/issues/2554): \[apex] Exception applying rule UnusedLocalVariable on trigger
 *   c#
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
 *   java-codestyle
@@ -73,6 +75,7 @@ The command line version of PMD continues to use **scala 2.13**.
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
 
+
 ### API Changes
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
@@ -80,7 +83,7 @@ The command line version of PMD continues to use **scala 2.13**.
     
 #### Deprecated APIs
 
-*   {%jdoc apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %}
+*   {% jdoc apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %}
 
 
 ### External Contributions
