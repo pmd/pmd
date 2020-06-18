@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -1798,7 +1797,7 @@ public class ClassTypeResolverTest {
 
 
     @Test
-    public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
+    public void testMethodInitialConstraints() throws NoSuchMethodException {
         List<AbstractJavaNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaNode.class, "//ArgumentList");
 
         List<Variable> variables = new ArrayList<>();

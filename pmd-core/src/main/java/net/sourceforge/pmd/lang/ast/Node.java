@@ -11,7 +11,6 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
@@ -226,27 +225,11 @@ public interface Node {
             XPathVersion.XPATH_2_0,
             Collections.emptyMap(),
             XPathHandler.noFunctionDefinitions(),
+            // since this method will be removed, we don't log anything anymore
             DeprecatedAttrLogger.noop()
         ).evaluate(this);
     }
 
-    /**
-     * Checks whether at least one descendant matches the xpath expression.
-     *
-     * @param xpathString the expression to check
-     * @return true if there is a match
-     *
-     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
-     *             support for this method.
-     */
-    @Deprecated
-    default boolean hasDescendantMatchingXPath(String xpathString) {
-        try {
-            return !findChildNodesWithXPath(xpathString).isEmpty();
-        } catch (final JaxenException e) {
-            throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
-        }
-    }
 
     /**
      * Returns a data map used to store additional information on this node.

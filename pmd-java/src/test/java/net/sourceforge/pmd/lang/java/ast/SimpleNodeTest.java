@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.jaxen.JaxenException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -253,9 +252,6 @@ public class SimpleNodeTest extends BaseParserTest {
         List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
-
-        assertTrue(c.hasDescendantMatchingXPath("//FieldDeclaration"));
-        assertFalse(c.hasDescendantMatchingXPath("//MethodDeclaration"));
     }
 
     private void verifyNode(Node node, int beginLine, int beginCol, int endLine, int endCol) {

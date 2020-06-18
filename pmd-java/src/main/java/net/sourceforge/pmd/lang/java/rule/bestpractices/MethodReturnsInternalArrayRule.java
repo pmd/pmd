@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
 
-import org.jaxen.JaxenException;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -123,14 +121,9 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
                         if (child instanceof ASTArrayInitializer && child.getNumChildren() == 0) {
                             return true;
                         } else if (child instanceof ASTExpression) {
-                            try {
-                                List<? extends Node> arrayAllocation = child.findChildNodesWithXPath(
-                                        "./PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@IntLiteral=\"true\"][@Image=\"0\"]");
-                                if (arrayAllocation != null && arrayAllocation.size() == 1) {
-                                    return true;
-                                }
-                            } catch (JaxenException e) {
-                                return false;
+                            List<? extends Node> arrayAllocation = child.findChildNodesWithXPath("./PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@IntLiteral=\"true\"][@Image=\"0\"]");
+                            if (arrayAllocation != null && arrayAllocation.size() == 1) {
+                                return true;
                             }
                         }
                     }
