@@ -23,4 +23,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negatives (#2544)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+public class UseProperClassLoaderFN {
+    {
+        Object o = new Object();
+        ClassLoader cl = o.getClass().getClassLoader();
+
+        Class<?> c = o.getClass();
+        ClassLoader cl2 = c.getClassLoader();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

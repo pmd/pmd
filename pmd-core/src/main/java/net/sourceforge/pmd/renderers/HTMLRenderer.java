@@ -31,15 +31,19 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 
-    // TODO 7.0.0 use PropertyDescriptor<String>
+    // TODO use PropertyDescriptor<Optional<String>> : we need a "blank" default value
     public static final StringProperty LINE_PREFIX = new StringProperty("linePrefix",
-            "Prefix for line number anchor in the source file.", null, 1);
-    public static final StringProperty LINK_PREFIX = new StringProperty("linkPrefix", "Path to HTML source.", null, 0);
-    public static final PropertyDescriptor<Boolean> HTML_EXTENSION = PropertyFactory.booleanProperty("htmlExtension")
-            .desc("Replace file extension with .html for the links (default: false)")
-            // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
-            .defaultValue(false)
-            .build();
+                                                                        "Prefix for line number anchor in the source file.", null, 1);
+
+    public static final PropertyDescriptor<String> LINK_PREFIX =
+        PropertyFactory.stringProperty("linkPrefix").desc("Path to HTML source.").defaultValue("").build();
+
+    public static final PropertyDescriptor<Boolean> HTML_EXTENSION =
+        PropertyFactory.booleanProperty("htmlExtension")
+                       .desc("Replace file extension with .html for the links (default: false)")
+                       // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
+                       .defaultValue(false)
+                       .build();
 
     private String linkPrefix;
     private String linePrefix;

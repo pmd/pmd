@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -721,7 +722,10 @@ public final class StringUtil {
      * @param name The string to convert
      *
      * @return The string converted to Camel case
+     *
+     * @deprecated Use {@link CaseConvention}
      */
+    @Deprecated
     public static String toCamelCase(String name) {
         return toCamelCase(name, false);
     }
@@ -742,7 +746,10 @@ public final class StringUtil {
      *                       case letters except on word start
      *
      * @return The string converted to Camel case
+     *
+     * @deprecated Use {@link CaseConvention}
      */
+    @Deprecated
     public static String toCamelCase(String name, boolean forceLowerCase) {
         StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
@@ -804,5 +811,70 @@ public final class StringUtil {
             }
         }
         return retval.toString();
+    }
+
+
+    public enum CaseConvention {
+        /** SCREAMING_SNAKE_CASE. */
+        SCREAMING_SNAKE_CASE {
+            @Override
+            List<String> toWords(String name) {
+                return CollectionUtil.map(name.split("_"), s -> s.toLowerCase(Locale.ROOT));
+            }
+
+            @Override
+            String joinWords(List<String> words) {
+                return words.stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.joining("_"));
+            }
+        },
+        /** camelCase. */
+        CAMEL_CASE {
+            @Override
+            List<String> toWords(String name) {
+                return PASCAL_CASE.toWords(name);
+            }
+
+            @Override
+            String joinWords(List<String> words) {
+                if (words.isEmpty()) {
+                    return "";
+                }
+                return words.get(0).toLowerCase(Locale.ROOT) + PASCAL_CASE.joinWords(words.subList(1, words.size()));
+            }
+        },
+        /** PascalCase. */
+        PASCAL_CASE {
+            @Override
+            List<String> toWords(String name) {
+                return CollectionUtil.map(name.split("(?<![A-Z])(?=[A-Z])"), s -> s.toLowerCase(Locale.ROOT));
+            }
+
+            @Override
+            String joinWords(List<String> words) {
+                return words.stream().map(StringUtils::capitalize).collect(Collectors.joining());
+            }
+        },
+        /** space separated. */
+        SPACE_SEPARATED {
+            @Override
+            List<String> toWords(String name) {
+                return CollectionUtil.map(name.split("\\s++"), s -> s.toLowerCase(Locale.ROOT));
+            }
+
+            @Override
+            String joinWords(List<String> words) {
+                return String.join(" ", words);
+            }
+        };
+
+        /** Split a name written with this convention into a list of *lowercase* words. */
+        abstract List<String> toWords(String name);
+
+        /** Takes a list of lowercase words and joins them into a name following this convention. */
+        abstract String joinWords(List<String> words);
+
+        public String convertTo(CaseConvention to, String name) {
+            return to.joinWords(toWords(name));
+        }
     }
 }

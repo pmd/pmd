@@ -29,8 +29,12 @@ public class ApexParserTest extends ApexParserTestBase {
     public void understandsSimpleFile() {
 
         // Setup
-        String code = "@isTest\n public class SimpleClass {\n" + "    @isTest\n public static void testAnything() {\n"
-            + "        \n" + "    }\n" + "}";
+        String code = "@isTest\n"
+            + " public class SimpleClass {\n"
+            + "    @isTest\n public static void testAnything() {\n"
+            + "        \n"
+            + "    }\n"
+            + "}";
 
         // Exercise
         ApexNode<Compilation> rootNode = parse(code);
@@ -40,7 +44,7 @@ public class ApexParserTest extends ApexParserTestBase {
         assertEquals(4, methods.size());
     }
 
-    private String testCodeForLineNumbers =
+    private final String testCodeForLineNumbers =
               "public class SimpleClass {\n" // line 1
             + "    public void method1() {\n" // line 2
             + "        System.out.println('abc');\n" // line 3
