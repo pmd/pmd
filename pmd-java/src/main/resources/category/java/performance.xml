@@ -133,8 +133,9 @@ Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDat
                 <value><![CDATA[
 //PrimaryPrefix[Name[ends-with(@Image, 'Calendar.getInstance')]] [count(../PrimarySuffix) > 2 and ../PrimarySuffix[last()-1][@Image = 'getTime' or @Image='getTimeInMillis']]
 |
-//Block/BlockStatement//Expression/PrimaryExpression/
-PrimaryPrefix/Name[pmd-java:typeIs('java.util.Calendar') and (ends-with(@Image,'.getTime') or ends-with(@Image,'.getTimeInMillis'))]
+//MethodDeclaration[not(MethodDeclarator/FormalParameters//ClassOrInterfaceType[pmd-java:typeIs('java.util.Calendar')])]
+  /Block/BlockStatement//Expression/PrimaryExpression
+  /PrimaryPrefix/Name[pmd-java:typeIs('java.util.Calendar') and (ends-with(@Image,'.getTime') or ends-with(@Image,'.getTimeInMillis'))]
 |
 //ClassOrInterfaceType[pmd-java:typeIs('org.joda.time.DateTime') or pmd-java:typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
                 ]]></value>
@@ -142,6 +143,10 @@ PrimaryPrefix/Name[pmd-java:typeIs('java.util.Calendar') and (ends-with(@Image,'
         </properties>
         <example>
             <![CDATA[
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+
 public class DateStuff {
     private Date bad1() {
         return Calendar.getInstance().getTime(); // now
