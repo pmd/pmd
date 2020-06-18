@@ -444,6 +444,15 @@ public class ConcatInLoop {
             logStatement = logStatement + val + ", "; // bad
         }
     }
+
+    public void good() {
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        StringBuilder sb = new StringBuilder(logStatement);
+        for (String val : values) {
+            sb.append(val).append(", ");
+        }
+        logStatement = sb.toString();
+    }
 }
         ]]></code>
     </test-code>
