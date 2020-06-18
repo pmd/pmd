@@ -1,0 +1,1419 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [from]                                  1         4
+    [__future__]                            6         15
+    [import]                                17        22
+    [unicode_literals]                      24        39
+L5
+    [import]                                1         6
+    [logging]                               8         14
+L6
+    [import]                                1         6
+    [sys]                                   8         10
+L7
+    [import]                                1         6
+    [types]                                 8         12
+L9
+    [from]                                  1         4
+    [django]                                6         11
+    [import]                                13        18
+    [http]                                  20        23
+L10
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [conf]                                  13        16
+    [import]                                18        23
+    [settings]                              25        32
+L11
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [core]                                  13        16
+    [import]                                18        23
+    [urlresolvers]                          25        36
+L12
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [core]                                  13        16
+    [import]                                18        23
+    [signals]                               25        31
+L13
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [core]                                  13        16
+    [.]                                     17        17
+    [exceptions]                            18        27
+    [import]                                29        34
+    [MiddlewareNotUsed]                     36        52
+    [,]                                     53        53
+    [PermissionDenied]                      55        70
+    [,]                                     71        71
+    [SuspiciousOperation]                   73        91
+L14
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [db]                                    13        14
+    [import]                                16        21
+    [connections]                           23        33
+    [,]                                     34        34
+    [transaction]                           36        46
+L15
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [http]                                  13        16
+    [.]                                     17        17
+    [multipartparser]                       18        32
+    [import]                                34        39
+    [MultiPartParserError]                  41        60
+L16
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [utils]                                 13        17
+    [.]                                     18        18
+    [encoding]                              19        26
+    [import]                                28        33
+    [force_text]                            35        44
+L17
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [utils]                                 13        17
+    [.]                                     18        18
+    [module_loading]                        19        32
+    [import]                                34        39
+    [import_string]                         41        53
+L18
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [utils]                                 13        17
+    [import]                                19        24
+    [six]                                   26        28
+L19
+    [from]                                  1         4
+    [django]                                6         11
+    [.]                                     12        12
+    [views]                                 13        17
+    [import]                                19        24
+    [debug]                                 26        30
+L21
+    [logger]                                1         6
+    [=]                                     8         8
+    [logging]                               10        16
+    [.]                                     17        17
+    [getLogger]                             18        26
+    [(]                                     27        27
+    ['django.request']                      28        43
+    [)]                                     44        44
+L24
+    [class]                                 1         5
+    [BaseHandler]                           7         17
+    [(]                                     18        18
+    [object]                                19        24
+    [)]                                     25        25
+    [:]                                     26        26
+L26
+    [response_fixes]                        5         18
+    [=]                                     20        20
+    [\[]                                    22        22
+L27
+    [http]                                  9         12
+    [.]                                     13        13
+    [fix_location_header]                   14        32
+    [,]                                     33        33
+L28
+    [http]                                  9         12
+    [.]                                     13        13
+    [conditional_content_removal]           14        40
+    [,]                                     41        41
+L29
+    [\]]                                    5         5
+L31
+    [def]                                   5         7
+    [__init__]                              9         16
+    [(]                                     17        17
+    [self]                                  18        21
+    [)]                                     22        22
+    [:]                                     23        23
+L32
+    [self]                                  9         12
+    [.]                                     13        13
+    [_request_middleware]                   14        32
+    [=]                                     34        34
+    [None]                                  36        39
+L33
+    [self]                                  9         12
+    [.]                                     13        13
+    [_view_middleware]                      14        29
+    [=]                                     31        31
+    [None]                                  33        36
+L34
+    [self]                                  9         12
+    [.]                                     13        13
+    [_template_response_middleware]         14        42
+    [=]                                     44        44
+    [None]                                  46        49
+L35
+    [self]                                  9         12
+    [.]                                     13        13
+    [_response_middleware]                  14        33
+    [=]                                     35        35
+    [None]                                  37        40
+L36
+    [self]                                  9         12
+    [.]                                     13        13
+    [_exception_middleware]                 14        34
+    [=]                                     36        36
+    [None]                                  38        41
+L38
+    [def]                                   5         7
+    [load_middleware]                       9         23
+    [(]                                     24        24
+    [self]                                  25        28
+    [)]                                     29        29
+    [:]                                     30        30
+L39
+    ["""\n        Populate middleware l[    9         11
+L44
+    [self]                                  9         12
+    [.]                                     13        13
+    [_view_middleware]                      14        29
+    [=]                                     31        31
+    [\[]                                    33        33
+    [\]]                                    34        34
+L45
+    [self]                                  9         12
+    [.]                                     13        13
+    [_template_response_middleware]         14        42
+    [=]                                     44        44
+    [\[]                                    46        46
+    [\]]                                    47        47
+L46
+    [self]                                  9         12
+    [.]                                     13        13
+    [_response_middleware]                  14        33
+    [=]                                     35        35
+    [\[]                                    37        37
+    [\]]                                    38        38
+L47
+    [self]                                  9         12
+    [.]                                     13        13
+    [_exception_middleware]                 14        34
+    [=]                                     36        36
+    [\[]                                    38        38
+    [\]]                                    39        39
+L49
+    [request_middleware]                    9         26
+    [=]                                     28        28
+    [\[]                                    30        30
+    [\]]                                    31        31
+L50
+    [for]                                   9         11
+    [middleware_path]                       13        27
+    [in]                                    29        30
+    [settings]                              32        39
+    [.]                                     40        40
+    [MIDDLEWARE_CLASSES]                    41        58
+    [:]                                     59        59
+L51
+    [mw_class]                              13        20
+    [=]                                     22        22
+    [import_string]                         24        36
+    [(]                                     37        37
+    [middleware_path]                       38        52
+    [)]                                     53        53
+L52
+    [try]                                   13        15
+    [:]                                     16        16
+L53
+    [mw_instance]                           17        27
+    [=]                                     29        29
+    [mw_class]                              31        38
+    [(]                                     39        39
+    [)]                                     40        40
+L54
+    [except]                                13        18
+    [MiddlewareNotUsed]                     20        36
+    [as]                                    38        39
+    [exc]                                   41        43
+    [:]                                     44        44
+L55
+    [if]                                    17        18
+    [settings]                              20        27
+    [.]                                     28        28
+    [DEBUG]                                 29        33
+    [:]                                     34        34
+L56
+    [if]                                    21        22
+    [six]                                   24        26
+    [.]                                     27        27
+    [text_type]                             28        36
+    [(]                                     37        37
+    [exc]                                   38        40
+    [)]                                     41        41
+    [:]                                     42        42
+L57
+    [logger]                                25        30
+    [.]                                     31        31
+    [debug]                                 32        36
+    [(]                                     37        37
+    ['MiddlewareNotUsed(%r): %s']           38        64
+    [,]                                     65        65
+    [middleware_path]                       67        81
+    [,]                                     82        82
+    [exc]                                   84        86
+    [)]                                     87        87
+L58
+    [else]                                  21        24
+    [:]                                     25        25
+L59
+    [logger]                                25        30
+    [.]                                     31        31
+    [debug]                                 32        36
+    [(]                                     37        37
+    ['MiddlewareNotUsed: %r']               38        60
+    [,]                                     61        61
+    [middleware_path]                       63        77
+    [)]                                     78        78
+L60
+    [continue]                              17        24
+L62
+    [if]                                    13        14
+    [hasattr]                               16        22
+    [(]                                     23        23
+    [mw_instance]                           24        34
+    [,]                                     35        35
+    ['process_request']                     37        53
+    [)]                                     54        54
+    [:]                                     55        55
+L63
+    [request_middleware]                    17        34
+    [.]                                     35        35
+    [append]                                36        41
+    [(]                                     42        42
+    [mw_instance]                           43        53
+    [.]                                     54        54
+    [process_request]                       55        69
+    [)]                                     70        70
+L64
+    [if]                                    13        14
+    [hasattr]                               16        22
+    [(]                                     23        23
+    [mw_instance]                           24        34
+    [,]                                     35        35
+    ['process_view']                        37        50
+    [)]                                     51        51
+    [:]                                     52        52
+L65
+    [self]                                  17        20
+    [.]                                     21        21
+    [_view_middleware]                      22        37
+    [.]                                     38        38
+    [append]                                39        44
+    [(]                                     45        45
+    [mw_instance]                           46        56
+    [.]                                     57        57
+    [process_view]                          58        69
+    [)]                                     70        70
+L66
+    [if]                                    13        14
+    [hasattr]                               16        22
+    [(]                                     23        23
+    [mw_instance]                           24        34
+    [,]                                     35        35
+    ['process_template_response']           37        63
+    [)]                                     64        64
+    [:]                                     65        65
+L67
+    [self]                                  17        20
+    [.]                                     21        21
+    [_template_response_middleware]         22        50
+    [.]                                     51        51
+    [insert]                                52        57
+    [(]                                     58        58
+    [0]                                     59        59
+    [,]                                     60        60
+    [mw_instance]                           62        72
+    [.]                                     73        73
+    [process_template_response]             74        98
+    [)]                                     99        99
+L68
+    [if]                                    13        14
+    [hasattr]                               16        22
+    [(]                                     23        23
+    [mw_instance]                           24        34
+    [,]                                     35        35
+    ['process_response']                    37        54
+    [)]                                     55        55
+    [:]                                     56        56
+L69
+    [self]                                  17        20
+    [.]                                     21        21
+    [_response_middleware]                  22        41
+    [.]                                     42        42
+    [insert]                                43        48
+    [(]                                     49        49
+    [0]                                     50        50
+    [,]                                     51        51
+    [mw_instance]                           53        63
+    [.]                                     64        64
+    [process_response]                      65        80
+    [)]                                     81        81
+L70
+    [if]                                    13        14
+    [hasattr]                               16        22
+    [(]                                     23        23
+    [mw_instance]                           24        34
+    [,]                                     35        35
+    ['process_exception']                   37        55
+    [)]                                     56        56
+    [:]                                     57        57
+L71
+    [self]                                  17        20
+    [.]                                     21        21
+    [_exception_middleware]                 22        42
+    [.]                                     43        43
+    [insert]                                44        49
+    [(]                                     50        50
+    [0]                                     51        51
+    [,]                                     52        52
+    [mw_instance]                           54        64
+    [.]                                     65        65
+    [process_exception]                     66        82
+    [)]                                     83        83
+L75
+    [self]                                  9         12
+    [.]                                     13        13
+    [_request_middleware]                   14        32
+    [=]                                     34        34
+    [request_middleware]                    36        53
+L77
+    [def]                                   5         7
+    [make_view_atomic]                      9         24
+    [(]                                     25        25
+    [self]                                  26        29
+    [,]                                     30        30
+    [view]                                  32        35
+    [)]                                     36        36
+    [:]                                     37        37
+L78
+    [non_atomic_requests]                   9         27
+    [=]                                     29        29
+    [getattr]                               31        37
+    [(]                                     38        38
+    [view]                                  39        42
+    [,]                                     43        43
+    ['_non_atomic_requests']                45        66
+    [,]                                     67        67
+    [set]                                   69        71
+    [(]                                     72        72
+    [)]                                     73        73
+    [)]                                     74        74
+L79
+    [for]                                   9         11
+    [db]                                    13        14
+    [in]                                    16        17
+    [connections]                           19        29
+    [.]                                     30        30
+    [all]                                   31        33
+    [(]                                     34        34
+    [)]                                     35        35
+    [:]                                     36        36
+L80
+    [if]                                    13        14
+    [(]                                     16        16
+    [db]                                    17        18
+    [.]                                     19        19
+    [settings_dict]                         20        32
+    [\[]                                    33        33
+    ['ATOMIC_REQUESTS']                     34        50
+    [\]]                                    51        51
+L81
+    [and]                                   21        23
+    [db]                                    25        26
+    [.]                                     27        27
+    [alias]                                 28        32
+    [not]                                   34        36
+    [in]                                    38        39
+    [non_atomic_requests]                   41        59
+    [)]                                     60        60
+    [:]                                     61        61
+L82
+    [view]                                  17        20
+    [=]                                     22        22
+    [transaction]                           24        34
+    [.]                                     35        35
+    [atomic]                                36        41
+    [(]                                     42        42
+    [using]                                 43        47
+    [=]                                     48        48
+    [db]                                    49        50
+    [.]                                     51        51
+    [alias]                                 52        56
+    [)]                                     57        57
+    [(]                                     58        58
+    [view]                                  59        62
+    [)]                                     63        63
+L83
+    [return]                                9         14
+    [view]                                  16        19
+L85
+    [def]                                   5         7
+    [get_exception_response]                9         30
+    [(]                                     31        31
+    [self]                                  32        35
+    [,]                                     36        36
+    [request]                               38        44
+    [,]                                     45        45
+    [resolver]                              47        54
+    [,]                                     55        55
+    [status_code]                           57        67
+    [)]                                     68        68
+    [:]                                     69        69
+L86
+    [try]                                   9         11
+    [:]                                     12        12
+L87
+    [callback]                              13        20
+    [,]                                     21        21
+    [param_dict]                            23        32
+    [=]                                     34        34
+    [resolver]                              36        43
+    [.]                                     44        44
+    [resolve_error_handler]                 45        65
+    [(]                                     66        66
+    [status_code]                           67        77
+    [)]                                     78        78
+L88
+    [response]                              13        20
+    [=]                                     22        22
+    [callback]                              24        31
+    [(]                                     32        32
+    [request]                               33        39
+    [,]                                     40        40
+    [**]                                    42        43
+    [param_dict]                            44        53
+    [)]                                     54        54
+L89
+    [except]                                9         14
+    [:]                                     15        15
+L90
+    [signals]                               13        19
+    [.]                                     20        20
+    [got_request_exception]                 21        41
+    [.]                                     42        42
+    [send]                                  43        46
+    [(]                                     47        47
+    [sender]                                48        53
+    [=]                                     54        54
+    [self]                                  55        58
+    [.]                                     59        59
+    [__class__]                             60        68
+    [,]                                     69        69
+    [request]                               71        77
+    [=]                                     78        78
+    [request]                               79        85
+    [)]                                     86        86
+L91
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [handle_uncaught_exception]             29        53
+    [(]                                     54        54
+    [request]                               55        61
+    [,]                                     62        62
+    [resolver]                              64        71
+    [,]                                     72        72
+    [sys]                                   74        76
+    [.]                                     77        77
+    [exc_info]                              78        85
+    [(]                                     86        86
+    [)]                                     87        87
+    [)]                                     88        88
+L93
+    [return]                                9         14
+    [response]                              16        23
+L95
+    [def]                                   5         7
+    [get_response]                          9         20
+    [(]                                     21        21
+    [self]                                  22        25
+    [,]                                     26        26
+    [request]                               28        34
+    [)]                                     35        35
+    [:]                                     36        36
+L96
+    ["Returns an HttpResponse object fo[    9         66
+L102
+    [urlconf]                               9         15
+    [=]                                     17        17
+    [settings]                              19        26
+    [.]                                     27        27
+    [ROOT_URLCONF]                          28        39
+L103
+    [urlresolvers]                          9         20
+    [.]                                     21        21
+    [set_urlconf]                           22        32
+    [(]                                     33        33
+    [urlconf]                               34        40
+    [)]                                     41        41
+L104
+    [resolver]                              9         16
+    [=]                                     18        18
+    [urlresolvers]                          20        31
+    [.]                                     32        32
+    [RegexURLResolver]                      33        48
+    [(]                                     49        49
+    [r'^/']                                 50        54
+    [,]                                     55        55
+    [urlconf]                               57        63
+    [)]                                     64        64
+L105
+    [try]                                   9         11
+    [:]                                     12        12
+L106
+    [response]                              13        20
+    [=]                                     22        22
+    [None]                                  24        27
+L108
+    [for]                                   13        15
+    [middleware_method]                     17        33
+    [in]                                    35        36
+    [self]                                  38        41
+    [.]                                     42        42
+    [_request_middleware]                   43        61
+    [:]                                     62        62
+L109
+    [response]                              17        24
+    [=]                                     26        26
+    [middleware_method]                     28        44
+    [(]                                     45        45
+    [request]                               46        52
+    [)]                                     53        53
+L110
+    [if]                                    17        18
+    [response]                              20        27
+    [:]                                     28        28
+L111
+    [break]                                 21        25
+L113
+    [if]                                    13        14
+    [response]                              16        23
+    [is]                                    25        26
+    [None]                                  28        31
+    [:]                                     32        32
+L114
+    [if]                                    17        18
+    [hasattr]                               20        26
+    [(]                                     27        27
+    [request]                               28        34
+    [,]                                     35        35
+    ['urlconf']                             37        45
+    [)]                                     46        46
+    [:]                                     47        47
+L116
+    [urlconf]                               21        27
+    [=]                                     29        29
+    [request]                               31        37
+    [.]                                     38        38
+    [urlconf]                               39        45
+L117
+    [urlresolvers]                          21        32
+    [.]                                     33        33
+    [set_urlconf]                           34        44
+    [(]                                     45        45
+    [urlconf]                               46        52
+    [)]                                     53        53
+L118
+    [resolver]                              21        28
+    [=]                                     30        30
+    [urlresolvers]                          32        43
+    [.]                                     44        44
+    [RegexURLResolver]                      45        60
+    [(]                                     61        61
+    [r'^/']                                 62        66
+    [,]                                     67        67
+    [urlconf]                               69        75
+    [)]                                     76        76
+L120
+    [resolver_match]                        17        30
+    [=]                                     32        32
+    [resolver]                              34        41
+    [.]                                     42        42
+    [resolve]                               43        49
+    [(]                                     50        50
+    [request]                               51        57
+    [.]                                     58        58
+    [path_info]                             59        67
+    [)]                                     68        68
+L121
+    [callback]                              17        24
+    [,]                                     25        25
+    [callback_args]                         27        39
+    [,]                                     40        40
+    [callback_kwargs]                       42        56
+    [=]                                     58        58
+    [resolver_match]                        60        73
+L122
+    [request]                               17        23
+    [.]                                     24        24
+    [resolver_match]                        25        38
+    [=]                                     40        40
+    [resolver_match]                        42        55
+L125
+    [for]                                   17        19
+    [middleware_method]                     21        37
+    [in]                                    39        40
+    [self]                                  42        45
+    [.]                                     46        46
+    [_view_middleware]                      47        62
+    [:]                                     63        63
+L126
+    [response]                              21        28
+    [=]                                     30        30
+    [middleware_method]                     32        48
+    [(]                                     49        49
+    [request]                               50        56
+    [,]                                     57        57
+    [callback]                              59        66
+    [,]                                     67        67
+    [callback_args]                         69        81
+    [,]                                     82        82
+    [callback_kwargs]                       84        98
+    [)]                                     99        99
+L127
+    [if]                                    21        22
+    [response]                              24        31
+    [:]                                     32        32
+L128
+    [break]                                 25        29
+L130
+    [if]                                    13        14
+    [response]                              16        23
+    [is]                                    25        26
+    [None]                                  28        31
+    [:]                                     32        32
+L131
+    [wrapped_callback]                      17        32
+    [=]                                     34        34
+    [self]                                  36        39
+    [.]                                     40        40
+    [make_view_atomic]                      41        56
+    [(]                                     57        57
+    [callback]                              58        65
+    [)]                                     66        66
+L132
+    [try]                                   17        19
+    [:]                                     20        20
+L133
+    [response]                              21        28
+    [=]                                     30        30
+    [wrapped_callback]                      32        47
+    [(]                                     48        48
+    [request]                               49        55
+    [,]                                     56        56
+    [*]                                     58        58
+    [callback_args]                         59        71
+    [,]                                     72        72
+    [**]                                    74        75
+    [callback_kwargs]                       76        90
+    [)]                                     91        91
+L134
+    [except]                                17        22
+    [Exception]                             24        32
+    [as]                                    34        35
+    [e]                                     37        37
+    [:]                                     38        38
+L138
+    [for]                                   21        23
+    [middleware_method]                     25        41
+    [in]                                    43        44
+    [self]                                  46        49
+    [.]                                     50        50
+    [_exception_middleware]                 51        71
+    [:]                                     72        72
+L139
+    [response]                              25        32
+    [=]                                     34        34
+    [middleware_method]                     36        52
+    [(]                                     53        53
+    [request]                               54        60
+    [,]                                     61        61
+    [e]                                     63        63
+    [)]                                     64        64
+L140
+    [if]                                    25        26
+    [response]                              28        35
+    [:]                                     36        36
+L141
+    [break]                                 29        33
+L142
+    [if]                                    21        22
+    [response]                              24        31
+    [is]                                    33        34
+    [None]                                  36        39
+    [:]                                     40        40
+L143
+    [raise]                                 25        29
+L146
+    [if]                                    13        14
+    [response]                              16        23
+    [is]                                    25        26
+    [None]                                  28        31
+    [:]                                     32        32
+L147
+    [if]                                    17        18
+    [isinstance]                            20        29
+    [(]                                     30        30
+    [callback]                              31        38
+    [,]                                     39        39
+    [types]                                 41        45
+    [.]                                     46        46
+    [FunctionType]                          47        58
+    [)]                                     59        59
+    [:]                                     60        60
+L148
+    [view_name]                             21        29
+    [=]                                     31        31
+    [callback]                              33        40
+    [.]                                     41        41
+    [__name__]                              42        49
+L149
+    [else]                                  17        20
+    [:]                                     21        21
+L150
+    [view_name]                             21        29
+    [=]                                     31        31
+    [callback]                              33        40
+    [.]                                     41        41
+    [__class__]                             42        50
+    [.]                                     51        51
+    [__name__]                              52        59
+    [+]                                     61        61
+    ['.__call__']                           63        73
+L151
+    [raise]                                 17        21
+    [ValueError]                            23        32
+    [(]                                     33        33
+    ["The view %s.%s didn't return an H[    34        113
+L152
+    [%]                                     34        34
+    [(]                                     36        36
+    [callback]                              37        44
+    [.]                                     45        45
+    [__module__]                            46        55
+    [,]                                     56        56
+    [view_name]                             58        66
+    [)]                                     67        67
+    [)]                                     68        68
+L156
+    [if]                                    13        14
+    [hasattr]                               16        22
+    [(]                                     23        23
+    [response]                              24        31
+    [,]                                     32        32
+    ['render']                              34        41
+    [)]                                     42        42
+    [and]                                   44        46
+    [callable]                              48        55
+    [(]                                     56        56
+    [response]                              57        64
+    [.]                                     65        65
+    [render]                                66        71
+    [)]                                     72        72
+    [:]                                     73        73
+L157
+    [for]                                   17        19
+    [middleware_method]                     21        37
+    [in]                                    39        40
+    [self]                                  42        45
+    [.]                                     46        46
+    [_template_response_middleware]         47        75
+    [:]                                     76        76
+L158
+    [response]                              21        28
+    [=]                                     30        30
+    [middleware_method]                     32        48
+    [(]                                     49        49
+    [request]                               50        56
+    [,]                                     57        57
+    [response]                              59        66
+    [)]                                     67        67
+L160
+    [if]                                    21        22
+    [response]                              24        31
+    [is]                                    33        34
+    [None]                                  36        39
+    [:]                                     40        40
+L161
+    [raise]                                 25        29
+    [ValueError]                            31        40
+    [(]                                     41        41
+L162
+    ["%s.process_template_response didn[    29        76
+L163
+    ["HttpResponse object. It returned [    29        76
+L164
+    [%]                                     29        29
+    [(]                                     31        31
+    [middleware_method]                     32        48
+    [.]                                     49        49
+    [__self__]                              50        57
+    [.]                                     58        58
+    [__class__]                             59        67
+    [.]                                     68        68
+    [__name__]                              69        76
+    [)]                                     77        77
+    [)]                                     78        78
+L165
+    [response]                              17        24
+    [=]                                     26        26
+    [response]                              28        35
+    [.]                                     36        36
+    [render]                                37        42
+    [(]                                     43        43
+    [)]                                     44        44
+L167
+    [except]                                9         14
+    [http]                                  16        19
+    [.]                                     20        20
+    [Http404]                               21        27
+    [as]                                    29        30
+    [e]                                     32        32
+    [:]                                     33        33
+L168
+    [logger]                                13        18
+    [.]                                     19        19
+    [warning]                               20        26
+    [(]                                     27        27
+    ['Not Found: %s']                       28        42
+    [,]                                     43        43
+    [request]                               45        51
+    [.]                                     52        52
+    [path]                                  53        56
+    [,]                                     57        57
+L169
+    [extra]                                 25        29
+    [=]                                     30        30
+    [{]                                     31        31
+L170
+    ['status_code']                         29        41
+    [:]                                     42        42
+    [404]                                   44        46
+    [,]                                     47        47
+L171
+    ['request']                             29        37
+    [:]                                     38        38
+    [request]                               40        46
+L172
+    [}]                                     25        25
+    [)]                                     26        26
+L173
+    [if]                                    13        14
+    [settings]                              16        23
+    [.]                                     24        24
+    [DEBUG]                                 25        29
+    [:]                                     30        30
+L174
+    [response]                              17        24
+    [=]                                     26        26
+    [debug]                                 28        32
+    [.]                                     33        33
+    [technical_404_response]                34        55
+    [(]                                     56        56
+    [request]                               57        63
+    [,]                                     64        64
+    [e]                                     66        66
+    [)]                                     67        67
+L175
+    [else]                                  13        16
+    [:]                                     17        17
+L176
+    [response]                              17        24
+    [=]                                     26        26
+    [self]                                  28        31
+    [.]                                     32        32
+    [get_exception_response]                33        54
+    [(]                                     55        55
+    [request]                               56        62
+    [,]                                     63        63
+    [resolver]                              65        72
+    [,]                                     73        73
+    [404]                                   75        77
+    [)]                                     78        78
+L178
+    [except]                                9         14
+    [PermissionDenied]                      16        31
+    [:]                                     32        32
+L179
+    [logger]                                13        18
+    [.]                                     19        19
+    [warning]                               20        26
+    [(]                                     27        27
+L180
+    ['Forbidden (Permission denied): %s[    17        51
+    [,]                                     52        52
+    [request]                               54        60
+    [.]                                     61        61
+    [path]                                  62        65
+    [,]                                     66        66
+L181
+    [extra]                                 17        21
+    [=]                                     22        22
+    [{]                                     23        23
+L182
+    ['status_code']                         21        33
+    [:]                                     34        34
+    [403]                                   36        38
+    [,]                                     39        39
+L183
+    ['request']                             21        29
+    [:]                                     30        30
+    [request]                               32        38
+L184
+    [}]                                     17        17
+    [)]                                     18        18
+L185
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [get_exception_response]                29        50
+    [(]                                     51        51
+    [request]                               52        58
+    [,]                                     59        59
+    [resolver]                              61        68
+    [,]                                     69        69
+    [403]                                   71        73
+    [)]                                     74        74
+L187
+    [except]                                9         14
+    [MultiPartParserError]                  16        35
+    [:]                                     36        36
+L188
+    [logger]                                13        18
+    [.]                                     19        19
+    [warning]                               20        26
+    [(]                                     27        27
+L189
+    ['Bad request (Unable to parse requ[    17        64
+    [,]                                     65        65
+    [request]                               67        73
+    [.]                                     74        74
+    [path]                                  75        78
+    [,]                                     79        79
+L190
+    [extra]                                 17        21
+    [=]                                     22        22
+    [{]                                     23        23
+L191
+    ['status_code']                         21        33
+    [:]                                     34        34
+    [400]                                   36        38
+    [,]                                     39        39
+L192
+    ['request']                             21        29
+    [:]                                     30        30
+    [request]                               32        38
+L193
+    [}]                                     17        17
+    [)]                                     18        18
+L194
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [get_exception_response]                29        50
+    [(]                                     51        51
+    [request]                               52        58
+    [,]                                     59        59
+    [resolver]                              61        68
+    [,]                                     69        69
+    [400]                                   71        73
+    [)]                                     74        74
+L196
+    [except]                                9         14
+    [SuspiciousOperation]                   16        34
+    [as]                                    36        37
+    [e]                                     39        39
+    [:]                                     40        40
+L199
+    [security_logger]                       13        27
+    [=]                                     29        29
+    [logging]                               31        37
+    [.]                                     38        38
+    [getLogger]                             39        47
+    [(]                                     48        48
+    ['django.security.%s']                  49        68
+    [%]                                     70        70
+L200
+    [e]                                     29        29
+    [.]                                     30        30
+    [__class__]                             31        39
+    [.]                                     40        40
+    [__name__]                              41        48
+    [)]                                     49        49
+L201
+    [security_logger]                       13        27
+    [.]                                     28        28
+    [error]                                 29        33
+    [(]                                     34        34
+L202
+    [force_text]                            17        26
+    [(]                                     27        27
+    [e]                                     28        28
+    [)]                                     29        29
+    [,]                                     30        30
+L203
+    [extra]                                 17        21
+    [=]                                     22        22
+    [{]                                     23        23
+L204
+    ['status_code']                         21        33
+    [:]                                     34        34
+    [400]                                   36        38
+    [,]                                     39        39
+L205
+    ['request']                             21        29
+    [:]                                     30        30
+    [request]                               32        38
+L206
+    [}]                                     17        17
+    [)]                                     18        18
+L207
+    [if]                                    13        14
+    [settings]                              16        23
+    [.]                                     24        24
+    [DEBUG]                                 25        29
+    [:]                                     30        30
+L208
+    [return]                                17        22
+    [debug]                                 24        28
+    [.]                                     29        29
+    [technical_500_response]                30        51
+    [(]                                     52        52
+    [request]                               53        59
+    [,]                                     60        60
+    [*]                                     62        62
+    [sys]                                   63        65
+    [.]                                     66        66
+    [exc_info]                              67        74
+    [(]                                     75        75
+    [)]                                     76        76
+    [,]                                     77        77
+    [status_code]                           79        89
+    [=]                                     90        90
+    [400]                                   91        93
+    [)]                                     94        94
+L210
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [get_exception_response]                29        50
+    [(]                                     51        51
+    [request]                               52        58
+    [,]                                     59        59
+    [resolver]                              61        68
+    [,]                                     69        69
+    [400]                                   71        73
+    [)]                                     74        74
+L212
+    [except]                                9         14
+    [SystemExit]                            16        25
+    [:]                                     26        26
+L214
+    [raise]                                 13        17
+L216
+    [except]                                9         14
+    [:]                                     15        15
+L218
+    [signals]                               13        19
+    [.]                                     20        20
+    [got_request_exception]                 21        41
+    [.]                                     42        42
+    [send]                                  43        46
+    [(]                                     47        47
+    [sender]                                48        53
+    [=]                                     54        54
+    [self]                                  55        58
+    [.]                                     59        59
+    [__class__]                             60        68
+    [,]                                     69        69
+    [request]                               71        77
+    [=]                                     78        78
+    [request]                               79        85
+    [)]                                     86        86
+L219
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [handle_uncaught_exception]             29        53
+    [(]                                     54        54
+    [request]                               55        61
+    [,]                                     62        62
+    [resolver]                              64        71
+    [,]                                     72        72
+    [sys]                                   74        76
+    [.]                                     77        77
+    [exc_info]                              78        85
+    [(]                                     86        86
+    [)]                                     87        87
+    [)]                                     88        88
+L221
+    [try]                                   9         11
+    [:]                                     12        12
+L223
+    [for]                                   13        15
+    [middleware_method]                     17        33
+    [in]                                    35        36
+    [self]                                  38        41
+    [.]                                     42        42
+    [_response_middleware]                  43        62
+    [:]                                     63        63
+L224
+    [response]                              17        24
+    [=]                                     26        26
+    [middleware_method]                     28        44
+    [(]                                     45        45
+    [request]                               46        52
+    [,]                                     53        53
+    [response]                              55        62
+    [)]                                     63        63
+L226
+    [if]                                    17        18
+    [response]                              20        27
+    [is]                                    29        30
+    [None]                                  32        35
+    [:]                                     36        36
+L227
+    [raise]                                 21        25
+    [ValueError]                            27        36
+    [(]                                     37        37
+L228
+    ["%s.process_response didn't return[    25        63
+L229
+    ["HttpResponse object. It returned [    25        72
+L230
+    [%]                                     25        25
+    [(]                                     27        27
+    [middleware_method]                     28        44
+    [.]                                     45        45
+    [__self__]                              46        53
+    [.]                                     54        54
+    [__class__]                             55        63
+    [.]                                     64        64
+    [__name__]                              65        72
+    [)]                                     73        73
+    [)]                                     74        74
+L231
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [apply_response_fixes]                  29        48
+    [(]                                     49        49
+    [request]                               50        56
+    [,]                                     57        57
+    [response]                              59        66
+    [)]                                     67        67
+L232
+    [except]                                9         14
+    [:]                                     15        15
+L233
+    [signals]                               13        19
+    [.]                                     20        20
+    [got_request_exception]                 21        41
+    [.]                                     42        42
+    [send]                                  43        46
+    [(]                                     47        47
+    [sender]                                48        53
+    [=]                                     54        54
+    [self]                                  55        58
+    [.]                                     59        59
+    [__class__]                             60        68
+    [,]                                     69        69
+    [request]                               71        77
+    [=]                                     78        78
+    [request]                               79        85
+    [)]                                     86        86
+L234
+    [response]                              13        20
+    [=]                                     22        22
+    [self]                                  24        27
+    [.]                                     28        28
+    [handle_uncaught_exception]             29        53
+    [(]                                     54        54
+    [request]                               55        61
+    [,]                                     62        62
+    [resolver]                              64        71
+    [,]                                     72        72
+    [sys]                                   74        76
+    [.]                                     77        77
+    [exc_info]                              78        85
+    [(]                                     86        86
+    [)]                                     87        87
+    [)]                                     88        88
+L236
+    [response]                              9         16
+    [.]                                     17        17
+    [_closable_objects]                     18        34
+    [.]                                     35        35
+    [append]                                36        41
+    [(]                                     42        42
+    [request]                               43        49
+    [)]                                     50        50
+L238
+    [return]                                9         14
+    [response]                              16        23
+L240
+    [def]                                   5         7
+    [handle_uncaught_exception]             9         33
+    [(]                                     34        34
+    [self]                                  35        38
+    [,]                                     39        39
+    [request]                               41        47
+    [,]                                     48        48
+    [resolver]                              50        57
+    [,]                                     58        58
+    [exc_info]                              60        67
+    [)]                                     68        68
+    [:]                                     69        69
+L241
+    ["""\n        Processing for any ot[    9         11
+L250
+    [if]                                    9         10
+    [settings]                              12        19
+    [.]                                     20        20
+    [DEBUG_PROPAGATE_EXCEPTIONS]            21        46
+    [:]                                     47        47
+L251
+    [raise]                                 13        17
+L253
+    [logger]                                9         14
+    [.]                                     15        15
+    [error]                                 16        20
+    [(]                                     21        21
+    ['Internal Server Error: %s']           22        48
+    [,]                                     49        49
+    [request]                               51        57
+    [.]                                     58        58
+    [path]                                  59        62
+    [,]                                     63        63
+L254
+    [exc_info]                              13        20
+    [=]                                     21        21
+    [exc_info]                              22        29
+    [,]                                     30        30
+L255
+    [extra]                                 13        17
+    [=]                                     18        18
+    [{]                                     19        19
+L256
+    ['status_code']                         17        29
+    [:]                                     30        30
+    [500]                                   32        34
+    [,]                                     35        35
+L257
+    ['request']                             17        25
+    [:]                                     26        26
+    [request]                               28        34
+L258
+    [}]                                     13        13
+L259
+    [)]                                     9         9
+L261
+    [if]                                    9         10
+    [settings]                              12        19
+    [.]                                     20        20
+    [DEBUG]                                 21        25
+    [:]                                     26        26
+L262
+    [return]                                13        18
+    [debug]                                 20        24
+    [.]                                     25        25
+    [technical_500_response]                26        47
+    [(]                                     48        48
+    [request]                               49        55
+    [,]                                     56        56
+    [*]                                     58        58
+    [exc_info]                              59        66
+    [)]                                     67        67
+L265
+    [if]                                    9         10
+    [resolver]                              12        19
+    [.]                                     20        20
+    [urlconf_module]                        21        34
+    [is]                                    36        37
+    [None]                                  39        42
+    [:]                                     43        43
+L266
+    [six]                                   13        15
+    [.]                                     16        16
+    [reraise]                               17        23
+    [(]                                     24        24
+    [*]                                     25        25
+    [exc_info]                              26        33
+    [)]                                     34        34
+L268
+    [callback]                              9         16
+    [,]                                     17        17
+    [param_dict]                            19        28
+    [=]                                     30        30
+    [resolver]                              32        39
+    [.]                                     40        40
+    [resolve_error_handler]                 41        61
+    [(]                                     62        62
+    [500]                                   63        65
+    [)]                                     66        66
+L269
+    [return]                                9         14
+    [callback]                              16        23
+    [(]                                     24        24
+    [request]                               25        31
+    [,]                                     32        32
+    [**]                                    34        35
+    [param_dict]                            36        45
+    [)]                                     46        46
+L271
+    [def]                                   5         7
+    [apply_response_fixes]                  9         28
+    [(]                                     29        29
+    [self]                                  30        33
+    [,]                                     34        34
+    [request]                               36        42
+    [,]                                     43        43
+    [response]                              45        52
+    [)]                                     53        53
+    [:]                                     54        54
+L272
+    ["""\n        Applies each of the f[    9         11
+L277
+    [for]                                   9         11
+    [func]                                  13        16
+    [in]                                    18        19
+    [self]                                  21        24
+    [.]                                     25        25
+    [response_fixes]                        26        39
+    [:]                                     40        40
+L278
+    [response]                              13        20
+    [=]                                     22        22
+    [func]                                  24        27
+    [(]                                     28        28
+    [request]                               29        35
+    [,]                                     36        36
+    [response]                              38        45
+    [)]                                     46        46
+L279
+    [return]                                9         14
+    [response]                              16        23
+EOF

@@ -17,7 +17,9 @@ import net.sourceforge.pmd.cpd.Tokens;
 /**
  * @author Romain PELISSE, belaran@gmail.com
  *
+ * @deprecated Use CpdTextComparisonTest in module pmd-lang-test
  */
+@Deprecated
 public abstract class AbstractTokenizerTest {
 
     protected int expectedTokenCount;

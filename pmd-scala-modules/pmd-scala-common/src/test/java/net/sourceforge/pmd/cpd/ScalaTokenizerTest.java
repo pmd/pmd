@@ -4,71 +4,41 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class ScalaTokenizerTest extends AbstractTokenizerTest {
+public class ScalaTokenizerTest extends CpdTextComparisonTest {
 
-    private static final Charset ENCODING = StandardCharsets.UTF_8;
+    @org.junit.Rule
+    public ExpectedException ex = ExpectedException.none();
 
-    private static final String FILENAME = "/tokenizerFiles/sample-LiftActor.scala";
-
-    private File tempFile;
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        createTempFileOnDisk();
-        this.tokenizer = new ScalaTokenizer();
-    }
-
-    private void createTempFileOnDisk() throws IOException {
-        this.tempFile = File.createTempFile("scala-tokenizer-test-", ".scala");
-        FileUtils.writeStringToFile(tempFile, getSampleCode(), ENCODING);
+    public ScalaTokenizerTest() {
+        super(".scala");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(getClass().getResourceAsStream(FILENAME), ENCODING);
+    protected String getResourcePrefix() {
+        return "../lang/scala/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new ScalaTokenizer();
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.sourceCode = new SourceCode(new SourceCode.FileCodeLoader(tempFile, "UTF-8"));
-        this.expectedTokenCount = 2472;
-        super.tokenizeTest();
+    public void testSample() {
+        doTest("sample-LiftActor");
     }
 
     @Test
-    public void tokenizeFailTest() throws IOException {
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
-                "  object Main { "
-                + " def main(args: Array[String]): Unit = { "
-                + "  println(\"Hello, World!) " //unclosed string literal
-                + " }"
-                + "}"));
-        try {
-            super.tokenizeTest();
-            Assert.fail();
-        } catch (Exception e) {
-            // intentional
-        }
-    }
-
-    @After
-    public void cleanUp() {
-        FileUtils.deleteQuietly(this.tempFile);
-        this.tempFile = null;
+    public void tokenizeFailTest() {
+        ex.expect(TokenMgrError.class);
+        doTest("unlexable_sample");
     }
 }

@@ -73,6 +73,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         return this.tokenCount;
     }
 
+    /** Newlines are normalized to \n. */
     public String getSourceCodeSlice() {
         return this.getMark(0).getSourceCodeSlice();
     }

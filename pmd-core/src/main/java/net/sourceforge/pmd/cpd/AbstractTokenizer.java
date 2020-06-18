@@ -34,6 +34,10 @@ public abstract class AbstractTokenizer implements Tokenizer {
     private int lineNumber = 0;
     private String currentLine;
 
+    // both zero-based
+    private int tokBeginLine;
+    private int tokBeginCol;
+
     protected boolean spanMultipleLinesString = true; // Most languages do, so
     // default is true
     protected Character spanMultipleLinesLineContinuationCharacter = null;
@@ -49,23 +53,35 @@ public abstract class AbstractTokenizer implements Tokenizer {
             int loc = 0;
             while (loc < currentLine.length()) {
                 StringBuilder token = new StringBuilder();
-                loc = getTokenFromLine(token, loc);
+                loc = getTokenFromLine(token, loc); // may jump several lines
+
                 if (token.length() > 0 && !isIgnorableString(token.toString())) {
+                    final String image;
                     if (downcaseString) {
-                        token = new StringBuilder(token.toString().toLowerCase(Locale.ROOT));
+                        image = token.toString().toLowerCase(Locale.ROOT);
+                    } else {
+                        image = token.toString();
                     }
-                    // need to re-think how to link this
-                    // if ( CPD.debugEnable ) {
-                    // System.out.println("Token added:" + token.toString());
-                    // }
-                    tokenEntries.add(new TokenEntry(token.toString(), tokens.getFileName(), lineNumber + 1, loc - token.length(), loc - 1));
+
+                    tokenEntries.add(new TokenEntry(image,
+                                                    tokens.getFileName(),
+                                                    tokBeginLine + 1,
+                                                    tokBeginCol + 1,
+                                                    loc));
                 }
             }
         }
         tokenEntries.add(TokenEntry.getEOF());
     }
 
+    /**
+     * Returns (0-based) EXclusive offset of the end of the token,
+     * may jump several lines (sets {@link #lineNumber} in this case).
+     */
     private int getTokenFromLine(StringBuilder token, int loc) {
+        tokBeginLine = lineNumber;
+        tokBeginCol = loc;
+
         for (int j = loc; j < currentLine.length(); j++) {
             char tok = currentLine.charAt(j);
             if (!Character.isWhitespace(tok) && !ignoreCharacter(tok)) {
@@ -89,6 +105,9 @@ public abstract class AbstractTokenizer implements Tokenizer {
             } else {
                 if (token.length() > 0) {
                     return j;
+                } else {
+                    // ignored char
+                    tokBeginCol++;
                 }
             }
             loc = j;
@@ -125,14 +144,14 @@ public abstract class AbstractTokenizer implements Tokenizer {
             if (spanMultipleLinesLineContinuationCharacter != null
                 && token.length() > 0
                 && token.charAt(token.length() - 1) == spanMultipleLinesLineContinuationCharacter) {
-                token.deleteCharAt(token.length() - 1);
+                token.setLength(token.length() - 1);
             }
             // parsing new line
             currentLine = code.get(++lineNumber);
             // Warning : recursive call !
             loc = parseString(token, 0, stringDelimiter);
         }
-        return loc + 1;
+        return loc;
     }
 
     private boolean ignoreCharacter(char tok) {
