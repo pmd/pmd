@@ -8,17 +8,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class CPPTokenizerTest extends CpdTextComparisonTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     public CPPTokenizerTest() {
         super(".cpp");
@@ -74,12 +68,6 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testUnicodeEscapeInIdentifier() {
-        Tokens tokens = parse(" void main() { int a\\u0048; }");
-        assertEquals(10, tokens.size());
-    }
-
-    @Test
     public void testMultiLineMacros() {
         doTest("multilineMacros");
     }
@@ -93,7 +81,6 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     public void testWrongUnicodeInIdentifier() {
         expectTokenMgrError(" void main() { int ⚜ = __; }");
     }
-
 
     @Test
     public void testTokenizerWithSkipBlocks() {
@@ -128,10 +115,7 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     public void testLexicalErrorFilename() {
-        expectedException.expect(TokenMgrError.class);
-        expectedException.expectMessage("Lexical error in file issue-1559.cpp at");
-
-        doTest("issue-1559", "", dontSkipBlocks());
+        expectTokenMgrError(sourceText("issue-1559"), dontSkipBlocks());
     }
 
 

@@ -1,7 +1,7 @@
  void main() {
     char x = L'a'; // wide chars
     x = '\0x05';   // hex
-    x = L'';       // empty
+    // x = L'';    // empty character is an error
 
     print("\    oMedia"); // whitespace escape
 
@@ -32,7 +32,7 @@
 
 
     // digit separators
-    auto integer_literal = 1'000'000;
+    auto integer_literal = 1'000''000;
     auto floating_point_literal = 0.000'015'3;
     auto hex_literal = 0x0F00'abcd'6f3d;
     auto silly_example = 1'0'0'000'00;
