@@ -54,6 +54,7 @@ The command line version of PMD continues to use **scala 2.13**.
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
 *   java-design
     *   [#2563](https://github.com/pmd/pmd/pull/2563): \[java] UselessOverridingMethod false negative with already public methods
+    *   [#2570](https://github.com/pmd/pmd/issues/2570): \[java] NPathComplexity should mention the expected NPath complexity
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
 
@@ -72,6 +73,7 @@ The command line version of PMD continues to use **scala 2.13**.
 *   [#2349](https://github.com/pmd/pmd/pull/2349): \[java] Optimize UnusedPrivateMethodRule - [shilko2013](https://github.com/shilko2013)
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
+*   [#2593](https://github.com/pmd/pmd/pull/2593): \[java] NPathComplexity should mention the expected NPath complexity - [Artem Krosheninnikov](https://github.com/KroArtem)
 
 {% endtocmaker %}
 
