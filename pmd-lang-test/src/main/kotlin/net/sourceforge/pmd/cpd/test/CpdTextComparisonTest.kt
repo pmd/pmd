@@ -114,7 +114,7 @@ abstract class CpdTextComparisonTest(
                 .replace("\\", "\\\\")                 // escape backslashes
                 .replace("\r\n", "\\r\\n")             // CRLF (treated specially because it has a different length)
                 .replace("\t", "\\t")                  // TAB
-                .replace(Regex("\\R"), "\\\\n")       // escape other newlines (normalizing)
+                .replace(Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"), "\\\\n")       // escape other newlines (normalizing), use \\R with java8+
                 .replace(Regex("[]\\[]"), "\\\\$0")   // escape []
 
         var truncated = StringUtils.truncate(escaped, ImageSize)
