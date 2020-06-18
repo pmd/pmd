@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -39,8 +40,17 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  */
 public class InefficientStringBufferingRule extends AbstractJavaRule {
 
+    public InefficientStringBufferingRule() {
+        addRuleChainVisit(ASTAdditiveExpression.class);
+    }
+
     @Override
     public Object visit(ASTAdditiveExpression node, Object data) {
+        if (node.getParent() instanceof ASTConditionalExpression) {
+            // ignore concats in ternary expressions
+            return data;
+        }
+
         ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
             return data;
