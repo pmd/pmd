@@ -73,7 +73,7 @@ public interface ViolationSuppressor {
                 rule.getPropertiesByPropertyDescriptor(),
                 // todo version should be carried around by the node
                 rule.getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),
-                DeprecatedAttrLogger.noop()
+                DeprecatedAttrLogger.createForSuppression(rv.getRule())
             );
             if (!rq.evaluate(node).isEmpty()) {
                 return new SuppressedViolation(rv, this, xpath);

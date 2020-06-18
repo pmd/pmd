@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -21,7 +23,7 @@ import net.sf.saxon.om.GenericTreeInfo;
  */
 public final class AstTreeInfo extends GenericTreeInfo {
 
-    private DeprecatedAttrLogger logger;
+    private Deque<DeprecatedAttrLogger> logger = new ArrayDeque<>(2);
 
     /**
      * Builds an AstDocument, with the given node as the root.
@@ -71,11 +73,18 @@ public final class AstTreeInfo extends GenericTreeInfo {
         return (AstDocumentNode) super.getRootNode();
     }
 
-    public void setAttrCtx(DeprecatedAttrLogger attrCtx) {
-        this.logger = attrCtx;
+
+    // We need push/pop semantics in order to run
+
+    public void pushAttrCtx(DeprecatedAttrLogger attrCtx) {
+        this.logger.addFirst(attrCtx);
+    }
+
+    public void popAttrCtx() {
+        this.logger.removeFirst();
     }
 
     public DeprecatedAttrLogger getLogger() {
-        return logger == null ? DeprecatedAttrLogger.noop() : logger;
+        return logger.isEmpty() ? DeprecatedAttrLogger.noop() : logger.peekFirst();
     }
 }

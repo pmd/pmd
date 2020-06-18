@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -28,8 +29,16 @@ public abstract class DeprecatedAttrLogger {
      * if the warnings would be ignored anyway.
      */
     public static DeprecatedAttrLogger create(XPathRule rule) {
+        return doCreate(rule, false);
+    }
+
+    public static DeprecatedAttrLogger createForSuppression(Rule rule) {
+        return doCreate(rule, true);
+    }
+
+    private static DeprecatedAttrLogger doCreate(Rule rule, boolean isSuppressionQuery) {
         if (LOG.isLoggable(Level.WARNING)) {
-            return new AttrLoggerImpl(rule);
+            return new AttrLoggerImpl(rule, isSuppressionQuery);
         } else {
             return noop();
         }
@@ -64,10 +73,12 @@ public abstract class DeprecatedAttrLogger {
     private static class AttrLoggerImpl extends DeprecatedAttrLogger {
 
         private final ConcurrentMap<String, Boolean> deprecated = new ConcurrentHashMap<>();
-        private final XPathRule rule;
+        private final Rule rule;
+        private final boolean isSuppressionQuery;
 
-        private AttrLoggerImpl(XPathRule rule) {
+        private AttrLoggerImpl(Rule rule, boolean isSuppressionQuery) {
             this.rule = rule;
+            this.isSuppressionQuery = isSuppressionQuery;
         }
 
         @Override
@@ -78,7 +89,10 @@ public abstract class DeprecatedAttrLogger {
                 Boolean b = deprecated.putIfAbsent(name, Boolean.TRUE);
                 if (b == null) {
                     // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
-                    String msg = "Use of deprecated attribute '" + name + "' by XPath rule " + ruleToString();
+
+                    String user = isSuppressionQuery ? "violationSuppressXPath for rule " + ruleToString()
+                                                     : "XPath rule " + ruleToString();
+                    String msg = "Use of deprecated attribute '" + name + "' by " + user;
                     if (!replacement.isEmpty()) {
                         msg += ", please use " + replacement + " instead";
                     }

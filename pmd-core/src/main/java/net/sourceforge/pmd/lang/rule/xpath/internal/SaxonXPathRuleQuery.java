@@ -108,7 +108,7 @@ public class SaxonXPathRuleQuery {
         ensureInitialized();
 
         final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
-        documentNode.setAttrCtx(attrCtx);
+        documentNode.pushAttrCtx(attrCtx);
         try {
 
             // Map AST Node -> Saxon Node
@@ -139,7 +139,7 @@ public class SaxonXPathRuleQuery {
         } catch (final XPathException e) {
             throw new RuntimeException(xpathExpr + " had problem: " + e.getMessage(), e);
         } finally {
-            documentNode.setAttrCtx(DeprecatedAttrLogger.noop());
+            documentNode.popAttrCtx();
         }
     }
 
