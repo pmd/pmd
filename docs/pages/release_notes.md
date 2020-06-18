@@ -74,6 +74,7 @@ The command line version of PMD continues to use **scala 2.13**.
     *   [#2573](https://github.com/pmd/pmd/pull/2573): \[java] DefaultPackage: Allow package default JUnit 5 Test methods
 *   java-design
     *   [#2563](https://github.com/pmd/pmd/pull/2563): \[java] UselessOverridingMethod false negative with already public methods
+    *   [#2570](https://github.com/pmd/pmd/issues/2570): \[java] NPathComplexity should mention the expected NPath complexity
 *   java-errorprone
     *   [#2544](https://github.com/pmd/pmd/issues/2544): \[java] UseProperClassLoader can not detect the case with method call on intermediate variable
 *   scala
@@ -96,6 +97,7 @@ The command line version of PMD continues to use **scala 2.13**.
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
 *   [#2573](https://github.com/pmd/pmd/pull/2573): \[java] DefaultPackage: Allow package default JUnit 5 Test methods - [Craig Andrews](https://github.com/candrews)
+*   [#2593](https://github.com/pmd/pmd/pull/2593): \[java] NPathComplexity should mention the expected NPath complexity - [Artem Krosheninnikov](https://github.com/KroArtem)
 
 {% endtocmaker %}
 
