@@ -120,7 +120,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     private boolean privateAndNotExcluded(MethodNameDeclaration mnd) {
-        ASTMethodDeclaration node = mnd.getMethodNameDeclaratorNode().getParent();
+        ASTMethodDeclaration node = mnd.getDeclarator();
         return node.isPrivate() && !SERIALIZATION_METHODS.contains(node.getName());
     }
 }
