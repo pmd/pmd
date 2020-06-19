@@ -165,7 +165,7 @@ public final class PropertyDescriptor<T> {
 
     @Override
     public String toString() {
-        return "GenericPropertyDescriptor{ "
+        return "PropertyDescriptor{ "
             + "name='" + name + '\''
             + ", parser=" + parser
             + ", typeId=" + typeId

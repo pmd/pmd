@@ -60,7 +60,7 @@ public class XmlParserOptions extends ParserOptions {
                        .defaultValue(false)
                        .build();
     public static final PropertyDescriptor<Boolean> LOOKUP_DESCRIPTOR_DTD =
-        PropertyFactory.booleanProperty("xincludeAware")
+        PropertyFactory.booleanProperty("lookupDescriptorDtd")
                        .desc("deprecated!Specifies whether XML parser will attempt to lookup the DTD.")
                        .defaultValue(false)
                        .build();

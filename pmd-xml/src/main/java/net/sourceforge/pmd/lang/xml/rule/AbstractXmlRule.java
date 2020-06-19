@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
+import static net.sourceforge.pmd.lang.xml.XmlParserOptions.LOOKUP_DESCRIPTOR_DTD;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -56,6 +58,7 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
         definePropertyDescriptor(NAMESPACE_AWARE_DESCRIPTOR);
         definePropertyDescriptor(VALIDATING_DESCRIPTOR);
         definePropertyDescriptor(XINCLUDE_AWARE_DESCRIPTOR);
+        definePropertyDescriptor(LOOKUP_DESCRIPTOR_DTD);
     }
 
     @Override
