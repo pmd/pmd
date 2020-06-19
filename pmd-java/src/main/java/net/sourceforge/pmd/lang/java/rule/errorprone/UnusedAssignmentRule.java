@@ -5,29 +5,30 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.errorprone.UnusedAssignmentRule.LivenessVisitor.ScopeData;
-import net.sourceforge.pmd.lang.java.rule.errorprone.UnusedAssignmentRule.LivenessVisitor.ScopeData.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -75,60 +76,52 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     static class LivenessVisitor extends JavaParserVisitorAdapter {
 
-        void bar(int i) {
-            int j = 0;
-            int z = 0;
-            if (i < 10) {
-                j = i;
-            }
-        }
 
-        static class ScopeData {
+        private final Deque<ScopeData> breakAddresses = new ArrayDeque<>();
+        private final Map<String, ScopeData> namedBreaks = new HashMap<>();
 
-            final Set<VariableNameDeclaration> varsThatMustBeUsed = new HashSet<>();
-
-            final Set<AssignmentEntry> allAssignments = new HashSet<>();
-            final Set<AssignmentEntry> usedAssignments = new HashSet<>();
-
-            final Map<VariableNameDeclaration, List<AssignmentEntry>> liveAssignments = new HashMap<>();
-
-            static class AssignmentEntry {
-
-                final VariableNameDeclaration var;
-                final JavaNode rhs;
-
-                AssignmentEntry(VariableNameDeclaration var, JavaNode rhs) {
-                    this.var = var;
-                    this.rhs = rhs;
-                }
-            }
-
-            public void assign(VariableNameDeclaration var, JavaNode rhs) {
-                AssignmentEntry entry = new AssignmentEntry(var, rhs);
-                liveAssignments.put(var, Collections.singletonList(entry)); // kills the previous value
-                allAssignments.add(entry);
-            }
-
-            public void use(VariableNameDeclaration var) {
-                List<AssignmentEntry> live = liveAssignments.get(var);
-                // may be null for implicit assignments, like method parameter
-                if (live != null) {
-                    usedAssignments.addAll(live);
-                }
-            }
-        }
+        // following deals with control flow
 
 
         @Override
-        public Object visit(ASTBlock node, Object data) {
+        public Object visit(JavaNode node, Object data) {
 
             for (JavaNode child : node.children()) {
-                // each statement's output is passed as input to the next
+                // each output is passed as input to the next (most relevant for blocks)
                 data = child.jjtAccept(this, data);
             }
 
             return data;
         }
+
+        @Override
+        public Object visit(ASTIfStatement node, Object data) {
+            ScopeData before = (ScopeData) node.getCondition().jjtAccept(this, data);
+
+            ScopeData thenData = before.fork();
+            thenData = (ScopeData) node.getThenBranch().jjtAccept(this, thenData);
+            if (node.hasElse()) {
+                ScopeData elseData = (ScopeData) node.getElseBranch().jjtAccept(this, before.fork());
+                return thenData.join(elseData);
+            } else {
+                return before.join(thenData);
+            }
+        }
+
+        @Override
+        public Object visit(ASTThrowStatement node, Object data) {
+            data = super.visit(node, data);
+            return ((ScopeData) data).abruptCompletion();
+        }
+
+        @Override
+        public Object visit(ASTReturnStatement node, Object data) {
+            data = super.visit(node, data);
+            return ((ScopeData) data).abruptCompletion();
+        }
+
+        // following deals with assignment
+
 
         @Override
         public Object visit(ASTVariableDeclarator node, Object data) {
@@ -140,6 +133,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
             return data;
         }
+
 
         @Override
         public Object visit(ASTExpression node, Object data) {
@@ -171,6 +165,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 return super.visit(node, data);
             }
         }
+
+        // variable usage
 
         @Override
         public Object visit(ASTPrimaryExpression node, Object data) {
@@ -232,4 +228,101 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
     }
 
+    private static class ScopeData {
+
+        // final Set<VariableNameDeclaration> varsThatMustBeUsed = new HashSet<>();
+
+        final Set<AssignmentEntry> allAssignments;
+        final Set<AssignmentEntry> usedAssignments;
+
+        final Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments;
+
+        private ScopeData() {
+            this(new HashSet<AssignmentEntry>(), new HashSet<AssignmentEntry>(), new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+        }
+
+        private ScopeData(Set<AssignmentEntry> allAssignments,
+                          Set<AssignmentEntry> usedAssignments,
+                          Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments) {
+            this.allAssignments = allAssignments;
+            this.usedAssignments = usedAssignments;
+            this.liveAssignments = liveAssignments;
+        }
+
+        void assign(VariableNameDeclaration var, JavaNode rhs) {
+            AssignmentEntry entry = new AssignmentEntry(var, rhs);
+            liveAssignments.put(var, Collections.singleton(entry)); // kills the previous value
+            allAssignments.add(entry);
+        }
+
+        void use(VariableNameDeclaration var) {
+            Set<AssignmentEntry> live = liveAssignments.get(var);
+            // may be null for implicit assignments, like method parameter
+            if (live != null) {
+                usedAssignments.addAll(live);
+            }
+        }
+
+        ScopeData fork() {
+            return new ScopeData(this.allAssignments, this.usedAssignments, new HashMap<>(this.liveAssignments));
+        }
+
+        ScopeData abruptCompletion() {
+            this.liveAssignments.clear();
+            return this;
+        }
+
+        ScopeData join(ScopeData sub) {
+            // Merge live assignments of forked scopes
+            if (sub != this) {
+                for (VariableNameDeclaration var : this.liveAssignments.keySet()) {
+                    Set<AssignmentEntry> myAssignments = this.liveAssignments.get(var);
+                    Set<AssignmentEntry> subScopeAssignments = sub.liveAssignments.get(var);
+                    if (subScopeAssignments == null) {
+                        this.liveAssignments.put(var, myAssignments);
+                        continue;
+                    }
+                    joinLive(var, myAssignments, subScopeAssignments);
+                }
+
+                for (VariableNameDeclaration var : sub.liveAssignments.keySet()) {
+                    Set<AssignmentEntry> subScopeAssignments = sub.liveAssignments.get(var);
+                    Set<AssignmentEntry> myAssignments = this.liveAssignments.get(var);
+                    if (myAssignments == null) {
+                        this.liveAssignments.put(var, subScopeAssignments);
+                        continue;
+                    }
+                    joinLive(var, myAssignments, subScopeAssignments);
+                }
+
+            }
+
+            return this;
+        }
+
+        private void joinLive(VariableNameDeclaration var, Set<AssignmentEntry> live1, Set<AssignmentEntry> live2) {
+            Set<AssignmentEntry> newLive = new HashSet<>(live1.size() + live2.size());
+            newLive.addAll(live2);
+            newLive.addAll(live1);
+            this.liveAssignments.put(var, newLive);
+        }
+
+        ScopeData join(Iterable<ScopeData> scopes) {
+            for (ScopeData sub : scopes) {
+                this.join(sub);
+            }
+            return this;
+        }
+    }
+
+    static class AssignmentEntry {
+
+        final VariableNameDeclaration var;
+        final JavaNode rhs;
+
+        AssignmentEntry(VariableNameDeclaration var, JavaNode rhs) {
+            this.var = var;
+            this.rhs = rhs;
+        }
+    }
 }

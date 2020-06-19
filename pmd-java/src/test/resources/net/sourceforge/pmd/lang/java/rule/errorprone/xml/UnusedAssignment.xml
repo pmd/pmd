@@ -21,6 +21,10 @@
     <test-code>
         <description>DD anomaly</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -58,8 +62,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>more komplex anomalysis</description>
-        <expected-problems>4</expected-problems>
+        <description>Conditional flow 0</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'z' is never used</message>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(int i) {
@@ -68,6 +78,100 @@ public class Foo {
         if (i < 10) {
             j = i;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'z' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;
+        int z = 0; // unused
+        if (i < 10) {
+            j = i;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0; // unused
+        int z = 0;
+        if (i < 10) {
+            j = i;
+        } else {
+            j = z;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow with abrupt throw</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0; // unused
+        int z = 0;
+        if (i < 10) {
+            j = i; // unused
+            throw new Exception();
+        } else {
+            j = z;
+        }
+        System.out.println(j);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conditional flow with abrupt return</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'j' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(int i) {
+        int j = 0;  // unused
+        int z = 0;
+        if (i < 10) {
+            j = i;  // unused
+            return;
+        } else {
+            j = z;
+        }
+        System.out.println(j);
     }
 }
         ]]></code>
@@ -136,7 +240,7 @@ public class AssertTest {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'b' (lines '6'-'7').</message>
+            <message>The value assigned to variable 'b' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -152,11 +256,10 @@ class Test{
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2. DU-Anomaly(a)</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '3'-'7').</message>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '5'-'7').</message>
+            <message>The value assigned to variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -191,11 +294,10 @@ class Test{
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4. DU-Anomaly(a)</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '3'-'9').</message>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'9').</message>
+            <message>The value assigned to variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
