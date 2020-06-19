@@ -299,7 +299,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         @Override
         public PropertyDescriptor<T> build() {
-            return new GenericPropertyDescriptor<>(
+            return new PropertyDescriptor<>(
                 getName(),
                 getDescription(),
                 getDefaultValue(),
@@ -502,7 +502,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
             syntax = XmlSyntaxUtils.withAllConstraints(syntax, collectionConstraints);
 
-            return new GenericPropertyDescriptor<>(
+            return new PropertyDescriptor<>(
                 getName(),
                 getDescription(),
                 getDefaultValue(),

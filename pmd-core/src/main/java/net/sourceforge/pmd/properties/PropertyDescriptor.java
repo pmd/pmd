@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
 /**
@@ -24,8 +27,6 @@ import net.sourceforge.pmd.properties.xml.XmlMapper;
  * <h1>Upcoming API changes to the properties framework</h1>
  * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
  *
- * TODO this could be turned into a class, there's a single, very simple implementation
- *
  * @param <T> Type of the property's value
  *
  * @author Brian Remedios
@@ -34,50 +35,90 @@ import net.sourceforge.pmd.properties.xml.XmlMapper;
  * @see PropertyFactory
  * @see PropertyBuilder
  */
-public interface PropertyDescriptor<T> {
+public final class PropertyDescriptor<T> {
+
+
+    private final XmlMapper<T> parser;
+    private final PropertyTypeId typeId;
+    private final String name;
+    private final String description;
+    private final T defaultValue;
+
+    PropertyDescriptor(String name,
+                       String description,
+                       T defaultValue,
+                       XmlMapper<T> parser,
+                       @Nullable PropertyTypeId typeId) {
+
+        this.name = name;
+        this.description = description;
+        this.defaultValue = defaultValue;
+        this.parser = parser;
+        this.typeId = typeId;
+
+        XmlSyntaxUtils.checkConstraintsThrow(
+            defaultValue,
+            parser.getConstraints(),
+            s -> new IllegalArgumentException("Constraint violated " + s)
+        );
+    }
+
 
     /**
-     * The name of the property without spaces as it serves as the key into the property map.
+     * The name of the property without spaces as it serves as the key
+     * into the property map.
      *
      * @return String
      */
-    String name();
+    public String name() {
+        return name;
+    }
 
 
     /**
-     * Describes the property and the role it plays within the rule it is specified for. Could be used in a tooltip.
+     * Describes the property and the role it plays within the rule it
+     * is specified for. Could be used in a tooltip.
      *
      * @return String
      */
-    String description();
+    public String description() {
+        return description;
+    }
 
 
     /**
-     * Default value to use when the user hasn't specified one or when they wish to revert to a known-good state.
+     * Default value to use when the user hasn't specified one or when
+     * they wish to revert to a known-good state.
      *
      * @return Object
      */
-    T defaultValue();
+    public T defaultValue() {
+        return defaultValue;
+    }
 
 
     /**
      * Returns the strategy used to read and write this property to XML.
      * May support strings too.
      */
-    XmlMapper<T> xmlMapper();
+    public XmlMapper<T> xmlMapper() {
+        return parser;
+    }
 
 
     /**
      * TODO this needs to go away. Property constraints are now checked at
-     *  the time the ruleset is parsed, to report errors on the specific
-     *  XML nodes. Other than that, constraints should be checked when
-     *  calling {@link PropertySource#setProperty(PropertyDescriptor, Object)}
-     *  for fail-fast behaviour.
+     * the time the ruleset is parsed, to report errors on the specific
+     * XML nodes. Other than that, constraints should be checked when
+     * calling {@link PropertySource#setProperty(PropertyDescriptor, Object)}
+     * for fail-fast behaviour.
      *
      * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
      */
     @Deprecated
-    String errorFor(T value);
+    public String errorFor(T value) {
+        return XmlSyntaxUtils.checkConstraintsJoin(value, parser.getConstraints());
+    }
 
 
     /**
@@ -87,8 +128,8 @@ public interface PropertyDescriptor<T> {
      * <p>This replaces isDefinedExternally for the RulesetWriter.
      */
     @InternalApi
-    default @Nullable PropertyTypeId getTypeId() {
-        return null;
+    public @Nullable PropertyTypeId getTypeId() {
+        return typeId;
     }
 
 
@@ -101,7 +142,7 @@ public interface PropertyDescriptor<T> {
      *     simple strings, this method won't be general enough
      */
     @Deprecated
-    default T valueFrom(String propertyString) throws IllegalArgumentException {
+    public T valueFrom(String propertyString) throws IllegalArgumentException {
         return xmlMapper().fromString(propertyString);
     }
 
@@ -118,8 +159,36 @@ public interface PropertyDescriptor<T> {
      *     simple strings, this method won't be general enough
      */
     @Deprecated
-    default String asDelimitedString(T value) {
+    public String asDelimitedString(T value) {
         return xmlMapper().toString(value);
     }
 
+    @Override
+    public String toString() {
+        return "GenericPropertyDescriptor{ "
+            + "name='" + name + '\''
+            + ", parser=" + parser
+            + ", typeId=" + typeId
+            + ", description='" + description + '\''
+            + ", defaultValue=" + defaultValue + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PropertyDescriptor<?> that = (PropertyDescriptor<?>) o;
+        return name.equals(that.name)
+            && description.equals(that.description)
+            && Objects.equals(defaultValue, that.defaultValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, defaultValue);
+    }
 }
