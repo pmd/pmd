@@ -414,11 +414,11 @@ public class RuleSetFactory {
 
     static class RulesetParseException extends RuntimeException {
 
-        public RulesetParseException(String message, Throwable cause) {
+        RulesetParseException(String message, Throwable cause) {
             super(message, cause);
         }
 
-        public RulesetParseException(Throwable cause) {
+        RulesetParseException(Throwable cause) {
             super(cause);
         }
     }
