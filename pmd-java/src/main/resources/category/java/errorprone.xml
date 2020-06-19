@@ -3276,6 +3276,25 @@ public String convert(int x) {
         </example>
     </rule>
 
+
+    <rule name="UnusedAssignment"
+          language="java"
+          since="6.26.0"
+          message="The value assigned to variable ''{0}'' is never used"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnusedAssignmentRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusedassignment">
+        <description>
+            TODO
+        </description>
+        <priority>3</priority>
+        <example>
+        <![CDATA[
+            // TODO
+        ]]>
+        </example>
+    </rule>
+
+
     <rule name="UnusedNullCheckInEquals"
           language="java"
           since="3.5"
