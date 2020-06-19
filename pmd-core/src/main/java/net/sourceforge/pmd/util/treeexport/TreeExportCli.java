@@ -176,7 +176,7 @@ public class TreeExportCli {
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
         try (Reader reader = source) {
-            RootNode root = (RootNode) parser.parse(file, reader);
+            RootNode root = parser.parse(file, reader);
 
             AstAnalysisContext ctx = new AstAnalysisContext() {
                 @Override
@@ -217,7 +217,7 @@ public class TreeExportCli {
     }
 
     private static <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
-        bundle.setProperty(descriptor, descriptor.valueFrom(value));
+        bundle.setProperty(descriptor, descriptor.xmlMapper().fromString(value));
     }
 
 

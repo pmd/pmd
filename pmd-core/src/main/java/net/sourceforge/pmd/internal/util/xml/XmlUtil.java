@@ -84,12 +84,16 @@ public final class XmlUtil {
         }).collect(Collectors.toList());
     }
 
-    public static Element getSingleChildIn(Element elt, XmlErrorReporter err, Set<String> names) {
+    public static Element getSingleChildIn(Element elt, boolean throwOnMissing, XmlErrorReporter err, Set<String> names) {
         List<Element> children = getElementChildrenNamed(elt, names).collect(Collectors.toList());
         if (children.size() == 1) {
             return children.get(0);
         } else if (children.isEmpty()) {
-            throw err.error(elt, ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
+            if (throwOnMissing) {
+                throw err.error(elt, ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
+            } else {
+                return null;
+            }
         } else {
             for (int i = 1; i < children.size(); i++) {
                 Element child = children.get(i);

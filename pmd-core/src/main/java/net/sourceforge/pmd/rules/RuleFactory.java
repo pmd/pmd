@@ -261,7 +261,7 @@ public class RuleFactory {
      * @return True if this element defines a new property, false if this is just stating a value
      */
     private static boolean isPropertyDefinition(Element node) {
-        return node.hasAttribute(SchemaConstants.TYPE.xmlName());
+        return node.hasAttribute(SchemaConstants.PROPERTY_TYPE.xmlName());
     }
 
     /**
@@ -274,7 +274,7 @@ public class RuleFactory {
      */
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement, XmlErrorReporter err) {
 
-        String typeId = SchemaConstants.TYPE.getAttributeOrThrow(propertyElement, err);
+        String typeId = SchemaConstants.PROPERTY_TYPE.getAttributeOrThrow(propertyElement, err);
 
         PropertyTypeId factory = PropertyTypeId.lookupMnemonic(typeId);
         if (factory == null) {
@@ -326,7 +326,7 @@ public class RuleFactory {
             }
 
         } else {
-            Element child = getSingleChildIn(propertyElt, err, syntax.getReadElementNames());
+            Element child = getSingleChildIn(propertyElt, true, err, syntax.getReadElementNames());
             // this will report the correct error if any
             return syntax.fromXml(child, err);
         }

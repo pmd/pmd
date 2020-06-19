@@ -317,7 +317,7 @@ public class RuleSetWriter {
         final Element element = createPropertyValueElement(propertyDescriptor, propertyDescriptor.defaultValue());
 
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
-        SchemaConstants.TYPE.setOn(element, typeId.getStringId());
+        SchemaConstants.PROPERTY_TYPE.setOn(element, typeId.getStringId());
         SchemaConstants.DESCRIPTION.setOn(element, propertyDescriptor.description());
         // TODO support property constraints in XML
         return element;
