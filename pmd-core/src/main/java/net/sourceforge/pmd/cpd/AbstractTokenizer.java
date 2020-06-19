@@ -67,7 +67,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
                                                     tokens.getFileName(),
                                                     tokBeginLine + 1,
                                                     tokBeginCol + 1,
-                                                    loc));
+                                                    loc + 1));
                 }
             }
         }

@@ -84,7 +84,7 @@ public class ScalaTokenizer implements Tokenizer {
                                                      filename,
                                                      pos.startLine() + 1,
                                                      pos.startColumn() + 1,
-                                                     pos.endColumn() + 1);
+                                                     pos.endColumn() + 2);
                 tokenEntries.add(cpdToken);
             }
         } catch (Exception e) {

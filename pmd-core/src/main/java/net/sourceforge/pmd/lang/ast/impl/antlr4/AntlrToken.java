@@ -101,7 +101,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
             // fast path for single char tokens
             if (image.charAt(0) != '\n') {
                 this.endline = getBeginLine();
-                this.endcolumn = getBeginColumn();
+                this.endcolumn = getBeginColumn() + 1;
                 return;
             }
         }
@@ -126,14 +126,14 @@ public class AntlrToken implements GenericToken<AntlrToken> {
             // single line token
             this.endline = this.getBeginLine();
             int length = 1 + token.getStopIndex() - token.getStartIndex();
-            this.endcolumn = token.getCharPositionInLine() + length;
+            this.endcolumn = token.getCharPositionInLine() + length + 1;
         } else if (lastOffset < image.length()) {
             this.endline = this.getBeginLine() + numNls;
-            this.endcolumn = image.length() - lastOffset;
+            this.endcolumn = image.length() - lastOffset + 1;
         } else {
             // ends with a newline, the newline is considered part of the previous line
             this.endline = this.getBeginLine() + numNls - 1;
-            this.endcolumn = lastLineLen;
+            this.endcolumn = lastLineLen + 1;
         }
     }
 

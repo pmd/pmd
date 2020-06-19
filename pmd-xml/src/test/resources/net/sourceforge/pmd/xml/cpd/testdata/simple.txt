@@ -1,43 +1,43 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [<?xml ]                                1         6
-    [version]                               7         13
-    [=]                                     14        14
-    ["1.0"]                                 15        19
-    [encoding]                              21        28
-    [=]                                     29        29
-    ["UTF-8"]                               30        36
-    [?>]                                    37        38
-    [\n]                                    39        39
+    [<?xml ]                                1         7
+    [version]                               7         14
+    [=]                                     14        15
+    ["1.0"]                                 15        20
+    [encoding]                              21        29
+    [=]                                     29        30
+    ["UTF-8"]                               30        37
+    [?>]                                    37        39
+    [\n]                                    39        40
 L2
-    [<]                                     1         1
-    [someTag]                               2         8
-    [>]                                     9         9
-    [\n\t]                                  10        1
+    [<]                                     1         2
+    [someTag]                               2         9
+    [>]                                     9         10
+    [\n\t]                                  10        2
 L3
-    [<]                                     2         2
-    [someOtherTag]                          3         14
-    [>]                                     15        15
-    [Somehow we would like to improve t[    16        125
-    [<]                                     126       126
-    [/]                                     127       127
-    [someOtherTag]                          128       139
-    [>]                                     140       140
-    [\n\t]                                  141       1
+    [<]                                     2         3
+    [someOtherTag]                          3         15
+    [>]                                     15        16
+    [Somehow we would like to improve t[    16        126
+    [<]                                     126       127
+    [/]                                     127       128
+    [someOtherTag]                          128       140
+    [>]                                     140       141
+    [\n\t]                                  141       2
 L4
-    [<]                                     2         2
-    [someOtherTag]                          3         14
-    [>]                                     15        15
-    [Somehow we would like to improve t[    16        125
-    [<]                                     126       126
-    [/]                                     127       127
-    [someOtherTag]                          128       139
-    [>]                                     140       140
-    [\n]                                    141       141
+    [<]                                     2         3
+    [someOtherTag]                          3         15
+    [>]                                     15        16
+    [Somehow we would like to improve t[    16        126
+    [<]                                     126       127
+    [/]                                     127       128
+    [someOtherTag]                          128       140
+    [>]                                     140       141
+    [\n]                                    141       142
 L5
-    [<]                                     1         1
-    [/]                                     2         2
-    [someTag]                               3         9
-    [>]                                     10        10
-    [\n]                                    11        11
+    [<]                                     1         2
+    [/]                                     2         3
+    [someTag]                               3         10
+    [>]                                     10        11
+    [\n]                                    11        12
 EOF

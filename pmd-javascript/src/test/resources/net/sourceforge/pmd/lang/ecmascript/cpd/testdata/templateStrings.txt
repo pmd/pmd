@@ -1,36 +1,36 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [export]                                1         6
-    [default]                               8         14
-    [class]                                 16        20
-    [DrawLocation]                          22        33
-    [extends]                               35        41
-    [joint]                                 43        47
-    [.]                                     48        48
-    [shapes]                                49        54
-    [.]                                     55        55
-    [basic]                                 56        60
-    [.]                                     61        61
-    [Generic]                               62        68
-    [{]                                     70        70
+    [export]                                1         7
+    [default]                               8         15
+    [class]                                 16        21
+    [DrawLocation]                          22        34
+    [extends]                               35        42
+    [joint]                                 43        48
+    [.]                                     48        49
+    [shapes]                                49        55
+    [.]                                     55        56
+    [basic]                                 56        61
+    [.]                                     61        62
+    [Generic]                               62        69
+    [{]                                     70        71
 L2
-    [constructor]                           5         15
-    [(]                                     16        16
-    [location]                              17        24
-    [:]                                     25        25
-    [ILocation]                             27        35
-    [)]                                     36        36
-    [{]                                     38        38
+    [constructor]                           5         16
+    [(]                                     16        17
+    [location]                              17        25
+    [:]                                     25        26
+    [ILocation]                             27        36
+    [)]                                     36        37
+    [{]                                     38        39
 L3
-    [this]                                  9         12
-    [.]                                     13        13
-    [markup]                                14        19
-    [=]                                     21        21
-    [`<g>\n        <path class="locatio[    23        11
+    [this]                                  9         13
+    [.]                                     13        14
+    [markup]                                14        20
+    [=]                                     21        22
+    [`<g>\n        <path class="locatio[    23        12
 L11
-    [;]                                     12        12
+    [;]                                     12        13
 L12
-    [}]                                     5         5
+    [}]                                     5         6
 L14
-    [}]                                     1         1
+    [}]                                     1         2
 EOF

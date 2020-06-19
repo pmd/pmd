@@ -36,11 +36,7 @@ public class GroovyTokenizer implements Tokenizer {
 
                 int lastCol;
                 if (token instanceof SourceInfo) {
-                    lastCol = ((SourceInfo) token).getColumnLast() - 1;
-                    if (lastCol == 0) {
-                        // newline
-                        lastCol = token.getColumn() + 1;
-                    }
+                    lastCol = ((SourceInfo) token).getColumnLast();
                 } else {
                     // fallback
                     lastCol = token.getColumn() + tokenText.length();

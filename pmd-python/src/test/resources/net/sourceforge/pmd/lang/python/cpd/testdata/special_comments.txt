@@ -1,5 +1,5 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [import]                                1         6
-    [logging]                               8         14
+    [import]                                1         7
+    [logging]                               8         15
 EOF
