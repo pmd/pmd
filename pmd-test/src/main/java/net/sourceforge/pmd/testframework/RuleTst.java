@@ -7,34 +7,30 @@ package net.sourceforge.pmd.testframework;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -48,21 +44,11 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
-import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.TextRenderer;
-import net.sourceforge.pmd.testframework.internal.TestSchemaConstants;
-
-import com.github.oowekyala.ooxml.messages.DefaultXmlErrorReporter;
-import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
-import com.github.oowekyala.ooxml.messages.XmlMessageHandler;
-import com.github.oowekyala.ooxml.messages.XmlMessageUtils;
 
 /**
  * Advanced methods for test cases
@@ -132,26 +118,55 @@ public abstract class RuleTst {
      * Run the rule on the given code, and check the expected number of
      * violations.
      */
+    @SuppressWarnings("unchecked")
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
-        int res;
-        Report report;
+        if (test.getReinitializeRule()) {
+            rule = reinitializeRule(rule);
+        }
+
+        Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
-            report = processUsingStringReader(test, rule);
-            res = report.getViolations().size();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
+            int res;
+            Report report;
+            try {
+                // Set test specific properties onto the Rule
+                if (test.getProperties() != null) {
+                    for (Map.Entry<Object, Object> entry : test.getProperties().entrySet()) {
+                        String propertyName = (String) entry.getKey();
+                        PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(propertyName);
+                        if (propertyDescriptor == null) {
+                            throw new IllegalArgumentException(
+                                    "No such property '" + propertyName + "' on Rule " + rule.getName());
+                        }
+
+                        Object value = propertyDescriptor.valueFrom((String) entry.getValue());
+                        rule.setProperty(propertyDescriptor, value);
+                    }
+                }
+
+                report = processUsingStringReader(test, rule);
+                res = report.getViolations().size();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
+            }
+            if (test.getNumberOfProblemsExpected() != res) {
+                printReport(test, report);
+            }
+            assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
+                    test.getNumberOfProblemsExpected(), res);
+            assertMessages(report, test);
+            assertLineNumbers(report, test);
+        } finally {
+            // Restore old properties
+            for (Map.Entry<PropertyDescriptor<?>, Object> entry : oldProperties.entrySet()) {
+                rule.setProperty((PropertyDescriptor) entry.getKey(), entry.getValue());
+            }
         }
-        if (test.getNumberOfProblemsExpected() != res) {
-            printReport(test, report);
-        }
-        assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
-                     test.getNumberOfProblemsExpected(), res);
-        assertMessages(report, test);
-        assertLineNumbers(report, test);
     }
+
 
     /**
      * Code to be executed if the rule is reinitialised.
@@ -323,37 +338,20 @@ public abstract class RuleTst {
      * should be ./xml/[testsFileName].xml relative to the test class. The
      * format is defined in test-data.xsd.
      */
-    @SuppressWarnings("PMD.CloseResource")
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
-        InputStream inputStream = getClass().getResourceAsStream(testXmlFileName);
-        if (inputStream == null) {
-            throw new RuntimeException("Couldn't find " + testXmlFileName);
-        }
 
-        try (InputStream is = inputStream;
-             Reader reader = new BufferedReader(new InputStreamReader(is))) {
-            InputSource inputSource = new InputSource(testXmlFileName);
-            inputSource.setCharacterStream(reader);
-            PositionedXmlDoc positionedXmlDoc = XmlMessageUtils.getInstance().parse(documentBuilder, inputSource, XmlMessageHandler.SYSTEM_ERR);
-
-            try (XmlErrorReporter err = getReporter(positionedXmlDoc)) {
-                return parseTests(rule, positionedXmlDoc.getDocument(), err);
+        Document doc;
+        try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
+            if (inputStream == null) {
+                throw new RuntimeException("Couldn't find " + testXmlFileName);
             }
-        } catch (IOException e) {
+            doc = documentBuilder.parse(inputStream);
+        } catch (FactoryConfigurationError | IOException | SAXException e) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
         }
 
-    }
-
-    @NonNull
-    private DefaultXmlErrorReporter getReporter(PositionedXmlDoc positionedXmlDoc) {
-        return new DefaultXmlErrorReporter(XmlMessageHandler.SYSTEM_ERR, positionedXmlDoc.getPositioner()) {
-            @Override
-            protected String template(String message, Object... args) {
-                return new MessageFormat(message).format(args);
-            }
-        };
+        return parseTests(rule, doc);
     }
 
     /**
@@ -378,46 +376,69 @@ public abstract class RuleTst {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        for (TestDescriptor test : tests) {
-            runTest(test);
+        for (int i = 0; i < tests.length; i++) {
+            runTest(tests[i]);
         }
     }
 
-    private TestDescriptor[] parseTests(Rule baseRule, Document doc, XmlErrorReporter err) {
+    private TestDescriptor[] parseTests(Rule rule, Document doc) {
         Element root = doc.getDocumentElement();
         NodeList testCodes = root.getElementsByTagName("test-code");
 
         TestDescriptor[] tests = new TestDescriptor[testCodes.getLength()];
         for (int i = 0; i < testCodes.getLength(); i++) {
-            Rule rule = baseRule.deepCopy();
             Element testCode = (Element) testCodes.item(i);
 
-            boolean isRegressionTest = TestSchemaConstants.REGRESSION_TEST.getAsBooleanAttr(testCode, true);
-            boolean isUseAuxClasspath = TestSchemaConstants.USE_AUXCLASSPATH.getAsBooleanAttr(testCode, true);
-
-            // set properties on the rule copy
-            for (Element ruleProperty : TestSchemaConstants.RULE_PROPERTY.getChildrenIn(testCode)) {
-                String name = SchemaConstants.NAME.getAttributeOrThrow(ruleProperty, err);
-                PropertyDescriptor<?> descriptor = rule.getPropertyDescriptor(name);
-                if (descriptor == null) {
-                    throw err.error(ruleProperty, XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST, name, rule.getName());
+            boolean reinitializeRule = true;
+            Node reinitializeRuleAttribute = testCode.getAttributes().getNamedItem("reinitializeRule");
+            if (reinitializeRuleAttribute != null) {
+                String reinitializeRuleValue = reinitializeRuleAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(reinitializeRuleValue) || "0".equalsIgnoreCase(reinitializeRuleValue)) {
+                    reinitializeRule = false;
                 }
-
-                setPropertyCapture(rule, descriptor, ruleProperty, err);
             }
 
+            boolean isRegressionTest = true;
+            Node regressionTestAttribute = testCode.getAttributes().getNamedItem("regressionTest");
+            if (regressionTestAttribute != null) {
+                String reinitializeRuleValue = regressionTestAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(reinitializeRuleValue)) {
+                    isRegressionTest = false;
+                }
+            }
+
+            boolean isUseAuxClasspath = true;
+            Node useAuxClasspathAttribute = testCode.getAttributes().getNamedItem("useAuxClasspath");
+            if (useAuxClasspathAttribute != null) {
+                String useAuxClasspathValue = useAuxClasspathAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(useAuxClasspathValue)) {
+                    isUseAuxClasspath = false;
+                }
+            }
+
+            NodeList ruleProperties = testCode.getElementsByTagName("rule-property");
+            Properties properties = new Properties();
+            for (int j = 0; j < ruleProperties.getLength(); j++) {
+                Node ruleProperty = ruleProperties.item(j);
+                String propertyName = ruleProperty.getAttributes().getNamedItem("name").getNodeValue();
+                properties.setProperty(propertyName, parseTextNode(ruleProperty));
+            }
+
+            NodeList expectedMessagesNodes = testCode.getElementsByTagName("expected-messages");
             List<String> messages = new ArrayList<>();
-            @Nullable Element expectedMessagesNodes = TestSchemaConstants.EXPECTED_MESSAGES.getOptChildIn(testCode, err);
-            if (expectedMessagesNodes != null) {
-                for (Element message : TestSchemaConstants.MESSAGE.getChildrenIn(expectedMessagesNodes)) {
-                    messages.add(parseTextNode(message));
+            if (expectedMessagesNodes != null && expectedMessagesNodes.getLength() > 0) {
+                Element item = (Element) expectedMessagesNodes.item(0);
+                NodeList messagesNodes = item.getElementsByTagName("message");
+                for (int j = 0; j < messagesNodes.getLength(); j++) {
+                    messages.add(parseTextNode(messagesNodes.item(j)));
                 }
             }
 
+            NodeList expectedLineNumbersNodes = testCode.getElementsByTagName("expected-linenumbers");
             List<Integer> expectedLineNumbers = new ArrayList<>();
-            @Nullable Element expectedLineNumbersNodes = TestSchemaConstants.EXPECTED_LINE_NUMBERS.getOptChildIn(testCode, err);
-            if (expectedLineNumbersNodes != null) {
-                String numbers = expectedLineNumbersNodes.getTextContent();
+            if (expectedLineNumbersNodes != null && expectedLineNumbersNodes.getLength() > 0) {
+                Element item = (Element) expectedLineNumbersNodes.item(0);
+                String numbers = item.getTextContent();
                 for (String n : numbers.split(" *, *")) {
                     expectedLineNumbers.add(Integer.valueOf(n));
                 }
@@ -450,33 +471,26 @@ public abstract class RuleTst {
             int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true));
 
             String languageVersionString = getNodeValue(testCode, "source-type", false);
-            final TestDescriptor descriptor;
             if (languageVersionString == null) {
-                descriptor = new TestDescriptor(code, description, expectedProblems, rule);
+                tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
             } else {
 
                 LanguageVersion languageVersion = parseSourceType(languageVersionString);
                 if (languageVersion != null) {
-                    descriptor = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
+                    tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
                 } else {
                     throw new RuntimeException("Unknown LanguageVersion for test: " + languageVersionString);
                 }
             }
-
-            descriptor.setRegressionTest(isRegressionTest);
-            descriptor.setUseAuxClasspath(isUseAuxClasspath);
-            descriptor.setExpectedMessages(messages);
-            descriptor.setExpectedLineNumbers(expectedLineNumbers);
-            descriptor.setNumberInDocument(i + 1);
-            tests[i] = descriptor;
+            tests[i].setReinitializeRule(reinitializeRule);
+            tests[i].setRegressionTest(isRegressionTest);
+            tests[i].setUseAuxClasspath(isUseAuxClasspath);
+            tests[i].setExpectedMessages(messages);
+            tests[i].setExpectedLineNumbers(expectedLineNumbers);
+            tests[i].setProperties(properties);
+            tests[i].setNumberInDocument(i + 1);
         }
         return tests;
-    }
-
-    private static <T> void setPropertyCapture(PropertySource properties, PropertyDescriptor<T> descriptor, Element valueElement, XmlErrorReporter err) {
-        valueElement.setNodeValue("value");
-        T value = descriptor.xmlMapper().fromXml(valueElement, err);
-        properties.setProperty(descriptor, value);
     }
 
     /** FIXME this is stupid, the language version may be of a different language than the Rule... */
