@@ -164,7 +164,7 @@ In case you have loops please name the loop variables more meaningful.
                 </value>
             </property>
             <property name="allowSimpleLoops" type="Boolean" description="Ignore simple loops, that are not nested" value="false" />
-            <property name="cursorPattern" type="Regex" description="The pattern used for the curosr loop variable" value="[a-zA-Z_0-9]{5,}" />
+            <property name="cursorPattern" type="Regex" description="The pattern used for the cursor loop variable" value="[a-zA-Z_0-9]{5,}" />
             <property name="indexPattern" type="Regex" description="The pattern used for the index loop variable" value="[a-zA-Z_0-9]{5,}" />
         </properties>
         <example>

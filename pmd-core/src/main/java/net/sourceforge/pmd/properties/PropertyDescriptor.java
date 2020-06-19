@@ -20,9 +20,6 @@ import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
  * <p>A property descriptor provides validation,
  * serialization, and default values for a datatype {@code <T>}.
  * Property descriptors are immutable and can be shared freely.
- * Property descriptors do not override {@link Object#equals(Object)}
- * or {@link Object#hashCode()}. Pre 6.0.0 two descriptors were equal
- * if they had the same name.
  *
  * <h1>Upcoming API changes to the properties framework</h1>
  * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
@@ -183,12 +180,11 @@ public final class PropertyDescriptor<T> {
         }
         PropertyDescriptor<?> that = (PropertyDescriptor<?>) o;
         return name.equals(that.name)
-            && description.equals(that.description)
-            && Objects.equals(defaultValue, that.defaultValue);
+            && description.equals(that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, defaultValue);
+        return Objects.hash(name, description);
     }
 }
