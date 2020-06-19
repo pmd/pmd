@@ -135,7 +135,7 @@ public class Complicated {
 
     <test-code>
         <description>Full example - considerAssert + ignoreBooleanPaths</description>
-        <rule-property name="metricOptions">ignoreBooleanPaths|considerAssert</rule-property>
+        <rule-property name="metricOptions">ignoreBooleanPaths,considerAssert</rule-property>
         <expected-problems>8</expected-problems>
         <expected-messages>
             <message>'Complicated#exception()' has value 4.</message>

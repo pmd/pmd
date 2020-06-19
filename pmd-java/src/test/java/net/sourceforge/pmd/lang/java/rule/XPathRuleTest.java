@@ -66,6 +66,7 @@ public class XPathRuleTest extends RuleTst {
             = PropertyFactory.stringListProperty("forbiddenNames")
                              .desc("Forbidden names")
                              .defaultValues("forbid1", "forbid2")
+                             .availableInXPath(true)
                              .build();
 
         rule.definePropertyDescriptor(varDescriptor);
@@ -80,7 +81,7 @@ public class XPathRuleTest extends RuleTst {
         XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$var]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<String> varDescriptor =
-            PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").build();
+            PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").availableInXPath(true).build();
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);

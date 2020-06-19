@@ -150,7 +150,7 @@ public class Foo {
 
     <test-code>
         <description>Comprehensive, check for IPv6 and IPv4 mapped IPv6</description>
-        <rule-property name="checkAddressTypes">IPv6|IPv4 mapped IPv6</rule-property>
+        <rule-property name="checkAddressTypes">IPv6,IPv4 mapped IPv6</rule-property>
         <expected-problems>15</expected-problems>
         <code-ref id="addresses"/>
     </test-code>

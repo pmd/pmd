@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
@@ -40,18 +41,21 @@ public final class PropertyDescriptor<T> {
     private final String name;
     private final String description;
     private final T defaultValue;
+    private final boolean isXPathAvailable;
 
     PropertyDescriptor(String name,
                        String description,
                        T defaultValue,
                        XmlMapper<T> parser,
-                       @Nullable PropertyTypeId typeId) {
+                       @Nullable PropertyTypeId typeId,
+                       boolean isXPathAvailable) {
 
         this.name = name;
         this.description = description;
         this.defaultValue = defaultValue;
         this.parser = parser;
         this.typeId = typeId;
+        this.isXPathAvailable = isXPathAvailable;
 
         XmlSyntaxUtils.checkConstraintsThrow(
             defaultValue,
@@ -120,13 +124,19 @@ public final class PropertyDescriptor<T> {
 
     /**
      * Returns the type ID which was used to define this property. Returns
-     * null if this property was defined in Java code and not in XML.
-     *
-     * <p>This replaces isDefinedExternally for the RulesetWriter.
+     * null if this property was defined in Java code and not in XML. This
+     * is used to write the property back to XML, when using a {@link RuleSetWriter}.
      */
     @InternalApi
     public @Nullable PropertyTypeId getTypeId() {
         return typeId;
+    }
+
+    /**
+     * Returns whether the property is available to XPath queries.
+     */
+    public boolean isXPathAvailable() {
+        return isXPathAvailable;
     }
 
 

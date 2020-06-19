@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
@@ -56,7 +57,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     private final String name;
     private String description;
     private T defaultValue;
-    protected PropertyTypeId typeId;
+    protected @Nullable PropertyTypeId typeId;
+    protected boolean isXPathAvailable = false;
 
 
     PropertyBuilder(String name) {
@@ -119,6 +121,20 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     @SuppressWarnings("unchecked")
     B typeId(PropertyTypeId typeId) {
         this.typeId = typeId;
+        return (B) this;
+    }
+
+    /**
+     * If true, the property will be made available to XPath queries as
+     * an XPath variable. The default is false (except for properties
+     * of XPath rules that were defined in XML).
+     *
+     * @param b Whether to enable or not
+     *
+     * @return This builder
+     */
+    public B availableInXPath(boolean b) {
+        this.isXPathAvailable = b;
         return (B) this;
     }
 
@@ -304,8 +320,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                 getDescription(),
                 getDefaultValue(),
                 parser,
-                typeId
-            );
+                typeId,
+                isXPathAvailable);
         }
     }
 
@@ -487,8 +503,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                 getDescription(),
                 getDefaultValue(),
                 syntax,
-                typeId
-            );
+                typeId,
+                isXPathAvailable);
         }
     }
 }

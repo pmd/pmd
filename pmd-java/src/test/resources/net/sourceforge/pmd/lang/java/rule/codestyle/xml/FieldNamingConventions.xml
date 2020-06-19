@@ -205,7 +205,7 @@ public class Foo implements Serializable {
 
     <test-code>
         <description>More exclusions can be configured</description>
-        <rule-property name="exclusions">m$mangled|serialVersionUID</rule-property>
+        <rule-property name="exclusions">m$mangled,serialVersionUID</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyException {
