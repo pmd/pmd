@@ -446,8 +446,8 @@ public class RuleDocGenerator {
                     if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");
                         lines.add("");
-                        lines.add("|Name|Default Value|Description|Multivalued|");
-                        lines.add("|----|-------------|-----------|-----------|");
+                        lines.add("|Name|Default Value|Description|");
+                        lines.add("|----|-------------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             String description = propertyDescriptor.description();
                             final boolean isDeprecated = isDeprecated(propertyDescriptor);
@@ -457,20 +457,16 @@ public class RuleDocGenerator {
 
                             String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, true);
 
-                            String multiValued = "no";
                             // TODO document property syntax
-                            // if (propertyDescriptor.isMultiValue()) {
-                            //     MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
-                            //             (MultiValuePropertyDescriptor<?>) propertyDescriptor;
-                            //     multiValued = "yes. Delimiter is '"
-                            //             + multiValuePropertyDescriptor.multiValueDelimiter() + "'.";
-                            // }
 
-                            lines.add("|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
-                                    + "|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue)) + "|"
-                                    + EscapeUtils.escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "")
-                                            + StringEscapeUtils.escapeHtml4(description))
-                                    + "|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(multiValued)) + "|");
+                            lines.add("|"
+                                    + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
+                                    + "|"
+                                    + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue))
+                                    + "|"
+                                    + EscapeUtils.escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "") + StringEscapeUtils.escapeHtml4(description))
+                                    + "|"
+                            );
                         }
                         lines.add("");
                     }
@@ -530,15 +526,11 @@ public class RuleDocGenerator {
 
         if (realDefaultValue != null) {
             defaultValue = propertyDescriptor.asDelimitedString(realDefaultValue);
-            // TODO document multi value properties
-            //  if (pad && propertyDescriptor.isMultiValue()) {
-            //      MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
-            //      // surround the delimiter with spaces, so that the browser can wrap
-            //      // the value nicely
-            //      defaultValue = defaultValue.replaceAll(Pattern.quote(
-            //              String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
-            //              " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
-            //  }
+            if (pad && realDefaultValue instanceof Collection) {
+                // surround the delimiter with spaces, so that the browser can wrap
+                // the value nicely
+                defaultValue = defaultValue.replaceAll(",", " , ");
+            }
         }
         return defaultValue;
     }

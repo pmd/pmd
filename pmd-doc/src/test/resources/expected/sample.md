@@ -71,18 +71,18 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|sampleAdditionalProperty|the value|This is a additional property for tests|no|
-|sampleMultiStringProperty|Value1 \| Value2|Test property with multiple strings|yes. Delimiter is '\|'.|
-|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|no|
-|sampleRegexProperty1|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|no|
-|sampleRegexProperty2|\[a-z\]\*|The property is of type regex|no|
-|sampleRegexProperty3|\\s+|The property is of type regex|no|
-|sampleRegexProperty4|\_dd\_|The property is of type regex|no|
-|sampleRegexProperty5|\[0-9\]{1,3}|The property is of type regex|no|
-|sampleRegexProperty6|\\b|The property is of type regex|no|
-|sampleRegexProperty7|\\n|The property is of type regex|no|
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|
+|sampleMultiStringProperty|Value1 , Value2|Test property with multiple strings|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|
+|sampleRegexProperty1|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|
+|sampleRegexProperty2|\[a-z\]\*|The property is of type regex|
+|sampleRegexProperty3|\\s+|The property is of type regex|
+|sampleRegexProperty4|\_dd\_|The property is of type regex|
+|sampleRegexProperty5|\[0-9\]{1,3}|The property is of type regex|
+|sampleRegexProperty6|\\b|The property is of type regex|
+|sampleRegexProperty7|\\n|The property is of type regex|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -94,7 +94,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 <rule ref="category/java/sample.xml/JumbledIncrementer">
     <properties>
         <property name="sampleAdditionalProperty" value="the value" />
-        <property name="sampleMultiStringProperty" value="Value1|Value2" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
         <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
         <property name="sampleRegexProperty2" value="[a-z]*" />
         <property name="sampleRegexProperty3" value="\s+" />
@@ -242,18 +242,18 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|sampleAdditionalProperty|the value|This is a additional property for tests|no|
-|sampleMultiStringProperty|Value1 \| Value2|Test property with multiple strings|yes. Delimiter is '\|'.|
-|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|no|
-|sampleRegexProperty1|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|no|
-|sampleRegexProperty2|\[a-z\]\*|The property is of type regex|no|
-|sampleRegexProperty3|\\s+|The property is of type regex|no|
-|sampleRegexProperty4|\_dd\_|The property is of type regex|no|
-|sampleRegexProperty5|\[0-9\]{1,3}|The property is of type regex|no|
-|sampleRegexProperty6|\\b|The property is of type regex|no|
-|sampleRegexProperty7|\\n|The property is of type regex|no|
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|
+|sampleMultiStringProperty|Value1 , Value2|Test property with multiple strings|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|
+|sampleRegexProperty1|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|
+|sampleRegexProperty2|\[a-z\]\*|The property is of type regex|
+|sampleRegexProperty3|\\s+|The property is of type regex|
+|sampleRegexProperty4|\_dd\_|The property is of type regex|
+|sampleRegexProperty5|\[0-9\]{1,3}|The property is of type regex|
+|sampleRegexProperty6|\\b|The property is of type regex|
+|sampleRegexProperty7|\\n|The property is of type regex|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -265,7 +265,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 <rule ref="category/java/sample.xml/RenamedRule">
     <properties>
         <property name="sampleAdditionalProperty" value="the value" />
-        <property name="sampleMultiStringProperty" value="Value1|Value2" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
         <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
         <property name="sampleRegexProperty2" value="[a-z]*" />
         <property name="sampleRegexProperty3" value="\s+" />
@@ -339,11 +339,11 @@ if (0 > 1 && 0 < 1) {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|sampleRegexProperty|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|no|
-|XSSpropertyTest &lt;script&gt;alert('XSS');&lt;/script&gt;|&lt;script&gt;alert('XSS');&lt;/script&gt;|&lt;script&gt;alert('XSS');&lt;/script&gt;|no|
-|escapingNeeded|this is escaped: \||You should be able to use \| in the description|no|
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|sampleRegexProperty|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|
+|XSSpropertyTest|&lt;script&gt;alert('XSS');&lt;/script&gt;|&lt;script&gt;alert('XSS');&lt;/script&gt;|
+|escapingNeeded|this is escaped: \||You should be able to use \| in the description|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -355,7 +355,7 @@ if (0 > 1 && 0 < 1) {
 <rule ref="category/java/sample.xml/XSSInDocumentation">
     <properties>
         <property name="sampleRegexProperty" value="\/\*\s+(default|package)\s+\*\/" />
-        <property name="XSSpropertyTest <script>alert('XSS');</script>" value="<script>alert('XSS');</script>" />
+        <property name="XSSpropertyTest" value="<script>alert('XSS');</script>" />
         <property name="escapingNeeded" value="this is escaped: |" />
     </properties>
 </rule>

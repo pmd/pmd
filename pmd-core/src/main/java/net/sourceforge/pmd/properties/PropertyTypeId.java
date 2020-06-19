@@ -71,8 +71,14 @@ public enum PropertyTypeId {
         this.factory = factory;
     }
 
-    // this is provided so that the mapper and the factory may be related
-    // through the same type parameter, so that capture works well
+    /**
+     * An factory for new properties, whose default value must be deserialized
+     * using an {@link XmlMapper}. This is provided so that the mapper and
+     * the factory may be related through the same type parameter, so that
+     * capture works well.
+     *
+     * @param <T> Type of values of the property.
+     */
     public interface BuilderAndMapper<T> {
 
         XmlMapper<T> getXmlMapper();
@@ -80,6 +86,11 @@ public enum PropertyTypeId {
         PropertyBuilder<?, T> newBuilder(String name);
     }
 
+    /**
+     * Returns the object used to create new properties with the type
+     * of this constant.
+     */
+    @SuppressWarnings("rawtypes")
     public BuilderAndMapper<?> getBuilderUtils() {
         return new BuilderAndMapper() {
             @Override

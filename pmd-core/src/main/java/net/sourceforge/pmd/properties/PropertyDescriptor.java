@@ -180,6 +180,7 @@ public final class PropertyDescriptor<T> {
             + ", defaultValue=" + defaultValue + '}';
     }
 
+    // TODO these equality routines needs to go away, should be implemented in Rule::equals
     @Override
     public boolean equals(Object o) {
         if (this == o) {

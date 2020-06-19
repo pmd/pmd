@@ -66,7 +66,7 @@ Here might be &lt;script&gt;alert('XSS');&lt;/script&gt; as well. And "quotes".
                </value>
            </property>
            <property name="sampleRegexProperty" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
-           <property name="XSSpropertyTest &lt;script&gt;alert('XSS');&lt;/script&gt;" type="String" description="&lt;script&gt;alert('XSS');&lt;/script&gt;" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
+           <property name="XSSpropertyTest" type="String" description="&lt;script&gt;alert('XSS');&lt;/script&gt;" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
            <property name="escapingNeeded" type="String" description="You should be able to use | in the description" value="this is escaped: |" />
        </properties>
        <example>

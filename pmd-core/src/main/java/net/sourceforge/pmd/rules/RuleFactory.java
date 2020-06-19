@@ -29,7 +29,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
@@ -288,19 +287,21 @@ public class RuleFactory {
     private static <T> PropertyDescriptor<T> propertyDefCapture(Element propertyElement,
                                                                 XmlErrorReporter err,
                                                                 BuilderAndMapper<T> factory) {
+        // TODO support constraints like numeric range
 
         String name = SchemaConstants.NAME.getAttributeOrThrow(propertyElement, err);
         String description = SchemaConstants.DESCRIPTION.getAttributeOrThrow(propertyElement, err);
 
-        final PropertyBuilder<?, T> builder = factory.newBuilder(name).desc(description);
+        try {
+            return factory.newBuilder(name)
+                          .desc(description)
+                          .defaultValue(parsePropertyValue(propertyElement, err, factory.getXmlMapper()))
+                          .build();
 
-        // parse the value
-
-        builder.defaultValue(parsePropertyValue(propertyElement, err, factory.getXmlMapper()));
-
-        // TODO support constraints like numeric range
-
-        return builder.build();
+        } catch (IllegalArgumentException e) {
+            // builder threw, rethrow with XML location
+            throw err.error(propertyElement, e);
+        }
     }
 
     private static <T> T parsePropertyValue(Element propertyElt, XmlErrorReporter err, XmlMapper<T> syntax) {
