@@ -1173,7 +1173,6 @@ should be annotated with @Test and @Ignore.
 ]
 ]]></value>
             </property>
-            <property name="version" value="2.0" />
         </properties>
         <example>
 <![CDATA[
