@@ -87,10 +87,7 @@ public final class PropertyFactory {
 
 
     /** Default delimiter for multi-valued properties other than numeric ones. */
-    static final char DEFAULT_DELIMITER = '|';
-
-    /** Default delimiter for numeric multi-valued properties. */
-    static final char DEFAULT_NUMERIC_DELIMITER = ',';
+    static final char DEFAULT_DELIMITER = ',';
 
 
     private PropertyFactory() {
@@ -129,7 +126,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
-        return intProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
+        return intProperty(name).toList();
     }
 
 
@@ -166,7 +163,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
-        return longIntProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
+        return longIntProperty(name).toList();
     }
 
 
@@ -198,7 +195,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
-        return doubleProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
+        return doubleProperty(name).toList();
     }
 
 

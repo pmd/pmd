@@ -34,7 +34,6 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
             <property name="validTypes"
                       value="pom,jar,maven-plugin,ejb,war,ear,rar,par"
                       type="List[String]"
-                      delimiter=","
                       description="Set of valid types."/>
         </properties>
         <example>

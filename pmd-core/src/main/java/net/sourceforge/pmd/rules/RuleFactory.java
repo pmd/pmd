@@ -295,11 +295,8 @@ public class RuleFactory {
         final PropertyBuilder<?, T> builder = factory.newBuilder(name).desc(description);
 
         // parse the value
-        final XmlMapper<T> syntax = factory.getXmlMapper();
 
-        final T defaultValue = parsePropertyValue(propertyElement, err, syntax);
-
-        builder.defaultValue(defaultValue);
+        builder.defaultValue(parsePropertyValue(propertyElement, err, factory.getXmlMapper()));
 
         // TODO support constraints like numeric range
 

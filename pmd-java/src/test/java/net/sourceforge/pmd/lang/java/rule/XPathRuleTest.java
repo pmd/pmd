@@ -66,7 +66,6 @@ public class XPathRuleTest extends RuleTst {
             = PropertyFactory.stringListProperty("forbiddenNames")
                              .desc("Forbidden names")
                              .defaultValues("forbid1", "forbid2")
-                             .delim('$')
                              .build();
 
         rule.definePropertyDescriptor(varDescriptor);

@@ -395,7 +395,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         private XmlMapper<V> itemParser;
         private final Collector<? super V, ?, ? extends C> collector;
-        private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
         private final List<PropertyConstraint<? super C>> collectionConstraints = new ArrayList<>();
 
 
@@ -475,29 +474,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
 
 
-        /**
-         * Specify a delimiter character. By default it's {@value PropertyFactory#DEFAULT_DELIMITER},
-         * or {@value PropertyFactory#DEFAULT_NUMERIC_DELIMITER} for numeric properties.
-         *
-         * @param delim Delimiter
-         *
-         * @return The same builder
-         *
-         * @deprecated PMD 7.0.0 will introduce a new XML syntax for multi-valued properties which will not rely on delimiters.
-         * This method is kept until this is implemented for compatibility reasons with the pre-7.0.0 framework, but
-         * it will be scrapped come 7.0.0.
-         */
-        @Deprecated
-        public GenericCollectionPropertyBuilder<V, C> delim(char delim) {
-            this.multiValueDelimiter = delim;
-            return this;
-        }
-
-
         @Override
         public PropertyDescriptor<C> build() {
             XmlMapper<C> syntax = itemParser.supportsStringMapping()
-                                  ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, multiValueDelimiter)
+                                  ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, PropertyFactory.DEFAULT_DELIMITER)
                                   : XmlSyntaxUtils.onlySeq(itemParser, collector);
 
             syntax = XmlSyntaxUtils.withAllConstraints(syntax, collectionConstraints);

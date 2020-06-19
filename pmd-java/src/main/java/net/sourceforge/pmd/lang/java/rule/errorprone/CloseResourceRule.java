@@ -71,13 +71,13 @@ public class CloseResourceRule extends AbstractJavaRule {
             stringListProperty("closeTargets")
                            .desc("Methods which may close this resource")
                            .emptyDefaultValue()
-                           .delim(',').build();
+                           .build();
 
     private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
             stringListProperty("types")
                     .desc("Affected types")
                     .defaultValues("java.lang.AutoCloseable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
-                    .delim(',').build();
+                    .build();
 
     private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
             booleanProperty("closeAsDefaultTarget")

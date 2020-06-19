@@ -1791,7 +1791,7 @@ preserved.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
+            <property name="closeMethods" type="List[String]" description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
             <property name="version" value="2.0" />
             <property name="xpath">
                 <value>

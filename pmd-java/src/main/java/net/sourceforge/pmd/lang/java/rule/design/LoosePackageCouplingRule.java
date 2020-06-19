@@ -38,10 +38,10 @@ import net.sourceforge.pmd.properties.PropertySource;
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
-            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().delim(',').build();
+            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().build();
 
     public static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
-            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().delim(',').build();
+            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().build();
 
     // The package of this source file
     private String thisPackage;

@@ -192,7 +192,7 @@ public class RuleSetFactoryTest {
                                    + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
                                    + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
                                    + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
-                                   + " value=\"com.aptsssss|com.abc\" \ntype=\"List[String]\" "
+                                   + " value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" "
                                    + "description=\"valid packages\"/>\n         </properties></rule></ruleset>");
         PropertyDescriptor<List<String>> prop = (PropertyDescriptor<List<String>>) r.getPropertyDescriptor("packageRegEx");
         List<String> values = r.getProperty(prop);

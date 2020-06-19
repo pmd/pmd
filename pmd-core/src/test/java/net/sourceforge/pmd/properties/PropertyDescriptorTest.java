@@ -231,7 +231,7 @@ public class PropertyDescriptorTest {
         assertEquals("stringListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo|bar"));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo,bar"));
     }
 
     private enum SampleEnum { A, B, C }
@@ -262,7 +262,7 @@ public class PropertyDescriptorTest {
         assertEquals("enumListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.valueFrom("TEST_B|TEST_C"));
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.valueFrom("TEST_B,TEST_C"));
     }
 
 

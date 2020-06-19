@@ -26,7 +26,6 @@ public class RuleWithProperties extends FooRule {
         PropertyFactory.stringListProperty("multiString")
                        .desc("multi string property")
                        .defaultValues("default1", "default2")
-                       .delim(',')
                        .build();
 
     public RuleWithProperties() {

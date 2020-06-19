@@ -45,7 +45,6 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                                           + "Components of this list should not be surrounded by double quotes.")
                          .map(Collectors.toSet())
                          .defaultValue(Collections.emptySet())
-                         .delim(',')
                          .build();
 
     private Map<String, List<ASTLiteral>> literals = new HashMap<>();

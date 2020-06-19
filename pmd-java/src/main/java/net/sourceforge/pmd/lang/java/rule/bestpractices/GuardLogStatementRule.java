@@ -63,14 +63,13 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
                     .desc("LogLevels to guard")
                     .defaultValues("trace", "debug", "info", "warn", "error",
                                    "log", "finest", "finer", "fine", "info", "warning", "severe")
-                    .delim(',')
                     .build();
 
     private static final PropertyDescriptor<List<String>> GUARD_METHODS =
             stringListProperty("guardsMethods")
                     .desc("Method use to guard the log statement")
                     .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
-                    .delim(',').build();
+                    .build();
 
     private Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
