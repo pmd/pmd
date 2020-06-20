@@ -21,9 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
@@ -38,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -46,6 +49,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -124,6 +128,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         private final TargetStack breakTargets = new TargetStack();
         // continue jumps to the condition check, while break jumps to after the loop
         private final TargetStack continueTargets = new TargetStack();
+
+        private final Deque<AlgoState> normalFinallies = new ArrayDeque<>();
 
         // following deals with control flow
 
@@ -207,6 +213,37 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             AlgoState elseState = acceptOpt(node.getElseBranch(), before.fork());
 
             return thenState.join(elseState);
+        }
+
+        @Override
+        public Object visit(ASTTryStatement node, Object data) {
+            final AlgoState before = (AlgoState) data;
+            ASTFinallyStatement finallyClause = node.getFinallyClause();
+
+            if (finallyClause != null) {
+                before.myFinally = before.forkEmpty();
+            }
+
+            ASTResourceSpecification resources = node.getFirstChildOfType(ASTResourceSpecification.class);
+
+            AlgoState bodyState = acceptOpt(resources, before.fork());
+            bodyState = acceptOpt(node.getBody(), bodyState);
+
+            AlgoState exceptionalState = null;
+            for (ASTCatchStatement catchClause : node.getCatchClauses()) {
+                AlgoState current = acceptOpt(catchClause, before.fork());
+                exceptionalState = current.join(exceptionalState);
+            }
+
+            AlgoState finalState;
+            if (finallyClause != null) {
+                finalState = before.myFinally.join(bodyState).join(exceptionalState);
+                finalState = acceptOpt(finallyClause, finalState);
+                before.myFinally = null;
+            } else {
+                finalState = bodyState.join(exceptionalState);
+            }
+            return finalState;
         }
 
         @Override
@@ -339,13 +376,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         @Override
         public Object visit(ASTThrowStatement node, Object data) {
             super.visit(node, data);
-            return ((AlgoState) data).abruptCompletion();
+            return ((AlgoState) data).abruptCompletion(null);
         }
 
         @Override
         public Object visit(ASTReturnStatement node, Object data) {
             super.visit(node, data);
-            return ((AlgoState) data).abruptCompletion();
+            return ((AlgoState) data).abruptCompletion(null);
         }
 
         // following deals with assignment
@@ -493,6 +530,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     private static class AlgoState {
 
+        final AlgoState parent;
+
         // Those 3 are shared between all the forked states
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
@@ -501,18 +540,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // Map of var -> reaching(var)
         final Map<VariableNameDeclaration, Set<AssignmentEntry>> reachingDefs;
 
+        AlgoState myFinally = null;
+
 
         private AlgoState() {
-            this(new HashSet<AssignmentEntry>(),
+            this(null,
+                 new HashSet<AssignmentEntry>(),
                  new HashSet<AssignmentEntry>(),
                  new HashMap<AssignmentEntry, Set<AssignmentEntry>>(),
                  new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
-        private AlgoState(Set<AssignmentEntry> allAssignments,
+        private AlgoState(AlgoState parent,
+                          Set<AssignmentEntry> allAssignments,
                           Set<AssignmentEntry> usedAssignments,
                           Map<AssignmentEntry, Set<AssignmentEntry>> killRecord,
                           Map<VariableNameDeclaration, Set<AssignmentEntry>> reachingDefs) {
+            this.parent = parent;
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
             this.killRecord = killRecord;
@@ -550,14 +594,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         AlgoState fork() {
-            return new AlgoState(this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<>(this.reachingDefs));
+            return new AlgoState(this, this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<>(this.reachingDefs));
         }
 
         AlgoState forkEmpty() {
-            return new AlgoState(this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+            return new AlgoState(this, this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
-        AlgoState abruptCompletion() {
+        AlgoState abruptCompletion(AlgoState target) {
+            // if target == null then this will unwind all the parents
+            AlgoState parent = this;
+            while (parent != target && parent != null) {
+                if (parent.myFinally != null) {
+                    parent.myFinally.join(this);
+                }
+                parent = parent.parent;
+            }
+
             this.reachingDefs.clear();
             return this;
         }
@@ -565,7 +618,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         AlgoState join(AlgoState sub) {
             // Merge reaching des of the other scope into this
-            if (sub == this || sub.reachingDefs.isEmpty()) {
+            if (sub == this || sub == null || sub.reachingDefs.isEmpty()) {
                 return this;
             }
 
@@ -625,16 +678,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         AlgoState doBreak(AlgoState data,/* nullable */ String label) {
             // basically, reaching defs at the point of the break
             // also reach after the break (wherever it lands)
+            AlgoState target;
             if (label == null) {
-                unnamedTargets.push(unnamedTargets.getFirst().join(data));
+                target = unnamedTargets.getFirst();
             } else {
-                AlgoState target = namedTargets.get(label);
-                if (target != null) {
-                    // otherwise CT error
-                    target.join(data);
-                }
+                target = namedTargets.get(label);
             }
-            return data.abruptCompletion();
+
+            if (target != null) { // otherwise CT error
+                target.join(data);
+            }
+            return data.abruptCompletion(target);
         }
     }
 

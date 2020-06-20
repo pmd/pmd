@@ -1073,4 +1073,104 @@ public class Foo {
 
 }        ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Try/catch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 6 and 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    public int foo() {
+        int a = 0;
+        try (Reader r = new StringReader("")) {
+            a = r.read();
+        } catch (IOException e) {
+            a = -1;
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try/catch finally</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 6 and 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    public int foo() {
+        int a = 0;
+        try (Reader r = new StringReader("")) {
+            a = r.read();  // used in finally
+        } catch (IOException e) {
+            a = -1; // used in finally
+        } finally {
+            print(a);
+        }
+        return 0;
+    }
+
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Try/catch finally 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used (overwritten on lines 6 and 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+
+    public int foo() {
+        int a = 0;
+        try (Reader r = new StringReader("")) {
+            a = r.read();  // used in finally
+        } catch (IOException e) {
+            a = -1; // used in finally
+        } finally {
+            // don't use a
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Try/catch finally in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+class Foo {
+
+    public int foo() {
+        int a = 0;
+        while (a > 10) {
+            try (Reader r = new StringReader("")) {
+                r.read();
+            } catch (IOException e) {
+                a = -1; // used in finally even if break
+                break;
+            } finally {
+                a++;
+            }
+        }
+        return a;
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
