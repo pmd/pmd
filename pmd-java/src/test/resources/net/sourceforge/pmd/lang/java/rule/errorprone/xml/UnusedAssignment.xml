@@ -1099,11 +1099,7 @@ public class Foo {
 
     <test-code>
         <description>Try/catch finally</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
-        <expected-messages>
-            <message>The value assigned to variable 'a' is never used (overwritten on lines 6 and 8)</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 
@@ -1170,6 +1166,41 @@ class Foo {
         return a;
     }
 
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Abstract method NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+abstract class Foo {
+
+    public abstract int foo();
+
+    interface Bar {
+        int bar();
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP in finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+class Foo {
+    public Object intercept(Object proxy) throws Throwable {
+        Object oldProxy = null; // FP here
+        try {
+            oldProxy = new Object[] { proxy };
+            return null;
+        }
+        finally {
+            System.out.println(oldProxy);
+        }
+    }
 }
         ]]></code>
     </test-code>

@@ -39,7 +39,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -74,6 +73,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        if (node.isAbstract()) {
+            return data;
+        }
 
         AlgoState endState = (AlgoState) node.getBody().jjtAccept(new ReachingDefsVisitor(), new AlgoState());
 
@@ -220,6 +222,26 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             final AlgoState before = (AlgoState) data;
             ASTFinallyStatement finallyClause = node.getFinallyClause();
 
+            /*
+                <before>
+                try (<resources>) {
+                    <body>
+                } catch (IOException e) {
+                    <catch>
+                } finally {
+                    <finally>
+                }
+                <end>
+
+                There is a path      <before> -> <resources> -> <body> -> <finally> -> <end>
+                and for each catch,  <before> -> <catch> -> <finally> -> <end>
+
+                Except that abrupt completion before the <finally> jumps
+                to the <finally> and completes abruptly for the same
+                reason (if the <finally> completes normally), which
+                means it doesn't go to <end>
+             */
+
             if (finallyClause != null) {
                 before.myFinally = before.forkEmpty();
             }
@@ -236,12 +258,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
 
             AlgoState finalState;
+            finalState = bodyState.join(exceptionalState);
             if (finallyClause != null) {
-                finalState = before.myFinally.join(bodyState).join(exceptionalState);
-                finalState = acceptOpt(finallyClause, finalState);
+                // this represents the finally clause when it was entered
+                // because of abrupt completion
+                // since we don't know when it terminated we must join it with before
+                AlgoState abruptFinally = before.myFinally.join(before);
+                acceptOpt(finallyClause, abruptFinally);
                 before.myFinally = null;
-            } else {
-                finalState = bodyState.join(exceptionalState);
+
+                // this is the normal finally
+                finalState = acceptOpt(finallyClause, finalState);
             }
             return finalState;
         }
@@ -478,22 +505,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (primary instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.getChild(0);
 
-                if (prefix.usesThisModifier()) {
-                    if (primary.getNumChildren() != 2 && inLhs) {
-                        return null;
-                    }
-                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
-                    if (suffix.isArguments() || suffix.isArrayDereference()) {
-                        return null;
-                    }
-                    return findVar(primary.getScope(), true, firstIdent(suffix.getImage()));
-                } else {
+                //                if (prefix.usesThisModifier()) {
+                //                    if (primary.getNumChildren() < 2) {
+                //                        return null;
+                //                    }
+                //                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
+                //                    if (suffix.isArguments() || suffix.isArrayDereference() || suffix.getImage() == null) {
+                //                        return null;
+                //                    }
+                //                    return findVar(primary.getScope(), true, firstIdent(suffix.getImage()));
+                //                } else
+                {
                     if (inLhs && primary.getNumChildren() > 1) {
                         return null;
                     }
 
-                    if (prefix.getChild(0) instanceof ASTName) {
-                        return findVar(prefix.getScope(), false, firstIdent(prefix.getChild(0).getImage()));
+                    if (prefix.getNumChildren() > 0 && (prefix.getChild(0) instanceof ASTName)) {
+                        return findVar(prefix.getScope(), identOf(inLhs, prefix.getChild(0).getImage()));
                     }
                 }
             }
@@ -501,22 +529,25 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return null;
         }
 
-        private static String firstIdent(String str) {
+        private static String identOf(boolean inLhs, String str) {
             int i = str.indexOf('.');
-            return i < 0 ? str : str.substring(0, i);
+            return i < 0 ? str
+                         : inLhs ? null
+                                 : str.substring(0, i);
         }
 
-        private VariableNameDeclaration findVar(Scope scope, boolean isThis, String name) {
+        private VariableNameDeclaration findVar(Scope scope, String name) {
             if (name == null) {
                 return null;
-            }
-            if (isThis) {
-                scope = scope.getEnclosingScope(ClassScope.class);
             }
 
             while (scope != null) {
                 for (VariableNameDeclaration decl : scope.getDeclarations(VariableNameDeclaration.class).keySet()) {
                     if (decl.getImage().equals(name)) {
+                        if (scope instanceof ClassScope) {
+                            // don't handle fields
+                            return null;
+                        }
                         return decl;
                     }
                 }
