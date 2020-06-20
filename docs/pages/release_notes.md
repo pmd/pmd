@@ -96,12 +96,33 @@ The command line version of PMD continues to use **scala 2.13**.
     
 #### Deprecated APIs
 
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc java::lang.java.rule.AbstractIgnoredAnnotationRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractInefficientZeroCheck %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractJUnitRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractJavaMetricsRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractLombokAwareRule %} (Java)
+*   {% jdoc java::lang.java.rule.AbstractPoorMethodCall %} (Java)
+*   {% jdoc java::lang.java.rule.bestpractices.AbstractSunSecureRule %} (Java)
+*   {% jdoc java::lang.java.rule.design.AbstractNcssCountRule %} (Java)
+*   {% jdoc java::lang.java.rule.documentation.AbstractCommentRule %} (Java)
+*   {% jdoc java::lang.java.rule.performance.AbstractOptimizationRule %} (Java)
+*   {% jdoc java::lang.java.rule.regex.RegexHelper %} (Java)
+
+##### For removal
+
 *   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
 *   {% jdoc !!core::cpd.TokenEntry#TokenEntry(java.lang.String, java.lang.String, int) %}
 *   {% jdoc test::testframework.AbstractTokenizerTest %}. Use CpdTextComparisonTest in module pmd-lang-test instead.
     For details see
     [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
     in the developer documentation.
+*   {% jdoc java::lang.java.rule.SymbolTableTestRule %} (Java)
+
 
 ### External Contributions
 
