@@ -198,7 +198,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             ScopeData breakTarget = before.forkEmpty();
             ScopeData continueTarget = before.forkEmpty();
 
-            Set<String> labels = pushTargets(loop, breakTarget, continueTarget);
+            pushTargets(loop, breakTarget, continueTarget);
 
             ScopeData iter = acceptOpt(body, before.fork());
             // make the body live in the other parts of the loop,
@@ -218,7 +218,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 continueTarget = acceptOpt(update, continueTarget);
             }
 
-            popTargets(labels);
+            popTargets(loop);
 
             ScopeData result = breakTarget.join(continueTarget).join(iter);
             if (checkFirstIter) {
@@ -228,36 +228,30 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return result;
         }
 
-        private Set<String> pushTargets(JavaNode loop, ScopeData breakTarget, ScopeData continueTarget) {
+        private void pushTargets(JavaNode loop, ScopeData breakTarget, ScopeData continueTarget) {
             unnamedBreakTargets.push(breakTarget);
             unnamedContinueTargets.push(continueTarget);
 
             JavaNode parent = loop.getNthParent(2);
-            Set<String> labels;
-            if (parent instanceof ASTLabeledStatement) {
-                labels = new HashSet<>(1);
-                while (parent instanceof ASTLabeledStatement) {
-                    String label = parent.getImage();
-                    namedBreakTargets.put(label, breakTarget);
-                    namedContinueTargets.put(label, continueTarget);
-                    labels.add(label);
-                    parent = parent.getNthParent(2);
-                }
-            } else {
-                labels = Collections.emptySet();
+            while (parent instanceof ASTLabeledStatement) {
+                String label = parent.getImage();
+                namedBreakTargets.put(label, breakTarget);
+                namedContinueTargets.put(label, continueTarget);
+                parent = parent.getNthParent(2);
             }
-            return labels;
         }
 
-        private void popTargets(Set<String> labels) {
+        private void popTargets(JavaNode loop) {
             unnamedContinueTargets.pop();
             unnamedBreakTargets.pop();
-            for (String label : labels) {
+            JavaNode parent = loop.getNthParent(2);
+            while (parent instanceof ASTLabeledStatement) {
+                String label = parent.getImage();
                 namedBreakTargets.remove(label);
                 namedContinueTargets.remove(label);
+                parent = parent.getNthParent(2);
             }
         }
-
 
         private ScopeData acceptOpt(JavaNode node, ScopeData before) {
             return node == null ? before : (ScopeData) node.jjtAccept(this, before);
@@ -455,8 +449,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     private static class ScopeData {
-
-        // final Set<VariableNameDeclaration> varsThatMustBeUsed = new HashSet<>();
 
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
