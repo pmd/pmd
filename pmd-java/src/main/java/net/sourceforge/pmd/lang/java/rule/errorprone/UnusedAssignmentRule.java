@@ -63,12 +63,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        // This analysis can be used to check for unused variables easily
+        // See reverted commit somewhere in the PR
 
         ScopeData bodyData = new ScopeData();
-
-        //        for (ASTFormalParameter param : node.getFormalParameters()) {
-        //            bodyData.varsThatMustBeUsed.add(param.getVariableDeclaratorId().getNameDeclaration());
-        //        }
 
         ScopeData endData = (ScopeData) node.getBody().jjtAccept(new LivenessVisitor(), bodyData);
 
@@ -81,20 +79,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 addViolationWithMessage(data, entry.rhs, "The value assigned to variable ''{0}'' is never used", new Object[] {entry.var.getImage()});
             }
         }
-        //        if (!endData.varsThatMustBeUsed.isEmpty()) {
-        //            HashSet<VariableNameDeclaration> assignedVars = new HashSet<>();
-        //            for (AssignmentEntry assignment : endData.allAssignments) {
-        //                assignedVars.add(assignment.var);
-        //            }
-
-        //            for (VariableNameDeclaration var : endData.varsThatMustBeUsed) {
-        //                if (assignedVars.contains(var)) {
-        //                    addViolationWithMessage(data, var.getNode(), "The variable ''{0}'' is assigned, but never accessed", new Object[] {var.getImage()});
-        //                } else {
-        //                    addViolationWithMessage(data, var.getNode(), "The variable ''{0}'' is never used", new Object[] {var.getImage()});
-        //                }
-        //            }
-        //        }
 
         return super.visit(node, data);
     }
