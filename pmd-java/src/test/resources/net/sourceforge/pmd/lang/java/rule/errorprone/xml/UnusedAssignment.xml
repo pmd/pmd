@@ -293,7 +293,7 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4. DU-Anomaly(a)</description>
+        <description>While loop 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Test{
@@ -304,6 +304,105 @@ class Test{
             a = a+3;
             i += 3;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused
+        while(a < 30){
+            a = a + 3;
+            i = 5; // unused (kills itself)
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>While loop with break</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (true) {
+            if (a >= 30) {
+                i = a + 1; // unused
+                break;
+            }
+            a = a + 3;
+            i = i + 1; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>While loop without break (control case)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (true) {
+            if (a >= 30) {
+                i = a + 1; // used by below
+                // break;  // no break here
+            }
+            a = a + 3;
+            i = i + 1; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with break 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // used now
+
+        outer:
+        while (true) {
+            a += 2;
+
+            while (true) {
+                if (a >= 30) {
+                    i = i + 1; // used now
+                    break outer;
+                }
+                a = a + 3;
+                i = i + 2; // unused (kills itself)
+            }
+        }
+
+        System.out.println(i); // uses i = i + 1
     }
 }
         ]]></code>

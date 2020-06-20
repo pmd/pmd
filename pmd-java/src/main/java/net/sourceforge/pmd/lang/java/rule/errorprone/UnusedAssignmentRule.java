@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -128,6 +129,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
+        public Object visit(ASTBreakStatement node, Object data) {
+            data = super.visit(node, data);
+            return ((ScopeData) data).abruptCompletion();
+        }
+
+        @Override
         public Object visit(ASTReturnStatement node, Object data) {
             data = super.visit(node, data);
             return ((ScopeData) data).abruptCompletion();
@@ -169,6 +176,11 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
                 VariableNameDeclaration lhsVar = getLhsVar(node.getChild(0), true);
                 if (lhsVar != null) {
+                    if (node.getChild(1).getImage().length() >= 2) {
+                        // compound assignment, to use BEFORE assigning
+                        ((ScopeData) data).use(lhsVar);
+                    }
+
                     ((ScopeData) data).assign(lhsVar, rhs);
                 } else {
                     node.getChild(0).jjtAccept(this, data);
