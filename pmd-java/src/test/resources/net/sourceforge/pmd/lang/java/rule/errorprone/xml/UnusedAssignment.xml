@@ -294,16 +294,12 @@ class Test{
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
-        <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Test{
     public static void main(String[] args){
-        int a = 0 ;
-        int i = 0 ;
+        int a = 0;
+        int i = 0;
         while(i < 30){
             a = a+3;
             i += 3;

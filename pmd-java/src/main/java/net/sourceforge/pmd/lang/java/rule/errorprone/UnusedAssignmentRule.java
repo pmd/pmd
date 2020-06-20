@@ -11,6 +11,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -106,6 +108,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             } else {
                 return before.join(thenData);
             }
+        }
+
+        @Override
+        public Object visit(ASTWhileStatement node, Object data) {
+            ScopeData before = (ScopeData) node.getCondition().jjtAccept(this, data);
+
+            ScopeData iter = (ScopeData) node.getBody().jjtAccept(this, before.fork());
+            iter = (ScopeData) node.getCondition().jjtAccept(this, iter);
+            iter = (ScopeData) node.getBody().jjtAccept(this, iter);
+
+            return before.join(iter);
         }
 
         @Override
@@ -316,13 +329,29 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     }
 
     static class AssignmentEntry {
-
         final VariableNameDeclaration var;
         final JavaNode rhs;
 
         AssignmentEntry(VariableNameDeclaration var, JavaNode rhs) {
             this.var = var;
             this.rhs = rhs;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            AssignmentEntry that = (AssignmentEntry) o;
+            return Objects.equals(rhs, that.rhs);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(rhs);
         }
     }
 }
