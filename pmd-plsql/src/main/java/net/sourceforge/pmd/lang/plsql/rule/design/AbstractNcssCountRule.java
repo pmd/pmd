@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
@@ -33,7 +34,11 @@ import net.sourceforge.pmd.util.NumericConstants;
 /**
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from
  * the Java version of the rule.
+ *
+ * @deprecated Internal API
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractNcssCountRule extends AbstractStatisticalPLSQLRule {
     private static final Logger LOGGER = Logger.getLogger(AbstractNcssCountRule.class.getName());
 

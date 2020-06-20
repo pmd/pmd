@@ -114,6 +114,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   {% jdoc java::lang.java.rule.regex.RegexHelper %} (Java)
 *   {% jdoc apex::lang.apex.rule.AbstractApexUnitTestRule %} (Apex)
 *   {% jdoc apex::lang.apex.rule.design.AbstractNcssCountRule %} (Apex)
+*   {% jdoc plsql::lang.plsql.rule.design.AbstractNcssCountRule %} (PLSQL)
 
 ##### For removal
 
