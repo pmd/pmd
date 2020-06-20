@@ -757,6 +757,36 @@ class Test{
     </test-code>
 
     <test-code>
+        <description>Switch non-fallthrough blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i) {
+            case 1 -> a = 1;
+            case 2 -> {
+                if (args.length > 0) {
+                    i = 4;
+                    break;
+                }
+                a = 2;
+            }
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        }
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Switch expr non-fallthrough</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,7,8,9</expected-linenumbers>
@@ -774,6 +804,39 @@ class Test{
             // all those are unused
             case 1 -> a = 1;
             case 2 -> a = 2;
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        };
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expr with yield</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,9,13,14</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        a = switch(i) { // this is used
+            // all those are unused
+            case 1 -> a = 1;
+            case 2 -> {
+                if (a > 0) {
+                    yield a++;
+                }
+                yield 4;
+            }
             case 3 -> a = 3;
             default -> a = a + 1;
         };

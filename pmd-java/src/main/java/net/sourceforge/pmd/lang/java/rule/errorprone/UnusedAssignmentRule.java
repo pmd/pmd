@@ -25,6 +25,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -39,6 +42,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -51,8 +55,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     /*
         TODO
            named break targets
-           continue;
-           yield
            constructors + initializers
 
      */
@@ -262,6 +264,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
+        @Override
+        public Object visit(ASTYieldStatement node, Object data) {
+            super.visit(node, data); // visit expression
+            // treat as break, ie abrupt completion + link live vars to outer context
+            return doBreak((ScopeData) data, unnamedBreakTargets);
+        }
+
         public ScopeData doBreak(ScopeData data, Deque<ScopeData> targets) {
             // basically, assignments that are live at the point of the break
             // are also live after the break (wherever it lands)
@@ -333,6 +342,30 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             } else {
                 return super.visit(node, data);
             }
+        }
+
+        @Override
+        public Object visit(ASTPreDecrementExpression node, Object data) {
+            return checkIncOrDecrement(node, (ScopeData) data);
+        }
+
+        @Override
+        public Object visit(ASTPreIncrementExpression node, Object data) {
+            return checkIncOrDecrement(node, (ScopeData) data);
+        }
+
+        @Override
+        public Object visit(ASTPostfixExpression node, Object data) {
+            return checkIncOrDecrement(node, (ScopeData) data);
+        }
+
+        private ScopeData checkIncOrDecrement(JavaNode unary, ScopeData data) {
+            VariableNameDeclaration var = getLhsVar(unary.getChild(0), true);
+            if (var != null) {
+                data.use(var);
+                data.assign(var, unary);
+            }
+            return data;
         }
 
         // variable usage
