@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
@@ -105,6 +106,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         private final Deque<ScopeData> unnamedContinueTargets = new ArrayDeque<>();
 
         private final Map<String, ScopeData> namedBreakTargets = new HashMap<>();
+        private final Map<String, ScopeData> namedContinueTargets = new HashMap<>();
 
         // following deals with control flow
 
@@ -168,12 +170,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTWhileStatement node, Object data) {
-            return handleLoop((ScopeData) data, null, node.getCondition(), null, node.getBody(), true);
+            return handleLoop(node, (ScopeData) data, null, node.getCondition(), null, node.getBody(), true);
         }
 
         @Override
         public Object visit(ASTDoStatement node, Object data) {
-            return handleLoop((ScopeData) data, null, node.getCondition(), null, node.getBody(), false);
+            return handleLoop(node, (ScopeData) data, null, node.getCondition(), null, node.getBody(), false);
         }
 
         @Override
@@ -182,17 +184,18 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (node.isForeach()) {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
-                return handleLoop((ScopeData) data, init, null, null, body, true);
+                return handleLoop(node, (ScopeData) data, init, null, null, body, true);
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
                 ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-                return handleLoop((ScopeData) data, init, cond, update, body, true);
+                return handleLoop(node, (ScopeData) data, init, cond, update, body, true);
             }
         }
 
 
-        private ScopeData handleLoop(ScopeData before,
+        private ScopeData handleLoop(JavaNode loop,
+                                     ScopeData before,
                                      JavaNode init,
                                      JavaNode cond,
                                      JavaNode update,
@@ -211,8 +214,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             ScopeData breakTarget = before.forkEmpty();
             ScopeData continueTarget = before.forkEmpty();
 
-            unnamedBreakTargets.push(breakTarget);
-            unnamedContinueTargets.push(continueTarget);
+            Set<String> labels = pushTargets(loop, breakTarget, continueTarget);
 
             ScopeData iter = acceptOpt(body, before.fork());
             // make the body live in the other parts of the loop,
@@ -221,9 +223,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             iter = acceptOpt(cond, iter);
             iter = acceptOpt(body, iter);
 
-            breakTarget = unnamedBreakTargets.pop();
 
-            continueTarget = unnamedContinueTargets.pop();
+            breakTarget = unnamedBreakTargets.getFirst();
+            continueTarget = unnamedContinueTargets.getFirst();
             if (!continueTarget.liveAssignments.isEmpty()) {
                 // make assignments that are only live before a continue
                 // live inside the other parts of the loop
@@ -231,12 +233,45 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 continueTarget = acceptOpt(body, continueTarget);
                 continueTarget = acceptOpt(update, continueTarget);
             }
+
+            popTargets(labels);
+
             ScopeData result = breakTarget.join(continueTarget).join(iter);
             if (checkFirstIter) {
                 result = result.join(before);
             }
 
             return result;
+        }
+
+        private Set<String> pushTargets(JavaNode loop, ScopeData breakTarget, ScopeData continueTarget) {
+            unnamedBreakTargets.push(breakTarget);
+            unnamedContinueTargets.push(continueTarget);
+
+            JavaNode parent = loop.getNthParent(2);
+            Set<String> labels;
+            if (parent instanceof ASTLabeledStatement) {
+                labels = new HashSet<>(1);
+                while (parent instanceof ASTLabeledStatement) {
+                    String label = parent.getImage();
+                    namedBreakTargets.put(label, breakTarget);
+                    namedContinueTargets.put(label, continueTarget);
+                    labels.add(label);
+                    parent = parent.getNthParent(2);
+                }
+            } else {
+                labels = Collections.emptySet();
+            }
+            return labels;
+        }
+
+        private void popTargets(Set<String> labels) {
+            unnamedContinueTargets.pop();
+            unnamedBreakTargets.pop();
+            for (String label : labels) {
+                namedBreakTargets.remove(label);
+                namedContinueTargets.remove(label);
+            }
         }
 
 
