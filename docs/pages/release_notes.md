@@ -112,15 +112,18 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 *   {% jdoc java::lang.java.rule.documentation.AbstractCommentRule %} (Java)
 *   {% jdoc java::lang.java.rule.performance.AbstractOptimizationRule %} (Java)
 *   {% jdoc java::lang.java.rule.regex.RegexHelper %} (Java)
+*   {% jdoc apex::lang.apex.rule.AbstractApexUnitTestRule %} (Apex)
+*   {% jdoc apex::lang.apex.rule.design.AbstractNcssCountRule %} (Apex)
 
 ##### For removal
 
-*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
 *   {% jdoc !!core::cpd.TokenEntry#TokenEntry(java.lang.String, java.lang.String, int) %}
 *   {% jdoc test::testframework.AbstractTokenizerTest %}. Use CpdTextComparisonTest in module pmd-lang-test instead.
     For details see
     [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
     in the developer documentation.
+*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
+*   {% jdoc apex::lang.apex.rule.ApexXPathRule %} (Apex)
 *   {% jdoc java::lang.java.rule.SymbolTableTestRule %} (Java)
 
 
