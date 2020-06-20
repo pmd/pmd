@@ -6,10 +6,12 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
+@Ignore("Needs to be enabled after java-grammar changes are finalized")
 public class JavaTokenizerTest extends CpdTextComparisonTest {
 
     public JavaTokenizerTest() {
