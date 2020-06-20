@@ -103,6 +103,11 @@ The command line version of PMD continues to use **scala 2.13**.
     [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
     in the developer documentation.
 
+#### Internal API
+
+*   {% jdoc apex::lang.apex.ApexParser %}
+*   {% jdoc apex::lang.apex.ApexHandler %}
+
 ### External Contributions
 
 *   [#2349](https://github.com/pmd/pmd/pull/2349): \[java] Optimize UnusedPrivateMethodRule - [shilko2013](https://github.com/shilko2013)
