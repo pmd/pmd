@@ -4,19 +4,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-<!--    <test-code>-->
-<!--        <description>ok</description>-->
-<!--        <expected-problems>0</expected-problems>-->
-<!--        <code><![CDATA[-->
-<!--public class Foo {-->
-<!--    void bar(int b) {-->
-<!--        for (int i = 0; i < 10; i++) {-->
-<!--            throw new Exception();-->
-<!--        }-->
-<!--    }-->
-<!--}-->
-<!--        ]]></code>-->
-<!--    </test-code>-->
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int b) {
+        for (int i = 0; i < 10; i++) {
+            throw new Exception();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>DD anomaly</description>
@@ -526,14 +526,14 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 6. DU-Anomaly(a)</description>
+        <description>Switch statement 0</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,8,10,12</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'14').</message>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '8'-'14').</message>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '10'-'14').</message>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '12'-'14').</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -547,7 +547,7 @@ class Test{
             break;
             case 3 : a = a+3;
             break;
-            default : a = a + 0;
+            default : a = a + 1;
         }
     }
 }
@@ -555,11 +555,85 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 7. DU-Anomaly(a)</description>
+        <description>Switch statement 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = 1;
+            break;
+            case 2 : a = 2;
+            break;
+            case 3 : a = 3;
+            break;
+            default : a = a + 1;
+        }
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statement 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = 1;
+                     if (args.length > 0) break; // else fallthrough
+            case 2 : a = 2; break;
+            case 3 : a = 3; break;
+            default : a = a + 1;
+        }
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch fallthrough</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i){
+            case 1 : a = 1; // unused
+            // break; // no break
+            case 2 : a = 2;
+            break;
+            case 3 : a = 3;
+            break;
+            default : a = a + 1;
+        }
+
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch fallthrough 2</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '9'-'11').</message>
+            <message>The value assigned to variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -570,8 +644,56 @@ class Test{
             case 1 : a = a+1;
             case 2 : a = a+2;
             case 3 : a = a+3;
-            default : a = a + 0;
+            default : a = a + 0; // this one
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch non-fallthrough</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        int i = 0 ;
+        switch(i) {
+            case 1 -> a = 1;
+            case 2 -> a = 2;
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        }
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expr non-fallthrough</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,7,8,9</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        a = switch(i) { // this is used
+            // all those are unused
+            case 1 -> a = 1;
+            case 2 -> a = 2;
+            case 3 -> a = 3;
+            default -> a = a + 1;
+        };
+
+        System.out.println(a);
     }
 }
         ]]></code>
@@ -681,9 +803,6 @@ public class Test {
     public void test(){
         int a = 0;
         a = a + 3;
-
-        int i = 0;
-        i += 3; // same with compound
     }
 }
         ]]></code>
@@ -706,7 +825,7 @@ public class Test {
     </test-code>
     <test-code>
         <description>Another case</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-linenumbers>3,5</expected-linenumbers>
         <expected-messages>
             <message>The value assigned to variable 'iter' is never used</message>
