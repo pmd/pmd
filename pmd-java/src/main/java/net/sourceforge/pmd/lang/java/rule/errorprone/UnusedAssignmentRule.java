@@ -16,6 +16,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
@@ -98,6 +99,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     private static class LivenessVisitor extends JavaParserVisitorAdapter {
 
         private final Deque<ScopeData> unnamedBreakTargets = new ArrayDeque<>();
+        // continue jumps to the condition check, while break jumps to after the loop
+        private final Deque<ScopeData> unnamedContinueTargets = new ArrayDeque<>();
+
         private final Map<String, ScopeData> namedBreakTargets = new HashMap<>();
 
         // following deals with control flow
@@ -136,7 +140,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 } else if (child instanceof ASTSwitchLabeledRule) {
                     // 'current' stays == 'before' so that the final join does nothing
                     current = acceptOpt(child.getChild(1), before.fork());
-                    current = doBreak(current); // process this as if it was followed by a break
+                    current = doBreak(current, unnamedBreakTargets); // process this as if it was followed by a break
                 } else {
                     // statement in a regular fallthrough switch block
                     current = acceptOpt(child, current);
@@ -162,36 +166,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTWhileStatement node, Object data) {
-            // perform a few "iterations", to make sure that assignments in
-            // the body can affect themselves in the next iteration, and
-            // that they affect the condition
-            ScopeData before = acceptOpt(node.getCondition(), (ScopeData) data);
-
-            unnamedBreakTargets.push(before);
-
-            ScopeData iter = acceptOpt(node.getBody(), before.fork());
-            iter = acceptOpt(node.getCondition(), iter);
-            iter = acceptOpt(node.getBody(), iter);
-
-            unnamedBreakTargets.pop();
-
-            return before.join(iter);
+            return handleLoop((ScopeData) data, null, node.getCondition(), null, node.getBody(), true);
         }
 
         @Override
         public Object visit(ASTDoStatement node, Object data) {
-            // same as while but don't check the condition first
-            ScopeData before = (ScopeData) data;
-
-            unnamedBreakTargets.push(before);
-
-            ScopeData iter = acceptOpt(node.getBody(), before.fork());
-            iter = acceptOpt(node.getCondition(), iter);
-            iter = acceptOpt(node.getBody(), iter);
-
-            unnamedBreakTargets.pop();
-
-            return before.join(iter);
+            return handleLoop((ScopeData) data, null, node.getCondition(), null, node.getBody(), false);
         }
 
         @Override
@@ -199,56 +179,97 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             ASTStatement body = node.getBody();
             if (node.isForeach()) {
                 // the iterable expression
-                ScopeData before = (ScopeData) node.getChild(1).jjtAccept(this, data);
-
-                unnamedBreakTargets.push(before);
-
-                ScopeData iter = acceptOpt(body, before.fork());
-                iter = acceptOpt(body, iter); // the body must be able to affect itself
-
-                unnamedBreakTargets.pop();
-
-                return before.join(iter);
+                JavaNode init = node.getChild(1);
+                return handleLoop((ScopeData) data, init, null, null, body, true);
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
                 ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-
-                ScopeData before = (ScopeData) data;
-                before = acceptOpt(init, before);
-                before = acceptOpt(cond, before);
-
-                unnamedBreakTargets.push(before);
-
-                ScopeData iter = acceptOpt(body, before.fork());
-                iter = acceptOpt(update, iter);
-                iter = acceptOpt(cond, iter);
-                iter = acceptOpt(body, iter); // the body must be able to affect itself
-
-                unnamedBreakTargets.pop();
-
-                return before.join(iter);
+                return handleLoop((ScopeData) data, init, cond, update, body, true);
             }
         }
+
+
+        private ScopeData handleLoop(ScopeData before,
+                                     JavaNode init,
+                                     JavaNode cond,
+                                     JavaNode update,
+                                     JavaNode body,
+                                     boolean checkFirstIter) {
+
+            // perform a few "iterations", to make sure that assignments in
+            // the body can affect themselves in the next iteration, and
+            // that they affect the condition, etc
+
+            before = acceptOpt(init, before);
+            if (checkFirstIter) {
+                before = acceptOpt(cond, before);
+            }
+
+            ScopeData breakTarget = before.forkEmpty();
+            ScopeData continueTarget = before.forkEmpty();
+
+            unnamedBreakTargets.push(breakTarget);
+            unnamedContinueTargets.push(continueTarget);
+
+            ScopeData iter = acceptOpt(body, before.fork());
+            // make the body live in the other parts of the loop,
+            // including itself
+            iter = acceptOpt(update, iter);
+            iter = acceptOpt(cond, iter);
+            iter = acceptOpt(body, iter);
+
+            breakTarget = unnamedBreakTargets.pop();
+
+            continueTarget = unnamedContinueTargets.pop();
+            if (!continueTarget.liveAssignments.isEmpty()) {
+                // make assignments that are only live before a continue
+                // live inside the other parts of the loop
+                continueTarget = acceptOpt(cond, continueTarget);
+                continueTarget = acceptOpt(body, continueTarget);
+                continueTarget = acceptOpt(update, continueTarget);
+            }
+            ScopeData result = breakTarget.join(continueTarget).join(iter);
+            if (checkFirstIter) {
+                result = result.join(before);
+            }
+
+            return result;
+        }
+
 
         private ScopeData acceptOpt(JavaNode node, ScopeData before) {
             return node == null ? before : (ScopeData) node.jjtAccept(this, before);
         }
 
         @Override
-        public Object visit(ASTBreakStatement node, Object data) {
+        public Object visit(ASTContinueStatement node, Object data) {
             if (node.getImage() == null) {
-                return doBreak((ScopeData) data);
+                return doBreak((ScopeData) data, unnamedContinueTargets);
             } else {
                 // TODO
                 return ((ScopeData) data).abruptCompletion();
             }
         }
 
-        public ScopeData doBreak(ScopeData data) {
-            unnamedBreakTargets.getFirst().join(data);
+        @Override
+        public Object visit(ASTBreakStatement node, Object data) {
+            if (node.getImage() == null) {
+                return doBreak((ScopeData) data, unnamedBreakTargets);
+            } else {
+                // TODO
+                return ((ScopeData) data).abruptCompletion();
+            }
+        }
+
+        public ScopeData doBreak(ScopeData data, Deque<ScopeData> targets) {
+            // basically, assignments that are live at the point of the break
+            // are also live after the break (wherever it lands)
+            targets.push(targets.getFirst().join(data));
             return data.abruptCompletion();
         }
+
+        // both of those exit the scope of the method/ctor, so their assignments go dead
 
         @Override
         public Object visit(ASTThrowStatement node, Object data) {
@@ -420,10 +441,15 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return new ScopeData(this.allAssignments, this.usedAssignments, new HashMap<>(this.liveAssignments));
         }
 
+        ScopeData forkEmpty() {
+            return new ScopeData(this.allAssignments, this.usedAssignments, new HashMap<>());
+        }
+
         ScopeData abruptCompletion() {
             this.liveAssignments.clear();
             return this;
         }
+
 
         ScopeData join(ScopeData sub) {
             // Merge live assignments of forked scopes

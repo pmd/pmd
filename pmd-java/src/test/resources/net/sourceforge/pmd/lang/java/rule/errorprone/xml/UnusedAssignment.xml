@@ -324,13 +324,9 @@ class Test{
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
-        <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '5'-'7').</message>
-        </expected-messages>
+    <test-code>
+        <description>Foreach</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Test{
     public static void main(String[] args){
@@ -459,6 +455,72 @@ class Test{
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>While loop with continue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (true) {
+            if (a >= 30) {
+                i = a + 1; // used by below
+                continue;
+            }
+            a = a + 3;
+            i = i + 1; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with continue 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (a < 50) {
+            if (i >= 30) {
+                a = i + 1; // used by loop condition
+                continue;
+            }
+            i++; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with break (control for continue test above)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        while (a < 50) {
+            if (i >= 30) {
+                a = i + 1; // unused
+                break;
+            }
+            i++; // used by itself
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>Do while 0</description>
         <expected-problems>0</expected-problems>
@@ -515,6 +577,29 @@ class Test{
                 i = 4;
                 a *= 5;
                 break;
+            }
+
+            a = i + 3;
+            i += 3;
+        } while (i < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while with continue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        do {
+            if (a >= 20) {
+                i = 4;  // used by condition
+                a *= 5;
+                continue;
             }
 
             a = i + 3;
