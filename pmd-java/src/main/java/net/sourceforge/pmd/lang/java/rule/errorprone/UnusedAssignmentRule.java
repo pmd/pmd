@@ -55,7 +55,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*
         TODO
-           named break targets
            constructors + initializers
 
      */
@@ -66,9 +65,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         // This analysis can be used to check for unused variables easily
         // See reverted commit somewhere in the PR
 
-        ScopeData bodyData = new ScopeData();
+        LivenessState bodyData = new LivenessState();
 
-        ScopeData endData = (ScopeData) node.getBody().jjtAccept(new LivenessVisitor(), bodyData);
+        LivenessState endData = (LivenessState) node.getBody().jjtAccept(new LivenessVisitor(), bodyData);
 
         if (endData.usedAssignments.size() < endData.allAssignments.size()) {
             HashSet<AssignmentEntry> unused = new HashSet<>(endData.allAssignments);
@@ -85,12 +84,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     private static class LivenessVisitor extends JavaParserVisitorAdapter {
 
-        private final Deque<ScopeData> unnamedBreakTargets = new ArrayDeque<>();
+        private final TargetStack breakTargets = new TargetStack();
         // continue jumps to the condition check, while break jumps to after the loop
-        private final Deque<ScopeData> unnamedContinueTargets = new ArrayDeque<>();
-
-        private final Map<String, ScopeData> namedBreakTargets = new HashMap<>();
-        private final Map<String, ScopeData> namedContinueTargets = new HashMap<>();
+        private final TargetStack continueTargets = new TargetStack();
 
         // following deals with control flow
 
@@ -107,20 +103,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTSwitchStatement node, Object data) {
-            return processSwitch(node, (ScopeData) data, node.getTestedExpression());
+            return processSwitch(node, (LivenessState) data, node.getTestedExpression());
         }
 
         @Override
         public Object visit(ASTSwitchExpression node, Object data) {
-            return processSwitch(node, (ScopeData) data, node.getChild(0));
+            return processSwitch(node, (LivenessState) data, node.getChild(0));
         }
 
-        private ScopeData processSwitch(JavaNode switchLike, ScopeData data, JavaNode testedExpr) {
-            ScopeData before = acceptOpt(testedExpr, data);
+        private LivenessState processSwitch(JavaNode switchLike, LivenessState data, JavaNode testedExpr) {
+            LivenessState before = acceptOpt(testedExpr, data);
 
-            unnamedBreakTargets.push(before.fork());
+            breakTargets.push(before.fork());
 
-            ScopeData current = before;
+            LivenessState current = before;
             for (int i = 1; i < switchLike.getNumChildren(); i++) {
                 JavaNode child = switchLike.getChild(i);
                 if (child instanceof ASTSwitchLabel) {
@@ -128,14 +124,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 } else if (child instanceof ASTSwitchLabeledRule) {
                     // 'current' stays == 'before' so that the final join does nothing
                     current = acceptOpt(child.getChild(1), before.fork());
-                    current = doBreak(current, unnamedBreakTargets); // process this as if it was followed by a break
+                    current = breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
                     // statement in a regular fallthrough switch block
                     current = acceptOpt(child, current);
                 }
             }
 
-            before = unnamedBreakTargets.pop();
+            before = breakTargets.pop();
 
             // join with the last state, which is the exit point of the
             // switch, if it's not closed by a break;
@@ -144,22 +140,22 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTIfStatement node, Object data) {
-            ScopeData before = acceptOpt(node.getCondition(), (ScopeData) data);
+            LivenessState before = acceptOpt(node.getCondition(), (LivenessState) data);
 
-            ScopeData thenData = acceptOpt(node.getThenBranch(), before.fork());
-            ScopeData elseData = acceptOpt(node.getElseBranch(), before.fork());
+            LivenessState thenData = acceptOpt(node.getThenBranch(), before.fork());
+            LivenessState elseData = acceptOpt(node.getElseBranch(), before.fork());
 
             return thenData.join(elseData);
         }
 
         @Override
         public Object visit(ASTWhileStatement node, Object data) {
-            return handleLoop(node, (ScopeData) data, null, node.getCondition(), null, node.getBody(), true);
+            return handleLoop(node, (LivenessState) data, null, node.getCondition(), null, node.getBody(), true);
         }
 
         @Override
         public Object visit(ASTDoStatement node, Object data) {
-            return handleLoop(node, (ScopeData) data, null, node.getCondition(), null, node.getBody(), false);
+            return handleLoop(node, (LivenessState) data, null, node.getCondition(), null, node.getBody(), false);
         }
 
         @Override
@@ -168,23 +164,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             if (node.isForeach()) {
                 // the iterable expression
                 JavaNode init = node.getChild(1);
-                return handleLoop(node, (ScopeData) data, init, null, null, body, true);
+                return handleLoop(node, (LivenessState) data, init, null, null, body, true);
             } else {
                 ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
                 ASTExpression cond = node.getCondition();
                 ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
-                return handleLoop(node, (ScopeData) data, init, cond, update, body, true);
+                return handleLoop(node, (LivenessState) data, init, cond, update, body, true);
             }
         }
 
 
-        private ScopeData handleLoop(JavaNode loop,
-                                     ScopeData before,
-                                     JavaNode init,
-                                     JavaNode cond,
-                                     JavaNode update,
-                                     JavaNode body,
-                                     boolean checkFirstIter) {
+        private LivenessState handleLoop(JavaNode loop,
+                                         LivenessState before,
+                                         JavaNode init,
+                                         JavaNode cond,
+                                         JavaNode update,
+                                         JavaNode body,
+                                         boolean checkFirstIter) {
 
             // perform a few "iterations", to make sure that assignments in
             // the body can affect themselves in the next iteration, and
@@ -195,12 +191,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 before = acceptOpt(cond, before);
             }
 
-            ScopeData breakTarget = before.forkEmpty();
-            ScopeData continueTarget = before.forkEmpty();
+            LivenessState breakTarget = before.forkEmpty();
+            LivenessState continueTarget = before.forkEmpty();
 
             pushTargets(loop, breakTarget, continueTarget);
 
-            ScopeData iter = acceptOpt(body, before.fork());
+            LivenessState iter = acceptOpt(body, before.fork());
             // make the body live in the other parts of the loop,
             // including itself
             iter = acceptOpt(update, iter);
@@ -208,8 +204,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             iter = acceptOpt(body, iter);
 
 
-            breakTarget = unnamedBreakTargets.getFirst();
-            continueTarget = unnamedContinueTargets.getFirst();
+            breakTarget = breakTargets.peek();
+            continueTarget = continueTargets.peek();
             if (!continueTarget.liveAssignments.isEmpty()) {
                 // make assignments that are only live before a continue
                 // live inside the other parts of the loop
@@ -218,9 +214,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 continueTarget = acceptOpt(update, continueTarget);
             }
 
-            popTargets(loop);
-
-            ScopeData result = breakTarget.join(continueTarget).join(iter);
+            LivenessState result = popTargets(loop, breakTarget, continueTarget);
+            result = result.join(iter);
             if (checkFirstIter) {
                 result = result.join(before);
             }
@@ -228,81 +223,76 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return result;
         }
 
-        private void pushTargets(JavaNode loop, ScopeData breakTarget, ScopeData continueTarget) {
-            unnamedBreakTargets.push(breakTarget);
-            unnamedContinueTargets.push(continueTarget);
+        private void pushTargets(JavaNode loop, LivenessState breakTarget, LivenessState continueTarget) {
+            breakTargets.unnamedTargets.push(breakTarget);
+            continueTargets.unnamedTargets.push(continueTarget);
 
             JavaNode parent = loop.getNthParent(2);
             while (parent instanceof ASTLabeledStatement) {
                 String label = parent.getImage();
-                namedBreakTargets.put(label, breakTarget);
-                namedContinueTargets.put(label, continueTarget);
+                breakTargets.namedTargets.put(label, breakTarget);
+                continueTargets.namedTargets.put(label, continueTarget);
                 parent = parent.getNthParent(2);
             }
         }
 
-        private void popTargets(JavaNode loop) {
-            unnamedContinueTargets.pop();
-            unnamedBreakTargets.pop();
+        private LivenessState popTargets(JavaNode loop, LivenessState breakTarget, LivenessState continueTarget) {
+            breakTargets.unnamedTargets.pop();
+            continueTargets.unnamedTargets.pop();
+
+            LivenessState total = breakTarget.join(continueTarget);
+
             JavaNode parent = loop.getNthParent(2);
             while (parent instanceof ASTLabeledStatement) {
                 String label = parent.getImage();
-                namedBreakTargets.remove(label);
-                namedContinueTargets.remove(label);
+                total = total.join(breakTargets.namedTargets.remove(label));
+                total = total.join(continueTargets.namedTargets.remove(label));
                 parent = parent.getNthParent(2);
             }
+            return total;
         }
 
-        private ScopeData acceptOpt(JavaNode node, ScopeData before) {
-            return node == null ? before : (ScopeData) node.jjtAccept(this, before);
+        private LivenessState acceptOpt(JavaNode node, LivenessState before) {
+            return node == null ? before : (LivenessState) node.jjtAccept(this, before);
         }
 
         @Override
         public Object visit(ASTContinueStatement node, Object data) {
-            if (node.getImage() == null) {
-                return doBreak((ScopeData) data, unnamedContinueTargets);
-            } else {
-                // TODO
-                return ((ScopeData) data).abruptCompletion();
-            }
+            return continueTargets.doBreak((LivenessState) data, node.getImage());
         }
 
         @Override
         public Object visit(ASTBreakStatement node, Object data) {
-            if (node.getImage() == null) {
-                return doBreak((ScopeData) data, unnamedBreakTargets);
-            } else {
-                // TODO
-                return ((ScopeData) data).abruptCompletion();
-            }
+            return breakTargets.doBreak((LivenessState) data, node.getImage());
         }
 
         @Override
         public Object visit(ASTYieldStatement node, Object data) {
             super.visit(node, data); // visit expression
             // treat as break, ie abrupt completion + link live vars to outer context
-            return doBreak((ScopeData) data, unnamedBreakTargets);
+            return breakTargets.doBreak((LivenessState) data, null);
         }
 
-        public ScopeData doBreak(ScopeData data, Deque<ScopeData> targets) {
+        private LivenessState doBreak(LivenessState data, Deque<LivenessState> targets) {
             // basically, assignments that are live at the point of the break
             // are also live after the break (wherever it lands)
             targets.push(targets.getFirst().join(data));
             return data.abruptCompletion();
         }
 
+
         // both of those exit the scope of the method/ctor, so their assignments go dead
 
         @Override
         public Object visit(ASTThrowStatement node, Object data) {
             super.visit(node, data);
-            return ((ScopeData) data).abruptCompletion();
+            return ((LivenessState) data).abruptCompletion();
         }
 
         @Override
         public Object visit(ASTReturnStatement node, Object data) {
             super.visit(node, data);
-            return ((ScopeData) data).abruptCompletion();
+            return ((LivenessState) data).abruptCompletion();
         }
 
         // following deals with assignment
@@ -314,7 +304,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             ASTVariableInitializer rhs = node.getInitializer();
             if (rhs != null) {
                 rhs.jjtAccept(this, data);
-                ((ScopeData) data).assign(var, rhs);
+                ((LivenessState) data).assign(var, rhs);
             }
             return data;
         }
@@ -331,7 +321,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         public Object checkAssignment(JavaNode node, Object data) {
-            ScopeData result = (ScopeData) data;
+            LivenessState result = (LivenessState) data;
             if (node.getNumChildren() == 3) {
                 // assignment
                 assert node.getChild(1) instanceof ASTAssignmentOperator;
@@ -344,10 +334,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 if (lhsVar != null) {
                     if (node.getChild(1).getImage().length() >= 2) {
                         // compound assignment, to use BEFORE assigning
-                        ((ScopeData) data).use(lhsVar);
+                        ((LivenessState) data).use(lhsVar);
                     }
 
-                    ((ScopeData) data).assign(lhsVar, rhs);
+                    ((LivenessState) data).assign(lhsVar, rhs);
                 } else {
                     result = acceptOpt(node.getChild(0), result);
                 }
@@ -359,20 +349,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTPreDecrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (ScopeData) data);
+            return checkIncOrDecrement(node, (LivenessState) data);
         }
 
         @Override
         public Object visit(ASTPreIncrementExpression node, Object data) {
-            return checkIncOrDecrement(node, (ScopeData) data);
+            return checkIncOrDecrement(node, (LivenessState) data);
         }
 
         @Override
         public Object visit(ASTPostfixExpression node, Object data) {
-            return checkIncOrDecrement(node, (ScopeData) data);
+            return checkIncOrDecrement(node, (LivenessState) data);
         }
 
-        private ScopeData checkIncOrDecrement(JavaNode unary, ScopeData data) {
+        private LivenessState checkIncOrDecrement(JavaNode unary, LivenessState data) {
             VariableNameDeclaration var = getLhsVar(unary.getChild(0), true);
             if (var != null) {
                 data.use(var);
@@ -389,7 +379,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             VariableNameDeclaration var = getLhsVar(node, false);
             if (var != null) {
-                ((ScopeData) data).use(var);
+                ((LivenessState) data).use(var);
             }
             return data;
         }
@@ -448,20 +438,20 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
     }
 
-    private static class ScopeData {
+    private static class LivenessState {
 
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
 
         final Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments;
 
-        private ScopeData() {
+        private LivenessState() {
             this(new HashSet<AssignmentEntry>(), new HashSet<AssignmentEntry>(), new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
-        private ScopeData(Set<AssignmentEntry> allAssignments,
-                          Set<AssignmentEntry> usedAssignments,
-                          Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments) {
+        private LivenessState(Set<AssignmentEntry> allAssignments,
+                              Set<AssignmentEntry> usedAssignments,
+                              Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments) {
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
             this.liveAssignments = liveAssignments;
@@ -481,21 +471,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-        ScopeData fork() {
-            return new ScopeData(this.allAssignments, this.usedAssignments, new HashMap<>(this.liveAssignments));
+        LivenessState fork() {
+            return new LivenessState(this.allAssignments, this.usedAssignments, new HashMap<>(this.liveAssignments));
         }
 
-        ScopeData forkEmpty() {
-            return new ScopeData(this.allAssignments, this.usedAssignments, new HashMap<>());
+        LivenessState forkEmpty() {
+            return new LivenessState(this.allAssignments, this.usedAssignments, new HashMap<>());
         }
 
-        ScopeData abruptCompletion() {
+        LivenessState abruptCompletion() {
             this.liveAssignments.clear();
             return this;
         }
 
 
-        ScopeData join(ScopeData sub) {
+        LivenessState join(LivenessState sub) {
             // Merge live assignments of forked scopes
             if (sub == this || sub.liveAssignments.isEmpty()) {
                 return this;
@@ -530,8 +520,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             this.liveAssignments.put(var, newLive);
         }
 
-        ScopeData join(Iterable<ScopeData> scopes) {
-            for (ScopeData sub : scopes) {
+        LivenessState join(Iterable<LivenessState> scopes) {
+            for (LivenessState sub : scopes) {
                 this.join(sub);
             }
             return this;
@@ -543,7 +533,42 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
     }
 
+    static class TargetStack {
+
+        final Deque<LivenessState> unnamedTargets = new ArrayDeque<>();
+        final Map<String, LivenessState> namedTargets = new HashMap<>();
+
+
+        void push(LivenessState state) {
+            unnamedTargets.push(state);
+        }
+
+        LivenessState pop() {
+            return unnamedTargets.pop();
+        }
+
+        LivenessState peek() {
+            return unnamedTargets.getFirst();
+        }
+
+        LivenessState doBreak(LivenessState data,/* nullable */ String label) {
+            // basically, assignments that are live at the point of the break
+            // are also live after the break (wherever it lands)
+            if (label == null) {
+                unnamedTargets.push(unnamedTargets.getFirst().join(data));
+            } else {
+                LivenessState target = namedTargets.get(label);
+                if (target != null) {
+                    // otherwise CT error
+                    target.join(data);
+                }
+            }
+            return data.abruptCompletion();
+        }
+    }
+
     static class AssignmentEntry {
+
         final VariableNameDeclaration var;
         final JavaNode rhs;
 

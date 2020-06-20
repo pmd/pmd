@@ -401,21 +401,22 @@ class Test{
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>While loop without break (control case)</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 class Test{
     public static void main(String[] args){
-        int a = 0;
+        int a = 0; // used by compound below
         int i = 0;
         while (true) {
             if (a >= 30) {
-                i = a + 1; // used by below
+                i += a + 1; // unused by below
                 // break;  // no break here
             }
             a = a + 3;
-            i = i + 1; // used by itself
+            i = a + 2; // used by above
         }
     }
 }
@@ -423,7 +424,7 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>While loop with break 2</description>
+        <description>While loop without break 2 (control case)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <expected-messages>
@@ -433,7 +434,7 @@ class Test{
 class Test{
     public static void main(String[] args){
         int a = 0;
-        int i = 0; // used now
+        int i = 0; // unused now
 
         outer:
         while (true) {
@@ -441,12 +442,80 @@ class Test{
 
             while (true) {
                 if (a >= 30) {
-                    i = i + 1; // used now
+                    i += a + 1; // unused because of i = a + 2
+                    // break outer;
+                }
+                a = a + 3;
+                i = a + 2;  // killed by below
+            }
+
+            i = 2; // used by print
+        }
+
+        System.out.println(i); // uses i = i + 1
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop without break 2 (control case)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused now
+
+        outer:
+        while (true) {
+            a += 2;
+
+            while (true) {
+                if (a >= 30) {
+                    i += a + 1; // unused because of i = 2
+                    break;
+                }
+                a = a + 3;
+                i = a + 2;  // used by i += a + 1
+            }
+
+            i = 2; // used by print
+        }
+
+        System.out.println(i); // uses i = i + 1
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with named break 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0; // unused now
+
+        outer:
+        while (true) {
+            a += 2;
+
+            while (true) {
+                if (a >= 30) {
+                    i += a + 1; // used by print
                     break outer;
                 }
                 a = a + 3;
-                i = i + 2; // unused (kills itself)
+                i = a + 2;  // used by i += a + 1
             }
+
+            i = 2; // used by print
         }
 
         System.out.println(i); // uses i = i + 1
@@ -988,5 +1057,19 @@ public class Test {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Var usage in lambda (#1304)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    public boolean dummyMethod(final String captured, final Set<String> dummySet) {
+        captured = captured.trim();
+        return dummySet.stream().noneMatch(value -> value.equalsIgnoreCase(captured));
+    }
+
+}        ]]></code>
     </test-code>
 </test-data>
