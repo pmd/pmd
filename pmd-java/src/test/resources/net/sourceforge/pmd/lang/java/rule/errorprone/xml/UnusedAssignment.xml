@@ -179,8 +179,12 @@ public class Foo {
 
     <test-code>
         <description>#1393 PMD hanging during DataflowAnomalyAnalysis</description>
-        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 3 problems are false positives!  -->
-        <expected-problems>3</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,19</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'fail' is never used</message>
+            <message>The value assigned to variable 'fail' is never used</message>
+        </expected-messages>
         <code><![CDATA[
 public class LoopTest {
     public static void main(String[] args) {
@@ -255,10 +259,26 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <description>For loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; i <= 10; i ++){
+            a = a+3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
         <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
             <message>The value assigned to variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
@@ -266,7 +286,38 @@ class Test{
     public static void main(String[] args){
         int a = 0 ;
         for(int i = 0 ; i <= 10; i ++){
-            a = a+3;
+            a = i * 3;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; i <= 10; i ++){
+            a = i * 3;
+        }
+        System.out.println(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For loop 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0 ;
+        for(int i = 0 ; (i + a) <= 10; i ++){
+            a = i * 3;
         }
     }
 }
@@ -409,12 +460,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 5. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
-        <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'9').</message>
-        </expected-messages>
+        <description>Do while 0</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Test{
     public static void main(String[] args){
@@ -422,6 +469,55 @@ class Test{
         int i = 0 ;
         do {
             a = a+3;
+            i += 3;
+        } while (i < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        do {
+            a = i+3;
+            i += 3;
+        } while ((a+i) < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do while with break</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int a = 0;
+        int i = 0;
+        do {
+            if (a >= 20) {
+                i = 4;
+                a *= 5;
+                break;
+            }
+
+            a = i + 3;
             i += 3;
         } while (i < 30);
    }
@@ -482,11 +578,11 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 9. DU-Anomaly(t1)</description>
+        <description>Usage as LHS of method</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 't1' (lines '5'-'6').</message>
+            <message>The value assigned to variable 't1' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -500,11 +596,11 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 12. DU-Anomaly(t1)</description>
+        <description>Assignment in operand</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 't1' (lines '6'-'7').</message>
+            <message>The value assigned to variable 't1' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -519,7 +615,27 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 13</description>
+        <description>Assignment in operand 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 't1' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+    public static void main(String[] args){
+        int t1 = 0 ;
+        int t2 = 0 ;
+        // the left assignment reaches the right of the ==
+        if (   (t1 = t1 + t2)
+            == (t1 = t2 * t1) ); // only this assignment is unused
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assignment in operand 3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Test{
@@ -534,12 +650,12 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14. DU-Anomaly(t1, t2)</description>
+        <description>Assignment in operand 4</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,6</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 't2' (lines '4'-'7').</message>
-            <message>Found 'DU'-anomaly for variable 't1' (lines '6'-'7').</message>
+            <message>The value assigned to variable 't2' is never used</message>
+            <message>The value assigned to variable 't1' is never used</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -558,13 +674,50 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>Found 'DU'-anomaly for variable 'a' (lines '4'-'5').</message>
+            <message>The value assigned to variable 'a' is never used</message>
         </expected-messages>
         <code><![CDATA[
 public class Test {
     public void test(){
         int a = 0;
         a = a + 3;
+
+        int i = 0;
+        i += 3; // same with compound
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Compound assignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'a' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void test(){
+        int a = 0;
+        a += 3; // same with compound
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Another case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'iter' is never used</message>
+            <message>The value assigned to variable 'iter' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void test(){
+       ScopeData iter = acceptOpt(node.getBody(), before.fork()); // this assignment is unused
+       iter = acceptOpt(node.getCondition(), before.fork());
+       iter = acceptOpt(node.getBody(), iter);
     }
 }
         ]]></code>

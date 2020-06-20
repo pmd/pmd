@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 
-import java.util.ArrayDeque;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +14,11 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTForInit;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -24,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -79,12 +82,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     static class LivenessVisitor extends JavaParserVisitorAdapter {
 
-
-        private final Deque<ScopeData> breakAddresses = new ArrayDeque<>();
-        private final Map<String, ScopeData> namedBreaks = new HashMap<>();
-
         // following deals with control flow
-
 
         @Override
         public Object visit(JavaNode node, Object data) {
@@ -99,27 +97,71 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
         @Override
         public Object visit(ASTIfStatement node, Object data) {
-            ScopeData before = (ScopeData) node.getCondition().jjtAccept(this, data);
+            ScopeData before = acceptOpt(node.getCondition(), (ScopeData) data);
 
-            ScopeData thenData = before.fork();
-            thenData = (ScopeData) node.getThenBranch().jjtAccept(this, thenData);
-            if (node.hasElse()) {
-                ScopeData elseData = (ScopeData) node.getElseBranch().jjtAccept(this, before.fork());
-                return thenData.join(elseData);
-            } else {
-                return before.join(thenData);
-            }
+            ScopeData thenData = acceptOpt(node.getThenBranch(), before.fork());
+            ScopeData elseData = acceptOpt(node.getElseBranch(), before.fork());
+
+            return thenData.join(elseData);
         }
 
         @Override
         public Object visit(ASTWhileStatement node, Object data) {
-            ScopeData before = (ScopeData) node.getCondition().jjtAccept(this, data);
+            // perform a few "iterations", to make sure that assignments in
+            // the body can affect themselves in the next iteration, and
+            // that they affect the condition
+            ScopeData before = acceptOpt(node.getCondition(), (ScopeData) data);
 
-            ScopeData iter = (ScopeData) node.getBody().jjtAccept(this, before.fork());
-            iter = (ScopeData) node.getCondition().jjtAccept(this, iter);
-            iter = (ScopeData) node.getBody().jjtAccept(this, iter);
+            ScopeData iter = acceptOpt(node.getBody(), before.fork());
+            iter = acceptOpt(node.getCondition(), iter);
+            iter = acceptOpt(node.getBody(), iter);
 
             return before.join(iter);
+        }
+
+        @Override
+        public Object visit(ASTDoStatement node, Object data) {
+            // same as while but don't check the condition first
+            ScopeData before = (ScopeData) data;
+
+            ScopeData iter = acceptOpt(node.getBody(), before.fork());
+            iter = acceptOpt(node.getCondition(), iter);
+            iter = acceptOpt(node.getBody(), iter);
+
+            return before.join(iter);
+        }
+
+        @Override
+        public Object visit(ASTForStatement node, Object data) {
+            ASTStatement body = node.getBody();
+            if (node.isForeach()) {
+                // the iterable expression
+                ScopeData before = (ScopeData) node.getChild(1).jjtAccept(this, data);
+
+                ScopeData iter = acceptOpt(body, before.fork());
+                iter = acceptOpt(body, iter); // the body must be able to affect itself
+
+                return before.join(iter);
+            } else {
+                ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
+                ASTExpression cond = node.getCondition();
+                ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
+
+                ScopeData before = (ScopeData) data;
+                before = acceptOpt(init, before);
+                before = acceptOpt(cond, before);
+
+                ScopeData iter = acceptOpt(body, before.fork());
+                iter = acceptOpt(update, iter);
+                iter = acceptOpt(cond, iter);
+                iter = acceptOpt(body, iter); // the body must be able to affect itself
+
+                return before.join(iter);
+            }
+        }
+
+        private ScopeData acceptOpt(JavaNode node, ScopeData before) {
+            return node == null ? before : (ScopeData) node.jjtAccept(this, before);
         }
 
         @Override
@@ -216,19 +258,24 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     if (suffix.isArguments() || suffix.isArrayDereference()) {
                         return null;
                     }
-                    return findVar(primary.getScope(), true, suffix.getImage());
+                    return findVar(primary.getScope(), true, substringBeforeFirst(suffix.getImage(), '.'));
                 } else {
                     if (inLhs && primary.getNumChildren() > 1) {
                         return null;
                     }
 
                     if (prefix.getChild(0) instanceof ASTName) {
-                        return findVar(prefix.getScope(), false, prefix.getChild(0).getImage());
+                        return findVar(prefix.getScope(), false, substringBeforeFirst(prefix.getChild(0).getImage(), '.'));
                     }
                 }
             }
 
             return null;
+        }
+
+        private static String substringBeforeFirst(String str, char delim) {
+            int i = str.indexOf(delim);
+            return i < 0 ? str : str.substring(0, i);
         }
 
         private VariableNameDeclaration findVar(Scope scope, boolean isThis, String name) {
