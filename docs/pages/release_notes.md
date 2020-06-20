@@ -63,17 +63,33 @@ The command line version of PMD continues to use **scala 2.13**.
 
 ### Fixed Issues
 
+*   apex-bestpractices
+    *   [#2554](https://github.com/pmd/pmd/issues/2554): \[apex] Exception applying rule UnusedLocalVariable on trigger
+*   core
+    *   [#2599](https://github.com/pmd/pmd/pull/2599): \[core] Fix XPath 2.0 Rule Chain Analyzer with Unions
+    *   [#2483](https://github.com/pmd/pmd/issues/2483): \[lang-test] Support cpd tests based on text comparison.
+        For details see
+        [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
+        in the developer documentation.
 *   c#
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
+*   cpp
+    *   [#1757](https://github.com/pmd/pmd/issues/1757): \[cpp] Support unicode characters
+*   java
+    *   [#2549](https://github.com/pmd/pmd/issues/2549): \[java] Auxclasspath in PMD CLI does not support relative file path
 *   java-codestyle
     *   [#2545](https://github.com/pmd/pmd/issues/2545): \[java] UseDiamondOperator false negatives
     *   [#2573](https://github.com/pmd/pmd/pull/2573): \[java] DefaultPackage: Allow package default JUnit 5 Test methods
 *   java-design
     *   [#2563](https://github.com/pmd/pmd/pull/2563): \[java] UselessOverridingMethod false negative with already public methods
+    *   [#2570](https://github.com/pmd/pmd/issues/2570): \[java] NPathComplexity should mention the expected NPath complexity
+*   java-errorprone
+    *   [#2544](https://github.com/pmd/pmd/issues/2544): \[java] UseProperClassLoader can not detect the case with method call on intermediate variable
 *   java-performance
     *   [#2600](https://github.com/pmd/pmd/pull/2600): \[java] UseStringBufferForStringAppends: fix false negative with fields
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
+
 
 ### API Changes
 
@@ -82,8 +98,12 @@ The command line version of PMD continues to use **scala 2.13**.
     
 #### Deprecated APIs
 
-*   {%jdoc apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %}
-
+*   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
+*   {% jdoc !!core::cpd.TokenEntry#TokenEntry(java.lang.String, java.lang.String, int) %}
+*   {% jdoc test::testframework.AbstractTokenizerTest %}. Use CpdTextComparisonTest in module pmd-lang-test instead.
+    For details see
+    [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
+    in the developer documentation.
 
 ### External Contributions
 
@@ -92,6 +112,7 @@ The command line version of PMD continues to use **scala 2.13**.
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
 *   [#2573](https://github.com/pmd/pmd/pull/2573): \[java] DefaultPackage: Allow package default JUnit 5 Test methods - [Craig Andrews](https://github.com/candrews)
+*   [#2593](https://github.com/pmd/pmd/pull/2593): \[java] NPathComplexity should mention the expected NPath complexity - [Artem Krosheninnikov](https://github.com/KroArtem)
 
 {% endtocmaker %}
 
