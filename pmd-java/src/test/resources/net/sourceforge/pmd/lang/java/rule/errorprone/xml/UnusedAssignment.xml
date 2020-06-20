@@ -23,7 +23,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 4)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -66,9 +66,9 @@ public class Foo {
         <expected-problems>3</expected-problems>
         <expected-linenumbers>3,4,6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'j' is never used</message>
-            <message>The value assigned to variable 'z' is never used</message>
-            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'j' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'z' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 'j' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -88,7 +88,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'z' is never used</message>
+            <message>The value assigned to variable 'z' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -109,7 +109,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'j' is never used (overwritten on lines 6 and 8)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -132,8 +132,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'j' is never used</message>
-            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'j' is never used (overwritten on lines 6 and 9)</message>
+            <message>The value assigned to variable 'j' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -157,8 +157,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'j' is never used</message>
-            <message>The value assigned to variable 'j' is never used</message>
+            <message>The value assigned to variable 'j' is never used (overwritten on lines 6 and 9)</message>
+            <message>The value assigned to variable 'j' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -178,12 +178,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#1393 PMD hanging during DataflowAnomalyAnalysis</description>
+        <description>Local variable in loop</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>10,19</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'fail' is never used</message>
-            <message>The value assigned to variable 'fail' is never used</message>
+            <message>The value assigned to variable 'fail' is never used (overwritten on line 19)</message>
+            <message>The value assigned to variable 'fail' is never used (overwritten on line 19)</message>
         </expected-messages>
         <code><![CDATA[
 public class LoopTest {
@@ -244,7 +244,7 @@ public class AssertTest {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'b' is never used</message>
+            <message>The value assigned to variable 'b' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -278,8 +278,9 @@ class Test{
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,5</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 5)</message>
+            <!-- Overwrites itself -->
+            <message>The value assigned to variable 'a' is never used (overwritten on line 5)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -361,8 +362,8 @@ class Test{
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,7</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
-            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -382,7 +383,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -428,7 +429,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 16)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -463,7 +464,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 19)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -571,7 +572,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -612,7 +613,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 6)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -633,8 +634,8 @@ class Test{
         <expected-problems>2</expected-problems>
         <expected-linenumbers>7,8</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -684,10 +685,10 @@ class Test{
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,8,10,12</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -759,7 +760,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 8)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -787,7 +788,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -830,7 +831,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'i' is never used</message>
+            <message>The value assigned to variable 'i' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -860,10 +861,10 @@ class Test{
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,7,8,9</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -888,10 +889,10 @@ class Test{
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,9,13,14</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'a' is never used (overwritten on line 4)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -921,7 +922,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 't1' is never used</message>
+            <message>The value assigned to variable 't1' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -939,7 +940,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 't1' is never used</message>
+            <message>The value assigned to variable 't1' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -958,7 +959,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 't1' is never used</message>
+            <message>The value assigned to variable 't1' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -993,8 +994,8 @@ class Test{
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,6</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 't2' is never used</message>
-            <message>The value assigned to variable 't1' is never used</message>
+            <message>The value assigned to variable 't2' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 't1' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
@@ -1013,7 +1014,7 @@ class Test{
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Test {
@@ -1029,7 +1030,7 @@ public class Test {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'a' is never used</message>
+            <message>The value assigned to variable 'a' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Test {
@@ -1045,8 +1046,8 @@ public class Test {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,5</expected-linenumbers>
         <expected-messages>
-            <message>The value assigned to variable 'iter' is never used</message>
-            <message>The value assigned to variable 'iter' is never used</message>
+            <message>The value assigned to variable 'iter' is never used (overwritten on line 4)</message>
+            <message>The value assigned to variable 'iter' is never used (goes out of scope)</message>
         </expected-messages>
         <code><![CDATA[
 public class Test {

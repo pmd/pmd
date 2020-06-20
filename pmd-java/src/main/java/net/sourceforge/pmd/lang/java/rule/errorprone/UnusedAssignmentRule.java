@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
@@ -24,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
@@ -41,6 +47,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
@@ -56,6 +63,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     /*
         TODO
            constructors + initializers
+           try/catch
 
      */
 
@@ -75,11 +83,39 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // allAssignments is the unused assignments now
 
             for (AssignmentEntry entry : unused) {
-                addViolationWithMessage(data, entry.rhs, "The value assigned to variable ''{0}'' is never used", new Object[] {entry.var.getImage()});
+                Set<AssignmentEntry> killers = endData.killRecord.get(entry);
+                if (killers == null || killers.isEmpty()) {
+                    addViolation(data, entry.rhs, new Object[] {entry.var.getImage(), "goes out of scope"});
+                } else if (killers.size() == 1) {
+                    AssignmentEntry k = killers.iterator().next();
+                    addViolation(data, entry.rhs, new Object[] {entry.var.getImage(),
+                                                                "overwritten on line " + k.rhs.getBeginLine()});
+                } else {
+                    addViolation(data, entry.rhs, new Object[] {entry.var.getImage(), joinLines("overwritten on lines ", killers)});
+                }
             }
         }
 
         return super.visit(node, data);
+    }
+
+    private static String joinLines(String prefix, Set<AssignmentEntry> killers) {
+        StringBuilder sb = new StringBuilder(prefix);
+        ArrayList<AssignmentEntry> sorted = new ArrayList<>(killers);
+        Collections.sort(sorted, new Comparator<AssignmentEntry>() {
+            @Override
+            public int compare(AssignmentEntry o1, AssignmentEntry o2) {
+                return Integer.compare(o1.rhs.getBeginLine(), o2.rhs.getBeginLine());
+            }
+        });
+
+        sb.append(sorted.get(0).rhs.getBeginLine());
+        for (int i = 1; i < sorted.size() - 1; i++) {
+            sb.append(", ").append(sorted.get(i).rhs.getBeginLine());
+        }
+        sb.append(" and ").append(sorted.get(sorted.size() - 1).rhs.getBeginLine());
+
+        return sb.toString();
     }
 
     private static class LivenessVisitor extends JavaParserVisitorAdapter {
@@ -96,6 +132,31 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
                 data = child.jjtAccept(this, data);
+            }
+
+            return data;
+        }
+
+        @Override
+        public Object visit(ASTBlock node, Object data) {
+            // variables local to a loop iteration must be killed before the
+            // next iteration
+            Set<VariableNameDeclaration> localsToKill = new HashSet<>();
+
+            for (JavaNode child : node.children()) {
+                // each output is passed as input to the next (most relevant for blocks)
+                data = child.jjtAccept(this, data);
+                if (child instanceof ASTBlockStatement
+                    && child.getChild(0) instanceof ASTLocalVariableDeclaration) {
+                    ASTLocalVariableDeclaration local = (ASTLocalVariableDeclaration) child.getChild(0);
+                    for (ASTVariableDeclaratorId id : local) {
+                        localsToKill.add(id.getNameDeclaration());
+                    }
+                }
+            }
+
+            for (VariableNameDeclaration var : localsToKill) {
+                ((LivenessState) data).undef(var);
             }
 
             return data;
@@ -122,7 +183,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 if (child instanceof ASTSwitchLabel) {
                     current = before.fork().join(current);
                 } else if (child instanceof ASTSwitchLabeledRule) {
-                    // 'current' stays == 'before' so that the final join does nothing
                     current = acceptOpt(child.getChild(1), before.fork());
                     current = breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
@@ -227,7 +287,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             breakTargets.unnamedTargets.push(breakTarget);
             continueTargets.unnamedTargets.push(continueTarget);
 
-            JavaNode parent = loop.getNthParent(2);
+            Node parent = loop.getNthParent(2);
             while (parent instanceof ASTLabeledStatement) {
                 String label = parent.getImage();
                 breakTargets.namedTargets.put(label, breakTarget);
@@ -242,7 +302,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             LivenessState total = breakTarget.join(continueTarget);
 
-            JavaNode parent = loop.getNthParent(2);
+            Node parent = loop.getNthParent(2);
             while (parent instanceof ASTLabeledStatement) {
                 String label = parent.getImage();
                 total = total.join(breakTargets.namedTargets.remove(label));
@@ -271,13 +331,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             super.visit(node, data); // visit expression
             // treat as break, ie abrupt completion + link live vars to outer context
             return breakTargets.doBreak((LivenessState) data, null);
-        }
-
-        private LivenessState doBreak(LivenessState data, Deque<LivenessState> targets) {
-            // basically, assignments that are live at the point of the break
-            // are also live after the break (wherever it lands)
-            targets.push(targets.getFirst().join(data));
-            return data.abruptCompletion();
         }
 
 
@@ -337,13 +390,13 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                         ((LivenessState) data).use(lhsVar);
                     }
 
-                    ((LivenessState) data).assign(lhsVar, rhs);
+                    result.assign(lhsVar, rhs);
                 } else {
                     result = acceptOpt(node.getChild(0), result);
                 }
                 return result;
             } else {
-                return super.visit(node, data);
+                return visit(node, data);
             }
         }
 
@@ -396,14 +449,14 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                     if (suffix.isArguments() || suffix.isArrayDereference()) {
                         return null;
                     }
-                    return findVar(primary.getScope(), true, substringBeforeFirst(suffix.getImage(), '.'));
+                    return findVar(primary.getScope(), true, firstIdent(suffix.getImage()));
                 } else {
                     if (inLhs && primary.getNumChildren() > 1) {
                         return null;
                     }
 
                     if (prefix.getChild(0) instanceof ASTName) {
-                        return findVar(prefix.getScope(), false, substringBeforeFirst(prefix.getChild(0).getImage(), '.'));
+                        return findVar(prefix.getScope(), false, firstIdent(prefix.getChild(0).getImage()));
                     }
                 }
             }
@@ -411,8 +464,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return null;
         }
 
-        private static String substringBeforeFirst(String str, char delim) {
-            int i = str.indexOf(delim);
+        private static String firstIdent(String str) {
+            int i = str.indexOf('.');
             return i < 0 ? str : str.substring(0, i);
         }
 
@@ -443,23 +496,43 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
 
+        final Map<AssignmentEntry, Set<AssignmentEntry>> killRecord;
+
         final Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments;
 
+
         private LivenessState() {
-            this(new HashSet<AssignmentEntry>(), new HashSet<AssignmentEntry>(), new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+            this(new HashSet<AssignmentEntry>(),
+                 new HashSet<AssignmentEntry>(),
+                 new HashMap<AssignmentEntry, Set<AssignmentEntry>>(),
+                 new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
         private LivenessState(Set<AssignmentEntry> allAssignments,
                               Set<AssignmentEntry> usedAssignments,
+                              Map<AssignmentEntry, Set<AssignmentEntry>> killRecord,
                               Map<VariableNameDeclaration, Set<AssignmentEntry>> liveAssignments) {
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
+            this.killRecord = killRecord;
             this.liveAssignments = liveAssignments;
         }
 
         void assign(VariableNameDeclaration var, JavaNode rhs) {
             AssignmentEntry entry = new AssignmentEntry(var, rhs);
-            liveAssignments.put(var, Collections.singleton(entry)); // kills the previous value
+            // kills the previous value
+            Set<AssignmentEntry> killed = liveAssignments.put(var, Collections.singleton(entry));
+            if (killed != null) {
+                for (AssignmentEntry k : killed) {
+                    // computeIfAbsent
+                    Set<AssignmentEntry> killers = killRecord.get(k);
+                    if (killers == null) {
+                        killers = new HashSet<>(1);
+                        killRecord.put(k, killers);
+                    }
+                    killers.add(entry);
+                }
+            }
             allAssignments.add(entry);
         }
 
@@ -471,12 +544,16 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
+        void undef(VariableNameDeclaration var) {
+            liveAssignments.remove(var);
+        }
+
         LivenessState fork() {
-            return new LivenessState(this.allAssignments, this.usedAssignments, new HashMap<>(this.liveAssignments));
+            return new LivenessState(this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<>(this.liveAssignments));
         }
 
         LivenessState forkEmpty() {
-            return new LivenessState(this.allAssignments, this.usedAssignments, new HashMap<>());
+            return new LivenessState(this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
         }
 
         LivenessState abruptCompletion() {
@@ -518,13 +595,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             newLive.addAll(live2);
             newLive.addAll(live1);
             this.liveAssignments.put(var, newLive);
-        }
-
-        LivenessState join(Iterable<LivenessState> scopes) {
-            for (LivenessState sub : scopes) {
-                this.join(sub);
-            }
-            return this;
         }
 
         @Override

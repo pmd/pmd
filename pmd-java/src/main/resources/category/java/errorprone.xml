@@ -3280,7 +3280,7 @@ public String convert(int x) {
     <rule name="UnusedAssignment"
           language="java"
           since="6.26.0"
-          message="The value assigned to variable ''{0}'' is never used"
+          message="The value assigned to variable ''{0}'' is never used ({1})"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UnusedAssignmentRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusedassignment">
         <description>
