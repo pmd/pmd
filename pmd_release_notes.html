@@ -1442,8 +1442,15 @@ is still available, but is deprecated from now on. It has been demoted to be jus
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The new Java Rule <a href="pmd_rules_java_codestyle.html#unnecessarycast"><code class="highlighter-rouge">UnnecessaryCast</code></a> (<code class="highlighter-rouge">java-codestyle</code>)
-finds casts that are unnecessary while accessing collection elements.</li>
+  <li>
+    <p>The new Java Rule <a href="pmd_rules_java_codestyle.html#unnecessarycast"><code class="highlighter-rouge">UnnecessaryCast</code></a> (<code class="highlighter-rouge">java-codestyle</code>)
+finds casts that are unnecessary while accessing collection elements.</p>
+  </li>
+  <li>
+    <p>The new Java Rule <a href="pmd_rules_java_performance.html#avoidcalendardatecreation"><code class="highlighter-rouge">AvoidCalendarDateCreation</code></a> (<code class="highlighter-rouge">java-performance</code>)
+finds usages of <code class="highlighter-rouge">java.util.Calendar</code> whose purpose is just to get the current date. This
+can be done in a more lightweight way.</p>
+  </li>
 </ul>
 
 <h4 id="modified-rules">Modified rules</h4>
@@ -1510,6 +1517,11 @@ in the developer documentation.</li>
       <li><a href="https://github.com/pmd/pmd/issues/2544">#2544</a>: [java] UseProperClassLoader can not detect the case with method call on intermediate variable</li>
     </ul>
   </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/2591">#2591</a>: [java] InefficientStringBuffering/AppendCharacterWithChar: Fix false negatives with concats in appends</li>
+    </ul>
+  </li>
   <li>scala
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/2547">#2547</a>: [scala] Add cross compilation for scala 2.12 and 2.13</li>
@@ -1529,10 +1541,13 @@ or <code class="highlighter-rouge">net.sourceforge.pmd:pmd-scala_2.12</code> ins
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTAnnotation.html#suppresses(net.sourceforge.pmd.Rule)"><code>ASTAnnotation#suppresses</code></a> (Apex)</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.25.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#TokenEntry(java.lang.String,java.lang.String,int)"><code>TokenEntry#TokenEntry</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/6.25.0-SNAPSHOT/net/sourceforge/pmd/testframework/AbstractTokenizerTest.html#"><code>AbstractTokenizerTest</code></a>. Use CpdTextComparisonTest in module pmd-lang-test instead.
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-test/6.25.0-SNAPSHOT/net/sourceforge/pmd/testframework/AbstractTokenizerTest.html#"><code>AbstractTokenizerTest</code></a>. Use CpdTextComparisonTest in module pmd-lang-test instead.
 For details see
 <a href="pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation">Testing your implementation</a>
-in the developer documentation.</li>
+in the developer documentation.</p>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/performance/InefficientStringBufferingRule.html#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node,int,java.lang.String)"><code>InefficientStringBufferingRule#isInStringBufferOperation</code></a></li>
 </ul>
 
 <h4 id="internal-api">Internal API</h4>
@@ -1545,6 +1560,7 @@ in the developer documentation.</li>
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1932">#1932</a>: [java] Added 4 performance rules originating from PMD-jPinpoint-rules - <a href="https://github.com/jborgers">Jeroen Borgers</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2349">#2349</a>: [java] Optimize UnusedPrivateMethodRule - <a href="https://github.com/shilko2013">shilko2013</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2547">#2547</a>: [scala] Add cross compilation for scala 2.12 and 2.13 - <a href="https://github.com/jtjeferreira">João Ferreira</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2567">#2567</a>: [c#] Fix CPD suppression with comments doesn’t work - <a href="https://github.com/LixonLookose">Lixon Lookose</a></li>
@@ -1568,7 +1584,7 @@ in the developer documentation.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 20, 2020 <br />
+ Site last generated: Jun 21, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag suboptimal code.">
-<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidFileStream, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
+<meta name="keywords" content=" Performance, AddEmptyString, AppendCharacterWithChar, AvoidArrayLoops, AvoidCalendarDateCreation, AvoidFileStream, AvoidInstantiatingObjectsInLoops, AvoidUsingShortType, BigIntegerInstantiation, BooleanInstantiation, ByteInstantiation, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, InefficientEmptyStringCheck, InefficientStringBuffering, InsufficientStringBufferDeclaration, IntegerInstantiation, LongInstantiation, OptimizableToArrayCall, RedundantFieldInitializer, SimplifyStartsWith, ShortInstantiation, StringInstantiation, StringToString, TooFewBranchesForASwitchStatement, UnnecessaryWrapperObjectCreation, UseArrayListInsteadOfVector, UseArraysAsList, UseIndexOfChar, UselessStringValueOf, UseStringBufferForStringAppends, UseStringBufferLength">
 <title>Performance | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1502,6 +1502,68 @@ It is much better to use one of the type-specific toString() methods instead.</p
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidArrayLoops"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoidcalendardatecreation">AvoidCalendarDateCreation</h2>
+
+<p><strong>Since:</strong> PMD 6.25.0</p>
+
+<p><strong>Priority:</strong> Medium High (2)</p>
+
+<p>Problem: A Calendar is a heavyweight object and expensive to create.</p>
+
+<p>Solution: Use <code class="highlighter-rouge">new Date()</code>, Java 8+ <code class="highlighter-rouge">java.time.LocalDateTime.now()</code> or <code class="highlighter-rouge">ZonedDateTime.now()</code>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'Calendar.getInstance'</span><span class="p">)]]</span><span class="w"> </span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">last</span><span class="p">()</span><span class="o">-</span><span class="m">1</span><span class="p">][</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'getTime'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'getTimeInMillis'</span><span class="p">]]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)])]</span><span class="w">
+  </span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
+  </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+    </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]</span><span class="w">
+    </span><span class="p">[</span><span class="kr">every</span><span class="w"> </span><span class="nv">$var</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="kr">satisfies</span><span class="w"> </span><span class="p">(</span><span class="w">
+       </span><span class="p">(</span><span class="nf">ends-with</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'.getTime'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'.getTimeInMillis'</span><span class="p">))</span><span class="w">
+       </span><span class="ow">and</span><span class="w">
+       </span><span class="c">(: ignore if .set* or .add* or .clear is called on the variable :)</span><span class="w">
+       </span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+          </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">((</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">),</span><span class="w"> </span><span class="nv">$var</span><span class="p">)[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="s1">'.set'</span><span class="p">))</span><span class="w">
+          </span><span class="ow">or</span><span class="w">
+          </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">((</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">),</span><span class="w"> </span><span class="nv">$var</span><span class="p">)[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="s1">'.add'</span><span class="p">))</span><span class="w">
+          </span><span class="ow">or</span><span class="w">
+          </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="nf">concat</span><span class="p">((</span><span class="kr">to</span><span class="nf">kenize</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span><span class="w"> </span><span class="s1">'\.'</span><span class="p">),</span><span class="w"> </span><span class="nv">$var</span><span class="p">)[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="s1">'.clear'</span><span class="p">))</span><span class="w">
+       </span><span class="p">])</span><span class="w">
+    </span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.joda.time.DateTime'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.joda.time.LocalDateTime'</span><span class="p">)][..</span><span class="o">/</span><span class="nt">Arguments</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'Calendar.getInstance'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.time.LocalDateTime</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DateStuff</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="nf">bad1</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getTime</span><span class="o">();</span> <span class="c1">// now</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="nf">good1a</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Date</span><span class="o">();</span> <span class="c1">// now</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="nc">LocalDateTime</span> <span class="nf">good1b</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="nf">bad2</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getTimeInMillis</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="nf">good2</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/performance.xml/AvoidCalendarDateCreation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="avoidfilestream">AvoidFileStream</h2>
 
 <p><strong>Since:</strong> PMD 6.0.0</p>
@@ -2437,7 +2499,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2020 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 20, 2020 <br />
+ Site last generated: Jun 21, 2020 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -4797,6 +4797,15 @@
 ,
 
 {
+"title": "AvoidCalendarDateCreation (Java, Performance)",
+"tags": "",
+"keywords": "AvoidCalendarDateCreation",
+"url": "pmd_rules_java_performance.html#avoidcalendardatecreation",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
 "title": "AvoidFileStream (Java, Performance)",
 "tags": "",
 "keywords": "AvoidFileStream",
