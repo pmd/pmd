@@ -348,8 +348,8 @@ class Test{
     public static void main(String[] args){
         int a = 0;
         int i = 0;
-        while(i < 30){
-            a = a+3;
+        while (i < 30) {
+            a = a + 3;
             i += 3;
         }
     }
@@ -370,7 +370,7 @@ class Test{
     public static void main(String[] args){
         int a = 0;
         int i = 0; // unused
-        while(a < 30){
+        while (a < 30) {
             a = a + 3;
             i = 5; // unused (kills itself)
         }
@@ -1201,6 +1201,68 @@ class Foo {
             System.out.println(oldProxy);
         }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lambda captured var use</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+	public Flux<Object> decode() {
+		Flux<List<XMLEvent>> splitEvents = splitEvts();
+
+		return map(events -> {
+			return unmarshal(events.append(splitEvents));
+		});
+	}
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Lambda assignment</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'k' is never used (overwritten on line 6)</message>
+            <message>The value assigned to variable 'k' is never used (goes out of scope)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+	public void decode() {
+    doSomething(events -> {
+      int k = 0;
+      return k = 2;
+    });
+	}
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Lambda returns 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to variable 'splitEvents' is never used (goes out of scope)</message>
+            <message>The value assigned to variable 'events' is never used (goes out of scope)</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+
+	public Flux<Object> decode() {
+		Flux<List<XMLEvent>> splitEvents = splitEvts();
+
+		return map(events -> {
+		  events = events.normalize();
+			return dontUseEvents();
+		});
+	}
+
 }
         ]]></code>
     </test-code>

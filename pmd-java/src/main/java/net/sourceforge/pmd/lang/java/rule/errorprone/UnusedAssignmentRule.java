@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -39,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -65,8 +67,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*
         TODO
-           constructors + initializers
-           try/catch
+           * constructors + initializers
+           * labels on arbitrary statements
+
+        DONE
+           * conditionals
+           * loops
+           * switch
+           * loop labels
+           * try/catch/finally
+           * lambdas
+
 
      */
 
@@ -274,6 +285,24 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         @Override
+        public Object visit(ASTLambdaExpression node, Object data) {
+            // Lambda expression have control flow that is separate from the method
+            // So we fork the context, but don't join it
+
+            // Reaching definitions of the enclosing context still reach in the lambda
+            // Since those definitions are [effectively] final, they actually can't be
+            // killed, but they can be used in the lambda
+
+            AlgoState before = (AlgoState) data;
+
+            JavaNode lambdaBody = node.getChild(node.getNumChildren() - 1);
+            // if it's an expression, then no assignments may occur in it,
+            // but it can still use some variables of the context
+            acceptOpt(lambdaBody, before.forkLambda());
+            return before;
+        }
+
+        @Override
         public Object visit(ASTWhileStatement node, Object data) {
             return handleLoop(node, (AlgoState) data, null, node.getCondition(), null, node.getBody(), true);
         }
@@ -312,7 +341,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // that they affect the condition, etc
 
             before = acceptOpt(init, before);
-            if (checkFirstIter) {
+            if (checkFirstIter) { // false for do-while
                 before = acceptOpt(cond, before);
             }
 
@@ -341,6 +370,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             AlgoState result = popTargets(loop, breakTarget, continueTarget);
             result = result.join(iter);
             if (checkFirstIter) {
+                // if the first iteration is checked,
+                // then it could be false on the first try, meaning
+                // the definitions before the loop reach after too
                 result = result.join(before);
             }
 
@@ -449,6 +481,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
                 VariableNameDeclaration lhsVar = getLhsVar(node.getChild(0), true);
                 if (lhsVar != null) {
+                    // in that case lhs is a normal variable (array access not supported)
+
                     if (node.getChild(1).getImage().length() >= 2) {
                         // compound assignment, to use BEFORE assigning
                         ((AlgoState) data).use(lhsVar);
@@ -516,12 +550,17 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 //                    return findVar(primary.getScope(), true, firstIdent(suffix.getImage()));
                 //                } else
                 {
-                    if (inLhs && primary.getNumChildren() > 1) {
-                        return null;
-                    }
-
                     if (prefix.getNumChildren() > 0 && (prefix.getChild(0) instanceof ASTName)) {
-                        return findVar(prefix.getScope(), identOf(inLhs, prefix.getChild(0).getImage()));
+                        String prefixImage = prefix.getChild(0).getImage();
+                        String varname = identOf(inLhs, prefixImage);
+                        if (primary.getNumChildren() > 1 && !inLhs) {
+                            ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
+                            if (suffix.isArguments()) {
+                                // then the prefix has the method name
+                                varname = methodLhsName(prefixImage);
+                            }
+                        }
+                        return findVar(prefix.getScope(), varname);
                     }
                 }
             }
@@ -534,6 +573,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return i < 0 ? str
                          : inLhs ? null
                                  : str.substring(0, i);
+        }
+
+        private static String methodLhsName(String name) {
+            int i = name.indexOf('.');
+            return i < 0 ? null // no lhs, the name is just the method name
+                         : name.substring(0, i);
         }
 
         private VariableNameDeclaration findVar(Scope scope, String name) {
@@ -625,11 +670,21 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         AlgoState fork() {
-            return new AlgoState(this, this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<>(this.reachingDefs));
+            return doFork(this, new HashMap<>(this.reachingDefs));
         }
 
         AlgoState forkEmpty() {
-            return new AlgoState(this, this.allAssignments, this.usedAssignments, this.killRecord, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+            return doFork(this, new HashMap<VariableNameDeclaration, Set<AssignmentEntry>>());
+        }
+
+        AlgoState forkLambda() {
+            // has no parent, so that in case of abrupt completion (return inside a lambda),
+            // enclosing finallies are not called
+            return doFork(null, new HashMap<>(this.reachingDefs));
+        }
+
+        private AlgoState doFork(AlgoState parent, Map<VariableNameDeclaration, Set<AssignmentEntry>> reaching) {
+            return new AlgoState(parent, this.allAssignments, this.usedAssignments, this.killRecord, reaching);
         }
 
         AlgoState abruptCompletion(AlgoState target) {
