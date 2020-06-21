@@ -124,6 +124,8 @@
                     <version>${antlr.version}</version>
                     <configuration>
                         <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+                        <visitor>true</visitor>
+                        <listener>true</listener>
                     </configuration>
                     <executions>
                         <execution>
@@ -133,10 +135,6 @@
                             </goals>
                             <!-- This is default but let's be clear -->
                             <phase>generate-sources</phase>
-                            <configuration>
-                                <visitor>true</visitor>
-                                <listener>true</listener>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
