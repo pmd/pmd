@@ -7,11 +7,9 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.SourceCode.FileCodeLoader;
 
 public class SourceCodeTest {
@@ -20,21 +18,16 @@ public class SourceCodeTest {
     private static final String SAMPLE_CODE = "Line 1\n" + "Line 2\n" + "Line 3\n" + "Line 4\n";
 
     @Test
-    public void testSimple() throws Exception {
-        Tokenizer tokenizer = new AbstractTokenizer() {
-            {
-                this.stringToken = new ArrayList<>();
-                this.ignorableCharacter = new ArrayList<>();
-                this.ignorableStmt = new ArrayList<>();
-            }
-        };
+    public void testSlice() {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(SAMPLE_CODE, "Foo.java"));
         assertEquals("Foo.java", sourceCode.getFileName());
-        tokenizer.tokenize(sourceCode, new Tokens());
 
         assertEquals("Line 1", sourceCode.getSlice(1, 1));
         assertEquals("Line 2", sourceCode.getSlice(2, 2));
-        assertEquals("Line 1" + PMD.EOL + "Line 2", sourceCode.getSlice(1, 2));
+        assertEquals("Line 1\nLine 2", sourceCode.getSlice(1, 2));
+
+        sourceCode.getCodeBuffer(); // load into soft reference, must not change behavior
+        assertEquals("Line 1\nLine 2", sourceCode.getSlice(1, 2));
     }
 
     @Test

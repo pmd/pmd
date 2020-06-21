@@ -135,10 +135,12 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
     }
 
     private Element addCodeSnippet(Document doc, Element duplication, Match match) {
-        String codeSnipet = match.getSourceCodeSlice();
-        if (codeSnipet != null) {
+        String codeSnippet = match.getSourceCodeSlice();
+        if (codeSnippet != null) {
+            // the code snippet has normalized line endings
+            String platformSpecific = codeSnippet.replace("\n", System.lineSeparator());
             Element codefragment = doc.createElement("codefragment");
-            codefragment.appendChild(doc.createCDATASection(codeSnipet));
+            codefragment.appendChild(doc.createCDATASection(platformSpecific));
             duplication.appendChild(codefragment);
         }
         return duplication;

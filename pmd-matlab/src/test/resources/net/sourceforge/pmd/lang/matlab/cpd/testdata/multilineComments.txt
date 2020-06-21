@@ -1,0 +1,16 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L8
+    [disp]                                  1         4
+    [(]                                     5         5
+    ['Hello World!']                        6         19
+    [)]                                     20        20
+    [;]                                     21        21
+L12
+    [msgbox]                                1         6
+    [(]                                     7         7
+    ['Hello World!']                        8         21
+    [,]                                     22        22
+    ['Hello World!']                        23        36
+    [)]                                     37        37
+    [;]                                     38        38
+EOF

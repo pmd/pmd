@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.apex;
 import java.io.Reader;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -15,7 +17,11 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Adapter for the Apex jorje parser
+ *
+ * @deprecated This is internal API, use {@link LanguageVersionHandler#getParser(ParserOptions)}.
  */
+@InternalApi
+@Deprecated
 public class ApexParser extends AbstractParser {
     private net.sourceforge.pmd.lang.apex.ast.ApexParser apexParser;
 

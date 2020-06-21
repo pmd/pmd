@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -26,6 +27,11 @@ import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 
+/**
+ * @deprecated Internal API
+ */
+@Deprecated
+@InternalApi
 public class ApexHandler extends AbstractLanguageVersionHandler {
 
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
