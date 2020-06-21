@@ -4,34 +4,30 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class GroovyTokenizerTest extends AbstractTokenizerTest {
+public class GroovyTokenizerTest extends CpdTextComparisonTest {
 
-    private static final String FILENAME = "BTree.groovy";
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new GroovyTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), FILENAME));
+    public GroovyTokenizerTest() {
+        super(".groovy");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(GroovyTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
+    protected String getResourcePrefix() {
+        return "../lang/groovy/cpd/testdata";
+    }
+
+    @Override
+    public Tokenizer newTokenizer(Properties properties) {
+        return new GroovyTokenizer();
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 369;
-        super.tokenizeTest();
+    public void testSample() {
+        doTest("sample");
     }
 }

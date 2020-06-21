@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -23,6 +24,11 @@ import apex.jorje.semantic.ast.compilation.UserTrigger;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 
+/**
+ * @deprecated Internal API
+ */
+@InternalApi
+@Deprecated
 public class ApexParser {
     protected final ApexParserOptions parserOptions;
 

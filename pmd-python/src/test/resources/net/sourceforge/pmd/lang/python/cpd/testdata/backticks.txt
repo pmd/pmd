@@ -1,0 +1,15 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [test]                                  1         4
+    [=]                                     6         6
+    ['hello']                               8         14
+L2
+    [quoted]                                1         6
+    [=]                                     8         8
+    [`]                                     10        10
+    [test]                                  11        14
+    [`]                                     15        15
+L3
+    [print]                                 1         5
+    [quoted]                                7         12
+EOF

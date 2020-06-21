@@ -3532,7 +3532,7 @@ Thread.currentThread().getContextClassLoader() instead.
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//PrimarySuffix[@Image='getClassLoader']</value>
+                <value>//PrimarySuffix[@Image='getClassLoader'] | //PrimaryPrefix[ends-with(Name/@Image, '.getClassLoader')]</value>
             </property>
         </properties>
         <example>
