@@ -48,6 +48,9 @@ The command line version of PMD continues to use **scala 2.13**.
 *   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
     finds casts that are unnecessary while accessing collection elements.
 
+*   The new Java Rule {% rule "java/performance/AvoidCalendarDateCreation" %} (`java-performance`)
+    finds usages of `java.util.Calendar` whose purpose is just to get the current date. This
+    can be done in a more lightweight way.
 
 #### Modified rules
 
@@ -59,7 +62,6 @@ The command line version of PMD continues to use **scala 2.13**.
     In order to avoid false positives when checking Java7 only code, the rule has the new property
     `java7Compatibility`, which is disabled by default. Settings this to "true" retains
     the old rule behaviour.
-
 
 ### Fixed Issues
 
@@ -86,6 +88,7 @@ The command line version of PMD continues to use **scala 2.13**.
 *   java-errorprone
     *   [#2544](https://github.com/pmd/pmd/issues/2544): \[java] UseProperClassLoader can not detect the case with method call on intermediate variable
 *   java-performance
+    *   [#2591](https://github.com/pmd/pmd/pull/2591): \[java] InefficientStringBuffering/AppendCharacterWithChar: Fix false negatives with concats in appends
     *   [#2600](https://github.com/pmd/pmd/pull/2600): \[java] UseStringBufferForStringAppends: fix false negative with fields
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
@@ -95,7 +98,7 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
-    
+
 #### Deprecated APIs
 
 *   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
@@ -104,6 +107,14 @@ The command line version of PMD continues to use **scala 2.13**.
     For details see
     [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
     in the developer documentation.
+
+
+*   {% jdoc !!java::lang.java.rule.performance.InefficientStringBufferingRule#isInStringBufferOperation(net.sourceforge.pmd.lang.ast.Node, int, java.lang.String) %}
+
+#### Internal API
+
+*   {% jdoc apex::lang.apex.ApexParser %}
+*   {% jdoc apex::lang.apex.ApexHandler %}
 
 ### External Contributions
 
