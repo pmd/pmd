@@ -89,6 +89,7 @@ The command line version of PMD continues to use **scala 2.13**.
     *   [#2544](https://github.com/pmd/pmd/issues/2544): \[java] UseProperClassLoader can not detect the case with method call on intermediate variable
 *   java-performance
     *   [#2591](https://github.com/pmd/pmd/pull/2591): \[java] InefficientStringBuffering/AppendCharacterWithChar: Fix false negatives with concats in appends
+    *   [#2600](https://github.com/pmd/pmd/pull/2600): \[java] UseStringBufferForStringAppends: fix false negative with fields
 *   scala
     *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13
 
