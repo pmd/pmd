@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.cpd.test
 
+import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.cpd.SourceCode
 import net.sourceforge.pmd.cpd.TokenEntry
 import net.sourceforge.pmd.cpd.Tokenizer
 import net.sourceforge.pmd.cpd.Tokens
+import net.sourceforge.pmd.lang.ast.TokenMgrError
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -54,6 +56,12 @@ abstract class CpdTextComparisonTest(
             buildString { format(tokens) }
         }
     }
+
+    @JvmOverloads
+    fun expectTokenMgrError(source: String, properties: Properties = defaultProperties()): TokenMgrError =
+            shouldThrow {
+                newTokenizer(properties).tokenize(sourceCodeOf(source), Tokens())
+            }
 
 
     private fun StringBuilder.format(tokens: Tokens) {
