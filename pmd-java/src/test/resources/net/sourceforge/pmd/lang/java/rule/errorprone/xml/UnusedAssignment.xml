@@ -1098,6 +1098,27 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Try with several catches</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    public int foo() {
+        int a;
+        try (Reader r = new StringReader("")) {
+            a = r.read();
+        } catch (IOException e) {
+            a = -1;
+        } catch (IllegalArgumentException e) {
+            a = 2;
+        }
+        return a;
+    }
+
+}        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Try/catch finally</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1211,13 +1232,13 @@ class Foo {
         <code><![CDATA[
 class Foo {
 
-	public Flux<Object> decode() {
-		Flux<List<XMLEvent>> splitEvents = splitEvts();
+  public Flux<Object> decode() {
+    Flux<List<XMLEvent>> splitEvents = splitEvts();
 
-		return map(events -> {
-			return unmarshal(events.append(splitEvents));
-		});
-	}
+    return map(events -> {
+      return unmarshal(events.append(splitEvents));
+    });
+  }
 
 }
         ]]></code>
@@ -1233,12 +1254,12 @@ class Foo {
         <code><![CDATA[
 class Foo {
 
-	public void decode() {
+  public void decode() {
     doSomething(events -> {
       int k = 0;
       return k = 2;
     });
-	}
+  }
 
 }
         ]]></code>
@@ -1254,16 +1275,39 @@ class Foo {
         <code><![CDATA[
 class Foo {
 
-	public Flux<Object> decode() {
-		Flux<List<XMLEvent>> splitEvents = splitEvts();
+  public Flux<Object> decode() {
+    Flux<List<XMLEvent>> splitEvents = splitEvts();
 
-		return map(events -> {
-		  events = events.normalize();
-			return dontUseEvents();
-		});
-	}
+    return map(events -> {
+      events = events.normalize();
+      return dontUseEvents();
+    });
+  }
 
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP in try</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foo;
+class Foo {
+
+    public Object getSubject() {
+      try {
+        Object subject = Other.currentUserMethod.invoke();
+        if (subject == null) {
+          subject = Other.anonymousSubjectMethod.invoke(0);
+        }
+        return subject;
+      } catch (Exception ex) {
+        throw new RuntimeException("Failed to obtain SubjectHandle", ex);
+      }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
