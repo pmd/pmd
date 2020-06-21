@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,27 +10,33 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
 
+    public UseStringBufferForStringAppendsRule() {
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
+    }
+
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isA(node, String.class) || node.hasArrayType()) {
+        if (!TypeHelper.isA(node, String.class) || node.hasArrayType()
+                || node.getNthParent(3) instanceof ASTForStatement) {
             return data;
         }
-        Node parent = node.getParent().getParent();
-        if (!(parent instanceof ASTLocalVariableDeclaration)) {
-            return data;
-        }
+
         for (NameOccurrence no : node.getUsages()) {
             Node name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
@@ -45,6 +51,12 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             ASTEqualityExpression equality = name.getFirstParentOfType(ASTEqualityExpression.class);
             if (equality != null && equality.getFirstParentOfType(ASTStatementExpression.class) == statement) {
                 // used in condition
+                continue;
+            }
+            if ((node.getNthParent(2) instanceof ASTFieldDeclaration
+                    || node.getParent() instanceof ASTFormalParameter)
+                    && isNotWithinLoop(name)) {
+                // ignore if the field or formal parameter is *not* used within loops
                 continue;
             }
             ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
@@ -79,5 +91,11 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             }
         }
         return data;
+    }
+
+    private boolean isNotWithinLoop(Node name) {
+        return name.getFirstParentOfType(ASTForStatement.class) == null
+                && name.getFirstParentOfType(ASTWhileStatement.class) == null
+                && name.getFirstParentOfType(ASTDoStatement.class) == null;
     }
 }

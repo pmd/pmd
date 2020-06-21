@@ -73,10 +73,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         for (NameOccurrence no : usage) {
             JavaNameOccurrence jno = (JavaNameOccurrence) no;
             Node n = jno.getLocation();
-            if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
+            if (!InefficientStringBufferingRule.isInStringBufferOperationChain(n, "append")) {
 
                 if (!jno.isOnLeftHandSide()
-                        && !InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "setLength")) {
+                        && !InefficientStringBufferingRule.isInStringBufferOperationChain(n, "setLength")) {
                     continue;
                 }
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {
