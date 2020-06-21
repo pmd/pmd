@@ -4,37 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
- * Base interface for all Antlr-based implementation of Node interface.
- * <p>
- * Initially all the methods implemented here will be no-op due to scope limitations
+ * Base interface for all Antlr-based implementation of the Node interface.
  */
-public interface AntlrNode extends Node, ParseTree {
-
-
-    @Override
-    AntlrNode getChild(int index);
-
-
-    @Override
-    AntlrNode getParent();
-
-
-    @Override
-    @SuppressWarnings("unchecked")
-    default NodeStream<? extends AntlrNode> children() {
-        return (NodeStream<? extends AntlrNode>) Node.super.children();
-    }
-
-    @Override
-    default int getIndexInParent() {
-        // FIXME, relied on by node streams
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
+public interface AntlrNode<N extends AntlrNode<N>> extends GenericNode<N> {
 
 }

@@ -44,7 +44,11 @@ abstract class BaseTextComparisonTest {
 
         if (!expectedFile.exists()) {
             expectedFile.writeText(actual)
-            throw AssertionError("Reference file doesn't exist, created it at $expectedFile")
+            throw AssertionError(
+            """
+            Reference file doesn't exist, created it at $expectedFile
+            Don't forget to `git add` it!
+            """.trimIndent())
         }
 
         val expected = expectedFile.readText()
