@@ -25,7 +25,7 @@
             <property name="xpath">
                 <value>
                     <![CDATA[
-//TypeCastingOperator[starts-with(@Text,'as!')]
+//TypeCastingOperator[T-as and T-bang]
 ]]>
                 </value>
             </property>
@@ -55,7 +55,7 @@ NSNumber() as? Int // no violation
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryOperator[@Text='try!']
+//TryOperator[T-bang]
 ]]>
                 </value>
             </property>

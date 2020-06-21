@@ -74,3 +74,62 @@ All you need to do is follow this few steps:
         You should take a look to [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/cpd/KotlinTokenizer.java)
     
     - For non-Antlr grammars you can use [BaseTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java) directly or take a peek to [Java's token filter](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/cpd/JavaTokenizer.java)  
+
+
+### Testing your implementation
+
+Add a Maven dependency on `pmd-lang-test` (scope `test`) in your `pom.xml`.
+This contains utilities to test your Tokenizer.
+
+For simple tests, create a test class extending from `CpdTextComparisonTest`.
+That class is written in Kotlin, but you can extend it in Java as well.
+
+To add tests, you need to write regular JUnit `@Test`-annotated methods, and
+call the method `doTest` with the name of the test file.
+
+For example, for the Dart language:
+
+```java
+
+public class DartTokenizerTest extends CpdTextComparisonTest {
+
+    /**********************************
+      Implementation of the superclass
+    ***********************************/
+
+
+    public DartTokenizerTest() {
+        super(".dart"); // the file extension for the dart language
+    }
+
+    @Override
+    protected String getResourcePrefix() {
+        // If your class is in                  src/test/java     /some/package
+        // you need to place the test files in  src/test/resources/some/package/cpdData
+        return "cpdData";
+    }
+
+    @Override
+    public Tokenizer newTokenizer() {
+        // Override this abstract method to return the correct tokenizer
+        return new DartTokenizer();
+    }
+
+    /**************
+      Test methods
+    ***************/
+
+
+    @Test  // don't forget the JUnit annotation
+    public void testLiterals() {
+        // This will look for a file named literals.dart
+        // in the directory identified by getResourcePrefix,
+        // tokenize it, then compare the result against a baseline
+        // literals.txt file in the same directory
+
+        // If the baseline file does not exist, it is created automatically
+        doTest("literals");
+    }
+
+}
+```

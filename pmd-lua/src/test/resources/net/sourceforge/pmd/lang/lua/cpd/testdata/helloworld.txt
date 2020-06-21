@@ -1,0 +1,7 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [print]                                 2         7
+    [(]                                     7         8
+    ["Hello World"]                         8         21
+    [)]                                     21        22
+EOF

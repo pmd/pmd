@@ -1,65 +1,85 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
+import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-@RunWith(Parameterized.class)
-public class DartTokenizerTest extends AbstractTokenizerTest {
+public class DartTokenizerTest extends CpdTextComparisonTest {
 
-    private final String filename;
-    private final int nExpectedTokens;
-
-    public DartTokenizerTest(String filename, int nExpectedTokens) {
-        this.filename = filename;
-        this.nExpectedTokens = nExpectedTokens;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[] { "comment.dart", 5 },
-                new Object[] { "escape_sequences.dart", 13 },
-                new Object[] { "escaped_backslash.dart", 14 },
-                new Object[] { "escaped_string.dart", 17 },
-                new Object[] { "increment.dart", 185 },
-                new Object[] { "imports.dart", 1 },
-                new Object[] { "regex.dart", 13 },
-                new Object[] { "regex2.dart", 13 },
-                new Object[] { "regex3.dart", 13 },
-                new Object[] { "string_with_backslashes.dart", 9 },
-                new Object[] { "string_multiline.dart", 13 }
-        );
-    }
-
-    @Before
-    @Override
-    public void buildTokenizer() throws IOException {
-        this.tokenizer = new DartTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(this.getSampleCode(), this.filename));
+    public DartTokenizerTest() {
+        super(".dart");
     }
 
     @Override
-    public String getSampleCode() throws IOException {
-        return IOUtils.toString(DartTokenizer.class.getResourceAsStream(this.filename), StandardCharsets.UTF_8);
+    public Tokenizer newTokenizer(Properties properties) {
+        return new DartTokenizer();
+    }
+
+
+    @Test
+    public void testComment() {
+        doTest("comment");
     }
 
     @Test
-    public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = nExpectedTokens;
-        super.tokenizeTest();
+    public void testEscapeSequences() {
+        doTest("escape_sequences");
     }
+
+    @Test
+    public void testEscapedBackslash() {
+        doTest("escaped_backslash");
+    }
+
+    @Test
+    public void testEscapedString() {
+        doTest("escaped_string");
+    }
+
+
+    @Test
+    public void testIncrement() {
+        doTest("increment");
+    }
+
+
+    @Test
+    public void testImports() {
+        doTest("imports");
+    }
+
+
+
+    @Test
+    public void testRegex() {
+        doTest("regex");
+    }
+
+
+    @Test
+    public void testRegex2() {
+        doTest("regex2");
+    }
+
+    @Test
+    public void testRegex3() {
+        doTest("regex3");
+    }
+
+    @Test
+    public void testStringWithBackslashes() {
+        doTest("string_with_backslashes");
+    }
+
+    @Test
+    public void testMultiline() {
+        doTest("string_multiline");
+    }
+
 }

@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageHandler;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
@@ -19,6 +20,7 @@ import scala.meta.Dialect;
 import scala.meta.inputs.Input;
 import scala.meta.inputs.Position;
 import scala.meta.internal.tokenizers.ScalametaTokenizer;
+import scala.meta.tokenizers.TokenizeException;
 import scala.meta.tokens.Token;
 
 /**
@@ -74,11 +76,25 @@ public class ScalaTokenizer implements Tokenizer {
 
             Token token;
             while ((token = filter.getNextToken()) != null) {
-                String tokenText = token.text() != null ? token.text() : token.name();
-                Position tokenPosition = token.pos();
-                TokenEntry cpdToken = new TokenEntry(tokenText, filename, tokenPosition.startLine(),
-                        tokenPosition.startColumn(), tokenPosition.endColumn());
+                if (StringUtils.isEmpty(token.text())) {
+                    continue;
+                }
+                Position pos = token.pos();
+                TokenEntry cpdToken = new TokenEntry(token.text(),
+                                                     filename,
+                                                     pos.startLine() + 1,
+                                                     pos.startColumn() + 1,
+                                                     pos.endColumn() + 2);
                 tokenEntries.add(cpdToken);
+            }
+        } catch (Exception e) {
+            if (e instanceof TokenizeException) { // NOPMD
+                // cannot catch it as it's a checked exception and Scala sneaky throws
+                TokenizeException tokE = (TokenizeException) e;
+                Position pos = tokE.pos();
+                throw new TokenMgrError(pos.startLine() + 1, pos.startColumn() + 1, filename, "Scalameta threw", tokE);
+            } else {
+                throw e;
             }
         } finally {
             tokenEntries.add(TokenEntry.getEOF());

@@ -1,0 +1,5 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [import]                                1         7
+    [logging]                               8         15
+EOF
