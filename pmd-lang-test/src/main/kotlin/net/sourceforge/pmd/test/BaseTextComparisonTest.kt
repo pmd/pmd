@@ -39,6 +39,24 @@ abstract class BaseTextComparisonTest {
                         expectedSuffix: String = "",
                         transformTextContent: (String) -> String) {
         val expectedFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$expectedSuffix$ExpectedExt").toFile()
+
+        val actual = transformTextContent(sourceText(fileBaseName))
+
+        if (!expectedFile.exists()) {
+            expectedFile.writeText(actual)
+            throw AssertionError(
+            """
+            Reference file doesn't exist, created it at $expectedFile
+            Don't forget to `git add` it!
+            """.trimIndent())
+        }
+
+        val expected = expectedFile.readText()
+
+        assertEquals(expected.normalize(), actual.normalize(), "File comparison failed, see the reference: $expectedFile")
+    }
+
+    protected fun sourceText(fileBaseName: String): String {
         val sourceFile = findTestFile(resourceLoader, "${resourcePrefix}/$fileBaseName$extensionIncludingDot").toFile()
 
         assert(sourceFile.isFile) {
@@ -46,16 +64,7 @@ abstract class BaseTextComparisonTest {
         }
 
         val sourceText = sourceFile.readText(Charsets.UTF_8).normalize()
-        val actual = transformTextContent(sourceText)
-
-        if (!expectedFile.exists()) {
-            expectedFile.writeText(actual)
-            throw AssertionError("Reference file doesn't exist, created it at $expectedFile")
-        }
-
-        val expected = expectedFile.readText()
-
-        assertEquals(expected.normalize(), actual.normalize(), "File comparison failed, see the reference: $expectedFile")
+        return sourceText
     }
 
     // Outputting a path makes for better error messages

@@ -245,12 +245,20 @@ public interface Node {
         }
     }
 
+
     /**
      * Returns a data map used to store additional information on this node.
      *
      * @return The user data map of this node
      */
     DataMap<DataKey<?, ?>> getUserMap();
+
+
+    // The acceptVisitor of #2589
+    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        return visitor.visitNode(this, data);
+    }
+
 
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
@@ -259,6 +267,7 @@ public interface Node {
      * @return The parent of this node
      */
     Node getParent();
+
 
     /**
      * Returns the child of this node at the given index.

@@ -78,6 +78,8 @@ The command line version of PMD continues to use **scala 2.13**.
         in the developer documentation.
 *   c#
     *   [#2551](https://github.com/pmd/pmd/issues/2551): \[c#] CPD suppression with comments doesn't work
+*   cpp
+    *   [#1757](https://github.com/pmd/pmd/issues/1757): \[cpp] Support unicode characters
 *   java
     *   [#2549](https://github.com/pmd/pmd/issues/2549): \[java] Auxclasspath in PMD CLI does not support relative file path
 *   java-codestyle
@@ -105,6 +107,11 @@ The command line version of PMD continues to use **scala 2.13**.
     For details see
     [Testing your implementation](pmd_devdocs_major_adding_new_cpd_language.html#testing-your-implementation)
     in the developer documentation.
+
+#### Internal API
+
+*   {% jdoc apex::lang.apex.ApexParser %}
+*   {% jdoc apex::lang.apex.ApexHandler %}
 
 ### External Contributions
 

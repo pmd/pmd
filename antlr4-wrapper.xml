@@ -1,0 +1,104 @@
+<!--
+  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  -->
+
+<project name="pmd" default="adapt-antlr-sources" basedir="../../../../">
+
+<!--    Input properties:
+        - lang-name: matches the grammar name (eg "Swift")
+        - lang-terse-name: uncapitalized package name (eg "swift")
+        - node-prefix: prefix for generated AST nodes (eg "Sw")
+        - root-node-name: name of the root node (eg "TopLevel"), will be made to implement RootNode
+
+        See AntlrGeneratedParserBase
+
+-->
+
+    <property name="target-package-dir" value="${antlr4.outputDirectory}/net/sourceforge/pmd/lang/${lang-terse-name}/ast"/>
+
+
+    <property name="lang-ast-package" value="net.sourceforge.pmd.lang.${lang-terse-name}.ast" />
+    <property name="ast-api-package" value="net.sourceforge.pmd.lang.ast" />
+    <property name="ast-impl-package" value="${ast-api-package}.impl.antlr4" />
+
+
+    <property name="parser-name" value="${lang-name}Parser"/>
+    <property name="parser-file" value="${target-package-dir}/${parser-name}.java"/>
+
+    <property name="visitor-name" value="${lang-name}Visitor"/>
+    <property name="visitor-file" value="${target-package-dir}/${visitor-name}.java"/>
+
+    <property name="base-visitor-name" value="${lang-name}BaseVisitor"/>
+    <property name="base-visitor-file" value="${target-package-dir}/${base-visitor-name}.java"/>
+
+    <property name="node-itf-name" value="${lang-name}Node"/>
+    <property name="base-class-name" value="Abstract${lang-name}Node"/>
+
+    <target name="adapt-antlr-sources" description="Adapt antlr sources to the PMD codebase">
+
+        <!-- Adapt parser. -->
+        <replace file="${parser-file}">
+            <replacefilter token="${root-node-name}Context extends ${lang-name}InnerNode"
+                           value="${root-node-name}Context extends ${lang-name}InnerNode implements net.sourceforge.pmd.lang.ast.RootNode"/>
+
+            <replacefilter token="_ctx = _localctx;"
+                           value="_ctx = _localctx.asAntlrNode();"/>
+
+            <replacefilter token="public &lt;T> T accept(ParseTreeVisitor&lt;? extends T> visitor)"
+                           value="public &lt;P, R> R acceptVisitor(AstVisitor&lt;? super P, ? extends R> visitor, P data)" />
+
+            <replacefilter token="((${visitor-name}&lt;? extends T>)visitor)"
+                           value="((${visitor-name}&lt;? super P, ? extends R>) visitor)" />
+
+            <replacefilter token="return visitor.visitChildren(this);"
+                           value="return visitor.visitNode(this, data);" />
+
+        </replace>
+
+        <replaceregexp flags="g" file="${parser-file}">
+            <regexp pattern="\.visit(\w++)\(this\);"/>
+            <substitution expression=".visit\1(this, data);"/>
+        </replaceregexp>
+
+        <replaceregexp flags="g" file="${parser-file}">
+            <regexp pattern="_sempred\(\((\w+)\)_localctx,"/>
+            <substitution expression="_sempred\((\1) asPmdNode(_localctx),"/>
+        </replaceregexp>
+
+        <!-- Transform the visitor to PMD-style. -->
+        <replace file="${visitor-file}">
+
+            <replacefilter token="Visitor&lt;T> extends ParseTreeVisitor&lt;T> {"
+                           value="Visitor&lt;P, R> extends net.sourceforge.pmd.lang.ast.AstVisitor&lt;P, R> {&#10;
+&#10;
+    /**&#10;
+     * The default visit method for ${lang-name} nodes. Unless overridden,&#10;
+     * the default implementations of the methods of this interface delegate&#10;
+     * to this method. The default calls {@link #visitNode(Node, Object)}.&#10;
+     * &#10;
+     * @param node Node to visit&#10;
+     * @param data Parameter of the visit&#10;
+     * @return Result of the visit&#10;
+     */&#10;
+     default R visit${node-itf-name}(${node-itf-name} node, P data) { return visitNode(node, data); }&#10;&#10;
+&#10;
+"/>
+
+            <replacefilter token="T visit" value="default R visit"/>
+            <replacefilter token="ctx);" value="node, P data) { return visit${node-itf-name}(node, data); }"/>
+
+        </replace>
+
+        <!-- This is in the main sources (not much to do). -->
+        <delete file="${base-visitor-file}" />
+
+
+        <replaceregexp flags="g">
+            <fileset dir="${target-package-dir}" />
+            <regexp pattern="\b([A-Z]\w*)Context\b(?&lt;!\b(Parser)?RuleContext\b)"/>
+            <substitution expression="${node-prefix}\1"/>
+        </replaceregexp>
+
+
+    </target>
+</project>
