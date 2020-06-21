@@ -48,6 +48,9 @@ The command line version of PMD continues to use **scala 2.13**.
 *   The new Java Rule {% rule "java/codestyle/UnnecessaryCast" %} (`java-codestyle`)
     finds casts that are unnecessary while accessing collection elements.
 
+*   The new Java Rule {% rule "java/performance/AvoidCalendarDateCreation" %} (`java-performance`)
+    finds usages of `java.util.Calendar` whose purpose is just to get the current date. This
+    can be done in a more lightweight way.
 
 #### Modified rules
 
@@ -59,7 +62,6 @@ The command line version of PMD continues to use **scala 2.13**.
     In order to avoid false positives when checking Java7 only code, the rule has the new property
     `java7Compatibility`, which is disabled by default. Settings this to "true" retains
     the old rule behaviour.
-
 
 ### Fixed Issues
 
@@ -93,7 +95,7 @@ The command line version of PMD continues to use **scala 2.13**.
 
 *   The maven module `net.sourceforge.pmd:pmd-scala` is deprecated. Use `net.sourceforge.pmd:pmd-scala_2.13`
     or `net.sourceforge.pmd:pmd-scala_2.12` instead.
-    
+
 #### Deprecated APIs
 
 *   {% jdoc !!apex::lang.apex.ast.ASTAnnotation#suppresses(core::Rule) %} (Apex)
@@ -110,6 +112,7 @@ The command line version of PMD continues to use **scala 2.13**.
 
 ### External Contributions
 
+*   [#1932](https://github.com/pmd/pmd/pull/1932): \[java] Added 4 performance rules originating from PMD-jPinpoint-rules - [Jeroen Borgers](https://github.com/jborgers)
 *   [#2349](https://github.com/pmd/pmd/pull/2349): \[java] Optimize UnusedPrivateMethodRule - [shilko2013](https://github.com/shilko2013)
 *   [#2547](https://github.com/pmd/pmd/pull/2547): \[scala] Add cross compilation for scala 2.12 and 2.13 - [João Ferreira](https://github.com/jtjeferreira)
 *   [#2567](https://github.com/pmd/pmd/pull/2567): \[c#] Fix CPD suppression with comments doesn't work - [Lixon Lookose](https://github.com/LixonLookose)
