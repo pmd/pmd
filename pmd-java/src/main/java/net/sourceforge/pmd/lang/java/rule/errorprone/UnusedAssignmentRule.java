@@ -19,7 +19,6 @@ import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -27,12 +26,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
@@ -79,10 +78,10 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
     /*
         TODO
-           * constructors + initializers
            * labels on arbitrary statements
            * foreach var should be reassigned from one iter to another
            * test local class/anonymous class
+           * test this.field in ctors
 
         DONE
            * conditionals
@@ -91,6 +90,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * loop labels
            * try/catch/finally
            * lambdas
+           * constructors + initializers
+           * anon class
 
 
      */
@@ -212,7 +213,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
 
             for (VariableNameDeclaration var : localsToKill) {
-                state.undef(var);
+                state.del(var);
             }
 
             return state;
@@ -302,7 +303,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             AlgoState exceptionalState = null;
             for (ASTCatchStatement catchClause : node.getCatchClauses()) {
-                AlgoState current = acceptOpt(catchClause, before.fork());
+                AlgoState current = acceptOpt(catchClause, before.fork().absorb(bodyState));
                 exceptionalState = current.absorb(exceptionalState);
             }
 
@@ -580,35 +581,46 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return data;
         }
 
+        /**
+         * Get the variable accessed from a primary.
+         */
         private VariableNameDeclaration getLhsVar(JavaNode primary, boolean inLhs) {
+
             if (primary instanceof ASTPrimaryExpression) {
                 ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.getChild(0);
 
-                // todo
-                //   this.x = 2;
 
-                //                if (prefix.usesThisModifier()) {
-                //                    if (primary.getNumChildren() < 2) {
-                //                        return null;
-                //                    }
-                //                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
-                //                    if (suffix.isArguments() || suffix.isArrayDereference() || suffix.getImage() == null) {
-                //                        return null;
-                //                    }
-                //                    return findVar(primary.getScope(), true, firstIdent(suffix.getImage()));
-                //                } else
-                {
+                //   this.x = 2;
+                if (prefix.usesThisModifier() && this.enclosingClassScope != null) {
+                    if (primary.getNumChildren() < 2 || primary.getNumChildren() > 2 && inLhs) {
+                        return null;
+                    }
+
+                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
+                    if (suffix.getImage() == null) {
+                        // catches arrays and such
+                        return null;
+                    }
+
+                    return findVar(primary.getScope(), true, suffix.getImage());
+                } else {
                     if (prefix.getNumChildren() > 0 && (prefix.getChild(0) instanceof ASTName)) {
                         String prefixImage = prefix.getChild(0).getImage();
                         String varname = identOf(inLhs, prefixImage);
-                        if (primary.getNumChildren() > 1 && !inLhs) {
+                        if (primary.getNumChildren() > 1) {
+                            if (primary.getNumChildren() > 2 && inLhs) {
+                                // this is for chains like `foo.m().field = 3`
+                                return null;
+                            }
                             ASTPrimarySuffix suffix = (ASTPrimarySuffix) primary.getChild(1);
                             if (suffix.isArguments()) {
                                 // then the prefix has the method name
                                 varname = methodLhsName(prefixImage);
+                            } else if (suffix.isArrayDereference() && inLhs) {
+                                return null;
                             }
                         }
-                        return findVar(prefix.getScope(), varname);
+                        return findVar(prefix.getScope(), false, varname);
                     }
                 }
             }
@@ -634,20 +646,23 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                          : name.substring(0, i);
         }
 
-        private VariableNameDeclaration findVar(Scope scope, String name) {
+        private VariableNameDeclaration findVar(Scope scope, boolean isField, String name) {
             if (name == null) {
                 return null;
             }
 
+            if (isField) {
+                return getFromSingleScope(enclosingClassScope, name);
+            }
+
             while (scope != null) {
-                for (VariableNameDeclaration decl : scope.getDeclarations(VariableNameDeclaration.class).keySet()) {
-                    if (decl.getImage().equals(name)) {
-                        if (scope instanceof ClassScope && scope != enclosingClassScope) {
-                            // don't handle fields
-                            return null;
-                        }
-                        return decl;
+                VariableNameDeclaration result = getFromSingleScope(scope, name);
+                if (result != null) {
+                    if (scope instanceof ClassScope && scope != enclosingClassScope) {
+                        // don't handle fields
+                        return null;
                     }
+                    return result;
                 }
 
                 scope = scope.getParent();
@@ -656,47 +671,56 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             return null;
         }
 
+        private VariableNameDeclaration getFromSingleScope(Scope scope, String name) {
+            if (scope != null) {
+                for (VariableNameDeclaration decl : scope.getDeclarations(VariableNameDeclaration.class).keySet()) {
+                    if (decl.getImage().equals(name)) {
+                        return decl;
+                    }
+                }
+            }
+            return null;
+        }
+
 
         // ctor/initializer handling
 
-        @Override
-        public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-            return visitType(node, data);
-        }
+        // this is the common denominator between anonymous class & astAnyTypeDeclaration on master
 
         @Override
-        public Object visit(ASTEnumDeclaration node, Object data) {
-            return visitType(node, data);
-        }
-
-        @Override
-        public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
-            return visitType(node, data);
-        }
-
-        private Object visitType(ASTAnyTypeDeclaration type, Object data) {
-            AlgoState prev = (AlgoState) data;
-            processInitializers(type, prev);
-
-            for (ASTAnyTypeBodyDeclaration decl : type.getDeclarations()) {
-                JavaNode d = decl.getDeclarationNode();
-                if (d instanceof ASTMethodDeclaration) {
-                    ONLY_LOCALS.acceptOpt(d, prev.forkCapturingNonLocal());
-                } else if (d instanceof ASTAnyTypeDeclaration) {
-                    visitType((ASTAnyTypeDeclaration) d, prev.forkEmptyNonLocal());
-                }
-            }
-
+        public Object visit(ASTClassOrInterfaceBody node, Object data) {
+            visitTypeBody(node, (AlgoState) data);
             return data; // type doesn't contribute anything to the enclosing control flow
         }
 
-        // todo anon class
+        @Override
+        public Object visit(ASTEnumBody node, Object data) {
+            visitTypeBody(node, (AlgoState) data);
+            return data; // type doesn't contribute anything to the enclosing control flow
+        }
 
 
-        public static void processInitializers(ASTAnyTypeDeclaration klass,
-                                               AlgoState beforeLocal) {
+        public void visitTypeBody(JavaNode typeBody, AlgoState data) {
+            List<ASTAnyTypeBodyDeclaration> declarations = typeBody.findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+            processInitializers(declarations, data, (ClassScope) typeBody.getScope());
 
-            ReachingDefsVisitor visitor = new ReachingDefsVisitor((ClassScope) klass.getScope());
+            for (ASTAnyTypeBodyDeclaration decl : declarations) {
+                JavaNode d = decl.getDeclarationNode();
+                if (d instanceof ASTMethodDeclaration) {
+                    ONLY_LOCALS.acceptOpt(d, data.forkCapturingNonLocal());
+                } else if (d instanceof ASTAnyTypeDeclaration) {
+                    JavaNode body = d.getChild(d.getNumChildren() - 1);
+                    visitTypeBody(body, data.forkEmptyNonLocal());
+                }
+            }
+        }
+
+
+        public static void processInitializers(List<ASTAnyTypeBodyDeclaration> declarations,
+                                               AlgoState beforeLocal,
+                                               ClassScope scope) {
+
+            ReachingDefsVisitor visitor = new ReachingDefsVisitor(scope);
 
             // All field initializers + instance initializers
             AlgoState ctorHeader = beforeLocal.forkCapturingNonLocal();
@@ -705,7 +729,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
             List<ASTConstructorDeclaration> ctors = new ArrayList<>();
 
-            for (ASTAnyTypeBodyDeclaration declaration : klass.getDeclarations()) {
+            for (ASTAnyTypeBodyDeclaration declaration : declarations) {
                 JavaNode node = declaration.getDeclarationNode();
 
                 final boolean isStatic;
@@ -737,6 +761,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             // assignments that reach the end of any constructor must
             // be considered used
             for (VariableNameDeclaration field : visitor.enclosingClassScope.getVariableDeclarations().keySet()) {
+                if (field.getAccessNodeParent().isStatic()) {
+                    staticInit.use(field);
+                }
                 ctorEndState.use(field);
             }
         }
@@ -816,7 +843,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-        void undef(VariableNameDeclaration var) {
+        void del(VariableNameDeclaration var) {
             reachingDefs.remove(var);
         }
 
@@ -858,7 +885,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
 
 
         AlgoState absorb(AlgoState sub) {
-            // Merge reaching des of the other scope into this
+            // Merge reaching defs of the other scope into this
+            // This is used to join paths after the control flow has forked
             if (sub == this || sub == null || sub.reachingDefs.isEmpty()) {
                 return this;
             }
