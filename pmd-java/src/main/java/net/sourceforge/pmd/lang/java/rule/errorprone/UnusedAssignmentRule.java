@@ -81,7 +81,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * labels on arbitrary statements
            * foreach var should be reassigned from one iter to another
            * test local class/anonymous class
-           * test this.field in ctors
+           * explicit ctor call (hard to impossible without type res)
 
         DONE
            * conditionals
@@ -92,6 +92,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * lambdas
            * constructors + initializers
            * anon class
+           * test this.field in ctors
 
 
      */
@@ -320,6 +321,12 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 // this is the normal finally
                 finalState = acceptOpt(finallyClause, finalState);
             }
+
+            // In the 7.0 grammar, the resources should be explicitly
+            // used here. For now they don't trigger anything as their
+            // node is not a VariableDeclaratorId. There's a test to
+            // check that.
+
             return finalState;
         }
 
@@ -964,6 +971,9 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
     static class AssignmentEntry {
 
         final VariableNameDeclaration var;
+
+        // this is not necessarily an expression, it may be also the
+        // variable declarator of a foreach loop
         final JavaNode rhs;
 
         AssignmentEntry(VariableNameDeclaration var, JavaNode rhs) {

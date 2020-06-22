@@ -141,12 +141,12 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
             return false;
         }
         VariableNameDeclaration n = (VariableNameDeclaration) o;
-        return n.node.getImage().equals(node.getImage());
+        return n.node.equals(this.node);
     }
 
     @Override
     public int hashCode() {
-        return node.getImage().hashCode();
+        return node.hashCode();
     }
 
     @Override
