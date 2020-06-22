@@ -74,6 +74,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -104,7 +105,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * explicit ctor call (hard to impossible without type res,
              or at least proper graph algorithms like toposort)
                 -> this is pretty invisible as it causes false negatives, not FPs
-           * shortcut conditionals have their own control-flow
            * test ternary expr
 
         DONE
@@ -119,6 +119,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
            * test this.field in ctors
            * foreach var should be reassigned from one iter to another
            * test local class/anonymous class
+           * shortcut conditionals have their own control-flow
+           * parenthesized expressions
 
      */
 
@@ -352,6 +354,8 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
         }
 
         private AlgoState linkConditional(AlgoState before, JavaNode condition, AlgoState thenState, AlgoState elseState, boolean isTopLevel) {
+            condition = ConfusingTernaryRule.unwrapParentheses(condition);
+
             if (condition instanceof ASTConditionalOrExpression) {
                 return visitShortcutOrExpr(condition, before, thenState, elseState);
             } else if (condition instanceof ASTConditionalAndExpression) {
@@ -368,7 +372,6 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 }
                 return state;
             }
-            // TODO parenthesized expression
         }
 
         AlgoState visitShortcutOrExpr(JavaNode orExpr,

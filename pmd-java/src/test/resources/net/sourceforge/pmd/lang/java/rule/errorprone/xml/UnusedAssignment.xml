@@ -2145,6 +2145,57 @@ class Foo {
     </test-code>
 
     <test-code>
+        <description>Nested boolean logic 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+              void main(int[] bufline, int start, int bufsize) {
+
+                int i = 0, j, k = 0;
+
+                if ( (i = 1) > 0 || ((i = 2) < (j = i) && (j = k) == i) ) {
+                    // reaching: i = 1, i = 2, j = k  (not j = i)
+                } else {
+                    // reaching: i = 2, j = k, j = i  (not i = 1)
+                    log(j);
+                    log(i);
+                }
+              }
+            }
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Nested boolean logic 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The value assigned to variable 'i' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+
+              void main(int[] bufline, int start, int bufsize) {
+
+                int i = 0, j, k = 0;
+
+                if ( (i = 1) > 0 && ((i = 2) < (j = i) || (j = k) == i) ) {
+                    // reaching: i = 2, j = i, j = k  (not i = 1)
+                    log(i);
+                } else {
+                    // reaching: i = 1, i = 2, j = k, j = i
+                    log(j);
+                }
+              }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>FP with argument</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
