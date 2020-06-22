@@ -126,7 +126,7 @@ Problem: A Calendar is a heavyweight object and expensive to create.
 
 Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDateTime.now()`.
         </description>
-        <priority>2</priority>
+        <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
@@ -1015,7 +1015,7 @@ could exhaust memory since they load the entire file into memory.
 Solution: Use [FileItem.getInputStream()](https://commons.apache.org/proper/commons-fileupload/apidocs/org/apache/commons/fileupload/FileItem.html#getInputStream--)
 and buffering.
         </description>
-        <priority>2</priority>
+        <priority>3</priority>
         <properties>
             <property name="version" value="2.0"/>
             <property name="xpath">
