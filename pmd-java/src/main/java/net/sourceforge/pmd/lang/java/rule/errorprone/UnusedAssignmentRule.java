@@ -122,22 +122,41 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
                 boolean isField = entry.var.getNode().getScope() instanceof ClassScope;
 
                 Set<AssignmentEntry> killers = result.killRecord.get(entry);
+                final String reason;
                 if (killers == null || killers.isEmpty()) {
                     if (isField) {
                         // assignments to fields don't really go out of scope
                         continue;
                     }
                     // This is a "DU" anomaly, the others are "DD"
-                    addViolation(ruleCtx, entry.rhs, new Object[] {entry.var.getImage(), "goes out of scope"});
+                    reason = "goes out of scope";
                 } else if (killers.size() == 1) {
                     AssignmentEntry k = killers.iterator().next();
-                    addViolation(ruleCtx, entry.rhs, new Object[] {entry.var.getImage(),
-                                                                   "overwritten on line " + k.rhs.getBeginLine()});
+                    reason = "overwritten on line " + k.rhs.getBeginLine();
                 } else {
-                    addViolation(ruleCtx, entry.rhs, new Object[] {entry.var.getImage(), joinLines("overwritten on lines ", killers)});
+                    reason = joinLines("overwritten on lines ", killers);
                 }
+                addViolationWithMessage(ruleCtx, entry.rhs, makeMessage(entry, reason));
             }
         }
+    }
+
+    private static String makeMessage(AssignmentEntry assignment, String reason) {
+        // The X is never used (reason)
+        //     ^
+        boolean isField = assignment.var.getNode().getScope() instanceof ClassScope;
+        String varName = assignment.var.getName();
+        StringBuilder format = new StringBuilder("The ");
+        if (assignment.rhs instanceof ASTVariableInitializer) {
+            format.append(isField ? "field initializer for"
+                                  : "initializer for variable");
+        } else {
+            format.append("value assigned to ");
+            format.append(isField ? "field" : "variable");
+        }
+        format.append(" ''").append(varName).append("''");
+        format.append(" is never used (").append(reason).append(")");
+        return format.toString();
     }
 
     private static String joinLines(String prefix, Set<AssignmentEntry> killers) {
@@ -215,7 +234,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
 
             for (VariableNameDeclaration var : localsToKill) {
-                state.del(var);
+                state.deleteVar(var);
             }
 
             return state;
@@ -868,7 +887,7 @@ public class UnusedAssignmentRule extends AbstractJavaRule {
             }
         }
 
-        void del(VariableNameDeclaration var) {
+        void deleteVar(VariableNameDeclaration var) {
             reachingDefs.remove(var);
         }
 
